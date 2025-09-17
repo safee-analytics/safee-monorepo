@@ -1,7 +1,8 @@
-import { pgTable, uuid, varchar, timestamp } from "drizzle-orm/pg-core";
+import { uuid, varchar, timestamp } from "drizzle-orm/pg-core";
+import { financeSchema } from "./_common.js";
 import { organizations } from "./organizations.js";
 
-export const accounts = pgTable("accounts", {
+export const accounts = financeSchema.table("accounts", {
   id: uuid("id").primaryKey().defaultRandom(),
   code: varchar("code", { length: 50 }).notNull(),
   name: varchar("name", { length: 255 }).notNull(),

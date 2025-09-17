@@ -1,8 +1,9 @@
-import { pgTable, uuid, varchar, timestamp } from "drizzle-orm/pg-core";
+import { uuid, varchar, timestamp } from "drizzle-orm/pg-core";
+import { salesSchema } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { ContactType } from "./schema.js";
 
-export const contacts = pgTable("contacts", {
+export const contacts = salesSchema.table("contacts", {
   id: uuid("id").primaryKey().defaultRandom(),
   firstName: varchar("first_name", { length: 100 }).notNull(),
   lastName: varchar("last_name", { length: 100 }).notNull(),

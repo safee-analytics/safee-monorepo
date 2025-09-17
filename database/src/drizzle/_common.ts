@@ -8,14 +8,18 @@ export function idpk(name: string) {
     .notNull();
 }
 
-export const gateway = pgSchema("gateway");
-export const memory = pgSchema("memory");
-export const items = pgSchema("items");
-export const recipeCraft = pgSchema("recipe_craft");
-export const images = pgSchema("images");
-export const creativeWorks = pgSchema("creative_works");
-export const behaviour = pgSchema("behaviour");
-export const pushNotifications = pgSchema("push_notifications");
-export const challenges = pgSchema("challenges");
-export const chat = pgSchema("chat");
-export const combat = pgSchema("combat");
+// Define PostgreSQL schemas for the Safee Analytics modular monolith
+export const identitySchema = pgSchema("identity");
+export const financeSchema = pgSchema("finance");
+export const hrSchema = pgSchema("hr");
+export const salesSchema = pgSchema("sales");
+export const systemSchema = pgSchema("system");
+
+// Export all schemas for easy importing
+export const schemas = {
+  identity: identitySchema,
+  finance: financeSchema,
+  hr: hrSchema,
+  sales: salesSchema,
+  system: systemSchema,
+} as const;

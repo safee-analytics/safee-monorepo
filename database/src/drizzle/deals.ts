@@ -1,9 +1,10 @@
-import { pgTable, uuid, varchar, timestamp, decimal, integer } from "drizzle-orm/pg-core";
+import { uuid, varchar, timestamp, decimal, integer } from "drizzle-orm/pg-core";
+import { salesSchema } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { contacts } from "./contacts.js";
 import { DealStage } from "./schema.js";
 
-export const deals = pgTable("deals", {
+export const deals = salesSchema.table("deals", {
   id: uuid("id").primaryKey().defaultRandom(),
   title: varchar("title", { length: 255 }).notNull(),
   value: decimal("value", { precision: 12, scale: 2 }),

@@ -1,6 +1,7 @@
-import { pgTable, uuid, varchar, timestamp, boolean } from "drizzle-orm/pg-core";
+import { uuid, varchar, timestamp, boolean } from "drizzle-orm/pg-core";
+import { identitySchema } from "./_common.js";
 
-export const organizations = pgTable("organizations", {
+export const organizations = identitySchema.table("organizations", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }).notNull(),
   slug: varchar("slug", { length: 100 }).notNull().unique(),

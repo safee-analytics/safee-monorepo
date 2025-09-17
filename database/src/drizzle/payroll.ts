@@ -1,8 +1,9 @@
-import { pgTable, uuid, varchar, timestamp, decimal, date } from "drizzle-orm/pg-core";
+import { uuid, varchar, timestamp, decimal, date } from "drizzle-orm/pg-core";
+import { hrSchema } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { employees } from "./employees.js";
 
-export const payrollRecords = pgTable("payroll_records", {
+export const payrollRecords = hrSchema.table("payroll_records", {
   id: uuid("id").primaryKey().defaultRandom(),
   employeeId: uuid("employee_id")
     .references(() => employees.id)

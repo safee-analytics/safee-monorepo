@@ -1,7 +1,8 @@
-import { pgTable, uuid, varchar, timestamp, decimal, date } from "drizzle-orm/pg-core";
+import { uuid, varchar, timestamp, decimal, date } from "drizzle-orm/pg-core";
+import { hrSchema } from "./_common.js";
 import { organizations } from "./organizations.js";
 
-export const employees = pgTable("employees", {
+export const employees = hrSchema.table("employees", {
   id: uuid("id").primaryKey().defaultRandom(),
   employeeId: varchar("employee_id", { length: 50 }).notNull(),
   firstName: varchar("first_name", { length: 100 }).notNull(),

@@ -1,9 +1,10 @@
-import { pgTable, uuid, varchar, timestamp, decimal, date } from "drizzle-orm/pg-core";
+import { uuid, varchar, timestamp, decimal, date } from "drizzle-orm/pg-core";
+import { financeSchema } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { contacts } from "./contacts.js";
 import { InvoiceType } from "./schema.js";
 
-export const invoices = pgTable("invoices", {
+export const invoices = financeSchema.table("invoices", {
   id: uuid("id").primaryKey().defaultRandom(),
   number: varchar("number", { length: 100 }).notNull().unique(),
   type: varchar("type", { length: 20 }).$type<InvoiceType>().notNull(),
@@ -20,7 +21,7 @@ export const invoices = pgTable("invoices", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-export const invoiceItems = pgTable("invoice_items", {
+export const invoiceItems = financeSchema.table("invoice_items", {
   id: uuid("id").primaryKey().defaultRandom(),
   invoiceId: uuid("invoice_id")
     .references(() => invoices.id)
