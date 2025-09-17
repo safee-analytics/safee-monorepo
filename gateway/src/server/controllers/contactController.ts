@@ -24,9 +24,9 @@ export class ContactController extends Controller {
   @Get("/")
   @Security("jwt")
   public async getContacts(
-    @Query() page: number = 1,
-    @Query() limit: number = 20,
-    @Query() type?: string,
+    @Query() _page: number = 1,
+    @Query() _limit: number = 20,
+    @Query() _type?: string,
   ): Promise<{
     contacts: Contact[];
     total: number;
@@ -39,7 +39,7 @@ export class ContactController extends Controller {
   @Post("/")
   @Security("jwt")
   @SuccessResponse("201", "Contact created successfully")
-  public async createContact(@Body() request: ContactCreateRequest): Promise<Contact> {
+  public async createContact(@Body() _request: ContactCreateRequest): Promise<Contact> {
     throw new Error("Not implemented yet");
   }
 }

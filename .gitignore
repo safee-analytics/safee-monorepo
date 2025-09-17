@@ -3,6 +3,12 @@
 .env.*
 !.env.example
 
+# Documentation (keep as working files, not in version control)
+*.md
+*.md.bak
+.task-config
+.task-config.bak
+
 out
 
 # System stuff

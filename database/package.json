@@ -24,26 +24,31 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/storage": "^7.17.1",
+    "@types/redis": "^4.0.11",
     "date-fns": "4.1.0",
+    "dotenv": "^16.4.5",
     "drizzle-orm": "0.44.2",
     "pg": "^8.13.0",
     "pino": "^8.20.0",
+    "redis": "^5.8.2",
     "uuid": "^11.0.5",
-    "zod": "^4.0.5",
-    "dotenv": "^16.4.5"
+    "zod": "^4.0.5"
   },
   "devDependencies": {
     "@types/node": "^20.14.7",
     "@types/pg": "^8.11.10",
     "drizzle-kit": "0.31.4",
+    "globstar": "^1.0.0",
     "postgrator": "^7.2.0",
     "prettier": "^3.3.3",
-    "globstar": "^1.0.0",
     "tsx": "^4.19.0",
     "typescript": "5.8.3"
   },
   "exports": {
     ".": "./build/src/index.js",
-    "./drizzle": "./build/src/drizzle.js"
+    "./drizzle": "./build/src/drizzle.js",
+    "./logging": "./build/src/logging.js",
+    "./storage": "./build/src/storage/index.js"
   }
 }

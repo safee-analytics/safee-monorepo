@@ -24,9 +24,9 @@ export class DealController extends Controller {
   @Get("/")
   @Security("jwt")
   public async getDeals(
-    @Query() page: number = 1,
-    @Query() limit: number = 20,
-    @Query() stage?: string,
+    @Query() _page: number = 1,
+    @Query() _limit: number = 20,
+    @Query() _stage?: string,
   ): Promise<{
     deals: Deal[];
     total: number;
@@ -39,7 +39,7 @@ export class DealController extends Controller {
   @Post("/")
   @Security("jwt")
   @SuccessResponse("201", "Deal created successfully")
-  public async createDeal(@Body() request: DealCreateRequest): Promise<Deal> {
+  public async createDeal(@Body() _request: DealCreateRequest): Promise<Deal> {
     throw new Error("Not implemented yet");
   }
 }

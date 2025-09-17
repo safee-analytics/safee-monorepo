@@ -11,6 +11,8 @@ import type { RedisClient, DrizzleClient } from "@safee/database";
 import { SessionStore } from "./SessionStore.js";
 import { RegisterRoutes } from "./routes.js";
 import swaggerDocument from "./swagger.json" with { type: "json" };
+import pg from "pg";
+import { initServerContext } from "./serverContext.js";
 
 dotenv.config();
 
@@ -24,6 +26,7 @@ type Dependencies = {
   logger: Logger<"http">;
   redis: RedisClient;
   drizzle: DrizzleClient;
+  pool: pg.Pool;
 };
 
 declare module "express-session" {
@@ -62,7 +65,7 @@ export class ApiError extends Error {
   }
 }
 
-export async function server({ logger, redis, drizzle }: Dependencies) {
+export async function server({ logger, redis, drizzle, pool: _pool }: Dependencies) {
   logger.info("Configuring Safee Analytics API server");
 
   const app: Application = express();
@@ -79,13 +82,13 @@ export async function server({ logger, redis, drizzle }: Dependencies) {
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
   // Dependency injection middleware
-  app.use((req, res, next) => {
+  app.use((req, _res, next) => {
     req.redis = redis;
     req.drizzle = drizzle;
     next();
   });
+  initServerContext({ drizzle, logger: logger as unknown as Logger, redis });
 
-  // Security middleware
   app.use(helmet());
 
   // API secret key authorization
@@ -100,7 +103,6 @@ export async function server({ logger, redis, drizzle }: Dependencies) {
     });
   }
 
-  // Session configuration
   logger.info("Cookie authorization: %s", COOKIE_KEY ? "Enabled" : "Disabled");
   if (COOKIE_KEY) {
     app.use(
@@ -150,10 +152,8 @@ export async function server({ logger, redis, drizzle }: Dependencies) {
     ),
   );
 
-  // API routes
   RegisterRoutes(app);
 
-  // Swagger documentation
   app.use(
     "/docs",
     swaggerUi.serve,
@@ -164,8 +164,7 @@ export async function server({ logger, redis, drizzle }: Dependencies) {
     }),
   );
 
-  // Root endpoint
-  app.get("/", (req, res) => {
+  app.get("/", (_req, res) => {
     res.json({
       message: "Safee Analytics API",
       version: "1.0.0",
@@ -174,7 +173,7 @@ export async function server({ logger, redis, drizzle }: Dependencies) {
   });
 
   // Error handling middleware
-  app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+  app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof ApiError) {
       logger.info({ err, url: req.url, userId: req.authenticatedUserId }, "api error");
       return res.status(err.statusCode).json({
@@ -199,7 +198,7 @@ export async function server({ logger, redis, drizzle }: Dependencies) {
   });
 
   // 404 handler
-  app.use("*", (req, res) => {
+  app.use("*", (_req, res) => {
     res.status(404).json({ error: "Endpoint not found" });
   });
 
@@ -208,9 +207,4 @@ export async function server({ logger, redis, drizzle }: Dependencies) {
     logger.info("API Documentation available at: http://%s:%s/docs", HOST, PORT);
     logger.info("Health Check available at: http://%s:%s/api/v1/health", HOST, PORT);
   });
-
-  return app;
 }
-
-export default server;
-

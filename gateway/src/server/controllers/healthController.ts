@@ -1,4 +1,4 @@
-import { Controller, Get, Route, Tags } from "tsoa";
+import { Controller, Get, Route, Tags, NoSecurity } from "tsoa";
 
 interface HealthCheck {
   status: "ok" | "error";
@@ -11,6 +11,7 @@ interface HealthCheck {
 @Tags("Health")
 export class HealthController extends Controller {
   @Get("/")
+  @NoSecurity()
   public async getHealth(): Promise<HealthCheck> {
     return {
       status: "ok",

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import Postgrator from "postgrator";
@@ -10,7 +11,6 @@ function fmt(migration: Postgrator.Migration) {
 }
 
 async function main() {
-  // eslint-disable-next-line import-x/no-named-as-default-member
   const client = new pg.Client({ connectionString: process.env.DATABASE_URL });
 
   try {

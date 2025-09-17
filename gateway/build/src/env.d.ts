@@ -1,0 +1,15 @@
+export declare const ENV: string;
+export declare const IS_LOCAL: boolean;
+export declare const API_SECRET_KEY: string | undefined;
+export declare const PORT: number;
+export declare const HOST: string;
+export declare const LOG_LEVEL: string;
+export declare const COOKIE_KEY: string | undefined;
+export declare const JWT_SECRET: string;
+export declare const DATABASE_URL: string | null;
+export declare const USE_CLOUD_STORAGE: boolean;
+export declare const FILE_UPLOAD_BUCKET: string;
+export declare const FILE_UPLOAD_PATH: string;
+export declare const PUBLIC_DIR: string;
+export declare const CORS_ORIGIN: string[];
+export declare const DASHBOARD_BASE_URL: string;

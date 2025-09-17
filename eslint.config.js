@@ -4,7 +4,7 @@ import tsEslint from "typescript-eslint";
 import eslintPluginImport from "eslint-plugin-import-x";
 import eslintConfigPrettier from "eslint-config-prettier";
 import eslintPluginUnicorn from "eslint-plugin-unicorn";
-import eslintPluginSafee from "eslint-plugin-safee";
+import eslintPluginSafee from "@safee/eslint-plugin";
 
 function config(...configs) {
   return tsEslint.config(

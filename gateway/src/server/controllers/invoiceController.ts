@@ -7,8 +7,8 @@ export class InvoiceController extends Controller {
   @Get("/")
   @Security("jwt")
   public async getInvoices(
-    @Query() page: number = 1,
-    @Query() limit: number = 20,
+    @Query() _page: number = 1,
+    @Query() _limit: number = 20,
   ): Promise<{
     invoices: Invoice[];
     total: number;
@@ -21,7 +21,7 @@ export class InvoiceController extends Controller {
   @Post("/")
   @Security("jwt")
   @SuccessResponse("201", "Invoice created successfully")
-  public async createInvoice(@Body() request: InvoiceCreateRequest): Promise<Invoice> {
+  public async createInvoice(@Body() _request: InvoiceCreateRequest): Promise<Invoice> {
     throw new Error("Not implemented yet");
   }
 }

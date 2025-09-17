@@ -1,8 +1,9 @@
+import globals from "globals";
 import js from "@eslint/js";
 import tseslint from "@typescript-eslint/eslint-plugin";
 import tsparser from "@typescript-eslint/parser";
 import prettier from "eslint-plugin-prettier";
-import safee from "eslint-plugin-safee";
+import safee from "@safee/eslint-plugin";
 
 export default [
   js.configs.recommended,
@@ -10,6 +11,9 @@ export default [
     files: ["**/*.ts", "**/*.tsx"],
     languageOptions: {
       parser: tsparser,
+      globals: {
+        ...globals.node,
+      },
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",

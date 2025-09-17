@@ -13,8 +13,8 @@ export interface AuthenticatedRequest extends ExRequest {
 export function expressAuthentication(
   request: ExRequest,
   securityName: string,
-  scopes?: string[],
-): Promise<any> {
+  _scopes?: string[],
+): Promise<unknown> {
   if (securityName === "jwt") {
     const token = request.headers.authorization?.replace("Bearer ", "");
 
@@ -28,12 +28,12 @@ export function expressAuthentication(
         return;
       }
 
-      jwt.verify(token, process.env.JWT_SECRET as string, (err: any, decoded: any) => {
+      jwt.verify(token, process.env.JWT_SECRET as string, (err: unknown, decoded: unknown) => {
         if (err) {
           reject(err);
         } else {
           // Attach user to request
-          (request as AuthenticatedRequest).user = decoded;
+          (request as AuthenticatedRequest).user = decoded as AuthenticatedRequest["user"];
           resolve(decoded);
         }
       });

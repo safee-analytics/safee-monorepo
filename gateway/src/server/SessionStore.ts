@@ -27,11 +27,7 @@ function getRedisKey(id: string, prefixKey = SessionPrefixKey) {
   return `user-session-${prefixKey}${id}`;
 }
 
-async function setRedisUserSession(
-  redis: RedisClient,
-  sessionData: RedisSession,
-  timeToLiveSeconds: number,
-) {
+async function setRedisUserSession(redis: RedisClient, sessionData: RedisSession, timeToLiveSeconds: number) {
   await redis.set(getRedisKey(sessionData.sid), JSON.stringify(sessionData), { EX: timeToLiveSeconds });
 }
 
@@ -68,9 +64,7 @@ export class SessionStore extends Store {
       return this.options.ttl;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-deprecated
     if (session.cookie.expires) {
-      // eslint-disable-next-line @typescript-eslint/no-deprecated
       return new Date(session.cookie.expires).getTime() - Date.now();
     }
     return 24 * 60 * 60 * 1000;
@@ -80,7 +74,6 @@ export class SessionStore extends Store {
     return this.options.serializer ?? JSON;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- haha i dont care
   async set(sid: string, session: SessionData, cb = noop) {
     const ttl = this.getTtl(session);
     try {
@@ -95,7 +88,6 @@ export class SessionStore extends Store {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- haha i dont care
   async get(sid: string, cb = noop) {
     const session = await getRedisUserSession(this.redis, sid);
 
@@ -112,7 +104,6 @@ export class SessionStore extends Store {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- haha i dont care
   override async touch(sid: string, session: SessionData, cb = noop) {
     const ttl = this.getTtl(session);
     try {
@@ -123,7 +114,6 @@ export class SessionStore extends Store {
     }
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises -- haha i dont care
   async destroy(sid: string, cb = noop) {
     try {
       await destroyRedisUserSession(this.redis, sid);

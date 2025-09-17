@@ -1,4 +1,4 @@
-import { Controller, Post, Route, Tags, Body, Security, SuccessResponse } from "tsoa";
+import { Controller, Post, Route, Tags, Body, Security, NoSecurity, SuccessResponse } from "tsoa";
 
 interface LoginRequest {
   email: string;
@@ -25,14 +25,16 @@ interface RegisterRequest {
 @Tags("Authentication")
 export class AuthController extends Controller {
   @Post("login")
+  @NoSecurity()
   @SuccessResponse("200", "Login successful")
-  public async login(@Body() request: LoginRequest): Promise<LoginResponse> {
+  public async login(@Body() _request: LoginRequest): Promise<LoginResponse> {
     throw new Error("Not implemented yet");
   }
 
   @Post("register")
+  @NoSecurity()
   @SuccessResponse("201", "User registered successfully")
-  public async register(@Body() request: RegisterRequest): Promise<LoginResponse> {
+  public async register(@Body() _request: RegisterRequest): Promise<LoginResponse> {
     throw new Error("Not implemented yet");
   }
 

@@ -1,9 +1,6 @@
 services:
   postgres:
-    build:
-      x-bake:
-        cache-to: type=gha
-      context: ./database
+    image: postgres:15
     ports:
       - "5433:5432"
     environment:

@@ -21,14 +21,14 @@ interface AccountCreateRequest {
 export class AccountController extends Controller {
   @Get("/")
   @Security("jwt")
-  public async getAccounts(@Query() type?: string): Promise<Account[]> {
+  public async getAccounts(@Query() _type?: string): Promise<Account[]> {
     throw new Error("Not implemented yet");
   }
 
   @Post("/")
   @Security("jwt")
   @SuccessResponse("201", "Account created successfully")
-  public async createAccount(@Body() request: AccountCreateRequest): Promise<Account> {
+  public async createAccount(@Body() _request: AccountCreateRequest): Promise<Account> {
     throw new Error("Not implemented yet");
   }
 }

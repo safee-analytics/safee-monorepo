@@ -25,9 +25,9 @@ export class PayrollController extends Controller {
   @Get("/")
   @Security("jwt")
   public async getPayrollRecords(
-    @Query() page: number = 1,
-    @Query() limit: number = 20,
-    @Query() period?: string,
+    @Query() _page: number = 1,
+    @Query() _limit: number = 20,
+    @Query() _period?: string,
   ): Promise<{
     records: PayrollRecord[];
     total: number;
@@ -40,14 +40,14 @@ export class PayrollController extends Controller {
   @Post("/")
   @Security("jwt")
   @SuccessResponse("201", "Payroll record created successfully")
-  public async createPayrollRecord(@Body() request: PayrollCreateRequest): Promise<PayrollRecord> {
+  public async createPayrollRecord(@Body() _request: PayrollCreateRequest): Promise<PayrollRecord> {
     throw new Error("Not implemented yet");
   }
 
   @Post("process")
   @Security("jwt")
   @SuccessResponse("200", "Payroll processed successfully")
-  public async processPayroll(@Body() request: { period: string }): Promise<{ message: string }> {
+  public async processPayroll(@Body() _request: { period: string }): Promise<{ message: string }> {
     throw new Error("Not implemented yet");
   }
 }

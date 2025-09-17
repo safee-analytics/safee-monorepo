@@ -25,8 +25,8 @@ export class EmployeeController extends Controller {
   @Get("/")
   @Security("jwt")
   public async getEmployees(
-    @Query() page: number = 1,
-    @Query() limit: number = 20,
+    @Query() _page: number = 1,
+    @Query() _limit: number = 20,
   ): Promise<{
     employees: Employee[];
     total: number;
@@ -39,7 +39,7 @@ export class EmployeeController extends Controller {
   @Post("/")
   @Security("jwt")
   @SuccessResponse("201", "Employee created successfully")
-  public async createEmployee(@Body() request: EmployeeCreateRequest): Promise<Employee> {
+  public async createEmployee(@Body() _request: EmployeeCreateRequest): Promise<Employee> {
     throw new Error("Not implemented yet");
   }
 }
