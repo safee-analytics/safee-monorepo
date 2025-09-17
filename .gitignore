@@ -1,0 +1,30 @@
+# Project
+.env
+.env.*
+!.env.example
+
+out
+
+# System stuff
+.DS_Store
+.idea
+.vscode
+*.log
+.cache
+
+# NodeJS Projects
+node_modules/
+.eslintcache
+*.tsbuildinfo
+
+# Coverage
+.coverage
+credentials/
+
+
+.ai/*
+.cursor/*
+.windsurfrules
+.aider*
+CLAUDE.local.md
+

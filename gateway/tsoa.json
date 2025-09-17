@@ -1,0 +1,35 @@
+{
+  "entryFile": "src/server/index.ts",
+  "noImplicitAdditionalProperties": "silently-remove-extras",
+  "controllerPathGlobs": ["src/server/controllers/*.ts"],
+  "spec": {
+    "outputDirectory": "src/server/",
+    "specVersion": 3,
+    "name": "Safee Analytics API",
+    "description": "API documentation for Safee Analytics SaaS platform",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Safee Analytics",
+      "email": "support@safee-analytics.com"
+    },
+    "license": "MIT",
+    "schemes": ["https", "http"],
+    "produces": ["application/json"],
+    "consumes": ["application/json"],
+    "securityDefinitions": {
+      "jwt": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "description": "JWT authorization header using the Bearer scheme. Format: Authorization: Bearer {token}"
+      }
+    },
+    "basePath": "api/v1/"
+  },
+  "routes": {
+    "routesDir": "src/server/",
+    "esm": true,
+    "basePath": "api/v1/",
+    "authenticationModule": "src/server/middleware/auth.ts"
+  }
+}

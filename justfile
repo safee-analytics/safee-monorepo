@@ -1,0 +1,174 @@
+
+set shell := ["bash", "-uc"]
+set dotenv-load
+
+DATABASE_URL := env("DATABASE_URL", "postgresql://postgres:postgres@localhost:5433/safee")
+DEV_DATABASE_URL := env("DEV_DB_URL", "")
+test_database_url := "postgresql://postgres:postgres@localhost:45432/safee"
+
+# Build anything that might be needed and then run the servers.
+
+default: build-database  prepare-gateway && run
+
+# Run the servers.
+run:
+    npx tsx {{ if env("DEBUG", "") == "true" { "--inspect-brk" } else { "" } }} -r dotenv/config dev.ts
+
+# Initialize the most basic parts of the repo
+init: tsinit
+    #!/usr/bin/env bash
+    DIRS=$(find . -type f -name '*.env.example' -exec dirname {} \; |sed -r 's|./?||' | sort | uniq)
+    for D in $DIRS; do
+      if [ ! -e $D/.env ]; then
+        (cd $D && ln -s ../.env .env)
+      fi
+    done
+
+_all pattern mode="all" do="run":
+    ruby task-runner.rb {{pattern}} {{mode}} {{do}}
+
+# Build all components of the project
+build mode="changed" do="run": (_all "^build-" mode do)
+
+# Lint all components
+lint mode="changed" do="run": (_all "^lint-" mode do)
+
+# Format all code
+fmt mode="changed" do="run": (_all "^fmt-" mode do)
+
+# Typecheck all components
+check mode="changed" do="run": (_all "^check-" mode do)
+
+# Run all tests
+test mode="changed" do="run" $DATABASE_URL=test_database_url: 
+    @just _all "^test-" {{mode}} {{do}}
+
+# Clean all
+clean: (_all "^clean-")
+
+# Install TypeScript dependencies
+[group('typescript')]
+tsinit:
+    npm ci
+
+[group('database')]
+bump:
+    npm run -w database bumpMigrations
+
+# Build database package
+[group('database')]
+build-database:
+    npm -w database run build
+
+# Typecheck database package
+[group('database')]
+check-database: 
+    npx -w database tsc --build --emitDeclarationOnly
+
+# Lint database package
+[group('database')]
+lint-database: build-eslint-plugin-safee
+    npx -w database eslint . --max-warnings 0 --cache
+
+# Format database package
+[group('database')]
+fmt-database:
+    npx -w database prettier . --write --cache
+
+# Clean generated files from database package
+[group('database')]
+clean-database:
+    npx -w database tsc --build --clean
+    rm -f database/.eslintcache
+    rm -rf database/node_modules/.cache/prettier/
+
+
+# Generate a new (possibly empty) migration
+[group('database')]
+migration name:
+    npx -w database tsx -r dotenv/config src/private/makemigration.ts "{{name}}"
+
+# Recompile imports into the latest migration
+[group('database')]
+compile-migration mode="--write":
+    npx -w database tsx -r dotenv/config src/private/compilemigration.ts {{mode}}
+
+# Migrate the database to the latest state
+[group('database')]
+migrate:
+    npx -w database tsx -r dotenv/config src/private/migrate.ts
+    npx -w database tsx -r dotenv/config src/private/postmigrate.ts
+
+# Clear the database and re-run all migrations
+[group('database')]
+reset-database: clear-database && migrate
+
+# Clear the database
+[group('database')]
+[confirm("Are you sure you want to reset the database? This action cannot be undone.")]
+clear-database:
+    docker compose exec postgres dropdb -U postgres colony || true
+    docker compose exec postgres createdb -U postgres colony
+
+
+# Prepare generated files for Gateway
+[group('gateway')]
+prepare-gateway: build-database 
+
+# Build gateway package
+[group('gateway')]
+build-gateway: prepare-gateway
+    npm -w gateway run build
+
+# Typecheck gateway
+[group('gateway')]
+check-gateway: prepare-gateway
+    npx -w gateway tsoa spec-and-routes
+    npx -w gateway tsc --build --emitDeclarationOnly
+
+# Lint gateway
+[group('gateway')]
+lint-gateway: build-eslint-plugin-safee build-database build-gateway
+    npx -w gateway eslint . --max-warnings 0 --cache
+
+# Format gateway
+[group('gateway')]
+fmt-gateway:
+    npx -w gateway prettier . --write --cache
+
+
+# Clean generated files from gateway
+[group('gateway')]
+clean-gateway:
+    npx -w gateway tsc --build --clean
+    cd gateway
+    rm -f gateway/.eslintcache
+    rm -rf gateway/node_modules/.cache/prettier/
+
+
+[private]
+build-eslint-plugin-safee:
+    npx tsc --build eslint-plugin-safee
+
+[private]
+check-eslint-plugin-safee:
+    npx -w eslint-plugin-safee tsc --build --emitDeclarationOnly
+
+[private]
+lint-eslint-plugin-safee:
+    npx -w eslint-plugin-safee eslint . --max-warnings 0 --cache
+
+[private]
+fmt-eslint-plugin-safee:
+    npx -w eslint-plugin-safee prettier . --write --cache
+
+[private]
+test-eslint-plugin-safee: build-eslint-plugin-safee
+    npm -w eslint-plugin-safee test
+
+[private]
+clean-eslint-plugin-safee:
+    npx -w eslint-plugin-safee tsc --build --clean
+    rm -f eslint-plugin-safee/.eslintcache
+    rm -rf eslint-plugin-safee/node_modules/.cache/prettier/
+

@@ -1,0 +1,109 @@
+# Safee Analytics - Task Manager
+
+## Current Session: Not Started
+
+**Session Status**: ACTIVE  
+**Current Sprint**: Phase 1: Foundation Current Sprint**: Not Set Core Infrastructure  
+**Active Tasks**: 0  
+**Session Start Time**: -  
+**Total Session Time**: 00:00:00  
+
+---
+
+## Quick Commands
+
+### Session Management
+- `start-session [sprint-name]` - Start a new development session
+- `stop-session` - End current session and save progress
+- `session-status` - View current session information
+
+### Task Management
+- `add-task "task description" [priority] [module]` - Add new task
+- `complete-task [task-id]` - Mark task as completed
+- `start-task [task-id]` - Start working on a task
+- `pause-task [task-id]` - Pause current task
+- `list-tasks [filter]` - List tasks by status/module
+- `update-task [task-id] [field] [value]` - Update task details
+
+---
+
+## Task Categories
+
+### 🏗️ Infrastructure & Setup
+- Backend architecture
+- Database setup
+- API Gateway configuration
+- CI/CD pipeline
+- Development environment
+
+### 💰 Hisabiq Module (Accounting)
+- Invoice management
+- Customer management
+- Financial reporting
+- PDF generation
+- Payment tracking
+
+### 👥 Kanz Module (HR & Payroll)
+- Employee management
+- Payroll processing
+- HR analytics
+- Performance tracking
+- Attendance management
+
+### 📞 Nisbah Module (CRM)
+- Lead management
+- Contact management
+- Sales pipeline
+- CRM analytics
+- Customer interactions
+
+### 🎨 Frontend Development
+- React components
+- UI/UX implementation
+- State management
+- Responsive design
+- Internationalization
+
+### 🧪 Testing & Quality
+- Unit tests
+- Integration tests
+- Performance testing
+- Security testing
+- Code quality
+
+---
+
+## Task Priority Levels
+
+- **P0** - Critical/Blocker (Must be done immediately)
+- **P1** - High Priority (Should be done this sprint)
+- **P2** - Medium Priority (Can be done this sprint)
+- **P3** - Low Priority (Nice to have)
+- **P4** - Backlog (Future consideration)
+
+---
+
+## Task Status Types
+
+- **TODO** - Not started
+- **IN_PROGRESS** - Currently being worked on
+- **BLOCKED** - Cannot proceed due to dependency
+- **REVIEW** - Ready for code review
+- **TESTING** - In testing phase
+- **DONE** - Completed
+- **CANCELLED** - No longer needed
+
+---
+
+## Session Rules
+
+1. **One Active Session**: Only one development session can be active at a time
+2. **Task Focus**: Maximum 3 tasks can be IN_PROGRESS simultaneously
+3. **Time Tracking**: All active tasks must log time spent
+4. **Daily Standup**: Session summary required at end of each day
+5. **Sprint Alignment**: Tasks should align with current sprint goals
+
+---
+
+*Last Updated: 2025-08-25*  
+*Version: 1.0*

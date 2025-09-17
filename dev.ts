@@ -1,0 +1,107 @@
+#!/usr/bin/env -S npx tsx -r dotenv/config
+/**
+ * Run all the services at once.
+ *
+ * Pulls all environment variables from the root `.env` file and supplies them to each of our service.
+ */
+
+import Watcher from "watcher";
+import concurrently from "concurrently";
+import ignore from "ignore";
+import { readFileSync } from "node:fs";
+import { relative } from "node:path";
+import { spawn } from "node:child_process";
+import { pino } from "pino";
+
+function declareVar(value: string, fallback: string) {
+  const parsed = Object.fromEntries(
+    value
+      .split(",")
+      .map((spec) => spec.split("="))
+      .map(([app, value]) => (app && value ? [app, value] : ["default", app])),
+  );
+
+  return (app: string) => parsed[app] ?? parsed.default ?? fallback;
+}
+
+const logger = pino({
+  transport: { target: "pino-pretty" },
+});
+
+const logLevel = declareVar(process.env.SAFEE_LOG ?? "", "info");
+const watch = declareVar(process.env.WATCH ?? "", "false");
+
+const apps = [
+  {
+    name: "@safee/gateway",
+    command: "npm run -w gateway dev",
+    env: { ...process.env, LOG_LEVEL: logLevel("safee-backend") },
+  },
+];
+
+// @ts-expect-error -- types are wrong or something idk
+concurrently(apps, { prefixColors: "auto" });
+
+// Dockerfile is used as the build-ignore file for now because Docker builds should
+// theoretically be already optimized to not rebuild when not necessary.
+// @ts-expect-error -- types are wrong or something idk
+const filter = ignore().add(readFileSync("./.dockerignore", "utf-8"));
+const LIBS = {
+  database: "build-database",
+  gateway: "prepare-gateway",
+} as const;
+
+const isRebuilding = new Set();
+const rebuildAgain = new Set();
+async function rebuild(lib: keyof typeof LIBS) {
+  const toRebuild = LIBS[lib];
+  if (isRebuilding.has(toRebuild)) {
+    rebuildAgain.add(toRebuild);
+    return;
+  }
+
+  isRebuilding.add(toRebuild);
+  rebuildAgain.delete(toRebuild);
+  logger.info("Change detected in %s. Running %s.", lib, toRebuild);
+  // NOTE: when any of the libs change, we rebuild `llm` because `llm` depends on all of them,
+  // so this will transitively rebuild all libs.
+  const cp = spawn("just", [toRebuild], {
+    cwd: process.cwd(),
+    env: process.env,
+    stdio: ["inherit", "inherit", "inherit"],
+  });
+  cp.on("exit", () => {
+    logger.info("Rebuilt libs (exit code %d)", cp.exitCode ?? -1);
+    isRebuilding.delete(toRebuild);
+    if (rebuildAgain.has(toRebuild)) rebuild(lib);
+  });
+  cp.on("error", (error) => {
+    logger.error({ err: error }, "Error building %s", toRebuild);
+    isRebuilding.delete(toRebuild);
+    if (rebuildAgain.has(toRebuild)) rebuild(lib);
+  });
+}
+
+const watchers: Watcher[] = [];
+for (const lib of Object.keys(LIBS) as (keyof typeof LIBS)[]) {
+  if (watch(lib)) {
+    logger.info("Watching %s", lib);
+    const watcher = new Watcher(lib, {
+      renameDetection: false,
+      ignore: (path: string) => {
+        if (!path || !path.trim()) return true;
+        const rel = relative(process.cwd(), path);
+        return rel && filter.ignores(rel);
+      },
+      ignoreInitial: true,
+      recursive: true,
+    });
+    watcher.on("all", () => rebuild(lib));
+    watchers.push(watcher);
+  }
+}
+
+process.on("SIGINT", () => {
+  for (const watcher of watchers) watcher.close();
+  logger.info("Exiting");
+});

@@ -1,0 +1,35 @@
+{
+  "name": "@safee/eslint-plugin",
+  "version": "0.0.60",
+  "description": "Custom eslint plugin",
+  "type": "module",
+  "main": "build/src/index.js",
+  "module": "src/index.ts",
+  "scripts": {
+    "fmt": "prettier . --write --cache",
+    "fmt:check": "prettier . --check",
+    "check": "tsc --noEmit",
+    "clean": "tsc --build --clean",
+    "build": "tsc --build",
+    "lint": "eslint . --max-warnings 0 --cache",
+    "lint:fix": "eslint . --max-warnings 0 --fix",
+    "lint-all": "eslint . --max-warnings 0",
+    "pretest": "npm run build",
+    "test": "node --test ./build/src/rules/*.test.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@typescript-eslint/utils": "8.29.1"
+  },
+  "peerDependencies": {
+    "eslint": "^9.12.0"
+  },
+  "devDependencies": {
+    "@types/glob": "^9.0.0",
+    "@types/node": "^20.14.7",
+    "@typescript-eslint/rule-tester": "8.29.1",
+    "eslint-plugin-eslint-plugin": "^6.2.0",
+    "prettier": "^3.3.3",
+    "typescript": "5.8.3"
+  }
+}

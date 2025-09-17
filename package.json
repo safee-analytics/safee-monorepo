@@ -1,0 +1,36 @@
+{
+  "name": "@safee/monorepo",
+  "version": "1.0.0",
+  "type": "module",
+  "license": "ISC",
+  "workspaces": [
+    "database",
+    "gateway",
+    "eslint-plugin-safee"
+  ],
+  "scripts": {
+    "build": "just build",
+    "dev": "just",
+    "install-all": "npm ci"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.12.0",
+    "@types/cookie-signature": "^1.1.2",
+    "concurrently": "^8.2.2",
+    "defrag": "^1.1.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^9.12.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.3",
+    "eslint-plugin-import-x": "^4.3.1",
+    "eslint-plugin-unicorn": "^56.0.1",
+    "globals": "^15.11.0",
+    "ignore": "^5.3.1",
+    "pino": "^9.3.2",
+    "pino-pretty": "^11.2.1",
+    "tsx": "^4.19.0",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.15.0",
+    "watcher": "^2.3.1"
+  }
+}
