@@ -30,51 +30,45 @@ _all pattern mode="all" do="run":
 # Build all components of the project
 build mode="changed" do="run": (_all "^build-" mode do)
 
-# Lint all components or specific target
-lint mode="changed" do="run" target="":
+# Lint all components
+lint mode="changed" do="run": (_all "^lint-" mode do)
+lint target mode="list":
     #!/usr/bin/env bash
-    if [ "{{target}}" != "" ] && [ "{{do}}" = "list" ]; then
+    if [ "{{mode}}" = "list" ]; then
         just --list | grep "lint-" | sed 's/.*lint-\([^ ]*\).*/\1/' | jq -R -s -c 'split("\n") | map(select(length > 0))'
-    elif [ "{{target}}" != "" ]; then
+    else
         just lint-{{target}}
-    else
-        ruby task-runner.rb "^lint-" {{mode}} {{do}}
     fi
 
-# Check format for all code or specific target
-fmt mode="changed" do="check" target="":
+# Format all code
+fmt mode="changed" do="run": (_all "^fmt-" mode do)
+fmt target mode="list":
     #!/usr/bin/env bash
-    if [ "{{target}}" != "" ] && [ "{{do}}" = "list" ]; then
+    if [ "{{mode}}" = "list" ]; then
         just --list | grep "fmt-" | sed 's/.*fmt-\([^ ]*\).*/\1/' | jq -R -s -c 'split("\n") | map(select(length > 0))'
-    elif [ "{{target}}" != "" ] && [ "{{do}}" = "check" ]; then
-        npx -w {{target}} prettier . --check --cache
-    elif [ "{{target}}" != "" ]; then
+    else
         just fmt-{{target}}
-    else
-        ruby task-runner.rb "^fmt-" {{mode}} {{do}}
     fi
 
-# Typecheck all components or specific target
-check mode="changed" do="run" target="":
+# Typecheck all components
+check mode="changed" do="run": (_all "^check-" mode do)
+check target mode="list":
     #!/usr/bin/env bash
-    if [ "{{target}}" != "" ] && [ "{{do}}" = "list" ]; then
+    if [ "{{mode}}" = "list" ]; then
         just --list | grep "check-" | sed 's/.*check-\([^ ]*\).*/\1/' | jq -R -s -c 'split("\n") | map(select(length > 0))'
-    elif [ "{{target}}" != "" ]; then
-        just check-{{target}}
     else
-        ruby task-runner.rb "^check-" {{mode}} {{do}}
+        just check-{{target}}
     fi
 
-# Run all tests or specific target
-test mode="changed" do="run" target="" $DATABASE_URL=test_database_url:
+# Run all tests
+test mode="changed" do="run" $DATABASE_URL=test_database_url: && stop-test
+    @just _all "^test-" {{mode}} {{do}}
+test target mode="list":
     #!/usr/bin/env bash
-    if [ "{{target}}" != "" ] && [ "{{do}}" = "list" ]; then
+    if [ "{{mode}}" = "list" ]; then
         just --list | grep -E "test-(database|gateway|tests|eslint-plugin)" | sed 's/.*test-\([^ ]*\).*/\1/' | jq -R -s -c 'split("\n") | map(select(length > 0))'
-    elif [ "{{target}}" != "" ]; then
-        just test-{{target}}
     else
-        ruby task-runner.rb "^test-" {{mode}} {{do}}
-        just stop-test
+        just test-{{target}}
     fi
 
 # Clean all
