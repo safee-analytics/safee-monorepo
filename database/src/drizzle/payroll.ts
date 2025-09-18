@@ -17,7 +17,7 @@ export const payrollRecords = hrSchema.table("payroll_records", {
     .notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
-}, (table) => ({
-  organizationIdx: index("payroll_records_organization_id_idx").on(table.organizationId),
-  employeeIdx: index("payroll_records_employee_id_idx").on(table.employeeId),
-}));
+}, (table) => [
+  index("payroll_records_organization_id_idx").on(table.organizationId),
+  index("payroll_records_employee_id_idx").on(table.employeeId),
+]);

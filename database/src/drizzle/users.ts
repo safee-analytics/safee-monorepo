@@ -15,7 +15,7 @@ export const users = identitySchema.table("users", {
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
-}, (table) => ({
-  organizationIdx: index("users_organization_id_idx").on(table.organizationId),
-  isActiveIdx: index("users_is_active_idx").on(table.isActive),
-}));
+}, (table) => [
+  index("users_organization_id_idx").on(table.organizationId),
+  index("users_is_active_idx").on(table.isActive),
+]);

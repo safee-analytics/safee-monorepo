@@ -19,6 +19,6 @@ export const employees = hrSchema.table("employees", {
     .notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
-}, (table) => ({
-  organizationIdx: index("employees_organization_id_idx").on(table.organizationId),
-}));
+}, (table) => [
+  index("employees_organization_id_idx").on(table.organizationId),
+]);

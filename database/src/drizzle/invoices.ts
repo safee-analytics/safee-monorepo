@@ -18,9 +18,9 @@ export const invoices = financeSchema.table("invoices", {
     .notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
-}, (table) => ({
-  organizationIdx: index("invoices_organization_id_idx").on(table.organizationId),
-}));
+}, (table) => [
+  index("invoices_organization_id_idx").on(table.organizationId),
+]);
 
 export const invoiceItems = financeSchema.table("invoice_items", {
   id: idpk("id"),
@@ -32,6 +32,6 @@ export const invoiceItems = financeSchema.table("invoice_items", {
   unitPrice: decimal("unit_price", { precision: 12, scale: 2 }).notNull(),
   total: decimal("total", { precision: 12, scale: 2 }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-}, (table) => ({
-  invoiceIdx: index("invoice_items_invoice_id_idx").on(table.invoiceId),
-}));
+}, (table) => [
+  index("invoice_items_invoice_id_idx").on(table.invoiceId),
+]);

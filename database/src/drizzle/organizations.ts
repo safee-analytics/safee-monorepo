@@ -1,4 +1,4 @@
-import { uuid, varchar, timestamp, boolean } from "drizzle-orm/pg-core";
+import { varchar, timestamp, boolean } from "drizzle-orm/pg-core";
 import { identitySchema, idpk } from "./_common.js";
 
 export const organizations = identitySchema.table("organizations", {

@@ -17,6 +17,6 @@ export const deals = salesSchema.table("deals", {
     .notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
-}, (table) => ({
-  organizationIdx: index("deals_organization_id_idx").on(table.organizationId),
-}));
+}, (table) => [
+  index("deals_organization_id_idx").on(table.organizationId),
+]);

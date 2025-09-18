@@ -70,15 +70,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       - name: Build database service
-        run: docker-compose build postgres
+        run: docker compose build postgres
       - name: Build redis service
-        run: docker-compose build redis
+        run: docker compose build redis
       - name: Test docker-compose services
         run: |
-          docker-compose up -d postgres redis
+          docker compose up -d postgres redis
           sleep 10
-          docker-compose ps
-          docker-compose down
+          docker compose ps
+          docker compose down
 
   build:
     runs-on: ubuntu-latest
