@@ -6,15 +6,7 @@ export function recommended(plugin: unknown) {
         "warn",
         {
           loggerNames: ["logger"],
-          logMethods: [
-            "silent",
-            "fatal",
-            "error",
-            "warn",
-            "info",
-            "debug",
-            "trace",
-          ],
+          logMethods: ["silent", "fatal", "error", "warn", "info", "debug", "trace"],
         },
       ],
       "safee/drizzle": [
