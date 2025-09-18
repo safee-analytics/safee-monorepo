@@ -13,7 +13,7 @@
     "clean": "rm -rf coverage dist",
     "build": "tsc --build",
     "test-server": "tsx integration/test-server.ts",
-    "test": "vitest run",
+    "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
