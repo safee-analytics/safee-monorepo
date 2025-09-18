@@ -12,9 +12,16 @@
     "check": "tsc --noEmit",
     "clean": "tsc --build --clean",
     "build": "tsc --build .",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "migrate": "tsx -r dotenv/config src/private/migrate.ts",
     "postmigrate": "tsx -r dotenv/config src/private/postmigrate.ts",
-    "bumpMigrations": "tsx -r dotenv/config src/private/bumpMigrations.ts"
+    "bumpMigrations": "tsx -r dotenv/config src/private/bumpMigrations.ts",
+    "generate-migration": "tsx -r dotenv/config src/private/generate-migration.ts",
+    "drizzle:generate": "npx drizzle-kit generate",
+    "drizzle:studio": "npx drizzle-kit studio",
+    "db:reset": "tsx -r dotenv/config src/private/reset-db.ts"
   },
   "keywords": [
     "drizzle",
@@ -36,14 +43,16 @@
     "zod": "^4.0.5"
   },
   "devDependencies": {
-    "@types/node": "^20.14.7",
+    "@types/node": "^24.3.0",
     "@types/pg": "^8.11.10",
+    "@vitest/coverage-v8": "^2.1.8",
     "drizzle-kit": "0.31.4",
     "globstar": "^1.0.0",
     "postgrator": "^7.2.0",
     "prettier": "^3.3.3",
     "tsx": "^4.19.0",
-    "typescript": "5.8.3"
+    "typescript": "5.8.3",
+    "vitest": "^2.1.8"
   },
   "exports": {
     ".": "./build/src/index.js",

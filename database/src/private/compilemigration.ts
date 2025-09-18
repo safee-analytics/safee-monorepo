@@ -16,7 +16,7 @@ async function main() {
   const postgrator = new Postgrator({
     migrationPattern: join(migrationDir, "*"),
     driver: "pg",
-    database: "colony",
+    database: "safee",
     schemaTable: "public.__postgrator_migrations",
   });
 

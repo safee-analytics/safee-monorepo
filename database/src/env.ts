@@ -23,13 +23,6 @@ export const IS_LOCAL = ENV === "local";
 export const LOG_LEVEL = process.env.LOG_LEVEL ?? "info";
 export const SQL_LOG_LEVEL = process.env.SQL_LOG_LEVEL ?? LOG_LEVEL;
 
-export const PUBSUB_PROJECT_ID = process.env.PUBSUB_PROJECT_ID ?? "parallel-dev-332718";
-export const PUBSUB_TOPIC_PREFIX = process.env.PUBSUB_TOPIC_PREFIX ?? "colony";
-
-export const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "fake-openai-api-key";
-export const OPENAI_ORGANIZATION = process.env.OPENAI_ORGANIZATION ?? "fake-openai-api-organization";
-export const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL;
-
 export const REDIS_URL = process.env.REDIS_URL;
 
 const DATABASE_URL = process.env.DATABASE_URL;

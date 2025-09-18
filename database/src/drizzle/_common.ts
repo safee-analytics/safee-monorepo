@@ -8,14 +8,32 @@ export function idpk(name: string) {
     .notNull();
 }
 
-// Define PostgreSQL schemas for the Safee Analytics modular monolith
 export const identitySchema = pgSchema("identity");
 export const financeSchema = pgSchema("finance");
 export const hrSchema = pgSchema("hr");
 export const salesSchema = pgSchema("sales");
 export const systemSchema = pgSchema("system");
 
-// Export all schemas for easy importing
+export const userRoleEnum = identitySchema.enum("user_role", ["ADMIN", "MANAGER", "EMPLOYEE", "ACCOUNTANT"]);
+
+export const invoiceTypeEnum = financeSchema.enum("invoice_type", ["SALES", "PURCHASE"]);
+
+export const contactTypeEnum = salesSchema.enum("contact_type", ["LEAD", "PROSPECT", "CUSTOMER", "SUPPLIER"]);
+
+export const dealStageEnum = salesSchema.enum("deal_stage", [
+  "LEAD",
+  "QUALIFIED",
+  "PROPOSAL",
+  "NEGOTIATION",
+  "CLOSED_WON",
+  "CLOSED_LOST",
+]);
+
+export type InvoiceType = (typeof invoiceTypeEnum.enumValues)[number];
+export type ContactType = (typeof contactTypeEnum.enumValues)[number];
+export type DealStage = (typeof dealStageEnum.enumValues)[number];
+export type UserRole = (typeof userRoleEnum.enumValues)[number];
+
 export const schemas = {
   identity: identitySchema,
   finance: financeSchema,

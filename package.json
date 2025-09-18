@@ -6,7 +6,8 @@
   "workspaces": [
     "database",
     "gateway",
-    "eslint-plugin-safee"
+    "eslint-plugin-safee",
+    "tests"
   ],
   "scripts": {
     "build": "just build",

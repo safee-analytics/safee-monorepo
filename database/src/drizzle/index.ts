@@ -1,4 +1,4 @@
-export * from "./schema.js";
+export * from "./_common.js";
 export * from "./organizations.js";
 export * from "./organizationsRelations.js";
 export * from "./users.js";

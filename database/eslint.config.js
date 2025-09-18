@@ -10,6 +10,6 @@ export default safeeEslintConfig.config(
     },
   },
   {
-    ignores: ["drizzle.config.ts"],
+    ignores: ["drizzle.config.ts", "vitest.config.ts"],
   },
 );

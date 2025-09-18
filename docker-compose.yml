@@ -14,11 +14,6 @@ services:
       retries: 5
     volumes:
       - "postgres:/var/lib/postgresql/data"
-  google-pubsub:
-    image: gcr.io/google.com/cloudsdktool/google-cloud-cli:latest
-    entrypoint: gcloud beta emulators pubsub start --host-port=0.0.0.0:8085 --project=safee-dev
-    ports:
-      - "8086:8085"
   redis:
     image: redis
     ports:

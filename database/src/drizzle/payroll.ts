@@ -1,10 +1,10 @@
-import { uuid, varchar, timestamp, decimal, date } from "drizzle-orm/pg-core";
-import { hrSchema } from "./_common.js";
+import { uuid, varchar, timestamp, decimal, date, index } from "drizzle-orm/pg-core";
+import { hrSchema, idpk } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { employees } from "./employees.js";
 
 export const payrollRecords = hrSchema.table("payroll_records", {
-  id: uuid("id").primaryKey().defaultRandom(),
+  id: idpk("id"),
   employeeId: uuid("employee_id")
     .references(() => employees.id)
     .notNull(),
@@ -15,6 +15,9 @@ export const payrollRecords = hrSchema.table("payroll_records", {
   organizationId: uuid("organization_id")
     .references(() => organizations.id)
     .notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+}, (table) => ({
+  organizationIdx: index("payroll_records_organization_id_idx").on(table.organizationId),
+  employeeIdx: index("payroll_records_employee_id_idx").on(table.employeeId),
+}));

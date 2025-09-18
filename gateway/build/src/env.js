@@ -2,22 +2,28 @@
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 function required(name) {
-  const value = process.env[name];
-  if (!value) throw new Error(`Environment variable ${name} is required`);
-  return value;
+    const value = process.env[name];
+    if (!value)
+        throw new Error(`Environment variable ${name} is required`);
+    return value;
 }
 function number(name, fallback) {
-  const value = process.env[name];
-  if (!value && fallback === undefined) throw new Error(`Environment variable ${name} is required`);
-  if (!value) return fallback;
-  if (Number.isNaN(+value)) throw new Error(`Environment variable ${name} must be a number. Found: ${value}`);
-  return +value;
+    const value = process.env[name];
+    if (!value && fallback === undefined)
+        throw new Error(`Environment variable ${name} is required`);
+    if (!value)
+        return fallback;
+    if (Number.isNaN(+value))
+        throw new Error(`Environment variable ${name} must be a number. Found: ${value}`);
+    return +value;
 }
 function boolean(name, fallback) {
-  const value = process.env[name];
-  if (!value && fallback === undefined) throw new Error(`Environment variable ${name} is required`);
-  if (!value) return fallback;
-  return value.toLowerCase() === "true";
+    const value = process.env[name];
+    if (!value && fallback === undefined)
+        throw new Error(`Environment variable ${name} is required`);
+    if (!value)
+        return fallback;
+    return value.toLowerCase() === "true";
 }
 export const ENV = process.env.ENV ?? "local";
 console.log(`Running in ${ENV} mode`);
@@ -34,11 +40,11 @@ export const DATABASE_URL = ENV !== "test" ? required("DATABASE_URL") : null;
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 export const USE_CLOUD_STORAGE = boolean("USE_CLOUD_STORAGE", false);
 export const FILE_UPLOAD_BUCKET = USE_CLOUD_STORAGE
-  ? (process.env.FILE_UPLOAD_BUCKET ?? "dev-safee-private-storage")
-  : join(__dirname, "../../.cache");
+    ? (process.env.FILE_UPLOAD_BUCKET ?? "dev-safee-private-storage")
+    : join(__dirname, "../../.cache");
 export const FILE_UPLOAD_PATH = process.env.FILE_UPLOAD_PATH ?? "gateway/uploads";
 export const PUBLIC_DIR = process.env.PUBLIC_DIR ?? join(__dirname, "../public");
 export const CORS_ORIGIN = process.env.CORS_ORIGIN
-  ? [process.env.CORS_ORIGIN, "http://localhost:4049"]
-  : ["http://localhost:4049"];
+    ? [process.env.CORS_ORIGIN, "http://localhost:4049"]
+    : ["http://localhost:4049"];
 export const DASHBOARD_BASE_URL = process.env.DASHBOARD_BASE_URL ?? "http://localhost:4050/";
