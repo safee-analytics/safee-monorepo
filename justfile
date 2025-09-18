@@ -40,9 +40,8 @@ fmt mode="changed" do="run": (_all "^fmt-" mode do)
 check mode="changed" do="run": (_all "^check-" mode do)
 
 # Run all tests
-test mode="changed" do="run" $DATABASE_URL=test_database_url: setup-test
+test mode="changed" do="run" $DATABASE_URL=test_database_url: && stop-test
     @just _all "^test-" {{mode}} {{do}}
-    just teardown-test
 
 # Clean all
 clean: (_all "^clean-")
@@ -106,8 +105,12 @@ drizzle-studio:
 
 # Start test Docker services
 [group('docker')]
-start-test:
-    docker-compose -f tests/docker-compose.yml up -d
+start-test service="" $DATABASE_URL=test_database_url:
+    docker-compose -f tests/docker-compose.yml up -d --wait {{service}}
+    sleep 1
+    docker-compose -f tests/docker-compose.yml exec postgres dropdb -U postgres safee || true
+    docker-compose -f tests/docker-compose.yml exec postgres createdb -U postgres safee
+    npm run -w database migrate
 
 # Stop test Docker services
 [group('docker')]
@@ -120,93 +123,56 @@ clean-test:
     docker-compose -f tests/docker-compose.yml down -v
     docker system prune -f --volumes
 
-# Wait for test services to be ready
-[group('test')]
-wait-for-test-services:
-    #!/usr/bin/env bash
-    echo "Waiting for test services to be ready..."
-    until docker-compose -f tests/docker-compose.yml exec postgres pg_isready -U postgres; do
-        echo "Waiting for postgres..."
-        sleep 1
-    done
-    until docker-compose -f tests/docker-compose.yml exec redis redis-cli ping | grep -q PONG; do
-        echo "Waiting for redis..."
-        sleep 1
-    done
-    echo "✅ Test services are ready!"
-
-# Setup test environment (start services and run migrations)
-[group('test')]
-setup-test: start-test wait-for-test-services
-    #!/usr/bin/env bash
-    export DATABASE_URL="{{test_database_url}}"
-    export REDIS_URL="redis://localhost:46379"
-    export NODE_ENV="test"
-
-    echo "Recreating test database..."
-    docker-compose -f tests/docker-compose.yml exec postgres dropdb -U postgres safee || true
-    docker-compose -f tests/docker-compose.yml exec postgres createdb -U postgres safee
-
-    echo "Running test database migrations..."
-    npm run -w database migrate
-    echo "✅ Test environment ready!"
-
 # Run integration tests
 [group('test')]
-test-integration: setup-test
+test-integration: (start-test "postgres")
+    docker-compose -f tests/docker-compose.yml up -d --wait redis
     cd tests && npm run test:integration
+    docker-compose -f tests/docker-compose.yml down
 
 # Run unit tests
 [group('test')]
-test-unit: setup-test
+test-unit: (start-test "postgres")
+    docker-compose -f tests/docker-compose.yml up -d --wait redis
     cd tests && npm run test:unit
+    docker-compose -f tests/docker-compose.yml down
 
 # Run all tests with coverage
 [group('test')]
-test-coverage: setup-test
+test-coverage: (start-test "postgres")
+    docker-compose -f tests/docker-compose.yml up -d --wait redis
     cd tests && npm run test:coverage
-
-# Run tests in watch mode (for development)
-[group('test')]
-test-watch: setup-test
-    cd tests && npm run test:watch
-
-# Open Vitest UI
-[group('test')]
-test-ui: setup-test
-    cd tests && npm run test:ui
-
-# Teardown test environment
-[group('test')]
-teardown-test: stop-test
+    docker-compose -f tests/docker-compose.yml down
 
 # Run unit tests for database module
 [group('test')]
-test-database:
+test-database: build-database (start-test "postgres")
+    docker-compose -f tests/docker-compose.yml up -d --wait redis
     npm -w database test
+    docker-compose -f tests/docker-compose.yml down
 
 # Run unit tests for gateway module
 [group('test')]
-test-gateway:
+test-gateway: prepare-gateway (start-test "postgres")
+    docker-compose -f tests/docker-compose.yml up -d --wait redis
     npm -w gateway test
+    docker-compose -f tests/docker-compose.yml down
 
 # Run unit tests for eslint-plugin
 [group('test')]
 test-eslint-plugin:
     npm -w eslint-plugin-safee test
 
-# Run all module unit tests
 [group('test')]
-test-all-modules:
-    npm -w database test
-    npm -w gateway test
-    npm -w eslint-plugin-safee test
+test-watch: (start-test "postgres")
+    docker-compose -f tests/docker-compose.yml up -d --wait redis
+    cd tests && npm run test:watch
 
-# Run tests with coverage for all modules
+# Open Vitest UI
 [group('test')]
-test-coverage-all:
-    npm -w database run test:coverage
-    npm -w gateway run test:coverage
+test-ui: (start-test "postgres")
+    docker-compose -f tests/docker-compose.yml up -d --wait redis
+    cd tests && npm run test:ui
 
 # Recompile imports into the latest migration
 [group('database')]
@@ -293,7 +259,7 @@ clean-tests:
 
 # Run unit tests for tests module
 [group('tests')]
-test-tests:
+test-tests: build-tests
     npm -w tests test
 
 
