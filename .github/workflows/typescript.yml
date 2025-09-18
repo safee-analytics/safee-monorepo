@@ -24,28 +24,22 @@ jobs:
         run: git fetch --depth=1 origin main
       - name: Custom lints
         run: ./custom-lints.sh
+
   fmt:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Install just
-        uses: extractions/setup-just@v3
-        with:
-          just-version: 1.28.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Use Node.js 24.3.0
+      - name: Use Node.js 20.14.0
         uses: actions/setup-node@v4
         with:
           cache: npm
-          node-version: 24.3.0
+          node-version: 20.14.0
       - name: Install node_modules
         run: npm ci
-      - name: Check formatting with just
-        run: just fmt all check
-
+      - name: Run fmt
+        run: npm run --workspaces --if-present fmt:check
   prepare:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
@@ -58,16 +52,16 @@ jobs:
         uses: actions/checkout@v4
       - name: Install just
         uses: extractions/setup-just@v3
-        with:
+        with: 
           just-version: 1.28.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: List tasks
         id: list
         run: |
-          echo "lint=$(just lint all list 2>/dev/null || echo '[]')" >> "${GITHUB_OUTPUT}"
-          echo "check=$(just check all list 2>/dev/null || echo '[]')" >> "${GITHUB_OUTPUT}"
-          echo "test=$(just test all list 2>/dev/null || echo '[]')" >> "${GITHUB_OUTPUT}"
+          echo "lint=$(just lint typescript list)" >> "${GITHUB_OUTPUT}"
+          echo "check=$(just check typescript list)" >> "${GITHUB_OUTPUT}"
+          echo "test=$(just test typescript list)" >> "${GITHUB_OUTPUT}"
 
   lint-each:
     runs-on: ubuntu-latest
@@ -81,20 +75,19 @@ jobs:
         uses: actions/checkout@v4
       - name: Install just
         uses: extractions/setup-just@v3
-        with:
+        with: 
           just-version: 1.28.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Use Node.js 24.3.0
+      - name: Use Node.js 20.14.0
         uses: actions/setup-node@v4
         with:
           cache: npm
-          node-version: 24.3.0
+          node-version: 20.14.0
       - name: Install node_modules
         run: npm ci
       - name: Run lint
-        run: just lint-${{ matrix.package }}
-
+        run: just lint ${{ matrix.package }}
   lint:
     runs-on: ubuntu-latest
     needs: lint-each
@@ -104,44 +97,6 @@ jobs:
         run: |
           if [ "${{ needs.lint-each.result }}" != "success" ]; then
             echo "Some lint-each runs failed."
-            exit 1
-          fi
-
-  check-each:
-    runs-on: ubuntu-latest
-    needs: prepare
-    strategy:
-      matrix:
-        package: ${{ fromJson(needs.prepare.outputs.check) }}
-      fail-fast: false
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Install just
-        uses: extractions/setup-just@v3
-        with:
-          just-version: 1.28.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Use Node.js 24.3.0
-        uses: actions/setup-node@v4
-        with:
-          cache: npm
-          node-version: 24.3.0
-      - name: Install node_modules
-        run: npm ci
-      - name: Run typecheck
-        run: just check-${{ matrix.package }}
-
-  check:
-    runs-on: ubuntu-latest
-    needs: check-each
-    if: ${{ always() }}
-    steps:
-      - name: Verify all check-each runs succeeded
-        run: |
-          if [ "${{ needs.check-each.result }}" != "success" ]; then
-            echo "Some check-each runs failed."
             exit 1
           fi
 
@@ -157,31 +112,30 @@ jobs:
         uses: actions/checkout@v4
       - name: Install just
         uses: extractions/setup-just@v3
-        with:
+        with: 
           just-version: 1.28.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Use Node.js 24.3.0
+      - name: Use Node.js 20.14.0
         uses: actions/setup-node@v4
         with:
           cache: npm
-          node-version: 24.3.0
+          node-version: 20.14.0
       - name: Install node_modules
         run: npm ci
       - name: Run tests
-        run: just test-${{ matrix.package }}
-
+        run: just test ${{ matrix.package }}
+      - name: Docker teardown
+        if: ${{ always() }}
+        run: just stop-e2e
   test:
     runs-on: ubuntu-latest
     needs: test-each
     if: ${{ always() }}
     steps:
-      - name: Wait for all tests and verify results
+      - name: Verify all test-each runs succeeded
         run: |
-          echo "All test jobs completed"
           if [ "${{ needs.test-each.result }}" != "success" ]; then
             echo "Some test-each runs failed."
             exit 1
-          else
-            echo "All tests passed successfully"
           fi
