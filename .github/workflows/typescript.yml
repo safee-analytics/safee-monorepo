@@ -170,18 +170,18 @@ jobs:
         run: npm ci
       - name: Run tests
         run: just test-${{ matrix.package }}
-      - name: Docker teardown
-        if: ${{ always() }}
-        run: just teardown-test
 
   test:
     runs-on: ubuntu-latest
     needs: test-each
     if: ${{ always() }}
     steps:
-      - name: Verify all test-each runs succeeded
+      - name: Wait for all tests and verify results
         run: |
+          echo "All test jobs completed"
           if [ "${{ needs.test-each.result }}" != "success" ]; then
             echo "Some test-each runs failed."
             exit 1
+          else
+            echo "All tests passed successfully"
           fi

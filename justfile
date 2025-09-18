@@ -32,16 +32,44 @@ build mode="changed" do="run": (_all "^build-" mode do)
 
 # Lint all components
 lint mode="changed" do="run": (_all "^lint-" mode do)
+lint target mode="list":
+    #!/usr/bin/env bash
+    if [ "{{mode}}" = "list" ]; then
+        just --list | grep "lint-" | sed 's/.*lint-\([^ ]*\).*/\1/' | jq -R -s -c 'split("\n") | map(select(length > 0))'
+    else
+        just lint-{{target}}
+    fi
 
 # Format all code
 fmt mode="changed" do="run": (_all "^fmt-" mode do)
+fmt target mode="list":
+    #!/usr/bin/env bash
+    if [ "{{mode}}" = "list" ]; then
+        just --list | grep "fmt-" | sed 's/.*fmt-\([^ ]*\).*/\1/' | jq -R -s -c 'split("\n") | map(select(length > 0))'
+    else
+        just fmt-{{target}}
+    fi
 
 # Typecheck all components
 check mode="changed" do="run": (_all "^check-" mode do)
+check target mode="list":
+    #!/usr/bin/env bash
+    if [ "{{mode}}" = "list" ]; then
+        just --list | grep "check-" | sed 's/.*check-\([^ ]*\).*/\1/' | jq -R -s -c 'split("\n") | map(select(length > 0))'
+    else
+        just check-{{target}}
+    fi
 
 # Run all tests
 test mode="changed" do="run" $DATABASE_URL=test_database_url: && stop-test
     @just _all "^test-" {{mode}} {{do}}
+test target mode="list":
+    #!/usr/bin/env bash
+    if [ "{{mode}}" = "list" ]; then
+        just --list | grep -E "test-(database|gateway|tests|eslint-plugin)" | sed 's/.*test-\([^ ]*\).*/\1/' | jq -R -s -c 'split("\n") | map(select(length > 0))'
+    else
+        just test-{{target}}
+    fi
 
 # Clean all
 clean: (_all "^clean-")
