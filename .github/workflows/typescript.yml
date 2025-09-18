@@ -127,7 +127,7 @@ jobs:
         run: just test ${{ matrix.package }}
       - name: Docker teardown
         if: ${{ always() }}
-        run: just stop-e2e
+        run: just stop-test
   test:
     runs-on: ubuntu-latest
     needs: test-each
