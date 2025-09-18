@@ -14,6 +14,16 @@ on:
       - ready_for_review
 
 jobs:
+  custom-lint:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Get more git history
+        run: git fetch --depth=1 origin main
+      - name: Custom lints
+        run: ./custom-lints.sh
   fmt:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
