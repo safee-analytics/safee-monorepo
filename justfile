@@ -31,45 +31,45 @@ _all pattern mode="all" do="run":
 build mode="changed" do="run":
     #!/usr/bin/env bash
     if [ "{{mode}}" = "changed" ]; then
-        turbo run build --filter='[HEAD^1]'
+        npx turbo run build --filter='[HEAD^1]'
     else
-        turbo run build
+        npx turbo run build
     fi
 
 # Lint all components with Turborepo caching
 lint mode="changed" do="run":
     #!/usr/bin/env bash
     if [ "{{mode}}" = "changed" ]; then
-        turbo run lint --filter='[HEAD^1]'
+        npx turbo run lint --filter='[HEAD^1]'
     else
-        turbo run lint
+        npx turbo run lint
     fi
 
 # Format all code with Turborepo caching
 fmt mode="changed" do="run":
     #!/usr/bin/env bash
     if [ "{{mode}}" = "changed" ]; then
-        turbo run fmt --filter='[HEAD^1]'
+        npx turbo run fmt --filter='[HEAD^1]'
     else
-        turbo run fmt
+        npx turbo run fmt
     fi
 
 # Typecheck all components with Turborepo caching
 check mode="changed" do="run":
     #!/usr/bin/env bash
     if [ "{{mode}}" = "changed" ]; then
-        turbo run check --filter='[HEAD^1]'
+        npx turbo run check --filter='[HEAD^1]'
     else
-        turbo run check
+        npx turbo run check
     fi
 
 # Run all tests with Turborepo caching
 test mode="changed" do="run" $DATABASE_URL=test_database_url: && stop-test
     #!/usr/bin/env bash
     if [ "{{mode}}" = "changed" ]; then
-        turbo run test --filter='[HEAD^1]'
+        npx turbo run test --filter='[HEAD^1]'
     else
-        turbo run test
+        npx turbo run test
     fi
 
 # Clean all
