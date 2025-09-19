@@ -27,23 +27,10 @@ init: tsinit
 _all pattern mode="all" do="run":
     ruby task-runner.rb {{pattern}} {{mode}} {{do}}
 
-# Build all components with Turborepo caching
-build package="" mode="changed" do="run":
-    #!/usr/bin/env bash
-    if [ -n "{{package}}" ]; then
-        # Build specific package - convert directory name to full package name if needed
-        if [[ "{{package}}" == @* ]]; then
-            npx turbo run build --filter={{package}}
-        else
-            npx turbo run build --filter=@safee/{{package}}
-        fi
-    elif [ "{{mode}}" = "changed" ]; then
-        npx turbo run build --filter='[HEAD^1]'
-    else
-        npx turbo run build
-    fi
+# Build all components of the project
+build mode="changed" do="run": (_all "^build-" mode do)
 
-# Lint all components with Turborepo caching
+# Lint all components
 lint package="" mode="changed" do="run":
     #!/usr/bin/env bash
     if [ "{{do}}" = "list" ]; then
@@ -55,28 +42,17 @@ lint package="" mode="changed" do="run":
             node -p "JSON.stringify(require('./package.json').workspaces)"
         fi
     elif [ -n "{{package}}" ]; then
-        # Lint specific package - convert directory name to full package name if needed
-        if [[ "{{package}}" == @* ]]; then
-            npx turbo run lint --filter={{package}}
-        else
-            npx turbo run lint --filter=@safee/{{package}}
-        fi
-    elif [ "{{mode}}" = "changed" ]; then
-        npx turbo run lint --filter='[HEAD^1]'
+        # Run specific package lint command
+        just lint-{{package}}
     else
-        npx turbo run lint
+        # Run all lint commands
+        just _all "^lint-" {{mode}} {{do}}
     fi
 
-# Format all code with Turborepo caching
-fmt mode="changed" do="run":
-    #!/usr/bin/env bash
-    if [ "{{mode}}" = "changed" ]; then
-        npx turbo run fmt --filter='[HEAD^1]'
-    else
-        npx turbo run fmt
-    fi
+# Format all code
+fmt mode="changed" do="run": (_all "^fmt-" mode do)
 
-# Typecheck all components with Turborepo caching
+# Typecheck all components
 check package="" mode="changed" do="run":
     #!/usr/bin/env bash
     if [ "{{do}}" = "list" ]; then
@@ -88,19 +64,14 @@ check package="" mode="changed" do="run":
             node -p "JSON.stringify(require('./package.json').workspaces)"
         fi
     elif [ -n "{{package}}" ]; then
-        # Check specific package - convert directory name to full package name if needed
-        if [[ "{{package}}" == @* ]]; then
-            npx turbo run check --filter={{package}}
-        else
-            npx turbo run check --filter=@safee/{{package}}
-        fi
-    elif [ "{{mode}}" = "changed" ]; then
-        npx turbo run check --filter='[HEAD^1]'
+        # Run specific package check command
+        just check-{{package}}
     else
-        npx turbo run check
+        # Run all check commands
+        just _all "^check-" {{mode}} {{do}}
     fi
 
-# Run all tests with Turborepo caching
+# Run all tests
 test package="" mode="changed" do="run" $DATABASE_URL=test_database_url: && stop-test
     #!/usr/bin/env bash
     if [ "{{do}}" = "list" ]; then
@@ -112,16 +83,11 @@ test package="" mode="changed" do="run" $DATABASE_URL=test_database_url: && stop
             node -p "JSON.stringify(require('./package.json').workspaces)"
         fi
     elif [ -n "{{package}}" ]; then
-        # Test specific package - convert directory name to full package name if needed
-        if [[ "{{package}}" == @* ]]; then
-            npx turbo run test --filter={{package}}
-        else
-            npx turbo run test --filter=@safee/{{package}}
-        fi
-    elif [ "{{mode}}" = "changed" ]; then
-        npx turbo run test --filter='[HEAD^1]'
+        # Run specific package test command
+        just test-{{package}}
     else
-        npx turbo run test
+        # Run all test commands
+        just _all "^test-" {{mode}} {{do}}
     fi
 
 # Clean all
@@ -143,18 +109,18 @@ build-database:
 
 # Typecheck database package
 [group('database')]
-check-database: 
-    npx -w database tsc --build --emitDeclarationOnly
+check-database:
+    npx turbo run check --filter=@safee/database
 
 # Lint database package
 [group('database')]
 lint-database: build-eslint-plugin-safee
-    npx -w database eslint . --max-warnings 0 --cache
+    npx turbo run lint --filter=@safee/database
 
 # Format database package
 [group('database')]
 fmt-database:
-    npx -w database prettier . --write --cache
+    npx turbo run fmt --filter=@safee/database
 
 # Clean generated files from database package
 [group('database')]
@@ -296,12 +262,12 @@ check-gateway: prepare-gateway
 # Lint gateway
 [group('gateway')]
 lint-gateway: build-eslint-plugin-safee build-database build-gateway
-    npx -w gateway eslint . --max-warnings 0 --cache
+    npx turbo run lint --filter=@safee/gateway
 
 # Format gateway
 [group('gateway')]
 fmt-gateway:
-    npx -w gateway prettier . --write --cache
+    npx turbo run fmt --filter=@safee/gateway
 
 
 # Clean generated files from gateway
@@ -319,17 +285,17 @@ build-tests:
 # Typecheck tests package
 [group('tests')]
 check-tests:
-    npx -w tests tsc --build --emitDeclarationOnly
+    npx turbo run check --filter=@safee/tests
 
 # Lint tests package
 [group('tests')]
 lint-tests: build-eslint-plugin-safee
-    npx -w tests eslint . --max-warnings 0 --cache
+    npx turbo run lint --filter=@safee/tests
 
 # Format tests package
 [group('tests')]
 fmt-tests:
-    npx -w tests prettier . --write --cache
+    npx turbo run fmt --filter=@safee/tests
 
 # Clean generated files from tests package
 [group('tests')]
@@ -350,16 +316,16 @@ build-eslint-plugin-safee:
 
 [private]
 check-eslint-plugin-safee:
-    npx -w eslint-plugin-safee tsc --build --emitDeclarationOnly
+    npx turbo run check --filter=@safee/eslint-plugin
 
 [private]
-lint-eslint-plugin-safee:
-    npx -w eslint-plugin-safee eslint . --max-warnings 0 --cache
+lint-eslint-plugin-safee: build-eslint-plugin-safee
+    npx turbo run lint --filter=@safee/eslint-plugin
 
 # Format eslint plugin
 [group('eslint-plugin')]
 fmt-eslint-plugin-safee:
-    npx -w eslint-plugin-safee prettier . --write --cache
+    npx turbo run fmt --filter=@safee/eslint-plugin
 
 [private]
 test-eslint-plugin-safee: build-eslint-plugin-safee
