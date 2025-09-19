@@ -1,4 +1,4 @@
-import { ESLintUtils } from "@typescript-eslint/utils";
+import { ESLintUtils, AST_NODE_TYPES } from "@typescript-eslint/utils";
 
 export const rule = ESLintUtils.RuleCreator.withoutDocs<[], "missing-security">({
   create(context) {
@@ -6,15 +6,15 @@ export const rule = ESLintUtils.RuleCreator.withoutDocs<[], "missing-security">(
       ClassDeclaration(node) {
         if (
           node.superClass &&
-          node.superClass.type === "Identifier" &&
+          node.superClass.type === AST_NODE_TYPES.Identifier &&
           node.superClass.name === "Controller"
         ) {
-          node.body.body.forEach((method) => {
-            if (method.type === "MethodDefinition" && method.kind === "method") {
-              const hasDecorator = method.decorators?.some(
+          for (const method of node.body.body) {
+            if (method.type === AST_NODE_TYPES.MethodDefinition && method.kind === "method") {
+              const hasDecorator = method.decorators.some(
                 (decorator) =>
-                  decorator.expression.type === "CallExpression" &&
-                  decorator.expression.callee.type === "Identifier" &&
+                  decorator.expression.type === AST_NODE_TYPES.CallExpression &&
+                  decorator.expression.callee.type === AST_NODE_TYPES.Identifier &&
                   (decorator.expression.callee.name === "Security" ||
                     decorator.expression.callee.name === "NoSecurity"),
               );
@@ -26,7 +26,7 @@ export const rule = ESLintUtils.RuleCreator.withoutDocs<[], "missing-security">(
                 });
               }
             }
-          });
+          }
         }
       },
     };

@@ -50,9 +50,7 @@
         "vitest.config.ts",
         "package.json"
       ],
-      "outputs": [
-        "coverage/**"
-      ]
+      "outputs": []
     },
     "fmt": {
       "inputs": [

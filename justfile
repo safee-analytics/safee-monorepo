@@ -282,7 +282,7 @@ fmt-tests:
 # Clean generated files from tests package
 [group('tests')]
 clean-tests:
-    npx -w tests run clean
+    npm -w tests run clean
     rm -f tests/.eslintcache
     rm -rf tests/node_modules/.cache/prettier/
 
