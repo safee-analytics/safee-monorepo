@@ -1,0 +1,293 @@
+import { createClient } from "redis";
+import type { PubSub, PubSubMessage, PubSubConfig } from "./pubsub.js";
+import { logger } from "../logger.js";
+
+interface RedisSubscription {
+  name: string;
+  topic: string;
+  handler: (message: PubSubMessage) => Promise<void>;
+  client: ReturnType<typeof createClient>;
+}
+
+/**
+ * Redis-based pub/sub implementation for local development
+ * Uses Redis pub/sub and lists for message queuing
+ */
+export class RedisPubSub implements PubSub {
+  private publishClient: ReturnType<typeof createClient>;
+  private subscriptions = new Map<string, RedisSubscription>();
+  private messageIdCounter = 0;
+  private isConnected = false;
+
+  constructor(private config: PubSubConfig = {}) {
+    const redisUrl = config.connectionString ?? process.env.REDIS_URL ?? "redis://localhost:6379";
+
+    this.publishClient = createClient({
+      url: redisUrl,
+    });
+
+    this.publishClient.on("error", (error: Error) => {
+      logger.error({ error }, "Redis pub/sub publish client error");
+    });
+
+    logger.info({ redisUrl }, "Initializing Redis pub/sub");
+  }
+
+  private async ensureConnected(): Promise<void> {
+    if (!this.isConnected) {
+      await this.publishClient.connect();
+      this.isConnected = true;
+      logger.info("Redis pub/sub publish client connected");
+    }
+  }
+
+  async publish(
+    topic: string,
+    data: Buffer | string | object,
+    attributes?: Record<string, string>,
+  ): Promise<string> {
+    await this.ensureConnected();
+
+    const messageId = `msg-${++this.messageIdCounter}-${Date.now()}`;
+
+    logger.debug({ topic, messageId, attributes }, "Publishing message to Redis pub/sub");
+
+    let messageData: string;
+    if (typeof data === "string") {
+      messageData = data;
+    } else if (Buffer.isBuffer(data)) {
+      messageData = data.toString("base64");
+    } else {
+      messageData = JSON.stringify(data);
+    }
+
+    const message: PubSubMessage = {
+      id: messageId,
+      data: messageData,
+      attributes: attributes ?? {},
+      publishTime: new Date(),
+    };
+
+    const serializedMessage = JSON.stringify(message);
+
+    // Use both pub/sub for immediate delivery and lists for persistence
+    const pipeline = this.publishClient.multi();
+
+    // Publish for immediate delivery to active subscribers
+    pipeline.publish(`topic:${topic}`, serializedMessage);
+
+    // Also push to a list for persistent queue (useful for workers)
+    pipeline.lPush(`queue:${topic}`, serializedMessage);
+
+    // Trim the queue to prevent infinite growth (keep last 1000 messages)
+    pipeline.lTrim(`queue:${topic}`, 0, 999);
+
+    await pipeline.exec();
+
+    logger.debug({ topic, messageId }, "Message published to Redis pub/sub");
+    return messageId;
+  }
+
+  async subscribe(subscription: string, handler: (message: PubSubMessage) => Promise<void>): Promise<void> {
+    logger.debug({ subscription }, "Setting up Redis pub/sub subscription");
+
+    // Create a dedicated client for this subscription
+    const subscriptionClient = createClient({
+      url: this.config.connectionString ?? process.env.REDIS_URL ?? "redis://localhost:6379",
+    });
+
+    subscriptionClient.on("error", (error: Error) => {
+      logger.error({ error, subscription }, "Redis pub/sub subscription client error");
+    });
+
+    await subscriptionClient.connect();
+
+    const topic = this.extractTopicFromSubscription(subscription);
+
+    const sub: RedisSubscription = {
+      name: subscription,
+      topic,
+      handler,
+      client: subscriptionClient,
+    };
+
+    this.subscriptions.set(subscription, sub);
+
+    // Subscribe to both real-time pub/sub and process queued messages
+    await this.setupRealTimeSubscription(sub);
+    await this.setupQueueProcessor(sub);
+
+    logger.info({ subscription, topic }, "Redis pub/sub subscription active");
+  }
+
+  async createTopic(topic: string): Promise<void> {
+    logger.debug({ topic }, "Creating Redis pub/sub topic");
+
+    // Redis doesn't require explicit topic creation
+    // But we can initialize the queue if needed
+    await this.ensureConnected();
+
+    logger.info({ topic }, "Redis pub/sub topic ready");
+  }
+
+  async createSubscription(topic: string, subscription: string): Promise<void> {
+    logger.debug({ topic, subscription }, "Creating Redis pub/sub subscription");
+
+    // Redis doesn't require explicit subscription creation
+    logger.info({ topic, subscription }, "Redis pub/sub subscription ready (will be active when subscribed)");
+  }
+
+  async close(): Promise<void> {
+    logger.debug("Closing Redis pub/sub connections");
+
+    // Close all subscription clients
+    for (const [name, subscription] of this.subscriptions) {
+      try {
+        await subscription.client.quit();
+        logger.debug({ subscription: name }, "Redis subscription client closed");
+      } catch (err) {
+        logger.error({ error: err, subscription: name }, "Error closing Redis subscription client");
+      }
+    }
+
+    this.subscriptions.clear();
+
+    // Close publish client
+    if (this.isConnected) {
+      await this.publishClient.quit();
+      this.isConnected = false;
+    }
+
+    logger.info("Redis pub/sub connections closed");
+  }
+
+  /**
+   * Set up real-time subscription using Redis pub/sub
+   */
+  private async setupRealTimeSubscription(subscription: RedisSubscription): Promise<void> {
+    await subscription.client.subscribe(`topic:${subscription.topic}`, (serializedMessage) => {
+      void this.processMessage(subscription, serializedMessage);
+    });
+
+    logger.debug(
+      { subscription: subscription.name, topic: subscription.topic },
+      "Real-time Redis subscription active",
+    );
+  }
+
+  /**
+   * Set up queue processor for persistent messages
+   */
+  private async setupQueueProcessor(subscription: RedisSubscription): Promise<void> {
+    const processQueue = async () => {
+      try {
+        // Use blocking pop to efficiently wait for messages
+        const result = await subscription.client.brPop(`queue:${subscription.topic}`, 1);
+
+        if (result) {
+          await this.processMessage(subscription, result.element);
+        }
+
+        // Continue processing
+        void setImmediate(() => {
+          void processQueue();
+        });
+      } catch (err) {
+        if (subscription.client.isOpen) {
+          logger.error({ error: err, subscription: subscription.name }, "Error processing Redis queue");
+          // Retry after a short delay
+          void setTimeout(() => {
+            void processQueue();
+          }, 1000);
+        }
+      }
+    };
+
+    // Start queue processing
+    void setImmediate(() => {
+      void processQueue();
+    });
+
+    logger.debug(
+      { subscription: subscription.name, topic: subscription.topic },
+      "Redis queue processor active",
+    );
+  }
+
+  /**
+   * Process a message from either pub/sub or queue
+   */
+  private async processMessage(subscription: RedisSubscription, serializedMessage: string): Promise<void> {
+    try {
+      const message: PubSubMessage = JSON.parse(serializedMessage) as PubSubMessage;
+
+      // Convert base64 data back to Buffer if needed
+      if (typeof message.data === "string" && this.isBase64(message.data)) {
+        message.data = Buffer.from(message.data, "base64");
+      }
+
+      logger.debug(
+        { messageId: message.id, subscription: subscription.name },
+        "Processing Redis pub/sub message",
+      );
+
+      await subscription.handler(message);
+
+      logger.debug(
+        { messageId: message.id, subscription: subscription.name },
+        "Redis pub/sub message processed successfully",
+      );
+    } catch (err) {
+      logger.error({ error: err, subscription: subscription.name }, "Error processing Redis pub/sub message");
+      // In production, you might want to implement dead letter queues here
+    }
+  }
+
+  /**
+   * Extract topic name from subscription name
+   */
+  private extractTopicFromSubscription(subscription: string): string {
+    const parts = subscription.split("-");
+    if (parts.length > 1) {
+      return parts.slice(0, -1).join("-");
+    }
+    return subscription;
+  }
+
+  /**
+   * Check if string is base64 encoded
+   */
+  private isBase64(str: string): boolean {
+    try {
+      return Buffer.from(str, "base64").toString("base64") === str;
+    } catch {
+      return false;
+    }
+  }
+
+  /**
+   * Get queue statistics (useful for monitoring)
+   */
+  async getQueueStats(topic: string): Promise<{
+    queueLength: number;
+    topic: string;
+  }> {
+    await this.ensureConnected();
+
+    const queueLength = await this.publishClient.lLen(`queue:${topic}`);
+
+    return {
+      queueLength,
+      topic,
+    };
+  }
+
+  /**
+   * Clear a topic queue (useful for testing/development)
+   */
+  async clearQueue(topic: string): Promise<void> {
+    await this.ensureConnected();
+    await this.publishClient.del(`queue:${topic}`);
+    logger.info({ topic }, "Redis topic queue cleared");
+  }
+}
