@@ -1,1351 +1,1567 @@
 {
-  "openapi": "3.0.0",
-  "components": {
-    "examples": {},
-    "headers": {},
-    "parameters": {},
-    "requestBodies": {},
-    "responses": {},
-    "schemas": {
-      "PayrollRecord": {
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "employeeId": {
-            "type": "string"
-          },
-          "period": {
-            "type": "string"
-          },
-          "basicSalary": {
-            "type": "number",
-            "format": "double"
-          },
-          "allowances": {
-            "type": "number",
-            "format": "double"
-          },
-          "deductions": {
-            "type": "number",
-            "format": "double"
-          },
-          "netPay": {
-            "type": "number",
-            "format": "double"
-          },
-          "status": {
-            "type": "string",
-            "enum": ["DRAFT", "PROCESSED", "PAID"]
-          }
-        },
-        "required": [
-          "id",
-          "employeeId",
-          "period",
-          "basicSalary",
-          "allowances",
-          "deductions",
-          "netPay",
-          "status"
-        ],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "PayrollCreateRequest": {
-        "properties": {
-          "employeeId": {
-            "type": "string"
-          },
-          "period": {
-            "type": "string"
-          },
-          "basicSalary": {
-            "type": "number",
-            "format": "double"
-          },
-          "allowances": {
-            "type": "number",
-            "format": "double"
-          },
-          "deductions": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "required": ["employeeId", "period", "basicSalary", "allowances", "deductions"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "Invoice": {
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "number": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["SALES", "PURCHASE"]
-          },
-          "date": {
-            "type": "string"
-          },
-          "total": {
-            "type": "number",
-            "format": "double"
-          },
-          "status": {
-            "type": "string"
-          }
-        },
-        "required": ["id", "number", "type", "date", "total", "status"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "InvoiceCreateRequest": {
-        "properties": {
-          "type": {
-            "type": "string",
-            "enum": ["SALES", "PURCHASE"]
-          },
-          "customerId": {
-            "type": "string"
-          },
-          "supplierId": {
-            "type": "string"
-          },
-          "date": {
-            "type": "string"
-          },
-          "dueDate": {
-            "type": "string"
-          },
-          "items": {
-            "items": {
-              "properties": {
-                "unitPrice": {
-                  "type": "number",
-                  "format": "double"
-                },
-                "quantity": {
-                  "type": "number",
-                  "format": "double"
-                },
-                "description": {
-                  "type": "string"
-                }
-              },
-              "required": ["unitPrice", "quantity", "description"],
-              "type": "object"
-            },
-            "type": "array"
-          }
-        },
-        "required": ["type", "date", "items"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "HealthCheck": {
-        "properties": {
-          "status": {
-            "type": "string",
-            "enum": ["ok", "error"]
-          },
-          "timestamp": {
-            "type": "string"
-          },
-          "uptime": {
-            "type": "number",
-            "format": "double"
-          },
-          "version": {
-            "type": "string"
-          }
-        },
-        "required": ["status", "timestamp", "uptime", "version"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "Employee": {
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "position": {
-            "type": "string"
-          },
-          "salary": {
-            "type": "number",
-            "format": "double"
-          },
-          "startDate": {
-            "type": "string"
-          }
-        },
-        "required": ["id", "firstName", "lastName", "email", "position", "salary", "startDate"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "EmployeeCreateRequest": {
-        "properties": {
-          "firstName": {
-            "type": "string"
-          },
-          "lastName": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "position": {
-            "type": "string"
-          },
-          "salary": {
-            "type": "number",
-            "format": "double"
-          },
-          "startDate": {
-            "type": "string"
-          }
-        },
-        "required": ["firstName", "lastName", "email", "position", "salary", "startDate"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "Deal": {
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "value": {
-            "type": "number",
-            "format": "double"
-          },
-          "stage": {
-            "type": "string",
-            "enum": ["PROSPECT", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "CLOSED_WON", "CLOSED_LOST"]
-          },
-          "contactId": {
-            "type": "string"
-          },
-          "expectedCloseDate": {
-            "type": "string"
-          },
-          "probability": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "required": ["id", "title", "value", "stage", "contactId", "expectedCloseDate", "probability"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "DealCreateRequest": {
-        "properties": {
-          "title": {
-            "type": "string"
-          },
-          "value": {
-            "type": "number",
-            "format": "double"
-          },
-          "contactId": {
-            "type": "string"
-          },
-          "expectedCloseDate": {
-            "type": "string"
-          },
-          "probability": {
-            "type": "number",
-            "format": "double"
-          }
-        },
-        "required": ["title", "value", "contactId", "expectedCloseDate", "probability"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "Contact": {
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "phone": {
-            "type": "string"
-          },
-          "company": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["LEAD", "CUSTOMER", "VENDOR"]
-          },
-          "status": {
-            "type": "string",
-            "enum": ["ACTIVE", "INACTIVE"]
-          }
-        },
-        "required": ["id", "name", "email", "phone", "type", "status"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "ContactCreateRequest": {
-        "properties": {
-          "name": {
-            "type": "string"
-          },
-          "email": {
-            "type": "string"
-          },
-          "phone": {
-            "type": "string"
-          },
-          "company": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["LEAD", "CUSTOMER", "VENDOR"]
-          }
-        },
-        "required": ["name", "email", "phone", "type"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "LoginResponse": {
-        "properties": {
-          "token": {
-            "type": "string"
-          },
-          "user": {
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "email": {
-                "type": "string"
-              },
-              "id": {
-                "type": "string"
-              }
-            },
-            "required": ["name", "email", "id"],
-            "type": "object"
-          }
-        },
-        "required": ["token", "user"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "LoginRequest": {
-        "properties": {
-          "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          }
-        },
-        "required": ["email", "password"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "RegisterRequest": {
-        "properties": {
-          "email": {
-            "type": "string"
-          },
-          "password": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "organizationName": {
-            "type": "string"
-          }
-        },
-        "required": ["email", "password", "name", "organizationName"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "Account": {
-        "properties": {
-          "id": {
-            "type": "string"
-          },
-          "code": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["ASSET", "LIABILITY", "EQUITY", "REVENUE", "EXPENSE"]
-          },
-          "balance": {
-            "type": "number",
-            "format": "double"
-          },
-          "parentId": {
-            "type": "string"
-          }
-        },
-        "required": ["id", "code", "name", "type", "balance"],
-        "type": "object",
-        "additionalProperties": false
-      },
-      "AccountCreateRequest": {
-        "properties": {
-          "code": {
-            "type": "string"
-          },
-          "name": {
-            "type": "string"
-          },
-          "type": {
-            "type": "string",
-            "enum": ["ASSET", "LIABILITY", "EQUITY", "REVENUE", "EXPENSE"]
-          },
-          "parentId": {
-            "type": "string"
-          }
-        },
-        "required": ["code", "name", "type"],
-        "type": "object",
-        "additionalProperties": false
-      }
-    },
-    "securitySchemes": {
-      "jwt": {
-        "type": "apiKey",
-        "name": "Authorization",
-        "in": "header",
-        "description": "JWT authorization header using the Bearer scheme. Format: Authorization: Bearer {token}"
-      }
-    }
-  },
-  "info": {
-    "title": "Safee Analytics API",
-    "version": "1.0.0",
-    "description": "API documentation for Safee Analytics SaaS platform",
-    "license": {
-      "name": "MIT"
-    },
-    "contact": {
-      "name": "Safee Analytics",
-      "email": "support@safee-analytics.com"
-    }
-  },
-  "paths": {
-    "/payroll": {
-      "get": {
-        "operationId": "GetPayrollRecords",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "limit": {
-                      "type": "number",
-                      "format": "double"
-                    },
-                    "page": {
-                      "type": "number",
-                      "format": "double"
-                    },
-                    "total": {
-                      "type": "number",
-                      "format": "double"
-                    },
-                    "records": {
-                      "items": {
-                        "$ref": "#/components/schemas/PayrollRecord"
-                      },
-                      "type": "array"
-                    }
-                  },
-                  "required": ["limit", "page", "total", "records"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["HR & Payroll"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "_page",
-            "required": false,
-            "schema": {
-              "default": 1,
-              "format": "double",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "_limit",
-            "required": false,
-            "schema": {
-              "default": 20,
-              "format": "double",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "_period",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      },
-      "post": {
-        "operationId": "CreatePayrollRecord",
-        "responses": {
-          "201": {
-            "description": "Payroll record created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PayrollRecord"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["HR & Payroll"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PayrollCreateRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/payroll/process": {
-      "post": {
-        "operationId": "ProcessPayroll",
-        "responses": {
-          "200": {
-            "description": "Payroll processed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
-                    }
-                  },
-                  "required": ["message"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["HR & Payroll"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
+    "openapi": "3.0.0",
+    "components": {
+        "examples": {},
+        "headers": {},
+        "parameters": {},
+        "requestBodies": {},
+        "responses": {},
+        "schemas": {
+            "PayrollRecord": {
                 "properties": {
-                  "period": {
-                    "type": "string"
-                  }
+                    "id": {
+                        "type": "string"
+                    },
+                    "employeeId": {
+                        "type": "string"
+                    },
+                    "period": {
+                        "type": "string"
+                    },
+                    "basicSalary": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "allowances": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "deductions": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "netPay": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "DRAFT",
+                            "PROCESSED",
+                            "PAID"
+                        ]
+                    }
                 },
-                "required": ["period"],
-                "type": "object"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/invoices": {
-      "get": {
-        "operationId": "GetInvoices",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "limit": {
-                      "type": "number",
-                      "format": "double"
+                "required": [
+                    "id",
+                    "employeeId",
+                    "period",
+                    "basicSalary",
+                    "allowances",
+                    "deductions",
+                    "netPay",
+                    "status"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "PayrollCreateRequest": {
+                "properties": {
+                    "employeeId": {
+                        "type": "string"
                     },
-                    "page": {
-                      "type": "number",
-                      "format": "double"
+                    "period": {
+                        "type": "string"
+                    },
+                    "basicSalary": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "allowances": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "deductions": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "employeeId",
+                    "period",
+                    "basicSalary",
+                    "allowances",
+                    "deductions"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "Invoice": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "number": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "SALES",
+                            "PURCHASE"
+                        ]
+                    },
+                    "date": {
+                        "type": "string"
                     },
                     "total": {
-                      "type": "number",
-                      "format": "double"
+                        "type": "number",
+                        "format": "double"
                     },
-                    "invoices": {
-                      "items": {
-                        "$ref": "#/components/schemas/Invoice"
-                      },
-                      "type": "array"
-                    }
-                  },
-                  "required": ["limit", "page", "total", "invoices"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["Invoices"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "_page",
-            "required": false,
-            "schema": {
-              "default": 1,
-              "format": "double",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "_limit",
-            "required": false,
-            "schema": {
-              "default": 20,
-              "format": "double",
-              "type": "number"
-            }
-          }
-        ]
-      },
-      "post": {
-        "operationId": "CreateInvoice",
-        "responses": {
-          "201": {
-            "description": "Invoice created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Invoice"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["Invoices"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InvoiceCreateRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/hisabiq/invoices": {
-      "get": {
-        "operationId": "GetInvoices",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "limit": {
-                      "type": "number",
-                      "format": "double"
-                    },
-                    "page": {
-                      "type": "number",
-                      "format": "double"
-                    },
-                    "total": {
-                      "type": "number",
-                      "format": "double"
-                    },
-                    "invoices": {
-                      "items": {
-                        "$ref": "#/components/schemas/Invoice"
-                      },
-                      "type": "array"
-                    }
-                  },
-                  "required": ["limit", "page", "total", "invoices"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "description": "Get all invoices for the authenticated user's organization",
-        "tags": ["Hisabiq (Accounting)"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "_page",
-            "required": false,
-            "schema": {
-              "default": 1,
-              "format": "double",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "_limit",
-            "required": false,
-            "schema": {
-              "default": 20,
-              "format": "double",
-              "type": "number"
-            }
-          }
-        ]
-      },
-      "post": {
-        "operationId": "CreateInvoice",
-        "responses": {
-          "201": {
-            "description": "Invoice created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Invoice"
-                }
-              }
-            }
-          }
-        },
-        "description": "Create a new invoice",
-        "tags": ["Hisabiq (Accounting)"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/InvoiceCreateRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/hisabiq/accounts": {
-      "get": {
-        "operationId": "GetAccounts",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "properties": {
-                      "parentId": {
+                    "status": {
                         "type": "string"
-                      },
-                      "type": {
-                        "type": "string"
-                      },
-                      "name": {
-                        "type": "string"
-                      },
-                      "code": {
-                        "type": "string"
-                      },
-                      "id": {
-                        "type": "string"
-                      }
-                    },
-                    "required": ["type", "name", "code", "id"],
-                    "type": "object"
-                  },
-                  "type": "array"
-                }
-              }
-            }
-          }
-        },
-        "description": "Get chart of accounts",
-        "tags": ["Hisabiq (Accounting)"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": []
-      }
-    },
-    "/health": {
-      "get": {
-        "operationId": "GetHealth",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HealthCheck"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["Health"],
-        "security": [],
-        "parameters": []
-      }
-    },
-    "/employees": {
-      "get": {
-        "operationId": "GetEmployees",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "limit": {
-                      "type": "number",
-                      "format": "double"
-                    },
-                    "page": {
-                      "type": "number",
-                      "format": "double"
-                    },
-                    "total": {
-                      "type": "number",
-                      "format": "double"
-                    },
-                    "employees": {
-                      "items": {
-                        "$ref": "#/components/schemas/Employee"
-                      },
-                      "type": "array"
                     }
-                  },
-                  "required": ["limit", "page", "total", "employees"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["HR & Payroll"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "_page",
-            "required": false,
-            "schema": {
-              "default": 1,
-              "format": "double",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "_limit",
-            "required": false,
-            "schema": {
-              "default": 20,
-              "format": "double",
-              "type": "number"
-            }
-          }
-        ]
-      },
-      "post": {
-        "operationId": "CreateEmployee",
-        "responses": {
-          "201": {
-            "description": "Employee created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Employee"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["HR & Payroll"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EmployeeCreateRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/deals": {
-      "get": {
-        "operationId": "GetDeals",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "limit": {
-                      "type": "number",
-                      "format": "double"
+                },
+                "required": [
+                    "id",
+                    "number",
+                    "type",
+                    "date",
+                    "total",
+                    "status"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "InvoiceCreateRequest": {
+                "properties": {
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "SALES",
+                            "PURCHASE"
+                        ]
                     },
-                    "page": {
-                      "type": "number",
-                      "format": "double"
+                    "customerId": {
+                        "type": "string"
                     },
-                    "total": {
-                      "type": "number",
-                      "format": "double"
+                    "supplierId": {
+                        "type": "string"
                     },
-                    "deals": {
-                      "items": {
-                        "$ref": "#/components/schemas/Deal"
-                      },
-                      "type": "array"
+                    "date": {
+                        "type": "string"
+                    },
+                    "dueDate": {
+                        "type": "string"
+                    },
+                    "items": {
+                        "items": {
+                            "properties": {
+                                "unitPrice": {
+                                    "type": "number",
+                                    "format": "double"
+                                },
+                                "quantity": {
+                                    "type": "number",
+                                    "format": "double"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "unitPrice",
+                                "quantity",
+                                "description"
+                            ],
+                            "type": "object"
+                        },
+                        "type": "array"
                     }
-                  },
-                  "required": ["limit", "page", "total", "deals"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["CRM"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "_page",
-            "required": false,
-            "schema": {
-              "default": 1,
-              "format": "double",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "_limit",
-            "required": false,
-            "schema": {
-              "default": 20,
-              "format": "double",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "_stage",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      },
-      "post": {
-        "operationId": "CreateDeal",
-        "responses": {
-          "201": {
-            "description": "Deal created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Deal"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["CRM"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/DealCreateRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/contacts": {
-      "get": {
-        "operationId": "GetContacts",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "limit": {
-                      "type": "number",
-                      "format": "double"
+                },
+                "required": [
+                    "type",
+                    "date",
+                    "items"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "HealthCheck": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ok",
+                            "error"
+                        ]
                     },
-                    "page": {
-                      "type": "number",
-                      "format": "double"
+                    "timestamp": {
+                        "type": "string"
                     },
-                    "total": {
-                      "type": "number",
-                      "format": "double"
+                    "uptime": {
+                        "type": "number",
+                        "format": "double"
                     },
-                    "contacts": {
-                      "items": {
-                        "$ref": "#/components/schemas/Contact"
-                      },
-                      "type": "array"
+                    "version": {
+                        "type": "string"
                     }
-                  },
-                  "required": ["limit", "page", "total", "contacts"],
-                  "type": "object"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["CRM"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "_page",
-            "required": false,
-            "schema": {
-              "default": 1,
-              "format": "double",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "_limit",
-            "required": false,
-            "schema": {
-              "default": 20,
-              "format": "double",
-              "type": "number"
-            }
-          },
-          {
-            "in": "query",
-            "name": "_type",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      },
-      "post": {
-        "operationId": "CreateContact",
-        "responses": {
-          "201": {
-            "description": "Contact created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Contact"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["CRM"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/ContactCreateRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/auth/login": {
-      "post": {
-        "operationId": "Login",
-        "responses": {
-          "200": {
-            "description": "Login successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["Authentication"],
-        "security": [],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/auth/register": {
-      "post": {
-        "operationId": "Register",
-        "responses": {
-          "201": {
-            "description": "User registered successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/LoginResponse"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["Authentication"],
-        "security": [],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegisterRequest"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/auth/logout": {
-      "post": {
-        "operationId": "Logout",
-        "responses": {
-          "200": {
-            "description": "Logout successful",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "message": {
-                      "type": "string"
+                },
+                "required": [
+                    "status",
+                    "timestamp",
+                    "uptime",
+                    "version"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "Employee": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "string"
+                    },
+                    "salary": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "startDate": {
+                        "type": "string"
                     }
-                  },
-                  "required": ["message"],
-                  "type": "object"
-                }
-              }
+                },
+                "required": [
+                    "id",
+                    "firstName",
+                    "lastName",
+                    "email",
+                    "position",
+                    "salary",
+                    "startDate"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "EmployeeCreateRequest": {
+                "properties": {
+                    "firstName": {
+                        "type": "string"
+                    },
+                    "lastName": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "position": {
+                        "type": "string"
+                    },
+                    "salary": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "startDate": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "firstName",
+                    "lastName",
+                    "email",
+                    "position",
+                    "salary",
+                    "startDate"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "Deal": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "stage": {
+                        "type": "string",
+                        "enum": [
+                            "PROSPECT",
+                            "QUALIFIED",
+                            "PROPOSAL",
+                            "NEGOTIATION",
+                            "CLOSED_WON",
+                            "CLOSED_LOST"
+                        ]
+                    },
+                    "contactId": {
+                        "type": "string"
+                    },
+                    "expectedCloseDate": {
+                        "type": "string"
+                    },
+                    "probability": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "id",
+                    "title",
+                    "value",
+                    "stage",
+                    "contactId",
+                    "expectedCloseDate",
+                    "probability"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "DealCreateRequest": {
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "value": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "contactId": {
+                        "type": "string"
+                    },
+                    "expectedCloseDate": {
+                        "type": "string"
+                    },
+                    "probability": {
+                        "type": "number",
+                        "format": "double"
+                    }
+                },
+                "required": [
+                    "title",
+                    "value",
+                    "contactId",
+                    "expectedCloseDate",
+                    "probability"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "Contact": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "company": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "LEAD",
+                            "CUSTOMER",
+                            "VENDOR"
+                        ]
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "ACTIVE",
+                            "INACTIVE"
+                        ]
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "email",
+                    "phone",
+                    "type",
+                    "status"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "ContactCreateRequest": {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "email": {
+                        "type": "string"
+                    },
+                    "phone": {
+                        "type": "string"
+                    },
+                    "company": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "LEAD",
+                            "CUSTOMER",
+                            "VENDOR"
+                        ]
+                    }
+                },
+                "required": [
+                    "name",
+                    "email",
+                    "phone",
+                    "type"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "LoginResponse": {
+                "properties": {
+                    "token": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "properties": {
+                            "name": {
+                                "type": "string"
+                            },
+                            "email": {
+                                "type": "string"
+                            },
+                            "id": {
+                                "type": "string"
+                            }
+                        },
+                        "required": [
+                            "name",
+                            "email",
+                            "id"
+                        ],
+                        "type": "object"
+                    }
+                },
+                "required": [
+                    "token",
+                    "user"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "LoginRequest": {
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email",
+                    "password"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "RegisterRequest": {
+                "properties": {
+                    "email": {
+                        "type": "string"
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "organizationName": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "email",
+                    "password",
+                    "name",
+                    "organizationName"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "Account": {
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "ASSET",
+                            "LIABILITY",
+                            "EQUITY",
+                            "REVENUE",
+                            "EXPENSE"
+                        ]
+                    },
+                    "balance": {
+                        "type": "number",
+                        "format": "double"
+                    },
+                    "parentId": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "code",
+                    "name",
+                    "type",
+                    "balance"
+                ],
+                "type": "object",
+                "additionalProperties": false
+            },
+            "AccountCreateRequest": {
+                "properties": {
+                    "code": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "ASSET",
+                            "LIABILITY",
+                            "EQUITY",
+                            "REVENUE",
+                            "EXPENSE"
+                        ]
+                    },
+                    "parentId": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "code",
+                    "name",
+                    "type"
+                ],
+                "type": "object",
+                "additionalProperties": false
             }
-          }
         },
-        "tags": ["Authentication"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": []
-      }
-    },
-    "/accounts": {
-      "get": {
-        "operationId": "GetAccounts",
-        "responses": {
-          "200": {
-            "description": "Ok",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/Account"
-                  },
-                  "type": "array"
-                }
-              }
+        "securitySchemes": {
+            "jwt": {
+                "type": "apiKey",
+                "name": "Authorization",
+                "in": "header",
+                "description": "JWT authorization header using the Bearer scheme. Format: Authorization: Bearer {token}"
             }
-          }
-        },
-        "tags": ["Accounting"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "_type",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
-      },
-      "post": {
-        "operationId": "CreateAccount",
-        "responses": {
-          "201": {
-            "description": "Account created successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Account"
-                }
-              }
-            }
-          }
-        },
-        "tags": ["Accounting"],
-        "security": [
-          {
-            "jwt": []
-          }
-        ],
-        "parameters": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/AccountCreateRequest"
-              }
-            }
-          }
         }
-      }
-    }
-  },
-  "servers": [
-    {
-      "url": "/api/v1"
-    }
-  ]
+    },
+    "info": {
+        "title": "Safee Analytics API",
+        "version": "1.0.0",
+        "description": "API documentation for Safee Analytics SaaS platform",
+        "license": {
+            "name": "MIT"
+        },
+        "contact": {
+            "name": "Safee Analytics",
+            "email": "support@safee-analytics.com"
+        }
+    },
+    "paths": {
+        "/payroll": {
+            "get": {
+                "operationId": "GetPayrollRecords",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "limit": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "page": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "total": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "records": {
+                                            "items": {
+                                                "$ref": "#/components/schemas/PayrollRecord"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "required": [
+                                        "limit",
+                                        "page",
+                                        "total",
+                                        "records"
+                                    ],
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "HR & Payroll"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "_page",
+                        "required": false,
+                        "schema": {
+                            "default": 1,
+                            "format": "double",
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "_limit",
+                        "required": false,
+                        "schema": {
+                            "default": 20,
+                            "format": "double",
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "_period",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "CreatePayrollRecord",
+                "responses": {
+                    "201": {
+                        "description": "Payroll record created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PayrollRecord"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "HR & Payroll"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PayrollCreateRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/payroll/process": {
+            "post": {
+                "operationId": "ProcessPayroll",
+                "responses": {
+                    "200": {
+                        "description": "Payroll processed successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "HR & Payroll"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "period": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "period"
+                                ],
+                                "type": "object"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/invoices": {
+            "get": {
+                "operationId": "GetInvoices",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "limit": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "page": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "total": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "invoices": {
+                                            "items": {
+                                                "$ref": "#/components/schemas/Invoice"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "required": [
+                                        "limit",
+                                        "page",
+                                        "total",
+                                        "invoices"
+                                    ],
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Invoices"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "_page",
+                        "required": false,
+                        "schema": {
+                            "default": 1,
+                            "format": "double",
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "_limit",
+                        "required": false,
+                        "schema": {
+                            "default": 20,
+                            "format": "double",
+                            "type": "number"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "CreateInvoice",
+                "responses": {
+                    "201": {
+                        "description": "Invoice created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Invoice"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Invoices"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InvoiceCreateRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hisabiq/invoices": {
+            "get": {
+                "operationId": "GetInvoices",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "limit": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "page": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "total": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "invoices": {
+                                            "items": {
+                                                "$ref": "#/components/schemas/Invoice"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "required": [
+                                        "limit",
+                                        "page",
+                                        "total",
+                                        "invoices"
+                                    ],
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Get all invoices for the authenticated user's organization",
+                "tags": [
+                    "Hisabiq (Accounting)"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "_page",
+                        "required": false,
+                        "schema": {
+                            "default": 1,
+                            "format": "double",
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "_limit",
+                        "required": false,
+                        "schema": {
+                            "default": 20,
+                            "format": "double",
+                            "type": "number"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "CreateInvoice",
+                "responses": {
+                    "201": {
+                        "description": "Invoice created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Invoice"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Create a new invoice",
+                "tags": [
+                    "Hisabiq (Accounting)"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InvoiceCreateRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/hisabiq/accounts": {
+            "get": {
+                "operationId": "GetAccounts",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "properties": {
+                                            "parentId": {
+                                                "type": "string"
+                                            },
+                                            "type": {
+                                                "type": "string"
+                                            },
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "code": {
+                                                "type": "string"
+                                            },
+                                            "id": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "type",
+                                            "name",
+                                            "code",
+                                            "id"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    }
+                },
+                "description": "Get chart of accounts",
+                "tags": [
+                    "Hisabiq (Accounting)"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": []
+            }
+        },
+        "/health": {
+            "get": {
+                "operationId": "GetHealth",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HealthCheck"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Health"
+                ],
+                "security": [],
+                "parameters": []
+            }
+        },
+        "/employees": {
+            "get": {
+                "operationId": "GetEmployees",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "limit": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "page": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "total": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "employees": {
+                                            "items": {
+                                                "$ref": "#/components/schemas/Employee"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "required": [
+                                        "limit",
+                                        "page",
+                                        "total",
+                                        "employees"
+                                    ],
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "HR & Payroll"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "_page",
+                        "required": false,
+                        "schema": {
+                            "default": 1,
+                            "format": "double",
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "_limit",
+                        "required": false,
+                        "schema": {
+                            "default": 20,
+                            "format": "double",
+                            "type": "number"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "CreateEmployee",
+                "responses": {
+                    "201": {
+                        "description": "Employee created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Employee"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "HR & Payroll"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/EmployeeCreateRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/deals": {
+            "get": {
+                "operationId": "GetDeals",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "limit": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "page": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "total": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "deals": {
+                                            "items": {
+                                                "$ref": "#/components/schemas/Deal"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "required": [
+                                        "limit",
+                                        "page",
+                                        "total",
+                                        "deals"
+                                    ],
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "CRM"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "_page",
+                        "required": false,
+                        "schema": {
+                            "default": 1,
+                            "format": "double",
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "_limit",
+                        "required": false,
+                        "schema": {
+                            "default": 20,
+                            "format": "double",
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "_stage",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "CreateDeal",
+                "responses": {
+                    "201": {
+                        "description": "Deal created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Deal"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "CRM"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/DealCreateRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/contacts": {
+            "get": {
+                "operationId": "GetContacts",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "limit": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "page": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "total": {
+                                            "type": "number",
+                                            "format": "double"
+                                        },
+                                        "contacts": {
+                                            "items": {
+                                                "$ref": "#/components/schemas/Contact"
+                                            },
+                                            "type": "array"
+                                        }
+                                    },
+                                    "required": [
+                                        "limit",
+                                        "page",
+                                        "total",
+                                        "contacts"
+                                    ],
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "CRM"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "_page",
+                        "required": false,
+                        "schema": {
+                            "default": 1,
+                            "format": "double",
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "_limit",
+                        "required": false,
+                        "schema": {
+                            "default": 20,
+                            "format": "double",
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "_type",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "CreateContact",
+                "responses": {
+                    "201": {
+                        "description": "Contact created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Contact"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "CRM"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ContactCreateRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "operationId": "Login",
+                "responses": {
+                    "200": {
+                        "description": "Login successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentication"
+                ],
+                "security": [],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/LoginRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "operationId": "Register",
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponse"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentication"
+                ],
+                "security": [],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/RegisterRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "operationId": "Logout",
+                "responses": {
+                    "200": {
+                        "description": "Logout successful",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "message"
+                                    ],
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Authentication"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": []
+            }
+        },
+        "/accounts": {
+            "get": {
+                "operationId": "GetAccounts",
+                "responses": {
+                    "200": {
+                        "description": "Ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "items": {
+                                        "$ref": "#/components/schemas/Account"
+                                    },
+                                    "type": "array"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Accounting"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "_type",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
+            },
+            "post": {
+                "operationId": "CreateAccount",
+                "responses": {
+                    "201": {
+                        "description": "Account created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Account"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "Accounting"
+                ],
+                "security": [
+                    {
+                        "jwt": []
+                    }
+                ],
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountCreateRequest"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "servers": [
+        {
+            "url": "/api/v1"
+        }
+    ]
 }

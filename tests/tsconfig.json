@@ -1,6 +1,9 @@
 {
   "extends": "../tsconfig.json",
-  "references": [{ "path": "../database" }],
+  "references": [
+    { "path": "../database" },
+    { "path": "../gateway" }
+  ],
   "include": ["**/*.ts", "**/*.js", "vitest.config.ts"],
   "exclude": ["node_modules", "dist", "build", "coverage"],
   "compilerOptions": {

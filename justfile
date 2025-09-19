@@ -27,21 +27,50 @@ init: tsinit
 _all pattern mode="all" do="run":
     ruby task-runner.rb {{pattern}} {{mode}} {{do}}
 
-# Build all components of the project
-build mode="changed" do="run": (_all "^build-" mode do)
+# Build all components with Turborepo caching
+build mode="changed" do="run":
+    #!/usr/bin/env bash
+    if [ "{{mode}}" = "changed" ]; then
+        turbo run build --filter='[HEAD^1]'
+    else
+        turbo run build
+    fi
 
-# Lint all components
-lint mode="changed" do="run": (_all "^lint-" mode do)
+# Lint all components with Turborepo caching
+lint mode="changed" do="run":
+    #!/usr/bin/env bash
+    if [ "{{mode}}" = "changed" ]; then
+        turbo run lint --filter='[HEAD^1]'
+    else
+        turbo run lint
+    fi
 
-# Format all code
-fmt mode="changed" do="run": (_all "^fmt-" mode do)
+# Format all code with Turborepo caching
+fmt mode="changed" do="run":
+    #!/usr/bin/env bash
+    if [ "{{mode}}" = "changed" ]; then
+        turbo run fmt --filter='[HEAD^1]'
+    else
+        turbo run fmt
+    fi
 
-# Typecheck all components
-check mode="changed" do="run": (_all "^check-" mode do)
+# Typecheck all components with Turborepo caching
+check mode="changed" do="run":
+    #!/usr/bin/env bash
+    if [ "{{mode}}" = "changed" ]; then
+        turbo run check --filter='[HEAD^1]'
+    else
+        turbo run check
+    fi
 
-# Run all tests
+# Run all tests with Turborepo caching
 test mode="changed" do="run" $DATABASE_URL=test_database_url: && stop-test
-    @just _all "^test-" {{mode}} {{do}}
+    #!/usr/bin/env bash
+    if [ "{{mode}}" = "changed" ]; then
+        turbo run test --filter='[HEAD^1]'
+    else
+        turbo run test
+    fi
 
 # Clean all
 clean: (_all "^clean-")
@@ -275,7 +304,8 @@ check-eslint-plugin-safee:
 lint-eslint-plugin-safee:
     npx -w eslint-plugin-safee eslint . --max-warnings 0 --cache
 
-[private]
+# Format eslint plugin
+[group('eslint-plugin')]
 fmt-eslint-plugin-safee:
     npx -w eslint-plugin-safee prettier . --write --cache
 

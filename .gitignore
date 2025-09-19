@@ -22,10 +22,15 @@ out
 node_modules/
 .eslintcache
 *.tsbuildinfo
+build/
+dist/
 
 # Coverage
 .coverage
 credentials/
+
+# Turborepo
+.turbo/
 
 
 .ai/*
