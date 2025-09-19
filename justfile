@@ -28,16 +28,23 @@ _all pattern mode="all" do="run":
     ruby task-runner.rb {{pattern}} {{mode}} {{do}}
 
 # Build all components with Turborepo caching
-build mode="changed" do="run":
+build package="" mode="changed" do="run":
     #!/usr/bin/env bash
-    if [ "{{mode}}" = "changed" ]; then
+    if [ -n "{{package}}" ]; then
+        # Build specific package - convert directory name to full package name if needed
+        if [[ "{{package}}" == @* ]]; then
+            npx turbo run build --filter={{package}}
+        else
+            npx turbo run build --filter=@safee/{{package}}
+        fi
+    elif [ "{{mode}}" = "changed" ]; then
         npx turbo run build --filter='[HEAD^1]'
     else
         npx turbo run build
     fi
 
 # Lint all components with Turborepo caching
-lint mode="changed" do="run":
+lint package="" mode="changed" do="run":
     #!/usr/bin/env bash
     if [ "{{do}}" = "list" ]; then
         if [ "{{mode}}" = "changed" ]; then
@@ -46,6 +53,13 @@ lint mode="changed" do="run":
         else
             # Get all workspace packages
             node -p "JSON.stringify(require('./package.json').workspaces)"
+        fi
+    elif [ -n "{{package}}" ]; then
+        # Lint specific package - convert directory name to full package name if needed
+        if [[ "{{package}}" == @* ]]; then
+            npx turbo run lint --filter={{package}}
+        else
+            npx turbo run lint --filter=@safee/{{package}}
         fi
     elif [ "{{mode}}" = "changed" ]; then
         npx turbo run lint --filter='[HEAD^1]'
@@ -63,7 +77,7 @@ fmt mode="changed" do="run":
     fi
 
 # Typecheck all components with Turborepo caching
-check mode="changed" do="run":
+check package="" mode="changed" do="run":
     #!/usr/bin/env bash
     if [ "{{do}}" = "list" ]; then
         if [ "{{mode}}" = "changed" ]; then
@@ -73,6 +87,13 @@ check mode="changed" do="run":
             # Get all workspace packages
             node -p "JSON.stringify(require('./package.json').workspaces)"
         fi
+    elif [ -n "{{package}}" ]; then
+        # Check specific package - convert directory name to full package name if needed
+        if [[ "{{package}}" == @* ]]; then
+            npx turbo run check --filter={{package}}
+        else
+            npx turbo run check --filter=@safee/{{package}}
+        fi
     elif [ "{{mode}}" = "changed" ]; then
         npx turbo run check --filter='[HEAD^1]'
     else
@@ -80,7 +101,7 @@ check mode="changed" do="run":
     fi
 
 # Run all tests with Turborepo caching
-test mode="changed" do="run" $DATABASE_URL=test_database_url: && stop-test
+test package="" mode="changed" do="run" $DATABASE_URL=test_database_url: && stop-test
     #!/usr/bin/env bash
     if [ "{{do}}" = "list" ]; then
         if [ "{{mode}}" = "changed" ]; then
@@ -89,6 +110,13 @@ test mode="changed" do="run" $DATABASE_URL=test_database_url: && stop-test
         else
             # Get all workspace packages
             node -p "JSON.stringify(require('./package.json').workspaces)"
+        fi
+    elif [ -n "{{package}}" ]; then
+        # Test specific package - convert directory name to full package name if needed
+        if [[ "{{package}}" == @* ]]; then
+            npx turbo run test --filter={{package}}
+        else
+            npx turbo run test --filter=@safee/{{package}}
         fi
     elif [ "{{mode}}" = "changed" ]; then
         npx turbo run test --filter='[HEAD^1]'
