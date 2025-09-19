@@ -39,7 +39,15 @@ build mode="changed" do="run":
 # Lint all components with Turborepo caching
 lint mode="changed" do="run":
     #!/usr/bin/env bash
-    if [ "{{mode}}" = "changed" ]; then
+    if [ "{{do}}" = "list" ]; then
+        if [ "{{mode}}" = "changed" ]; then
+            # Get changed packages dynamically
+            npx turbo run lint --filter='[HEAD^1]' --dry-run=json | jq -r '.tasks[].package' | jq -R -s -c 'split("\n") | map(select(length > 0))'
+        else
+            # Get all workspace packages
+            node -p "JSON.stringify(require('./package.json').workspaces)"
+        fi
+    elif [ "{{mode}}" = "changed" ]; then
         npx turbo run lint --filter='[HEAD^1]'
     else
         npx turbo run lint
@@ -57,7 +65,15 @@ fmt mode="changed" do="run":
 # Typecheck all components with Turborepo caching
 check mode="changed" do="run":
     #!/usr/bin/env bash
-    if [ "{{mode}}" = "changed" ]; then
+    if [ "{{do}}" = "list" ]; then
+        if [ "{{mode}}" = "changed" ]; then
+            # Get changed packages dynamically
+            npx turbo run check --filter='[HEAD^1]' --dry-run=json | jq -r '.tasks[].package' | jq -R -s -c 'split("\n") | map(select(length > 0))'
+        else
+            # Get all workspace packages
+            node -p "JSON.stringify(require('./package.json').workspaces)"
+        fi
+    elif [ "{{mode}}" = "changed" ]; then
         npx turbo run check --filter='[HEAD^1]'
     else
         npx turbo run check
@@ -66,7 +82,15 @@ check mode="changed" do="run":
 # Run all tests with Turborepo caching
 test mode="changed" do="run" $DATABASE_URL=test_database_url: && stop-test
     #!/usr/bin/env bash
-    if [ "{{mode}}" = "changed" ]; then
+    if [ "{{do}}" = "list" ]; then
+        if [ "{{mode}}" = "changed" ]; then
+            # Get changed packages dynamically
+            npx turbo run test --filter='[HEAD^1]' --dry-run=json | jq -r '.tasks[].package' | jq -R -s -c 'split("\n") | map(select(length > 0))'
+        else
+            # Get all workspace packages
+            node -p "JSON.stringify(require('./package.json').workspaces)"
+        fi
+    elif [ "{{mode}}" = "changed" ]; then
         npx turbo run test --filter='[HEAD^1]'
     else
         npx turbo run test
