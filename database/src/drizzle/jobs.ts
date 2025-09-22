@@ -1,4 +1,4 @@
-import { text, timestamp, jsonb, integer, index } from "drizzle-orm/pg-core";
+import { text, timestamp, jsonb, integer, index, uuid } from "drizzle-orm/pg-core";
 import { idpk, jobsSchema, jobStatusEnum, jobTypeEnum, priorityEnum } from "./_common.js";
 import { jobDefinitions } from "./jobDefinitions.js";
 import { jobSchedules } from "./jobSchedules.js";
@@ -8,11 +8,11 @@ export const jobs = jobsSchema.table(
   "jobs",
   {
     id: idpk("id"),
-    jobDefinitionId: text("job_definition_id")
+    jobDefinitionId: uuid("job_definition_id")
       .notNull()
       .references(() => jobDefinitions.id),
-    scheduleId: text("schedule_id").references(() => jobSchedules.id),
-    organizationId: text("organization_id").references(() => organizations.id),
+    scheduleId: uuid("schedule_id").references(() => jobSchedules.id),
+    organizationId: uuid("organization_id").references(() => organizations.id),
     status: jobStatusEnum("status").default("pending").notNull(),
     type: jobTypeEnum("type").default("immediate").notNull(),
     priority: priorityEnum("priority").default("normal").notNull(),

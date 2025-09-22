@@ -1,4 +1,4 @@
-import { text, timestamp, jsonb, index } from "drizzle-orm/pg-core";
+import { text, timestamp, jsonb, index, uuid } from "drizzle-orm/pg-core";
 import { idpk, systemSchema, entityTypeEnum, actionEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
@@ -12,10 +12,10 @@ export const auditEvents = systemSchema.table(
   {
     id: idpk("id"),
     entityType: entityTypeEnum("entity_type").notNull(),
-    entityId: text("entity_id").notNull(),
+    entityId: uuid("entity_id").notNull(),
     action: actionEnum("action").notNull(),
-    organizationId: text("organization_id").references(() => organizations.id),
-    userId: text("user_id").references(() => users.id),
+    organizationId: uuid("organization_id").references(() => organizations.id),
+    userId: uuid("user_id").references(() => users.id),
     metadata: jsonb("metadata").$type<Record<string, unknown>>(), // Minimal context
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),

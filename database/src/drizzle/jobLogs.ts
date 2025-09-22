@@ -1,4 +1,4 @@
-import { text, timestamp, jsonb, index } from "drizzle-orm/pg-core";
+import { text, timestamp, jsonb, index, uuid } from "drizzle-orm/pg-core";
 import { idpk, jobsSchema, logLevelEnum } from "./_common.js";
 import { jobs } from "./jobs.js";
 
@@ -6,7 +6,7 @@ export const jobLogs = jobsSchema.table(
   "job_logs",
   {
     id: idpk("id"),
-    jobId: text("job_id")
+    jobId: uuid("job_id")
       .notNull()
       .references(() => jobs.id, { onDelete: "cascade" }),
     level: logLevelEnum("level").notNull(),
