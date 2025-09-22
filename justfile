@@ -41,12 +41,17 @@ lint package="" mode="changed" do="run":
             # Get all workspace packages
             node -p "JSON.stringify(require('./package.json').workspaces)"
         fi
-    elif [ -n "{{package}}" ]; then
+    elif [ -n "{{package}}" ] && [ "{{package}}" != "all" ]; then
         # Run specific package lint command
         just lint-{{package}}
     else
-        # Run all lint commands
-        just _all "^lint-" {{mode}} {{do}}
+        # Run all lint commands (when no package specified or package="all")
+        # Use mode="all" when package="all" is specified
+        if [ "{{package}}" = "all" ]; then
+            just _all "^lint-" "all" {{do}}
+        else
+            just _all "^lint-" {{mode}} {{do}}
+        fi
     fi
 
 # Format all code

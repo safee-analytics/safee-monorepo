@@ -219,8 +219,8 @@ void describe("Job Scheduler", async () => {
       // Subscribe to job queue to capture messages
       await pubsub.subscribe("test-job-queue-worker", async (message) => {
         const messageText = typeof message.data === "string" ? message.data : message.data.toString();
-        const parsed = JSON.parse(messageText);
-        queuedMessage = parsed as { jobId: string; type: string };
+        const parsed = JSON.parse(messageText) as { jobId: string; type: string };
+        queuedMessage = parsed;
       });
 
       await scheduler.queueJob("test-job-id");
