@@ -1,14 +1,12 @@
-import { eq, and, desc, asc, inArray, lte, or, isNull, lt } from "drizzle-orm";
+import { eq, and, desc, asc, inArray, lte, or, isNull, lt, count, gte } from "drizzle-orm";
 import { DbDeps } from "../deps.js";
+import { conditionalCount } from "../index.js";
 import { jobs } from "../drizzle/jobs.js";
 import { jobDefinitions } from "../drizzle/jobDefinitions.js";
 import { jobLogs } from "../drizzle/jobLogs.js";
 import type { Job, NewJob } from "../drizzle/jobs.js";
 import type { JobStatus, JobType, Priority } from "../drizzle/_common.js";
 
-/**
- * Create a new job
- */
 export async function createJob({ drizzle, logger }: DbDeps, data: NewJob): Promise<Job> {
   logger.info(
     {
@@ -57,9 +55,6 @@ export async function createJob({ drizzle, logger }: DbDeps, data: NewJob): Prom
   });
 }
 
-/**
- * Get job by ID
- */
 export async function getJobById({ drizzle, logger }: DbDeps, id: string): Promise<Job | undefined> {
   logger.debug({ id }, "Getting job by ID");
 
@@ -83,9 +78,6 @@ export async function getJobById({ drizzle, logger }: DbDeps, id: string): Promi
   return result;
 }
 
-/**
- * Get jobs by status
- */
 export async function getJobsByStatus(
   { drizzle, logger }: DbDeps,
   status: JobStatus | JobStatus[],
@@ -102,9 +94,6 @@ export async function getJobsByStatus(
   });
 }
 
-/**
- * Get pending jobs ready for execution
- */
 export async function getPendingJobs(
   { drizzle, logger }: DbDeps,
   limit = 10,
@@ -135,9 +124,6 @@ export async function getPendingJobs(
   return results;
 }
 
-/**
- * Get failed jobs that can be retried
- */
 export async function getRetryableJobs({ drizzle, logger }: DbDeps, limit = 10): Promise<Job[]> {
   logger.debug({ limit }, "Getting retryable jobs");
 
@@ -154,9 +140,6 @@ export async function getRetryableJobs({ drizzle, logger }: DbDeps, limit = 10):
   return results;
 }
 
-/**
- * Update job status
- */
 export async function updateJobStatus(
   { drizzle, logger }: DbDeps,
   id: string,
@@ -207,9 +190,6 @@ export async function updateJobStatus(
   });
 }
 
-/**
- * Start job execution
- */
 export async function startJob({ drizzle, logger }: DbDeps, id: string): Promise<Job> {
   logger.info({ id }, "Starting job execution");
 
@@ -219,9 +199,6 @@ export async function startJob({ drizzle, logger }: DbDeps, id: string): Promise
   });
 }
 
-/**
- * Complete job successfully
- */
 export async function completeJob(
   { drizzle, logger }: DbDeps,
   id: string,
@@ -235,9 +212,6 @@ export async function completeJob(
   });
 }
 
-/**
- * Fail job with error
- */
 export async function failJob(
   { drizzle, logger }: DbDeps,
   id: string,
@@ -254,9 +228,6 @@ export async function failJob(
   });
 }
 
-/**
- * Cancel job
- */
 export async function cancelJob({ drizzle, logger }: DbDeps, id: string): Promise<Job> {
   logger.info({ id }, "Cancelling job");
 
@@ -265,9 +236,6 @@ export async function cancelJob({ drizzle, logger }: DbDeps, id: string): Promis
   });
 }
 
-/**
- * Get job statistics
- */
 export async function getJobStats(
   { drizzle, logger }: DbDeps,
   organizationId?: string,
@@ -280,26 +248,60 @@ export async function getJobStats(
 }> {
   logger.debug({ organizationId, timeRange }, "Getting job statistics");
 
-  // This would require raw SQL or multiple queries
-  // For now, returning a simple structure
-  const allJobs = await drizzle.query.jobs.findMany({
-    where: organizationId ? eq(jobs.organizationId, organizationId) : undefined,
-    columns: { status: true, type: true, priority: true },
-  });
+  const whereConditions = [];
+  if (organizationId) {
+    whereConditions.push(eq(jobs.organizationId, organizationId));
+  }
+  if (timeRange) {
+    whereConditions.push(and(lte(jobs.createdAt, timeRange.end), gte(jobs.createdAt, timeRange.start)));
+  }
+
+  const baseWhere = whereConditions.length > 0 ? and(...whereConditions) : undefined;
+
+  const [result] = await drizzle
+    .select({
+      total: count(),
+      pendingCount: conditionalCount(jobs.status, "pending"),
+      runningCount: conditionalCount(jobs.status, "running"),
+      completedCount: conditionalCount(jobs.status, "completed"),
+      failedCount: conditionalCount(jobs.status, "failed"),
+      cancelledCount: conditionalCount(jobs.status, "cancelled"),
+      retryingCount: conditionalCount(jobs.status, "retrying"),
+      cronCount: conditionalCount(jobs.type, "cron"),
+      scheduledCount: conditionalCount(jobs.type, "scheduled"),
+      immediateCount: conditionalCount(jobs.type, "immediate"),
+      recurringCount: conditionalCount(jobs.type, "recurring"),
+      lowCount: conditionalCount(jobs.priority, "low"),
+      normalCount: conditionalCount(jobs.priority, "normal"),
+      highCount: conditionalCount(jobs.priority, "high"),
+      criticalCount: conditionalCount(jobs.priority, "critical"),
+    })
+    .from(jobs)
+    .where(baseWhere);
 
   const stats = {
-    total: allJobs.length,
-    byStatus: {} as Record<JobStatus, number>,
-    byType: {} as Record<JobType, number>,
-    byPriority: {} as Record<Priority, number>,
+    total: result.total,
+    byStatus: {
+      pending: result.pendingCount,
+      running: result.runningCount,
+      completed: result.completedCount,
+      failed: result.failedCount,
+      cancelled: result.cancelledCount,
+      retrying: result.retryingCount,
+    } satisfies Record<JobStatus, number>,
+    byType: {
+      cron: result.cronCount,
+      scheduled: result.scheduledCount,
+      immediate: result.immediateCount,
+      recurring: result.recurringCount,
+    } satisfies Record<JobType, number>,
+    byPriority: {
+      low: result.lowCount,
+      normal: result.normalCount,
+      high: result.highCount,
+      critical: result.criticalCount,
+    } satisfies Record<Priority, number>,
   };
-
-  // Count by categories
-  for (const job of allJobs) {
-    stats.byStatus[job.status] = stats.byStatus[job.status] + 1;
-    stats.byType[job.type] = stats.byType[job.type] + 1;
-    stats.byPriority[job.priority] = stats.byPriority[job.priority] + 1;
-  }
 
   logger.info({ stats }, "Retrieved job statistics");
   return stats;

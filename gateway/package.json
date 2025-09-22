@@ -20,13 +20,17 @@
     "check": "tsc --noEmit",
     "fmt": "prettier . --write --cache",
     "fmt:check": "prettier . --check",
-    "clean": "tsc --build --clean && rm -rf coverage"
+    "clean": "tsc --build --clean && rm -rf coverage",
+    "secrets:generate": "node ../scripts/generate-secrets.js",
+    "secrets:generate:prod": "node ../scripts/generate-secrets.js --env production"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@azure/identity": "^4.0.1",
+    "@azure/keyvault-secrets": "^4.7.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",

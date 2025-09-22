@@ -35,6 +35,20 @@ export const LOG_LEVEL = process.env.LOG_LEVEL ?? "info";
 export const COOKIE_KEY = process.env.COOKIE_KEY;
 export const JWT_SECRET = process.env.JWT_SECRET ?? "fake-jwt-secret";
 
+// Azure Key Vault and secrets management
+export const AZURE_KEY_VAULT_URL = process.env.AZURE_KEY_VAULT_URL;
+export const AZURE_CLIENT_ID = process.env.AZURE_CLIENT_ID;
+export const AZURE_CLIENT_SECRET = process.env.AZURE_CLIENT_SECRET;
+export const AZURE_TENANT_ID = process.env.AZURE_TENANT_ID;
+
+// Storage credentials
+export const AZURE_STORAGE_ACCOUNT_NAME = process.env.AZURE_STORAGE_ACCOUNT_NAME;
+export const AZURE_STORAGE_ACCOUNT_KEY = process.env.AZURE_STORAGE_ACCOUNT_KEY;
+
+// Application Insights
+export const APPLICATION_INSIGHTS_CONNECTION_STRING = process.env.APPLICATION_INSIGHTS_CONNECTION_STRING;
+export const APPLICATION_INSIGHTS_INSTRUMENTATION_KEY = process.env.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY;
+
 export const DATABASE_URL = ENV !== "test" ? required("DATABASE_URL") : null;
 
 // export const PUBSUB_TOPIC_PREFIX = process.env.PUBSUB_TOPIC_PREFIX ?? "colony";

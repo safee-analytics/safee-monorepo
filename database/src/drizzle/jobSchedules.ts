@@ -1,4 +1,4 @@
-import { text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { text, timestamp, boolean, index, uuid } from "drizzle-orm/pg-core";
 import { idpk, jobsSchema } from "./_common.js";
 import { jobDefinitions } from "./jobDefinitions.js";
 
@@ -6,7 +6,7 @@ export const jobSchedules = jobsSchema.table(
   "job_schedules",
   {
     id: idpk("id"),
-    jobDefinitionId: text("job_definition_id")
+    jobDefinitionId: uuid("job_definition_id")
       .notNull()
       .references(() => jobDefinitions.id, { onDelete: "cascade" }),
     name: text("name").notNull(),

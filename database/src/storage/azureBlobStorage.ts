@@ -4,30 +4,117 @@ import {
   BlobSASPermissions,
   generateBlobSASQueryParameters,
   StorageSharedKeyCredential,
+  ContainerCreateOptions,
+  RestError,
+  StorageRetryOptions,
+  StorageRetryPolicyType,
 } from "@azure/storage-blob";
 import type { Storage, StorageMetadata, StorageResult } from "./storage.js";
 import { logger } from "../logger.js";
 
+export interface AzureBlobStorageOptions {
+  connectionString?: string;
+  accountName?: string;
+  accountKey?: string;
+  sasToken?: string;
+  retryOptions?: StorageRetryOptions;
+  containerCreateOptions?: ContainerCreateOptions;
+}
+
 export class AzureBlobStorage implements Storage {
-  private static blobServiceClient: BlobServiceClient | null = null;
+  private blobServiceClient: BlobServiceClient;
   private containerClient: ContainerClient;
   private containerName: string;
-  private accountName: string;
-  private accountKey: string;
+  private credential: StorageSharedKeyCredential | null = null;
 
-  constructor(containerName: string, connectionString?: string) {
-    if (!connectionString) {
-      throw new Error("Azure Blob Storage connection string is required");
+  constructor(containerName: string, options: AzureBlobStorageOptions | string) {
+    if (!containerName) {
+      throw new Error("Container name is required");
     }
 
-    // Parse connection string to extract account name and key for SAS generation
-    const connectionParams = new URLSearchParams(connectionString.replace(/;/g, "&"));
-    this.accountName = connectionParams.get("AccountName") ?? "";
-    this.accountKey = connectionParams.get("AccountKey") ?? "";
-
-    AzureBlobStorage.blobServiceClient ??= BlobServiceClient.fromConnectionString(connectionString);
     this.containerName = containerName;
-    this.containerClient = AzureBlobStorage.blobServiceClient.getContainerClient(containerName);
+
+    if (typeof options === "string") {
+      if (!options) {
+        throw new Error("Azure Blob Storage connection string is required");
+      }
+      this.blobServiceClient = this.createClientFromConnectionString(options);
+    } else {
+      this.blobServiceClient = this.createClientFromOptions(options);
+    }
+
+    this.containerClient = this.blobServiceClient.getContainerClient(containerName);
+  }
+
+  private createClientFromConnectionString(connectionString: string): BlobServiceClient {
+    try {
+      const params = this.parseConnectionString(connectionString);
+      if (params.accountName && params.accountKey) {
+        this.credential = new StorageSharedKeyCredential(params.accountName, params.accountKey);
+      }
+
+      return BlobServiceClient.fromConnectionString(connectionString, {
+        retryOptions: {
+          retryPolicyType: StorageRetryPolicyType.EXPONENTIAL,
+          maxTries: 3,
+          tryTimeoutInMs: 30000,
+          retryDelayInMs: 1000,
+          maxRetryDelayInMs: 10000,
+        },
+      });
+    } catch (err) {
+      logger.error(
+        { error: err, connectionString: "***" },
+        "Failed to create Azure Blob Service Client from connection string",
+      );
+      throw new Error("Invalid Azure Blob Storage connection string");
+    }
+  }
+
+  private createClientFromOptions(options: AzureBlobStorageOptions): BlobServiceClient {
+    const { accountName, accountKey, sasToken, retryOptions } = options;
+
+    if (!accountName) {
+      throw new Error("Account name is required when not using connection string");
+    }
+
+    const defaultRetryOptions: StorageRetryOptions = {
+      retryPolicyType: StorageRetryPolicyType.EXPONENTIAL,
+      maxTries: 3,
+      tryTimeoutInMs: 30000,
+      retryDelayInMs: 1000,
+      maxRetryDelayInMs: 10000,
+      ...retryOptions,
+    };
+
+    try {
+      if (accountKey) {
+        this.credential = new StorageSharedKeyCredential(accountName, accountKey);
+        const accountUrl = `https://${accountName}.blob.core.windows.net`;
+        return new BlobServiceClient(accountUrl, this.credential, { retryOptions: defaultRetryOptions });
+      } else if (sasToken) {
+        const accountUrl = `https://${accountName}.blob.core.windows.net`;
+        return new BlobServiceClient(`${accountUrl}?${sasToken}`, undefined, {
+          retryOptions: defaultRetryOptions,
+        });
+      }
+      const accountUrl = `https://${accountName}.blob.core.windows.net`;
+      return new BlobServiceClient(accountUrl, undefined, { retryOptions: defaultRetryOptions });
+    } catch (err) {
+      logger.error({ error: err, accountName }, "Failed to create Azure Blob Service Client from options");
+      throw new Error("Failed to initialize Azure Blob Storage client");
+    }
+  }
+
+  private parseConnectionString(connectionString: string): Record<string, string> {
+    const params: Record<string, string> = {};
+    for (const param of connectionString.split(";")) {
+      const [key, value] = param.split("=");
+      if (key && value) {
+        params[key] = value;
+      }
+    }
+    return params;
   }
 
   async saveFile(path: string, data: Buffer, metadata?: StorageMetadata): Promise<StorageResult> {
@@ -37,9 +124,8 @@ export class AzureBlobStorage implements Storage {
     );
 
     try {
-      // Ensure container exists
       await this.containerClient.createIfNotExists({
-        access: "blob", // Allow public read access to blobs
+        access: "blob",
       });
 
       const blobClient = this.containerClient.getBlockBlobClient(path);
@@ -81,6 +167,11 @@ export class AzureBlobStorage implements Storage {
         { error: err, path, container: this.containerName },
         "Error saving file to Azure Blob Storage",
       );
+
+      if (err instanceof RestError) {
+        throw new Error(`Failed to save file to Azure Blob Storage: ${err.message} (${err.statusCode})`);
+      }
+
       const message = err instanceof Error ? err.message : String(err);
       throw new Error(`Failed to save file to Azure Blob Storage: ${message}`);
     }
@@ -110,8 +201,12 @@ export class AzureBlobStorage implements Storage {
         "Error getting file from Azure Blob Storage",
       );
 
-      if (err && typeof err === "object" && "statusCode" in err && err.statusCode === 404) {
+      if (err instanceof RestError && err.statusCode === 404) {
         throw new Error(`File not found: ${path}`);
+      }
+
+      if (err instanceof RestError) {
+        throw new Error(`Failed to get file from Azure Blob Storage: ${err.message} (${err.statusCode})`);
       }
 
       const message = err instanceof Error ? err.message : String(err);
@@ -129,6 +224,10 @@ export class AzureBlobStorage implements Storage {
       logger.debug({ path, container: this.containerName, exists }, "File existence check completed");
       return exists;
     } catch (err) {
+      if (err instanceof RestError && err.statusCode === 404) {
+        return false;
+      }
+
       logger.error(
         { error: err, path, container: this.containerName },
         "Error checking file existence in Azure Blob Storage",
@@ -150,6 +249,11 @@ export class AzureBlobStorage implements Storage {
         { error: err, path, container: this.containerName },
         "Error deleting file from Azure Blob Storage",
       );
+
+      if (err instanceof RestError) {
+        throw new Error(`Failed to delete file from Azure Blob Storage: ${err.message} (${err.statusCode})`);
+      }
+
       const message = err instanceof Error ? err.message : String(err);
       throw new Error(`Failed to delete file from Azure Blob Storage: ${message}`);
     }
@@ -182,8 +286,14 @@ export class AzureBlobStorage implements Storage {
         "Error getting file metadata from Azure Blob Storage",
       );
 
-      if (err && typeof err === "object" && "statusCode" in err && err.statusCode === 404) {
+      if (err instanceof RestError && err.statusCode === 404) {
         throw new Error(`File not found: ${path}`);
+      }
+
+      if (err instanceof RestError) {
+        throw new Error(
+          `Failed to get file metadata from Azure Blob Storage: ${err.message} (${err.statusCode})`,
+        );
       }
 
       const message = err instanceof Error ? err.message : String(err);
@@ -223,6 +333,11 @@ export class AzureBlobStorage implements Storage {
         { error: err, prefix, container: this.containerName },
         "Error listing files from Azure Blob Storage",
       );
+
+      if (err instanceof RestError) {
+        throw new Error(`Failed to list files from Azure Blob Storage: ${err.message} (${err.statusCode})`);
+      }
+
       const message = err instanceof Error ? err.message : String(err);
       throw new Error(`Failed to list files from Azure Blob Storage: ${message}`);
     }
@@ -237,7 +352,11 @@ export class AzureBlobStorage implements Storage {
     try {
       const blobClient = this.containerClient.getBlockBlobClient(path);
 
-      // Generate SAS token
+      // Only generate SAS token if we have credentials available
+      if (!this.credential) {
+        throw new Error("Cannot generate signed URL without account key credentials");
+      }
+
       const sasToken = generateBlobSASQueryParameters(
         {
           containerName: this.containerName,
@@ -246,7 +365,7 @@ export class AzureBlobStorage implements Storage {
           startsOn: new Date(),
           expiresOn: new Date(Date.now() + expiresIn * 1000),
         },
-        new StorageSharedKeyCredential(this.accountName, this.accountKey),
+        this.credential,
       );
 
       const signedUrl = `${blobClient.url}?${sasToken.toString()}`;
@@ -261,6 +380,13 @@ export class AzureBlobStorage implements Storage {
         { error: err, path, container: this.containerName },
         "Error generating signed URL for Azure Blob Storage",
       );
+
+      if (err instanceof RestError) {
+        throw new Error(
+          `Failed to generate signed URL for Azure Blob Storage: ${err.message} (${err.statusCode})`,
+        );
+      }
+
       const message = err instanceof Error ? err.message : String(err);
       throw new Error(`Failed to generate signed URL for Azure Blob Storage: ${message}`);
     }
@@ -295,8 +421,12 @@ export class AzureBlobStorage implements Storage {
         "Error copying file in Azure Blob Storage",
       );
 
-      if (err && typeof err === "object" && "statusCode" in err && err.statusCode === 404) {
+      if (err instanceof RestError && err.statusCode === 404) {
         throw new Error(`Source file not found: ${sourcePath}`);
+      }
+
+      if (err instanceof RestError) {
+        throw new Error(`Failed to copy file in Azure Blob Storage: ${err.message} (${err.statusCode})`);
       }
 
       const message = err instanceof Error ? err.message : String(err);
@@ -304,25 +434,42 @@ export class AzureBlobStorage implements Storage {
     }
   }
 
-  /**
-   * Convert stream to buffer
-   */
   private async streamToBuffer(readableStream: NodeJS.ReadableStream): Promise<Buffer> {
     return new Promise((resolve, reject) => {
       const chunks: Uint8Array[] = [];
+      let totalLength = 0;
+
+      const timeout = setTimeout(() => {
+        reject(new Error("Stream timeout: failed to read data within 60 seconds"));
+      }, 60000);
+
       readableStream.on("data", (data: Uint8Array) => {
         chunks.push(data);
+        totalLength += data.length;
+
+        if (totalLength > 500 * 1024 * 1024) {
+          // 500MB limit
+          clearTimeout(timeout);
+          reject(new Error("Stream size exceeded maximum limit of 500MB"));
+        }
       });
+
       readableStream.on("end", () => {
+        clearTimeout(timeout);
         resolve(Buffer.concat(chunks));
       });
-      readableStream.on("error", reject);
+
+      readableStream.on("error", (error) => {
+        clearTimeout(timeout);
+        reject(error instanceof Error ? error : new Error(String(error)));
+      });
+
+      readableStream.on("close", () => {
+        clearTimeout(timeout);
+      });
     });
   }
 
-  /**
-   * Get content type based on file extension
-   */
   private getContentType(path: string): string {
     const extension = path.split(".").pop()?.toLowerCase();
 
@@ -338,6 +485,9 @@ export class AzureBlobStorage implements Storage {
       bmp: "image/bmp",
       tiff: "image/tiff",
       tif: "image/tiff",
+      avif: "image/avif",
+      heic: "image/heic",
+      heif: "image/heif",
 
       // Documents
       pdf: "application/pdf",
@@ -347,6 +497,9 @@ export class AzureBlobStorage implements Storage {
       xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       ppt: "application/vnd.ms-powerpoint",
       pptx: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+      odt: "application/vnd.oasis.opendocument.text",
+      ods: "application/vnd.oasis.opendocument.spreadsheet",
+      odp: "application/vnd.oasis.opendocument.presentation",
 
       // Text files
       txt: "text/plain",
@@ -354,6 +507,16 @@ export class AzureBlobStorage implements Storage {
       csv: "text/csv",
       json: "application/json",
       xml: "application/xml",
+      html: "text/html",
+      htm: "text/html",
+      css: "text/css",
+      js: "application/javascript",
+      jsx: "application/javascript",
+      ts: "application/typescript",
+      tsx: "application/typescript",
+      md: "text/markdown",
+      yaml: "application/x-yaml",
+      yml: "application/x-yaml",
 
       // Archives
       zip: "application/zip",
@@ -361,12 +524,30 @@ export class AzureBlobStorage implements Storage {
       "7z": "application/x-7z-compressed",
       tar: "application/x-tar",
       gz: "application/gzip",
+      bz2: "application/x-bzip2",
+      xz: "application/x-xz",
 
       // Audio/Video
       mp3: "audio/mpeg",
       wav: "audio/wav",
+      flac: "audio/flac",
+      aac: "audio/aac",
+      ogg: "audio/ogg",
+      m4a: "audio/mp4",
       mp4: "video/mp4",
       avi: "video/x-msvideo",
+      mov: "video/quicktime",
+      wmv: "video/x-ms-wmv",
+      flv: "video/x-flv",
+      webm: "video/webm",
+      mkv: "video/x-matroska",
+
+      // Fonts
+      ttf: "font/ttf",
+      otf: "font/otf",
+      woff: "font/woff",
+      woff2: "font/woff2",
+      eot: "application/vnd.ms-fontobject",
     };
 
     return contentTypes[extension ?? ""] ?? "application/octet-stream";
