@@ -167,7 +167,7 @@ void describe("Job Logs", async () => {
 
       // Should be ordered by creation time (newest first)
       for (let i = 1; i < logs.length; i++) {
-        assert.ok(logs[i - 1]!.createdAt >= logs[i]!.createdAt);
+        assert.ok(logs[i - 1].createdAt >= logs[i].createdAt);
       }
     });
   });
@@ -357,7 +357,7 @@ void describe("Job Logs", async () => {
       assert.ok(job2Summary.lastLogTime);
 
       // job2 should have later lastLogTime since we created its last log later
-      assert.ok(job2Summary.lastLogTime! > job1Summary.lastLogTime!);
+      assert.ok(job2Summary.lastLogTime > job1Summary.lastLogTime);
     });
 
     void it("handles jobs with no logs", async () => {

@@ -17,7 +17,7 @@ void describe("Storage Integration Tests", async () => {
   after(async () => {
     try {
       await rmdir(testDir, { recursive: true });
-    } catch (err) {
+    } catch {
       // Ignore cleanup errors
     }
   });
@@ -62,7 +62,7 @@ void describe("Storage Integration Tests", async () => {
     });
 
     void it("handles large files consistently", async () => {
-      const largeData = Buffer.alloc(1024 * 1024, 'A'); // 1MB of 'A's
+      const largeData = Buffer.alloc(1024 * 1024, "A"); // 1MB of "A"s
       const path = "large-file.bin";
 
       const saveResult = await fileSystemStorage.saveFile(path, largeData);
@@ -290,7 +290,7 @@ void describe("Storage Integration Tests", async () => {
 
       // Create batch of files
       for (let i = 0; i < 10; i++) {
-        const path = `batch/file-${i.toString().padStart(2, '0')}.txt`;
+        const path = `batch/file-${i.toString().padStart(2, "0")}.txt`;
         batchFiles.push(path);
       }
 
@@ -298,7 +298,7 @@ void describe("Storage Integration Tests", async () => {
       const uploadPromises = batchFiles.map(path =>
         storage.saveFile(path, batchData, {
           contentType: "text/plain",
-          metadata: { batchId: "batch-001", fileIndex: path.split('-')[1].split('.')[0] }
+          metadata: { batchId: "batch-001", fileIndex: path.split("-")[1].split(".")[0] }
         })
       );
 
@@ -312,7 +312,7 @@ void describe("Storage Integration Tests", async () => {
       // Verify all files exist
       const existsPromises = batchFiles.map(path => storage.fileExists(path));
       const existsResults = await Promise.all(existsPromises);
-      assert.ok(existsResults.every(exists => exists === true));
+      assert.ok(existsResults.every(exists => exists));
 
       // Delete all batch files
       const deletePromises = batchFiles.map(path => storage.deleteFile(path));
@@ -321,7 +321,7 @@ void describe("Storage Integration Tests", async () => {
       // Verify all files are deleted
       const deletedExistsPromises = batchFiles.map(path => storage.fileExists(path));
       const deletedExistsResults = await Promise.all(deletedExistsPromises);
-      assert.ok(deletedExistsResults.every(exists => exists === false));
+      assert.ok(deletedExistsResults.every(exists => !exists));
     });
   });
 
@@ -369,9 +369,9 @@ void describe("Storage Integration Tests", async () => {
       // Attempt invalid operation (should handle gracefully)
       try {
         await storage.saveFile(invalidPath, testData);
-      } catch (error) {
+      } catch (err) {
         // Expected to fail
-        assert.ok(error instanceof Error);
+        assert.ok(err instanceof Error);
       }
 
       // Verify valid file is unaffected

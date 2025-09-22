@@ -297,12 +297,151 @@ update_task_statistics() {
     local todo_tasks=$(grep -c "Status.*TODO" "$TASK_FILE")
     local done_tasks=$(grep -c "Status.*DONE" "$TASK_FILE")
     local in_progress_tasks=$(grep -c "Status.*IN_PROGRESS" "$TASK_FILE")
-    
+
     # Update TASKS.md statistics
     sed -i.bak "s/Total Tasks.*[0-9]*/Total Tasks**: $total_tasks/" "$TASK_FILE"
     sed -i.bak "s/Todo.*[0-9]*/Todo**: $todo_tasks/" "$TASK_FILE"
     sed -i.bak "s/Completed.*[0-9]*/Completed**: $done_tasks/" "$TASK_FILE"
     sed -i.bak "s/In Progress.*[0-9]*/In Progress**: $in_progress_tasks/" "$TASK_FILE"
+}
+
+# Generate dynamic dashboard
+generate_dynamic_dashboard() {
+    local total_tasks=$(grep -c "### Task #" "$TASK_FILE")
+    local todo_tasks=$(grep -c "Status.*TODO" "$TASK_FILE")
+    local done_tasks=$(grep -c "Status.*DONE" "$TASK_FILE")
+    local in_progress_tasks=$(grep -c "Status.*IN_PROGRESS" "$TASK_FILE")
+    local blocked_tasks=$(grep -c "Status.*BLOCKED" "$TASK_FILE")
+
+    # Calculate completion percentage
+    local completion_pct=$(( done_tasks * 100 / total_tasks ))
+
+    # Count by priority
+    local p0_tasks=$(grep -A 2 "### Task #" "$TASK_FILE" | grep -c "Priority.*P0")
+    local p1_tasks=$(grep -A 2 "### Task #" "$TASK_FILE" | grep -c "Priority.*P1")
+    local p2_tasks=$(grep -A 2 "### Task #" "$TASK_FILE" | grep -c "Priority.*P2")
+
+    # Count by module
+    local infra_tasks=$(grep -A 3 "### Task #" "$TASK_FILE" | grep -c "Module.*Infrastructure")
+    local testing_tasks=$(grep -A 3 "### Task #" "$TASK_FILE" | grep -c "Module.*Testing")
+    local frontend_tasks=$(grep -A 3 "### Task #" "$TASK_FILE" | grep -c "Module.*Frontend")
+
+    cat << EOF
+# Safee Analytics - Project Dashboard
+
+## 📊 Project Overview
+
+**Project**: Safee Analytics (Bayanat Suite)
+**Current Phase**: Phase 1 - Foundation
+**Overall Progress**: ${completion_pct}% (${done_tasks}/${total_tasks} tasks completed)
+**Start Date**: 2025-08-25
+**Target Launch**: 2027-08-25
+
+---
+
+## 🎯 Current Sprint Status
+
+### Phase 1 - Foundation (Months 1-6)
+**Progress**: ${completion_pct}% (${done_tasks}/${total_tasks} tasks completed)
+**Current Sprint**: Active Development
+**Sprint Progress**: ${completion_pct}%
+
+#### Sprint 1 (Weeks 1-2): Project Initialization - ✅ COMPLETED
+- ✅ Set up monorepo workspace structure (NPM workspaces + Turbo)
+- ✅ Configure development environment and tooling (ESLint, TypeScript, Prettier)
+- ✅ Implement CI/CD pipeline with GitHub Actions
+- ✅ Set up Azure infrastructure (basic setup) - COMPLETED
+
+#### Sprint 2 (Weeks 3-4): Database & ORM Setup - ✅ COMPLETED
+- ✅ Design comprehensive database schema with Drizzle ORM
+- ✅ Set up PostgreSQL database with Drizzle
+- ✅ Create TSOA + Express API Gateway
+- ✅ Implement comprehensive testing framework
+- ✅ Database testing system with job and storage tests
+
+---
+
+## 📈 Task Statistics
+
+### By Status
+- **TODO**: ${todo_tasks} tasks ($(( todo_tasks * 100 / total_tasks ))%)
+- **IN_PROGRESS**: ${in_progress_tasks} tasks ($(( in_progress_tasks * 100 / total_tasks ))%)
+- **BLOCKED**: ${blocked_tasks} tasks ($(( blocked_tasks * 100 / total_tasks ))%)
+- **DONE**: ${done_tasks} tasks ($(( done_tasks * 100 / total_tasks ))%)
+
+### By Priority
+- **P0 (Critical)**: ${p0_tasks} tasks
+- **P1 (High)**: ${p1_tasks} tasks
+- **P2 (Medium)**: ${p2_tasks} tasks
+
+### By Module
+- **🏗️ Infrastructure**: ${infra_tasks} tasks
+- **🧪 Testing**: ${testing_tasks} tasks
+- **🎨 Frontend**: ${frontend_tasks} tasks
+
+---
+
+## 🔥 Recent Accomplishments
+
+### ✅ **Database System** (100% Complete)
+- Comprehensive Drizzle ORM schema with multi-tenant architecture
+- Job system with scheduling, logging, and execution
+- Storage abstraction with FileSystem, Azure Blob, GCP support
+- Full test coverage with optimized queries
+
+### ✅ **Infrastructure Foundation** (85% Complete)
+- TSOA + Express API Gateway with auto-generated routes
+- GitHub Actions CI/CD pipeline
+- ESLint, Prettier, TypeScript configuration
+- Turborepo monorepo structure
+
+---
+
+## 📋 Task Board
+
+### 🔴 TODO (${todo_tasks} tasks)
+EOF
+
+    # Show TODO tasks
+    grep -A 5 "### Task #" "$TASK_FILE" | grep -B 1 -A 4 "Status.*TODO" | grep "### Task #" | head -5
+
+    cat << EOF
+
+### 🟡 IN_PROGRESS (${in_progress_tasks} tasks)
+EOF
+
+    # Show IN_PROGRESS tasks
+    grep -A 5 "### Task #" "$TASK_FILE" | grep -B 1 -A 4 "Status.*IN_PROGRESS" | grep "### Task #" | head -3
+
+    cat << EOF
+
+### 🟢 DONE (${done_tasks} tasks - Last 5)
+EOF
+
+    # Show recent DONE tasks
+    grep -A 5 "### Task #" "$TASK_FILE" | grep -B 1 -A 4 "Status.*DONE" | grep "### Task #" | tail -5
+
+    cat << EOF
+
+---
+
+## 🎯 Next Priority Actions
+
+### Critical Tasks (P0)
+1. **Authentication System** - Implement JWT authentication with RBAC
+2. **Environment Configuration** - Set up secrets management
+3. **Frontend Setup** - Create React SPA with Vite
+
+### High Priority Tasks (P1)
+1. **Logging & Monitoring** - Set up observability stack
+2. **Azure Infrastructure** - Basic cloud setup
+
+---
+
+*Dashboard Last Updated: $(date "+%Y-%m-%d %H:%M:%S")*
+*Auto-refresh: Run \`./task-manager.sh dashboard\` for latest stats*
+
+EOF
 }
 
 # Show help
@@ -365,7 +504,7 @@ main() {
             ;;
         dashboard)
             log_info "Opening dashboard..."
-            cat "$DASHBOARD_FILE"
+            generate_dynamic_dashboard
             ;;
         help|--help|-h)
             show_help

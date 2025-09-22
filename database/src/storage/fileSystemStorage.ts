@@ -20,16 +20,12 @@ export class FileSystemStorage implements Storage {
     logger.debug({ path, fullPath, size: data.length }, "Saving file to file system");
 
     try {
-      // Ensure directory exists
       await mkdir(dirname(fullPath), { recursive: true });
 
-      // Write file
       await writeFile(fullPath, data);
 
-      // Get file stats
       const stats = await stat(fullPath);
 
-      // Generate ETag (hash of file content)
       const hash = createHash("md5");
       hash.update(data);
       const etag = hash.digest("hex");
@@ -119,7 +115,6 @@ export class FileSystemStorage implements Storage {
     try {
       const stats = await stat(fullPath);
 
-      // Generate ETag by reading and hashing the file
       const buffer = await readFile(fullPath);
       const hash = createHash("md5");
       hash.update(buffer);
@@ -171,7 +166,6 @@ export class FileSystemStorage implements Storage {
   async getSignedUrl(path: string, expiresIn = 3600): Promise<string> {
     logger.debug({ path, expiresIn }, "Generating signed URL for file system");
 
-    // For file system, we'll generate a signed URL with expiry timestamp and signature
     const expires = Date.now() + expiresIn * 1000;
     const signature = this.generateSignature(path, expires);
     const signedUrl = `${this.getPublicUrl(path)}?expires=${expires}&signature=${signature}`;
@@ -190,10 +184,8 @@ export class FileSystemStorage implements Storage {
     );
 
     try {
-      // Ensure destination directory exists
       await mkdir(dirname(destFullPath), { recursive: true });
 
-      // Copy the file
       await copyFile(sourceFullPath, destFullPath);
 
       const result = await this.getFileMetadata(destinationPath);
@@ -212,9 +204,6 @@ export class FileSystemStorage implements Storage {
     }
   }
 
-  /**
-   * Walk directory recursively to find all files
-   */
   private async walkDirectory(
     basePath: string,
     currentPath: string,
@@ -237,13 +226,10 @@ export class FileSystemStorage implements Storage {
         const fullPath = join(currentPath, entry.name);
 
         if (entry.isDirectory()) {
-          // Recursively walk subdirectories
           await this.walkDirectory(basePath, fullPath, prefix, results, limit);
         } else if (entry.isFile()) {
-          // Get relative path from base path
           const relativePath = relative(basePath, fullPath);
 
-          // Skip if it doesn't match the prefix
           if (prefix && !relativePath.startsWith(prefix)) {
             continue;
           }
@@ -251,7 +237,6 @@ export class FileSystemStorage implements Storage {
           try {
             const stats = await stat(fullPath);
 
-            // Generate ETag efficiently (using file stats instead of reading content)
             const etag = createHash("md5")
               .update(`${relativePath}-${stats.size}-${stats.mtime.getTime()}`)
               .digest("hex");
@@ -276,18 +261,11 @@ export class FileSystemStorage implements Storage {
     }
   }
 
-  /**
-   * Generate public URL for a file
-   */
   private getPublicUrl(path: string): string {
     return `${this.publicUrl}/${this.folderName}/${path}`.replace(/\/+/g, "/");
   }
 
-  /**
-   * Generate signature for signed URL
-   */
   private generateSignature(path: string, expires: number): string {
-    // Simple signature using HMAC-like approach
     const secret = process.env.FILE_STORAGE_SECRET ?? "default-secret";
     const payload = `${path}:${expires}`;
 

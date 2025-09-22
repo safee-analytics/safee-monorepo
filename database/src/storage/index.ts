@@ -13,9 +13,6 @@ export interface StorageConfig {
   localPath?: string;
 }
 
-/**
- * Create a storage instance based on configuration
- */
 export function createStorage(config: StorageConfig): Storage {
   switch (config.provider) {
     case "google":
@@ -32,9 +29,6 @@ export function createStorage(config: StorageConfig): Storage {
   }
 }
 
-/**
- * Get default storage based on environment (backward compatibility)
- */
 export function getStorage(bucket: string): Storage {
   if (IS_LOCAL) {
     return new FileSystemStorage("public", bucket);
@@ -42,7 +36,6 @@ export function getStorage(bucket: string): Storage {
   return new GoogleCloudStorage(bucket);
 }
 
-// Re-export types and classes
 export type { Storage } from "./storage.js";
 export { GoogleCloudStorage } from "./googleCloudStorage.js";
 export { AzureBlobStorage } from "./azureBlobStorage.js";

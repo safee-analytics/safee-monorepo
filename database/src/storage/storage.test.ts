@@ -1,9 +1,8 @@
-import { describe, it, before, after, beforeEach, afterEach } from "node:test";
+import { describe, it, before, after, beforeEach } from "node:test";
 import assert from "node:assert";
-import { mkdir, rmdir, writeFile } from "node:fs/promises";
+import { mkdir, rmdir } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { pino } from "pino";
 import { FileSystemStorage } from "./fileSystemStorage.js";
 import { createStorage, getStorage } from "./index.js";
 import type { StorageMetadata } from "./storage.js";
@@ -11,7 +10,6 @@ import type { StorageMetadata } from "./storage.js";
 void describe("Storage System", async () => {
   let testDir: string;
   let storage: FileSystemStorage;
-  const logger = pino({ level: "silent" });
 
   before(async () => {
     testDir = join(tmpdir(), `storage-test-${Date.now()}`);
@@ -21,7 +19,7 @@ void describe("Storage System", async () => {
   after(async () => {
     try {
       await rmdir(testDir, { recursive: true });
-    } catch (err) {
+    } catch {
       // Ignore cleanup errors
     }
   });
@@ -291,7 +289,7 @@ void describe("Storage System", async () => {
         assert.ok(signedUrl.includes("expires="));
 
         // Extract expires timestamp and verify it's approximately correct
-        const match = signedUrl.match(/expires=(\d+)/);
+        const match = /expires=(\d+)/.exec(signedUrl);
         assert.ok(match);
         const expires = parseInt(match[1]);
         const expectedExpires = Date.now() + expiresIn * 1000;
@@ -308,8 +306,8 @@ void describe("Storage System", async () => {
         const url1 = await storage.getSignedUrl(path1);
         const url2 = await storage.getSignedUrl(path2);
 
-        const sig1 = url1.match(/signature=([^&]+)/)?.[1];
-        const sig2 = url2.match(/signature=([^&]+)/)?.[1];
+        const sig1 = /signature=([^&]+)/.exec(url1)?.[1];
+        const sig2 = /signature=([^&]+)/.exec(url2)?.[1];
 
         assert.ok(sig1);
         assert.ok(sig2);
@@ -428,7 +426,7 @@ void describe("Storage System", async () => {
       void it("throws error for unsupported provider", () => {
         assert.throws(
           () => createStorage({
-            provider: "unsupported" as any,
+            provider: "unsupported" as "filesystem" | "azure" | "google",
             bucket: "test-bucket"
           }),
           /Unsupported storage provider: unsupported/
@@ -489,7 +487,7 @@ void describe("Storage System", async () => {
 
     void it("handles large file names", async () => {
       const testData = Buffer.from("Large filename test");
-      const longName = "a".repeat(200) + ".txt";
+      const longName = `${"a".repeat(200)}.txt`;
 
       const result = await storage.saveFile(longName, testData);
       assert.strictEqual(result.key, longName);

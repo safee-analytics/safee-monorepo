@@ -55,8 +55,8 @@ void describe("Job Scheduler", async () => {
       await scheduler.start(deps);
 
       // Verify topics were created
-      assert.ok(pubsub["topics"].has("test-job-queue"));
-      assert.ok(pubsub["topics"].has("test-job-events"));
+      assert.ok(pubsub.topics.has("test-job-queue"));
+      assert.ok(pubsub.topics.has("test-job-events"));
 
       await scheduler.stop();
 
@@ -107,7 +107,7 @@ void describe("Job Scheduler", async () => {
       await scheduler.scheduleJob(deps, testJobSchedule.id);
 
       // Verify cron job was created
-      const cronJobs = scheduler["cronJobs"];
+      const cronJobs = scheduler.cronJobs;
       assert.ok(cronJobs.has(testJobSchedule.id));
     });
 
@@ -120,7 +120,7 @@ void describe("Job Scheduler", async () => {
 
       await scheduler.scheduleJob(deps, testJobSchedule.id);
 
-      const cronJobs = scheduler["cronJobs"];
+      const cronJobs = scheduler.cronJobs;
       assert.ok(!cronJobs.has(testJobSchedule.id));
     });
 
@@ -133,7 +133,7 @@ void describe("Job Scheduler", async () => {
 
       await scheduler.scheduleJob(deps, testJobSchedule.id);
 
-      const cronJobs = scheduler["cronJobs"];
+      const cronJobs = scheduler.cronJobs;
       assert.ok(!cronJobs.has(testJobSchedule.id));
     });
 
@@ -141,14 +141,14 @@ void describe("Job Scheduler", async () => {
       // Should not throw
       await scheduler.scheduleJob(deps, "nonexistent-id");
 
-      const cronJobs = scheduler["cronJobs"];
+      const cronJobs = scheduler.cronJobs;
       assert.strictEqual(cronJobs.size, 0);
     });
 
     void it("updates existing cron job when rescheduling", async () => {
       await scheduler.scheduleJob(deps, testJobSchedule.id);
 
-      const cronJobs = scheduler["cronJobs"];
+      const cronJobs = scheduler.cronJobs;
       const originalJob = cronJobs.get(testJobSchedule.id);
       assert.ok(originalJob);
 
@@ -192,7 +192,7 @@ void describe("Job Scheduler", async () => {
     });
 
     void it("unschedules existing job", async () => {
-      const cronJobs = scheduler["cronJobs"];
+      const cronJobs = scheduler.cronJobs;
       assert.ok(cronJobs.has(testJobSchedule.id));
 
       await scheduler.unscheduleJob(testJobSchedule.id);
@@ -216,11 +216,11 @@ void describe("Job Scheduler", async () => {
     });
 
     void it("queues job for immediate execution", async () => {
-      let queuedMessage: any = null;
+      let queuedMessage: { jobId: string; type: string } | null = null;
 
       // Subscribe to job queue to capture messages
       await pubsub.subscribe("test-job-queue-worker", async (message) => {
-        queuedMessage = JSON.parse(message.data.toString());
+        queuedMessage = JSON.parse(message.data.toString()) as { jobId: string; type: string };
       });
 
       await scheduler.queueJob("test-job-id");
@@ -236,7 +236,7 @@ void describe("Job Scheduler", async () => {
   void describe("job processing", async () => {
     let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testJob: typeof schema.jobs.$inferSelect;
-    let jobEvents: any[] = [];
+    let jobEvents: { jobId: string; type: string; error?: string }[] = [];
 
     beforeEach(async () => {
       testJobDefinition = await createJobDefinition(deps, {
@@ -257,7 +257,7 @@ void describe("Job Scheduler", async () => {
       // Subscribe to job events
       jobEvents = [];
       await pubsub.subscribe("test-job-events-worker", async (message) => {
-        const event = JSON.parse(message.data.toString());
+        const event = JSON.parse(message.data.toString()) as { jobId: string; type: string; error?: string };
         jobEvents.push(event);
       });
     });
@@ -337,7 +337,7 @@ void describe("Job Scheduler", async () => {
 
     void it("creates job instance when cron job executes", async () => {
       // Manually execute cron job to avoid waiting for actual cron timing
-      await scheduler["executeCronJob"](deps, {
+      await scheduler.executeCronJob(deps, {
         id: testJobSchedule.id,
         jobDefinitionId: testJobDefinition.id,
         cronExpression: "* * * * *",
@@ -363,7 +363,7 @@ void describe("Job Scheduler", async () => {
         where: eq(schema.jobSchedules.id, testJobSchedule.id),
       });
 
-      await scheduler["executeCronJob"](deps, {
+      await scheduler.executeCronJob(deps, {
         id: testJobSchedule.id,
         jobDefinitionId: testJobDefinition.id,
         cronExpression: "* * * * *",
@@ -432,7 +432,7 @@ void describe("Job Scheduler", async () => {
     void it("loads only active schedules with cron expressions on start", async () => {
       await scheduler.start(deps);
 
-      const cronJobs = scheduler["cronJobs"];
+      const cronJobs = scheduler.cronJobs;
       assert.strictEqual(cronJobs.size, 2);
 
       await scheduler.stop();

@@ -4,9 +4,6 @@ import { jobSchedules } from "../drizzle/jobSchedules.js";
 import { jobDefinitions } from "../drizzle/jobDefinitions.js";
 import type { JobSchedule, NewJobSchedule } from "../drizzle/jobSchedules.js";
 
-/**
- * Create a new job schedule
- */
 export async function createJobSchedule(
   { drizzle, logger }: DbDeps,
   data: NewJobSchedule,
@@ -14,7 +11,6 @@ export async function createJobSchedule(
   logger.info({ name: data.name, cronExpression: data.cronExpression }, "Creating job schedule");
 
   return drizzle.transaction(async (tx) => {
-    // Verify job definition exists
     const jobDef = await tx.query.jobDefinitions.findFirst({
       where: eq(jobDefinitions.id, data.jobDefinitionId),
     });
@@ -24,7 +20,6 @@ export async function createJobSchedule(
       throw new Error(`Job definition with ID '${data.jobDefinitionId}' not found`);
     }
 
-    // Check if schedule with this name already exists for this job definition
     const existing = await tx.query.jobSchedules.findFirst({
       where: and(eq(jobSchedules.name, data.name), eq(jobSchedules.jobDefinitionId, data.jobDefinitionId)),
     });
@@ -44,9 +39,6 @@ export async function createJobSchedule(
   });
 }
 
-/**
- * Get job schedule by ID
- */
 export async function getJobScheduleById(
   { drizzle, logger }: DbDeps,
   id: string,
@@ -67,9 +59,6 @@ export async function getJobScheduleById(
   return result;
 }
 
-/**
- * Get job schedules by job definition ID
- */
 export async function getJobSchedulesByDefinition(
   { drizzle, logger }: DbDeps,
   jobDefinitionId: string,
@@ -82,9 +71,6 @@ export async function getJobSchedulesByDefinition(
   });
 }
 
-/**
- * List all active job schedules
- */
 export async function listActiveJobSchedules({ drizzle, logger }: DbDeps): Promise<JobSchedule[]> {
   logger.debug("Listing active job schedules");
 
@@ -100,9 +86,6 @@ export async function listActiveJobSchedules({ drizzle, logger }: DbDeps): Promi
   return results;
 }
 
-/**
- * Get schedules ready to run
- */
 export async function getSchedulesReadyToRun(
   { drizzle, logger }: DbDeps,
   checkTime: Date = new Date(),
@@ -124,9 +107,6 @@ export async function getSchedulesReadyToRun(
   return results;
 }
 
-/**
- * Update job schedule
- */
 export async function updateJobSchedule(
   { drizzle, logger }: DbDeps,
   id: string,
@@ -155,9 +135,6 @@ export async function updateJobSchedule(
   });
 }
 
-/**
- * Update schedule run times after execution
- */
 export async function updateScheduleRunTime(
   { drizzle, logger }: DbDeps,
   id: string,
@@ -173,25 +150,16 @@ export async function updateScheduleRunTime(
   });
 }
 
-/**
- * Activate job schedule
- */
 export async function activateJobSchedule({ drizzle, logger }: DbDeps, id: string): Promise<JobSchedule> {
   logger.info({ id }, "Activating job schedule");
   return updateJobSchedule({ drizzle, logger }, id, { isActive: true });
 }
 
-/**
- * Deactivate job schedule
- */
 export async function deactivateJobSchedule({ drizzle, logger }: DbDeps, id: string): Promise<JobSchedule> {
   logger.info({ id }, "Deactivating job schedule");
   return updateJobSchedule({ drizzle, logger }, id, { isActive: false });
 }
 
-/**
- * Delete job schedule
- */
 export async function deleteJobSchedule({ drizzle, logger }: DbDeps, id: string): Promise<boolean> {
   logger.info({ id }, "Deleting job schedule");
 

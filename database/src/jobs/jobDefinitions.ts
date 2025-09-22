@@ -3,9 +3,6 @@ import { DbDeps } from "../deps.js";
 import { jobDefinitions } from "../drizzle/jobDefinitions.js";
 import type { JobDefinition, NewJobDefinition } from "../drizzle/jobDefinitions.js";
 
-/**
- * Create a new job definition
- */
 export async function createJobDefinition(
   { drizzle, logger }: DbDeps,
   data: NewJobDefinition,
@@ -13,7 +10,6 @@ export async function createJobDefinition(
   logger.info({ name: data.name, handlerName: data.handlerName }, "Creating job definition");
 
   return drizzle.transaction(async (tx) => {
-    // Check if job definition with this name already exists
     const existing = await tx.query.jobDefinitions.findFirst({
       where: eq(jobDefinitions.name, data.name),
     });
@@ -30,9 +26,6 @@ export async function createJobDefinition(
   });
 }
 
-/**
- * Get job definition by ID
- */
 export async function getJobDefinitionById(
   { drizzle, logger }: DbDeps,
   id: string,
@@ -50,9 +43,6 @@ export async function getJobDefinitionById(
   return result;
 }
 
-/**
- * Get job definition by name
- */
 export async function getJobDefinitionByName(
   { drizzle, logger }: DbDeps,
   name: string,
@@ -64,9 +54,6 @@ export async function getJobDefinitionByName(
   });
 }
 
-/**
- * Get job definition by handler name
- */
 export async function getJobDefinitionByHandler(
   { drizzle, logger }: DbDeps,
   handlerName: string,
@@ -78,9 +65,6 @@ export async function getJobDefinitionByHandler(
   });
 }
 
-/**
- * List all active job definitions
- */
 export async function listActiveJobDefinitions({ drizzle, logger }: DbDeps): Promise<JobDefinition[]> {
   logger.debug("Listing active job definitions");
 
@@ -93,9 +77,6 @@ export async function listActiveJobDefinitions({ drizzle, logger }: DbDeps): Pro
   return results;
 }
 
-/**
- * List job definitions with pagination
- */
 export async function listJobDefinitions(
   { drizzle, logger }: DbDeps,
   options: {
@@ -120,9 +101,6 @@ export async function listJobDefinitions(
   return results;
 }
 
-/**
- * Update job definition
- */
 export async function updateJobDefinition(
   { drizzle, logger }: DbDeps,
   id: string,
@@ -151,17 +129,11 @@ export async function updateJobDefinition(
   });
 }
 
-/**
- * Activate job definition
- */
 export async function activateJobDefinition({ drizzle, logger }: DbDeps, id: string): Promise<JobDefinition> {
   logger.info({ id }, "Activating job definition");
   return updateJobDefinition({ drizzle, logger }, id, { isActive: true });
 }
 
-/**
- * Deactivate job definition
- */
 export async function deactivateJobDefinition(
   { drizzle, logger }: DbDeps,
   id: string,
@@ -170,9 +142,6 @@ export async function deactivateJobDefinition(
   return updateJobDefinition({ drizzle, logger }, id, { isActive: false });
 }
 
-/**
- * Check if job definition exists by name
- */
 export async function jobDefinitionExists({ drizzle, logger }: DbDeps, name: string): Promise<boolean> {
   logger.debug({ name }, "Checking if job definition exists");
 

@@ -151,31 +151,40 @@ export async function getJobLogsSummary(
 > {
   logger.debug({ jobIds }, "Getting job logs summary");
 
-  // This would require a more complex query or multiple queries
-  // For now, implementing a simplified version
-  const summaries = [];
+  if (jobIds.length === 0) {
+    return [];
+  }
 
-  for (const jobId of jobIds) {
-    const logs = await drizzle.query.jobLogs.findMany({
-      where: eq(jobLogs.jobId, jobId),
-      columns: { level: true, createdAt: true },
-    });
+  const allLogs = await drizzle.query.jobLogs.findMany({
+    where: (t, { inArray }) => inArray(t.jobId, jobIds),
+    columns: { jobId: true, level: true, createdAt: true },
+  });
+
+  const logsByJobId = new Map<string, typeof allLogs>();
+  for (const log of allLogs) {
+    const existing = logsByJobId.get(log.jobId) ?? [];
+    existing.push(log);
+    logsByJobId.set(log.jobId, existing);
+  }
+
+  const summaries = jobIds.map((jobId) => {
+    const logs = logsByJobId.get(jobId) ?? [];
 
     const errorCount = logs.filter((log) => log.level === "error").length;
     const warningCount = logs.filter((log) => log.level === "warn").length;
     const lastLogTime =
       logs.length > 0
-        ? logs.reduce((latest, log) => (log.createdAt > latest ? log.createdAt : latest), logs[0]?.createdAt)
+        ? logs.reduce((latest, log) => (log.createdAt > latest ? log.createdAt : latest), logs[0].createdAt)
         : null;
 
-    summaries.push({
+    return {
       jobId,
       totalLogs: logs.length,
       errorCount,
       warningCount,
       lastLogTime,
-    });
-  }
+    };
+  });
 
   return summaries;
 }

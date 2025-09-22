@@ -262,11 +262,11 @@ void describe("Jobs", async () => {
       const pendingJobs = await getPendingJobs(deps, 10);
       const now = new Date();
 
-      pendingJobs.forEach((job) => {
+      for (const job of pendingJobs) {
         if (job.scheduledFor) {
           assert.ok(job.scheduledFor.getTime() <= now.getTime());
         }
-      });
+      }
     });
   });
 

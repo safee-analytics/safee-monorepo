@@ -260,7 +260,7 @@ void describe("Job Definitions", async () => {
 
     void it("filters by isActive when specified", async () => {
       const firstJob = await listJobDefinitions(deps, { limit: 1 });
-      await deactivateJobDefinition(deps, firstJob[0]!.id);
+      await deactivateJobDefinition(deps, firstJob[0].id);
 
       const activeJobs = await listJobDefinitions(deps, { isActive: true });
       const allJobs = await listJobDefinitions(deps);
