@@ -72,7 +72,7 @@ export class SecretsManager {
    * Get multiple secrets at once
    */
   async getSecrets(names: string[]): Promise<Record<string, string | null>> {
-    const results = await Promise.all(names.map(name => this.getSecret(name)));
+    const results = await Promise.all(names.map((name) => this.getSecret(name)));
     const secrets: Record<string, string | null> = {};
 
     for (let i = 0; i < names.length; i++) {
@@ -143,15 +143,11 @@ export async function initializeSecrets(): Promise<void> {
   const requiredSecrets = ["jwt-secret"];
 
   if (ENV === "production") {
-    requiredSecrets.push(
-      "database-url",
-      "azure-storage-account-name",
-      "azure-storage-account-key"
-    );
+    requiredSecrets.push("database-url", "azure-storage-account-name", "azure-storage-account-key");
   }
 
   const secrets = await secretsManager.getSecrets(requiredSecrets);
-  const missing = requiredSecrets.filter(name => !secrets[name]);
+  const missing = requiredSecrets.filter((name) => !secrets[name]);
 
   if (missing.length > 0) {
     throw new Error(`Missing required secrets: ${missing.join(", ")}`);

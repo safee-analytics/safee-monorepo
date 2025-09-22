@@ -50,7 +50,7 @@ void describe("Storage System", async () => {
         const path = "test-with-metadata.txt";
         const metadata: StorageMetadata = {
           contentType: "text/plain",
-          metadata: { userId: "123", category: "test" }
+          metadata: { userId: "123", category: "test" },
         };
 
         const result = await storage.saveFile(path, testData, metadata);
@@ -99,10 +99,7 @@ void describe("Storage System", async () => {
       void it("throws error for non-existent file", async () => {
         const path = "non-existent.txt";
 
-        await assert.rejects(
-          async () => await storage.getFile(path),
-          /File not found: non-existent.txt/
-        );
+        await assert.rejects(async () => await storage.getFile(path), /File not found: non-existent.txt/);
       });
 
       void it("retrieves binary file correctly", async () => {
@@ -197,7 +194,7 @@ void describe("Storage System", async () => {
 
         await assert.rejects(
           async () => await storage.getFileMetadata(path),
-          /File not found: non-existent-metadata.txt/
+          /File not found: non-existent-metadata.txt/,
         );
       });
     });
@@ -210,7 +207,7 @@ void describe("Storage System", async () => {
           { path: "file2.txt", content: "Content 2" },
           { path: "folder/file3.txt", content: "Content 3" },
           { path: "folder/subfolder/file4.txt", content: "Content 4" },
-          { path: "other/file5.txt", content: "Content 5" }
+          { path: "other/file5.txt", content: "Content 5" },
         ];
 
         for (const file of testFiles) {
@@ -222,7 +219,7 @@ void describe("Storage System", async () => {
         const files = await storage.listFiles();
 
         assert.ok(files.length >= 5);
-        const paths = files.map(f => f.key);
+        const paths = files.map((f) => f.key);
         assert.ok(paths.includes("file1.txt"));
         assert.ok(paths.includes("folder/file3.txt"));
         assert.ok(paths.includes("folder/subfolder/file4.txt"));
@@ -232,8 +229,8 @@ void describe("Storage System", async () => {
         const files = await storage.listFiles("folder/");
 
         assert.ok(files.length >= 2);
-        const paths = files.map(f => f.key);
-        assert.ok(paths.every(path => path.startsWith("folder/")));
+        const paths = files.map((f) => f.key);
+        assert.ok(paths.every((path) => path.startsWith("folder/")));
         assert.ok(paths.includes("folder/file3.txt"));
         assert.ok(paths.includes("folder/subfolder/file4.txt"));
       });
@@ -371,7 +368,7 @@ void describe("Storage System", async () => {
 
         await assert.rejects(
           async () => await storage.copyFile(sourcePath, destPath),
-          /Source file not found: non-existent-source.txt/
+          /Source file not found: non-existent-source.txt/,
         );
       });
     });
@@ -383,39 +380,42 @@ void describe("Storage System", async () => {
         const storage = createStorage({
           provider: "filesystem",
           bucket: "test-bucket",
-          localPath: "/tmp"
+          localPath: "/tmp",
         });
 
         assert.ok(storage instanceof FileSystemStorage);
       });
 
       void it("creates AzureBlobStorage with connection string", () => {
-        const mockConnectionString = "DefaultEndpointsProtocol=https;AccountName=test;AccountKey=test123;EndpointSuffix=core.windows.net";
+        const mockConnectionString =
+          "DefaultEndpointsProtocol=https;AccountName=test;AccountKey=test123;EndpointSuffix=core.windows.net";
 
         assert.throws(
-          () => createStorage({
-            provider: "azure",
-            bucket: "test-bucket",
-            connectionString: mockConnectionString
-          }),
+          () =>
+            createStorage({
+              provider: "azure",
+              bucket: "test-bucket",
+              connectionString: mockConnectionString,
+            }),
           // Will throw during Azure client initialization since it's a fake connection string
         );
       });
 
       void it("throws error for Azure without connection string", () => {
         assert.throws(
-          () => createStorage({
-            provider: "azure",
-            bucket: "test-bucket"
-          }),
-          /Azure Blob Storage requires a connection string/
+          () =>
+            createStorage({
+              provider: "azure",
+              bucket: "test-bucket",
+            }),
+          /Azure Blob Storage requires a connection string/,
         );
       });
 
       void it("creates GoogleCloudStorage", () => {
         const storage = createStorage({
           provider: "google",
-          bucket: "test-bucket"
+          bucket: "test-bucket",
         });
 
         // GoogleCloudStorage will be created but may fail during actual operations
@@ -425,11 +425,12 @@ void describe("Storage System", async () => {
 
       void it("throws error for unsupported provider", () => {
         assert.throws(
-          () => createStorage({
-            provider: "unsupported" as "filesystem" | "azure" | "google",
-            bucket: "test-bucket"
-          }),
-          /Unsupported storage provider: unsupported/
+          () =>
+            createStorage({
+              provider: "unsupported" as "filesystem" | "azure" | "google",
+              bucket: "test-bucket",
+            }),
+          /Unsupported storage provider: unsupported/,
         );
       });
     });

@@ -64,7 +64,7 @@ export function getStorageConfig(): StorageConfig {
     provider: useCloud ? (process.env.STORAGE_PROVIDER as "azure" | "gcp") || "azure" : "local",
     bucket: process.env.FILE_UPLOAD_BUCKET || "dev-safee-storage",
     uploadPath: process.env.FILE_UPLOAD_PATH || "uploads",
-    maxFileSize: Number(process.env.MAX_FILE_SIZE) || (10 * 1024 * 1024), // 10MB default
+    maxFileSize: Number(process.env.MAX_FILE_SIZE) || 10 * 1024 * 1024, // 10MB default
     allowedMimeTypes: process.env.ALLOWED_MIME_TYPES?.split(",") || [
       "image/jpeg",
       "image/png",
@@ -72,7 +72,7 @@ export function getStorageConfig(): StorageConfig {
       "application/pdf",
       "text/csv",
       "application/vnd.ms-excel",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ],
   };
 }
@@ -110,16 +110,13 @@ export function getLoggingConfig(): LoggingConfig {
  * Validate required environment variables for current environment
  */
 export function validateEnvironmentConfig(): void {
-  const required = [
-    "DATABASE_URL",
-    "JWT_SECRET"
-  ];
+  const required = ["DATABASE_URL", "JWT_SECRET"];
 
   const production = [
     "AZURE_STORAGE_ACCOUNT_NAME",
     "AZURE_STORAGE_ACCOUNT_KEY",
     "APPLICATION_INSIGHTS_CONNECTION_STRING",
-    "CORS_ORIGIN"
+    "CORS_ORIGIN",
   ];
 
   const missing: string[] = [];

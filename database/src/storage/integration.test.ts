@@ -29,7 +29,7 @@ void describe("Storage Integration Tests", async () => {
       fileSystemStorage = createStorage({
         provider: "filesystem",
         bucket: "test-bucket",
-        localPath: testDir
+        localPath: testDir,
       });
     });
 
@@ -38,7 +38,7 @@ void describe("Storage Integration Tests", async () => {
       const path = "consistency-test.txt";
       const metadata: StorageMetadata = {
         contentType: "text/plain",
-        metadata: { testId: "123" }
+        metadata: { testId: "123" },
       };
 
       // Test with FileSystem storage (the only one we can fully test)
@@ -83,12 +83,13 @@ void describe("Storage Integration Tests", async () => {
       for (let i = 0; i < 20; i++) {
         const path = `concurrent-${i}.txt`;
         operations.push(
-          fileSystemStorage.saveFile(path, testData)
+          fileSystemStorage
+            .saveFile(path, testData)
             .then(() => fileSystemStorage.getFile(path))
             .then((data) => {
               assert.deepStrictEqual(data, testData);
               return fileSystemStorage.deleteFile(path);
-            })
+            }),
         );
       }
 
@@ -124,8 +125,8 @@ void describe("Storage Integration Tests", async () => {
         {
           provider: "filesystem" as const,
           bucket: "factory-test",
-          localPath: testDir
-        }
+          localPath: testDir,
+        },
       ];
 
       for (const config of configs) {
@@ -177,7 +178,7 @@ void describe("Storage Integration Tests", async () => {
       storage = createStorage({
         provider: "filesystem",
         bucket: "use-case-test",
-        localPath: testDir
+        localPath: testDir,
       });
     });
 
@@ -190,8 +191,8 @@ void describe("Storage Integration Tests", async () => {
         metadata: {
           userId: "123",
           uploadDate: "2024-01-15",
-          documentType: "invoice"
-        }
+          documentType: "invoice",
+        },
       };
 
       // Upload document
@@ -223,7 +224,7 @@ void describe("Storage Integration Tests", async () => {
       // List documents for user
       const userDocuments = await storage.listFiles("documents/2024/01/user-123/");
       assert.ok(userDocuments.length >= 1);
-      assert.ok(userDocuments.some(doc => doc.key === documentPath));
+      assert.ok(userDocuments.some((doc) => doc.key === documentPath));
 
       // Cleanup
       await storage.deleteFile(documentPath);
@@ -243,8 +244,8 @@ void describe("Storage Integration Tests", async () => {
           width: "1920",
           height: "1080",
           userId: "456",
-          originalFilename: "vacation-photo.jpg"
-        }
+          originalFilename: "vacation-photo.jpg",
+        },
       };
 
       // Upload original image
@@ -257,8 +258,8 @@ void describe("Storage Integration Tests", async () => {
           width: "150",
           height: "150",
           isThumnail: "true",
-          parentImage: originalPath
-        }
+          parentImage: originalPath,
+        },
       };
       await storage.saveFile(thumbnailPath, thumbnailImage, thumbnailMetadata);
 
@@ -295,11 +296,11 @@ void describe("Storage Integration Tests", async () => {
       }
 
       // Upload all files concurrently
-      const uploadPromises = batchFiles.map(path =>
+      const uploadPromises = batchFiles.map((path) =>
         storage.saveFile(path, batchData, {
           contentType: "text/plain",
-          metadata: { batchId: "batch-001", fileIndex: path.split("-")[1].split(".")[0] }
-        })
+          metadata: { batchId: "batch-001", fileIndex: path.split("-")[1].split(".")[0] },
+        }),
       );
 
       const uploadResults = await Promise.all(uploadPromises);
@@ -310,18 +311,18 @@ void describe("Storage Integration Tests", async () => {
       assert.strictEqual(listedFiles.length, 10);
 
       // Verify all files exist
-      const existsPromises = batchFiles.map(path => storage.fileExists(path));
+      const existsPromises = batchFiles.map((path) => storage.fileExists(path));
       const existsResults = await Promise.all(existsPromises);
-      assert.ok(existsResults.every(exists => exists));
+      assert.ok(existsResults.every((exists) => exists));
 
       // Delete all batch files
-      const deletePromises = batchFiles.map(path => storage.deleteFile(path));
+      const deletePromises = batchFiles.map((path) => storage.deleteFile(path));
       await Promise.all(deletePromises);
 
       // Verify all files are deleted
-      const deletedExistsPromises = batchFiles.map(path => storage.fileExists(path));
+      const deletedExistsPromises = batchFiles.map((path) => storage.fileExists(path));
       const deletedExistsResults = await Promise.all(deletedExistsPromises);
-      assert.ok(deletedExistsResults.every(exists => !exists));
+      assert.ok(deletedExistsResults.every((exists) => !exists));
     });
   });
 
@@ -332,7 +333,7 @@ void describe("Storage Integration Tests", async () => {
       storage = createStorage({
         provider: "filesystem",
         bucket: "error-test",
-        localPath: testDir
+        localPath: testDir,
       });
     });
 
@@ -345,10 +346,7 @@ void describe("Storage Integration Tests", async () => {
       assert.strictEqual(await storage.fileExists(path), true);
 
       // Simulate partial failure by attempting operations on non-existent files
-      await assert.rejects(
-        async () => await storage.getFile("non-existent.txt"),
-        /File not found/
-      );
+      await assert.rejects(async () => await storage.getFile("non-existent.txt"), /File not found/);
 
       // Verify original file is still intact
       const retrievedData = await storage.getFile(path);

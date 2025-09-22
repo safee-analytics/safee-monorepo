@@ -388,4 +388,3 @@ void describe("Job Logs", async () => {
     });
   });
 });
-
