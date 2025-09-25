@@ -129,9 +129,6 @@ export class InMemoryPubSub implements PubSub {
     logger.info("In-memory pub/sub connections closed");
   }
 
-  /**
-   * Create a message handler for a subscription
-   */
   private createMessageHandler(subscription: Subscription) {
     return async (message: PubSubMessage) => {
       logger.debug(
@@ -157,10 +154,6 @@ export class InMemoryPubSub implements PubSub {
     };
   }
 
-  /**
-   * Extract topic name from subscription name
-   * Assumes format: topicName-subscriptionSuffix or just uses subscription as topic
-   */
   private extractTopicFromSubscription(subscription: string): string {
     // Common patterns:
     // - job-queue-worker -> job-queue

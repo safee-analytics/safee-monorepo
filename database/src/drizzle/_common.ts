@@ -30,7 +30,6 @@ export const dealStageEnum = salesSchema.enum("deal_stage", [
   "CLOSED_LOST",
 ]);
 
-// Job system enums
 export const jobStatusEnum = jobsSchema.enum("job_status", [
   "pending",
   "running",
@@ -46,7 +45,6 @@ export const priorityEnum = jobsSchema.enum("priority", ["low", "normal", "high"
 
 export const logLevelEnum = jobsSchema.enum("log_level", ["debug", "info", "warn", "error"]);
 
-// Audit system enums
 export const entityTypeEnum = systemSchema.enum("entity_type", [
   "job",
   "invoice",
@@ -68,6 +66,61 @@ export const actionEnum = systemSchema.enum("action", [
   "retrying",
 ]);
 
+export const permissionActionEnum = identitySchema.enum("permission_action", [
+  "create",
+  "read",
+  "update",
+  "delete",
+  "list",
+  "export",
+  "import",
+  "approve",
+  "reject",
+  "manage",
+]);
+
+export const permissionResourceEnum = identitySchema.enum("permission_resource", [
+  "users",
+  "roles",
+  "permissions",
+  "organizations",
+  "invoices",
+  "accounts",
+  "contacts",
+  "deals",
+  "employees",
+  "payroll",
+  "reports",
+  "settings",
+  "audit",
+]);
+
+export const loginMethodEnum = identitySchema.enum("login_method", ["password", "sso", "mfa"]);
+
+export const revokedReasonEnum = identitySchema.enum("revoked_reason", [
+  "logout",
+  "timeout",
+  "admin",
+  "security",
+  "new_device",
+]);
+
+export const identifierTypeEnum = identitySchema.enum("identifier_type", ["email", "ip"]);
+
+export const eventTypeEnum = identitySchema.enum("event_type", [
+  "login_success",
+  "login_failed",
+  "logout",
+  "password_changed",
+  "session_revoked",
+  "permission_changed",
+  "suspicious_activity",
+  "account_locked",
+  "account_unlocked",
+]);
+
+export const riskLevelEnum = identitySchema.enum("risk_level", ["low", "medium", "high", "critical"]);
+
 export type InvoiceType = (typeof invoiceTypeEnum.enumValues)[number];
 export type ContactType = (typeof contactTypeEnum.enumValues)[number];
 export type DealStage = (typeof dealStageEnum.enumValues)[number];
@@ -78,6 +131,13 @@ export type Priority = (typeof priorityEnum.enumValues)[number];
 export type LogLevel = (typeof logLevelEnum.enumValues)[number];
 export type EntityType = (typeof entityTypeEnum.enumValues)[number];
 export type Action = (typeof actionEnum.enumValues)[number];
+export type PermissionAction = (typeof permissionActionEnum.enumValues)[number];
+export type PermissionResource = (typeof permissionResourceEnum.enumValues)[number];
+export type LoginMethod = (typeof loginMethodEnum.enumValues)[number];
+export type RevokedReason = (typeof revokedReasonEnum.enumValues)[number];
+export type IdentifierType = (typeof identifierTypeEnum.enumValues)[number];
+export type EventType = (typeof eventTypeEnum.enumValues)[number];
+export type RiskLevel = (typeof riskLevelEnum.enumValues)[number];
 
 export const schemas = {
   identity: identitySchema,

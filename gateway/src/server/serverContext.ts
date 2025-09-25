@@ -1,10 +1,13 @@
-import { DrizzleClient, RedisClient } from "@safee/database";
+import { DrizzleClient, RedisClient, Storage, PubSub, JobScheduler } from "@safee/database";
 import { Logger } from "pino";
 
 export interface ServerContext {
   drizzle: DrizzleClient;
   logger: Logger;
   redis: RedisClient;
+  storage: Storage;
+  pubsub: PubSub;
+  scheduler: JobScheduler;
 }
 
 let instance: ServerContext | undefined = undefined;

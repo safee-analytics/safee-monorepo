@@ -1,5 +1,5 @@
 import { pino } from "pino";
-import { connect, redisConnect } from "@safee/database";
+import { connect, redisConnect, getStorage, getDefaultPubSub, JobScheduler } from "@safee/database";
 import { LOG_LEVEL } from "./env.js";
 import { server } from "./server/index.js";
 
@@ -7,7 +7,6 @@ const logger = pino({
   level: LOG_LEVEL,
   base: { app: "gateway" },
   customLevels: { http: 27 },
-  useOnlyCustomLevels: false,
 });
 
 async function main() {
@@ -15,10 +14,23 @@ async function main() {
     const { drizzle, pool } = connect("gateway");
     const redis = await redisConnect();
 
+    // Initialize storage and pubsub
+    const storage = getStorage("safee-storage");
+    const pubsub = getDefaultPubSub();
+
+    // Initialize job scheduler
+    const scheduler = new JobScheduler({
+      pubsub,
+      topics: {
+        jobQueue: "safee-job-queue",
+        jobEvents: "safee-job-events",
+      },
+    });
+
     const apps = [];
 
     apps.push(
-      server({ logger, drizzle, redis, pool }).catch((err: unknown) => {
+      server({ logger, drizzle, redis, pool, storage, pubsub, scheduler }).catch((err: unknown) => {
         logger.error(err);
       }),
     );

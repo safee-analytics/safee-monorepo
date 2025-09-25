@@ -1,5 +1,5 @@
 import { uuid, varchar, timestamp, boolean, index } from "drizzle-orm/pg-core";
-import { identitySchema, userRoleEnum, idpk } from "./_common.js";
+import { identitySchema, idpk } from "./_common.js";
 import { organizations } from "./organizations.js";
 
 export const users = identitySchema.table(
@@ -10,7 +10,6 @@ export const users = identitySchema.table(
     firstName: varchar("first_name", { length: 100 }),
     lastName: varchar("last_name", { length: 100 }),
     passwordHash: varchar("password_hash", { length: 255 }).notNull(),
-    role: userRoleEnum("role").default("EMPLOYEE").notNull(),
     organizationId: uuid("organization_id")
       .references(() => organizations.id)
       .notNull(),
