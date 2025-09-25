@@ -7,7 +7,7 @@ import session from "express-session";
 import { pinoHttp } from "pino-http";
 import type { Logger } from "pino";
 import { ValidateError } from "tsoa";
-import type { RedisClient, DrizzleClient } from "@safee/database";
+import type { RedisClient, DrizzleClient, Storage, PubSub, JobScheduler } from "@safee/database";
 import { SessionStore } from "./SessionStore.js";
 import { RegisterRoutes } from "./routes.js";
 import swaggerDocument from "./swagger.json" with { type: "json" };
@@ -27,6 +27,9 @@ type Dependencies = {
   redis: RedisClient;
   drizzle: DrizzleClient;
   pool: pg.Pool;
+  storage: Storage;
+  pubsub: PubSub;
+  scheduler: JobScheduler;
 };
 
 declare module "express-session" {
@@ -65,7 +68,15 @@ export class ApiError extends Error {
   }
 }
 
-export async function server({ logger, redis, drizzle, pool: _pool }: Dependencies) {
+export async function server({
+  logger,
+  redis,
+  drizzle,
+  pool: _pool,
+  storage,
+  pubsub,
+  scheduler,
+}: Dependencies) {
   logger.info("Configuring Safee Analytics API server");
 
   const app: Application = express();
@@ -87,7 +98,7 @@ export async function server({ logger, redis, drizzle, pool: _pool }: Dependenci
     req.drizzle = drizzle;
     next();
   });
-  initServerContext({ drizzle, logger: logger as unknown as Logger, redis });
+  initServerContext({ drizzle, logger: logger as unknown as Logger, redis, storage, pubsub, scheduler });
 
   app.use(helmet());
 
@@ -201,6 +212,10 @@ export async function server({ logger, redis, drizzle, pool: _pool }: Dependenci
   app.use("*", (_req, res) => {
     res.status(404).json({ error: "Endpoint not found" });
   });
+
+  // Start the job scheduler
+  await scheduler.start({ drizzle, logger: logger as unknown as Logger });
+  logger.info("Job scheduler started");
 
   app.listen(PORT, HOST, () => {
     logger.info("Server listening on %s:%s", HOST, PORT);

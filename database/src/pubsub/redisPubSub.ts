@@ -7,6 +7,7 @@ interface RedisSubscription {
   topic: string;
   handler: (message: PubSubMessage) => Promise<void>;
   client: ReturnType<typeof createClient>;
+  queueClient?: ReturnType<typeof createClient>;
 }
 
 export class RedisPubSub implements PubSub {
@@ -140,6 +141,15 @@ export class RedisPubSub implements PubSub {
       } catch (err) {
         logger.error({ error: err, subscription: name }, "Error closing Redis subscription client");
       }
+
+      if (subscription.queueClient) {
+        try {
+          await subscription.queueClient.quit();
+          logger.debug({ subscription: name }, "Redis queue client closed");
+        } catch (err) {
+          logger.error({ error: err, subscription: name }, "Error closing Redis queue client");
+        }
+      }
     }
 
     this.subscriptions.clear();
@@ -164,21 +174,34 @@ export class RedisPubSub implements PubSub {
   }
 
   private async setupQueueProcessor(subscription: RedisSubscription): Promise<void> {
+    // Create a separate client for queue operations to avoid conflicts with pub/sub
+    const queueClient = createClient({
+      url: this.config.connectionString ?? process.env.REDIS_URL ?? "redis://localhost:6379",
+    });
+
+    queueClient.on("error", (error: Error) => {
+      logger.error({ error, subscription: subscription.name }, "Redis queue client error");
+    });
+
+    await queueClient.connect();
+
     const processQueue = async () => {
       try {
         // Use blocking pop to efficiently wait for messages
-        const result = await subscription.client.brPop(`queue:${subscription.topic}`, 1);
+        const result = await queueClient.brPop(`queue:${subscription.topic}`, 1);
 
         if (result) {
           await this.processMessage(subscription, result.element);
         }
 
-        // Continue processing
-        void setImmediate(() => {
-          void processQueue();
-        });
+        // Continue processing if client is still open
+        if (queueClient.isOpen) {
+          void setImmediate(() => {
+            void processQueue();
+          });
+        }
       } catch (err) {
-        if (subscription.client.isOpen) {
+        if (queueClient.isOpen) {
           logger.error({ error: err, subscription: subscription.name }, "Error processing Redis queue");
           // Retry after a short delay
           void setTimeout(() => {
@@ -192,6 +215,9 @@ export class RedisPubSub implements PubSub {
     void setImmediate(() => {
       void processQueue();
     });
+
+    // Store queue client for cleanup
+    subscription.queueClient = queueClient;
 
     logger.debug(
       { subscription: subscription.name, topic: subscription.topic },

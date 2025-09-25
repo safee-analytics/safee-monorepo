@@ -15,7 +15,7 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "migrate": "tsx -r dotenv/config src/private/migrate.ts",
+    "migrate": "npx drizzle-kit migrate",
     "postmigrate": "tsx -r dotenv/config src/private/postmigrate.ts",
     "bumpMigrations": "tsx -r dotenv/config src/private/bumpMigrations.ts",
     "generate-migration": "tsx -r dotenv/config src/private/generate-migration.ts",

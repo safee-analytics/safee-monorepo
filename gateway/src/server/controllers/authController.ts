@@ -1,4 +1,5 @@
-import { Controller, Post, Route, Tags, Body, Security, NoSecurity, SuccessResponse } from "tsoa";
+import { Controller, Post, Route, Tags, Body, Security, NoSecurity, SuccessResponse, Request } from "tsoa";
+import type { Request as ExpressRequest } from "express";
 import { getServerContext, type ServerContext } from "../serverContext.js";
 import { Unauthorized } from "../errors.js";
 import {
@@ -6,7 +7,9 @@ import {
   createUserWithOrganization,
   getUserRoleStrings,
   getUserPermissionStrings,
+  sessionService,
 } from "@safee/database";
+import { extractDeviceName } from "../utils/deviceUtils.js";
 import { jwtService } from "../services/jwt.js";
 import { passwordService } from "../services/password.js";
 
@@ -19,6 +22,7 @@ interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
+  sessionId: string;
   user: {
     id: string;
     email: string;
@@ -54,16 +58,61 @@ export class AuthController extends Controller {
   @Post("login")
   @NoSecurity()
   @SuccessResponse("200", "Login successful")
-  public async login(@Body() request: LoginRequest): Promise<LoginResponse> {
+  public async login(@Body() request: LoginRequest, @Request() req: ExpressRequest): Promise<LoginResponse> {
+    const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
+    const ipAddress = req.ip || req.connection?.remoteAddress || "unknown";
+    const userAgent = req.get("User-Agent") || "unknown";
+
     try {
+      // Log login attempt (will be marked as success/failure later)
+      await sessionService.logLoginAttempt(deps, {
+        identifier: request.email,
+        identifierType: "email",
+        ipAddress,
+        userAgent,
+        success: false, // Will update this if successful
+      });
+
+      // Check rate limiting
+      const recentFailedAttempts = await sessionService.getRecentFailedAttempts(deps, request.email);
+      if (recentFailedAttempts >= 5) {
+        await sessionService.logSecurityEvent(deps, {
+          organizationId: "unknown",
+          eventType: "account_locked",
+          ipAddress,
+          userAgent,
+          success: false,
+          riskLevel: "high",
+          metadata: { reason: "too_many_failed_attempts", attempts: recentFailedAttempts },
+        });
+        throw new Unauthorized("Account temporarily locked due to too many failed attempts");
+      }
+
       // Get user by email
       const user = await getUserByEmail(this.context, request.email);
 
       if (!user) {
+        await sessionService.logLoginAttempt(deps, {
+          identifier: request.email,
+          identifierType: "email",
+          ipAddress,
+          userAgent,
+          success: false,
+          failureReason: "invalid_email",
+        });
         throw new Unauthorized("Invalid email or password");
       }
 
       if (!user.isActive) {
+        await sessionService.logLoginAttempt(deps, {
+          identifier: request.email,
+          identifierType: "email",
+          userId: user.id,
+          ipAddress,
+          userAgent,
+          success: false,
+          failureReason: "account_deactivated",
+        });
         throw new Unauthorized("Account is deactivated");
       }
 
@@ -71,30 +120,84 @@ export class AuthController extends Controller {
       const isValidPassword = await passwordService.verifyPassword(request.password, user.passwordHash);
 
       if (!isValidPassword) {
+        await sessionService.logLoginAttempt(deps, {
+          identifier: request.email,
+          identifierType: "email",
+          userId: user.id,
+          ipAddress,
+          userAgent,
+          success: false,
+          failureReason: "invalid_password",
+        });
         throw new Unauthorized("Invalid email or password");
       }
+
+      // Create device fingerprint (simple version)
+      const deviceFingerprint = `${userAgent}-${ipAddress}`.replace(/[^a-zA-Z0-9-]/g, "").substring(0, 50);
+
+      // Create user session
+      const session = await sessionService.createSession(deps, {
+        userId: user.id,
+        deviceFingerprint,
+        deviceName: extractDeviceName(userAgent),
+        ipAddress,
+        userAgent,
+        loginMethod: "password",
+        expiresIn: 24 * 60, // 24 hours
+      });
+
+      // Log successful login attempt
+      await sessionService.logLoginAttempt(deps, {
+        identifier: request.email,
+        identifierType: "email",
+        userId: user.id,
+        ipAddress,
+        userAgent,
+        success: true,
+      });
+
+      // Log security event
+      await sessionService.logSecurityEvent(deps, {
+        userId: user.id,
+        organizationId: user.organizationId,
+        eventType: "login_success",
+        ipAddress,
+        userAgent,
+        success: true,
+        riskLevel: "low",
+      });
 
       // Get user roles and permissions
       const roles = await getUserRoleStrings(this.context, user.id);
       const permissions = await getUserPermissionStrings(this.context, user.id);
 
-      // Generate tokens
+      // Generate tokens (include sessionId in payload)
       const tokenPayload = {
         userId: user.id,
         organizationId: user.organizationId,
         email: user.email,
+        sessionId: session.id,
         roles,
         permissions,
       };
 
       const tokens = await jwtService.generateTokenPair(tokenPayload);
 
-      this.context.logger.info({ userId: user.id, email: user.email }, "User logged in successfully");
+      this.context.logger.info(
+        {
+          userId: user.id,
+          email: user.email,
+          sessionId: session.id,
+          deviceFingerprint,
+        },
+        "User logged in successfully",
+      );
 
       return {
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken,
         expiresIn: tokens.expiresIn,
+        sessionId: session.id,
         user: {
           id: user.id,
           email: user.email,
@@ -106,10 +209,15 @@ export class AuthController extends Controller {
         },
       };
     } catch (error) {
-      this.context.logger.error({ error, email: request.email }, "Login failed");
+      this.context.logger.error({ error, email: request.email, ipAddress }, "Login failed");
 
       if (error instanceof Error && error.message.includes("Invalid")) {
         this.setStatus(401);
+        throw error;
+      }
+
+      if (error instanceof Error && error.message.includes("locked")) {
+        this.setStatus(429);
         throw error;
       }
 
@@ -176,6 +284,7 @@ export class AuthController extends Controller {
         accessToken: tokens.accessToken,
         refreshToken: tokens.refreshToken,
         expiresIn: tokens.expiresIn,
+        sessionId: "registration-session", // For consistency, though registration doesn't create a full session
         user: {
           id: result.user.id,
           email: result.user.email,
@@ -212,17 +321,49 @@ export class AuthController extends Controller {
   @Post("logout")
   @Security("jwt")
   @SuccessResponse("200", "Logout successful")
-  public async logout(): Promise<{ message: string }> {
-    // In a stateless JWT system, logout is handled on the client side
-    // However, for security, you might want to:
-    // 1. Add the token to a blacklist (Redis)
-    // 2. Clear any server-side sessions
-    // 3. Log the logout event
+  public async logout(@Request() req: ExpressRequest): Promise<{ message: string }> {
+    const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
+    const ipAddress = req.ip || req.socket?.remoteAddress || "unknown";
+    const userAgent = req.get("User-Agent") || "unknown";
 
-    this.context.logger.info("User logged out successfully");
+    try {
+      // Extract user info from JWT (this would be set by auth middleware)
+      const userId = req.user?.userId;
+      const sessionId = req.user?.sessionId;
+      const organizationId = req.user?.organizationId;
 
-    return {
-      message: "Logged out successfully",
-    };
+      if (sessionId) {
+        // Revoke the session
+        await sessionService.revokeSession(deps, sessionId, "logout");
+
+        // Log security event
+        if (userId && organizationId) {
+          await sessionService.logSecurityEvent(deps, {
+            userId,
+            organizationId,
+            eventType: "logout",
+            ipAddress,
+            userAgent,
+            success: true,
+            riskLevel: "low",
+          });
+        }
+
+        this.context.logger.info({ userId, sessionId }, "User logged out successfully");
+      } else {
+        this.context.logger.warn("Logout attempted without valid session");
+      }
+
+      return {
+        message: "Logged out successfully",
+      };
+    } catch (error) {
+      this.context.logger.error({ error }, "Logout failed");
+
+      // Still return success for security - don't reveal internal errors
+      return {
+        message: "Logged out successfully",
+      };
+    }
   }
 }

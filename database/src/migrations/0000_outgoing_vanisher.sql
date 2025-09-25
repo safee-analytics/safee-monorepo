@@ -16,11 +16,18 @@ CREATE TYPE "system"."action" AS ENUM('created', 'updated', 'deleted', 'complete
 CREATE TYPE "sales"."contact_type" AS ENUM('LEAD', 'PROSPECT', 'CUSTOMER', 'SUPPLIER');
 CREATE TYPE "sales"."deal_stage" AS ENUM('LEAD', 'QUALIFIED', 'PROPOSAL', 'NEGOTIATION', 'CLOSED_WON', 'CLOSED_LOST');
 CREATE TYPE "system"."entity_type" AS ENUM('job', 'invoice', 'user', 'organization', 'employee', 'contact', 'deal');
+CREATE TYPE "identity"."event_type" AS ENUM('login_success', 'login_failed', 'logout', 'password_changed', 'session_revoked', 'permission_changed', 'suspicious_activity', 'account_locked', 'account_unlocked');
+CREATE TYPE "identity"."identifier_type" AS ENUM('email', 'ip');
 CREATE TYPE "finance"."invoice_type" AS ENUM('SALES', 'PURCHASE');
 CREATE TYPE "jobs"."job_status" AS ENUM('pending', 'running', 'completed', 'failed', 'cancelled', 'retrying');
 CREATE TYPE "jobs"."job_type" AS ENUM('cron', 'scheduled', 'immediate', 'recurring');
 CREATE TYPE "jobs"."log_level" AS ENUM('debug', 'info', 'warn', 'error');
+CREATE TYPE "identity"."login_method" AS ENUM('password', 'sso', 'mfa');
+CREATE TYPE "identity"."permission_action" AS ENUM('create', 'read', 'update', 'delete', 'list', 'export', 'import', 'approve', 'reject', 'manage');
+CREATE TYPE "identity"."permission_resource" AS ENUM('users', 'roles', 'permissions', 'organizations', 'invoices', 'accounts', 'contacts', 'deals', 'employees', 'payroll', 'reports', 'settings', 'audit');
 CREATE TYPE "jobs"."priority" AS ENUM('low', 'normal', 'high', 'critical');
+CREATE TYPE "identity"."revoked_reason" AS ENUM('logout', 'timeout', 'admin', 'security', 'new_device');
+CREATE TYPE "identity"."risk_level" AS ENUM('low', 'medium', 'high', 'critical');
 CREATE TYPE "identity"."user_role" AS ENUM('ADMIN', 'MANAGER', 'EMPLOYEE', 'ACCOUNTANT');
 CREATE TABLE "identity"."organizations" (
 	"id" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
@@ -38,7 +45,6 @@ CREATE TABLE "identity"."users" (
 	"first_name" varchar(100),
 	"last_name" varchar(100),
 	"password_hash" varchar(255) NOT NULL,
-	"role" "identity"."user_role" DEFAULT 'EMPLOYEE' NOT NULL,
 	"organization_id" uuid NOT NULL,
 	"is_active" boolean DEFAULT true NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
@@ -211,6 +217,94 @@ CREATE TABLE "system"."audit_events" (
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 
+CREATE TABLE "identity"."roles" (
+	"id" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
+	"name" varchar(50) NOT NULL,
+	"slug" varchar(50) NOT NULL,
+	"description" text,
+	"is_system_role" boolean DEFAULT false NOT NULL,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "roles_name_unique" UNIQUE("name"),
+	CONSTRAINT "roles_slug_unique" UNIQUE("slug")
+);
+
+CREATE TABLE "identity"."permissions" (
+	"id" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
+	"name" varchar(100) NOT NULL,
+	"slug" varchar(100) NOT NULL,
+	"description" text,
+	"resource" "identity"."permission_resource" NOT NULL,
+	"action" "identity"."permission_action" NOT NULL,
+	"is_system_permission" boolean DEFAULT false NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "permissions_name_unique" UNIQUE("name"),
+	CONSTRAINT "permissions_slug_unique" UNIQUE("slug")
+);
+
+CREATE TABLE "identity"."role_permissions" (
+	"role_id" uuid NOT NULL,
+	"permission_id" uuid NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "role_permissions_role_id_permission_id_pk" PRIMARY KEY("role_id","permission_id")
+);
+
+CREATE TABLE "identity"."user_roles" (
+	"user_id" uuid NOT NULL,
+	"role_id" uuid NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "user_roles_user_id_role_id_pk" PRIMARY KEY("user_id","role_id")
+);
+
+CREATE TABLE "user_sessions" (
+	"id" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"device_fingerprint" text NOT NULL,
+	"device_name" text,
+	"ip_address" text NOT NULL,
+	"user_agent" text NOT NULL,
+	"location" text,
+	"login_method" "identity"."login_method" DEFAULT 'password' NOT NULL,
+	"is_active" boolean DEFAULT true NOT NULL,
+	"last_activity" timestamp DEFAULT now() NOT NULL,
+	"expires_at" timestamp NOT NULL,
+	"revoked_at" timestamp,
+	"revoked_reason" "identity"."revoked_reason",
+	"created_at" timestamp DEFAULT now() NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL
+);
+
+CREATE TABLE "login_attempts" (
+	"id" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
+	"identifier" text NOT NULL,
+	"identifier_type" "identity"."identifier_type" NOT NULL,
+	"user_id" uuid,
+	"ip_address" text NOT NULL,
+	"user_agent" text NOT NULL,
+	"success" boolean NOT NULL,
+	"failure_reason" text,
+	"risk_score" integer DEFAULT 0,
+	"attempted_at" timestamp DEFAULT now() NOT NULL
+);
+
+CREATE TABLE "security_events" (
+	"id" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
+	"user_id" uuid,
+	"organization_id" uuid NOT NULL,
+	"event_type" "identity"."event_type" NOT NULL,
+	"resource" text,
+	"action" text,
+	"ip_address" text NOT NULL,
+	"user_agent" text NOT NULL,
+	"location" text,
+	"risk_level" "identity"."risk_level" DEFAULT 'low' NOT NULL,
+	"success" boolean NOT NULL,
+	"metadata" text,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+
 ALTER TABLE "identity"."users" ADD CONSTRAINT "users_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "identity"."organizations"("id") ON DELETE no action ON UPDATE no action;
 ALTER TABLE "sales"."contacts" ADD CONSTRAINT "contacts_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "identity"."organizations"("id") ON DELETE no action ON UPDATE no action;
 ALTER TABLE "sales"."deals" ADD CONSTRAINT "deals_contact_id_contacts_id_fk" FOREIGN KEY ("contact_id") REFERENCES "sales"."contacts"("id") ON DELETE no action ON UPDATE no action;
@@ -230,6 +324,14 @@ ALTER TABLE "jobs"."jobs" ADD CONSTRAINT "jobs_organization_id_organizations_id_
 ALTER TABLE "jobs"."job_logs" ADD CONSTRAINT "job_logs_job_id_jobs_id_fk" FOREIGN KEY ("job_id") REFERENCES "jobs"."jobs"("id") ON DELETE cascade ON UPDATE no action;
 ALTER TABLE "system"."audit_events" ADD CONSTRAINT "audit_events_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "identity"."organizations"("id") ON DELETE no action ON UPDATE no action;
 ALTER TABLE "system"."audit_events" ADD CONSTRAINT "audit_events_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "identity"."users"("id") ON DELETE no action ON UPDATE no action;
+ALTER TABLE "identity"."role_permissions" ADD CONSTRAINT "role_permissions_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "identity"."roles"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "identity"."role_permissions" ADD CONSTRAINT "role_permissions_permission_id_permissions_id_fk" FOREIGN KEY ("permission_id") REFERENCES "identity"."permissions"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "identity"."user_roles" ADD CONSTRAINT "user_roles_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "identity"."users"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "identity"."user_roles" ADD CONSTRAINT "user_roles_role_id_roles_id_fk" FOREIGN KEY ("role_id") REFERENCES "identity"."roles"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "user_sessions" ADD CONSTRAINT "user_sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "identity"."users"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "login_attempts" ADD CONSTRAINT "login_attempts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "identity"."users"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "security_events" ADD CONSTRAINT "security_events_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "identity"."users"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "security_events" ADD CONSTRAINT "security_events_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "identity"."organizations"("id") ON DELETE cascade ON UPDATE no action;
 CREATE INDEX "users_organization_id_idx" ON "identity"."users" USING btree ("organization_id");
 CREATE INDEX "users_is_active_idx" ON "identity"."users" USING btree ("is_active");
 CREATE INDEX "deals_organization_id_idx" ON "sales"."deals" USING btree ("organization_id");

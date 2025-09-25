@@ -39,13 +39,11 @@ export async function createUser(deps: DbDeps, userData: CreateUserData): Promis
   const { drizzle, logger } = deps;
 
   try {
-    // Check if user already exists
     const existingUser = await getUserByEmail(deps, userData.email);
     if (existingUser) {
       throw new Error("User with this email already exists");
     }
 
-    // Insert user
     const [newUser] = await drizzle
       .insert(users)
       .values({
@@ -73,16 +71,13 @@ export async function createUserWithOrganization(
   const { drizzle, logger } = deps;
 
   try {
-    // Check if user already exists
     const existingUser = await getUserByEmail(deps, userData.email);
     if (existingUser) {
       throw new Error("User with this email already exists");
     }
 
-    // Create organization slug
     const slug = generateSlug(userData.organizationName);
 
-    // Check if organization slug already exists
     const existingOrg = await drizzle
       .select()
       .from(organizations)
@@ -93,9 +88,7 @@ export async function createUserWithOrganization(
       throw new Error("Organization with this name already exists");
     }
 
-    // Create organization and user in a transaction
     const result = await drizzle.transaction(async (tx) => {
-      // Create organization
       const [newOrg] = await tx
         .insert(organizations)
         .values({
@@ -104,7 +97,6 @@ export async function createUserWithOrganization(
         })
         .returning();
 
-      // Create user as admin of the organization
       const [newUser] = await tx
         .insert(users)
         .values({
