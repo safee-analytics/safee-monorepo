@@ -284,7 +284,7 @@ clean-gateway:
 
 # Build tests package
 [group('tests')]
-build-tests:
+build-tests: build-gateway
     npm -w tests run build
 
 # Typecheck tests package

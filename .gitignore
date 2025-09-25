@@ -37,6 +37,10 @@ node_modules/
 build/
 dist/
 
+# TSOA Generated Files
+**/routes.ts
+**/swagger.json
+
 # Coverage
 .coverage
 credentials/
