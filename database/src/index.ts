@@ -30,3 +30,6 @@ export * from "./jobs/index.js";
 
 // Job Scheduler
 export * from "./scheduler/jobScheduler.js";
+
+// Users
+export * from "./users/index.js";

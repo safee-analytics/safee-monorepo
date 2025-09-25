@@ -37,6 +37,15 @@ export interface LoggingConfig {
   enableQueryLogging: boolean;
 }
 
+export interface AuthConfig {
+  enableAuthentication: boolean;
+  jwtSecret: string;
+  jwtExpiresIn: string;
+  jwtRefreshExpiresIn: string;
+  bcryptRounds: number;
+  enablePasswordValidation: boolean;
+}
+
 /**
  * Get environment-specific security configuration
  */
@@ -107,10 +116,33 @@ export function getLoggingConfig(): LoggingConfig {
 }
 
 /**
+ * Get environment-specific authentication configuration
+ */
+export function getAuthConfig(): AuthConfig {
+  const isProduction = ENV === "production";
+  const _isDevelopment = ENV === "local" || ENV === "development";
+
+  return {
+    enableAuthentication: process.env.ENABLE_AUTH?.toLowerCase() !== "false" && isProduction,
+    jwtSecret: process.env.JWT_SECRET || "dev-secret-key-please-change-in-production",
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN || "1h",
+    jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
+    bcryptRounds: Number(process.env.BCRYPT_ROUNDS) || (isProduction ? 12 : 8),
+    enablePasswordValidation: process.env.ENABLE_PASSWORD_VALIDATION?.toLowerCase() !== "false",
+  };
+}
+
+/**
  * Validate required environment variables for current environment
  */
 export function validateEnvironmentConfig(): void {
-  const required = ["DATABASE_URL", "JWT_SECRET"];
+  const authConfig = getAuthConfig();
+  const required = ["DATABASE_URL"];
+
+  // Only require JWT_SECRET if authentication is enabled
+  if (authConfig.enableAuthentication) {
+    required.push("JWT_SECRET");
+  }
 
   const production = [
     "AZURE_STORAGE_ACCOUNT_NAME",
@@ -141,8 +173,8 @@ export function validateEnvironmentConfig(): void {
     throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
   }
 
-  // Validate JWT secret length
-  if (process.env.JWT_SECRET && process.env.JWT_SECRET.length < 32) {
+  // Validate JWT secret length only if authentication is enabled and JWT_SECRET is provided
+  if (authConfig.enableAuthentication && process.env.JWT_SECRET && process.env.JWT_SECRET.length < 32) {
     throw new Error("JWT_SECRET must be at least 32 characters long");
   }
 }

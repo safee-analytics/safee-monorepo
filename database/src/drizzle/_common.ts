@@ -68,6 +68,37 @@ export const actionEnum = systemSchema.enum("action", [
   "retrying",
 ]);
 
+// Permission action enum
+export const permissionActionEnum = identitySchema.enum("permission_action", [
+  "create",
+  "read",
+  "update",
+  "delete",
+  "list",
+  "export",
+  "import",
+  "approve",
+  "reject",
+  "manage",
+]);
+
+// Permission resource enum
+export const permissionResourceEnum = identitySchema.enum("permission_resource", [
+  "users",
+  "roles",
+  "permissions",
+  "organizations",
+  "invoices",
+  "accounts",
+  "contacts",
+  "deals",
+  "employees",
+  "payroll",
+  "reports",
+  "settings",
+  "audit",
+]);
+
 export type InvoiceType = (typeof invoiceTypeEnum.enumValues)[number];
 export type ContactType = (typeof contactTypeEnum.enumValues)[number];
 export type DealStage = (typeof dealStageEnum.enumValues)[number];
@@ -78,6 +109,8 @@ export type Priority = (typeof priorityEnum.enumValues)[number];
 export type LogLevel = (typeof logLevelEnum.enumValues)[number];
 export type EntityType = (typeof entityTypeEnum.enumValues)[number];
 export type Action = (typeof actionEnum.enumValues)[number];
+export type PermissionAction = (typeof permissionActionEnum.enumValues)[number];
+export type PermissionResource = (typeof permissionResourceEnum.enumValues)[number];
 
 export const schemas = {
   identity: identitySchema,

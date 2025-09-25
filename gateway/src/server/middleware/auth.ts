@@ -1,11 +1,13 @@
 import { Request as ExRequest } from "express";
-import jwt from "jsonwebtoken";
+import { jwtService, type JwtPayload } from "../services/jwt.js";
+import { getServerContext } from "../serverContext.js";
 
 export interface AuthenticatedRequest extends ExRequest {
   user?: {
-    id: string;
+    userId: string;
     email: string;
-    role: string;
+    roles: string[];
+    permissions: string[];
     organizationId: string;
   };
 }
@@ -13,32 +15,124 @@ export interface AuthenticatedRequest extends ExRequest {
 export function expressAuthentication(
   request: ExRequest,
   securityName: string,
-  _scopes?: string[],
-): Promise<unknown> {
+  scopes?: string[],
+): Promise<JwtPayload> {
   if (securityName === "jwt") {
-    const token = request.headers.authorization?.replace("Bearer ", "");
+    const context = getServerContext();
+
+    // Check if authentication is disabled (development mode)
+    if (!jwtService.isAuthEnabled()) {
+      context.logger.debug("🚨 Authentication bypassed - Development mode");
+
+      // Return mock user for development
+      const mockUser: JwtPayload = {
+        userId: "dev-user-id",
+        organizationId: "dev-org-id",
+        email: "dev@example.com",
+        roles: ["admin"],
+        permissions: ["*"],
+      };
+
+      // Attach mock user to request
+      (request as AuthenticatedRequest).user = {
+        userId: mockUser.userId,
+        email: mockUser.email,
+        roles: mockUser.roles,
+        permissions: mockUser.permissions,
+        organizationId: mockUser.organizationId,
+      };
+
+      return Promise.resolve(mockUser);
+    }
+
+    const token = jwtService.extractTokenFromHeader(request.headers.authorization);
 
     if (!token) {
+      context.logger.warn("Authentication failed - No token provided");
       return Promise.reject(new Error("No token provided"));
     }
 
-    return new Promise((resolve, reject) => {
-      if (!process.env.JWT_SECRET) {
-        reject(new Error("JWT_SECRET not configured"));
-        return;
-      }
+    return jwtService
+      .verifyAccessToken(token)
+      .then((decoded) => {
+        if (scopes && scopes.length > 0) {
+          const hasPermission = scopes.some(
+            (scope) =>
+              decoded.permissions.includes("*") ||
+              decoded.permissions.includes(scope) ||
+              decoded.permissions.some(
+                (permission) => permission.endsWith("*") && scope.startsWith(permission.slice(0, -1)),
+              ),
+          );
 
-      jwt.verify(token, process.env.JWT_SECRET as string, (err: unknown, decoded: unknown) => {
-        if (err) {
-          reject(err);
-        } else {
-          // Attach user to request
-          (request as AuthenticatedRequest).user = decoded as AuthenticatedRequest["user"];
-          resolve(decoded);
+          if (!hasPermission) {
+            context.logger.warn(
+              {
+                userId: decoded.userId,
+                requiredScopes: scopes,
+                userPermissions: decoded.permissions,
+              },
+              "Authorization failed - Insufficient permissions",
+            );
+
+            return Promise.reject(new Error("Insufficient permissions"));
+          }
         }
+
+        (request as AuthenticatedRequest).user = {
+          userId: decoded.userId,
+          email: decoded.email,
+          roles: decoded.roles,
+          permissions: decoded.permissions,
+          organizationId: decoded.organizationId,
+        };
+
+        context.logger.debug({ userId: decoded.userId }, "Authentication successful");
+
+        return decoded;
+      })
+      .catch((error) => {
+        context.logger.warn({ error: error.message }, "Authentication failed");
+        return Promise.reject(error);
       });
-    });
   }
 
   return Promise.reject(new Error("Unknown security name"));
+}
+
+export function requirePermissions(permissions: string[]) {
+  return (request: AuthenticatedRequest): boolean => {
+    if (!jwtService.isAuthEnabled()) {
+      return true; // Allow everything in development mode
+    }
+
+    const user = request.user;
+    if (!user) {
+      return false;
+    }
+
+    return permissions.some(
+      (permission) =>
+        user.permissions.includes("*") ||
+        user.permissions.includes(permission) ||
+        user.permissions.some(
+          (userPerm) => userPerm.endsWith("*") && permission.startsWith(userPerm.slice(0, -1)),
+        ),
+    );
+  };
+}
+
+export function requireRoles(roles: string[]) {
+  return (request: AuthenticatedRequest): boolean => {
+    if (!jwtService.isAuthEnabled()) {
+      return true; // Allow everything in development mode
+    }
+
+    const user = request.user;
+    if (!user) {
+      return false;
+    }
+
+    return roles.some((role) => user.roles.includes(role.toLowerCase()));
+  };
 }
