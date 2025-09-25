@@ -1,0 +1,33 @@
+# Generated files by TSOA
+src/server/routes.ts
+src/server/swagger.json
+
+# Build outputs
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Cache files
+.eslintcache
+*.tsbuildinfo
+
+# Coverage reports
+coverage/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.staging
+
+# Logs
+*.log
+npm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
