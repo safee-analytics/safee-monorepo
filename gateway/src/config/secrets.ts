@@ -25,6 +25,7 @@ export class SecretsManager {
         const credential = new DefaultAzureCredential();
         this.client = new SecretClient(process.env.AZURE_KEY_VAULT_URL, credential);
       } catch (error) {
+        // eslint-disable-next-line no-console -- Acceptable for Azure Key Vault initialization errors
         console.warn("Failed to initialize Azure Key Vault client:", error);
       }
     }
@@ -48,6 +49,7 @@ export class SecretsManager {
         const secret = await this.client.getSecret(name);
         value = secret.value || null;
       } catch (error) {
+        // eslint-disable-next-line no-console -- Acceptable for secret retrieval errors
         console.warn(`Failed to retrieve secret "${name}" from Key Vault:`, error);
       }
     }
@@ -153,5 +155,6 @@ export async function initializeSecrets(): Promise<void> {
     throw new Error(`Missing required secrets: ${missing.join(", ")}`);
   }
 
+  // eslint-disable-next-line no-console -- Acceptable for initialization success logging
   console.log("✅ Secrets manager initialized successfully");
 }

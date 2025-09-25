@@ -11,6 +11,10 @@
 task-manager.sh
 **/test-bucket/
 
+# TSOA generated files (auto-generated during build)
+**/routes.ts
+**/swagger.json
+
 # Documentation (keep as working files, not in version control)
 *.md
 *.md.bak
