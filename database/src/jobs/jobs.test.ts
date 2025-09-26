@@ -223,7 +223,6 @@ void describe("Jobs", async () => {
         maxRetries: 3,
       });
 
-      // Create jobs with different priorities
       await createJob(deps, {
         jobDefinitionId: testJobDefinition.id,
         type: "immediate" as const,
@@ -248,7 +247,6 @@ void describe("Jobs", async () => {
       const pendingJobs = await getPendingJobs(deps, 10);
 
       assert.ok(pendingJobs.length >= 2);
-      // High priority should come first
       const priorities = pendingJobs.map((job) => job.priority);
       assert.strictEqual(priorities[0], "high");
     });
@@ -330,7 +328,6 @@ void describe("Jobs", async () => {
         maxRetries: 3,
       });
 
-      // Create jobs with different statuses
       const job1 = await createJob(deps, {
         jobDefinitionId: testJobDefinition.id,
         type: "immediate" as const,

@@ -2,7 +2,7 @@ import { describe, it } from "node:test";
 import assert from "node:assert";
 import { getTimeWindows } from "./getTimeWindows.js";
 
-// small wrapper for new date for test readability
+
 function createUtcDate({
   year,
   month,
@@ -42,11 +42,11 @@ await describe("getTimeWindows", async () => {
       lastWindow: createUtcDate({ ...baseDate, second: 0 }),
       nextWindow: createUtcDate({ ...baseDate, second: 0, minute: 2 }),
     };
-    // these two should have the same expected windows because they're within the same window time frame
+
     assert.deepStrictEqual(result1, expectedWindows);
     assert.deepStrictEqual(result2, expectedWindows);
 
-    // this one should be in the next window
+
     assert.deepStrictEqual(result3.lastWindow, expectedWindows.nextWindow);
   });
 });

@@ -21,6 +21,5 @@ export const jobLogs = jobsSchema.table(
   ],
 );
 
-// Types
 export type JobLog = typeof jobLogs.$inferSelect;
 export type NewJobLog = typeof jobLogs.$inferInsert;

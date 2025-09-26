@@ -202,9 +202,9 @@ export async function getUserById(deps: DbDeps, id: string): Promise<UserWithOrg
 function generateSlug(name: string): string {
   return name
     .toLowerCase()
-    .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
-    .replace(/\s+/g, "-") // Replace spaces with hyphens
-    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
     .trim()
-    .slice(0, 50); // Limit to 50 characters
+    .slice(0, 50);
 }

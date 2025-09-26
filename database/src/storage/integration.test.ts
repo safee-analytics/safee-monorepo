@@ -17,9 +17,7 @@ void describe("Storage Integration Tests", async () => {
   after(async () => {
     try {
       await rmdir(testDir, { recursive: true });
-    } catch {
-      // Ignore cleanup errors
-    }
+    } catch {}
   });
 
   void describe("Cross-Provider Consistency", async () => {
@@ -41,7 +39,6 @@ void describe("Storage Integration Tests", async () => {
         metadata: { testId: "123" },
       };
 
-      // Test with FileSystem storage (the only one we can fully test)
       const saveResult = await fileSystemStorage.saveFile(path, testData, metadata);
       assert.strictEqual(saveResult.key, path);
       assert.strictEqual(saveResult.size, testData.length);
@@ -79,7 +76,6 @@ void describe("Storage Integration Tests", async () => {
       const operations = [];
       const testData = Buffer.from("Concurrent data");
 
-      // Create multiple concurrent operations
       for (let i = 0; i < 20; i++) {
         const path = `concurrent-${i}.txt`;
         operations.push(
@@ -100,7 +96,6 @@ void describe("Storage Integration Tests", async () => {
       const originalData = Buffer.from("Original file content for integrity test");
       const path = "integrity-test.txt";
 
-      // Save, read, and verify multiple times
       for (let i = 0; i < 5; i++) {
         await fileSystemStorage.saveFile(path, originalData);
 
@@ -110,7 +105,6 @@ void describe("Storage Integration Tests", async () => {
         const metadata = await fileSystemStorage.getFileMetadata(path);
         assert.strictEqual(metadata.size, originalData.length);
 
-        // Verify the file still exists
         const exists = await fileSystemStorage.fileExists(path);
         assert.strictEqual(exists, true);
       }
@@ -145,7 +139,6 @@ void describe("Storage Integration Tests", async () => {
     });
 
     void it("getStorage returns appropriate storage for environment", async () => {
-      // Test with local environment
       const originalEnv = process.env.ENV;
       process.env.ENV = "local";
 
@@ -153,7 +146,6 @@ void describe("Storage Integration Tests", async () => {
       const testData = Buffer.from("Environment test data");
       const path = "env-test.txt";
 
-      // Should work with FileSystemStorage in local environment
       const result = await localStorage.saveFile(path, testData);
       assert.strictEqual(result.key, path);
 
@@ -162,7 +154,6 @@ void describe("Storage Integration Tests", async () => {
 
       await localStorage.deleteFile(path);
 
-      // Restore environment
       if (originalEnv !== undefined) {
         process.env.ENV = originalEnv;
       } else {
@@ -183,7 +174,6 @@ void describe("Storage Integration Tests", async () => {
     });
 
     void it("handles document storage workflow", async () => {
-      // Simulate a document upload workflow
       const documentContent = Buffer.from("This is a test document with some content.");
       const documentPath = "documents/2024/01/user-123/document.pdf";
       const metadata: StorageMetadata = {
@@ -195,44 +185,35 @@ void describe("Storage Integration Tests", async () => {
         },
       };
 
-      // Upload document
       const uploadResult = await storage.saveFile(documentPath, documentContent, metadata);
       assert.ok(uploadResult.url);
       assert.strictEqual(uploadResult.size, documentContent.length);
 
-      // Verify document exists
       const exists = await storage.fileExists(documentPath);
       assert.strictEqual(exists, true);
 
-      // Get document metadata
       const docMetadata = await storage.getFileMetadata(documentPath);
       assert.strictEqual(docMetadata.key, documentPath);
       assert.ok(docMetadata.lastModified);
 
-      // Generate signed URL for temporary access
       const signedUrl = await storage.getSignedUrl(documentPath, 1800); // 30 minutes
       assert.ok(signedUrl.includes(documentPath));
 
-      // Create backup copy
       const backupPath = "backups/documents/2024/01/user-123/document-backup.pdf";
       await storage.copyFile(documentPath, backupPath);
 
-      // Verify both files exist
       assert.strictEqual(await storage.fileExists(documentPath), true);
       assert.strictEqual(await storage.fileExists(backupPath), true);
 
-      // List documents for user
       const userDocuments = await storage.listFiles("documents/2024/01/user-123/");
       assert.ok(userDocuments.length >= 1);
       assert.ok(userDocuments.some((doc) => doc.key === documentPath));
 
-      // Cleanup
       await storage.deleteFile(documentPath);
       await storage.deleteFile(backupPath);
     });
 
     void it("handles image processing workflow", async () => {
-      // Simulate image upload and processing
       const originalImage = Buffer.from("fake-image-data-original");
       const thumbnailImage = Buffer.from("fake-image-data-thumb");
       const originalPath = "images/uploads/2024/image-456.jpg";
@@ -248,10 +229,8 @@ void describe("Storage Integration Tests", async () => {
         },
       };
 
-      // Upload original image
       await storage.saveFile(originalPath, originalImage, imageMetadata);
 
-      // Upload thumbnail
       const thumbnailMetadata: StorageMetadata = {
         contentType: "image/jpeg",
         metadata: {
@@ -263,24 +242,20 @@ void describe("Storage Integration Tests", async () => {
       };
       await storage.saveFile(thumbnailPath, thumbnailImage, thumbnailMetadata);
 
-      // List all images for 2024
       const allImages = await storage.listFiles("images/", 100);
       assert.ok(allImages.length >= 2);
 
-      // Verify both images exist
       const originalExists = await storage.fileExists(originalPath);
       const thumbnailExists = await storage.fileExists(thumbnailPath);
       assert.strictEqual(originalExists, true);
       assert.strictEqual(thumbnailExists, true);
 
-      // Get metadata for both
       const originalMeta = await storage.getFileMetadata(originalPath);
       const thumbnailMeta = await storage.getFileMetadata(thumbnailPath);
 
       assert.strictEqual(originalMeta.size, originalImage.length);
       assert.strictEqual(thumbnailMeta.size, thumbnailImage.length);
 
-      // Cleanup
       await storage.deleteFile(originalPath);
       await storage.deleteFile(thumbnailPath);
     });
@@ -289,13 +264,11 @@ void describe("Storage Integration Tests", async () => {
       const batchFiles = [];
       const batchData = Buffer.from("Batch file content");
 
-      // Create batch of files
       for (let i = 0; i < 10; i++) {
         const path = `batch/file-${i.toString().padStart(2, "0")}.txt`;
         batchFiles.push(path);
       }
 
-      // Upload all files concurrently
       const uploadPromises = batchFiles.map((path) =>
         storage.saveFile(path, batchData, {
           contentType: "text/plain",
@@ -306,20 +279,16 @@ void describe("Storage Integration Tests", async () => {
       const uploadResults = await Promise.all(uploadPromises);
       assert.strictEqual(uploadResults.length, 10);
 
-      // List all batch files
       const listedFiles = await storage.listFiles("batch/");
       assert.strictEqual(listedFiles.length, 10);
 
-      // Verify all files exist
       const existsPromises = batchFiles.map((path) => storage.fileExists(path));
       const existsResults = await Promise.all(existsPromises);
       assert.ok(existsResults.every((exists) => exists));
 
-      // Delete all batch files
       const deletePromises = batchFiles.map((path) => storage.deleteFile(path));
       await Promise.all(deletePromises);
 
-      // Verify all files are deleted
       const deletedExistsPromises = batchFiles.map((path) => storage.fileExists(path));
       const deletedExistsResults = await Promise.all(deletedExistsPromises);
       assert.ok(deletedExistsResults.every((exists) => !exists));
@@ -341,18 +310,14 @@ void describe("Storage Integration Tests", async () => {
       const testData = Buffer.from("Recovery test data");
       const path = "recovery/test-file.txt";
 
-      // Normal operation
       await storage.saveFile(path, testData);
       assert.strictEqual(await storage.fileExists(path), true);
 
-      // Simulate partial failure by attempting operations on non-existent files
       await assert.rejects(async () => await storage.getFile("non-existent.txt"), /File not found/);
 
-      // Verify original file is still intact
       const retrievedData = await storage.getFile(path);
       assert.deepStrictEqual(retrievedData, testData);
 
-      // Cleanup
       await storage.deleteFile(path);
     });
 
@@ -361,25 +326,20 @@ void describe("Storage Integration Tests", async () => {
       const validPath = "cleanup/valid-file.txt";
       const invalidPath = ""; // Invalid path
 
-      // Save valid file
       await storage.saveFile(validPath, testData);
 
-      // Attempt invalid operation (should handle gracefully)
       try {
         await storage.saveFile(invalidPath, testData);
       } catch (err) {
-        // Expected to fail
         assert.ok(err instanceof Error);
       }
 
-      // Verify valid file is unaffected
       const exists = await storage.fileExists(validPath);
       assert.strictEqual(exists, true);
 
       const data = await storage.getFile(validPath);
       assert.deepStrictEqual(data, testData);
 
-      // Cleanup
       await storage.deleteFile(validPath);
     });
   });

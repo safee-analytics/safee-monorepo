@@ -105,7 +105,6 @@ export class InMemoryPubSub implements PubSub {
   async createSubscription(topic: string, subscription: string): Promise<void> {
     logger.debug({ topic, subscription }, "Creating in-memory pub/sub subscription");
 
-    // Ensure topic exists
     await this.createTopic(topic);
 
     // For in-memory implementation, subscription creation is implicit
@@ -119,10 +118,8 @@ export class InMemoryPubSub implements PubSub {
   async close(): Promise<void> {
     logger.debug("Closing in-memory pub/sub connections");
 
-    // Remove all listeners
     this.emitter.removeAllListeners();
 
-    // Clear internal state
     this.topics.clear();
     this.subscriptions.clear();
 

@@ -111,7 +111,6 @@ void describe("Job Logs", async () => {
         priority: "normal" as const,
       });
 
-      // Create logs with different levels
       await createJobLog(deps, testJob.id, "debug", "Debug message");
       await createJobLog(deps, testJob.id, "info", "Info message 1");
       await createJobLog(deps, testJob.id, "info", "Info message 2");
@@ -156,7 +155,6 @@ void describe("Job Logs", async () => {
       assert.strictEqual(firstBatch.length, 2);
       assert.strictEqual(secondBatch.length, 2);
 
-      // Should have different logs
       const firstIds = firstBatch.map((log) => log.id);
       const secondIds = secondBatch.map((log) => log.id);
       assert.ok(!firstIds.some((id) => secondIds.includes(id)));
@@ -270,7 +268,6 @@ void describe("Job Logs", async () => {
     });
 
     void it("deletes old logs based on cutoff date", async () => {
-      // Create some logs
       await createJobLog(deps, testJob.id, "info", "Old log 1");
       await createJobLog(deps, testJob.id, "info", "Old log 2");
       await createJobLog(deps, testJob.id, "info", "Recent log");
@@ -282,7 +279,6 @@ void describe("Job Logs", async () => {
 
       assert.ok(deletedCount >= 3);
 
-      // Verify logs are deleted
       const remainingLogs = await getJobLogs(deps, testJob.id);
       assert.strictEqual(remainingLogs.length, 0);
     });
@@ -320,13 +316,11 @@ void describe("Job Logs", async () => {
         priority: "normal" as const,
       });
 
-      // Create logs for job1
       await createJobLog(deps, testJob1.id, "info", "Info message 1");
       await createJobLog(deps, testJob1.id, "info", "Info message 2");
       await createJobLog(deps, testJob1.id, "warn", "Warning message");
       await createJobLog(deps, testJob1.id, "error", "Error message");
 
-      // Create logs for job2
       await createJobLog(deps, testJob2.id, "info", "Info message");
       await createJobLog(deps, testJob2.id, "error", "Error message 1");
       await createJobLog(deps, testJob2.id, "error", "Error message 2");

@@ -109,7 +109,6 @@ export class GooglePubSubAdapter implements PubSub {
   async close(): Promise<void> {
     logger.debug("Closing Google Pub/Sub connections");
 
-    // Close all subscriptions
     for (const [name, subscription] of this.subscriptions) {
       try {
         await subscription.close();

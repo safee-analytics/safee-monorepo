@@ -19,9 +19,7 @@ void describe("Storage System", async () => {
   after(async () => {
     try {
       await rmdir(testDir, { recursive: true });
-    } catch {
-      // Ignore cleanup errors
-    }
+    } catch {}
   });
 
   beforeEach(() => {
@@ -156,7 +154,6 @@ void describe("Storage System", async () => {
       void it("does not throw error when deleting non-existent file", async () => {
         const path = "non-existent-delete.txt";
 
-        // Should not throw
         await storage.deleteFile(path);
       });
 
@@ -201,7 +198,6 @@ void describe("Storage System", async () => {
 
     void describe("listFiles", async () => {
       beforeEach(async () => {
-        // Create test files
         const testFiles = [
           { path: "file1.txt", content: "Content 1" },
           { path: "file2.txt", content: "Content 2" },
@@ -277,7 +273,7 @@ void describe("Storage System", async () => {
       void it("generates signed URL with custom expiry", async () => {
         const path = "custom-expiry.txt";
         const testData = Buffer.from("Custom expiry test");
-        const expiresIn = 1800; // 30 minutes
+        const expiresIn = 1800;
 
         await storage.saveFile(path, testData);
         const signedUrl = await storage.getSignedUrl(path, expiresIn);
@@ -285,7 +281,6 @@ void describe("Storage System", async () => {
         assert.ok(signedUrl.includes(path));
         assert.ok(signedUrl.includes("expires="));
 
-        // Extract expires timestamp and verify it's approximately correct
         const match = /expires=(\d+)/.exec(signedUrl);
         assert.ok(match);
         const expires = parseInt(match[1]);
@@ -327,7 +322,6 @@ void describe("Storage System", async () => {
         const copiedData = await storage.getFile(destPath);
         assert.deepStrictEqual(copiedData, sourceData);
 
-        // Verify original still exists
         const originalData = await storage.getFile(sourcePath);
         assert.deepStrictEqual(originalData, sourceData);
       });
@@ -437,7 +431,6 @@ void describe("Storage System", async () => {
 
     void describe("getStorage", async () => {
       void it("returns FileSystemStorage for local environment", () => {
-        // Mock IS_LOCAL to be true
         const originalEnv = process.env.ENV;
         process.env.ENV = "local";
 
@@ -445,7 +438,6 @@ void describe("Storage System", async () => {
 
         assert.ok(storage instanceof FileSystemStorage);
 
-        // Restore original environment
         if (originalEnv !== undefined) {
           process.env.ENV = originalEnv;
         } else {
@@ -454,17 +446,14 @@ void describe("Storage System", async () => {
       });
 
       void it("returns GoogleCloudStorage for non-local environment", () => {
-        // Mock IS_LOCAL to be false
         const originalEnv = process.env.ENV;
         process.env.ENV = "production";
 
         const storage = getStorage("test-bucket");
 
-        // Will create GoogleCloudStorage instance
         assert.ok(storage);
         assert.ok(!(storage instanceof FileSystemStorage));
 
-        // Restore original environment
         if (originalEnv !== undefined) {
           process.env.ENV = originalEnv;
         } else {

@@ -34,7 +34,6 @@ void describe("Cloud Storage Adapters", async () => {
         const connectionString =
           "DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=mykey123;EndpointSuffix=core.windows.net";
 
-        // This should not throw during construction
         const storage = new AzureBlobStorage("test-container", connectionString);
         assert.ok(storage);
       });
@@ -80,7 +79,6 @@ void describe("Cloud Storage Adapters", async () => {
 
     void describe("path validation", async () => {
       void it("should handle various path formats", () => {
-        // These paths should not throw errors during construction/validation
         const testPaths = [
           "simple-file.txt",
           "folder/file.txt",
@@ -138,16 +136,15 @@ void describe("Cloud Storage Adapters", async () => {
     void it("Azure storage handles invalid connection strings gracefully", () => {
       const invalidConnectionStrings = [
         "invalid-connection-string",
-        "AccountName=test", // Missing other required parts
-        "DefaultEndpointsProtocol=https;AccountName=;AccountKey=key", // Empty account name
+        "AccountName=test",
+        "DefaultEndpointsProtocol=https;AccountName=;AccountKey=key",
       ];
 
       for (const connectionString of invalidConnectionStrings) {
         try {
           const storage = new AzureBlobStorage("test", connectionString);
-          assert.ok(storage); // Instance created, actual operations might fail later
+          assert.ok(storage);
         } catch (err) {
-          // Some connection strings might fail during construction, which is acceptable
           assert.ok(err instanceof Error);
         }
       }

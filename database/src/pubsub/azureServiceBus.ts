@@ -118,7 +118,6 @@ export class AzureServiceBusAdapter implements PubSub {
   async close(): Promise<void> {
     logger.debug("Closing Azure Service Bus connections");
 
-    // Close all receivers
     for (const [name, receiver] of this.receivers) {
       try {
         await receiver.close();
@@ -128,7 +127,6 @@ export class AzureServiceBusAdapter implements PubSub {
       }
     }
 
-    // Close all senders
     for (const [name, sender] of this.senders) {
       try {
         await sender.close();

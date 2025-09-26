@@ -198,7 +198,6 @@ void describe("Job Definitions", async () => {
         isActive: true,
       });
 
-      // Deactivate one job
       await deactivateJobDefinition(deps, inactiveJob.id);
     });
 
@@ -252,7 +251,6 @@ void describe("Job Definitions", async () => {
       assert.strictEqual(firstPage.length, 2);
       assert.strictEqual(secondPage.length, 2);
 
-      // Should have different jobs
       const firstPageIds = firstPage.map((job) => job.id);
       const secondPageIds = secondPage.map((job) => job.id);
       assert.ok(!firstPageIds.some((id) => secondPageIds.includes(id)));

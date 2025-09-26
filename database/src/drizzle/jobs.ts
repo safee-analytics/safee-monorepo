@@ -38,6 +38,5 @@ export const jobs = jobsSchema.table(
   ],
 );
 
-// Types
 export type Job = typeof jobs.$inferSelect;
 export type NewJob = typeof jobs.$inferInsert;
