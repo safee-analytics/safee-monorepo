@@ -1,10 +1,18 @@
 {
   "files": [],
   "references": [
-    { "path": "./database" },
-    { "path": "./eslint-plugin-safee" },
-    { "path": "./gateway" },
-    { "path": "./tests" }
+    {
+      "path": "./database"
+    },
+    {
+      "path": "./eslint-plugin-safee"
+    },
+    {
+      "path": "./gateway"
+    },
+    {
+      "path": "./e2e"
+    }
   ],
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig to read more about this file */

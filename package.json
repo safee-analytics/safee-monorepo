@@ -8,7 +8,7 @@
     "database",
     "gateway",
     "eslint-plugin-safee",
-    "tests"
+    "e2e"
   ],
   "scripts": {
     "build": "just build",

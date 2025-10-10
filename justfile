@@ -2,9 +2,9 @@
 set shell := ["bash", "-uc"]
 set dotenv-load
 
-DATABASE_URL := env("DATABASE_URL", "postgresql://postgres:postgres@localhost:5433/safee")
+DATABASE_URL := env("DATABASE_URL", "postgresql://postgres:postgres@localhost:15432/safee")
 DEV_DATABASE_URL := env("DEV_DB_URL", "")
-test_database_url := "postgresql://postgres:postgres@localhost:45432/safee"
+test_database_url := "postgresql://postgres:postgres@localhost:25432/safee"
 
 # Build anything that might be needed and then run the servers.
 
@@ -158,57 +158,57 @@ drizzle-studio:
 # Start test Docker services
 [group('docker')]
 start-test service="" $DATABASE_URL=test_database_url:
-    docker compose -f tests/docker-compose.yml up -d --wait {{service}}
+    docker compose -f e2e/docker-compose.yml up -d --wait {{service}}
     sleep 1
-    docker compose -f tests/docker-compose.yml exec postgres dropdb -U postgres safee || true
-    docker compose -f tests/docker-compose.yml exec postgres createdb -U postgres safee
+    docker compose -f e2e/docker-compose.yml exec postgres dropdb -U postgres safee || true
+    docker compose -f e2e/docker-compose.yml exec postgres createdb -U postgres safee
     npm run -w database migrate
 
 # Stop test Docker services
 [group('docker')]
 stop-test:
-    docker compose -f tests/docker-compose.yml down
+    docker compose -f e2e/docker-compose.yml down
 
 # Clean test Docker volumes and containers
 [group('docker')]
 clean-test:
-    docker compose -f tests/docker-compose.yml down -v
+    docker compose -f e2e/docker-compose.yml down -v
     docker system prune -f --volumes
 
 # Run integration tests
 [group('test')]
 test-integration: (start-test "postgres")
-    docker compose -f tests/docker-compose.yml up -d --wait redis
-    cd tests && npm run test:integration
-    docker compose -f tests/docker-compose.yml down
+    docker compose -f e2e/docker-compose.yml up -d --wait redis
+    cd e2e && npm run test:integration
+    docker compose -f e2e/docker-compose.yml down
 
 # Run unit tests
 [group('test')]
 test-unit: (start-test "postgres")
-    docker compose -f tests/docker-compose.yml up -d --wait redis
-    cd tests && npm run test:unit
-    docker compose -f tests/docker-compose.yml down
+    docker compose -f e2e/docker-compose.yml up -d --wait redis
+    cd e2e && npm run test:unit
+    docker compose -f e2e/docker-compose.yml down
 
 # Run all tests with coverage
 [group('test')]
 test-coverage: (start-test "postgres")
-    docker compose -f tests/docker-compose.yml up -d --wait redis
-    cd tests && npm run test:coverage
-    docker compose -f tests/docker-compose.yml down
+    docker compose -f e2e/docker-compose.yml up -d --wait redis
+    cd e2e && npm run test:coverage
+    docker compose -f e2e/docker-compose.yml down
 
 # Run unit tests for database module
 [group('test')]
 test-database: build-database (start-test "postgres")
-    docker compose -f tests/docker-compose.yml up -d --wait redis
+    docker compose -f e2e/docker-compose.yml up -d --wait redis
     npm -w database test
-    docker compose -f tests/docker-compose.yml down
+    docker compose -f e2e/docker-compose.yml down
 
 # Run unit tests for gateway module
 [group('test')]
 test-gateway: prepare-gateway (start-test "postgres")
-    docker compose -f tests/docker-compose.yml up -d --wait redis
+    docker compose -f e2e/docker-compose.yml up -d --wait redis
     npm -w gateway test
-    docker compose -f tests/docker-compose.yml down
+    docker compose -f e2e/docker-compose.yml down
 
 # Run unit tests for eslint-plugin
 [group('test')]
@@ -217,14 +217,14 @@ test-eslint-plugin:
 
 [group('test')]
 test-watch: (start-test "postgres")
-    docker compose -f tests/docker-compose.yml up -d --wait redis
-    cd tests && npm run test:watch
+    docker compose -f e2e/docker-compose.yml up -d --wait redis
+    cd e2e && npm run test:watch
 
 # Open Vitest UI
 [group('test')]
 test-ui: (start-test "postgres")
-    docker compose -f tests/docker-compose.yml up -d --wait redis
-    cd tests && npm run test:ui
+    docker compose -f e2e/docker-compose.yml up -d --wait redis
+    cd e2e && npm run test:ui
 
 # Recompile imports into the latest migration
 [group('database')]
@@ -283,36 +283,36 @@ clean-gateway:
     rm -rf gateway/node_modules/.cache/prettier/
 
 # Build tests package
-[group('tests')]
-build-tests: build-gateway
-    npm -w tests run build
+[group('e2e')]
+build-e2e: build-gateway
+    npm -w e2e run build
 
 # Typecheck tests package
-[group('tests')]
-check-tests:
-    npx turbo run check --filter=@safee/tests
+[group('e2e')]
+check-e2e:
+    npx turbo run check --filter=@safee/e2e
 
 # Lint tests package
-[group('tests')]
-lint-tests: build-eslint-plugin-safee
-    npx turbo run lint --filter=@safee/tests
+[group('e2e')]
+lint-e2e: build-eslint-plugin-safee
+    npx turbo run lint --filter=@safee/e2e
 
 # Format tests package
-[group('tests')]
-fmt-tests:
-    npx turbo run fmt --filter=@safee/tests
+[group('e2e')]
+fmt-e2e:
+    npx turbo run fmt --filter=@safee/e2e
 
 # Clean generated files from tests package
-[group('tests')]
-clean-tests:
-    npm -w tests run clean
-    rm -f tests/.eslintcache
-    rm -rf tests/node_modules/.cache/prettier/
+[group('e2e')]
+clean-e2e:
+    npm -w e2e run clean
+    rm -f e2e/.eslintcache
+    rm -rf e2e/node_modules/.cache/prettier/
 
 # Run unit tests for tests module
-[group('tests')]
-test-tests: build-tests
-    npm -w tests test
+[group('e2e')]
+test-e2e: build-e2e
+    npm -w e2e test
 
 
 [private]

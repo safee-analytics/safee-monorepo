@@ -1,5 +1,5 @@
 {
-  "name": "@safee/tests",
+  "name": "@safee/e2e",
   "version": "1.0.0",
   "description": "Safee Analytics Testing",
   "type": "module",

@@ -60,7 +60,7 @@ export class AuthController extends Controller {
   @SuccessResponse("200", "Login successful")
   public async login(@Body() request: LoginRequest, @Request() req: ExpressRequest): Promise<LoginResponse> {
     const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
-    const ipAddress = req.ip || req.connection?.remoteAddress || "unknown";
+    const ipAddress = req.ip || req.socket?.remoteAddress || "unknown";
     const userAgent = req.get("User-Agent") || "unknown";
 
     try {
