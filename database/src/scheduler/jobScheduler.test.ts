@@ -4,7 +4,6 @@ import { pino } from "pino";
 import { testConnect } from "../drizzle/testConnect.js";
 import type { DrizzleClient } from "../drizzle.js";
 import { JobScheduler } from "./jobScheduler.js";
-import { createJobDefinition } from "../jobs/jobDefinitions.js";
 import { createJobSchedule } from "../jobs/jobSchedules.js";
 import { getJobById } from "../jobs/jobs.js";
 import { InMemoryPubSub } from "../pubsub/inMemoryPubSub.js";
@@ -17,7 +16,6 @@ async function wipeSchedulerDb(drizzle: DrizzleClient) {
   await drizzle.delete(schema.jobLogs);
   await drizzle.delete(schema.jobs);
   await drizzle.delete(schema.jobSchedules);
-  await drizzle.delete(schema.jobDefinitions);
 }
 
 void describe("Job Scheduler", async () => {
@@ -80,18 +78,12 @@ void describe("Job Scheduler", async () => {
   });
 
   void describe("job scheduling", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testJobSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestSchedulerHandler",
-      });
-
       testJobSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *", // 9 AM daily
         timezone: "UTC",
         isActive: true,
@@ -164,18 +156,12 @@ void describe("Job Scheduler", async () => {
   });
 
   void describe("job unscheduling", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testJobSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestSchedulerHandler",
-      });
-
       testJobSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
         isActive: true,
       });
@@ -234,20 +220,14 @@ void describe("Job Scheduler", async () => {
   });
 
   void describe("job processing", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testJob: typeof schema.jobs.$inferSelect;
     let jobEvents: { jobId: string; type: string; error?: string }[] = [];
 
     beforeEach(async () => {
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestProcessorHandler",
-      });
-
       // Import createJob here to avoid circular dependency issues
       const { createJob } = await import("../jobs/jobs.js");
       testJob = await createJob(deps, {
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         type: "immediate" as const,
         priority: "normal" as const,
       });
@@ -310,19 +290,13 @@ void describe("Job Scheduler", async () => {
   });
 
   void describe("cron job execution", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testJobSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestCronHandler",
-      });
-
       // Create schedule that should run immediately (every minute)
       testJobSchedule = await createJobSchedule(deps, {
         name: "TestCronSchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "* * * * *", // Every minute
         timezone: "UTC",
         isActive: true,
@@ -369,27 +343,17 @@ void describe("Job Scheduler", async () => {
 
   void describe("loading schedules on start", async () => {
     beforeEach(async () => {
-      const jobDef1 = await createJobDefinition(deps, {
-        name: `job-def-1-${Date.now()}`,
-        handlerName: "Handler1",
-      });
-
-      const jobDef2 = await createJobDefinition(deps, {
-        name: `job-def-2-${Date.now()}`,
-        handlerName: "Handler2",
-      });
-
       // Create active schedules
       await createJobSchedule(deps, {
         name: "ActiveSchedule1",
-        jobDefinitionId: jobDef1.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
         isActive: true,
       });
 
       await createJobSchedule(deps, {
         name: "ActiveSchedule2",
-        jobDefinitionId: jobDef2.id,
+        jobName: "send_email" as const,
         cronExpression: "0 17 * * *",
         isActive: true,
       });
@@ -397,7 +361,7 @@ void describe("Job Scheduler", async () => {
       // Create inactive schedule
       await createJobSchedule(deps, {
         name: "InactiveSchedule",
-        jobDefinitionId: jobDef1.id,
+        jobName: "send_email" as const,
         cronExpression: "0 12 * * *",
         isActive: false,
       });
@@ -405,7 +369,7 @@ void describe("Job Scheduler", async () => {
       // Create schedule without cron expression
       await createJobSchedule(deps, {
         name: "NoCronSchedule",
-        jobDefinitionId: jobDef2.id,
+        jobName: "send_email" as const,
         cronExpression: null,
         isActive: true,
       });

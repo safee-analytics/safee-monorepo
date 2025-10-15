@@ -1,6 +1,7 @@
 import { eq } from "drizzle-orm";
 import { users, organizations } from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
+import type { Locale } from "../drizzle/_common.js";
 
 export interface CreateUserData {
   email: string;
@@ -25,6 +26,7 @@ export interface UserWithOrganization {
   lastName?: string | null;
   passwordHash: string;
   organizationId: string;
+  preferredLocale: Locale;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -33,6 +35,12 @@ export interface UserWithOrganization {
     name: string;
     slug: string;
   };
+}
+
+export interface UpdateUserProfileData {
+  firstName?: string;
+  lastName?: string;
+  preferredLocale?: Locale;
 }
 
 export async function createUser(deps: DbDeps, userData: CreateUserData): Promise<typeof users.$inferSelect> {
@@ -195,6 +203,56 @@ export async function getUserById(deps: DbDeps, id: string): Promise<UserWithOrg
     };
   } catch (err) {
     logger.error({ error: err, userId: id }, "Failed to get user by ID");
+    throw err;
+  }
+}
+
+export async function updateUserProfile(
+  deps: DbDeps,
+  userId: string,
+  updateData: UpdateUserProfileData,
+): Promise<typeof users.$inferSelect> {
+  const { drizzle, logger } = deps;
+
+  try {
+    const existingUser = await getUserById(deps, userId);
+    if (!existingUser) {
+      throw new Error("User not found");
+    }
+
+    const [updatedUser] = await drizzle
+      .update(users)
+      .set({
+        ...updateData,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+
+    logger.info({ userId, updateData }, "User profile updated successfully");
+
+    return updatedUser;
+  } catch (err) {
+    logger.error({ error: err, userId }, "Failed to update user profile");
+    throw err;
+  }
+}
+
+export async function updateUserLocale(deps: DbDeps, userId: string, locale: Locale): Promise<void> {
+  const { drizzle, logger } = deps;
+
+  try {
+    await drizzle
+      .update(users)
+      .set({
+        preferredLocale: locale,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId));
+
+    logger.info({ userId, locale }, "User locale updated successfully");
+  } catch (err) {
+    logger.error({ error: err, userId, locale }, "Failed to update user locale");
     throw err;
   }
 }

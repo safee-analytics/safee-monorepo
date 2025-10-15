@@ -1,6 +1,5 @@
 import { text, timestamp, jsonb, integer, index, uuid } from "drizzle-orm/pg-core";
-import { idpk, jobsSchema, jobStatusEnum, jobTypeEnum, priorityEnum } from "./_common.js";
-import { jobDefinitions } from "./jobDefinitions.js";
+import { idpk, jobsSchema, jobStatusEnum, jobTypeEnum, jobNameEnum, priorityEnum } from "./_common.js";
 import { jobSchedules } from "./jobSchedules.js";
 import { organizations } from "./organizations.js";
 
@@ -8,9 +7,7 @@ export const jobs = jobsSchema.table(
   "jobs",
   {
     id: idpk("id"),
-    jobDefinitionId: uuid("job_definition_id")
-      .notNull()
-      .references(() => jobDefinitions.id),
+    jobName: jobNameEnum("job_name").notNull(),
     scheduleId: uuid("schedule_id").references(() => jobSchedules.id),
     organizationId: uuid("organization_id").references(() => organizations.id),
     status: jobStatusEnum("status").default("pending").notNull(),
@@ -34,7 +31,7 @@ export const jobs = jobsSchema.table(
     index("jobs_priority_idx").on(table.priority),
     index("jobs_type_idx").on(table.type),
     index("jobs_created_at_idx").on(table.createdAt),
-    index("jobs_definition_idx").on(table.jobDefinitionId),
+    index("jobs_job_name_idx").on(table.jobName),
   ],
 );
 

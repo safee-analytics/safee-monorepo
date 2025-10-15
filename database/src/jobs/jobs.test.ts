@@ -15,7 +15,6 @@ import {
   cancelJob,
   getJobStats,
 } from "./jobs.js";
-import { createJobDefinition } from "./jobDefinitions.js";
 import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
 
@@ -23,7 +22,6 @@ async function wipeJobsDb(drizzle: DrizzleClient) {
   await drizzle.delete(schema.jobLogs);
   await drizzle.delete(schema.jobs);
   await drizzle.delete(schema.jobSchedules);
-  await drizzle.delete(schema.jobDefinitions);
 }
 
 void describe("Jobs", async () => {
@@ -42,84 +40,42 @@ void describe("Jobs", async () => {
   });
 
   void describe("createJob", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
-
     beforeEach(async () => {
       await wipeJobsDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        description: "Test job definition",
-        handlerName: "TestJobHandler",
-        defaultPayload: { testData: true },
-        maxRetries: 3,
-        retryDelayMs: 1000,
-        timeoutMs: 30000,
-      });
     });
 
-    void it("creates job successfully with valid job definition", async () => {
+    void it("creates job successfully", async () => {
       const jobData = {
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         type: "immediate" as const,
         priority: "normal" as const,
         payload: { customData: "test" },
+        maxRetries: 3,
       };
 
       const job = await createJob(deps, jobData);
 
       assert.ok(job.id);
-      assert.strictEqual(job.jobDefinitionId, testJobDefinition.id);
+      assert.strictEqual(job.jobName, "send_email");
       assert.strictEqual(job.status, "pending");
       assert.strictEqual(job.type, "immediate");
       assert.strictEqual(job.priority, "normal");
       assert.deepStrictEqual(job.payload, { customData: "test" });
       assert.strictEqual(job.maxRetries, 3);
     });
-
-    void it("throws error when job definition does not exist", async () => {
-      const jobData = {
-        jobDefinitionId: "nonexistent-id",
-        type: "immediate" as const,
-        priority: "normal" as const,
-      };
-
-      await assert.rejects(
-        async () => await createJob(deps, jobData),
-        /Job definition with ID 'nonexistent-id' not found/,
-      );
-    });
-
-    void it("uses default payload when none provided", async () => {
-      const jobData = {
-        jobDefinitionId: testJobDefinition.id,
-        type: "immediate" as const,
-        priority: "normal" as const,
-      };
-
-      const job = await createJob(deps, jobData);
-
-      assert.deepStrictEqual(job.payload, { testData: true });
-    });
   });
 
   void describe("getJobById", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
       await wipeJobsDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        description: "Test job definition",
-        handlerName: "TestJobHandler",
-        defaultPayload: { testData: true },
-        maxRetries: 3,
-      });
 
       testJob = await createJob(deps, {
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         type: "immediate" as const,
         priority: "high" as const,
+        maxRetries: 3,
       });
     });
 
@@ -128,7 +84,7 @@ void describe("Jobs", async () => {
 
       assert.ok(retrievedJob);
       assert.strictEqual(retrievedJob.id, testJob.id);
-      assert.strictEqual(retrievedJob.jobDefinitionId, testJobDefinition.id);
+      assert.strictEqual(retrievedJob.jobName, "send_email");
     });
 
     void it("returns undefined for non-existent job", async () => {
@@ -138,22 +94,16 @@ void describe("Jobs", async () => {
   });
 
   void describe("job status updates", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
       await wipeJobsDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        description: "Test job definition",
-        handlerName: "TestJobHandler",
-        maxRetries: 3,
-      });
 
       testJob = await createJob(deps, {
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         type: "immediate" as const,
         priority: "normal" as const,
+        maxRetries: 3,
       });
     });
 
@@ -212,34 +162,29 @@ void describe("Jobs", async () => {
   });
 
   void describe("getPendingJobs", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
-
     beforeEach(async () => {
       await wipeJobsDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        description: "Test job definition",
-        handlerName: "TestJobHandler",
+
+      await createJob(deps, {
+        jobName: "send_email" as const,
+        type: "immediate" as const,
+        priority: "high" as const,
         maxRetries: 3,
       });
 
       await createJob(deps, {
-        jobDefinitionId: testJobDefinition.id,
-        type: "immediate" as const,
-        priority: "high" as const,
-      });
-
-      await createJob(deps, {
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         type: "immediate" as const,
         priority: "low" as const,
+        maxRetries: 3,
       });
 
       await createJob(deps, {
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         type: "immediate" as const,
         priority: "normal" as const,
         scheduledFor: new Date(Date.now() + 60000), // Future
+        maxRetries: 3,
       });
     });
 
@@ -269,23 +214,16 @@ void describe("Jobs", async () => {
   });
 
   void describe("getRetryableJobs", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
-
     beforeEach(async () => {
       await wipeJobsDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        description: "Test job definition",
-        handlerName: "TestJobHandler",
-        maxRetries: 3,
-      });
     });
 
     void it("finds failed jobs with remaining retries", async () => {
       const job = await createJob(deps, {
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         type: "immediate" as const,
         priority: "normal" as const,
+        maxRetries: 3,
       });
 
       // Fail the job with retry available
@@ -301,9 +239,10 @@ void describe("Jobs", async () => {
 
     void it("excludes jobs that have exhausted retries", async () => {
       const job = await createJob(deps, {
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         type: "immediate" as const,
         priority: "normal" as const,
+        maxRetries: 3,
       });
 
       // Fail the job with max retries reached
@@ -317,27 +256,21 @@ void describe("Jobs", async () => {
   });
 
   void describe("getJobStats", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
-
     beforeEach(async () => {
       await wipeJobsDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        description: "Test job definition",
-        handlerName: "TestJobHandler",
+
+      const job1 = await createJob(deps, {
+        jobName: "send_email" as const,
+        type: "immediate" as const,
+        priority: "high" as const,
         maxRetries: 3,
       });
 
-      const job1 = await createJob(deps, {
-        jobDefinitionId: testJobDefinition.id,
-        type: "immediate" as const,
-        priority: "high" as const,
-      });
-
       const job2 = await createJob(deps, {
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         type: "cron" as const,
         priority: "normal" as const,
+        maxRetries: 3,
       });
 
       await completeJob(deps, job1.id);

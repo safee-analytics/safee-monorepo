@@ -19,7 +19,9 @@ void describe("Storage System", async () => {
   after(async () => {
     try {
       await rmdir(testDir, { recursive: true });
-    } catch {}
+    } catch {
+      // Ignore cleanup errors
+    }
   });
 
   beforeEach(() => {

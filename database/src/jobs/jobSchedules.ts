@@ -1,7 +1,6 @@
 import { eq, and, asc, lte, isNull, or } from "drizzle-orm";
 import { DbDeps } from "../deps.js";
 import { jobSchedules } from "../drizzle/jobSchedules.js";
-import { jobDefinitions } from "../drizzle/jobDefinitions.js";
 import type { JobSchedule, NewJobSchedule } from "../drizzle/jobSchedules.js";
 
 export async function createJobSchedule(
@@ -11,25 +10,16 @@ export async function createJobSchedule(
   logger.info({ name: data.name, cronExpression: data.cronExpression }, "Creating job schedule");
 
   return drizzle.transaction(async (tx) => {
-    const jobDef = await tx.query.jobDefinitions.findFirst({
-      where: eq(jobDefinitions.id, data.jobDefinitionId),
-    });
-
-    if (!jobDef) {
-      logger.error({ jobDefinitionId: data.jobDefinitionId }, "Job definition not found");
-      throw new Error(`Job definition with ID '${data.jobDefinitionId}' not found`);
-    }
-
     const existing = await tx.query.jobSchedules.findFirst({
-      where: and(eq(jobSchedules.name, data.name), eq(jobSchedules.jobDefinitionId, data.jobDefinitionId)),
+      where: and(eq(jobSchedules.name, data.name), eq(jobSchedules.jobName, data.jobName)),
     });
 
     if (existing) {
       logger.error(
-        { name: data.name, jobDefinitionId: data.jobDefinitionId },
-        "Job schedule with this name already exists for this job definition",
+        { name: data.name, jobName: data.jobName },
+        "Job schedule with this name already exists for this job",
       );
-      throw new Error(`Job schedule with name '${data.name}' already exists for this job definition`);
+      throw new Error(`Job schedule with name '${data.name}' already exists for this job`);
     }
 
     const [result] = await tx.insert(jobSchedules).values(data).returning();
@@ -47,9 +37,6 @@ export async function getJobScheduleById(
 
   const result = await drizzle.query.jobSchedules.findFirst({
     where: eq(jobSchedules.id, id),
-    with: {
-      definition: true,
-    },
   });
 
   if (!result) {
@@ -59,14 +46,14 @@ export async function getJobScheduleById(
   return result;
 }
 
-export async function getJobSchedulesByDefinition(
+export async function getJobSchedulesByJobName(
   { drizzle, logger }: DbDeps,
-  jobDefinitionId: string,
+  jobName: "send_email",
 ): Promise<JobSchedule[]> {
-  logger.debug({ jobDefinitionId }, "Getting job schedules by definition");
+  logger.debug({ jobName }, "Getting job schedules by job name");
 
   return await drizzle.query.jobSchedules.findMany({
-    where: eq(jobSchedules.jobDefinitionId, jobDefinitionId),
+    where: eq(jobSchedules.jobName, jobName),
     orderBy: asc(jobSchedules.name),
   });
 }
@@ -77,9 +64,6 @@ export async function listActiveJobSchedules({ drizzle, logger }: DbDeps): Promi
   const results = await drizzle.query.jobSchedules.findMany({
     where: eq(jobSchedules.isActive, true),
     orderBy: asc(jobSchedules.nextRunAt),
-    with: {
-      definition: true,
-    },
   });
 
   logger.info({ count: results.length }, "Retrieved active job schedules");
@@ -98,9 +82,6 @@ export async function getSchedulesReadyToRun(
       or(lte(jobSchedules.nextRunAt, checkTime), isNull(jobSchedules.nextRunAt)),
     ),
     orderBy: asc(jobSchedules.nextRunAt),
-    with: {
-      definition: true,
-    },
   });
 
   logger.info({ count: results.length, checkTime }, "Found schedules ready to run");

@@ -2,7 +2,6 @@ import { eq, and, desc, asc, inArray, lte, or, isNull, lt, count, gte } from "dr
 import { DbDeps } from "../deps.js";
 import { conditionalCount } from "../index.js";
 import { jobs } from "../drizzle/jobs.js";
-import { jobDefinitions } from "../drizzle/jobDefinitions.js";
 import { jobLogs } from "../drizzle/jobLogs.js";
 import type { Job, NewJob } from "../drizzle/jobs.js";
 import type { JobStatus, JobType, Priority } from "../drizzle/_common.js";
@@ -10,49 +9,25 @@ import type { JobStatus, JobType, Priority } from "../drizzle/_common.js";
 export async function createJob({ drizzle, logger }: DbDeps, data: NewJob): Promise<Job> {
   logger.info(
     {
-      jobDefinitionId: data.jobDefinitionId,
+      jobName: data.jobName,
       type: data.type,
       priority: data.priority,
     },
     "Creating job",
   );
 
-  return drizzle.transaction(async (tx) => {
-    // Verify job definition exists and is active
-    const jobDef = await tx.query.jobDefinitions.findFirst({
-      where: eq(jobDefinitions.id, data.jobDefinitionId),
-    });
+  const [result] = await drizzle.insert(jobs).values(data).returning();
 
-    if (!jobDef) {
-      logger.error({ jobDefinitionId: data.jobDefinitionId }, "Job definition not found");
-      throw new Error(`Job definition with ID '${data.jobDefinitionId}' not found`);
-    }
+  logger.info(
+    {
+      id: result.id,
+      jobName: result.jobName,
+      status: result.status,
+    },
+    "Job created successfully",
+  );
 
-    if (!jobDef.isActive) {
-      logger.error({ jobDefinitionId: data.jobDefinitionId }, "Job definition is not active");
-      throw new Error(`Job definition '${jobDef.name}' is not active`);
-    }
-
-    // Set defaults from job definition if not provided
-    const jobData: NewJob = {
-      ...data,
-      maxRetries: data.maxRetries ?? jobDef.maxRetries,
-      payload: data.payload ?? jobDef.defaultPayload,
-    };
-
-    const [result] = await tx.insert(jobs).values(jobData).returning();
-
-    logger.info(
-      {
-        id: result.id,
-        jobDefinitionId: result.jobDefinitionId,
-        status: result.status,
-      },
-      "Job created successfully",
-    );
-
-    return result;
-  });
+  return result;
 }
 
 export async function getJobById({ drizzle, logger }: DbDeps, id: string): Promise<Job | undefined> {
@@ -61,7 +36,6 @@ export async function getJobById({ drizzle, logger }: DbDeps, id: string): Promi
   const result = await drizzle.query.jobs.findFirst({
     where: eq(jobs.id, id),
     with: {
-      definition: true,
       schedule: true,
       organization: true,
       logs: {
@@ -88,9 +62,6 @@ export async function getJobsByStatus(
   return await drizzle.query.jobs.findMany({
     where: inArray(jobs.status, statuses),
     orderBy: [asc(jobs.priority), asc(jobs.scheduledFor), asc(jobs.createdAt)],
-    with: {
-      definition: true,
-    },
   });
 }
 
@@ -115,9 +86,6 @@ export async function getPendingJobs(
     where: whereCondition,
     orderBy: [asc(jobs.priority), asc(jobs.scheduledFor), asc(jobs.createdAt)],
     limit,
-    with: {
-      definition: true,
-    },
   });
 
   logger.info({ count: results.length, limit }, "Retrieved pending jobs");
@@ -131,9 +99,6 @@ export async function getRetryableJobs({ drizzle, logger }: DbDeps, limit = 10):
     where: and(eq(jobs.status, "failed"), lt(jobs.attempts, jobs.maxRetries)),
     orderBy: [asc(jobs.priority), asc(jobs.updatedAt)],
     limit,
-    with: {
-      definition: true,
-    },
   });
 
   logger.info({ count: results.length }, "Retrieved retryable jobs");

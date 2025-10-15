@@ -24,11 +24,11 @@ export function expressAuthentication(
     if (!jwtService.isAuthEnabled()) {
       context.logger.debug("🚨 Authentication bypassed - Development mode");
 
-      // Return mock user for development
+      // Return mock user for development (matches seeded dev user)
       const mockUser: JwtPayload = {
-        userId: "dev-user-id",
-        organizationId: "dev-org-id",
-        email: "dev@example.com",
+        userId: "00000000-0000-0000-0000-000000000001",
+        organizationId: "00000000-0000-0000-0000-000000000002",
+        email: "dev@safee.local",
         roles: ["admin"],
         permissions: ["*"],
       };

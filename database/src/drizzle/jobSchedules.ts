@@ -1,14 +1,11 @@
-import { text, timestamp, boolean, index, uuid } from "drizzle-orm/pg-core";
-import { idpk, jobsSchema } from "./_common.js";
-import { jobDefinitions } from "./jobDefinitions.js";
+import { text, timestamp, boolean, index } from "drizzle-orm/pg-core";
+import { idpk, jobsSchema, jobNameEnum } from "./_common.js";
 
 export const jobSchedules = jobsSchema.table(
   "job_schedules",
   {
     id: idpk("id"),
-    jobDefinitionId: uuid("job_definition_id")
-      .notNull()
-      .references(() => jobDefinitions.id, { onDelete: "cascade" }),
+    jobName: jobNameEnum("job_name").notNull(),
     name: text("name").notNull(),
     cronExpression: text("cron_expression"), // e.g., "0 9 * * *" for daily at 9am
     timezone: text("timezone").default("UTC").notNull(),
@@ -19,7 +16,7 @@ export const jobSchedules = jobsSchema.table(
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
   },
   (table) => [
-    index("job_schedules_definition_idx").on(table.jobDefinitionId),
+    index("job_schedules_job_name_idx").on(table.jobName),
     index("job_schedules_next_run_idx").on(table.nextRunAt),
     index("job_schedules_active_idx").on(table.isActive),
   ],

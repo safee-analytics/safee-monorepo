@@ -18,7 +18,7 @@
     "migrate": "npx drizzle-kit migrate",
     "postmigrate": "tsx -r dotenv/config src/private/postmigrate.ts",
     "bumpMigrations": "tsx -r dotenv/config src/private/bumpMigrations.ts",
-    "generate-migration": "tsx -r dotenv/config src/private/generate-migration.ts",
+    "generate-migration": "npx drizzle-kit generate",
     "drizzle:generate": "npx drizzle-kit generate",
     "drizzle:studio": "npx drizzle-kit studio",
     "db:reset": "tsx -r dotenv/config src/private/reset-db.ts"
@@ -31,6 +31,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@azure/communication-email": "^1.1.0",
     "@azure/service-bus": "^7.9.4",
     "@azure/storage-blob": "^12.24.0",
     "@google-cloud/pubsub": "^4.9.0",

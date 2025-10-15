@@ -41,6 +41,8 @@ export const jobStatusEnum = jobsSchema.enum("job_status", [
 
 export const jobTypeEnum = jobsSchema.enum("job_type", ["cron", "scheduled", "immediate", "recurring"]);
 
+export const jobNameEnum = jobsSchema.enum("job_name", ["send_email"]);
+
 export const priorityEnum = jobsSchema.enum("priority", ["low", "normal", "high", "critical"]);
 
 export const logLevelEnum = jobsSchema.enum("log_level", ["debug", "info", "warn", "error"]);
@@ -121,12 +123,15 @@ export const eventTypeEnum = identitySchema.enum("event_type", [
 
 export const riskLevelEnum = identitySchema.enum("risk_level", ["low", "medium", "high", "critical"]);
 
+export const localeEnum = identitySchema.enum("locale", ["en", "ar"]);
+
 export type InvoiceType = (typeof invoiceTypeEnum.enumValues)[number];
 export type ContactType = (typeof contactTypeEnum.enumValues)[number];
 export type DealStage = (typeof dealStageEnum.enumValues)[number];
 export type UserRole = (typeof userRoleEnum.enumValues)[number];
 export type JobStatus = (typeof jobStatusEnum.enumValues)[number];
 export type JobType = (typeof jobTypeEnum.enumValues)[number];
+export type JobName = (typeof jobNameEnum.enumValues)[number];
 export type Priority = (typeof priorityEnum.enumValues)[number];
 export type LogLevel = (typeof logLevelEnum.enumValues)[number];
 export type EntityType = (typeof entityTypeEnum.enumValues)[number];
@@ -138,6 +143,7 @@ export type RevokedReason = (typeof revokedReasonEnum.enumValues)[number];
 export type IdentifierType = (typeof identifierTypeEnum.enumValues)[number];
 export type EventType = (typeof eventTypeEnum.enumValues)[number];
 export type RiskLevel = (typeof riskLevelEnum.enumValues)[number];
+export type Locale = (typeof localeEnum.enumValues)[number];
 
 export const schemas = {
   identity: identitySchema,

@@ -31,7 +31,8 @@ export const invoiceItems = financeSchema.table(
     invoiceId: uuid("invoice_id")
       .references(() => invoices.id)
       .notNull(),
-    description: varchar("description", { length: 255 }).notNull(),
+    descriptionEn: varchar("description_en", { length: 255 }).notNull(),
+    descriptionAr: varchar("description_ar", { length: 255 }),
     quantity: decimal("quantity", { precision: 10, scale: 2 }).notNull(),
     unitPrice: decimal("unit_price", { precision: 12, scale: 2 }).notNull(),
     total: decimal("total", { precision: 12, scale: 2 }).notNull(),

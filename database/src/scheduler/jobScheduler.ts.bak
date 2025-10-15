@@ -70,6 +70,9 @@ export class JobScheduler {
 
     const schedule = await deps.drizzle.query.jobSchedules.findFirst({
       where: eq(jobSchedules.id, scheduleId),
+      with: {
+        definition: true,
+      },
     });
 
     if (!schedule) {
@@ -94,7 +97,7 @@ export class JobScheduler {
         if (schedule.cronExpression) {
           await this.executeCronJob(deps, {
             id: schedule.id,
-            jobName: schedule.jobName,
+            jobDefinitionId: schedule.jobDefinitionId,
             cronExpression: schedule.cronExpression,
             timezone: schedule.timezone,
           });
@@ -152,13 +155,13 @@ export class JobScheduler {
 
   private async executeCronJob(
     deps: DbDeps,
-    schedule: { id: string; jobName: "send_email"; cronExpression: string; timezone?: string },
+    schedule: { id: string; jobDefinitionId: string; cronExpression: string; timezone?: string },
   ): Promise<void> {
     logger.debug({ scheduleId: schedule.id }, "Executing cron job");
 
     try {
       const job = await createJob(deps, {
-        jobName: schedule.jobName,
+        jobDefinitionId: schedule.jobDefinitionId,
         scheduleId: schedule.id,
         type: "cron",
         priority: "normal",

@@ -1,5 +1,5 @@
 import { uuid, varchar, timestamp, boolean, index } from "drizzle-orm/pg-core";
-import { identitySchema, idpk } from "./_common.js";
+import { identitySchema, idpk, localeEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 
 export const users = identitySchema.table(
@@ -13,6 +13,7 @@ export const users = identitySchema.table(
     organizationId: uuid("organization_id")
       .references(() => organizations.id)
       .notNull(),
+    preferredLocale: localeEnum("preferred_locale").default("en").notNull(),
     isActive: boolean("is_active").default(true).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

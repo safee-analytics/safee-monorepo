@@ -2,7 +2,6 @@ import { describe, it } from "node:test";
 import assert from "node:assert";
 import { getTimeWindows } from "./getTimeWindows.js";
 
-
 function createUtcDate({
   year,
   month,
@@ -45,7 +44,6 @@ await describe("getTimeWindows", async () => {
 
     assert.deepStrictEqual(result1, expectedWindows);
     assert.deepStrictEqual(result2, expectedWindows);
-
 
     assert.deepStrictEqual(result3.lastWindow, expectedWindows.nextWindow);
   });

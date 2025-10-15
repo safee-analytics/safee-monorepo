@@ -6,7 +6,6 @@ import type { DrizzleClient } from "../drizzle.js";
 import {
   createJobSchedule,
   getJobScheduleById,
-  getJobSchedulesByDefinition,
   listActiveJobSchedules,
   getSchedulesReadyToRun,
   updateJobSchedule,
@@ -15,7 +14,6 @@ import {
   deactivateJobSchedule,
   deleteJobSchedule,
 } from "./jobSchedules.js";
-import { createJobDefinition } from "./jobDefinitions.js";
 import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
 
@@ -23,7 +21,6 @@ async function wipeJobSchedulesDb(drizzle: DrizzleClient) {
   await drizzle.delete(schema.jobLogs);
   await drizzle.delete(schema.jobs);
   await drizzle.delete(schema.jobSchedules);
-  await drizzle.delete(schema.jobDefinitions);
 }
 
 void describe("Job Schedules", async () => {
@@ -42,20 +39,14 @@ void describe("Job Schedules", async () => {
   });
 
   void describe("createJobSchedule", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
-
     beforeEach(async () => {
       await wipeJobSchedulesDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestScheduleHandler",
-      });
     });
 
     void it("creates job schedule successfully", async () => {
       const scheduleData = {
         name: "DailySchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *", // 9 AM daily
         timezone: "UTC",
       };
@@ -64,29 +55,16 @@ void describe("Job Schedules", async () => {
 
       assert.ok(schedule.id);
       assert.strictEqual(schedule.name, "DailySchedule");
-      assert.strictEqual(schedule.jobDefinitionId, testJobDefinition.id);
+      assert.strictEqual(schedule.jobName, "send_email");
       assert.strictEqual(schedule.cronExpression, "0 9 * * *");
       assert.strictEqual(schedule.timezone, "UTC");
       assert.strictEqual(schedule.isActive, true);
     });
 
-    void it("throws error when job definition not found", async () => {
-      const scheduleData = {
-        name: "TestSchedule",
-        jobDefinitionId: "nonexistent-id",
-        cronExpression: "0 9 * * *",
-      };
-
-      await assert.rejects(
-        async () => await createJobSchedule(deps, scheduleData),
-        /Job definition with ID 'nonexistent-id' not found/,
-      );
-    });
-
-    void it("throws error when schedule with same name exists for same job definition", async () => {
+    void it("throws error when schedule with same name exists for same job", async () => {
       const scheduleData = {
         name: "DuplicateSchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
       };
 
@@ -94,25 +72,20 @@ void describe("Job Schedules", async () => {
 
       await assert.rejects(
         async () => await createJobSchedule(deps, scheduleData),
-        /Job schedule with name 'DuplicateSchedule' already exists for this job definition/,
+        /Job schedule with name 'DuplicateSchedule' already exists for this job/,
       );
     });
 
-    void it("allows same schedule name for different job definitions", async () => {
-      const otherJobDefinition = await createJobDefinition(deps, {
-        name: `other-job-def-${Date.now()}`,
-        handlerName: "OtherHandler",
-      });
-
+    void it("allows same schedule name for different jobs", async () => {
       const scheduleData1 = {
         name: "SameName",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
       };
 
       const scheduleData2 = {
         name: "SameName",
-        jobDefinitionId: otherJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 10 * * *",
       };
 
@@ -126,19 +99,14 @@ void describe("Job Schedules", async () => {
   });
 
   void describe("getJobScheduleById", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
       await wipeJobSchedulesDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
       });
     });
@@ -149,7 +117,7 @@ void describe("Job Schedules", async () => {
       assert.ok(schedule);
       assert.strictEqual(schedule.id, testSchedule.id);
       assert.strictEqual(schedule.name, "TestSchedule");
-      assert.strictEqual(schedule.jobDefinitionId, testJobDefinition.id);
+      assert.strictEqual(schedule.jobName, "send_email");
     });
 
     void it("returns undefined for non-existent schedule", async () => {
@@ -158,89 +126,27 @@ void describe("Job Schedules", async () => {
     });
   });
 
-  void describe("getJobSchedulesByDefinition", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
-
-    beforeEach(async () => {
-      await wipeJobSchedulesDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
-
-      await createJobSchedule(deps, {
-        name: "Schedule1",
-        jobDefinitionId: testJobDefinition.id,
-        cronExpression: "0 9 * * *",
-      });
-
-      await createJobSchedule(deps, {
-        name: "Schedule2",
-        jobDefinitionId: testJobDefinition.id,
-        cronExpression: "0 17 * * *",
-      });
-
-      // Create schedule for different job definition
-      const otherJobDef = await createJobDefinition(deps, {
-        name: `other-job-def-${Date.now()}`,
-        handlerName: "OtherHandler",
-      });
-
-      await createJobSchedule(deps, {
-        name: "OtherSchedule",
-        jobDefinitionId: otherJobDef.id,
-        cronExpression: "0 12 * * *",
-      });
-    });
-
-    void it("returns schedules for specific job definition", async () => {
-      const schedules = await getJobSchedulesByDefinition(deps, testJobDefinition.id);
-
-      assert.strictEqual(schedules.length, 2);
-      assert.ok(schedules.every((s) => s.jobDefinitionId === testJobDefinition.id));
-
-      const names = schedules.map((s) => s.name).sort();
-      assert.deepStrictEqual(names, ["Schedule1", "Schedule2"]);
-    });
-
-    void it("returns empty array for job definition with no schedules", async () => {
-      const emptyJobDef = await createJobDefinition(deps, {
-        name: `empty-job-def-${Date.now()}`,
-        handlerName: "EmptyHandler",
-      });
-
-      const schedules = await getJobSchedulesByDefinition(deps, emptyJobDef.id);
-      assert.strictEqual(schedules.length, 0);
-    });
-  });
-
   void describe("listActiveJobSchedules", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
-
     beforeEach(async () => {
       await wipeJobSchedulesDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
 
       await createJobSchedule(deps, {
         name: "ActiveSchedule1",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
         isActive: true,
       });
 
       await createJobSchedule(deps, {
         name: "ActiveSchedule2",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 17 * * *",
         isActive: true,
       });
 
       const inactiveSchedule = await createJobSchedule(deps, {
         name: "InactiveSchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 12 * * *",
         isActive: true,
       });
@@ -257,23 +163,11 @@ void describe("Job Schedules", async () => {
       const names = activeSchedules.map((s) => s.name).sort();
       assert.deepStrictEqual(names, ["ActiveSchedule1", "ActiveSchedule2"]);
     });
-
-    void it("returns schedules with correct job definition IDs", async () => {
-      const activeSchedules = await listActiveJobSchedules(deps);
-
-      assert.ok(activeSchedules.every((s) => s.jobDefinitionId === testJobDefinition.id));
-    });
   });
 
   void describe("getSchedulesReadyToRun", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
-
     beforeEach(async () => {
       await wipeJobSchedulesDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
 
       const now = new Date();
       const pastTime = new Date(now.getTime() - 60000); // 1 minute ago
@@ -282,7 +176,7 @@ void describe("Job Schedules", async () => {
       // Schedule ready to run (past time)
       await createJobSchedule(deps, {
         name: "ReadySchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "* * * * *",
         nextRunAt: pastTime,
         isActive: true,
@@ -291,7 +185,7 @@ void describe("Job Schedules", async () => {
       // Schedule not ready (future time)
       await createJobSchedule(deps, {
         name: "NotReadySchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "* * * * *",
         nextRunAt: futureTime,
         isActive: true,
@@ -300,7 +194,7 @@ void describe("Job Schedules", async () => {
       // Schedule ready (null nextRunAt)
       await createJobSchedule(deps, {
         name: "NullNextRunSchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "* * * * *",
         nextRunAt: null,
         isActive: true,
@@ -309,7 +203,7 @@ void describe("Job Schedules", async () => {
       // Inactive schedule (should not be returned)
       const inactiveSchedule = await createJobSchedule(deps, {
         name: "InactiveReadySchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "* * * * *",
         nextRunAt: pastTime,
         isActive: true,
@@ -338,19 +232,14 @@ void describe("Job Schedules", async () => {
   });
 
   void describe("updateJobSchedule", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
       await wipeJobSchedulesDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
       });
     });
@@ -390,19 +279,14 @@ void describe("Job Schedules", async () => {
   });
 
   void describe("updateScheduleRunTime", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
       await wipeJobSchedulesDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
       });
     });
@@ -428,19 +312,14 @@ void describe("Job Schedules", async () => {
   });
 
   void describe("activateJobSchedule", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
       await wipeJobSchedulesDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
         isActive: false,
       });
@@ -454,19 +333,14 @@ void describe("Job Schedules", async () => {
   });
 
   void describe("deactivateJobSchedule", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
       await wipeJobSchedulesDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
         isActive: true,
       });
@@ -480,19 +354,14 @@ void describe("Job Schedules", async () => {
   });
 
   void describe("deleteJobSchedule", async () => {
-    let testJobDefinition: typeof schema.jobDefinitions.$inferSelect;
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
       await wipeJobSchedulesDb(drizzle);
-      testJobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
-        jobDefinitionId: testJobDefinition.id,
+        jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
       });
     });

@@ -12,8 +12,10 @@ export const employees = hrSchema.table(
     email: varchar("email", { length: 255 }),
     phone: varchar("phone", { length: 50 }),
     hireDate: date("hire_date").notNull(),
-    department: varchar("department", { length: 100 }),
-    position: varchar("position", { length: 100 }),
+    departmentEn: varchar("department_en", { length: 100 }),
+    departmentAr: varchar("department_ar", { length: 100 }),
+    positionEn: varchar("position_en", { length: 100 }),
+    positionAr: varchar("position_ar", { length: 100 }),
     salary: decimal("salary", { precision: 12, scale: 2 }),
     status: varchar("status", { length: 50 }).default("ACTIVE").notNull(),
     organizationId: uuid("organization_id")

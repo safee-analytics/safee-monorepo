@@ -7,7 +7,8 @@ export const accounts = financeSchema.table(
   {
     id: idpk("id"),
     code: varchar("code", { length: 50 }).notNull(),
-    name: varchar("name", { length: 255 }).notNull(),
+    nameEn: varchar("name_en", { length: 255 }).notNull(),
+    nameAr: varchar("name_ar", { length: 255 }),
     type: varchar("type", { length: 100 }).notNull(),
     parentId: uuid("parent_id"),
     organizationId: uuid("organization_id")

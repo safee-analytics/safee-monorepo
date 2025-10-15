@@ -14,7 +14,6 @@ import {
   cleanupOldJobLogs,
   getJobLogsSummary,
 } from "./jobLogs.js";
-import { createJobDefinition } from "./jobDefinitions.js";
 import { createJob } from "./jobs.js";
 import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
@@ -23,7 +22,6 @@ async function wipeJobLogsDb(drizzle: DrizzleClient) {
   await drizzle.delete(schema.jobLogs);
   await drizzle.delete(schema.jobs);
   await drizzle.delete(schema.jobSchedules);
-  await drizzle.delete(schema.jobDefinitions);
 }
 
 void describe("Job Logs", async () => {
@@ -47,13 +45,9 @@ void describe("Job Logs", async () => {
     beforeEach(async () => {
       await wipeJobLogsDb(drizzle);
 
-      const jobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
-
       testJob = await createJob(deps, {
-        jobDefinitionId: jobDefinition.id,
+        jobName: "send_email" as const,
+        maxRetries: 3,
         type: "immediate" as const,
         priority: "normal" as const,
       });
@@ -100,13 +94,9 @@ void describe("Job Logs", async () => {
     beforeEach(async () => {
       await wipeJobLogsDb(drizzle);
 
-      const jobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
-
       testJob = await createJob(deps, {
-        jobDefinitionId: jobDefinition.id,
+        jobName: "send_email" as const,
+        maxRetries: 3,
         type: "immediate" as const,
         priority: "normal" as const,
       });
@@ -176,13 +166,9 @@ void describe("Job Logs", async () => {
     beforeEach(async () => {
       await wipeJobLogsDb(drizzle);
 
-      const jobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
-
       testJob = await createJob(deps, {
-        jobDefinitionId: jobDefinition.id,
+        jobName: "send_email" as const,
+        maxRetries: 3,
         type: "immediate" as const,
         priority: "normal" as const,
       });
@@ -207,13 +193,9 @@ void describe("Job Logs", async () => {
     beforeEach(async () => {
       await wipeJobLogsDb(drizzle);
 
-      const jobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
-
       testJob = await createJob(deps, {
-        jobDefinitionId: jobDefinition.id,
+        jobName: "send_email" as const,
+        maxRetries: 3,
         type: "immediate" as const,
         priority: "normal" as const,
       });
@@ -255,13 +237,9 @@ void describe("Job Logs", async () => {
     beforeEach(async () => {
       await wipeJobLogsDb(drizzle);
 
-      const jobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
-
       testJob = await createJob(deps, {
-        jobDefinitionId: jobDefinition.id,
+        jobName: "send_email" as const,
+        maxRetries: 3,
         type: "immediate" as const,
         priority: "normal" as const,
       });
@@ -299,19 +277,16 @@ void describe("Job Logs", async () => {
     beforeEach(async () => {
       await wipeJobLogsDb(drizzle);
 
-      const jobDefinition = await createJobDefinition(deps, {
-        name: `test-job-def-${Date.now()}`,
-        handlerName: "TestHandler",
-      });
-
       testJob1 = await createJob(deps, {
-        jobDefinitionId: jobDefinition.id,
+        jobName: "send_email" as const,
+        maxRetries: 3,
         type: "immediate" as const,
         priority: "normal" as const,
       });
 
       testJob2 = await createJob(deps, {
-        jobDefinitionId: jobDefinition.id,
+        jobName: "send_email" as const,
+        maxRetries: 3,
         type: "immediate" as const,
         priority: "normal" as const,
       });
@@ -355,13 +330,9 @@ void describe("Job Logs", async () => {
     });
 
     void it("handles jobs with no logs", async () => {
-      const emptyJobDefinition = await createJobDefinition(deps, {
-        name: `empty-job-def-${Date.now()}`,
-        handlerName: "EmptyHandler",
-      });
-
       const emptyJob = await createJob(deps, {
-        jobDefinitionId: emptyJobDefinition.id,
+        jobName: "send_email" as const,
+        maxRetries: 3,
         type: "immediate" as const,
         priority: "normal" as const,
       });

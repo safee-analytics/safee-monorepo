@@ -15,8 +15,6 @@ export * from "./accounts.js";
 export * from "./accountsRelations.js";
 export * from "./payroll.js";
 export * from "./payrollRelations.js";
-export * from "./jobDefinitions.js";
-export * from "./jobDefinitionsRelations.js";
 export * from "./jobSchedules.js";
 export * from "./jobSchedulesRelations.js";
 export * from "./jobs.js";

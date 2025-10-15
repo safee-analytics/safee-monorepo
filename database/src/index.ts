@@ -5,7 +5,7 @@ import type { Column } from "drizzle-orm";
 export * from "./errors.js";
 export * from "./drizzle.js";
 export * from "./deps.js";
-export {} from "./drizzle/_common.js";
+export type { Locale } from "./drizzle/_common.js";
 export type RedisClient = Awaited<ReturnType<typeof redisConnect>>;
 
 export function conditionalCount(column: Column, value: unknown) {
@@ -28,3 +28,7 @@ export * from "./scheduler/jobScheduler.js";
 export * from "./users/index.js";
 
 export * from "./sessions/index.js";
+
+export * from "./general-utils/i18n.js";
+
+export * from "./email/index.js";

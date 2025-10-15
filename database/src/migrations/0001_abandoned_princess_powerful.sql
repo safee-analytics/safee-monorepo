@@ -1,0 +1,11 @@
+CREATE TYPE "identity"."locale" AS ENUM('en', 'ar');
+ALTER TABLE "hr"."employees" RENAME COLUMN "department" TO "department_en";
+ALTER TABLE "hr"."employees" RENAME COLUMN "position" TO "position_en";
+ALTER TABLE "finance"."invoice_items" RENAME COLUMN "description" TO "description_en";
+ALTER TABLE "finance"."accounts" RENAME COLUMN "name" TO "name_en";
+ALTER TABLE "identity"."organizations" ADD COLUMN "default_locale" "identity"."locale" DEFAULT 'en' NOT NULL;
+ALTER TABLE "identity"."users" ADD COLUMN "preferred_locale" "identity"."locale" DEFAULT 'en' NOT NULL;
+ALTER TABLE "hr"."employees" ADD COLUMN "department_ar" varchar(100);
+ALTER TABLE "hr"."employees" ADD COLUMN "position_ar" varchar(100);
+ALTER TABLE "finance"."invoice_items" ADD COLUMN "description_ar" varchar(255);
+ALTER TABLE "finance"."accounts" ADD COLUMN "name_ar" varchar(255);

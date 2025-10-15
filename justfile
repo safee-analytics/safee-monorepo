@@ -234,7 +234,7 @@ compile-migration mode="--write":
 # Migrate the database to the latest state
 [group('database')]
 migrate:
-    npx -w database tsx -r dotenv/config src/private/migrate.ts
+    npm -w database run migrate
     npx -w database tsx -r dotenv/config src/private/postmigrate.ts
 
 # Clear the database and re-run all migrations
@@ -281,6 +281,38 @@ clean-gateway:
     npx -w gateway tsc --build --clean
     rm -f gateway/.eslintcache
     rm -rf gateway/node_modules/.cache/prettier/
+
+# Build jobs package
+[group('jobs')]
+build-jobs: build-database
+    npm -w jobs run build
+
+# Typecheck jobs
+[group('jobs')]
+check-jobs: build-database
+    npx turbo run check --filter=@safee/jobs
+
+# Lint jobs
+[group('jobs')]
+lint-jobs: build-eslint-plugin-safee build-database
+    npx turbo run lint --filter=@safee/jobs
+
+# Format jobs
+[group('jobs')]
+fmt-jobs:
+    npx turbo run fmt --filter=@safee/jobs
+
+# Clean generated files from jobs
+[group('jobs')]
+clean-jobs:
+    npx -w jobs tsc --build --clean
+    rm -f jobs/.eslintcache
+    rm -rf jobs/node_modules/.cache/prettier/
+
+# Run unit tests for jobs module
+[group('jobs')]
+test-jobs: build-jobs
+    npm -w jobs test
 
 # Build tests package
 [group('e2e')]

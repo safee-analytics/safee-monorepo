@@ -8,6 +8,20 @@
       "when": 1758829708276,
       "tag": "0000_outgoing_vanisher",
       "breakpoints": false
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1760121852830,
+      "tag": "0001_abandoned_princess_powerful",
+      "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1760223836786,
+      "tag": "0002_kind_callisto",
+      "breakpoints": false
     }
   ]
 }

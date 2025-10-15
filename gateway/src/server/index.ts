@@ -7,9 +7,10 @@ import session from "express-session";
 import { pinoHttp } from "pino-http";
 import type { Logger } from "pino";
 import { ValidateError } from "tsoa";
-import type { RedisClient, DrizzleClient, Storage, PubSub, JobScheduler } from "@safee/database";
+import type { RedisClient, DrizzleClient, Storage, PubSub, JobScheduler, Locale } from "@safee/database";
 import { SessionStore } from "./SessionStore.js";
 import { RegisterRoutes } from "./routes.js";
+import { localeMiddleware } from "./middleware/localeMiddleware.js";
 import swaggerDocument from "./swagger.json" with { type: "json" };
 import pg from "pg";
 import { initServerContext } from "./serverContext.js";
@@ -45,6 +46,7 @@ declare global {
     interface Request {
       redis: RedisClient;
       drizzle: DrizzleClient;
+      locale: Locale;
 
       authenticatedUserId?: string;
       organizationId?: string;
@@ -91,6 +93,9 @@ export async function server({
   // Body parsing middleware (needed for body to show up properly in logging)
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+
+  // Locale detection middleware
+  app.use(localeMiddleware);
 
   // Dependency injection middleware
   app.use((req, _res, next) => {

@@ -17,7 +17,9 @@ void describe("Storage Integration Tests", async () => {
   after(async () => {
     try {
       await rmdir(testDir, { recursive: true });
-    } catch {}
+    } catch {
+      // Ignore cleanup errors
+    }
   });
 
   void describe("Cross-Provider Consistency", async () => {
