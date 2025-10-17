@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const EmailAddressSchema = z.object({
-  email: z.email(),
+  email: z.string().email(),
   name: z.string().optional(),
 });
 

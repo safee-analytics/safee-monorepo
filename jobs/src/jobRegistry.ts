@@ -9,13 +9,13 @@ export interface JobHandlerContext {
   };
 }
 
-export interface JobDefinition {
+export interface JobDefinition<TPayload = unknown> {
   name: string;
   description: string;
   maxRetries: number;
   retryDelayMs: number;
   timeoutMs: number;
-  handler: (context: JobHandlerContext, payload: unknown) => Promise<void>;
+  handler: (context: JobHandlerContext, payload: TPayload) => Promise<void>;
 }
 
 // Job type definitions
@@ -26,12 +26,12 @@ export const JOB_DEFINITIONS = {
     maxRetries: 3,
     retryDelayMs: 60000, // 1 minute
     timeoutMs: 300000, // 5 minutes
-    handler: async (context: JobHandlerContext, payload: EmailJobPayload) => {
+    handler: async (context: JobHandlerContext, payload: unknown) => {
       const emailHandler = new EmailHandler(context);
-      await emailHandler.handleEmailJob(payload);
+      await emailHandler.handleEmailJob(payload as EmailJobPayload);
     },
-  },
-} as const satisfies Record<string, JobDefinition>;
+  } satisfies JobDefinition,
+} as const;
 
 export type JobType = keyof typeof JOB_DEFINITIONS;
 
