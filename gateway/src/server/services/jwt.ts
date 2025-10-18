@@ -8,6 +8,7 @@ export interface JwtPayload {
   email: string;
   roles: string[];
   permissions: string[];
+  sessionId?: string;
 }
 
 export interface TokenPair {
@@ -18,7 +19,10 @@ export interface TokenPair {
 
 export interface RefreshTokenPayload {
   userId: string;
+  organizationId: string;
+  email: string;
   tokenId: string;
+  sessionId?: string;
   type: "refresh";
 }
 
@@ -30,6 +34,43 @@ export class JwtService {
       logger.info("JWT Service initialized with authentication enabled");
     } else {
       logger.warn("🚨 JWT Service initialized with authentication DISABLED - Development mode only!");
+    }
+  }
+
+  async generateAccessToken(payload: JwtPayload): Promise<{ accessToken: string; expiresIn: number }> {
+    if (!this.config.enableAuthentication) {
+      logger.debug("Authentication disabled - returning mock access token");
+      return {
+        accessToken: "dev-access-token",
+        expiresIn: 3600, // 1 hour in seconds
+      };
+    }
+
+    try {
+      const accessToken = jwt.sign(
+        {
+          ...payload,
+          type: "access",
+        },
+        this.config.jwtSecret,
+        {
+          expiresIn: this.config.jwtExpiresIn,
+          issuer: "safee-analytics",
+          audience: "safee-api",
+        } as SignOptions,
+      );
+
+      const expiresIn = this.parseExpiresIn(this.config.jwtExpiresIn);
+
+      logger.debug({ userId: payload.userId }, "Access token generated successfully");
+
+      return {
+        accessToken,
+        expiresIn,
+      };
+    } catch (error) {
+      logger.error({ error }, "Failed to generate access token");
+      throw new Error("Access token generation failed");
     }
   }
 
@@ -62,7 +103,10 @@ export class JwtService {
       const refreshToken = jwt.sign(
         {
           userId: payload.userId,
+          organizationId: payload.organizationId,
+          email: payload.email,
           tokenId,
+          sessionId: payload.sessionId,
           type: "refresh",
         } as RefreshTokenPayload,
         this.config.jwtSecret,
@@ -138,6 +182,8 @@ export class JwtService {
       logger.debug("Authentication disabled - returning mock refresh token payload");
       return {
         userId: "dev-user-id",
+        organizationId: "dev-org-id",
+        email: "dev@example.com",
         tokenId: "dev-token-id",
         type: "refresh",
       };
