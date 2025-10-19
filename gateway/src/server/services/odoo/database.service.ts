@@ -5,6 +5,7 @@ import crypto from "crypto";
 import { odooClient } from "./client.js";
 import { encryptionService } from "../encryption.js";
 import { env } from "../../../env.js";
+import { OrganizationNotFound, OdooDatabaseAlreadyExists, OdooDatabaseNotFound } from "../../errors.js";
 
 export interface OdooProvisionResult {
   databaseName: string;
@@ -31,7 +32,7 @@ export class OdooDatabaseService {
     });
 
     if (!org) {
-      throw new Error(`Organization not found: ${organizationId}`);
+      throw new OrganizationNotFound();
     }
 
     const existingDb = await this.drizzle.query.odooDatabases.findFirst({
@@ -39,14 +40,14 @@ export class OdooDatabaseService {
     });
 
     if (existingDb) {
-      throw new Error(`Odoo database already provisioned for organization: ${organizationId}`);
+      throw new OdooDatabaseAlreadyExists(organizationId);
     }
 
     const databaseName = this.generateDatabaseName(org.slug);
 
     const exists = await odooClient.databaseExists(databaseName);
     if (exists) {
-      throw new Error(`Odoo database already exists for organization: ${databaseName}`);
+      throw new OdooDatabaseAlreadyExists(organizationId);
     }
 
     // Generate unique admin login based on organization slug for better security
@@ -89,7 +90,7 @@ export class OdooDatabaseService {
     });
 
     if (!org) {
-      throw new Error(`Organization not found: ${organizationId}`);
+      throw new OrganizationNotFound();
     }
 
     const databaseName = this.generateDatabaseName(org.slug);
@@ -107,7 +108,7 @@ export class OdooDatabaseService {
     });
 
     if (!org) {
-      throw new Error(`Organization not found: ${organizationId}`);
+      throw new OrganizationNotFound();
     }
 
     const databaseName = this.generateDatabaseName(org.slug);
@@ -120,6 +121,8 @@ export class OdooDatabaseService {
   }
 
   async listAllDatabases(): Promise<string[]> {
+    // Odoo's dbfilter configuration (^odoo_.*$) automatically filters the list
+    // to only show databases matching the pattern
     return odooClient.listDatabases();
   }
 
@@ -127,7 +130,7 @@ export class OdooDatabaseService {
     const info = await this.getDatabaseInfo(organizationId);
 
     if (!info.exists) {
-      throw new Error(`Odoo database does not exist for organization: ${organizationId}`);
+      throw new OdooDatabaseNotFound(organizationId);
     }
 
     return `${env.ODOO_URL}/web/login?db=${info.databaseName}`;

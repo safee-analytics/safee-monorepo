@@ -1,14 +1,17 @@
 import { Controller, Post, Route, Tags, Body, Security, NoSecurity, SuccessResponse, Request } from "tsoa";
 import type { Request as ExpressRequest } from "express";
 import { getServerContext, type ServerContext } from "../serverContext.js";
-import { Unauthorized } from "../errors.js";
+import { Unauthorized, PasswordValidationFailed, OperationFailed } from "../errors.js";
 import {
   getUserByEmail,
+  getUserById,
   createUserWithOrganization,
   getUserRoleStrings,
   getUserPermissionStrings,
   sessionService,
+  schema,
 } from "@safee/database";
+import { eq } from "drizzle-orm";
 import { extractDeviceName } from "../utils/deviceUtils.js";
 import { jwtService } from "../services/jwt.js";
 import { passwordService } from "../services/password.js";
@@ -44,6 +47,19 @@ interface RegisterRequest {
   firstName?: string;
   lastName?: string;
   organizationName: string;
+}
+
+interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+interface RequestPasswordResetRequest {
+  email: string;
+}
+
+interface PasswordResetResponse {
+  message: string;
 }
 
 @Route("auth")
@@ -222,7 +238,7 @@ export class AuthController extends Controller {
       }
 
       this.setStatus(500);
-      throw new Error("Login failed");
+      throw new OperationFailed("Login");
     }
   }
 
@@ -236,10 +252,7 @@ export class AuthController extends Controller {
       // Validate password
       if (!passwordService.validatePassword(request.password)) {
         this.setStatus(400);
-        throw new Error(
-          "Password does not meet security requirements: " +
-            passwordService.getPasswordRequirements().join(", "),
-        );
+        throw new PasswordValidationFailed();
       }
 
       // Hash password
@@ -314,7 +327,7 @@ export class AuthController extends Controller {
       }
 
       this.setStatus(500);
-      throw new Error("Registration failed");
+      throw new OperationFailed("Registration");
     }
   }
 
@@ -363,6 +376,151 @@ export class AuthController extends Controller {
       // Still return success for security - don't reveal internal errors
       return {
         message: "Logged out successfully",
+      };
+    }
+  }
+
+  /**
+   * Change password for authenticated user
+   */
+  @Post("change-password")
+  @Security("jwt")
+  @SuccessResponse("200", "Password changed successfully")
+  public async changePassword(
+    @Body() request: ChangePasswordRequest,
+    @Request() req: ExpressRequest,
+  ): Promise<PasswordResetResponse> {
+    const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
+    const userId = req.user?.userId;
+    const ipAddress = req.ip || req.socket?.remoteAddress || "unknown";
+    const userAgent = req.get("User-Agent") || "unknown";
+
+    if (!userId) {
+      throw new Unauthorized("User not authenticated");
+    }
+
+    try {
+      // Get user
+      const user = await getUserById(deps, userId);
+      if (!user) {
+        throw new Unauthorized("User not found");
+      }
+
+      // Verify current password
+      const isValidPassword = await passwordService.verifyPassword(
+        request.currentPassword,
+        user.passwordHash,
+      );
+      if (!isValidPassword) {
+        await sessionService.logSecurityEvent(deps, {
+          userId,
+          organizationId: user.organizationId,
+          eventType: "password_change_failed",
+          ipAddress,
+          userAgent,
+          success: false,
+          riskLevel: "medium",
+          metadata: { reason: "invalid_current_password" },
+        });
+        throw new Unauthorized("Current password is incorrect");
+      }
+
+      // Validate new password
+      if (!passwordService.validatePassword(request.newPassword)) {
+        throw new PasswordValidationFailed();
+      }
+
+      // Hash new password
+      const newPasswordHash = await passwordService.hashPassword(request.newPassword);
+
+      // Update password in database
+      await deps.drizzle
+        .update(schema.users)
+        .set({
+          passwordHash: newPasswordHash,
+          updatedAt: new Date(),
+        })
+        .where(eq(schema.users.id, userId));
+
+      // Log security event
+      await sessionService.logSecurityEvent(deps, {
+        userId,
+        organizationId: user.organizationId,
+        eventType: "password_changed",
+        ipAddress,
+        userAgent,
+        success: true,
+        riskLevel: "low",
+      });
+
+      this.context.logger.info({ userId }, "Password changed successfully");
+
+      return {
+        message: "Password changed successfully",
+      };
+    } catch (error) {
+      this.context.logger.error({ error, userId }, "Failed to change password");
+      throw error;
+    }
+  }
+
+  /**
+   * Request password reset (will send email in future)
+   * For now, this endpoint logs the request for future email implementation
+   */
+  @Post("request-password-reset")
+  @NoSecurity()
+  @SuccessResponse("200", "Password reset email sent (if account exists)")
+  public async requestPasswordReset(
+    @Body() request: RequestPasswordResetRequest,
+    @Request() req: ExpressRequest,
+  ): Promise<PasswordResetResponse> {
+    const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
+    const ipAddress = req.ip || req.socket?.remoteAddress || "unknown";
+    const userAgent = req.get("User-Agent") || "unknown";
+
+    try {
+      // Get user by email
+      const user = await getUserByEmail(this.context, request.email);
+
+      if (user) {
+        // TODO: Generate reset token and send email
+        // For now, just log the request
+        await sessionService.logSecurityEvent(deps, {
+          userId: user.id,
+          organizationId: user.organizationId,
+          eventType: "password_reset_requested",
+          ipAddress,
+          userAgent,
+          success: true,
+          riskLevel: "low",
+          metadata: { email: request.email },
+        });
+
+        this.context.logger.info(
+          { userId: user.id, email: request.email },
+          "Password reset requested - email functionality not yet implemented",
+        );
+      } else {
+        // Log failed attempt but don't reveal that user doesn't exist
+        this.context.logger.warn(
+          { email: request.email, ipAddress },
+          "Password reset requested for non-existent user",
+        );
+      }
+
+      // Always return success to prevent user enumeration
+      return {
+        message:
+          "If an account exists with this email, a password reset link will be sent. (Email functionality coming soon)",
+      };
+    } catch (error) {
+      this.context.logger.error({ error, email: request.email }, "Failed to process password reset request");
+
+      // Always return success to prevent user enumeration
+      return {
+        message:
+          "If an account exists with this email, a password reset link will be sent. (Email functionality coming soon)",
       };
     }
   }

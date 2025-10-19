@@ -32,11 +32,11 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_USER=safee
-      - DB_PASSWORD=safee
-      - ADMIN_PASSWORD=${ODOO_ADMIN_PASSWORD:-admin}
+      - ODOO_DB_HOST=postgres
+      - ODOO_DB_PORT=5432
+      - ODOO_DB_USER=safee
+      - ODOO_DB_PASSWORD=safee
+      - ODOO_ADMIN_PASSWD=${ODOO_ADMIN_PASSWORD:-admin}
     volumes:
       - odoo-data:/var/lib/odoo
       - ./odoo/addons:/mnt/extra-addons:ro

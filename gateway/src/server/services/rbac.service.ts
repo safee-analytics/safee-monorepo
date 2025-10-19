@@ -1,6 +1,7 @@
 import type { DrizzleClient } from "@safee/database";
 import { schema } from "@safee/database";
 import { eq, and } from "drizzle-orm";
+import { RoleNotFound } from "../errors.js";
 
 export interface PermissionCheck {
   resource: string;
@@ -122,7 +123,7 @@ export class RBACServiceImpl implements RBACService {
     });
 
     if (!role) {
-      throw new Error(`Role not found: ${roleSlug}`);
+      throw new RoleNotFound(roleSlug);
     }
 
     const existing = await this.drizzle.query.userRoles.findFirst({
@@ -146,7 +147,7 @@ export class RBACServiceImpl implements RBACService {
     });
 
     if (!role) {
-      throw new Error(`Role not found: ${roleSlug}`);
+      throw new RoleNotFound(roleSlug);
     }
 
     // Remove role

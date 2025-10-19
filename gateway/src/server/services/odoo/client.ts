@@ -1,4 +1,6 @@
 import { env } from "../../../env.js";
+import { BadGateway } from "../../errors.js";
+import xmlrpc from "xmlrpc";
 
 export interface OdooAuthResponse {
   uid: number;
@@ -22,41 +24,54 @@ export interface CreateDatabaseParams {
 
 export class OdooClient {
   private baseUrl: string;
+  private host: string;
+  private port: number;
+  private isSecure: boolean;
 
   constructor(baseUrl?: string) {
     this.baseUrl = baseUrl || env.ODOO_URL;
+    const url = new URL(this.baseUrl);
+    this.host = url.hostname;
+    this.port = url.port ? parseInt(url.port) : url.protocol === "https:" ? 443 : 80;
+    this.isSecure = url.protocol === "https:";
+  }
+
+  private createDbClient(): xmlrpc.Client {
+    const options = {
+      host: this.host,
+      port: this.port,
+      path: "/xmlrpc/2/db",
+    };
+
+    return this.isSecure ? xmlrpc.createSecureClient(options) : xmlrpc.createClient(options);
+  }
+
+  private async callDbMethod(method: string, args: unknown[]): Promise<unknown> {
+    return new Promise((resolve, reject) => {
+      const client = this.createDbClient();
+      client.methodCall(method, args, (error, value) => {
+        if (error) {
+          const errorMessage =
+            error instanceof Error ? error.message : typeof error === "string" ? error : String(error);
+          reject(new BadGateway(`Odoo database ${method} error: ${errorMessage}`));
+        } else {
+          resolve(value);
+        }
+      });
+    });
   }
 
   async createDatabase(params: CreateDatabaseParams): Promise<OdooDatabase> {
-    const response = await fetch(`${this.baseUrl}/web/database/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "call",
-        params: {
-          master_pwd: params.masterPassword,
-          name: params.name,
-          login: params.adminLogin,
-          password: params.adminPassword,
-          lang: params.lang || "en_US",
-          country_code: params.countryCode || "SA",
-          phone: params.phone || "",
-        },
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to create Odoo database: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    if (data.error) {
-      throw new Error(`Odoo error: ${data.error.message || JSON.stringify(data.error)}`);
-    }
+    await this.callDbMethod("create_database", [
+      params.masterPassword,
+      params.name,
+      false, // demo data
+      params.lang || "en_US",
+      params.adminPassword,
+      params.adminLogin,
+      params.countryCode || "SA",
+      params.phone || "",
+    ]);
 
     return {
       name: params.name,
@@ -65,59 +80,8 @@ export class OdooClient {
   }
 
   async listDatabases(): Promise<string[]> {
-    const response = await fetch(`${this.baseUrl}/web/database/list`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "call",
-        params: {},
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to list Odoo databases: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    if (data.error) {
-      throw new Error(`Odoo error: ${data.error.message || JSON.stringify(data.error)}`);
-    }
-
-    return data.result || [];
-  }
-
-  async authenticate(database: string, login: string, password: string): Promise<OdooAuthResponse> {
-    const response = await fetch(`${this.baseUrl}/web/session/authenticate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "call",
-        params: {
-          db: database,
-          login,
-          password,
-        },
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to authenticate with Odoo: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    if (data.error) {
-      throw new Error(`Odoo error: ${data.error.message || JSON.stringify(data.error)}`);
-    }
-
-    return data.result;
+    const result = await this.callDbMethod("list", []);
+    return result as string[];
   }
 
   async databaseExists(name: string): Promise<boolean> {
@@ -126,30 +90,7 @@ export class OdooClient {
   }
 
   async dropDatabase(masterPassword: string, name: string): Promise<void> {
-    const response = await fetch(`${this.baseUrl}/web/database/drop`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "call",
-        params: {
-          master_pwd: masterPassword,
-          name,
-        },
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to drop Odoo database: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-
-    if (data.error) {
-      throw new Error(`Odoo error: ${data.error.message || JSON.stringify(data.error)}`);
-    }
+    await this.callDbMethod("drop", [masterPassword, name]);
   }
 }
 

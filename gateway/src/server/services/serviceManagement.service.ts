@@ -3,6 +3,9 @@ import { schema, connect } from "@safee/database";
 import { eq, and } from "drizzle-orm";
 import { odooModuleService } from "./odoo/module.service.js";
 import { odooDatabaseService } from "./odoo/database.service.js";
+import { ServiceNotFound, ServiceAlreadyEnabled } from "../errors.js";
+import { env } from "../../env.js";
+import pino from "pino";
 
 export interface EnableServiceForOrganizationParams {
   organizationId: string;
@@ -15,6 +18,8 @@ export interface EnableServiceForUserParams {
 }
 
 export class ServiceManagementService {
+  private logger = pino({ name: "service-management" });
+
   constructor(private readonly drizzle: DrizzleClient) {}
 
   async enableServiceForOrganization(params: EnableServiceForOrganizationParams): Promise<void> {
@@ -25,7 +30,7 @@ export class ServiceManagementService {
     });
 
     if (!service) {
-      throw new Error(`Service not found: ${serviceId}`);
+      throw new ServiceNotFound(serviceId);
     }
 
     const existing = await this.drizzle.query.organizationServices.findFirst({
@@ -36,7 +41,7 @@ export class ServiceManagementService {
     });
 
     if (existing && existing.isEnabled) {
-      throw new Error(`Service already enabled for organization`);
+      throw new ServiceAlreadyEnabled();
     }
 
     if (existing) {
@@ -68,23 +73,24 @@ export class ServiceManagementService {
       if (dbInfo.exists) {
         const credentials = await odooDatabaseService.getCredentials(organizationId);
         if (credentials) {
-          const auth = await odooModuleService.authenticate(
-            credentials.databaseName,
-            credentials.adminLogin,
-            credentials.adminPassword,
-          );
+          const odooUrl = new URL(env.ODOO_URL);
+          const odooPort = odooUrl.port ? parseInt(odooUrl.port) : odooUrl.protocol === "https:" ? 443 : 80;
 
           await odooModuleService.installModules({
-            database: dbInfo.databaseName,
+            config: {
+              url: credentials.odooUrl,
+              port: odooPort,
+              database: credentials.databaseName,
+              username: credentials.adminLogin,
+              password: credentials.adminPassword,
+            },
             modules: [service.name],
-            uid: auth.uid,
-            sessionId: auth.session_id,
+            logger: this.logger,
           });
         }
       }
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error("Failed to install Odoo module:", err);
+      this.logger.error({ err, organizationId, serviceId }, "Failed to install Odoo module");
     }
   }
 

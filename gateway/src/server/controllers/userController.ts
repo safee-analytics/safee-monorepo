@@ -2,7 +2,7 @@ import { Controller, Get, Put, Route, Tags, Security, Body, SuccessResponse, Req
 import type { Request as ExpressRequest } from "express";
 import { getServerContext, type ServerContext } from "../serverContext.js";
 import { getUserById, updateUserProfile, updateUserLocale } from "@safee/database";
-import { Unauthorized } from "../errors.js";
+import { Unauthorized, UserNotFound } from "../errors.js";
 
 type Locale = "en" | "ar";
 
@@ -56,7 +56,7 @@ export class UserController extends Controller {
 
       if (!user) {
         this.setStatus(404);
-        throw new Error("User not found");
+        throw new UserNotFound();
       }
 
       return {
@@ -95,7 +95,7 @@ export class UserController extends Controller {
 
       if (!user) {
         this.setStatus(404);
-        throw new Error("User not found");
+        throw new UserNotFound();
       }
 
       return {

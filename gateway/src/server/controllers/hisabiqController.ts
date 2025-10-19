@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Route, Tags, Security, Query, Body, SuccessResponse } from "tsoa";
 import type { Invoice, InvoiceCreateRequest } from "../types/invoice.js";
+import { NotImplemented } from "../errors.js";
 
 @Route("hisabiq")
 @Tags("Hisabiq (Accounting)")
@@ -19,7 +20,7 @@ export class HisabiqController extends Controller {
     limit: number;
   }> {
     // TODO: Implement get invoices logic
-    throw new Error("Not implemented yet");
+    throw new NotImplemented();
   }
 
   /**
@@ -30,7 +31,7 @@ export class HisabiqController extends Controller {
   @SuccessResponse("201", "Invoice created successfully")
   public async createInvoice(@Body() _request: InvoiceCreateRequest): Promise<Invoice> {
     // TODO: Implement create invoice logic
-    throw new Error("Not implemented yet");
+    throw new NotImplemented();
   }
 
   /**
@@ -48,6 +49,6 @@ export class HisabiqController extends Controller {
     }>
   > {
     // TODO: Implement get accounts logic
-    throw new Error("Not implemented yet");
+    throw new NotImplemented();
   }
 }

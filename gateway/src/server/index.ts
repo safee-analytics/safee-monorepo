@@ -11,9 +11,11 @@ import type { RedisClient, DrizzleClient, Storage, PubSub, JobScheduler, Locale 
 import { SessionStore } from "./SessionStore.js";
 import { RegisterRoutes } from "./routes.js";
 import { localeMiddleware } from "./middleware/localeMiddleware.js";
+import { ApiError } from "./errors.js";
 import swaggerDocument from "./swagger.json" with { type: "json" };
 import pg from "pg";
 import { initServerContext } from "./serverContext.js";
+import { initOdooClientManager } from "./services/odoo/manager.service.js";
 
 dotenv.config();
 
@@ -55,21 +57,6 @@ declare global {
   }
 }
 
-// Custom error class for API errors
-export class ApiError extends Error {
-  public statusCode: number;
-  public context?: Record<string, unknown>;
-  public code?: string;
-
-  constructor(message: string, statusCode: number = 500, context?: Record<string, unknown>, code?: string) {
-    super(message);
-    this.name = "ApiError";
-    this.statusCode = statusCode;
-    this.context = context;
-    this.code = code;
-  }
-}
-
 export async function server({
   logger,
   redis,
@@ -97,13 +84,25 @@ export async function server({
   // Locale detection middleware
   app.use(localeMiddleware);
 
+  // Initialize Odoo client manager
+  const odoo = initOdooClientManager(drizzle, logger as unknown as Logger);
+  logger.info("Odoo client manager initialized");
+
   // Dependency injection middleware
   app.use((req, _res, next) => {
     req.redis = redis;
     req.drizzle = drizzle;
     next();
   });
-  initServerContext({ drizzle, logger: logger as unknown as Logger, redis, storage, pubsub, scheduler });
+  initServerContext({
+    drizzle,
+    logger: logger as unknown as Logger,
+    redis,
+    storage,
+    pubsub,
+    scheduler,
+    odoo,
+  });
 
   app.use(helmet());
 
@@ -190,15 +189,7 @@ export async function server({
 
   // Error handling middleware
   app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
-    if (err instanceof ApiError) {
-      logger.info({ err, url: req.url, userId: req.authenticatedUserId }, "api error");
-      return res.status(err.statusCode).json({
-        message: err.message,
-        context: err.context,
-        code: err.code,
-      });
-    }
-
+    // Handle TSOA validation errors
     if (err instanceof ValidateError) {
       logger.info({ err, url: req.url, userId: req.authenticatedUserId }, "validation error");
       return res.status(422).json({
@@ -207,7 +198,31 @@ export async function server({
       });
     }
 
-    req.log.error({ err }, "Error in request handler reached end of chain");
+    // Handle our custom ApiError hierarchy (includes all auth/authorization errors)
+    if (err instanceof ApiError) {
+      logger.info(
+        {
+          err,
+          url: req.url,
+          userId: req.authenticatedUserId,
+          code: err.code,
+          statusCode: err.statusCode,
+        },
+        "api error",
+      );
+
+      return res.status(err.statusCode).json({
+        message: err.message,
+        code: err.code,
+        ...(Object.keys(err.context || {}).length > 0 && { context: err.context }),
+      });
+    }
+
+    // Unhandled errors
+    logger.error(
+      { err, url: req.url, userId: req.authenticatedUserId },
+      "Error in request handler reached end of chain",
+    );
     return res.status(500).json({
       message: "Internal Server Error",
     });

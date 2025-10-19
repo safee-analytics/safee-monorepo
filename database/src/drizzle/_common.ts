@@ -114,6 +114,8 @@ export const eventTypeEnum = identitySchema.enum("event_type", [
   "login_failed",
   "logout",
   "password_changed",
+  "password_change_failed",
+  "password_reset_requested",
   "session_revoked",
   "permission_changed",
   "suspicious_activity",
