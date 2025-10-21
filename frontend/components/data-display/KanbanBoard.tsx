@@ -202,7 +202,7 @@ const Column = ({
 };
 
 type CardProps = CardType & {
-  handleDragStart: (e: DragEvent, card: CardType) => void;
+  handleDragStart: (e: DragEvent<HTMLDivElement>, card: CardType) => void;
 };
 
 const Card = ({ title, id, column, handleDragStart }: CardProps) => {
