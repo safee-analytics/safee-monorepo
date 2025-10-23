@@ -73,8 +73,10 @@ const Column = ({
 }: ColumnProps) => {
   const [active, setActive] = useState(false);
 
-  const handleDragStart = (e: DragEvent, card: CardType) => {
-    e.dataTransfer.setData("cardId", card.id);
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement> | MouseEvent | TouchEvent | PointerEvent, card: CardType) => {
+    if ('dataTransfer' in e) {
+      e.dataTransfer.setData("cardId", card.id);
+    }
   };
 
   const handleDragEnd = (e: DragEvent) => {
@@ -202,7 +204,7 @@ const Column = ({
 };
 
 type CardProps = CardType & {
-  handleDragStart: (e: DragEvent<HTMLDivElement>, card: CardType) => void;
+  handleDragStart: (e: React.DragEvent<HTMLDivElement> | MouseEvent | TouchEvent | PointerEvent, card: CardType) => void;
 };
 
 const Card = ({ title, id, column, handleDragStart }: CardProps) => {

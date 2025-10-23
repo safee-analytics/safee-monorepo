@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from "react";
 import {
-  DynamicAnimationOptions,
   motion,
   useAnimate,
   Transition,
@@ -22,7 +21,7 @@ const BLOCK_SIZE = 32;
 const DURATION_IN_MS = 175;
 const DURATION_IN_SECS = DURATION_IN_MS * 0.001;
 
-const TRANSITION: DynamicAnimationOptions = {
+const TRANSITION: Transition = {
   ease: "easeInOut",
   duration: DURATION_IN_SECS,
 };

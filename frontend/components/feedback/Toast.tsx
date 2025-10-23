@@ -14,27 +14,19 @@ const StackedNotifications = () => {
   };
 
   return (
-    <div className="bg-slate-900 min-h-[200px] flex items-center justify-center">
-      <button
-        onClick={() => {
-          setNotification(generateRandomNotif());
-        }}
-        className="text-sm text-white bg-violet-600 hover:bg-violet-700 active:scale-95 transition-all font-medium px-3 py-2 rounded"
-      >
-        Add notification
-      </button>
-      <AnimatePresence>
-        {notification && (
-          <Notification
-            removeNotif={removeNotif}
-            key={notification.id}
-            {...notification}
-          />
-        )}
-      </AnimatePresence>
-    </div>
+    <AnimatePresence>
+      {notification && (
+        <Notification
+          removeNotif={removeNotif}
+          key={notification.id}
+          {...notification}
+        />
+      )}
+    </AnimatePresence>
   );
 };
+
+export const StackedNotificationsContainer = StackedNotifications;
 
 const NOTIFICATION_TTL = 5000;
 
@@ -45,9 +37,8 @@ type NotificationType = {
 
 const Notification = ({
   text,
-  id,
   removeNotif,
-}: NotificationType & { removeNotif: (id: string) => void }) => {
+}: Omit<NotificationType, 'id'> & { removeNotif: () => void }) => {
   useEffect(() => {
     const timeoutRef = setTimeout(() => {
       removeNotif();
@@ -68,7 +59,7 @@ const Notification = ({
     >
       <FiAlertCircle className="text-3xl absolute -top-4 -left-4 p-2 rounded-full bg-white text-violet-600 shadow" />
       <span>{text}</span>
-      <button onClick={() => removeNotif(id)} className="ml-auto mt-0.5">
+      <button onClick={() => removeNotif()} className="ml-auto mt-0.5">
         <FiX />
       </button>
     </motion.div>
@@ -77,7 +68,7 @@ const Notification = ({
 
 export default StackedNotifications;
 
-const generateRandomNotif = (): NotificationType => {
+export const generateRandomNotif = (): NotificationType => {
   const names = [
     "John Anderson",
     "Emily Peterson",

@@ -15,7 +15,7 @@ import {
 } from "react-icons/fi";
 import { motion } from "framer-motion";
 
-export const Example = () => {
+export const SidebarLayout = () => {
   return (
     <div className="flex bg-indigo-50">
       <Sidebar />
@@ -24,17 +24,20 @@ export const Example = () => {
   );
 };
 
-const Sidebar = () => {
-  const [open, setOpen] = useState(true);
+export const Sidebar = () => {
+  const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
   return (
     <motion.nav
-      layout
-      className="sticky top-0 h-screen shrink-0 border-r border-slate-300 bg-white p-2"
-      style={{
+      initial={false}
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+      className="fixed top-0 left-0 h-screen border-r border-slate-300 bg-white p-2 z-40"
+      animate={{
         width: open ? "225px" : "fit-content",
       }}
+      transition={{ duration: 0.2, ease: "easeInOut" }}
     >
       <TitleSection open={open} />
 

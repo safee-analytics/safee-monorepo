@@ -5,7 +5,7 @@ import { DarkGridAuth } from "@/components/auth/LoginForm";
 import { SafeeLoginForm } from "@/components/auth/SafeeLoginForm";
 
 // Layout Components
-import { Example as SidebarExample } from "@/components/layout/Sidebar";
+import { SidebarLayout as SidebarExample } from "@/components/layout/Sidebar";
 import { ShiftHightlightTabs } from "@/components/layout/Tabs";
 
 // Data Display Components
@@ -28,6 +28,7 @@ import { VanishList } from "@/components/ui/AnimatedList";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { useOrgStore } from "@/stores/useOrgStore";
 import Link from "next/link";
+import SlideInNotifications from "@/components/feedback/SlideInToast";
 
 export default function ComponentGallery() {
   const { locale } = useOrgStore()
@@ -75,67 +76,68 @@ export default function ComponentGallery() {
         {/* Auth Components */}
         <section className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-zinc-800">{t.auth}</h2>
-        <DarkGridAuth />
-        <SafeeLoginForm
-          t={{
-            title: "Sign in",
-            subtitle: "Don't have an account?",
-            createAccount: "Create one",
-            goBack: "Go back",
-            email: "Email",
-            emailPlaceholder: "your.email@company.com",
-            password: "Password",
-            passwordPlaceholder: "••••••••••••",
-            forgotPassword: "Forgot password?",
-            signIn: "Sign in",
-            signInWithGoogle: "Sign in with Google",
-            signInWithSSO: "Sign in with SSO",
-            or: "OR",
-            termsPrefix: "By signing in, you agree to our",
-            termsLink: "Terms & Conditions",
-            termsMiddle: "and",
-            privacyLink: "Privacy Policy",
-          }}
-        />
+          <DarkGridAuth />
+          <SafeeLoginForm
+            t={{
+              title: "Sign in",
+              subtitle: "Don't have an account?",
+              createAccount: "Create one",
+              goBack: "Go back",
+              email: "Email",
+              emailPlaceholder: "your.email@company.com",
+              password: "Password",
+              passwordPlaceholder: "••••••••••••",
+              forgotPassword: "Forgot password?",
+              signIn: "Sign in",
+              signInWithGoogle: "Sign in with Google",
+              signInWithSSO: "Sign in with SSO",
+              or: "OR",
+              termsPrefix: "By signing in, you agree to our",
+              termsLink: "Terms & Conditions",
+              termsMiddle: "and",
+              privacyLink: "Privacy Policy",
+            }}
+          />
         </section>
 
         {/* Layout Components */}
         <section className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-zinc-800">{t.layout}</h2>
-        <SidebarExample />
-        <ShiftHightlightTabs />
+          <SidebarExample />
+          <ShiftHightlightTabs />
         </section>
 
         {/* Data Display Components */}
         <section className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-zinc-800">{t.dataDisplay}</h2>
-        <CustomKanban />
-        <ShuffleSortTable />
-        <FlipCalendarExample />
+          <CustomKanban />
+          <ShuffleSortTable />
+          <FlipCalendarExample />
         </section>
 
         {/* Feedback Components */}
         <section className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-zinc-800">{t.feedback}</h2>
-        <SafeeToastContainer
-          notifications={[
-            { id: "1", type: "success", message: "Action completed" }
-          ]}
-          onRemove={() => { }}
-        />
-        <StackedNotifications />
-        <SteppedProgress />
-        <ShuffleLoaderExample />
+          <SafeeToastContainer
+            notifications={[
+              { id: "1", type: "success", message: "Action completed" }
+            ]}
+            onRemove={() => { }}
+          />
+          <StackedNotifications />
+          <SlideInNotifications />
+          <SteppedProgress />
+          <ShuffleLoaderExample />
         </section>
 
         {/* UI Components */}
         <section className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-zinc-800">{t.ui}</h2>
-        <ExampleWrapper />
-        <StaggeredDropDown />
-        <HoverDevCards />
-        <DotExpandButton />
-        <VanishList />
+          <ExampleWrapper />
+          <StaggeredDropDown />
+          <HoverDevCards />
+          <DotExpandButton />
+          <VanishList />
         </section>
       </div>
     </div>
