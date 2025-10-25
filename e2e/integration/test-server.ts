@@ -2,7 +2,7 @@ import { concurrently, ConcurrentlyResult } from "concurrently";
 
 const COMMON_ENV = {
   LOG_LEVEL: "info",
-  DATABASE_URL: "postgresql://postgres:postgres@localhost:45432/safee",
+  DATABASE_URL: "postgresql://safee:safee@localhost:45432/safee",
   REDIS_URL: "redis://localhost:46379",
   NODE_ENV: "test",
   COOKIE_KEY: "test-key",

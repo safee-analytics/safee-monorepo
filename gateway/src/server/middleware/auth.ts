@@ -1,6 +1,13 @@
 import { Request as ExRequest } from "express";
 import { jwtService, type JwtPayload } from "../services/jwt.js";
 import { getServerContext } from "../serverContext.js";
+import {
+  NoTokenProvided,
+  InvalidToken,
+  TokenExpired,
+  InsufficientPermissions,
+  UnknownSecurityScheme,
+} from "../errors.js";
 
 export interface AuthenticatedRequest extends ExRequest {
   user?: {
@@ -20,36 +27,11 @@ export function expressAuthentication(
   if (securityName === "jwt") {
     const context = getServerContext();
 
-    // Check if authentication is disabled (development mode)
-    if (!jwtService.isAuthEnabled()) {
-      context.logger.debug("🚨 Authentication bypassed - Development mode");
-
-      // Return mock user for development (matches seeded dev user)
-      const mockUser: JwtPayload = {
-        userId: "00000000-0000-0000-0000-000000000001",
-        organizationId: "00000000-0000-0000-0000-000000000002",
-        email: "dev@safee.local",
-        roles: ["admin"],
-        permissions: ["*"],
-      };
-
-      // Attach mock user to request
-      (request as AuthenticatedRequest).user = {
-        userId: mockUser.userId,
-        email: mockUser.email,
-        roles: mockUser.roles,
-        permissions: mockUser.permissions,
-        organizationId: mockUser.organizationId,
-      };
-
-      return Promise.resolve(mockUser);
-    }
-
     const token = jwtService.extractTokenFromHeader(request.headers.authorization);
 
     if (!token) {
       context.logger.warn("Authentication failed - No token provided");
-      return Promise.reject(new Error("No token provided"));
+      return Promise.reject(new NoTokenProvided());
     }
 
     return jwtService
@@ -75,7 +57,7 @@ export function expressAuthentication(
               "Authorization failed - Insufficient permissions",
             );
 
-            return Promise.reject(new Error("Insufficient permissions"));
+            throw new InsufficientPermissions();
           }
         }
 
@@ -93,19 +75,33 @@ export function expressAuthentication(
       })
       .catch((error) => {
         context.logger.warn({ error: error.message }, "Authentication failed");
-        return Promise.reject(error);
+
+        if (
+          error instanceof NoTokenProvided ||
+          error instanceof InvalidToken ||
+          error instanceof TokenExpired ||
+          error instanceof InsufficientPermissions
+        ) {
+          throw error;
+        }
+
+        if (error.message === "Invalid token") {
+          throw new InvalidToken();
+        }
+
+        if (error.message === "Token expired") {
+          throw new TokenExpired();
+        }
+
+        throw new InvalidToken();
       });
   }
 
-  return Promise.reject(new Error("Unknown security name"));
+  return Promise.reject(new UnknownSecurityScheme(securityName));
 }
 
 export function requirePermissions(permissions: string[]) {
   return (request: AuthenticatedRequest): boolean => {
-    if (!jwtService.isAuthEnabled()) {
-      return true; // Allow everything in development mode
-    }
-
     const user = request.user;
     if (!user) {
       return false;
@@ -124,10 +120,6 @@ export function requirePermissions(permissions: string[]) {
 
 export function requireRoles(roles: string[]) {
   return (request: AuthenticatedRequest): boolean => {
-    if (!jwtService.isAuthEnabled()) {
-      return true; // Allow everything in development mode
-    }
-
     const user = request.user;
     if (!user) {
       return false;

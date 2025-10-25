@@ -51,6 +51,10 @@ export const APPLICATION_INSIGHTS_INSTRUMENTATION_KEY = process.env.APPLICATION_
 
 export const DATABASE_URL = ENV !== "test" ? required("DATABASE_URL") : null;
 
+// Odoo Configuration
+export const ODOO_URL = process.env.ODOO_URL ?? "http://localhost:8069";
+export const ODOO_ADMIN_PASSWORD = process.env.ODOO_ADMIN_PASSWORD ?? "admin";
+
 // export const PUBSUB_TOPIC_PREFIX = process.env.PUBSUB_TOPIC_PREFIX ?? "colony";
 // export const PROJECT_ID = process.env.PROJECT_ID ?? process.env.PUBSUB_PROJECT_ID ?? "parallel-dev-332718";
 
@@ -67,3 +71,31 @@ export const CORS_ORIGIN = process.env.CORS_ORIGIN
   ? [process.env.CORS_ORIGIN, "http://localhost:4049"]
   : ["http://localhost:4049"];
 export const DASHBOARD_BASE_URL = process.env.DASHBOARD_BASE_URL ?? "http://localhost:4050/";
+
+export const env = {
+  ENV,
+  IS_LOCAL,
+  API_SECRET_KEY,
+  PORT,
+  HOST,
+  LOG_LEVEL,
+  COOKIE_KEY,
+  JWT_SECRET,
+  AZURE_KEY_VAULT_URL,
+  AZURE_CLIENT_ID,
+  AZURE_CLIENT_SECRET,
+  AZURE_TENANT_ID,
+  AZURE_STORAGE_ACCOUNT_NAME,
+  AZURE_STORAGE_ACCOUNT_KEY,
+  APPLICATION_INSIGHTS_CONNECTION_STRING,
+  APPLICATION_INSIGHTS_INSTRUMENTATION_KEY,
+  DATABASE_URL,
+  ODOO_URL,
+  ODOO_ADMIN_PASSWORD,
+  USE_CLOUD_STORAGE,
+  FILE_UPLOAD_BUCKET,
+  FILE_UPLOAD_PATH,
+  PUBLIC_DIR,
+  CORS_ORIGIN,
+  DASHBOARD_BASE_URL,
+};

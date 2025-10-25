@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Route, Tags, Security, Query, Body, SuccessResponse } from "tsoa";
+import { NotImplemented } from "../errors.js";
 
 interface PayrollRecord {
   id: string;
@@ -34,20 +35,20 @@ export class PayrollController extends Controller {
     page: number;
     limit: number;
   }> {
-    throw new Error("Not implemented yet");
+    throw new NotImplemented();
   }
 
   @Post("/")
   @Security("jwt")
   @SuccessResponse("201", "Payroll record created successfully")
   public async createPayrollRecord(@Body() _request: PayrollCreateRequest): Promise<PayrollRecord> {
-    throw new Error("Not implemented yet");
+    throw new NotImplemented();
   }
 
   @Post("process")
   @Security("jwt")
   @SuccessResponse("200", "Payroll processed successfully")
   public async processPayroll(@Body() _request: { period: string }): Promise<{ message: string }> {
-    throw new Error("Not implemented yet");
+    throw new NotImplemented();
   }
 }

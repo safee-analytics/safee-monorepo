@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Route, Tags, Security, Query, Body, SuccessResponse } from "tsoa";
+import { NotImplemented } from "../errors.js";
 
 interface Contact {
   id: string;
@@ -33,13 +34,13 @@ export class ContactController extends Controller {
     page: number;
     limit: number;
   }> {
-    throw new Error("Not implemented yet");
+    throw new NotImplemented();
   }
 
   @Post("/")
   @Security("jwt")
   @SuccessResponse("201", "Contact created successfully")
   public async createContact(@Body() _request: ContactCreateRequest): Promise<Contact> {
-    throw new Error("Not implemented yet");
+    throw new NotImplemented();
   }
 }

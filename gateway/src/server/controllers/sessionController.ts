@@ -2,6 +2,7 @@ import { Controller, Get, Post, Route, Tags, Security, SuccessResponse, Path, Re
 import type { Request as ExpressRequest } from "express";
 import { getServerContext, type ServerContext } from "../serverContext.js";
 import { sessionService } from "@safee/database";
+import { Unauthorized, SessionNotFound, Forbidden, OperationFailed } from "../errors.js";
 
 interface SessionInfo {
   id: string;
@@ -48,7 +49,7 @@ export class SessionController extends Controller {
     try {
       if (!req.user?.userId) {
         this.setStatus(401);
-        throw new Error("User not authenticated");
+        throw new Unauthorized("User not authenticated");
       }
 
       const sessions = await sessionService.getUserActiveSessions(deps, req.user.userId);
@@ -65,7 +66,7 @@ export class SessionController extends Controller {
     } catch (error) {
       this.context.logger.error({ error, userId: req.user?.userId }, "Failed to retrieve user sessions");
       this.setStatus(500);
-      throw new Error("Failed to retrieve sessions");
+      throw new OperationFailed("Retrieve sessions");
     }
   }
 
@@ -86,7 +87,7 @@ export class SessionController extends Controller {
     try {
       if (!req.user?.userId) {
         this.setStatus(401);
-        throw new Error("User not authenticated");
+        throw new Unauthorized("User not authenticated");
       }
 
       // First, verify the session belongs to the current user
@@ -94,12 +95,12 @@ export class SessionController extends Controller {
 
       if (!session) {
         this.setStatus(404);
-        throw new Error("Session not found");
+        throw new SessionNotFound();
       }
 
       if (session.userId !== req.user.userId) {
         this.setStatus(403);
-        throw new Error("Cannot revoke another user's session");
+        throw new Forbidden("Cannot revoke another user's session");
       }
 
       // Revoke the session
@@ -155,7 +156,7 @@ export class SessionController extends Controller {
       }
 
       this.setStatus(500);
-      throw new Error("Failed to revoke session");
+      throw new OperationFailed("Revoke session");
     }
   }
 
@@ -175,7 +176,7 @@ export class SessionController extends Controller {
     try {
       if (!req.user?.userId) {
         this.setStatus(401);
-        throw new Error("User not authenticated");
+        throw new Unauthorized("User not authenticated");
       }
 
       const currentSessionId = req.user.sessionId;
@@ -233,7 +234,7 @@ export class SessionController extends Controller {
       );
 
       this.setStatus(500);
-      throw new Error("Failed to revoke other sessions");
+      throw new OperationFailed("Revoke other sessions");
     }
   }
 
@@ -256,7 +257,7 @@ export class SessionController extends Controller {
     try {
       if (!req.user?.userId) {
         this.setStatus(401);
-        throw new Error("User not authenticated");
+        throw new Unauthorized("User not authenticated");
       }
 
       return {
@@ -272,7 +273,7 @@ export class SessionController extends Controller {
     } catch (error) {
       this.context.logger.error({ error }, "Failed to get current session");
       this.setStatus(500);
-      throw new Error("Failed to get current session");
+      throw new OperationFailed("Get current session");
     }
   }
 }

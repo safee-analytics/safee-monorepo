@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { getAuthConfig } from "../../config/index.js";
 import { logger } from "../utils/logger.js";
+import { PasswordValidationFailed, OperationFailed, NotImplemented } from "../errors.js";
 
 export class PasswordService {
   private readonly config = getAuthConfig();
@@ -23,7 +24,7 @@ export class PasswordService {
     }
 
     if (this.config.enablePasswordValidation && !this.validatePassword(password)) {
-      throw new Error("Password does not meet security requirements");
+      throw new PasswordValidationFailed();
     }
 
     try {
@@ -32,7 +33,7 @@ export class PasswordService {
       return hash;
     } catch (error) {
       logger.error({ error }, "Failed to hash password");
-      throw new Error("Password hashing failed");
+      throw new OperationFailed("Password hashing");
     }
   }
 
@@ -48,7 +49,7 @@ export class PasswordService {
       return isValid;
     } catch (error) {
       logger.error({ error }, "Failed to verify password");
-      throw new Error("Password verification failed");
+      throw new OperationFailed("Password verification");
     }
   }
 
@@ -93,7 +94,7 @@ export class PasswordService {
    */
   generateRandomPassword(): string {
     if (this.config.enableAuthentication && this.config.enablePasswordValidation) {
-      throw new Error("Random password generation is only available in development mode");
+      throw new NotImplemented("Random password generation in production mode");
     }
 
     if (this.config.enablePasswordValidation) {

@@ -1,5 +1,6 @@
 import { Controller, Get, Post, Route, Tags, Security, Query, Body, SuccessResponse } from "tsoa";
 import type { Invoice, InvoiceCreateRequest } from "../types/invoice.js";
+import { NotImplemented } from "../errors.js";
 
 @Route("invoices")
 @Tags("Invoices")
@@ -15,13 +16,13 @@ export class InvoiceController extends Controller {
     page: number;
     limit: number;
   }> {
-    throw new Error("Not implemented yet");
+    throw new NotImplemented();
   }
 
   @Post("/")
   @Security("jwt")
   @SuccessResponse("201", "Invoice created successfully")
   public async createInvoice(@Body() _request: InvoiceCreateRequest): Promise<Invoice> {
-    throw new Error("Not implemented yet");
+    throw new NotImplemented();
   }
 }

@@ -16,7 +16,7 @@ export default defineConfig({
     },
     env: {
       NODE_ENV: "test",
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:45432/safee",
+      DATABASE_URL: "postgresql://safee:safee@localhost:45432/safee",
       REDIS_URL: "redis://localhost:46379",
     },
     testTimeout: 10000,

@@ -120,10 +120,9 @@ export function getLoggingConfig(): LoggingConfig {
  */
 export function getAuthConfig(): AuthConfig {
   const isProduction = ENV === "production";
-  const _isDevelopment = ENV === "local" || ENV === "development";
 
   return {
-    enableAuthentication: process.env.ENABLE_AUTH?.toLowerCase() !== "false" && isProduction,
+    enableAuthentication: true, // Always enabled - authentication required for all environments
     jwtSecret: process.env.JWT_SECRET || "dev-secret-key-please-change-in-production",
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || "1h",
     jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",

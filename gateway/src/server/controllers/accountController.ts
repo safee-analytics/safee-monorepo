@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Route, Tags, Security, Query, Body, SuccessResponse } from "tsoa";
+import { NotImplemented } from "../errors.js";
 
 interface Account {
   id: string;
@@ -22,13 +23,13 @@ export class AccountController extends Controller {
   @Get("/")
   @Security("jwt")
   public async getAccounts(@Query() _type?: string): Promise<Account[]> {
-    throw new Error("Not implemented yet");
+    throw new NotImplemented();
   }
 
   @Post("/")
   @Security("jwt")
   @SuccessResponse("201", "Account created successfully")
   public async createAccount(@Body() _request: AccountCreateRequest): Promise<Account> {
-    throw new Error("Not implemented yet");
+    throw new NotImplemented();
   }
 }

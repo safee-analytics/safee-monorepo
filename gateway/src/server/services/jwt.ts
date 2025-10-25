@@ -1,6 +1,7 @@
 import jwt, { type SignOptions } from "jsonwebtoken";
 import { getAuthConfig } from "../../config/index.js";
 import { logger } from "../utils/logger.js";
+import { InvalidToken, TokenExpired, BadRequest } from "../errors.js";
 
 export interface JwtPayload {
   userId: string;
@@ -8,6 +9,7 @@ export interface JwtPayload {
   email: string;
   roles: string[];
   permissions: string[];
+  sessionId?: string;
 }
 
 export interface TokenPair {
@@ -18,7 +20,10 @@ export interface TokenPair {
 
 export interface RefreshTokenPayload {
   userId: string;
+  organizationId: string;
+  email: string;
   tokenId: string;
+  sessionId?: string;
   type: "refresh";
 }
 
@@ -26,23 +31,39 @@ export class JwtService {
   private readonly config = getAuthConfig();
 
   constructor() {
-    if (this.config.enableAuthentication) {
-      logger.info("JWT Service initialized with authentication enabled");
-    } else {
-      logger.warn("🚨 JWT Service initialized with authentication DISABLED - Development mode only!");
+    logger.info("JWT Service initialized with authentication enabled");
+  }
+
+  async generateAccessToken(payload: JwtPayload): Promise<{ accessToken: string; expiresIn: number }> {
+    try {
+      const accessToken = jwt.sign(
+        {
+          ...payload,
+          type: "access",
+        },
+        this.config.jwtSecret,
+        {
+          expiresIn: this.config.jwtExpiresIn,
+          issuer: "safee-analytics",
+          audience: "safee-api",
+        } as SignOptions,
+      );
+
+      const expiresIn = this.parseExpiresIn(this.config.jwtExpiresIn);
+
+      logger.debug({ userId: payload.userId }, "Access token generated successfully");
+
+      return {
+        accessToken,
+        expiresIn,
+      };
+    } catch (error) {
+      logger.error({ error }, "Failed to generate access token");
+      throw new BadRequest("Access token generation failed");
     }
   }
 
   async generateTokenPair(payload: JwtPayload): Promise<TokenPair> {
-    if (!this.config.enableAuthentication) {
-      logger.debug("Authentication disabled - returning mock tokens");
-      return {
-        accessToken: "dev-access-token",
-        refreshToken: "dev-refresh-token",
-        expiresIn: 3600, // 1 hour in seconds
-      };
-    }
-
     try {
       const accessToken = jwt.sign(
         {
@@ -62,7 +83,10 @@ export class JwtService {
       const refreshToken = jwt.sign(
         {
           userId: payload.userId,
+          organizationId: payload.organizationId,
+          email: payload.email,
           tokenId,
+          sessionId: payload.sessionId,
           type: "refresh",
         } as RefreshTokenPayload,
         this.config.jwtSecret,
@@ -84,22 +108,11 @@ export class JwtService {
       };
     } catch (error) {
       logger.error({ error }, "Failed to generate token pair");
-      throw new Error("Token generation failed");
+      throw new BadRequest("Token generation failed");
     }
   }
 
   async verifyAccessToken(token: string): Promise<JwtPayload> {
-    if (!this.config.enableAuthentication) {
-      logger.debug("Authentication disabled - returning mock user");
-      return {
-        userId: "dev-user-id",
-        organizationId: "dev-org-id",
-        email: "dev@example.com",
-        roles: ["admin"],
-        permissions: ["*"],
-      };
-    }
-
     try {
       const decoded = jwt.verify(token, this.config.jwtSecret, {
         issuer: "safee-analytics",
@@ -107,7 +120,7 @@ export class JwtService {
       }) as JwtPayload & { type: string };
 
       if (decoded.type !== "access") {
-        throw new Error("Invalid token type");
+        throw new InvalidToken();
       }
 
       logger.debug({ userId: decoded.userId }, "Access token verified successfully");
@@ -122,27 +135,18 @@ export class JwtService {
     } catch (error) {
       if (error instanceof jwt.JsonWebTokenError) {
         logger.warn({ error: error.message }, "Invalid JWT token");
-        throw new Error("Invalid token");
+        throw new InvalidToken();
       } else if (error instanceof jwt.TokenExpiredError) {
         logger.warn("JWT token expired");
-        throw new Error("Token expired");
+        throw new TokenExpired();
       } else {
         logger.error({ error }, "Token verification failed");
-        throw new Error("Token verification failed");
+        throw new InvalidToken();
       }
     }
   }
 
   async verifyRefreshToken(token: string): Promise<RefreshTokenPayload> {
-    if (!this.config.enableAuthentication) {
-      logger.debug("Authentication disabled - returning mock refresh token payload");
-      return {
-        userId: "dev-user-id",
-        tokenId: "dev-token-id",
-        type: "refresh",
-      };
-    }
-
     try {
       const decoded = jwt.verify(token, this.config.jwtSecret, {
         issuer: "safee-analytics",
@@ -150,7 +154,7 @@ export class JwtService {
       }) as RefreshTokenPayload;
 
       if (decoded.type !== "refresh") {
-        throw new Error("Invalid token type");
+        throw new InvalidToken();
       }
 
       logger.debug({ userId: decoded.userId }, "Refresh token verified successfully");
@@ -159,13 +163,13 @@ export class JwtService {
     } catch (error) {
       if (error instanceof jwt.JsonWebTokenError) {
         logger.warn({ error: error.message }, "Invalid refresh token");
-        throw new Error("Invalid refresh token");
+        throw new InvalidToken();
       } else if (error instanceof jwt.TokenExpiredError) {
         logger.warn("Refresh token expired");
-        throw new Error("Refresh token expired");
+        throw new TokenExpired();
       } else {
         logger.error({ error }, "Refresh token verification failed");
-        throw new Error("Refresh token verification failed");
+        throw new InvalidToken();
       }
     }
   }
@@ -184,10 +188,6 @@ export class JwtService {
     return token;
   }
 
-  isAuthEnabled(): boolean {
-    return this.config.enableAuthentication;
-  }
-
   private parseExpiresIn(expiresIn: string): number {
     const units: Record<string, number> = {
       s: 1,
@@ -200,19 +200,11 @@ export class JwtService {
     const match = expiresIn.match(/^(\d+)([smhdw])$/);
 
     if (!match) {
-      throw new Error(`Invalid expiresIn format: ${expiresIn}`);
+      throw new BadRequest(`Invalid expiresIn format: ${expiresIn}`);
     }
 
     const [, value, unit] = match;
     return parseInt(value) * (units[unit] || 1);
-  }
-
-  generateDevToken(userId: string = "dev-user"): string {
-    if (this.config.enableAuthentication) {
-      throw new Error("Development tokens are only available when authentication is disabled");
-    }
-
-    return `dev-token-${userId}-${Date.now()}`;
   }
 }
 
