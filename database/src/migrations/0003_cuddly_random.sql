@@ -12,4 +12,4 @@ CREATE TABLE "identity"."odoo_databases" (
 	CONSTRAINT "odoo_databases_database_name_unique" UNIQUE("database_name")
 );
 
-ALTER TABLE "identity"."odoo_databases" ADD CONSTRAINT "odoo_databases_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "identity"."organizations"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "identity"."odoo_databases" ADD CONSTRAINT "odoo_databases_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "identity"."organizations"("id") ON DELETE cascade ON UPDATE cascade;

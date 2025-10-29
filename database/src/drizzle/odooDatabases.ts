@@ -6,7 +6,7 @@ export const odooDatabases = identitySchema.table("odoo_databases", {
   id: uuid("id").primaryKey().defaultRandom(),
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizations.id, { onDelete: "cascade" })
+    .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" })
     .unique(),
   databaseName: varchar("database_name", { length: 255 }).notNull().unique(),
   adminLogin: varchar("admin_login", { length: 255 }).notNull(),

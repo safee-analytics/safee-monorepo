@@ -8,8 +8,8 @@ export const jobs = jobsSchema.table(
   {
     id: idpk("id"),
     jobName: jobNameEnum("job_name").notNull(),
-    scheduleId: uuid("schedule_id").references(() => jobSchedules.id),
-    organizationId: uuid("organization_id").references(() => organizations.id),
+    scheduleId: uuid("schedule_id").references(() => jobSchedules.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" }),
     status: jobStatusEnum("status").default("pending").notNull(),
     type: jobTypeEnum("type").default("immediate").notNull(),
     priority: priorityEnum("priority").default("normal").notNull(),

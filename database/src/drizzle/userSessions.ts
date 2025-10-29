@@ -6,7 +6,7 @@ export const userSessions = pgTable("user_sessions", {
   id: idpk("id"),
   userId: uuid("user_id")
     .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
+    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   deviceFingerprint: text("device_fingerprint").notNull(),
   deviceName: text("device_name"),
   ipAddress: text("ip_address").notNull(),

@@ -1,5 +1,5 @@
 import { schema, eq, and, type DrizzleClient } from "@safee/database";
-import { type ConnectorMetadata, type ConnectorConfig, type IConnector, type ConnectorType } from "./base.connector.js";
+import { type ConnectorMetadata, type IConnector, type ConnectorType } from "./base.connector.js";
 import { ConnectorFactory } from "./connector.factory.js";
 import type { PostgreSQLConfig } from "./postgresql.connector.js";
 import type { MySQLConfig } from "./mysql.connector.js";
@@ -9,8 +9,9 @@ import { z } from "zod";
 
 const { connectors } = schema;
 
-// Zod schema for validating encrypted config from database
-const encryptedConfigSchema = z.string();
+// Schema for the actual config object structure from database
+// jsonb can store either encrypted string or object (we store encrypted string)
+const configWrapperSchema = z.union([z.string(), z.record(z.string(), z.unknown())]);
 
 // Zod schemas for each connector type
 const postgresqlConfigSchema = z.object({
@@ -49,11 +50,7 @@ const mssqlConfigSchema = z.object({
 });
 
 // Union type for all connector configs
-const connectorConfigSchema = z.union([
-  postgresqlConfigSchema,
-  mysqlConfigSchema,
-  mssqlConfigSchema,
-]);
+const connectorConfigSchema = z.union([postgresqlConfigSchema, mysqlConfigSchema, mssqlConfigSchema]);
 
 /**
  * Service for managing database connectors
@@ -75,7 +72,7 @@ export class ConnectorManager {
     type: ConnectorMetadata["type"];
     config: PostgreSQLConfig | MySQLConfig | MSSQLConnectorConfig;
     tags?: string[];
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     createdBy?: string;
   }): Promise<{ id: string; connector: IConnector }> {
     // Validate config before saving
@@ -88,6 +85,7 @@ export class ConnectorManager {
     const encryptedConfig = await encryptionService.encrypt(JSON.stringify(params.config));
 
     // Create database record
+    // Note: config is jsonb, so we store the encrypted string which Postgres will accept
     const [record] = await this.db
       .insert(connectors)
       .values({
@@ -95,7 +93,7 @@ export class ConnectorManager {
         name: params.name,
         description: params.description,
         type: params.type,
-        config: encryptedConfig as any,
+        config: encryptedConfig as unknown as Record<string, unknown>,
         tags: params.tags || [],
         metadata: params.metadata || {},
         createdBy: params.createdBy,
@@ -112,7 +110,7 @@ export class ConnectorManager {
       description: record.description || undefined,
       isActive: record.isActive,
       tags: (record.tags as string[]) || [],
-      metadata: (record.metadata as Record<string, any>) || {},
+      metadata: (record.metadata as Record<string, unknown>) || {},
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
     };
@@ -173,7 +171,8 @@ export class ConnectorManager {
     }
 
     // Validate and decrypt config
-    const encryptedConfig = encryptedConfigSchema.parse(record.config);
+    const configValue = configWrapperSchema.parse(record.config);
+    const encryptedConfig = typeof configValue === "string" ? configValue : JSON.stringify(configValue);
     const decryptedConfigRaw = await encryptionService.decrypt(encryptedConfig);
     const decryptedConfig = connectorConfigSchema.parse(JSON.parse(decryptedConfigRaw));
 
@@ -186,7 +185,7 @@ export class ConnectorManager {
       description: record.description || undefined,
       isActive: record.isActive,
       tags: (record.tags as string[]) || [],
-      metadata: (record.metadata as Record<string, any>) || {},
+      metadata: (record.metadata as Record<string, unknown>) || {},
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
     };
@@ -208,11 +207,14 @@ export class ConnectorManager {
   /**
    * List all connectors for an organization
    */
-  async listConnectors(organizationId: string, filters?: {
-    type?: ConnectorType;
-    isActive?: boolean;
-    tags?: string[];
-  }) {
+  async listConnectors(
+    organizationId: string,
+    filters?: {
+      type?: ConnectorType;
+      isActive?: boolean;
+      tags?: string[];
+    },
+  ) {
     const conditions = [eq(connectors.organizationId, organizationId)];
 
     // Apply filters
@@ -224,12 +226,15 @@ export class ConnectorManager {
       conditions.push(eq(connectors.isActive, filters.isActive));
     }
 
-    const results = await this.db.select().from(connectors).where(and(...conditions));
+    const results = await this.db
+      .select()
+      .from(connectors)
+      .where(and(...conditions));
 
     // Filter by tags if provided
     if (filters?.tags && filters.tags.length > 0) {
       return results.filter((r: typeof connectors.$inferSelect) =>
-        filters.tags!.some((tag) => (r.tags as string[])?.includes(tag))
+        filters.tags!.some((tag) => (r.tags as string[])?.includes(tag)),
       );
     }
 
@@ -247,10 +252,10 @@ export class ConnectorManager {
       description?: string;
       config?: PostgreSQLConfig | MySQLConfig | MSSQLConnectorConfig;
       tags?: string[];
-      metadata?: Record<string, any>;
+      metadata?: Record<string, unknown>;
       isActive?: boolean;
       updatedBy?: string;
-    }
+    },
   ) {
     const [existing] = await this.db
       .select()
@@ -261,7 +266,11 @@ export class ConnectorManager {
       throw new Error(`Connector ${connectorId} not found`);
     }
 
-    const updateData: any = {
+    type UpdateDataType = Partial<typeof connectors.$inferInsert> & {
+      updatedAt: Date;
+    };
+
+    const updateData: UpdateDataType = {
       updatedAt: new Date(),
       updatedBy: updates.updatedBy,
     };
@@ -276,18 +285,16 @@ export class ConnectorManager {
     if (updates.config) {
       const validation = await ConnectorFactory.validateConfig(
         existing.type as ConnectorMetadata["type"],
-        updates.config
+        updates.config,
       );
       if (!validation.valid) {
         throw new Error(`Invalid connector configuration: ${validation.errors?.join(", ")}`);
       }
 
-      updateData.config = await encryptionService.encrypt(JSON.stringify(updates.config));
+      const encryptedNewConfig = await encryptionService.encrypt(JSON.stringify(updates.config));
+      updateData.config = encryptedNewConfig as unknown as typeof connectors.$inferInsert.config;
 
-      // Test new connection (validate existing config)
-      const existingEncryptedConfig = encryptedConfigSchema.parse(existing.config);
-      const existingDecryptedConfigRaw = await encryptionService.decrypt(existingEncryptedConfig);
-      const decryptedConfig = connectorConfigSchema.parse(JSON.parse(existingDecryptedConfigRaw));
+      // Test new connection
       const metadata: ConnectorMetadata = {
         id: existing.id,
         organizationId: existing.organizationId,
@@ -296,7 +303,7 @@ export class ConnectorManager {
         description: existing.description || undefined,
         isActive: existing.isActive,
         tags: (existing.tags as string[]) || [],
-        metadata: (existing.metadata as Record<string, any>) || {},
+        metadata: (existing.metadata as Record<string, unknown>) || {},
         createdAt: existing.createdAt,
         updatedAt: existing.updatedAt,
       };
@@ -371,9 +378,7 @@ export class ConnectorManager {
    * Disconnect all connectors (useful for cleanup/shutdown)
    */
   async disconnectAll() {
-    const promises = Array.from(this.activeConnectors.keys()).map((id) =>
-      this.disconnectConnector(id)
-    );
+    const promises = Array.from(this.activeConnectors.keys()).map((id) => this.disconnectConnector(id));
     await Promise.all(promises);
   }
 

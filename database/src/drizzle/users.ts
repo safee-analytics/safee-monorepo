@@ -11,7 +11,7 @@ export const users = identitySchema.table(
     lastName: varchar("last_name", { length: 100 }),
     passwordHash: varchar("password_hash", { length: 255 }).notNull(),
     organizationId: uuid("organization_id")
-      .references(() => organizations.id)
+      .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" })
       .notNull(),
     preferredLocale: localeEnum("preferred_locale").default("en").notNull(),
     isActive: boolean("is_active").default(true).notNull(),

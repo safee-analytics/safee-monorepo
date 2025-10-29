@@ -13,7 +13,7 @@ export const contacts = salesSchema.table("contacts", {
   source: varchar("source", { length: 100 }),
   notes: varchar("notes", { length: 1000 }),
   organizationId: uuid("organization_id")
-    .references(() => organizations.id)
+    .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" })
     .notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

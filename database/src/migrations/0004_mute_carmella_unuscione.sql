@@ -35,10 +35,10 @@ CREATE TABLE "identity"."user_services" (
 	CONSTRAINT "user_services_user_id_service_id_pk" PRIMARY KEY("user_id","service_id")
 );
 
-ALTER TABLE "identity"."organization_services" ADD CONSTRAINT "organization_services_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "identity"."organizations"("id") ON DELETE cascade ON UPDATE no action;
-ALTER TABLE "identity"."organization_services" ADD CONSTRAINT "organization_services_service_id_services_id_fk" FOREIGN KEY ("service_id") REFERENCES "system"."services"("id") ON DELETE cascade ON UPDATE no action;
-ALTER TABLE "identity"."user_services" ADD CONSTRAINT "user_services_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "identity"."users"("id") ON DELETE cascade ON UPDATE no action;
-ALTER TABLE "identity"."user_services" ADD CONSTRAINT "user_services_service_id_services_id_fk" FOREIGN KEY ("service_id") REFERENCES "system"."services"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "identity"."organization_services" ADD CONSTRAINT "organization_services_organization_id_organizations_id_fk" FOREIGN KEY ("organization_id") REFERENCES "identity"."organizations"("id") ON DELETE cascade ON UPDATE cascade;
+ALTER TABLE "identity"."organization_services" ADD CONSTRAINT "organization_services_service_id_services_id_fk" FOREIGN KEY ("service_id") REFERENCES "system"."services"("id") ON DELETE cascade ON UPDATE cascade;
+ALTER TABLE "identity"."user_services" ADD CONSTRAINT "user_services_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "identity"."users"("id") ON DELETE cascade ON UPDATE cascade;
+ALTER TABLE "identity"."user_services" ADD CONSTRAINT "user_services_service_id_services_id_fk" FOREIGN KEY ("service_id") REFERENCES "system"."services"("id") ON DELETE cascade ON UPDATE cascade;
 CREATE INDEX "org_services_org_id_idx" ON "identity"."organization_services" USING btree ("organization_id");
 CREATE INDEX "org_services_service_id_idx" ON "identity"."organization_services" USING btree ("service_id");
 CREATE INDEX "org_services_is_enabled_idx" ON "identity"."organization_services" USING btree ("is_enabled");

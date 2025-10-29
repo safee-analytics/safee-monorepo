@@ -19,7 +19,7 @@ export const employees = hrSchema.table(
     salary: decimal("salary", { precision: 12, scale: 2 }),
     status: varchar("status", { length: 50 }).default("ACTIVE").notNull(),
     organizationId: uuid("organization_id")
-      .references(() => organizations.id)
+      .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" })
       .notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

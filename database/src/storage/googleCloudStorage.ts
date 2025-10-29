@@ -270,9 +270,6 @@ export class GoogleCloudStorage implements StorageInterface {
     }
   }
 
-  /**
-   * Get content type based on file extension
-   */
   private getContentType(path: string): string {
     const extension = path.split(".").pop()?.toLowerCase();
 

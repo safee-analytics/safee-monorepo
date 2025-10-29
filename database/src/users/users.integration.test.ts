@@ -1,0 +1,196 @@
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
+import { connectTest, createTestDeps } from "../test-helpers/integration-setup.js";
+import { createUser, getUserByEmail, getUserById, updateUserProfile, updateUserLocale } from "./users.js";
+import type { DrizzleClient } from "../index.js";
+import { users, organizations } from "../drizzle/index.js";
+
+describe("User Integration Tests", () => {
+  let db: DrizzleClient;
+  let close: () => Promise<void>;
+
+  beforeAll(async () => {
+    const connection = await connectTest();
+    db = connection.drizzle;
+    close = connection.close;
+  });
+
+  afterAll(async () => {
+    await close();
+  });
+
+  beforeEach(async () => {
+    // With CASCADE, we only need to delete parent tables
+    await db.delete(organizations);
+  });
+
+  describe("createUser", () => {
+    it("should create a user in the database", async () => {
+      const deps = createTestDeps(db);
+
+      // First create an organization
+      const [org] = await db
+        .insert(await import("../drizzle/index.js").then((m) => m.organizations))
+        .values({ name: "Test Org", slug: "test-org" })
+        .returning();
+
+      const userData = {
+        email: "test@example.com",
+        passwordHash: "hashed_password_123",
+        firstName: "John",
+        lastName: "Doe",
+        organizationId: org.id,
+      };
+
+      const user = await createUser(deps, userData);
+
+      expect(user).toBeDefined();
+      expect(user.email).toBe("test@example.com");
+      expect(user.firstName).toBe("John");
+      expect(user.lastName).toBe("Doe");
+      expect(user.organizationId).toBe(org.id);
+    });
+
+    it("should throw error when creating duplicate email", async () => {
+      const deps = createTestDeps(db);
+
+      const [org] = await db
+        .insert(await import("../drizzle/index.js").then((m) => m.organizations))
+        .values({ name: "Test Org", slug: "test-org" })
+        .returning();
+
+      const userData = {
+        email: "duplicate@example.com",
+        passwordHash: "hashed",
+        organizationId: org.id,
+      };
+
+      await createUser(deps, userData);
+
+      await expect(createUser(deps, userData)).rejects.toThrow("User with this email already exists");
+    });
+  });
+
+  describe("getUserByEmail", () => {
+    it("should retrieve user by email", async () => {
+      const deps = createTestDeps(db);
+
+      const [org] = await db
+        .insert(await import("../drizzle/index.js").then((m) => m.organizations))
+        .values({ name: "Test Org", slug: "test-org" })
+        .returning();
+
+      await createUser(deps, {
+        email: "find@example.com",
+        passwordHash: "hashed",
+        firstName: "Jane",
+        organizationId: org.id,
+      });
+
+      const user = await getUserByEmail(deps, "find@example.com");
+
+      expect(user).toBeDefined();
+      expect(user?.email).toBe("find@example.com");
+      expect(user?.firstName).toBe("Jane");
+      expect(user?.organization).toBeDefined();
+      expect(user?.organization?.name).toBe("Test Org");
+    });
+
+    it("should return null for non-existent email", async () => {
+      const deps = createTestDeps(db);
+
+      const user = await getUserByEmail(deps, "nonexistent@example.com");
+
+      expect(user).toBeNull();
+    });
+  });
+
+  describe("getUserById", () => {
+    it("should retrieve user by ID", async () => {
+      const deps = createTestDeps(db);
+
+      const [org] = await db
+        .insert(await import("../drizzle/index.js").then((m) => m.organizations))
+        .values({ name: "Test Org", slug: "test-org" })
+        .returning();
+
+      const createdUser = await createUser(deps, {
+        email: "findbyid@example.com",
+        passwordHash: "hashed",
+        organizationId: org.id,
+      });
+
+      const user = await getUserById(deps, createdUser.id);
+
+      expect(user).toBeDefined();
+      expect(user?.id).toBe(createdUser.id);
+      expect(user?.email).toBe("findbyid@example.com");
+    });
+
+    it("should return null for non-existent ID", async () => {
+      const deps = createTestDeps(db);
+
+      const user = await getUserById(deps, "00000000-0000-0000-0000-000000000000");
+
+      expect(user).toBeNull();
+    });
+  });
+
+  describe("updateUserProfile", () => {
+    it("should update user profile fields", async () => {
+      const deps = createTestDeps(db);
+
+      const [org] = await db
+        .insert(await import("../drizzle/index.js").then((m) => m.organizations))
+        .values({ name: "Test Org", slug: "test-org" })
+        .returning();
+
+      const createdUser = await createUser(deps, {
+        email: "update@example.com",
+        passwordHash: "hashed",
+        firstName: "Old",
+        lastName: "Name",
+        organizationId: org.id,
+      });
+
+      const updatedUser = await updateUserProfile(deps, createdUser.id, {
+        firstName: "New",
+        lastName: "Name",
+        preferredLocale: "ar",
+      });
+
+      expect(updatedUser.firstName).toBe("New");
+      expect(updatedUser.lastName).toBe("Name");
+      expect(updatedUser.preferredLocale).toBe("ar");
+    });
+
+    it("should throw error for non-existent user", async () => {
+      const deps = createTestDeps(db);
+
+      await expect(
+        updateUserProfile(deps, "00000000-0000-0000-0000-000000000000", { firstName: "Test" }),
+      ).rejects.toThrow("User not found");
+    });
+  });
+
+  describe("updateUserLocale", () => {
+    it("should update user locale", async () => {
+      const deps = createTestDeps(db);
+
+      const [org] = await db
+        .insert(await import("../drizzle/index.js").then((m) => m.organizations))
+        .values({ name: "Test Org", slug: "test-org" })
+        .returning();
+
+      const createdUser = await createUser(deps, {
+        email: "locale@example.com",
+        passwordHash: "hashed",
+        organizationId: org.id,
+      });
+
+      await updateUserLocale(deps, createdUser.id, "ar");
+
+      const user = await getUserById(deps, createdUser.id);
+      expect(user?.preferredLocale).toBe("ar");
+    });
+  });
+});

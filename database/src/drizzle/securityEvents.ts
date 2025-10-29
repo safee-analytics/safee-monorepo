@@ -5,10 +5,10 @@ import { eventTypeEnum, riskLevelEnum, idpk } from "./_common.js";
 
 export const securityEvents = pgTable("security_events", {
   id: idpk("id"),
-  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizations.id, { onDelete: "cascade" }),
+    .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" }),
   eventType: eventTypeEnum("event_type").notNull(),
   resource: text("resource"), // What was accessed
   action: text("action"), // What action was performed

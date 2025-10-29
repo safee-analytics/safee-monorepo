@@ -13,9 +13,9 @@ export const connectors = identitySchema.table("connectors", {
 
   organizationId: uuid("organization_id")
     .notNull()
-    .references(() => organizations.id, { onDelete: "cascade" }),
-  createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
-  updatedBy: uuid("updated_by").references(() => users.id, { onDelete: "set null" }),
+    .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" }),
+  createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null", onUpdate: "cascade" }),
+  updatedBy: uuid("updated_by").references(() => users.id, { onDelete: "set null", onUpdate: "cascade" }),
 
   name: varchar("name", { length: 255 }).notNull(),
   description: varchar("description", { length: 1000 }),

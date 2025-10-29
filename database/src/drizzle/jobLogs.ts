@@ -8,7 +8,7 @@ export const jobLogs = jobsSchema.table(
     id: idpk("id"),
     jobId: uuid("job_id")
       .notNull()
-      .references(() => jobs.id, { onDelete: "cascade" }),
+      .references(() => jobs.id, { onDelete: "cascade", onUpdate: "cascade" }),
     level: logLevelEnum("level").notNull(),
     message: text("message").notNull(),
     metadata: jsonb("metadata").$type<Record<string, unknown>>(),

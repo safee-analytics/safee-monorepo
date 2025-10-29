@@ -8,14 +8,14 @@ export const payrollRecords = hrSchema.table(
   {
     id: idpk("id"),
     employeeId: uuid("employee_id")
-      .references(() => employees.id)
+      .references(() => employees.id, { onDelete: "restrict", onUpdate: "cascade" })
       .notNull(),
     payPeriod: varchar("pay_period", { length: 50 }).notNull(),
     baseSalary: decimal("base_salary", { precision: 12, scale: 2 }).notNull(),
     netPay: decimal("net_pay", { precision: 12, scale: 2 }).notNull(),
     payDate: date("pay_date").notNull(),
     organizationId: uuid("organization_id")
-      .references(() => organizations.id)
+      .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" })
       .notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

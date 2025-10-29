@@ -1,6 +1,11 @@
 import mysql from "mysql2/promise";
 import type { Pool, PoolOptions } from "mysql2/promise";
-import { BaseConnector, type ConnectorConfig, type ConnectionTestResult, type ConnectorMetadata } from "./base.connector.js";
+import {
+  BaseConnector,
+  type ConnectorConfig,
+  type ConnectionTestResult,
+  type ConnectorMetadata,
+} from "./base.connector.js";
 
 export interface MySQLConfig extends ConnectorConfig {
   host: string;
@@ -94,7 +99,9 @@ export class MySQLConnector extends BaseConnector {
 
         try {
           const connection = await testPool.getConnection();
-          const [rows] = await connection.query("SELECT VERSION() as version, DATABASE() as database, USER() as user");
+          const [rows] = await connection.query(
+            "SELECT VERSION() as version, DATABASE() as database, USER() as user",
+          );
           connection.release();
           return rows;
         } finally {
@@ -132,7 +139,7 @@ export class MySQLConnector extends BaseConnector {
   /**
    * Execute a raw SQL query on the external database
    */
-  async query<T = any>(sql: string, params?: any[]): Promise<T[]> {
+  async query<T = unknown>(sql: string, params?: unknown[]): Promise<T[]> {
     const pool = this.getPool();
     const [rows] = await pool.query(sql, params);
     return rows as T[];
@@ -160,7 +167,10 @@ export class MySQLConnector extends BaseConnector {
   /**
    * Get columns for a specific table
    */
-  async getTableColumns(schema: string, table: string): Promise<
+  async getTableColumns(
+    schema: string,
+    table: string,
+  ): Promise<
     Array<{
       name: string;
       type: string;
@@ -168,7 +178,8 @@ export class MySQLConnector extends BaseConnector {
       default: string | null;
     }>
   > {
-    return await this.query(`
+    return await this.query(
+      `
       SELECT
         COLUMN_NAME as name,
         DATA_TYPE as type,
@@ -177,6 +188,8 @@ export class MySQLConnector extends BaseConnector {
       FROM information_schema.COLUMNS
       WHERE TABLE_SCHEMA = ? AND TABLE_NAME = ?
       ORDER BY ORDINAL_POSITION
-    `, [schema, table]);
+    `,
+      [schema, table],
+    );
   }
 }

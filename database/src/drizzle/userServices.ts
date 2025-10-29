@@ -9,10 +9,10 @@ export const userServices = identitySchema.table(
   {
     userId: uuid("user_id")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
     serviceId: uuid("service_id")
       .notNull()
-      .references(() => services.id, { onDelete: "cascade" }),
+      .references(() => services.id, { onDelete: "cascade", onUpdate: "cascade" }),
     isEnabled: boolean("is_enabled").default(true).notNull(),
     enabledAt: timestamp("enabled_at", { withTimezone: true }).defaultNow().notNull(),
     disabledAt: timestamp("disabled_at", { withTimezone: true }),

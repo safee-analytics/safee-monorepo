@@ -2,7 +2,6 @@ import { RedisClient } from "../index.js";
 import { z } from "zod";
 
 // ex use: cacheFunctionCall(redis, ID, {name: "bob"}, z.int(), async () => redis.incr(INCR_KEY));
-// can see in the example use that the 'actualFunction' can still have params just needs to be wrapped in anonymous function
 export async function cacheFunctionCall<T>(
   redis: RedisClient,
   id: string,

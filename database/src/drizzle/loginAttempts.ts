@@ -6,7 +6,7 @@ export const loginAttempts = pgTable("login_attempts", {
   id: idpk("id"),
   identifier: text("identifier").notNull(), // email or IP
   identifierType: identifierTypeEnum("identifier_type").notNull(),
-  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade" }),
+  userId: uuid("user_id").references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   ipAddress: text("ip_address").notNull(),
   userAgent: text("user_agent").notNull(),
   success: boolean("success").notNull(),

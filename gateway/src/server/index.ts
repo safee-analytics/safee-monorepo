@@ -237,9 +237,17 @@ export async function server({
   await scheduler.start({ drizzle, logger: logger as unknown as Logger });
   logger.info("Job scheduler started");
 
+  return app;
+}
+
+export async function startServer(deps: Dependencies) {
+  const app = await server(deps);
+
   app.listen(PORT, HOST, () => {
-    logger.info("Server listening on %s:%s", HOST, PORT);
-    logger.info("API Documentation available at: http://%s:%s/docs", HOST, PORT);
-    logger.info("Health Check available at: http://%s:%s/api/v1/health", HOST, PORT);
+    deps.logger.info("Server listening on %s:%s", HOST, PORT);
+    deps.logger.info("API Documentation available at: http://%s:%s/docs", HOST, PORT);
+    deps.logger.info("Health Check available at: http://%s:%s/api/v1/health", HOST, PORT);
   });
+
+  return app;
 }

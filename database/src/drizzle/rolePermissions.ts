@@ -7,10 +7,10 @@ export const rolePermissions = identitySchema.table(
   "role_permissions",
   {
     roleId: uuid("role_id")
-      .references(() => roles.id, { onDelete: "cascade" })
+      .references(() => roles.id, { onDelete: "cascade", onUpdate: "cascade" })
       .notNull(),
     permissionId: uuid("permission_id")
-      .references(() => permissions.id, { onDelete: "cascade" })
+      .references(() => permissions.id, { onDelete: "cascade", onUpdate: "cascade" })
       .notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },

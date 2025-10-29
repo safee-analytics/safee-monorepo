@@ -16,6 +16,7 @@ export class InMemoryPubSub implements PubSub {
   private emitter = new EventEmitter();
   private topics = new Set<string>();
   private subscriptions = new Map<string, Subscription>();
+  private subscriptionTopics = new Map<string, string>(); // subscription name -> topic name
   private messageIdCounter = 0;
 
   constructor(_config: PubSubConfig = {}) {
@@ -71,9 +72,8 @@ export class InMemoryPubSub implements PubSub {
       );
     }
 
-    // For in-memory, we'll assume subscription name follows pattern: topicName-subscriptionSuffix
-    // Or use the subscription name as topic if no pattern is found
-    const topic = this.extractTopicFromSubscription(subscription);
+    // Get topic from stored mapping, or fall back to extracting from subscription name
+    const topic = this.subscriptionTopics.get(subscription) ?? this.extractTopicFromSubscription(subscription);
 
     const sub: Subscription = {
       name: subscription,
@@ -107,8 +107,9 @@ export class InMemoryPubSub implements PubSub {
 
     await this.createTopic(topic);
 
-    // For in-memory implementation, subscription creation is implicit
-    // when subscribe() is called, but we can track it here
+    // Store the subscription -> topic mapping
+    this.subscriptionTopics.set(subscription, topic);
+
     logger.info(
       { topic, subscription },
       "In-memory pub/sub subscription created (will be active when subscribed)",
@@ -122,6 +123,7 @@ export class InMemoryPubSub implements PubSub {
 
     this.topics.clear();
     this.subscriptions.clear();
+    this.subscriptionTopics.clear();
 
     logger.info("In-memory pub/sub connections closed");
   }

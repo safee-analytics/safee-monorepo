@@ -1,6 +1,11 @@
 import sql from "mssql";
 import type { ConnectionPool, config as MSSQLConfig } from "mssql";
-import { BaseConnector, type ConnectorConfig, type ConnectionTestResult, type ConnectorMetadata } from "./base.connector.js";
+import {
+  BaseConnector,
+  type ConnectorConfig,
+  type ConnectionTestResult,
+  type ConnectorMetadata,
+} from "./base.connector.js";
 
 export interface MSSQLConnectorConfig extends ConnectorConfig {
   host: string;
@@ -146,7 +151,7 @@ export class MSSQLConnector extends BaseConnector {
   /**
    * Execute a raw SQL query on the external database
    */
-  async query<T = any>(queryString: string, params?: Record<string, any>): Promise<T[]> {
+  async query<T = unknown>(queryString: string, params?: Record<string, unknown>): Promise<T[]> {
     const pool = this.getPool();
     const request = pool.request();
 
@@ -183,7 +188,10 @@ export class MSSQLConnector extends BaseConnector {
   /**
    * Get columns for a specific table
    */
-  async getTableColumns(schema: string, table: string): Promise<
+  async getTableColumns(
+    schema: string,
+    table: string,
+  ): Promise<
     Array<{
       name: string;
       type: string;
@@ -191,7 +199,8 @@ export class MSSQLConnector extends BaseConnector {
       default: string | null;
     }>
   > {
-    return await this.query(`
+    return await this.query(
+      `
       SELECT
         COLUMN_NAME as name,
         DATA_TYPE as type,
@@ -200,6 +209,8 @@ export class MSSQLConnector extends BaseConnector {
       FROM INFORMATION_SCHEMA.COLUMNS
       WHERE TABLE_SCHEMA = @schema AND TABLE_NAME = @table
       ORDER BY ORDINAL_POSITION
-    `, { schema, table });
+    `,
+      { schema, table },
+    );
   }
 }

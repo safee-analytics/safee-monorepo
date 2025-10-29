@@ -1,4 +1,4 @@
-import type { ConnectorType, ConnectorMetadata, ConnectorConfig, IConnector } from "./base.connector.js";
+import type { ConnectorType, ConnectorMetadata, IConnector } from "./base.connector.js";
 import { PostgreSQLConnector, type PostgreSQLConfig } from "./postgresql.connector.js";
 import { MySQLConnector, type MySQLConfig } from "./mysql.connector.js";
 import { MSSQLConnector, type MSSQLConnectorConfig } from "./mssql.connector.js";
@@ -83,7 +83,7 @@ export class ConnectorFactory {
     label: string;
     placeholder?: string;
     required: boolean;
-    defaultValue?: any;
+    defaultValue?: unknown;
     helpText?: string;
   }> {
     const commonDatabaseFields = [

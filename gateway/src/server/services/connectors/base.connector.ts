@@ -1,7 +1,7 @@
 import type { schema } from "@safee/database";
 
-export type ConnectorType = typeof schema.connectorTypeEnum.enumValues[number];
-export type ConnectionStatus = typeof schema.connectionStatusEnum.enumValues[number];
+export type ConnectorType = (typeof schema.connectorTypeEnum.enumValues)[number];
+export type ConnectionStatus = (typeof schema.connectionStatusEnum.enumValues)[number];
 
 export interface ConnectorConfig {
   host?: string;
@@ -13,14 +13,14 @@ export interface ConnectorConfig {
   url?: string;
   apiKey?: string;
   authToken?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface ConnectionTestResult {
   status: ConnectionStatus;
   message: string;
   latency?: number; // ms
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   error?: string;
 }
 
@@ -32,7 +32,7 @@ export interface ConnectorMetadata {
   description?: string;
   isActive: boolean;
   tags: string[];
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -77,7 +77,7 @@ export interface IConnector {
   getHealthStatus(): Promise<{
     healthy: boolean;
     message?: string;
-    details?: Record<string, any>;
+    details?: Record<string, unknown>;
   }>;
 }
 
@@ -113,7 +113,7 @@ export abstract class BaseConnector implements IConnector {
   async getHealthStatus(): Promise<{
     healthy: boolean;
     message?: string;
-    details?: Record<string, any>;
+    details?: Record<string, unknown>;
   }> {
     if (!this.connected) {
       return {
@@ -148,7 +148,7 @@ export abstract class BaseConnector implements IConnector {
    */
   protected async safeExecute<T>(
     operation: () => Promise<T>,
-    errorMessage: string
+    errorMessage: string,
   ): Promise<{ success: boolean; result?: T; error?: string }> {
     try {
       const result = await operation();

@@ -11,12 +11,12 @@ export const invoices = financeSchema.table(
     type: invoiceTypeEnum("type").notNull(),
     date: date("date").notNull(),
     dueDate: date("due_date"),
-    customerId: uuid("customer_id").references(() => contacts.id),
-    supplierId: uuid("supplier_id").references(() => contacts.id),
+    customerId: uuid("customer_id").references(() => contacts.id, { onDelete: "restrict", onUpdate: "cascade" }),
+    supplierId: uuid("supplier_id").references(() => contacts.id, { onDelete: "restrict", onUpdate: "cascade" }),
     total: decimal("total", { precision: 12, scale: 2 }).default("0").notNull(),
     status: varchar("status", { length: 50 }).default("DRAFT").notNull(),
     organizationId: uuid("organization_id")
-      .references(() => organizations.id)
+      .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" })
       .notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
@@ -29,7 +29,7 @@ export const invoiceItems = financeSchema.table(
   {
     id: idpk("id"),
     invoiceId: uuid("invoice_id")
-      .references(() => invoices.id)
+      .references(() => invoices.id, { onDelete: "cascade", onUpdate: "cascade" })
       .notNull(),
     descriptionEn: varchar("description_en", { length: 255 }).notNull(),
     descriptionAr: varchar("description_ar", { length: 255 }),

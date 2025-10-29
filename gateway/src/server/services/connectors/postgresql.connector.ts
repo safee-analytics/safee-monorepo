@@ -1,5 +1,10 @@
 import { Pool } from "pg";
-import { BaseConnector, type ConnectorConfig, type ConnectionTestResult, type ConnectorMetadata } from "./base.connector.js";
+import {
+  BaseConnector,
+  type ConnectorConfig,
+  type ConnectionTestResult,
+  type ConnectorMetadata,
+} from "./base.connector.js";
 
 export interface PostgreSQLConfig extends ConnectorConfig {
   host: string;
@@ -129,7 +134,7 @@ export class PostgreSQLConnector extends BaseConnector {
   /**
    * Execute a raw SQL query on the external database
    */
-  async query<T = any>(sql: string, params?: any[]): Promise<T[]> {
+  async query<T = unknown>(sql: string, params?: unknown[]): Promise<T[]> {
     const pool = this.getPool();
     const result = await pool.query(sql, params);
     return result.rows;
@@ -157,7 +162,10 @@ export class PostgreSQLConnector extends BaseConnector {
   /**
    * Get columns for a specific table
    */
-  async getTableColumns(schema: string, table: string): Promise<
+  async getTableColumns(
+    schema: string,
+    table: string,
+  ): Promise<
     Array<{
       name: string;
       type: string;
@@ -165,7 +173,8 @@ export class PostgreSQLConnector extends BaseConnector {
       default: string | null;
     }>
   > {
-    return await this.query(`
+    return await this.query(
+      `
       SELECT
         column_name as name,
         data_type as type,
@@ -174,6 +183,8 @@ export class PostgreSQLConnector extends BaseConnector {
       FROM information_schema.columns
       WHERE table_schema = $1 AND table_name = $2
       ORDER BY ordinal_position
-    `, [schema, table]);
+    `,
+      [schema, table],
+    );
   }
 }

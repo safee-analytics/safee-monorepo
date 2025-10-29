@@ -12,7 +12,7 @@ export const accounts = financeSchema.table(
     type: varchar("type", { length: 100 }).notNull(),
     parentId: uuid("parent_id"),
     organizationId: uuid("organization_id")
-      .references(() => organizations.id)
+      .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" })
       .notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

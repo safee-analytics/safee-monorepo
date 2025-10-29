@@ -12,9 +12,16 @@
     "check": "tsc --noEmit",
     "clean": "tsc --build --clean",
     "build": "tsc --build .",
-    "test": "vitest run --passWithNoTests",
+    "test": "npm run test:unit && npm run test:integration",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
+    "test:integration": "vitest run --no-file-parallelism --pool=forks --poolOptions.forks.singleFork=true --passWithNoTests src/**/*.integration.test.ts",
+    "test:unit": "vitest run --passWithNoTests --exclude '**/*.integration.test.ts'",
+    "test:services:up": "docker-compose -f docker-compose.test.yml up -d",
+    "test:services:down": "docker-compose -f docker-compose.test.yml down",
+    "test:services:logs": "docker-compose -f docker-compose.test.yml logs -f",
+    "test:migrate": "DATABASE_URL=postgresql://safee:safee@localhost:45432/safee npx drizzle-kit migrate",
+    "test:setup": "npm run test:services:up && sleep 3 && npm run test:migrate",
     "migrate": "npx drizzle-kit migrate",
     "postmigrate": "tsx -r dotenv/config src/private/postmigrate.ts",
     "bumpMigrations": "tsx -r dotenv/config src/private/bumpMigrations.ts",
@@ -64,6 +71,7 @@
     ".": "./build/src/index.js",
     "./drizzle": "./build/src/drizzle.js",
     "./logging": "./build/src/logging.js",
-    "./storage": "./build/src/storage/index.js"
+    "./storage": "./build/src/storage/index.js",
+    "./test-helpers": "./build/src/test-helpers/test-fixtures.js"
   }
 }

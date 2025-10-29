@@ -7,6 +7,7 @@ import {
   Route,
   Tags,
   Security,
+  NoSecurity,
   Query,
   Body,
   Path,
@@ -33,7 +34,7 @@ interface CreateConnectorRequest {
   type: ConnectorType;
   config: PostgreSQLConfig | MySQLConfig | MSSQLConnectorConfig;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 interface UpdateConnectorRequest {
@@ -41,7 +42,7 @@ interface UpdateConnectorRequest {
   description?: string;
   config?: PostgreSQLConfig | MySQLConfig | MSSQLConnectorConfig;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   isActive?: boolean;
 }
 
@@ -53,7 +54,7 @@ interface ConnectorResponse {
   type: ConnectorType;
   isActive: boolean;
   tags: string[];
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   lastConnectionTest?: string;
   lastConnectionStatus?: string;
   lastConnectionError?: string;
@@ -63,10 +64,10 @@ interface ConnectorResponse {
 
 interface QueryRequest {
   sql: string;
-  params?: any[];
+  params?: unknown[];
 }
 
-interface QueryResponse<T = any> {
+interface QueryResponse<T = unknown> {
   rows: T[];
   rowCount: number;
   executionTime: number;
@@ -88,7 +89,7 @@ interface TablePreviewResponse {
     type: string;
     nullable: boolean;
   }>;
-  sampleData: any[];
+  sampleData: unknown[];
   totalRows: number;
 }
 
@@ -96,7 +97,7 @@ interface FieldMapping {
   sourceColumn: string;
   targetField: string;
   transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean";
-  defaultValue?: any;
+  defaultValue?: unknown;
 }
 
 interface SuggestMappingsRequest {
@@ -107,6 +108,7 @@ interface SuggestMappingsRequest {
 @Route("connectors")
 @Tags("Connectors")
 export class ConnectorController extends Controller {
+  @NoSecurity()
   private getServices(req: ExpressRequest) {
     const ctx = getServerContext();
     const connectorManager = new ConnectorManager(ctx.drizzle);
@@ -118,8 +120,8 @@ export class ConnectorController extends Controller {
       dataProxyService,
       dataMapperService,
       ctx,
-      organizationId: req.user?.organizationId || '',
-      userId: req.user?.userId || ''
+      organizationId: req.user?.organizationId || "",
+      userId: req.user?.userId || "",
     };
   }
 
@@ -145,16 +147,14 @@ export class ConnectorController extends Controller {
    */
   @Get("/types/{type}/fields")
   @Security("jwt")
-  public async getFieldDefinitions(
-    @Path() type: ConnectorType
-  ): Promise<
+  public async getFieldDefinitions(@Path() type: ConnectorType): Promise<
     Array<{
       name: string;
       type: "text" | "number" | "password" | "boolean";
       label: string;
       placeholder?: string;
       required: boolean;
-      defaultValue?: any;
+      defaultValue?: unknown;
       helpText?: string;
     }>
   > {
@@ -170,7 +170,7 @@ export class ConnectorController extends Controller {
     @Request() req: ExpressRequest,
     @Query() type?: ConnectorType,
     @Query() isActive?: boolean,
-    @Query() tags?: string
+    @Query() tags?: string,
   ): Promise<ConnectorResponse[]> {
     const { connectorManager, organizationId } = this.getServices(req);
 
@@ -189,7 +189,7 @@ export class ConnectorController extends Controller {
       type: c.type as ConnectorType,
       isActive: c.isActive,
       tags: (c.tags as string[]) || [],
-      metadata: (c.metadata as Record<string, any>) || {},
+      metadata: (c.metadata as Record<string, unknown>) || {},
       lastConnectionTest: c.lastConnectionTest?.toISOString(),
       lastConnectionStatus: c.lastConnectionStatus || undefined,
       lastConnectionError: c.lastConnectionError || undefined,
@@ -206,11 +206,11 @@ export class ConnectorController extends Controller {
   @SuccessResponse("201", "Connector created successfully")
   public async createConnector(
     @Request() req: ExpressRequest,
-    @Body() request: CreateConnectorRequest
+    @Body() request: CreateConnectorRequest,
   ): Promise<ConnectorResponse> {
     const { connectorManager, organizationId, userId } = this.getServices(req);
 
-    const { id, connector } = await connectorManager.createConnector({
+    const { connector } = await connectorManager.createConnector({
       organizationId,
       name: request.name,
       description: request.description,
@@ -245,7 +245,7 @@ export class ConnectorController extends Controller {
   @Security("jwt")
   public async getConnector(
     @Request() req: ExpressRequest,
-    @Path() connectorId: string
+    @Path() connectorId: string,
   ): Promise<ConnectorResponse> {
     const { connectorManager, organizationId } = this.getServices(req);
 
@@ -274,7 +274,7 @@ export class ConnectorController extends Controller {
   public async updateConnector(
     @Request() req: ExpressRequest,
     @Path() connectorId: string,
-    @Body() request: UpdateConnectorRequest
+    @Body() request: UpdateConnectorRequest,
   ): Promise<{ success: boolean }> {
     const { connectorManager, organizationId, userId } = this.getServices(req);
 
@@ -291,7 +291,7 @@ export class ConnectorController extends Controller {
   @Security("jwt")
   public async deleteConnector(
     @Request() req: ExpressRequest,
-    @Path() connectorId: string
+    @Path() connectorId: string,
   ): Promise<{ success: boolean }> {
     const { connectorManager, organizationId } = this.getServices(req);
 
@@ -305,12 +305,12 @@ export class ConnectorController extends Controller {
   @Security("jwt")
   public async testConnection(
     @Request() req: ExpressRequest,
-    @Path() connectorId: string
+    @Path() connectorId: string,
   ): Promise<{
     status: string;
     message: string;
     latency?: number;
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     error?: string;
   }> {
     const { connectorManager, organizationId } = this.getServices(req);
@@ -325,11 +325,11 @@ export class ConnectorController extends Controller {
   @Security("jwt")
   public async getHealth(
     @Request() req: ExpressRequest,
-    @Path() connectorId: string
+    @Path() connectorId: string,
   ): Promise<{
     healthy: boolean;
     message?: string;
-    details?: Record<string, any>;
+    details?: Record<string, unknown>;
   }> {
     const { connectorManager, organizationId } = this.getServices(req);
 
@@ -344,7 +344,7 @@ export class ConnectorController extends Controller {
   public async executeQuery(
     @Request() req: ExpressRequest,
     @Path() connectorId: string,
-    @Body() request: QueryRequest
+    @Body() request: QueryRequest,
   ): Promise<QueryResponse> {
     const { dataProxyService, organizationId } = this.getServices(req);
 
@@ -362,7 +362,7 @@ export class ConnectorController extends Controller {
   @Security("jwt")
   public async getSchema(
     @Request() req: ExpressRequest,
-    @Path() connectorId: string
+    @Path() connectorId: string,
   ): Promise<SchemaResponse> {
     const { dataProxyService, organizationId } = this.getServices(req);
 
@@ -370,11 +370,11 @@ export class ConnectorController extends Controller {
 
     // Cast to proper type
     return {
-      tables: schema.tables.map(t => ({
+      tables: schema.tables.map((t) => ({
         schema: t.schema,
         name: t.name,
-        type: t.type as "table" | "view"
-      }))
+        type: t.type as "table" | "view",
+      })),
     };
   }
 
@@ -388,17 +388,11 @@ export class ConnectorController extends Controller {
     @Path() connectorId: string,
     @Path() schemaName: string,
     @Path() tableName: string,
-    @Query() limit: number = 100
+    @Query() limit: number = 100,
   ): Promise<TablePreviewResponse> {
     const { dataProxyService, organizationId } = this.getServices(req);
 
-    return await dataProxyService.getTablePreview(
-      organizationId,
-      connectorId,
-      schemaName,
-      tableName,
-      limit
-    );
+    return await dataProxyService.getTablePreview(organizationId, connectorId, schemaName, tableName, limit);
   }
 
   /**
@@ -413,8 +407,8 @@ export class ConnectorController extends Controller {
     @Path() tableName: string,
     @Query() searchTerm: string,
     @Query() searchColumns: string,
-    @Query() limit: number = 50
-  ): Promise<any[]> {
+    @Query() limit: number = 50,
+  ): Promise<unknown[]> {
     const { dataProxyService, organizationId } = this.getServices(req);
 
     return await dataProxyService.searchTable(organizationId, connectorId, {
@@ -433,7 +427,7 @@ export class ConnectorController extends Controller {
   @Security("jwt")
   public async suggestMappings(
     @Request() req: ExpressRequest,
-    @Body() request: SuggestMappingsRequest
+    @Body() request: SuggestMappingsRequest,
   ): Promise<FieldMapping[]> {
     const { dataMapperService } = this.getServices(req);
 

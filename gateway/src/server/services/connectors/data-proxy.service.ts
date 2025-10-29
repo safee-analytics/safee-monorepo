@@ -6,10 +6,10 @@ import { MSSQLConnector } from "./mssql.connector.js";
 export interface QueryRequest {
   connectorId: string;
   sql: string;
-  params?: any[];
+  params?: unknown[];
 }
 
-export interface QueryResult<T = any> {
+export interface QueryResult<T = unknown> {
   rows: T[];
   rowCount: number;
   executionTime: number;
@@ -23,7 +23,7 @@ export interface TablePreview {
     type: string;
     nullable: boolean;
   }>;
-  sampleData: any[];
+  sampleData: unknown[];
   totalRows: number;
 }
 
@@ -37,25 +37,22 @@ export class DataProxyService {
   /**
    * Execute a raw SQL query on an external database
    */
-  async executeQuery<T = any>(
-    organizationId: string,
-    request: QueryRequest
-  ): Promise<QueryResult<T>> {
+  async executeQuery<T = unknown>(organizationId: string, request: QueryRequest): Promise<QueryResult<T>> {
     const connector = await this.connectorManager.getConnector(request.connectorId, organizationId);
 
     const startTime = Date.now();
-    let rows: any[];
+    let rows: unknown[];
 
     // Execute query based on connector type
     if (connector instanceof PostgreSQLConnector || connector instanceof MySQLConnector) {
       rows = await connector.query(request.sql, request.params);
     } else if (connector instanceof MSSQLConnector) {
       // MSSQL uses named parameters
-      const params = request.params
-        ? request.params.reduce((acc, val, idx) => {
+      const params: Record<string, unknown> | undefined = request.params
+        ? request.params.reduce<Record<string, unknown>>((acc, val, idx) => {
             acc[`param${idx}`] = val;
             return acc;
-          }, {} as Record<string, any>)
+          }, {})
         : undefined;
       rows = await connector.query(request.sql, params);
     } else {
@@ -96,7 +93,7 @@ export class DataProxyService {
     connectorId: string,
     schema: string,
     table: string,
-    limit: number = 100
+    limit: number = 100,
   ): Promise<TablePreview> {
     const connector = await this.connectorManager.getConnector(connectorId, organizationId);
 
@@ -114,34 +111,26 @@ export class DataProxyService {
     const columns = await connector.getTableColumns(schema, table);
 
     // Get sample data
-    let sampleData: any[];
+    let sampleData: unknown[];
     let totalRows: number;
 
     if (connector instanceof PostgreSQLConnector) {
-      sampleData = await connector.query(
-        `SELECT * FROM "${schema}"."${table}" LIMIT $1`,
-        [limit]
-      );
+      sampleData = await connector.query(`SELECT * FROM "${schema}"."${table}" LIMIT $1`, [limit]);
       const [countResult] = await connector.query<{ count: string }>(
-        `SELECT COUNT(*) as count FROM "${schema}"."${table}"`
+        `SELECT COUNT(*) as count FROM "${schema}"."${table}"`,
       );
       totalRows = parseInt(countResult.count, 10);
     } else if (connector instanceof MySQLConnector) {
-      sampleData = await connector.query(
-        `SELECT * FROM \`${schema}\`.\`${table}\` LIMIT ?`,
-        [limit]
-      );
+      sampleData = await connector.query(`SELECT * FROM \`${schema}\`.\`${table}\` LIMIT ?`, [limit]);
       const [countResult] = await connector.query<{ count: number }>(
-        `SELECT COUNT(*) as count FROM \`${schema}\`.\`${table}\``
+        `SELECT COUNT(*) as count FROM \`${schema}\`.\`${table}\``,
       );
       totalRows = countResult.count;
     } else {
       // MSSQL
-      sampleData = await connector.query(
-        `SELECT TOP ${limit} * FROM [${schema}].[${table}]`
-      );
+      sampleData = await connector.query(`SELECT TOP ${limit} * FROM [${schema}].[${table}]`);
       const [countResult] = await connector.query<{ count: number }>(
-        `SELECT COUNT(*) as count FROM [${schema}].[${table}]`
+        `SELECT COUNT(*) as count FROM [${schema}].[${table}]`,
       );
       totalRows = countResult.count;
     }
@@ -158,18 +147,18 @@ export class DataProxyService {
   /**
    * Execute a paginated query
    */
-  async executePaginatedQuery<T = any>(
+  async executePaginatedQuery<T = unknown>(
     organizationId: string,
     connectorId: string,
     params: {
       schema: string;
       table: string;
       columns?: string[];
-      where?: Record<string, any>;
+      where?: Record<string, unknown>;
       orderBy?: { column: string; direction: "ASC" | "DESC" }[];
       limit: number;
       offset: number;
-    }
+    },
   ): Promise<{
     rows: T[];
     total: number;
@@ -194,15 +183,15 @@ export class DataProxyService {
 
     // Build WHERE clause
     let whereClause = "";
-    const whereParams: any[] = [];
+    const whereParams: unknown[] = [];
     if (where && Object.keys(where).length > 0) {
       const conditions = Object.entries(where).map(([key, value], idx) => {
         whereParams.push(value);
         return connector instanceof MSSQLConnector
           ? `[${key}] = @param${idx}`
           : connector instanceof MySQLConnector
-          ? `\`${key}\` = ?`
-          : `"${key}" = $${idx + 1}`;
+            ? `\`${key}\` = ?`
+            : `"${key}" = $${idx + 1}`;
       });
       whereClause = `WHERE ${conditions.join(" AND ")}`;
     }
@@ -215,8 +204,8 @@ export class DataProxyService {
           connector instanceof MSSQLConnector
             ? `[${o.column}]`
             : connector instanceof MySQLConnector
-            ? `\`${o.column}\``
-            : `"${o.column}"`;
+              ? `\`${o.column}\``
+              : `"${o.column}"`;
         return `${col} ${o.direction}`;
       });
       orderByClause = `ORDER BY ${orders.join(", ")}`;
@@ -256,16 +245,31 @@ export class DataProxyService {
       countQuery = `SELECT COUNT(*) as count FROM [${schema}].[${table}] ${whereClause}`;
     }
 
-    // Execute queries
-    const rows = await connector.query<T>(dataQuery, [...whereParams, limit, offset]);
-    const [countResult] = await connector.query<{ count: number | string }>(
-      countQuery,
-      whereParams
-    );
+    // Execute queries - handle different parameter styles for different connectors
+    let rows: T[];
+    let countResult: { count: number | string };
 
-    const total = typeof countResult.count === "string"
-      ? parseInt(countResult.count, 10)
-      : countResult.count;
+    if (connector instanceof MSSQLConnector) {
+      // MSSQL uses named parameters
+      const queryParams = whereParams.reduce<Record<string, unknown>>((acc, val, idx) => {
+        acc[`param${idx}`] = val;
+        return acc;
+      }, {});
+      rows = await connector.query<T>(dataQuery, queryParams);
+
+      const [countRes] = await connector.query<{ count: number | string }>(countQuery, queryParams);
+      countResult = countRes;
+    } else {
+      // PostgreSQL and MySQL use positional parameters
+      rows = await connector.query<T>(dataQuery, [...whereParams, limit, offset] as unknown[]);
+      const [countRes] = await connector.query<{ count: number | string }>(
+        countQuery,
+        whereParams as unknown[],
+      );
+      countResult = countRes;
+    }
+
+    const total = typeof countResult.count === "string" ? parseInt(countResult.count, 10) : countResult.count;
 
     return {
       rows,
@@ -279,7 +283,7 @@ export class DataProxyService {
   /**
    * Search across multiple columns
    */
-  async searchTable<T = any>(
+  async searchTable<T = unknown>(
     organizationId: string,
     connectorId: string,
     params: {
@@ -288,7 +292,7 @@ export class DataProxyService {
       searchColumns: string[];
       searchTerm: string;
       limit?: number;
-    }
+    },
   ): Promise<T[]> {
     const connector = await this.connectorManager.getConnector(connectorId, organizationId);
 
@@ -308,9 +312,7 @@ export class DataProxyService {
     // Build search conditions
     let conditions: string[];
     if (connector instanceof PostgreSQLConnector) {
-      conditions = searchColumns.map(
-        (col) => `"${col}"::text ILIKE $1`
-      );
+      conditions = searchColumns.map((col) => `"${col}"::text ILIKE $1`);
     } else if (connector instanceof MySQLConnector) {
       conditions = searchColumns.map((col) => `\`${col}\` LIKE ?`);
     } else {

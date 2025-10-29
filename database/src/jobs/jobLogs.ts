@@ -5,9 +5,6 @@ import type { JobLog } from "../drizzle/jobLogs.js";
 
 type LogLevel = "debug" | "info" | "warn" | "error";
 
-/**
- * Create job log entry
- */
 export async function createJobLog(
   { drizzle, logger }: DbDeps,
   jobId: string,
@@ -30,9 +27,6 @@ export async function createJobLog(
   return result;
 }
 
-/**
- * Get logs for a job
- */
 export async function getJobLogs(
   { drizzle, logger }: DbDeps,
   jobId: string,
@@ -61,9 +55,6 @@ export async function getJobLogs(
   });
 }
 
-/**
- * Get error logs for a job
- */
 export async function getJobErrorLogs({ drizzle, logger }: DbDeps, jobId: string): Promise<JobLog[]> {
   logger.debug({ jobId }, "Getting job error logs");
 
@@ -72,9 +63,6 @@ export async function getJobErrorLogs({ drizzle, logger }: DbDeps, jobId: string
   });
 }
 
-/**
- * Log job info message
- */
 export async function logJobInfo(
   { drizzle, logger }: DbDeps,
   jobId: string,
@@ -84,9 +72,6 @@ export async function logJobInfo(
   return createJobLog({ drizzle, logger }, jobId, "info", message, metadata);
 }
 
-/**
- * Log job warning message
- */
 export async function logJobWarning(
   { drizzle, logger }: DbDeps,
   jobId: string,
@@ -96,9 +81,6 @@ export async function logJobWarning(
   return createJobLog({ drizzle, logger }, jobId, "warn", message, metadata);
 }
 
-/**
- * Log job error message
- */
 export async function logJobError(
   { drizzle, logger }: DbDeps,
   jobId: string,
@@ -108,9 +90,6 @@ export async function logJobError(
   return createJobLog({ drizzle, logger }, jobId, "error", message, metadata);
 }
 
-/**
- * Log job debug message
- */
 export async function logJobDebug(
   { drizzle, logger }: DbDeps,
   jobId: string,
@@ -120,9 +99,6 @@ export async function logJobDebug(
   return createJobLog({ drizzle, logger }, jobId, "debug", message, metadata);
 }
 
-/**
- * Clean up old job logs
- */
 export async function cleanupOldJobLogs({ drizzle, logger }: DbDeps, olderThan: Date): Promise<number> {
   logger.info({ olderThan }, "Cleaning up old job logs");
 
@@ -134,9 +110,6 @@ export async function cleanupOldJobLogs({ drizzle, logger }: DbDeps, olderThan: 
   return deletedCount;
 }
 
-/**
- * Get logs summary for multiple jobs
- */
 export async function getJobLogsSummary(
   { drizzle, logger }: DbDeps,
   jobIds: string[],

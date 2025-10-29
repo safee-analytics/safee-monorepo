@@ -4,7 +4,7 @@ export interface FieldMapping {
   sourceColumn: string;
   targetField: string;
   transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean";
-  defaultValue?: any;
+  defaultValue?: unknown;
 }
 
 export interface TableMapping {
@@ -14,7 +14,7 @@ export interface TableMapping {
   sourceTable: string;
   targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
   fieldMappings: FieldMapping[];
-  filters?: Record<string, any>;
+  filters?: Record<string, unknown>;
   syncEnabled: boolean;
   syncFrequency?: "manual" | "hourly" | "daily" | "weekly";
   lastSyncAt?: Date;
@@ -30,10 +30,7 @@ export class DataMapperService {
   /**
    * Get suggested field mappings based on column names
    */
-  suggestMappings(
-    sourceColumns: string[],
-    targetEntity: TableMapping["targetEntity"]
-  ): FieldMapping[] {
+  suggestMappings(sourceColumns: string[], targetEntity: TableMapping["targetEntity"]): FieldMapping[] {
     const mappings: FieldMapping[] = [];
 
     // Common mappings for contacts/customers
@@ -170,11 +167,7 @@ export class DataMapperService {
           mapping.transform = "lowercase";
         } else if (targetField.includes("Date") || targetField.includes("At")) {
           mapping.transform = "date";
-        } else if (
-          targetField === "value" ||
-          targetField === "amount" ||
-          targetField === "salary"
-        ) {
+        } else if (targetField === "value" || targetField === "amount" || targetField === "salary") {
           mapping.transform = "number";
         }
 
@@ -188,8 +181,8 @@ export class DataMapperService {
   /**
    * Transform data according to field mappings
    */
-  transformRow(sourceRow: Record<string, any>, mappings: FieldMapping[]): Record<string, any> {
-    const transformed: any = {};
+  transformRow(sourceRow: Record<string, unknown>, mappings: FieldMapping[]): Record<string, unknown> {
+    const transformed: Record<string, unknown> = {};
 
     for (const mapping of mappings) {
       let value = sourceRow[mapping.sourceColumn];
@@ -216,7 +209,9 @@ export class DataMapperService {
             value = String(value).trim();
             break;
           case "date":
-            value = new Date(value);
+            if (typeof value === "string" || typeof value === "number") {
+              value = new Date(value);
+            }
             break;
           case "number":
             value = Number(value);
@@ -236,31 +231,27 @@ export class DataMapperService {
   /**
    * Fetch and transform data from external table
    */
-  async fetchMappedData<T = any>(
+  async fetchMappedData<T = unknown>(
     organizationId: string,
     mapping: TableMapping,
     options?: {
       limit?: number;
       offset?: number;
-      where?: Record<string, any>;
-    }
+      where?: Record<string, unknown>;
+    },
   ): Promise<{ data: T[]; total: number }> {
     // Get raw data from external database
-    const result = await this.dataProxyService.executePaginatedQuery(
-      organizationId,
-      mapping.connectorId,
-      {
-        schema: mapping.sourceSchema,
-        table: mapping.sourceTable,
-        where: { ...mapping.filters, ...options?.where },
-        limit: options?.limit || 100,
-        offset: options?.offset || 0,
-      }
-    );
+    const result = await this.dataProxyService.executePaginatedQuery(organizationId, mapping.connectorId, {
+      schema: mapping.sourceSchema,
+      table: mapping.sourceTable,
+      where: { ...mapping.filters, ...options?.where },
+      limit: options?.limit || 100,
+      offset: options?.offset || 0,
+    });
 
-    // Transform each row
-    const transformedData = result.rows.map((row: Record<string, any>) =>
-      this.transformRow(row, mapping.fieldMappings)
+    // Transform each row - rows are unknown, need to assert as Record for transform
+    const transformedData = result.rows.map((row) =>
+      this.transformRow(row as Record<string, unknown>, mapping.fieldMappings),
     ) as T[];
 
     return {
@@ -275,28 +266,24 @@ export class DataMapperService {
   async previewMapping(
     organizationId: string,
     mapping: TableMapping,
-    limit: number = 10
+    limit: number = 10,
   ): Promise<
     Array<{
-      source: Record<string, any>;
-      target: Record<string, any>;
+      source: Record<string, unknown>;
+      target: Record<string, unknown>;
     }>
   > {
-    const result = await this.dataProxyService.executePaginatedQuery(
-      organizationId,
-      mapping.connectorId,
-      {
-        schema: mapping.sourceSchema,
-        table: mapping.sourceTable,
-        where: mapping.filters,
-        limit,
-        offset: 0,
-      }
-    );
+    const result = await this.dataProxyService.executePaginatedQuery(organizationId, mapping.connectorId, {
+      schema: mapping.sourceSchema,
+      table: mapping.sourceTable,
+      where: mapping.filters,
+      limit,
+      offset: 0,
+    });
 
-    return result.rows.map((source: Record<string, any>) => ({
-      source,
-      target: this.transformRow(source, mapping.fieldMappings),
+    return result.rows.map((source) => ({
+      source: source as Record<string, unknown>,
+      target: this.transformRow(source as Record<string, unknown>, mapping.fieldMappings),
     }));
   }
 
@@ -305,7 +292,7 @@ export class DataMapperService {
    */
   async validateMapping(
     organizationId: string,
-    mapping: TableMapping
+    mapping: TableMapping,
   ): Promise<{
     valid: boolean;
     errors: string[];
@@ -320,13 +307,12 @@ export class DataMapperService {
 
       // Check if source table exists
       const tableExists = schema.tables.some(
-        (t: { schema: string; name: string }) => t.schema === mapping.sourceSchema && t.name === mapping.sourceTable
+        (t: { schema: string; name: string }) =>
+          t.schema === mapping.sourceSchema && t.name === mapping.sourceTable,
       );
 
       if (!tableExists) {
-        errors.push(
-          `Table ${mapping.sourceSchema}.${mapping.sourceTable} not found in connector`
-        );
+        errors.push(`Table ${mapping.sourceSchema}.${mapping.sourceTable} not found in connector`);
         return { valid: false, errors, warnings };
       }
 
@@ -336,7 +322,7 @@ export class DataMapperService {
         mapping.connectorId,
         mapping.sourceSchema,
         mapping.sourceTable,
-        1
+        1,
       );
 
       const actualColumns = preview.columns.map((c: { name: string }) => c.name);
@@ -356,10 +342,9 @@ export class DataMapperService {
         warnings.push(
           `${unmappedColumns.length} columns are not mapped: ${unmappedColumns.slice(0, 5).join(", ")}${
             unmappedColumns.length > 5 ? "..." : ""
-          }`
+          }`,
         );
       }
-
     } catch (error) {
       errors.push(`Failed to validate mapping: ${error instanceof Error ? error.message : String(error)}`);
     }

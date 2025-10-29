@@ -1,8 +1,3 @@
-/**
- * Azure Key Vault integration for production secrets management
- * Falls back to environment variables for local development
- */
-
 import { SecretClient } from "@azure/keyvault-secrets";
 import { DefaultAzureCredential } from "@azure/identity";
 import { ENV } from "../env.js";
@@ -31,9 +26,6 @@ export class SecretsManager {
     }
   }
 
-  /**
-   * Get a secret from Azure Key Vault (production) or environment variables (development)
-   */
   async getSecret(name: string): Promise<string | null> {
     // Check cache first
     const cached = this.cache[name];
@@ -43,7 +35,6 @@ export class SecretsManager {
 
     let value: string | null = null;
 
-    // Try Azure Key Vault first (production)
     if (this.client) {
       try {
         const secret = await this.client.getSecret(name);
@@ -54,12 +45,10 @@ export class SecretsManager {
       }
     }
 
-    // Fall back to environment variables
     if (!value) {
       value = process.env[name.toUpperCase()] || null;
     }
 
-    // Cache the result
     if (value) {
       this.cache[name] = {
         value,
@@ -70,9 +59,6 @@ export class SecretsManager {
     return value;
   }
 
-  /**
-   * Get multiple secrets at once
-   */
   async getSecrets(names: string[]): Promise<Record<string, string | null>> {
     const results = await Promise.all(names.map((name) => this.getSecret(name)));
     const secrets: Record<string, string | null> = {};
@@ -84,16 +70,10 @@ export class SecretsManager {
     return secrets;
   }
 
-  /**
-   * Clear the secret cache (useful for tests or manual refresh)
-   */
   clearCache(): void {
     this.cache = {};
   }
 
-  /**
-   * Get database connection string with proper escaping
-   */
   async getDatabaseUrl(): Promise<string> {
     const baseUrl = await this.getSecret("database-url");
     if (!baseUrl) {
@@ -102,9 +82,6 @@ export class SecretsManager {
     return baseUrl;
   }
 
-  /**
-   * Get JWT secret for token signing
-   */
   async getJwtSecret(): Promise<string> {
     const secret = await this.getSecret("jwt-secret");
     if (!secret) {
@@ -118,9 +95,6 @@ export class SecretsManager {
     return secret;
   }
 
-  /**
-   * Get storage account credentials
-   */
   async getStorageCredentials(): Promise<{ accountName: string; accountKey: string } | null> {
     const [accountName, accountKey] = await Promise.all([
       this.getSecret("azure-storage-account-name"),
@@ -135,12 +109,8 @@ export class SecretsManager {
   }
 }
 
-// Singleton instance
 export const secretsManager = new SecretsManager();
 
-/**
- * Initialize secrets manager and validate required secrets
- */
 export async function initializeSecrets(): Promise<void> {
   const requiredSecrets = ["jwt-secret"];
 

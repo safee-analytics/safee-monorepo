@@ -1,7 +1,7 @@
 import { pino } from "pino";
 import { connect, redisConnect, getStorage, getDefaultPubSub, JobScheduler } from "@safee/database";
 import { LOG_LEVEL } from "./env.js";
-import { server } from "./server/index.js";
+import { startServer } from "./server/index.js";
 
 const logger = pino({
   level: LOG_LEVEL,
@@ -30,7 +30,7 @@ async function main() {
     const apps = [];
 
     apps.push(
-      server({ logger, drizzle, redis, pool, storage, pubsub, scheduler }).catch((err: unknown) => {
+      startServer({ logger, drizzle, redis, pool, storage, pubsub, scheduler }).catch((err: unknown) => {
         logger.error(err);
       }),
     );
