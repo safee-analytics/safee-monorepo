@@ -3,6 +3,8 @@ export * from "./organizations.js";
 export * from "./organizationsRelations.js";
 export * from "./odooDatabases.js";
 export * from "./odooDatabasesRelations.js";
+export * from "./odooUsers.js";
+export * from "./odooUsersRelations.js";
 export * from "./connectors.js";
 export * from "./connectorsRelations.js";
 export * from "./users.js";

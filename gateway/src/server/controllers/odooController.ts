@@ -162,8 +162,9 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooSearchRequest,
   ): Promise<number[]> {
+    const userId = request.user!.userId;
     const organizationId = request.user!.organizationId;
-    const client = await getOdooClientManager().getClient(organizationId);
+    const client = await getOdooClientManager().getClient(userId, organizationId);
 
     return client.search(body.model, body.domain || [], {
       limit: body.limit,
@@ -178,8 +179,9 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooSearchReadRequest,
   ): Promise<Record<string, unknown>[]> {
+    const userId = request.user!.userId;
     const organizationId = request.user!.organizationId;
-    const client = await getOdooClientManager().getClient(organizationId);
+    const client = await getOdooClientManager().getClient(userId, organizationId);
 
     return client.searchRead(
       body.model,
@@ -200,8 +202,9 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooReadRequest,
   ): Promise<Record<string, unknown>[]> {
+    const userId = request.user!.userId;
     const organizationId = request.user!.organizationId;
-    const client = await getOdooClientManager().getClient(organizationId);
+    const client = await getOdooClientManager().getClient(userId, organizationId);
 
     return client.read(body.model, body.ids, body.fields || [], body.context);
   }
@@ -212,8 +215,9 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooCreateRequest,
   ): Promise<{ id: number }> {
+    const userId = request.user!.userId;
     const organizationId = request.user!.organizationId;
-    const client = await getOdooClientManager().getClient(organizationId);
+    const client = await getOdooClientManager().getClient(userId, organizationId);
 
     const id = await client.create(body.model, body.values, body.context);
 
@@ -226,8 +230,9 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooWriteRequest,
   ): Promise<{ success: boolean }> {
+    const userId = request.user!.userId;
     const organizationId = request.user!.organizationId;
-    const client = await getOdooClientManager().getClient(organizationId);
+    const client = await getOdooClientManager().getClient(userId, organizationId);
 
     const success = await client.write(body.model, body.ids, body.values, body.context);
 
@@ -240,8 +245,9 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooUnlinkRequest,
   ): Promise<{ success: boolean }> {
+    const userId = request.user!.userId;
     const organizationId = request.user!.organizationId;
-    const client = await getOdooClientManager().getClient(organizationId);
+    const client = await getOdooClientManager().getClient(userId, organizationId);
 
     const success = await client.unlink(body.model, body.ids, body.context);
 
@@ -254,8 +260,9 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooExecuteRequest,
   ): Promise<unknown> {
+    const userId = request.user!.userId;
     const organizationId = request.user!.organizationId;
-    const client = await getOdooClientManager().getClient(organizationId);
+    const client = await getOdooClientManager().getClient(userId, organizationId);
 
     return client.execute(body.model, body.method, body.args || [], body.kwargs || {});
   }
