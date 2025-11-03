@@ -37,9 +37,6 @@ export class SessionController extends Controller {
     this.context = context ?? getServerContext();
   }
 
-  /**
-   * Get all active sessions for the current user
-   */
   @Get("/")
   @Security("jwt")
   @SuccessResponse("200", "Sessions retrieved successfully")
@@ -70,9 +67,6 @@ export class SessionController extends Controller {
     }
   }
 
-  /**
-   * Revoke a specific session
-   */
   @Post("/{sessionId}/revoke")
   @Security("jwt")
   @SuccessResponse("200", "Session revoked successfully")
@@ -86,27 +80,21 @@ export class SessionController extends Controller {
 
     try {
       if (!req.user?.userId) {
-        this.setStatus(401);
         throw new Unauthorized("User not authenticated");
       }
 
-      // First, verify the session belongs to the current user
       const session = await sessionService.getSessionById(deps, sessionId);
 
       if (!session) {
-        this.setStatus(404);
         throw new SessionNotFound();
       }
 
       if (session.userId !== req.user.userId) {
-        this.setStatus(403);
         throw new Forbidden("Cannot revoke another user's session");
       }
 
-      // Revoke the session
       await sessionService.revokeSession(deps, sessionId, "admin");
 
-      // Log security event
       await sessionService.logSecurityEvent(deps, {
         userId: req.user.userId,
         organizationId: req.user.organizationId,
@@ -160,9 +148,6 @@ export class SessionController extends Controller {
     }
   }
 
-  /**
-   * Revoke all other sessions (keep current session active)
-   */
   @Post("/revoke-all-others")
   @Security("jwt")
   @SuccessResponse("200", "All other sessions revoked successfully")
@@ -181,13 +166,11 @@ export class SessionController extends Controller {
 
       const currentSessionId = req.user.sessionId;
 
-      // Get all sessions first to count them
       const allSessions = await sessionService.getUserActiveSessions(deps, req.user.userId);
       const _otherSessionsCount = currentSessionId
         ? allSessions.filter((s) => s.id !== currentSessionId).length
         : allSessions.length;
 
-      // Revoke all other sessions
       const revokedCount = await sessionService.revokeAllUserSessions(
         deps,
         req.user.userId,
@@ -195,7 +178,6 @@ export class SessionController extends Controller {
         currentSessionId,
       );
 
-      // Log security event
       await sessionService.logSecurityEvent(deps, {
         userId: req.user.userId,
         organizationId: req.user.organizationId,
@@ -238,9 +220,6 @@ export class SessionController extends Controller {
     }
   }
 
-  /**
-   * Get current session information
-   */
   @Get("/current")
   @Security("jwt")
   @SuccessResponse("200", "Current session retrieved successfully")

@@ -3,10 +3,6 @@ import { idpk, systemSchema, entityTypeEnum, actionEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
 
-/**
- * Audit events - minimal table for audit trail and history
- * Real-time messaging handled by Azure Service Bus / Google Pub/Sub
- */
 export const auditEvents = systemSchema.table(
   "audit_events",
   {
@@ -14,7 +10,10 @@ export const auditEvents = systemSchema.table(
     entityType: entityTypeEnum("entity_type").notNull(),
     entityId: uuid("entity_id").notNull(),
     action: actionEnum("action").notNull(),
-    organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" }),
+    organizationId: uuid("organization_id").references(() => organizations.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
     userId: uuid("user_id").references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
     metadata: jsonb("metadata").$type<Record<string, unknown>>(), // Minimal context
     ipAddress: text("ip_address"),

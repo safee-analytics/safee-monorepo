@@ -24,10 +24,8 @@ import type { PostgreSQLConfig } from "../services/connectors/postgresql.connect
 import type { MySQLConfig } from "../services/connectors/mysql.connector.js";
 import type { MSSQLConnectorConfig } from "../services/connectors/mssql.connector.js";
 
-// Explicit type for TSOA (can't resolve dynamic enum types)
 type ConnectorType = "postgresql" | "mysql" | "mssql";
 
-// Request/Response types
 interface CreateConnectorRequest {
   name: string;
   description?: string;
@@ -125,9 +123,6 @@ export class ConnectorController extends Controller {
     };
   }
 
-  /**
-   * Get available connector types and their field definitions
-   */
   @Get("/types")
   @Security("jwt")
   public async getConnectorTypes(): Promise<
@@ -142,9 +137,6 @@ export class ConnectorController extends Controller {
     return ConnectorFactory.getAvailableTypes();
   }
 
-  /**
-   * Get field definitions for a specific connector type
-   */
   @Get("/types/{type}/fields")
   @Security("jwt")
   public async getFieldDefinitions(@Path() type: ConnectorType): Promise<
@@ -161,9 +153,6 @@ export class ConnectorController extends Controller {
     return ConnectorFactory.getFieldDefinitions(type);
   }
 
-  /**
-   * List all connectors for the current organization
-   */
   @Get("/")
   @Security("jwt")
   public async listConnectors(
@@ -198,9 +187,6 @@ export class ConnectorController extends Controller {
     }));
   }
 
-  /**
-   * Create a new connector
-   */
   @Post("/")
   @Security("jwt")
   @SuccessResponse("201", "Connector created successfully")
@@ -238,9 +224,6 @@ export class ConnectorController extends Controller {
     };
   }
 
-  /**
-   * Get a specific connector by ID
-   */
   @Get("/{connectorId}")
   @Security("jwt")
   public async getConnector(
@@ -266,9 +249,6 @@ export class ConnectorController extends Controller {
     };
   }
 
-  /**
-   * Update a connector
-   */
   @Put("/{connectorId}")
   @Security("jwt")
   public async updateConnector(
@@ -284,9 +264,6 @@ export class ConnectorController extends Controller {
     });
   }
 
-  /**
-   * Delete a connector
-   */
   @Delete("/{connectorId}")
   @Security("jwt")
   public async deleteConnector(
@@ -298,9 +275,6 @@ export class ConnectorController extends Controller {
     return await connectorManager.deleteConnector(connectorId, organizationId);
   }
 
-  /**
-   * Test connection for a connector
-   */
   @Post("/{connectorId}/test")
   @Security("jwt")
   public async testConnection(
@@ -318,9 +292,6 @@ export class ConnectorController extends Controller {
     return await connectorManager.testConnection(connectorId, organizationId);
   }
 
-  /**
-   * Get health status for a connector
-   */
   @Get("/{connectorId}/health")
   @Security("jwt")
   public async getHealth(
@@ -336,9 +307,6 @@ export class ConnectorController extends Controller {
     return await connectorManager.getConnectorHealth(connectorId, organizationId);
   }
 
-  /**
-   * Execute a raw SQL query on an external database
-   */
   @Post("/{connectorId}/query")
   @Security("jwt")
   public async executeQuery(
@@ -355,9 +323,6 @@ export class ConnectorController extends Controller {
     });
   }
 
-  /**
-   * Get schema information (tables and views) from external database
-   */
   @Get("/{connectorId}/schema")
   @Security("jwt")
   public async getSchema(
@@ -368,7 +333,6 @@ export class ConnectorController extends Controller {
 
     const schema = await dataProxyService.getSchema(organizationId, connectorId);
 
-    // Cast to proper type
     return {
       tables: schema.tables.map((t) => ({
         schema: t.schema,
@@ -378,9 +342,6 @@ export class ConnectorController extends Controller {
     };
   }
 
-  /**
-   * Get table preview (structure and sample data)
-   */
   @Get("/{connectorId}/schema/{schemaName}/tables/{tableName}")
   @Security("jwt")
   public async getTablePreview(
@@ -395,9 +356,6 @@ export class ConnectorController extends Controller {
     return await dataProxyService.getTablePreview(organizationId, connectorId, schemaName, tableName, limit);
   }
 
-  /**
-   * Search a table across multiple columns
-   */
   @Get("/{connectorId}/schema/{schemaName}/tables/{tableName}/search")
   @Security("jwt")
   public async searchTable(
@@ -420,9 +378,6 @@ export class ConnectorController extends Controller {
     });
   }
 
-  /**
-   * Get suggested field mappings for a target entity
-   */
   @Post("/mappings/suggest")
   @Security("jwt")
   public async suggestMappings(

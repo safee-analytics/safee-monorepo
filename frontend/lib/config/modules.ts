@@ -47,6 +47,20 @@ export const MODULES = {
       en: 'Customer Relationship Management',
       ar: 'إدارة علاقات العملاء'
     }
+  },
+  AUDIT: {
+    id: 'audit',
+    key: 'audit' as const,
+    name: {
+      en: 'Audit',
+      ar: 'التدقيق'
+    },
+    icon: '🔍',
+    path: '/audit',
+    description: {
+      en: 'Audit Case Management',
+      ar: 'إدارة قضايا التدقيق'
+    }
   }
 } as const
 

@@ -26,7 +26,6 @@ await describe("Local Pub/Sub Adapters", async () => {
 
       const messageId = await pubsub.publish("test-topic", "Hello World", { type: "test" });
 
-      // Wait for async message processing
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       assert.ok(receivedMessage);
@@ -75,7 +74,6 @@ await describe("Local Pub/Sub Adapters", async () => {
     let pubsub: RedisPubSub | undefined;
 
     beforeEach(() => {
-      // Only run Redis tests if Redis is available
       if (!process.env.REDIS_URL) {
         return;
       }
@@ -127,7 +125,6 @@ await describe("Local Pub/Sub Adapters", async () => {
       assert.strictEqual(stats.queueLength, 1);
       assert.strictEqual(stats.topic, "queue-test");
 
-      // Clear the queue
       await (pubsub as unknown as { clearQueue: (topic: string) => Promise<void> }).clearQueue("queue-test");
       const clearedStats = await (
         pubsub as unknown as {

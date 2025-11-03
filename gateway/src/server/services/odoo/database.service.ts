@@ -6,6 +6,7 @@ import { odooClient } from "./client.js";
 import { encryptionService } from "../encryption.js";
 import { env } from "../../../env.js";
 import { OrganizationNotFound, OdooDatabaseAlreadyExists, OdooDatabaseNotFound } from "../../errors.js";
+import { Logger } from "pino";
 
 export interface OdooProvisionResult {
   databaseName: string;
@@ -15,7 +16,10 @@ export interface OdooProvisionResult {
 }
 
 export class OdooDatabaseService {
-  constructor(private readonly drizzle: DrizzleClient) {}
+  constructor(
+    private readonly drizzle: DrizzleClient,
+    logger?: Logger,
+  ) {}
 
   private generateSecurePassword(): string {
     return crypto.randomBytes(32).toString("base64url");
@@ -50,7 +54,6 @@ export class OdooDatabaseService {
       throw new OdooDatabaseAlreadyExists(organizationId);
     }
 
-    // Generate unique admin login based on organization slug for better security
     const adminLogin = `admin_${org.slug}`;
     const adminPassword = this.generateSecurePassword();
 
@@ -121,8 +124,6 @@ export class OdooDatabaseService {
   }
 
   async listAllDatabases(): Promise<string[]> {
-    // Odoo's dbfilter configuration (^odoo_.*$) automatically filters the list
-    // to only show databases matching the pattern
     return odooClient.listDatabases();
   }
 
@@ -137,7 +138,6 @@ export class OdooDatabaseService {
   }
 
   getProxyHeaders(organizationId: string): Record<string, string> {
-    // Return headers that can be used to identify which Odoo database to use
     return {
       "X-Odoo-Organization-Id": organizationId,
     };

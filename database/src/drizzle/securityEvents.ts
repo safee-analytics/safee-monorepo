@@ -17,7 +17,7 @@ export const securityEvents = pgTable("security_events", {
   location: text("location"),
   riskLevel: riskLevelEnum("risk_level").notNull().default("low"),
   success: boolean("success").notNull(),
-  metadata: text("metadata"), // JSON string for additional data
+  metadata: jsonb("metadata"), // JSON string for additional data
   createdAt: timestamp("created_at").notNull().defaultNow(),
 });
 

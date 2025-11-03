@@ -55,7 +55,6 @@ export class UserController extends Controller {
       const user = await getUserById(deps, userId);
 
       if (!user) {
-        this.setStatus(404);
         throw new UserNotFound();
       }
 
@@ -94,7 +93,6 @@ export class UserController extends Controller {
       const user = await getUserById(deps, userId);
 
       if (!user) {
-        this.setStatus(404);
         throw new UserNotFound();
       }
 

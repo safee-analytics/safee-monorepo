@@ -448,7 +448,6 @@ export class AzureBlobStorage implements Storage {
         totalLength += data.length;
 
         if (totalLength > 500 * 1024 * 1024) {
-          // 500MB limit
           clearTimeout(timeout);
           reject(new Error("Stream size exceeded maximum limit of 500MB"));
         }

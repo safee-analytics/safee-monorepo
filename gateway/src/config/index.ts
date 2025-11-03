@@ -1,8 +1,3 @@
-/**
- * Environment-specific configuration management
- * Centralizes all app configuration with proper validation
- */
-
 import { ENV } from "../env.js";
 
 export interface SecurityConfig {
@@ -46,9 +41,6 @@ export interface AuthConfig {
   enablePasswordValidation: boolean;
 }
 
-/**
- * Get environment-specific security configuration
- */
 export function getSecurityConfig(): SecurityConfig {
   const isProduction = ENV === "production";
 
@@ -62,9 +54,6 @@ export function getSecurityConfig(): SecurityConfig {
   };
 }
 
-/**
- * Get environment-specific storage configuration
- */
 export function getStorageConfig(): StorageConfig {
   const useCloud = process.env.USE_CLOUD_STORAGE?.toLowerCase() === "true";
 
@@ -86,9 +75,6 @@ export function getStorageConfig(): StorageConfig {
   };
 }
 
-/**
- * Get environment-specific database configuration
- */
 export function getDatabaseConfig(): DatabaseConfig {
   const isProduction = ENV === "production";
 
@@ -100,9 +86,6 @@ export function getDatabaseConfig(): DatabaseConfig {
   };
 }
 
-/**
- * Get environment-specific logging configuration
- */
 export function getLoggingConfig(): LoggingConfig {
   const isProduction = ENV === "production";
   const isDevelopment = ENV === "local" || ENV === "development";
@@ -115,9 +98,6 @@ export function getLoggingConfig(): LoggingConfig {
   };
 }
 
-/**
- * Get environment-specific authentication configuration
- */
 export function getAuthConfig(): AuthConfig {
   const isProduction = ENV === "production";
 
@@ -131,9 +111,6 @@ export function getAuthConfig(): AuthConfig {
   };
 }
 
-/**
- * Validate required environment variables for current environment
- */
 export function validateEnvironmentConfig(): void {
   const authConfig = getAuthConfig();
   const required = ["DATABASE_URL"];
@@ -152,14 +129,12 @@ export function validateEnvironmentConfig(): void {
 
   const missing: string[] = [];
 
-  // Check required vars for all environments
   for (const varName of required) {
     if (!process.env[varName]) {
       missing.push(varName);
     }
   }
 
-  // Check production-specific vars
   if (ENV === "production") {
     for (const varName of production) {
       if (!process.env[varName]) {
@@ -172,7 +147,6 @@ export function validateEnvironmentConfig(): void {
     throw new Error(`Missing required environment variables: ${missing.join(", ")}`);
   }
 
-  // Validate JWT secret length only if authentication is enabled and JWT_SECRET is provided
   if (authConfig.enableAuthentication && process.env.JWT_SECRET && process.env.JWT_SECRET.length < 32) {
     throw new Error("JWT_SECRET must be at least 32 characters long");
   }

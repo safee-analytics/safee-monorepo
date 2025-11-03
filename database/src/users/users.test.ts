@@ -88,7 +88,6 @@ describe("User Utilities", () => {
       ),
     };
 
-    // Store transaction result for access in tests
     (mockDrizzle as typeof mockDrizzle & { _txResult: typeof mockTransactionResult })._txResult =
       mockTransactionResult;
 
@@ -119,7 +118,6 @@ describe("User Utilities", () => {
         updatedAt: new Date(),
       };
 
-      // Mock getUserByEmail to return null (no existing user)
       vi.mocked(mockDeps.drizzle.select).mockReturnValue({
         from: vi.fn().mockReturnValue({
           leftJoin: vi.fn().mockReturnValue({
@@ -169,7 +167,6 @@ describe("User Utilities", () => {
         organization: undefined,
       };
 
-      // Mock getUserByEmail to return existing user
       vi.mocked(mockDeps.drizzle.select).mockReturnValue({
         from: vi.fn().mockReturnValue({
           leftJoin: vi.fn().mockReturnValue({
@@ -225,7 +222,6 @@ describe("User Utilities", () => {
         },
       };
 
-      // Mock getUserByEmail to return null (first select call)
       const mockSelectForUserCheck = {
         from: vi.fn().mockReturnValue({
           leftJoin: vi.fn().mockReturnValue({
@@ -236,7 +232,6 @@ describe("User Utilities", () => {
         }),
       };
 
-      // Mock organization slug check to return empty (second select call)
       const mockSelectForOrgCheck = {
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({
@@ -275,7 +270,6 @@ describe("User Utilities", () => {
         organizationName: "Existing Company",
       };
 
-      // Mock getUserByEmail to return null
       const mockSelectForUser = {
         from: vi.fn().mockReturnValue({
           leftJoin: vi.fn().mockReturnValue({
@@ -286,7 +280,6 @@ describe("User Utilities", () => {
         }),
       };
 
-      // Mock select for organization check to return existing org
       const mockSelectForOrg = {
         from: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({
@@ -476,7 +469,6 @@ describe("User Utilities", () => {
         updatedAt: new Date(),
       };
 
-      // Mock getUserById
       vi.mocked(mockDeps.drizzle.select).mockReturnValue({
         from: vi.fn().mockReturnValue({
           leftJoin: vi.fn().mockReturnValue({
@@ -492,7 +484,6 @@ describe("User Utilities", () => {
         }),
       } as never);
 
-      // Mock update
       vi.mocked(mockDeps.drizzle.update).mockReturnValue({
         set: vi.fn().mockReturnValue({
           where: vi.fn().mockReturnValue({

@@ -14,11 +14,9 @@ async function main() {
     const { drizzle, pool } = connect("gateway");
     const redis = await redisConnect();
 
-    // Initialize storage and pubsub
     const storage = getStorage("safee-storage");
     const pubsub = getDefaultPubSub();
 
-    // Initialize job scheduler
     const scheduler = new JobScheduler({
       pubsub,
       topics: {

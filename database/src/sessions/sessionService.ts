@@ -1,4 +1,4 @@
-import { eq, and, gte, lt, desc, count } from "drizzle-orm";
+import { eq, and, gte, lt, desc, count, not } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 import type { DbDeps } from "../deps.js";
 import {
@@ -14,6 +14,8 @@ import {
   type EventType,
   type RiskLevel,
 } from "../drizzle/index.js";
+import { notEqual } from "assert";
+import { schema } from "../drizzle.js";
 
 export interface CreateSessionData {
   userId: string;
@@ -53,21 +55,15 @@ export class SessionService {
   private readonly MAX_CONCURRENT_SESSIONS = 5;
   private readonly DEFAULT_SESSION_DURATION_MINUTES = 24 * 60; // 24 hours
 
-  /**
-   * Create a new user session
-   */
   async createSession(deps: DbDeps, data: CreateSessionData): Promise<UserSession> {
     const { drizzle, logger } = deps;
-    const sessionId = uuidv4();
 
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + (data.expiresIn ?? this.DEFAULT_SESSION_DURATION_MINUTES));
 
-    // Check for concurrent session limits
     await this.enforceConcurrentSessionLimits(deps, data.userId);
 
     const sessionData: NewUserSession = {
-      id: sessionId,
       userId: data.userId,
       deviceFingerprint: data.deviceFingerprint,
       deviceName: data.deviceName,
@@ -81,16 +77,13 @@ export class SessionService {
     const [session] = await drizzle.insert(userSessions).values(sessionData).returning();
 
     logger.info(
-      { sessionId, userId: data.userId, deviceFingerprint: data.deviceFingerprint },
+      { sessionId: session.id, userId: data.userId, deviceFingerprint: data.deviceFingerprint },
       "User session created",
     );
 
     return session;
   }
 
-  /**
-   * Get active session by ID
-   */
   async getSessionById(deps: DbDeps, sessionId: string): Promise<UserSession | null> {
     const { drizzle } = deps;
 
@@ -105,9 +98,6 @@ export class SessionService {
     return session ?? null;
   }
 
-  /**
-   * Update session last activity
-   */
   async updateSessionActivity(deps: DbDeps, sessionId: string): Promise<void> {
     const { drizzle, logger } = deps;
 
@@ -122,9 +112,6 @@ export class SessionService {
     logger.debug({ sessionId }, "Session activity updated");
   }
 
-  /**
-   * Revoke a session
-   */
   async revokeSession(deps: DbDeps, sessionId: string, reason: RevokedReason): Promise<void> {
     const { drizzle, logger } = deps;
 
@@ -141,9 +128,6 @@ export class SessionService {
     logger.info({ sessionId, reason }, "User session revoked");
   }
 
-  /**
-   * Revoke all sessions for a user
-   */
   async revokeAllUserSessions(
     deps: DbDeps,
     userId: string,
@@ -156,7 +140,7 @@ export class SessionService {
       ? and(
           eq(userSessions.userId, userId),
           eq(userSessions.isActive, true),
-          eq(userSessions.id, excludeSessionId), // NOT operator would be better, but this works
+          not(eq(userSessions.id, excludeSessionId)), // NOT operator would be better, but this works
         )
       : and(eq(userSessions.userId, userId), eq(userSessions.isActive, true));
 
@@ -175,9 +159,6 @@ export class SessionService {
     return result.rowCount ?? 0;
   }
 
-  /**
-   * Get user's active sessions
-   */
   async getUserActiveSessions(deps: DbDeps, userId: string): Promise<SessionInfo[]> {
     const { drizzle } = deps;
 
@@ -203,9 +184,6 @@ export class SessionService {
     }));
   }
 
-  /**
-   * Clean up expired sessions
-   */
   async cleanupExpiredSessions(deps: DbDeps): Promise<number> {
     const { drizzle, logger } = deps;
 
@@ -228,9 +206,6 @@ export class SessionService {
     return cleanedCount;
   }
 
-  /**
-   * Log login attempt
-   */
   async logLoginAttempt(deps: DbDeps, data: LoginAttemptData): Promise<void> {
     const { drizzle, logger } = deps;
 
@@ -258,9 +233,6 @@ export class SessionService {
     );
   }
 
-  /**
-   * Get recent failed login attempts for rate limiting
-   */
   async getRecentFailedAttempts(deps: DbDeps, identifier: string, windowMinutes = 15): Promise<number> {
     const { drizzle } = deps;
 
@@ -281,43 +253,10 @@ export class SessionService {
     return result.count;
   }
 
-  /**
-   * Log security event
-   */
-  async logSecurityEvent(
-    deps: DbDeps,
-    data: {
-      userId?: string;
-      organizationId: string;
-      eventType: EventType;
-      resource?: string;
-      action?: string;
-      ipAddress: string;
-      userAgent: string;
-      location?: string;
-      riskLevel?: RiskLevel;
-      success: boolean;
-      metadata?: Record<string, unknown>;
-    },
-  ): Promise<void> {
+  async logSecurityEvent(deps: DbDeps, data: typeof schema.securityEvents.$inferInsert): Promise<void> {
     const { drizzle, logger } = deps;
 
-    const eventData: NewSecurityEvent = {
-      id: uuidv4(),
-      userId: data.userId,
-      organizationId: data.organizationId,
-      eventType: data.eventType,
-      resource: data.resource,
-      action: data.action,
-      ipAddress: data.ipAddress,
-      userAgent: data.userAgent,
-      location: data.location,
-      riskLevel: data.riskLevel ?? "low",
-      success: data.success,
-      metadata: data.metadata ? JSON.stringify(data.metadata) : null,
-    };
-
-    await drizzle.insert(securityEvents).values(eventData);
+    await drizzle.insert(securityEvents).values(data);
 
     logger.info(
       {
@@ -330,9 +269,6 @@ export class SessionService {
     );
   }
 
-  /**
-   * Enforce concurrent session limits
-   */
   private async enforceConcurrentSessionLimits(deps: DbDeps, userId: string): Promise<void> {
     const { drizzle, logger } = deps;
 
@@ -346,7 +282,6 @@ export class SessionService {
     });
 
     if (activeSessions.length >= this.MAX_CONCURRENT_SESSIONS) {
-      // Revoke the oldest sessions to make room
       const sessionsToRevoke = activeSessions.slice(this.MAX_CONCURRENT_SESSIONS - 1);
 
       for (const session of sessionsToRevoke) {

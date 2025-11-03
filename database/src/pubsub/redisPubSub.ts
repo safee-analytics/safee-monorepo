@@ -67,16 +67,12 @@ export class RedisPubSub implements PubSub {
 
     const serializedMessage = JSON.stringify(message);
 
-    // Use both pub/sub for immediate delivery and lists for persistence
     const pipeline = this.publishClient.multi();
 
-    // Publish for immediate delivery to active subscribers
     pipeline.publish(`topic:${topic}`, serializedMessage);
 
-    // Also push to a list for persistent queue (useful for workers)
     pipeline.lPush(`queue:${topic}`, serializedMessage);
 
-    // Trim the queue to prevent infinite growth (keep last 1000 messages)
     pipeline.lTrim(`queue:${topic}`, 0, 999);
 
     await pipeline.exec();
@@ -88,7 +84,6 @@ export class RedisPubSub implements PubSub {
   async subscribe(subscription: string, handler: (message: PubSubMessage) => Promise<void>): Promise<void> {
     logger.debug({ subscription }, "Setting up Redis pub/sub subscription");
 
-    // Create a dedicated client for this subscription
     const subscriptionClient = createClient({
       url: this.config.connectionString ?? process.env.REDIS_URL ?? "redis://localhost:6379",
     });
@@ -110,7 +105,6 @@ export class RedisPubSub implements PubSub {
 
     this.subscriptions.set(subscription, sub);
 
-    // Subscribe to both real-time pub/sub and process queued messages
     await this.setupRealTimeSubscription(sub);
     await this.setupQueueProcessor(sub);
 
@@ -174,7 +168,6 @@ export class RedisPubSub implements PubSub {
   }
 
   private async setupQueueProcessor(subscription: RedisSubscription): Promise<void> {
-    // Create a separate client for queue operations to avoid conflicts with pub/sub
     const queueClient = createClient({
       url: this.config.connectionString ?? process.env.REDIS_URL ?? "redis://localhost:6379",
     });
@@ -187,14 +180,12 @@ export class RedisPubSub implements PubSub {
 
     const processQueue = async () => {
       try {
-        // Use blocking pop to efficiently wait for messages
         const result = await queueClient.brPop(`queue:${subscription.topic}`, 1);
 
         if (result) {
           await this.processMessage(subscription, result.element);
         }
 
-        // Continue processing if client is still open
         if (queueClient.isOpen) {
           void setImmediate(() => {
             void processQueue();
@@ -203,7 +194,6 @@ export class RedisPubSub implements PubSub {
       } catch (err) {
         if (queueClient.isOpen) {
           logger.error({ error: err, subscription: subscription.name }, "Error processing Redis queue");
-          // Retry after a short delay
           void setTimeout(() => {
             void processQueue();
           }, 1000);
@@ -211,12 +201,10 @@ export class RedisPubSub implements PubSub {
       }
     };
 
-    // Start queue processing
     void setImmediate(() => {
       void processQueue();
     });
 
-    // Store queue client for cleanup
     subscription.queueClient = queueClient;
 
     logger.debug(
@@ -229,7 +217,6 @@ export class RedisPubSub implements PubSub {
     try {
       const message: PubSubMessage = JSON.parse(serializedMessage) as PubSubMessage;
 
-      // Convert base64 data back to Buffer if needed
       if (typeof message.data === "string" && this.isBase64(message.data)) {
         message.data = Buffer.from(message.data, "base64");
       }
@@ -247,7 +234,7 @@ export class RedisPubSub implements PubSub {
       );
     } catch (err) {
       logger.error({ error: err, subscription: subscription.name }, "Error processing Redis pub/sub message");
-      // In production, you might want to implement dead letter queues here
+      // TODO: In production, you might want to implement dead letter queues here
     }
   }
 

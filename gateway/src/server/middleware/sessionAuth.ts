@@ -23,7 +23,7 @@ export async function sessionAuthMiddleware(req: Request, res: Response, next: N
       return res.status(401).json({ error: "Missing or invalid authorization header" });
     }
 
-    const token = authHeader.substring(7); // Remove "Bearer " prefix
+    const token = authHeader.substring(7);
     const config = getAuthConfig();
 
     // Verify JWT token
@@ -85,7 +85,7 @@ export async function sessionAuthMiddleware(req: Request, res: Response, next: N
 // Enhanced auth middleware that also logs security events
 export async function enhancedSessionAuthMiddleware(req: Request, res: Response, next: NextFunction) {
   const startTime = Date.now();
-  const ipAddress = req.ip || req.connection?.remoteAddress || "unknown";
+  const ipAddress = req.ip || req.socket?.remoteAddress || "unknown";
   const userAgent = req.get("User-Agent") || "unknown";
 
   try {
@@ -94,12 +94,10 @@ export async function enhancedSessionAuthMiddleware(req: Request, res: Response,
         return next(err);
       }
 
-      // Log successful authentication
       if (req.user) {
         const context = getServerContext();
         const deps = { drizzle: context.drizzle, logger: context.logger };
 
-        // Log security event for sensitive operations
         const isSensitiveOperation =
           req.method !== "GET" ||
           req.path.includes("admin") ||
@@ -208,7 +206,6 @@ export function requireRole(role: string) {
   };
 }
 
-// Extend Express Request type
 declare global {
   // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Express {

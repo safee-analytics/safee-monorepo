@@ -4,7 +4,7 @@ import { persist } from 'zustand/middleware'
 interface Organization {
   id: string
   name: string
-  modules: ('hisabiq' | 'kanz' | 'nisbah')[]
+  modules: ('hisabiq' | 'kanz' | 'nisbah' | 'audit')[]
 }
 
 interface User {
@@ -17,13 +17,13 @@ interface User {
 interface OrgStore {
   currentOrg: Organization | null
   currentUser: User | null
-  currentModule: 'hisabiq' | 'kanz' | 'nisbah'
+  currentModule: 'hisabiq' | 'kanz' | 'nisbah' | 'audit'
   locale: 'ar' | 'en'
 
   // Actions
   setOrg: (org: Organization) => void
   setUser: (user: User) => void
-  setModule: (module: 'hisabiq' | 'kanz' | 'nisbah') => void
+  setModule: (module: 'hisabiq' | 'kanz' | 'nisbah' | 'audit') => void
   setLocale: (locale: 'ar' | 'en') => void
   clearSession: () => void
 }
@@ -34,7 +34,7 @@ export const useOrgStore = create<OrgStore>()(
       currentOrg: null,
       currentUser: null,
       currentModule: 'hisabiq',
-      locale: 'ar',
+      locale: 'en',
 
       setOrg: (org) => set({ currentOrg: org }),
       setUser: (user) => set({ currentUser: user }),

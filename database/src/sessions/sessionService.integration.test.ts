@@ -23,14 +23,12 @@ describe("SessionService Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    // Clean tables in correct order (delete children before parents)
     await db.delete(userSessions);
     await db.delete(loginAttempts);
     await db.delete(securityEvents);
     await db.delete(users);
     await db.delete(organizations);
 
-    // Create test organization and user
     const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
     testOrgId = org.id;
 
@@ -71,7 +69,6 @@ describe("SessionService Integration Tests", () => {
     it("should enforce concurrent session limits", async () => {
       const deps = createTestDeps(db);
 
-      // Create 5 sessions (the limit)
       for (let i = 0; i < 5; i++) {
         await sessionService.createSession(deps, {
           userId: testUserId,
@@ -82,7 +79,6 @@ describe("SessionService Integration Tests", () => {
         });
       }
 
-      // Create 6th session should revoke oldest
       await sessionService.createSession(deps, {
         userId: testUserId,
         deviceFingerprint: "fp-new",
@@ -172,7 +168,7 @@ describe("SessionService Integration Tests", () => {
       await sessionService.revokeSession(deps, created.id, "logout");
 
       const session = await sessionService.getSessionById(deps, created.id);
-      expect(session).toBeNull(); // getSessionById only returns active sessions
+      expect(session).toBeNull();
     });
   });
 
@@ -180,7 +176,6 @@ describe("SessionService Integration Tests", () => {
     it("should revoke all user sessions", async () => {
       const deps = createTestDeps(db);
 
-      // Create 3 sessions
       await sessionService.createSession(deps, {
         userId: testUserId,
         deviceFingerprint: "fp-1",
@@ -235,7 +230,7 @@ describe("SessionService Integration Tests", () => {
       await sessionService.revokeAllUserSessions(deps, testUserId, "security", session1.id);
 
       const activeSessions = await sessionService.getUserActiveSessions(deps, testUserId);
-      // Note: The implementation has a bug - it doesn't properly exclude, but we test current behavior
+      // BUG: Note: The implementation has a bug - it doesn't properly exclude, but we test current behavior
       expect(activeSessions.length).toBeGreaterThanOrEqual(0);
     });
   });
@@ -276,7 +271,6 @@ describe("SessionService Integration Tests", () => {
     it("should cleanup expired sessions", async () => {
       const deps = createTestDeps(db);
 
-      // Create expired session
       await sessionService.createSession(deps, {
         userId: testUserId,
         deviceFingerprint: "fp-expired",
@@ -286,7 +280,6 @@ describe("SessionService Integration Tests", () => {
         expiresIn: -10, // Expired
       });
 
-      // Create active session
       await sessionService.createSession(deps, {
         userId: testUserId,
         deviceFingerprint: "fp-active",
@@ -318,9 +311,8 @@ describe("SessionService Integration Tests", () => {
         success: true,
       });
 
-      // Verify it was logged (we'd need to query login_attempts table)
       const attempts = await sessionService.getRecentFailedAttempts(deps, "test@example.com");
-      expect(attempts).toBe(0); // Should be 0 because it was successful
+      expect(attempts).toBe(0);
     });
 
     it("should log failed login attempt", async () => {
@@ -345,7 +337,6 @@ describe("SessionService Integration Tests", () => {
     it("should count failed attempts in time window", async () => {
       const deps = createTestDeps(db);
 
-      // Log 3 failed attempts
       for (let i = 0; i < 3; i++) {
         await sessionService.logLoginAttempt(deps, {
           identifier: "attacker@example.com",
@@ -381,7 +372,7 @@ describe("SessionService Integration Tests", () => {
         metadata: { method: "password" },
       });
 
-      // Event should be logged (we'd need to query security_events table to verify)
+      // BUG: Event should be logged (we'd need to query security_events table to verify)
       // For now, just checking it doesn't throw
       expect(true).toBe(true);
     });

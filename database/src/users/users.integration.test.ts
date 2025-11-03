@@ -19,7 +19,6 @@ describe("User Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    // With CASCADE, we only need to delete parent tables
     await db.delete(organizations);
   });
 
@@ -28,10 +27,7 @@ describe("User Integration Tests", () => {
       const deps = createTestDeps(db);
 
       // First create an organization
-      const [org] = await db
-        .insert(await import("../drizzle/index.js").then((m) => m.organizations))
-        .values({ name: "Test Org", slug: "test-org" })
-        .returning();
+      const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
 
       const userData = {
         email: "test@example.com",
@@ -53,10 +49,7 @@ describe("User Integration Tests", () => {
     it("should throw error when creating duplicate email", async () => {
       const deps = createTestDeps(db);
 
-      const [org] = await db
-        .insert(await import("../drizzle/index.js").then((m) => m.organizations))
-        .values({ name: "Test Org", slug: "test-org" })
-        .returning();
+      const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
 
       const userData = {
         email: "duplicate@example.com",
@@ -74,10 +67,7 @@ describe("User Integration Tests", () => {
     it("should retrieve user by email", async () => {
       const deps = createTestDeps(db);
 
-      const [org] = await db
-        .insert(await import("../drizzle/index.js").then((m) => m.organizations))
-        .values({ name: "Test Org", slug: "test-org" })
-        .returning();
+      const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
 
       await createUser(deps, {
         email: "find@example.com",
@@ -108,10 +98,7 @@ describe("User Integration Tests", () => {
     it("should retrieve user by ID", async () => {
       const deps = createTestDeps(db);
 
-      const [org] = await db
-        .insert(await import("../drizzle/index.js").then((m) => m.organizations))
-        .values({ name: "Test Org", slug: "test-org" })
-        .returning();
+      const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
 
       const createdUser = await createUser(deps, {
         email: "findbyid@example.com",
@@ -139,10 +126,7 @@ describe("User Integration Tests", () => {
     it("should update user profile fields", async () => {
       const deps = createTestDeps(db);
 
-      const [org] = await db
-        .insert(await import("../drizzle/index.js").then((m) => m.organizations))
-        .values({ name: "Test Org", slug: "test-org" })
-        .returning();
+      const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
 
       const createdUser = await createUser(deps, {
         email: "update@example.com",
@@ -176,10 +160,7 @@ describe("User Integration Tests", () => {
     it("should update user locale", async () => {
       const deps = createTestDeps(db);
 
-      const [org] = await db
-        .insert(await import("../drizzle/index.js").then((m) => m.organizations))
-        .values({ name: "Test Org", slug: "test-org" })
-        .returning();
+      const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
 
       const createdUser = await createUser(deps, {
         email: "locale@example.com",

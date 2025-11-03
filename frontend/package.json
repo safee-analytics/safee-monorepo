@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate:api": "openapi-typescript ../gateway/src/server/swagger.json -o ./lib/api/schema.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
@@ -18,15 +19,14 @@
     "@tanstack/react-query": "^5.62.11",
     "@tanstack/react-table": "^8.20.6",
     "axios": "^1.7.9",
-    "chakra-dayzed-datepicker": "^3.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
-    "dayzed": "^3.2.3",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.468.0",
     "next": "15.5.6",
     "next-intl": "^3.24.0",
+    "openapi-fetch": "^0.15.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.54.2",
@@ -43,6 +43,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.6",
+    "openapi-typescript": "^7.10.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

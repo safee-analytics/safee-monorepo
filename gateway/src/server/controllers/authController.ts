@@ -80,7 +80,6 @@ export class AuthController extends Controller {
     const userAgent = req.get("User-Agent") || "unknown";
 
     try {
-      // Log login attempt (will be marked as success/failure later)
       await sessionService.logLoginAttempt(deps, {
         identifier: request.email,
         identifierType: "email",
@@ -148,10 +147,8 @@ export class AuthController extends Controller {
         throw new Unauthorized("Invalid email or password");
       }
 
-      // Create device fingerprint (simple version)
       const deviceFingerprint = `${userAgent}-${ipAddress}`.replace(/[^a-zA-Z0-9-]/g, "").substring(0, 50);
 
-      // Create user session
       const session = await sessionService.createSession(deps, {
         userId: user.id,
         deviceFingerprint,
@@ -249,16 +246,12 @@ export class AuthController extends Controller {
     const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
 
     try {
-      // Validate password
       if (!passwordService.validatePassword(request.password)) {
-        this.setStatus(400);
         throw new PasswordValidationFailed();
       }
 
-      // Hash password
       const passwordHash = await passwordService.hashPassword(request.password);
 
-      // Create user with organization
       const result = await createUserWithOrganization(deps, {
         email: request.email,
         passwordHash,
@@ -267,11 +260,9 @@ export class AuthController extends Controller {
         organizationName: request.organizationName,
       });
 
-      // Get user roles and permissions for the new user
       const roles = await getUserRoleStrings(deps, result.user.id);
       const permissions = await getUserPermissionStrings(deps, result.user.id);
 
-      // Generate tokens for the new user
       const tokenPayload = {
         userId: result.user.id,
         organizationId: result.user.organizationId,
@@ -340,16 +331,13 @@ export class AuthController extends Controller {
     const userAgent = req.get("User-Agent") || "unknown";
 
     try {
-      // Extract user info from JWT (this would be set by auth middleware)
       const userId = req.user?.userId;
       const sessionId = req.user?.sessionId;
       const organizationId = req.user?.organizationId;
 
       if (sessionId) {
-        // Revoke the session
         await sessionService.revokeSession(deps, sessionId, "logout");
 
-        // Log security event
         if (userId && organizationId) {
           await sessionService.logSecurityEvent(deps, {
             userId,
@@ -373,16 +361,12 @@ export class AuthController extends Controller {
     } catch (error) {
       this.context.logger.error({ error }, "Logout failed");
 
-      // Still return success for security - don't reveal internal errors
       return {
         message: "Logged out successfully",
       };
     }
   }
 
-  /**
-   * Change password for authenticated user
-   */
   @Post("change-password")
   @Security("jwt")
   @SuccessResponse("200", "Password changed successfully")
@@ -400,13 +384,11 @@ export class AuthController extends Controller {
     }
 
     try {
-      // Get user
       const user = await getUserById(deps, userId);
       if (!user) {
         throw new Unauthorized("User not found");
       }
 
-      // Verify current password
       const isValidPassword = await passwordService.verifyPassword(
         request.currentPassword,
         user.passwordHash,
@@ -425,15 +407,12 @@ export class AuthController extends Controller {
         throw new Unauthorized("Current password is incorrect");
       }
 
-      // Validate new password
       if (!passwordService.validatePassword(request.newPassword)) {
         throw new PasswordValidationFailed();
       }
 
-      // Hash new password
       const newPasswordHash = await passwordService.hashPassword(request.newPassword);
 
-      // Update password in database
       await deps.drizzle
         .update(schema.users)
         .set({
@@ -442,7 +421,6 @@ export class AuthController extends Controller {
         })
         .where(eq(schema.users.id, userId));
 
-      // Log security event
       await sessionService.logSecurityEvent(deps, {
         userId,
         organizationId: user.organizationId,
@@ -464,10 +442,6 @@ export class AuthController extends Controller {
     }
   }
 
-  /**
-   * Request password reset (will send email in future)
-   * For now, this endpoint logs the request for future email implementation
-   */
   @Post("request-password-reset")
   @NoSecurity()
   @SuccessResponse("200", "Password reset email sent (if account exists)")
@@ -480,7 +454,6 @@ export class AuthController extends Controller {
     const userAgent = req.get("User-Agent") || "unknown";
 
     try {
-      // Get user by email
       const user = await getUserByEmail(this.context, request.email);
 
       if (user) {
@@ -502,14 +475,12 @@ export class AuthController extends Controller {
           "Password reset requested - email functionality not yet implemented",
         );
       } else {
-        // Log failed attempt but don't reveal that user doesn't exist
         this.context.logger.warn(
           { email: request.email, ipAddress },
           "Password reset requested for non-existent user",
         );
       }
 
-      // Always return success to prevent user enumeration
       return {
         message:
           "If an account exists with this email, a password reset link will be sent. (Email functionality coming soon)",
@@ -517,7 +488,6 @@ export class AuthController extends Controller {
     } catch (error) {
       this.context.logger.error({ error, email: request.email }, "Failed to process password reset request");
 
-      // Always return success to prevent user enumeration
       return {
         message:
           "If an account exists with this email, a password reset link will be sent. (Email functionality coming soon)",

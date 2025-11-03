@@ -3,10 +3,13 @@ import { identitySchema } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
 
-// Enums
-export const connectorTypeEnum = pgEnum("connector_type", ["postgresql", "mysql", "mssql"]);
+export const connectorTypeEnum = identitySchema.enum("connector_type", ["postgresql", "mysql", "mssql"]);
 
-export const connectionStatusEnum = pgEnum("connection_status", ["success", "failed", "untested"]);
+export const connectionStatusEnum = identitySchema.enum("connection_status", [
+  "success",
+  "failed",
+  "untested",
+]);
 
 export const connectors = identitySchema.table("connectors", {
   id: uuid("id").primaryKey().defaultRandom(),

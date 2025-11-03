@@ -16,6 +16,7 @@ import swaggerDocument from "./swagger.json" with { type: "json" };
 import pg from "pg";
 import { initServerContext } from "./serverContext.js";
 import { initOdooClientManager } from "./services/odoo/manager.service.js";
+import { hoursToMilliseconds } from "date-fns";
 
 dotenv.config();
 
@@ -77,14 +78,11 @@ export async function server({
   }
   app.set("trust proxy", !IS_LOCAL ? 1 : 0);
 
-  // Body parsing middleware (needed for body to show up properly in logging)
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-  // Locale detection middleware
   app.use(localeMiddleware);
 
-  // Initialize Odoo client manager
   const odoo = initOdooClientManager(drizzle, logger as unknown as Logger);
   logger.info("Odoo client manager initialized");
 
@@ -129,7 +127,7 @@ export async function server({
         unset: "destroy",
         saveUninitialized: false,
         cookie: {
-          maxAge: 1000 * 60 * 60 * 24, // 24 hours
+          maxAge: hoursToMilliseconds(24),
           httpOnly: true,
           signed: true,
           secure: !IS_LOCAL,
@@ -187,9 +185,7 @@ export async function server({
     });
   });
 
-  // Error handling middleware
   app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
-    // Handle TSOA validation errors
     if (err instanceof ValidateError) {
       logger.info({ err, url: req.url, userId: req.authenticatedUserId }, "validation error");
       return res.status(422).json({
@@ -198,7 +194,6 @@ export async function server({
       });
     }
 
-    // Handle our custom ApiError hierarchy (includes all auth/authorization errors)
     if (err instanceof ApiError) {
       logger.info(
         {
@@ -228,12 +223,10 @@ export async function server({
     });
   });
 
-  // 404 handler
   app.use("*", (_req, res) => {
     res.status(404).json({ error: "Endpoint not found" });
   });
 
-  // Start the job scheduler
   await scheduler.start({ drizzle, logger: logger as unknown as Logger });
   logger.info("Job scheduler started");
 

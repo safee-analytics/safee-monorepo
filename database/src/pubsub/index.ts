@@ -26,9 +26,6 @@ export function createPubSub(config: PubSubFactoryConfig): PubSub {
   }
 }
 
-/**
- * Get default pub/sub adapter based on environment
- */
 export function getDefaultPubSub(config: PubSubConfig = {}): PubSub {
   if (IS_LOCAL) {
     // For local development, prefer Redis if available, otherwise use in-memory
@@ -39,8 +36,6 @@ export function getDefaultPubSub(config: PubSubConfig = {}): PubSub {
     return new InMemoryPubSub(config);
   }
 
-  // For production, you would determine based on environment variables
-  // This is just an example - adjust based on your needs
   const provider = (process.env.PUBSUB_PROVIDER ?? "google") as PubSubProvider;
 
   return createPubSub({
@@ -49,7 +44,6 @@ export function getDefaultPubSub(config: PubSubConfig = {}): PubSub {
   });
 }
 
-// Re-export types and interfaces
 export type { PubSub, PubSubMessage, PubSubSubscription, PubSubConfig } from "./pubsub.js";
 export { GooglePubSubAdapter } from "./googlePubSub.js";
 export { AzureServiceBusAdapter } from "./azureServiceBus.js";

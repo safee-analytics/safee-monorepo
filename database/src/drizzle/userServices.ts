@@ -3,7 +3,6 @@ import { identitySchema } from "./_common.js";
 import { users } from "./users.js";
 import { services } from "./services.js";
 
-// Services enabled for a specific user (user-level overrides)
 export const userServices = identitySchema.table(
   "user_services",
   {

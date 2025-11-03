@@ -1,5 +1,4 @@
 export function extractDeviceName(userAgent: string): string {
-  // Simple device name extraction
   if (userAgent.includes("Mobile")) return "Mobile Device";
   if (userAgent.includes("iPad")) return "iPad";
   if (userAgent.includes("iPhone")) return "iPhone";

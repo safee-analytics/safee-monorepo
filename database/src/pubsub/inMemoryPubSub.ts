@@ -22,7 +22,6 @@ export class InMemoryPubSub implements PubSub {
   constructor(_config: PubSubConfig = {}) {
     logger.info("Initializing in-memory pub/sub");
 
-    // Set max listeners to handle many subscriptions
     this.emitter.setMaxListeners(1000);
   }
 
@@ -51,7 +50,6 @@ export class InMemoryPubSub implements PubSub {
       publishTime: new Date(),
     };
 
-    // Use setImmediate to ensure async behavior
     setImmediate(() => {
       this.emitter.emit(`topic:${topic}`, message);
     });
@@ -72,8 +70,8 @@ export class InMemoryPubSub implements PubSub {
       );
     }
 
-    // Get topic from stored mapping, or fall back to extracting from subscription name
-    const topic = this.subscriptionTopics.get(subscription) ?? this.extractTopicFromSubscription(subscription);
+    const topic =
+      this.subscriptionTopics.get(subscription) ?? this.extractTopicFromSubscription(subscription);
 
     const sub: Subscription = {
       name: subscription,
@@ -107,7 +105,6 @@ export class InMemoryPubSub implements PubSub {
 
     await this.createTopic(topic);
 
-    // Store the subscription -> topic mapping
     this.subscriptionTopics.set(subscription, topic);
 
     logger.info(
@@ -161,17 +158,12 @@ export class InMemoryPubSub implements PubSub {
 
     const parts = subscription.split("-");
     if (parts.length > 1) {
-      // Remove the last part (assumed to be subscription suffix)
       return parts.slice(0, -1).join("-");
     }
 
-    // If no pattern, use subscription name as topic
     return subscription;
   }
 
-  /**
-   * Get statistics about current state (useful for debugging)
-   */
   getStats(): {
     topicCount: number;
     subscriptionCount: number;

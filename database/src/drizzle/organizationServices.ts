@@ -3,7 +3,6 @@ import { identitySchema } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { services } from "./services.js";
 
-// Services enabled for an organization
 export const organizationServices = identitySchema.table(
   "organization_services",
   {

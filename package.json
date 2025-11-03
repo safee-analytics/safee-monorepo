@@ -9,7 +9,8 @@
     "gateway",
     "jobs",
     "eslint-plugin-safee",
-    "e2e"
+    "e2e",
+    "frontend"
   ],
   "scripts": {
     "build": "just build",

@@ -1,6 +1,7 @@
 'use client'
 
 import { Sidebar } from '@/components/layout/Sidebar'
+import { Navigation } from '@/components/layout/Navigation'
 import { TranslationProvider } from '@/lib/providers/TranslationProvider'
 import { SafeeToastContainer } from '@/components/feedback/SafeeToast'
 import { StackedNotificationsContainer } from '@/components/feedback/Toast'
@@ -12,9 +13,10 @@ export default function AppLayout({
 }) {
   return (
     <TranslationProvider>
-      <div className="min-h-screen bg-indigo-50">
+      <div className="min-h-screen bg-gray-50">
+        <Navigation />
         <Sidebar />
-        <main className="p-8 ml-[60px]">
+        <main className="pt-[65px] pl-[64px]">
           {children}
         </main>
         <SafeeToastContainer notifications={[]} onRemove={() => {}} />
