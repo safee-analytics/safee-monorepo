@@ -232,7 +232,7 @@ export default function AuditDashboard() {
             <div className="h-80">
               <div className="h-full flex items-end justify-between gap-2">
                 {chartData.map((data, idx) => {
-                  const total = data.completed + data.inProgress + data.pending
+                  const _total = data.completed + data.inProgress + data.pending
                   const completedHeight = (data.completed / maxValue) * 100
                   const inProgressHeight = (data.inProgress / maxValue) * 100
                   const pendingHeight = (data.pending / maxValue) * 100

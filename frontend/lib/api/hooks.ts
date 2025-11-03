@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { apiClient, handleApiError } from './client'
 import type { paths } from './schema'
+import { z } from 'zod'
 
 // Query keys for React Query cache management
 export const queryKeys = {
@@ -80,27 +81,28 @@ export function useStorageFile(fileId: string) {
   })
 }
 
+const uploadFileSchema = z.object({
+  file: z.instanceof(File),
+  folderId: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  metadata: z.record(z.unknown()).optional(),
+})
+
 export function useUploadFile() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({
-      file,
-      ...options
-    }: {
-      file: File
-      folderId?: string
-      tags?: string[]
-      metadata?: Record<string, unknown>
-    }) => {
+    mutationFn: async (input: z.infer<typeof uploadFileSchema>) => {
+      const validated = uploadFileSchema.parse(input)
       const formData = new FormData()
-      formData.append('file', file)
-      if (options.folderId) formData.append('folderId', options.folderId)
-      if (options.tags) formData.append('tags', JSON.stringify(options.tags))
-      if (options.metadata) formData.append('metadata', JSON.stringify(options.metadata))
+      formData.append('file', validated.file)
+      if (validated.folderId) formData.append('folderId', validated.folderId)
+      if (validated.tags) formData.append('tags', JSON.stringify(validated.tags))
+      if (validated.metadata) formData.append('metadata', JSON.stringify(validated.metadata))
 
       const { data, error } = await apiClient.POST('/api/v1/storage/upload', {
-        body: formData as any,
+        // @ts-expect-error FormData is compatible with multipart/form-data
+        body: formData,
       })
       if (error) throw new Error(handleApiError(error))
       return data
@@ -145,17 +147,22 @@ export function useStorageQuota() {
   })
 }
 
-// Generic hook factory for creating custom API hooks
+// Generic hook factory for creating custom API hooks with schema validation
 export function createApiHook<
   TPath extends keyof paths,
   TMethod extends keyof paths[TPath],
->(path: TPath, method: TMethod) {
-  return (params?: any) => {
+  TParams extends z.ZodType = z.ZodType<Record<string, unknown>>,
+>(path: TPath, method: TMethod, paramsSchema?: TParams) {
+  return (params?: z.infer<TParams>) => {
     return useQuery({
       queryKey: [path, method, params],
       queryFn: async () => {
-        const client = apiClient as any
-        const { data, error } = await client[method](path, params)
+        const validatedParams = paramsSchema ? paramsSchema.parse(params) : params
+        const clientMethod = apiClient[method as 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH']
+        if (!clientMethod) {
+          throw new Error(`Method ${String(method)} not found on apiClient`)
+        }
+        const { data, error } = await clientMethod(path, validatedParams)
         if (error) throw new Error(handleApiError(error))
         return data
       },

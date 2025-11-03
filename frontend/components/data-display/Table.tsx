@@ -70,7 +70,7 @@ export function Table<T>({
                     <td key={`cell-${key}-${column.key}-${colIdx}`} className={`p-4 ${column.className || ''}`}>
                       {column.render
                         ? column.render(row, index)
-                        : (row as any)[column.key]
+                        : (row as Record<string, unknown>)[column.key]
                       }
                     </td>
                   ))}
@@ -84,7 +84,7 @@ export function Table<T>({
                   <td key={`cell-${key}-${column.key}-${colIdx}`} className={`p-4 ${column.className || ''}`}>
                     {column.render
                       ? column.render(row, index)
-                      : (row as any)[column.key]
+                      : (row as Record<string, unknown>)[column.key]
                     }
                   </td>
                 ))}

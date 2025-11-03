@@ -205,7 +205,7 @@ export const Sidebar = () => {
               <Link
                 key={module.key}
                 href={module.path}
-                onClick={() => setModule(module.key as any)}
+                onClick={() => setModule(module.key as 'hisabiq' | 'kanz' | 'nisbah' | 'audit')}
               >
                 <Option
                   Icon={Icon}

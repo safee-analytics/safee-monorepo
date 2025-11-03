@@ -29,7 +29,7 @@ export function SafeeSidebar() {
 
   const modules = getAllModules()
 
-  const moduleIcons: Record<string, any> = {
+  const moduleIcons: Record<string, React.ComponentType<{ className?: string }>> = {
     hisabiq: DollarSign,
     kanz: Users,
     nisbah: UserPlus,
@@ -139,7 +139,7 @@ export function SafeeSidebar() {
               <Link
                 key={module.key}
                 href={module.path}
-                onClick={() => setModule(module.key as any)}
+                onClick={() => setModule(module.key as 'hisabiq' | 'kanz' | 'nisbah' | 'audit')}
                 className={`w-12 h-12 rounded-lg flex items-center justify-center transition-all relative group ${
                   isActive
                     ? moduleColors[module.key]

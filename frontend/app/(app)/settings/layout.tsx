@@ -19,7 +19,7 @@ import { useTranslation } from '@/lib/providers/TranslationProvider'
 interface SettingLink {
   href: string
   label: string
-  icon: any
+  icon: React.ComponentType<{ className?: string }>
   restricted?: boolean
 }
 

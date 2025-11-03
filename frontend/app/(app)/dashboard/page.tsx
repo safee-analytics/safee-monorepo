@@ -25,7 +25,7 @@ interface AppModule {
   nameAr: string
   description: string
   descriptionAr: string
-  icon: any
+  icon: React.ComponentType<{ className?: string }>
   color: string
   gradient: string
   href: string

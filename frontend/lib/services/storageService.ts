@@ -1,19 +1,23 @@
+import { z } from 'zod'
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'
 
-export interface FileMetadata {
-  id: string
-  name: string
-  path: string
-  size: number
-  mimeType: string
-  createdAt: string
-  modifiedAt: string
-  createdBy: string
-  modifiedBy?: string
-  folderId?: string
-  tags?: string[]
-  metadata?: Record<string, any>
-}
+export const fileMetadataSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  path: z.string(),
+  size: z.number(),
+  mimeType: z.string(),
+  createdAt: z.string(),
+  modifiedAt: z.string(),
+  createdBy: z.string(),
+  modifiedBy: z.string().optional(),
+  folderId: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  metadata: z.record(z.unknown()).optional(),
+})
+
+export type FileMetadata = z.infer<typeof fileMetadataSchema>
 
 export interface FolderMetadata {
   id: string
@@ -72,7 +76,7 @@ class StorageService {
     options?: {
       folderId?: string
       tags?: string[]
-      metadata?: Record<string, any>
+      metadata?: Record<string, unknown>
       onProgress?: (progress: UploadProgress) => void
     }
   ): Promise<FileMetadata> {
@@ -163,7 +167,7 @@ class StorageService {
     options?: {
       folderId?: string
       tags?: string[]
-      metadata?: Record<string, any>
+      metadata?: Record<string, unknown>
       onProgress?: (fileId: string, progress: UploadProgress) => void
     }
   ): Promise<FileMetadata[]> {

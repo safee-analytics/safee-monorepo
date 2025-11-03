@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Search, Upload, LayoutGrid, List, MoreVertical, Download, Share2, Trash2, Folder, FileText, File } from 'lucide-react'
+import { Search, Upload, LayoutGrid, List, Download, Share2, Trash2, Folder, FileText, File } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Document } from '@/types/audit'
 import { useTranslation } from '@/lib/providers/TranslationProvider'
