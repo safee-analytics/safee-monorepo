@@ -9,11 +9,12 @@ import {
   Path,
   Query,
   UploadedFile,
+  FormField,
   Security,
   Request,
   SuccessResponse,
 } from 'tsoa'
-import { StorageService } from '../services/storage.service'
+import { StorageService } from '../services/storage.service.js'
 import type { Request as ExpressRequest } from 'express'
 
 export interface FileUploadRequest {
@@ -84,7 +85,9 @@ export class StorageController extends Controller {
   public async uploadFile(
     @Request() request: ExpressRequest,
     @UploadedFile() file: Express.Multer.File,
-    @Body() body: FileUploadRequest
+    @FormField() folderId?: string,
+    @FormField() tags?: string,
+    @FormField() metadata?: string
   ): Promise<FileMetadata> {
     const userId = (request as any).user?.id
 
@@ -93,9 +96,9 @@ export class StorageController extends Controller {
     }
 
     return await this.storageService.uploadFile(file, {
-      folderId: body.folderId,
-      tags: body.tags,
-      metadata: body.metadata,
+      folderId,
+      tags: tags ? JSON.parse(tags) : undefined,
+      metadata: metadata ? JSON.parse(metadata) : undefined,
       userId,
     })
   }
@@ -109,7 +112,9 @@ export class StorageController extends Controller {
   public async uploadFiles(
     @Request() request: ExpressRequest,
     @UploadedFile() files: Express.Multer.File[],
-    @Body() body: FileUploadRequest
+    @FormField() folderId?: string,
+    @FormField() tags?: string,
+    @FormField() metadata?: string
   ): Promise<FileMetadata[]> {
     const userId = (request as any).user?.id
 
@@ -118,9 +123,9 @@ export class StorageController extends Controller {
     }
 
     return await this.storageService.uploadFiles(files, {
-      folderId: body.folderId,
-      tags: body.tags,
-      metadata: body.metadata,
+      folderId,
+      tags: tags ? JSON.parse(tags) : undefined,
+      metadata: metadata ? JSON.parse(metadata) : undefined,
       userId,
     })
   }

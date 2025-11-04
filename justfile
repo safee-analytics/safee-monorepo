@@ -374,3 +374,102 @@ clean-eslint-plugin-safee:
     rm -f eslint-plugin-safee/.eslintcache
     rm -rf eslint-plugin-safee/node_modules/.cache/prettier/
 
+# ==================================
+# Caddy Reverse Proxy Commands
+# ==================================
+
+# Run Caddy reverse proxy in development mode (port 8080)
+[group('caddy')]
+caddy-dev:
+    @echo "Starting Caddy on http://localhost:8080"
+    @echo "Make sure backend (port 3000) and frontend (port 3001) are running!"
+    caddy run --config Caddyfile.dev
+
+# Run Caddy in production mode with auto HTTPS
+[group('caddy')]
+caddy-prod:
+    @echo "Starting Caddy with auto HTTPS"
+    @echo "Make sure to update domain in Caddyfile first!"
+    sudo caddy run --config Caddyfile
+
+# Reload Caddy configuration without downtime
+[group('caddy')]
+caddy-reload:
+    caddy reload --config Caddyfile
+
+# Stop Caddy
+[group('caddy')]
+caddy-stop:
+    caddy stop
+
+# Format Caddyfile
+[group('caddy')]
+caddy-fmt:
+    caddy fmt --overwrite Caddyfile
+    caddy fmt --overwrite Caddyfile.dev
+
+# Validate Caddyfile
+[group('caddy')]
+caddy-validate:
+    @echo "Validating Caddyfile..."
+    caddy validate --config Caddyfile
+    @echo "Validating Caddyfile.dev..."
+    caddy validate --config Caddyfile.dev
+
+# Run full stack with Caddy (gateway + frontend + caddy)
+[group('caddy')]
+dev-with-caddy:
+    #!/usr/bin/env bash
+    set -e
+
+    # Cleanup function to kill all child processes
+    cleanup() {
+        echo ""
+        echo "🛑 Shutting down services..."
+
+        # Kill all processes on the ports
+        lsof -ti tcp:3000 tcp:3001 tcp:8080 2>/dev/null | xargs kill -9 2>/dev/null || true
+
+        # Kill process groups
+        [[ -n "$GATEWAY_PID" ]] && kill -TERM -$GATEWAY_PID 2>/dev/null || true
+        [[ -n "$FRONTEND_PID" ]] && kill -TERM -$FRONTEND_PID 2>/dev/null || true
+        [[ -n "$CADDY_PID" ]] && kill -TERM $CADDY_PID 2>/dev/null || true
+
+        sleep 1
+        echo "✓ All services stopped"
+    }
+
+    # Set trap BEFORE starting processes
+    trap cleanup EXIT INT TERM
+
+    echo "Starting full stack with Caddy reverse proxy..."
+    echo ""
+    echo "Services will be available at:"
+    echo "  - Main app: http://localhost:8080"
+    echo "  - API docs: http://localhost:8080/docs"
+    echo "  - Backend:  http://localhost:3000 (direct)"
+    echo "  - Frontend: http://localhost:3001 (direct)"
+    echo ""
+    echo "Press Ctrl+C to stop all services"
+    echo ""
+
+    # Start backend in background (new process group)
+    (cd gateway && npm run dev) &
+    GATEWAY_PID=$!
+
+    # Start frontend in background (new process group)
+    (cd frontend && npm run dev) &
+    FRONTEND_PID=$!
+
+    # Wait for services to be ready
+    echo "Waiting for services to start..."
+    sleep 5
+
+    # Start Caddy (foreground)
+    echo "Starting Caddy..."
+    caddy run --config Caddyfile.dev &
+    CADDY_PID=$!
+
+    # Wait for Caddy to finish (keeps script running)
+    wait $CADDY_PID
+

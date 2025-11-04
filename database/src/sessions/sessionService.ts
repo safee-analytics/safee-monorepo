@@ -8,13 +8,9 @@ import {
   type UserSession,
   type NewUserSession,
   type NewLoginAttempt,
-  type NewSecurityEvent,
   type LoginMethod,
   type RevokedReason,
-  type EventType,
-  type RiskLevel,
 } from "../drizzle/index.js";
-import { notEqual } from "assert";
 import { schema } from "../drizzle.js";
 
 export interface CreateSessionData {

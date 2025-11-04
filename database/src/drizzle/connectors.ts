@@ -1,4 +1,4 @@
-import { varchar, timestamp, uuid, jsonb, boolean, pgEnum } from "drizzle-orm/pg-core";
+import { varchar, timestamp, uuid, jsonb, boolean } from "drizzle-orm/pg-core";
 import { identitySchema } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
@@ -43,7 +43,7 @@ export const connectors = identitySchema.table("connectors", {
   lastConnectionError: varchar("last_connection_error", { length: 1000 }),
 
   tags: jsonb("tags").$type<string[]>().default([]),
-  metadata: jsonb("metadata").$type<Record<string, any>>().default({}),
+  metadata: jsonb("metadata").$type<Record<string, unknown>>().default({}),
 
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

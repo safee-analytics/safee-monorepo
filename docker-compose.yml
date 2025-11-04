@@ -1,4 +1,24 @@
 services:
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"  # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy-data:/data
+      - caddy-config:/config
+      - caddy-logs:/var/log/caddy
+    environment:
+      - CADDY_INGRESS_NETWORKS=safee-network
+    networks:
+      - safee-network
+    depends_on:
+      - frontend
+      - backend
+
   postgres:
     image: postgres:15
     ports:
@@ -14,6 +34,8 @@ services:
       retries: 5
     volumes:
       - "postgres:/var/lib/postgresql/data"
+    networks:
+      - safee-network
 
   redis:
     image: redis
@@ -21,6 +43,8 @@ services:
       - "16379:6379"
     volumes:
       - "redis:/data"
+    networks:
+      - safee-network
 
   odoo:
     build:
@@ -46,8 +70,48 @@ services:
       timeout: 5s
       retries: 5
       start_period: 60s
+    networks:
+      - safee-network
+
+  # Backend Gateway (Express/TSOA)
+  # Uncomment to run backend in Docker
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: gateway/Dockerfile
+  #   expose:
+  #     - "3000"
+  #   environment:
+  #     - NODE_ENV=production
+  #     - DATABASE_URL=postgresql://safee:safee@postgres:5432/safee
+  #     - REDIS_URL=redis://redis:6379
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #   networks:
+  #     - safee-network
+
+  # Frontend (Next.js)
+  # Uncomment to run frontend in Docker
+  # frontend:
+  #   build:
+  #     context: .
+  #     dockerfile: frontend/Dockerfile
+  #   expose:
+  #     - "3001"
+  #   environment:
+  #     - NODE_ENV=production
+  #   networks:
+  #     - safee-network
+
+networks:
+  safee-network:
+    driver: bridge
 
 volumes:
   postgres:
   redis:
   odoo-data:
+  caddy-data:
+  caddy-config:
+  caddy-logs:

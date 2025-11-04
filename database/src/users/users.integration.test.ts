@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { connectTest, createTestDeps } from "../test-helpers/integration-setup.js";
 import { createUser, getUserByEmail, getUserById, updateUserProfile, updateUserLocale } from "./users.js";
 import type { DrizzleClient } from "../index.js";
-import { users, organizations } from "../drizzle/index.js";
+import { organizations } from "../drizzle/index.js";
 
 describe("User Integration Tests", () => {
   let db: DrizzleClient;
@@ -31,7 +31,6 @@ describe("User Integration Tests", () => {
 
       const userData = {
         email: "test@example.com",
-        passwordHash: "hashed_password_123",
         firstName: "John",
         lastName: "Doe",
         organizationId: org.id,
@@ -53,7 +52,6 @@ describe("User Integration Tests", () => {
 
       const userData = {
         email: "duplicate@example.com",
-        passwordHash: "hashed",
         organizationId: org.id,
       };
 
@@ -71,7 +69,6 @@ describe("User Integration Tests", () => {
 
       await createUser(deps, {
         email: "find@example.com",
-        passwordHash: "hashed",
         firstName: "Jane",
         organizationId: org.id,
       });
@@ -102,7 +99,6 @@ describe("User Integration Tests", () => {
 
       const createdUser = await createUser(deps, {
         email: "findbyid@example.com",
-        passwordHash: "hashed",
         organizationId: org.id,
       });
 
@@ -130,7 +126,6 @@ describe("User Integration Tests", () => {
 
       const createdUser = await createUser(deps, {
         email: "update@example.com",
-        passwordHash: "hashed",
         firstName: "Old",
         lastName: "Name",
         organizationId: org.id,
@@ -164,7 +159,6 @@ describe("User Integration Tests", () => {
 
       const createdUser = await createUser(deps, {
         email: "locale@example.com",
-        passwordHash: "hashed",
         organizationId: org.id,
       });
 

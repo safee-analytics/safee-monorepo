@@ -74,10 +74,20 @@ $$ LANGUAGE plpgsql
       console.log("✅ Created odoo_safee database");
     } catch (err: unknown) {
       // If dblink extension doesn't exist, create database using raw query
-      if (err instanceof Error && err.message.includes("dblink")) {
-        console.log("⚠️  dblink not available, using direct CREATE DATABASE");
-        await pool.query("CREATE DATABASE odoo_safee");
-        console.log("✅ Created odoo_safee database");
+      const errorString = JSON.stringify(err);
+      if (errorString.includes("dblink")) {
+        console.log("⚠️  dblink extension not available, using direct CREATE DATABASE");
+        try {
+          await pool.query("CREATE DATABASE odoo_safee");
+          console.log("✅ Created odoo_safee database");
+        } catch (createErr: unknown) {
+          // Database might already exist
+          if (createErr instanceof Error && createErr.message.includes("already exists")) {
+            console.log("ℹ️  odoo_safee database already exists");
+          } else {
+            throw createErr;
+          }
+        }
       } else {
         throw err;
       }
@@ -98,16 +108,21 @@ $$ LANGUAGE plpgsql
             "SELECT 1 FROM information_schema.tables WHERE table_name = 'ir_module_module' LIMIT 1",
           );
           if (result.rows.length === 0) {
-            // Database exists but not initialized
+            // Database exists but not initialized - close pool before Odoo initialization
             await odooPool.end();
             await initializeOdooDatabase("odoo_safee");
           } else {
             console.log("⏭️  odoo_safee database already initialized");
+            await odooPool.end();
           }
-        } catch {
+        } catch (checkErr) {
           console.log("⚠️  Could not check odoo_safee initialization status, skipping initialization");
-        } finally {
-          await odooPool.end();
+          // Ensure pool is closed even on error
+          try {
+            await odooPool.end();
+          } catch {
+            // Ignore if already closed
+          }
         }
       }
     } catch (initErr) {

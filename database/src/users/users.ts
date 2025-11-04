@@ -5,18 +5,18 @@ import type { Locale } from "../drizzle/_common.js";
 
 export interface CreateUserData {
   email: string;
-  passwordHash: string;
   firstName?: string;
   lastName?: string;
   organizationId: string;
+  // Password removed - Better Auth handles passwords in oauth_accounts table
 }
 
 export interface CreateUserWithOrgData {
   email: string;
-  passwordHash: string;
   firstName?: string;
   lastName?: string;
   organizationName: string;
+  // Password removed - Better Auth handles passwords in oauth_accounts table
 }
 
 export interface UserWithOrganization {
@@ -24,10 +24,12 @@ export interface UserWithOrganization {
   email: string;
   firstName?: string | null;
   lastName?: string | null;
-  passwordHash: string;
+  // passwordHash removed - Better Auth handles passwords in oauth_accounts table
   organizationId: string;
   preferredLocale: Locale;
   isActive: boolean;
+  emailVerified: boolean;
+  image?: string | null;
   createdAt: Date;
   updatedAt: Date;
   organization?: {
@@ -58,7 +60,6 @@ export async function createUser(deps: DbDeps, userData: CreateUserData): Promis
         email: userData.email,
         firstName: userData.firstName,
         lastName: userData.lastName,
-        passwordHash: userData.passwordHash,
         organizationId: userData.organizationId,
       })
       .returning();
@@ -111,7 +112,6 @@ export async function createUserWithOrganization(
           email: userData.email,
           firstName: userData.firstName,
           lastName: userData.lastName,
-          passwordHash: userData.passwordHash,
           organizationId: newOrg.id,
         })
         .returning();

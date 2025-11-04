@@ -1,13 +1,16 @@
 import createClient, { type Middleware } from 'openapi-fetch'
 import type { paths } from './schema'
 
-// Base URL for API - can be overridden with environment variable
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api/v1'
+// Base URL for API
+// Empty string = same origin (works with Next.js rewrites in dev and Caddy in prod)
+// Can be overridden with NEXT_PUBLIC_API_URL environment variable
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || ''
 
-// Auth middleware to inject JWT token
+// Auth middleware - Better Auth uses httpOnly cookies, but this supports manual JWT too
 const authMiddleware: Middleware = {
   async onRequest({ request }) {
-    // Get token from localStorage or your auth system
+    // Better Auth cookies are sent automatically with credentials: 'include'
+    // This is only needed for manual JWT tokens (if used in addition to Better Auth)
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null
 
     if (token) {
@@ -59,6 +62,8 @@ const loggingMiddleware: Middleware = {
 // Create the typed API client
 export const apiClient = createClient<paths>({
   baseUrl: BASE_URL,
+  // Include credentials (cookies) with all requests for Better Auth
+  credentials: 'include',
 })
 
 // Apply middleware

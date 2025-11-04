@@ -48,6 +48,10 @@ credentials/
 # Turborepo
 .turbo/
 
+# Caddy
+caddy-data/
+caddy-config/
+caddy-logs/
 
 .ai/*
 .cursor/*

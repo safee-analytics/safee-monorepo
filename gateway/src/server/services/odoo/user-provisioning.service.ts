@@ -314,13 +314,16 @@ export class OdooUserProvisioningService {
 
     this.logger?.info({ userId, role }, "Provisioning Odoo user with role");
 
+    // Create user name from firstName and lastName
+    const userName = [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email;
+
     // Create user in Odoo
     const odooUid = await this.createOdooUser(
       databaseName,
       adminLogin,
       adminPassword,
       user.email,
-      user.name,
+      userName,
       role,
     );
 

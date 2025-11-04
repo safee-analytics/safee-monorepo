@@ -7,6 +7,15 @@ import session from "express-session";
 import { pinoHttp } from "pino-http";
 import type { Logger } from "pino";
 import { ValidateError } from "tsoa";
+
+// Swagger UI request interceptor types
+interface SwaggerRequest {
+  url: string;
+  method: string;
+  headers: Record<string, string>;
+  credentials?: RequestCredentials;
+  body?: unknown;
+}
 import type { RedisClient, DrizzleClient, Storage, PubSub, JobScheduler, Locale } from "@safee/database";
 import { SessionStore } from "./SessionStore.js";
 import { RegisterRoutes } from "./routes.js";
@@ -17,6 +26,8 @@ import pg from "pg";
 import { initServerContext } from "./serverContext.js";
 import { initOdooClientManager } from "./services/odoo/manager.service.js";
 import { hoursToMilliseconds } from "date-fns";
+import { toNodeHandler } from "better-auth/node";
+import { auth } from "../auth.js";
 
 dotenv.config();
 
@@ -77,6 +88,11 @@ export async function server({
     logger.warn("Running in local mode");
   }
   app.set("trust proxy", !IS_LOCAL ? 1 : 0);
+
+  // Mount Better Auth handler BEFORE express.json()
+  // This handles all routes under /api/auth/*
+  app.all("/api/auth/*", toNodeHandler(auth));
+  logger.info("Better Auth mounted at /api/auth/*");
 
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -140,7 +156,7 @@ export async function server({
 
   app.use(
     cors({
-      origin: process.env.CORS_ORIGIN || "http://localhost:5173",
+      origin: process.env.CORS_ORIGIN || "http://localhost:3001",
       credentials: true,
     }),
   );
@@ -167,15 +183,51 @@ export async function server({
 
   RegisterRoutes(app);
 
-  app.use(
-    "/docs",
-    swaggerUi.serve,
-    swaggerUi.setup(swaggerDocument, {
-      explorer: true,
-      customCss: ".swagger-ui .topbar { display: none }",
-      customSiteTitle: "Safee Analytics API Documentation",
-    }),
-  );
+  // Custom Swagger UI setup with auto-authentication for development
+  const swaggerUiOptions = {
+    explorer: true,
+    customCss: ".swagger-ui .topbar { display: none }",
+    customSiteTitle: "Safee Analytics API Documentation",
+    swaggerOptions: {
+      persistAuthorization: true,
+      requestInterceptor: (req: SwaggerRequest): SwaggerRequest => {
+        // Automatically include credentials (cookies) with each request
+        req.credentials = "include";
+        return req;
+      },
+    },
+    customJs: IS_LOCAL ? "/swagger-auth-dev.js" : undefined,
+  };
+
+  // Serve custom JS for dev auto-authentication
+  if (IS_LOCAL) {
+    app.get("/swagger-auth-dev.js", (_req, res) => {
+      res.type("application/javascript");
+      res.send(`
+        // Auto-authenticate Swagger UI in development
+        window.addEventListener('load', function() {
+          // Check if we already have a stored token
+          const storedAuth = localStorage.getItem('authorized');
+          if (!storedAuth) {
+            // Try to get session from Better Auth
+            fetch('/api/auth/session', { credentials: 'include' })
+              .then(res => res.json())
+              .then(session => {
+                if (session && session.session) {
+                  console.log('[Swagger] Better Auth session detected, no JWT needed');
+                  // Session cookies will be sent automatically
+                }
+              })
+              .catch(() => {
+                console.log('[Swagger] No session found. Use the "Authorize" button to authenticate.');
+              });
+          }
+        });
+      `);
+    });
+  }
+
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerUiOptions));
 
   app.get("/", (_req, res) => {
     res.json({

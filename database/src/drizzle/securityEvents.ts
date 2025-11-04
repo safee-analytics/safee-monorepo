@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, boolean, uuid } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, boolean, uuid, jsonb } from "drizzle-orm/pg-core";
 import { users } from "./users.js";
 import { organizations } from "./organizations.js";
 import { eventTypeEnum, riskLevelEnum, idpk } from "./_common.js";

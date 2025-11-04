@@ -1,13 +1,8 @@
 import { Request as ExRequest } from "express";
-import { jwtService, type JwtPayload } from "../services/jwt.js";
+import { fromNodeHeaders } from "better-auth/node";
+import { auth } from "../../auth.js";
 import { getServerContext } from "../serverContext.js";
-import {
-  NoTokenProvided,
-  InvalidToken,
-  TokenExpired,
-  InsufficientPermissions,
-  UnknownSecurityScheme,
-} from "../errors.js";
+import { NoTokenProvided, InvalidToken, InsufficientPermissions, UnknownSecurityScheme } from "../errors.js";
 
 export interface AuthenticatedRequest extends ExRequest {
   user?: {
@@ -19,85 +14,94 @@ export interface AuthenticatedRequest extends ExRequest {
   };
 }
 
-export function expressAuthentication(
+export interface BetterAuthUser {
+  id: string;
+  email: string;
+  name: string;
+  emailVerified: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  // Add custom fields as needed
+  roles?: string[];
+  permissions?: string[];
+  organizationId?: string;
+}
+
+export async function expressAuthentication(
   request: ExRequest,
   securityName: string,
   scopes?: string[],
-): Promise<JwtPayload> {
+): Promise<BetterAuthUser> {
   if (securityName === "jwt") {
     const context = getServerContext();
 
-    const token = jwtService.extractTokenFromHeader(request.headers.authorization);
+    try {
+      // Get session from Better Auth using request headers
+      const session = await auth.api.getSession({
+        headers: fromNodeHeaders(request.headers),
+      });
 
-    if (!token) {
-      context.logger.warn("Authentication failed - No token provided");
-      return Promise.reject(new NoTokenProvided());
-    }
+      if (!session?.user) {
+        context.logger.warn("Authentication failed - No valid session");
+        throw new NoTokenProvided();
+      }
 
-    return jwtService
-      .verifyAccessToken(token)
-      .then((decoded) => {
-        if (scopes && scopes.length > 0) {
-          const hasPermission = scopes.some(
-            (scope) =>
-              decoded.permissions.includes("*") ||
-              decoded.permissions.includes(scope) ||
-              decoded.permissions.some(
-                (permission) => permission.endsWith("*") && scope.startsWith(permission.slice(0, -1)),
-              ),
+      const user = session.user as BetterAuthUser;
+
+      // Check permissions if scopes are provided
+      if (scopes && scopes.length > 0) {
+        const userPermissions = user.permissions || [];
+        const hasPermission = scopes.some(
+          (scope) =>
+            userPermissions.includes("*") ||
+            userPermissions.includes(scope) ||
+            userPermissions.some(
+              (permission) => permission.endsWith("*") && scope.startsWith(permission.slice(0, -1)),
+            ),
+        );
+
+        if (!hasPermission) {
+          context.logger.warn(
+            {
+              userId: user.id,
+              requiredScopes: scopes,
+              userPermissions,
+            },
+            "Authorization failed - Insufficient permissions",
           );
 
-          if (!hasPermission) {
-            context.logger.warn(
-              {
-                userId: decoded.userId,
-                requiredScopes: scopes,
-                userPermissions: decoded.permissions,
-              },
-              "Authorization failed - Insufficient permissions",
-            );
-
-            throw new InsufficientPermissions();
-          }
+          throw new InsufficientPermissions();
         }
+      }
 
-        (request as AuthenticatedRequest).user = {
-          userId: decoded.userId,
-          email: decoded.email,
-          roles: decoded.roles,
-          permissions: decoded.permissions,
-          organizationId: decoded.organizationId,
-        };
+      // Set user on request for TSOA controllers
+      (request as AuthenticatedRequest).user = {
+        userId: user.id,
+        email: user.email,
+        roles: user.roles || [],
+        permissions: user.permissions || [],
+        organizationId: user.organizationId || "",
+      };
 
-        context.logger.debug({ userId: decoded.userId }, "Authentication successful");
+      context.logger.debug({ userId: user.id }, "Authentication successful");
 
-        return decoded;
-      })
-      .catch((error) => {
-        context.logger.warn({ error: error.message }, "Authentication failed");
+      return user;
+    } catch (error) {
+      context.logger.warn({ error: error instanceof Error ? error.message : error }, "Authentication failed");
 
-        if (
-          error instanceof NoTokenProvided ||
-          error instanceof InvalidToken ||
-          error instanceof TokenExpired ||
-          error instanceof InsufficientPermissions
-        ) {
-          throw error;
-        }
+      if (
+        error instanceof NoTokenProvided ||
+        error instanceof InvalidToken ||
+        error instanceof InsufficientPermissions
+      ) {
+        throw error;
+      }
 
-        if (error.message === "Invalid token") {
-          throw new InvalidToken();
-        }
-
-        if (error.message === "Token expired") {
-          throw new TokenExpired();
-        }
-
-        throw new InvalidToken();
-      });
+      throw new InvalidToken();
+    }
   }
 
-  return Promise.reject(new UnknownSecurityScheme(securityName));
+  throw new UnknownSecurityScheme(securityName);
 }
 
 export function requirePermissions(permissions: string[]) {

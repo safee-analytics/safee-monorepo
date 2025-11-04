@@ -53,7 +53,6 @@ describe("Permission Integration Tests", () => {
       .insert(users)
       .values({
         email: "testuser@example.com",
-        passwordHash: "hashed",
         organizationId: testOrgId,
       })
       .returning();

@@ -2,7 +2,7 @@ import fs from 'fs/promises'
 import path from 'path'
 import { v4 as uuidv4 } from 'uuid'
 import type { Response } from 'express'
-import type { FileMetadata, FolderMetadata, FileSearchParams } from '../controllers/storageController'
+import type { FileMetadata, FolderMetadata, FileSearchParams } from '../controllers/storageController.js'
 
 export interface UploadOptions {
   folderId?: string
@@ -153,7 +153,7 @@ export class StorageService {
           continue
         }
 
-        if (params.tags && !params.tags.some((tag) => metadata.tags?.includes(tag))) {
+        if (params.tags && !params.tags.some((tag: string) => metadata.tags?.includes(tag))) {
           continue
         }
 

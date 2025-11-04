@@ -7,6 +7,8 @@ import {
   permissions,
   userRoles,
   rolePermissions,
+  type PermissionResource,
+  type PermissionAction,
 } from "../drizzle/index.js";
 
 export type TestOrganization = InferSelectModel<typeof organizations>;
@@ -47,8 +49,7 @@ export async function createTestOrganization(
 
 /**
  * Create a test user
- * Note: passwordHash should be pre-hashed. For tests, you can use any string.
- * Example with bcrypt: $2b$10$X...
+ * Note: Passwords are now handled by Better Auth in oauth_accounts table
  */
 export async function createTestUser(
   db: DrizzleClient,
@@ -57,7 +58,6 @@ export async function createTestUser(
     email?: string;
     firstName?: string;
     lastName?: string;
-    passwordHash?: string;
   },
 ): Promise<TestUser> {
   const [user] = await db
@@ -66,7 +66,6 @@ export async function createTestUser(
       email: data?.email ?? `user-${Date.now()}@test.com`,
       firstName: data?.firstName ?? "Test",
       lastName: data?.lastName ?? "User",
-      passwordHash: data?.passwordHash ?? "test-password-hash",
       organizationId,
       isActive: true,
     })
@@ -102,8 +101,8 @@ export async function createTestPermission(
   data: {
     name?: string;
     slug: string;
-    resource: string;
-    action: string;
+    resource: PermissionResource;
+    action: PermissionAction;
     description?: string;
   },
 ): Promise<TestPermission> {
@@ -113,8 +112,8 @@ export async function createTestPermission(
       name: data.name ?? `Test Permission ${data.slug}`,
       slug: data.slug,
       description: data.description ?? `Test permission for ${data.resource}:${data.action}`,
-      resource: data.resource as any,
-      action: data.action as any,
+      resource: data.resource,
+      action: data.action,
     })
     .returning();
 
