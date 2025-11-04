@@ -36,7 +36,10 @@ describe("Jobs Integration Tests", () => {
     await db.delete(organizations);
 
     // Create test organization
-    const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org-jobs" }).returning();
+    const [org] = await db
+      .insert(organizations)
+      .values({ name: "Test Org", slug: "test-org-jobs" })
+      .returning();
     testOrgId = org.id;
   });
 

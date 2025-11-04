@@ -64,8 +64,7 @@ export async function createTestUser(
     .insert(users)
     .values({
       email: data?.email ?? `user-${Date.now()}@test.com`,
-      firstName: data?.firstName ?? "Test",
-      lastName: data?.lastName ?? "User",
+      name: data?.firstName && data.lastName ? `${data.firstName} ${data.lastName}` : "Test User",
       organizationId,
       isActive: true,
     })

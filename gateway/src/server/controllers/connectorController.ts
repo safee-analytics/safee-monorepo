@@ -14,7 +14,7 @@ import {
   SuccessResponse,
   Request,
 } from "tsoa";
-import type { Request as ExpressRequest } from "express";
+import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext } from "../serverContext.js";
 import { ConnectorManager } from "../services/connectors/connector.manager.js";
 import { DataProxyService } from "../services/connectors/data-proxy.service.js";
@@ -107,7 +107,7 @@ interface SuggestMappingsRequest {
 @Tags("Connectors")
 export class ConnectorController extends Controller {
   @NoSecurity()
-  private getServices(req: ExpressRequest) {
+  private getServices(req: AuthenticatedRequest) {
     const ctx = getServerContext();
     const connectorManager = new ConnectorManager(ctx.drizzle);
     const dataProxyService = new DataProxyService(connectorManager);
@@ -119,7 +119,7 @@ export class ConnectorController extends Controller {
       dataMapperService,
       ctx,
       organizationId: req.user?.organizationId || "",
-      userId: req.user?.userId || "",
+      userId: req.user?.id || "",
     };
   }
 
@@ -156,7 +156,7 @@ export class ConnectorController extends Controller {
   @Get("/")
   @Security("jwt")
   public async listConnectors(
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
     @Query() type?: ConnectorType,
     @Query() isActive?: boolean,
     @Query() tags?: string,
@@ -191,7 +191,7 @@ export class ConnectorController extends Controller {
   @Security("jwt")
   @SuccessResponse("201", "Connector created successfully")
   public async createConnector(
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
     @Body() request: CreateConnectorRequest,
   ): Promise<ConnectorResponse> {
     const { connectorManager, organizationId, userId } = this.getServices(req);
@@ -227,7 +227,7 @@ export class ConnectorController extends Controller {
   @Get("/{connectorId}")
   @Security("jwt")
   public async getConnector(
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
   ): Promise<ConnectorResponse> {
     const { connectorManager, organizationId } = this.getServices(req);
@@ -252,7 +252,7 @@ export class ConnectorController extends Controller {
   @Put("/{connectorId}")
   @Security("jwt")
   public async updateConnector(
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
     @Body() request: UpdateConnectorRequest,
   ): Promise<{ success: boolean }> {
@@ -267,7 +267,7 @@ export class ConnectorController extends Controller {
   @Delete("/{connectorId}")
   @Security("jwt")
   public async deleteConnector(
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
   ): Promise<{ success: boolean }> {
     const { connectorManager, organizationId } = this.getServices(req);
@@ -278,7 +278,7 @@ export class ConnectorController extends Controller {
   @Post("/{connectorId}/test")
   @Security("jwt")
   public async testConnection(
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
   ): Promise<{
     status: string;
@@ -295,7 +295,7 @@ export class ConnectorController extends Controller {
   @Get("/{connectorId}/health")
   @Security("jwt")
   public async getHealth(
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
   ): Promise<{
     healthy: boolean;
@@ -310,7 +310,7 @@ export class ConnectorController extends Controller {
   @Post("/{connectorId}/query")
   @Security("jwt")
   public async executeQuery(
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
     @Body() request: QueryRequest,
   ): Promise<QueryResponse> {
@@ -326,7 +326,7 @@ export class ConnectorController extends Controller {
   @Get("/{connectorId}/schema")
   @Security("jwt")
   public async getSchema(
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
   ): Promise<SchemaResponse> {
     const { dataProxyService, organizationId } = this.getServices(req);
@@ -345,7 +345,7 @@ export class ConnectorController extends Controller {
   @Get("/{connectorId}/schema/{schemaName}/tables/{tableName}")
   @Security("jwt")
   public async getTablePreview(
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
     @Path() schemaName: string,
     @Path() tableName: string,
@@ -359,7 +359,7 @@ export class ConnectorController extends Controller {
   @Get("/{connectorId}/schema/{schemaName}/tables/{tableName}/search")
   @Security("jwt")
   public async searchTable(
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
     @Path() schemaName: string,
     @Path() tableName: string,
@@ -381,7 +381,7 @@ export class ConnectorController extends Controller {
   @Post("/mappings/suggest")
   @Security("jwt")
   public async suggestMappings(
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
     @Body() request: SuggestMappingsRequest,
   ): Promise<FieldMapping[]> {
     const { dataMapperService } = this.getServices(req);

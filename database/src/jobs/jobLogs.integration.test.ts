@@ -37,7 +37,10 @@ describe("JobLogs Integration Tests", () => {
     await db.delete(organizations);
 
     // Create test organization
-    const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org-logs" }).returning();
+    const [org] = await db
+      .insert(organizations)
+      .values({ name: "Test Org", slug: "test-org-logs" })
+      .returning();
     testOrgId = org.id;
 
     // Create test job

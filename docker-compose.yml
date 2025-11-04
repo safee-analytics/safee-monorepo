@@ -15,9 +15,10 @@ services:
       - CADDY_INGRESS_NETWORKS=safee-network
     networks:
       - safee-network
-    depends_on:
-      - frontend
-      - backend
+    # depends_on commented out since frontend/backend run locally
+    # depends_on:
+    #   - frontend
+    #   - backend
 
   postgres:
     image: postgres:15

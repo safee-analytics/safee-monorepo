@@ -1,5 +1,5 @@
 import { Controller, Get, Put, Route, Tags, Security, Body, SuccessResponse, Request } from "tsoa";
-import type { Request as ExpressRequest } from "express";
+import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext, type ServerContext } from "../serverContext.js";
 import { getUserById, updateUserProfile, updateUserLocale } from "@safee/database";
 import { Unauthorized, UserNotFound } from "../errors.js";
@@ -9,8 +9,7 @@ type Locale = "en" | "ar";
 interface UserProfileResponse {
   id: string;
   email: string;
-  firstName?: string | null;
-  lastName?: string | null;
+  name?: string | null;
   preferredLocale: Locale;
   organizationId: string;
   organization?: {
@@ -21,8 +20,7 @@ interface UserProfileResponse {
 }
 
 interface UpdateProfileRequest {
-  firstName?: string;
-  lastName?: string;
+  name?: string;
   preferredLocale?: Locale;
 }
 
@@ -43,9 +41,9 @@ export class UserController extends Controller {
   @Get("me")
   @Security("jwt")
   @SuccessResponse("200", "User profile retrieved")
-  public async getCurrentUser(@Request() req: ExpressRequest): Promise<UserProfileResponse> {
+  public async getCurrentUser(@Request() req: AuthenticatedRequest): Promise<UserProfileResponse> {
     const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
-    const userId = req.user?.userId;
+    const userId = req.user?.id;
 
     if (!userId) {
       throw new Unauthorized("User not authenticated");
@@ -61,8 +59,7 @@ export class UserController extends Controller {
       return {
         id: user.id,
         email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        name: user.name,
         preferredLocale: user.preferredLocale,
         organizationId: user.organizationId,
         organization: user.organization,
@@ -78,10 +75,10 @@ export class UserController extends Controller {
   @SuccessResponse("200", "User profile updated")
   public async updateCurrentUser(
     @Body() request: UpdateProfileRequest,
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
   ): Promise<UserProfileResponse> {
     const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
-    const userId = req.user?.userId;
+    const userId = req.user?.id;
 
     if (!userId) {
       throw new Unauthorized("User not authenticated");
@@ -99,8 +96,7 @@ export class UserController extends Controller {
       return {
         id: updatedUser.id,
         email: updatedUser.email,
-        firstName: updatedUser.firstName,
-        lastName: updatedUser.lastName,
+        name: updatedUser.name,
         preferredLocale: updatedUser.preferredLocale,
         organizationId: updatedUser.organizationId,
         organization: user.organization,
@@ -116,10 +112,10 @@ export class UserController extends Controller {
   @SuccessResponse("200", "User locale updated")
   public async updateCurrentUserLocale(
     @Body() request: UpdateLocaleRequest,
-    @Request() req: ExpressRequest,
+    @Request() req: AuthenticatedRequest,
   ): Promise<{ message: string; locale: Locale }> {
     const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
-    const userId = req.user?.userId;
+    const userId = req.user?.id;
 
     if (!userId) {
       throw new Unauthorized("User not authenticated");

@@ -1,10 +1,7 @@
 import type { Logger } from "pino";
 import type { DrizzleClient } from "@safee/database";
-import { schema } from "@safee/database";
-import { eq, and } from "drizzle-orm";
 import { createOdooClient, type OdooClient, type OdooConnectionConfig } from "./client.service.js";
-import { OdooDatabaseNotFound, OperationFailed } from "../../errors.js";
-import { encryptionService } from "../encryption.js";
+import { OperationFailed } from "../../errors.js";
 import { odooUserProvisioningService } from "./user-provisioning.service.js";
 
 export class OdooClientManager {

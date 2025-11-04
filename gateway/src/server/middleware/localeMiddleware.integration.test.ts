@@ -33,7 +33,9 @@ describe("Locale Middleware Integration Tests", () => {
     });
 
     it("should use Accept-Language header when others not provided", async () => {
-      const response = await request(app).get("/api/v1/health").set("Accept-Language", "ar-SA,ar;q=0.9,en;q=0.8");
+      const response = await request(app)
+        .get("/api/v1/health")
+        .set("Accept-Language", "ar-SA,ar;q=0.9,en;q=0.8");
 
       expect(response.status).toBe(200);
     });
@@ -54,7 +56,10 @@ describe("Locale Middleware Integration Tests", () => {
     });
 
     it("should prioritize x-locale header over Accept-Language", async () => {
-      const response = await request(app).get("/api/v1/health").set("x-locale", "en").set("Accept-Language", "ar-SA");
+      const response = await request(app)
+        .get("/api/v1/health")
+        .set("x-locale", "en")
+        .set("Accept-Language", "ar-SA");
 
       expect(response.status).toBe(200);
     });

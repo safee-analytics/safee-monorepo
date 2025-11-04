@@ -115,7 +115,7 @@ $$ LANGUAGE plpgsql
             console.log("⏭️  odoo_safee database already initialized");
             await odooPool.end();
           }
-        } catch (checkErr) {
+        } catch {
           console.log("⚠️  Could not check odoo_safee initialization status, skipping initialization");
           // Ensure pool is closed even on error
           try {

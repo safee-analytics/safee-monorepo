@@ -245,8 +245,12 @@ reset-database: clear-database && migrate
 [group('database')]
 [confirm("Are you sure you want to reset the database? This action cannot be undone.")]
 clear-database:
-    docker compose exec postgres dropdb -U postgres safee || true
-    docker compose exec postgres createdb -U postgres safee
+    @echo "Terminating all connections to database..."
+    docker compose exec postgres psql -U safee -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'safee' AND pid <> pg_backend_pid();" || true
+    @echo "Dropping database..."
+    docker compose exec postgres dropdb -U safee safee || true
+    @echo "Creating database..."
+    docker compose exec postgres createdb -U safee safee
 
 
 # Prepare generated files for Gateway

@@ -38,7 +38,7 @@ export async function getAuditEventsForEntity(
     limit,
     with: {
       user: {
-        columns: { id: true, firstName: true, lastName: true, email: true },
+        columns: { id: true, name: true, email: true },
       },
     },
   });
@@ -102,7 +102,7 @@ export async function getAuditEventsForOrganization(
     offset,
     with: {
       user: {
-        columns: { id: true, firstName: true, lastName: true, email: true },
+        columns: { id: true, name: true, email: true },
       },
     },
   });
@@ -126,7 +126,7 @@ export async function getRecentAuditEvents(
     limit,
     with: {
       user: {
-        columns: { id: true, firstName: true, lastName: true, email: true },
+        columns: { id: true, name: true, email: true },
       },
       organization: {
         columns: { id: true, name: true },

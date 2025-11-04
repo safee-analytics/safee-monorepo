@@ -2,5 +2,11 @@
   "watch": ["src"],
   "ext": ".ts,.tsx",
   "ignore": [],
-  "exec": "npx tsx -r dotenv/config ./src/index.ts | pino-pretty"
+  "exec": "npx tsx -r dotenv/config ./src/index.ts",
+  "signal": "SIGKILL",
+  "delay": 1000,
+  "events": {
+    "restart": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true",
+    "crash": "lsof -ti:3000 | xargs kill -9 2>/dev/null || true"
+  }
 }

@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Delete, Route, Tags, Security, Request, Path, Body } from "tsoa";
 import { odooDatabaseService } from "../services/odoo/database.service.js";
 import { getOdooClientManager } from "../services/odoo/manager.service.js";
+import { OdooClient } from "../services/odoo/client.js";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 
 interface OdooProvisionResponse {
@@ -25,6 +26,17 @@ interface OdooDeleteResponse {
 
 interface OdooListResponse {
   databases: string[];
+}
+
+interface OdooDuplicateRequest {
+  newName: string;
+  neutralize?: boolean;
+}
+
+interface OdooDuplicateResponse {
+  success: boolean;
+  originalName: string;
+  newName: string;
 }
 
 interface OdooSearchRequest {
@@ -128,6 +140,63 @@ export class OdooController extends Controller {
     };
   }
 
+  @Post("/duplicate")
+  @Security("jwt")
+  public async duplicateDatabase(
+    @Request() request: AuthenticatedRequest,
+    @Body() body: OdooDuplicateRequest,
+  ): Promise<OdooDuplicateResponse> {
+    const organizationId = request.user!.organizationId;
+
+    const info = await odooDatabaseService.getDatabaseInfo(organizationId);
+    if (!info.exists) {
+      throw new Error("Cannot duplicate: Database does not exist");
+    }
+
+    const odooClient = new OdooClient();
+    const masterPassword = process.env.ODOO_MASTER_PASSWORD || "admin";
+
+    await odooClient.duplicateDatabase(
+      masterPassword,
+      info.databaseName,
+      body.newName,
+      body.neutralize || false,
+    );
+
+    return {
+      success: true,
+      originalName: info.databaseName,
+      newName: body.newName,
+    };
+  }
+
+  @Post("/backup")
+  @Security("jwt")
+  public async backupDatabase(
+    @Request() request: AuthenticatedRequest,
+  ): Promise<{ success: boolean; data: string }> {
+    const organizationId = request.user!.organizationId;
+
+    const info = await odooDatabaseService.getDatabaseInfo(organizationId);
+    if (!info.exists) {
+      throw new Error("Cannot backup: Database does not exist");
+    }
+
+    const odooClient = new OdooClient();
+    const masterPassword = process.env.ODOO_MASTER_PASSWORD || "admin";
+
+    const backupData = await odooClient.backupDatabase({
+      masterPassword,
+      name: info.databaseName,
+      format: "zip",
+    });
+
+    return {
+      success: true,
+      data: backupData.toString("base64"),
+    };
+  }
+
   @Get("/databases")
   @Security("jwt")
   public async listAllDatabases(): Promise<OdooListResponse> {
@@ -162,7 +231,7 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooSearchRequest,
   ): Promise<number[]> {
-    const userId = request.user!.userId;
+    const userId = request.user!.id;
     const organizationId = request.user!.organizationId;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
@@ -179,7 +248,7 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooSearchReadRequest,
   ): Promise<Record<string, unknown>[]> {
-    const userId = request.user!.userId;
+    const userId = request.user!.id;
     const organizationId = request.user!.organizationId;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
@@ -202,7 +271,7 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooReadRequest,
   ): Promise<Record<string, unknown>[]> {
-    const userId = request.user!.userId;
+    const userId = request.user!.id;
     const organizationId = request.user!.organizationId;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
@@ -215,7 +284,7 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooCreateRequest,
   ): Promise<{ id: number }> {
-    const userId = request.user!.userId;
+    const userId = request.user!.id;
     const organizationId = request.user!.organizationId;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
@@ -230,7 +299,7 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooWriteRequest,
   ): Promise<{ success: boolean }> {
-    const userId = request.user!.userId;
+    const userId = request.user!.id;
     const organizationId = request.user!.organizationId;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
@@ -245,7 +314,7 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooUnlinkRequest,
   ): Promise<{ success: boolean }> {
-    const userId = request.user!.userId;
+    const userId = request.user!.id;
     const organizationId = request.user!.organizationId;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
@@ -260,7 +329,7 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooExecuteRequest,
   ): Promise<unknown> {
-    const userId = request.user!.userId;
+    const userId = request.user!.id;
     const organizationId = request.user!.organizationId;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 

@@ -245,26 +245,26 @@ export async function getJobStats(
     .where(baseWhere);
 
   const stats = {
-    total: Number(result.total),
+    total: result.total,
     byStatus: {
-      pending: Number(result.pendingCount),
-      running: Number(result.runningCount),
-      completed: Number(result.completedCount),
-      failed: Number(result.failedCount),
-      cancelled: Number(result.cancelledCount),
-      retrying: Number(result.retryingCount),
+      pending: result.pendingCount,
+      running: result.runningCount,
+      completed: result.completedCount,
+      failed: result.failedCount,
+      cancelled: result.cancelledCount,
+      retrying: result.retryingCount,
     } satisfies Record<JobStatus, number>,
     byType: {
-      cron: Number(result.cronCount),
-      scheduled: Number(result.scheduledCount),
-      immediate: Number(result.immediateCount),
-      recurring: Number(result.recurringCount),
+      cron: result.cronCount,
+      scheduled: result.scheduledCount,
+      immediate: result.immediateCount,
+      recurring: result.recurringCount,
     } satisfies Record<JobType, number>,
     byPriority: {
-      low: Number(result.lowCount),
-      normal: Number(result.normalCount),
-      high: Number(result.highCount),
-      critical: Number(result.criticalCount),
+      low: result.lowCount,
+      normal: result.normalCount,
+      high: result.highCount,
+      critical: result.criticalCount,
     } satisfies Record<Priority, number>,
   };
 

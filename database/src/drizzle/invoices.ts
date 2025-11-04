@@ -11,8 +11,14 @@ export const invoices = financeSchema.table(
     type: invoiceTypeEnum("type").notNull(),
     date: date("date").notNull(),
     dueDate: date("due_date"),
-    customerId: uuid("customer_id").references(() => contacts.id, { onDelete: "restrict", onUpdate: "cascade" }),
-    supplierId: uuid("supplier_id").references(() => contacts.id, { onDelete: "restrict", onUpdate: "cascade" }),
+    customerId: uuid("customer_id").references(() => contacts.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
+    supplierId: uuid("supplier_id").references(() => contacts.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
     total: decimal("total", { precision: 12, scale: 2 }).default("0").notNull(),
     status: varchar("status", { length: 50 }).default("DRAFT").notNull(),
     organizationId: uuid("organization_id")

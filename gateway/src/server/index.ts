@@ -27,7 +27,9 @@ import { initServerContext } from "./serverContext.js";
 import { initOdooClientManager } from "./services/odoo/manager.service.js";
 import { hoursToMilliseconds } from "date-fns";
 import { toNodeHandler } from "better-auth/node";
-import { auth } from "../auth.js";
+import { initAuth, getAuth } from "../auth.js";
+import { mergeBetterAuthSpec } from "./mergeOpenApiSpecs.js";
+import type { OpenAPIV3 } from "openapi-types";
 
 dotenv.config();
 
@@ -87,19 +89,20 @@ export async function server({
   if (IS_LOCAL) {
     logger.warn("Running in local mode");
   }
-  app.set("trust proxy", !IS_LOCAL ? 1 : 0);
+  app.set("trust proxy", 1);
+  const odoo = initOdooClientManager(drizzle, logger as unknown as Logger);
 
-  // Mount Better Auth handler BEFORE express.json()
-  // This handles all routes under /api/auth/*
-  app.all("/api/auth/*", toNodeHandler(auth));
-  logger.info("Better Auth mounted at /api/auth/*");
+  initAuth(drizzle);
+  logger.info("Better Auth initialized");
+
+  app.all("/api/v1/auth/*", toNodeHandler(getAuth()));
+  logger.info("Better Auth mounted at /api/v1/auth/*");
 
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
   app.use(localeMiddleware);
 
-  const odoo = initOdooClientManager(drizzle, logger as unknown as Logger);
   logger.info("Odoo client manager initialized");
 
   // Dependency injection middleware
@@ -156,7 +159,10 @@ export async function server({
 
   app.use(
     cors({
-      origin: process.env.CORS_ORIGIN || "http://localhost:3001",
+      origin: [
+        process.env.CORS_ORIGIN || "http://localhost:3001",
+        "http://localhost:8080", // Caddy proxy URL
+      ],
       credentials: true,
     }),
   );
@@ -190,44 +196,20 @@ export async function server({
     customSiteTitle: "Safee Analytics API Documentation",
     swaggerOptions: {
       persistAuthorization: true,
+      // Force credentials to be included with all requests
+      withCredentials: true,
       requestInterceptor: (req: SwaggerRequest): SwaggerRequest => {
-        // Automatically include credentials (cookies) with each request
         req.credentials = "include";
         return req;
       },
     },
-    customJs: IS_LOCAL ? "/swagger-auth-dev.js" : undefined,
   };
 
-  // Serve custom JS for dev auto-authentication
-  if (IS_LOCAL) {
-    app.get("/swagger-auth-dev.js", (_req, res) => {
-      res.type("application/javascript");
-      res.send(`
-        // Auto-authenticate Swagger UI in development
-        window.addEventListener('load', function() {
-          // Check if we already have a stored token
-          const storedAuth = localStorage.getItem('authorized');
-          if (!storedAuth) {
-            // Try to get session from Better Auth
-            fetch('/api/auth/session', { credentials: 'include' })
-              .then(res => res.json())
-              .then(session => {
-                if (session && session.session) {
-                  console.log('[Swagger] Better Auth session detected, no JWT needed');
-                  // Session cookies will be sent automatically
-                }
-              })
-              .catch(() => {
-                console.log('[Swagger] No session found. Use the "Authorize" button to authenticate.');
-              });
-          }
-        });
-      `);
-    });
-  }
+  // @ts-expect-error - Better Auth OpenAPI plugin types are incompatible
+  const betterAuthSpec = (await getAuth().api.generateOpenAPISchema()) as OpenAPIV3.Document;
+  const mergedSpec = mergeBetterAuthSpec(swaggerDocument as OpenAPIV3.Document, betterAuthSpec);
 
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument, swaggerUiOptions));
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(mergedSpec, swaggerUiOptions));
 
   app.get("/", (_req, res) => {
     res.json({

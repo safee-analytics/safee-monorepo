@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from "vitest";
 import { connectTest, createTestDeps } from "../test-helpers/integration-setup.js";
 import { JobScheduler } from "./jobScheduler.js";
 import { InMemoryPubSub } from "../pubsub/inMemoryPubSub.js";
@@ -31,7 +31,10 @@ describe("JobScheduler Integration Tests", () => {
     await db.delete(organizations);
 
     // Create test organization
-    const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org-scheduler" }).returning();
+    const [org] = await db
+      .insert(organizations)
+      .values({ name: "Test Org", slug: "test-org-scheduler" })
+      .returning();
     testOrgId = org.id;
 
     // Create new PubSub and scheduler for each test
@@ -255,9 +258,6 @@ describe("JobScheduler Integration Tests", () => {
         payload: {},
         maxRetries: 3,
       });
-
-      // Mock updateJobStatus to throw error on first call
-      const originalUpdateJobStatus = vi.fn();
 
       await scheduler.queueJob(job.id);
 

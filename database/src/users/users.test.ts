@@ -494,8 +494,7 @@ describe("User Utilities", () => {
 
       const result = await updateUserProfile(mockDeps, "user-123", updateData);
 
-      expect(result.firstName).toBe("Updated");
-      expect(result.lastName).toBe("Name");
+      expect(result.name).toBe("Updated Name");
       expect(mockDeps.logger.info).toHaveBeenCalledWith(
         { userId: "user-123", updateData },
         "User profile updated successfully",
@@ -513,7 +512,7 @@ describe("User Utilities", () => {
         }),
       } as never);
 
-      await expect(updateUserProfile(mockDeps, "nonexistent-user", { firstName: "Test" })).rejects.toThrow(
+      await expect(updateUserProfile(mockDeps, "nonexistent-user", { name: "Test" })).rejects.toThrow(
         "User not found",
       );
       expect(mockDeps.logger.error).toHaveBeenCalled();

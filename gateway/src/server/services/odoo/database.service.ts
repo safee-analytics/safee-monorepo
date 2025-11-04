@@ -18,7 +18,7 @@ export interface OdooProvisionResult {
 export class OdooDatabaseService {
   constructor(
     private readonly drizzle: DrizzleClient,
-    logger?: Logger,
+    private readonly logger?: Logger,
   ) {}
 
   private generateSecurePassword(): string {
@@ -31,11 +31,14 @@ export class OdooDatabaseService {
   }
 
   async provisionDatabase(organizationId: string): Promise<OdooProvisionResult> {
+    this.logger?.info({ organizationId }, "Starting Odoo database provisioning");
+
     const org = await this.drizzle.query.organizations.findFirst({
       where: eq(schema.organizations.id, organizationId),
     });
 
     if (!org) {
+      this.logger?.error({ organizationId }, "Organization not found");
       throw new OrganizationNotFound();
     }
 
@@ -44,6 +47,10 @@ export class OdooDatabaseService {
     });
 
     if (existingDb) {
+      this.logger?.warn(
+        { organizationId, databaseName: existingDb.databaseName },
+        "Odoo database already exists",
+      );
       throw new OdooDatabaseAlreadyExists(organizationId);
     }
 
@@ -51,11 +58,14 @@ export class OdooDatabaseService {
 
     const exists = await odooClient.databaseExists(databaseName);
     if (exists) {
+      this.logger?.error({ databaseName }, "Odoo database name already in use");
       throw new OdooDatabaseAlreadyExists(organizationId);
     }
 
     const adminLogin = `admin_${org.slug}`;
     const adminPassword = this.generateSecurePassword();
+
+    this.logger?.info({ databaseName, adminLogin }, "Creating Odoo database");
 
     await odooClient.createDatabase({
       masterPassword: env.ODOO_ADMIN_PASSWORD,
@@ -75,6 +85,8 @@ export class OdooDatabaseService {
       adminPassword: encryptedPassword,
       odooUrl: env.ODOO_URL,
     });
+
+    this.logger?.info({ organizationId, databaseName }, "Odoo database provisioned successfully");
 
     return {
       databaseName,

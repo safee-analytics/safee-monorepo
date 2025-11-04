@@ -1,12 +1,12 @@
 import { Request as ExRequest } from "express";
 import { fromNodeHeaders } from "better-auth/node";
-import { auth } from "../../auth.js";
+import { getAuth } from "../../auth.js";
 import { getServerContext } from "../serverContext.js";
 import { NoTokenProvided, InvalidToken, InsufficientPermissions, UnknownSecurityScheme } from "../errors.js";
 
 export interface AuthenticatedRequest extends ExRequest {
   user?: {
-    userId: string;
+    id: string;
     email: string;
     roles: string[];
     permissions: string[];
@@ -37,12 +37,40 @@ export async function expressAuthentication(
 
     try {
       // Get session from Better Auth using request headers
-      const session = await auth.api.getSession({
-        headers: fromNodeHeaders(request.headers),
+      const headers = fromNodeHeaders(request.headers);
+      context.logger.info(
+        {
+          path: request.path,
+          cookies: request.headers.cookie,
+          hasAuthHeader: !!request.headers.authorization,
+          origin: request.headers.origin,
+          referer: request.headers.referer,
+        },
+        "Attempting to get session from Better Auth",
+      );
+
+      const session = await getAuth().api.getSession({
+        headers,
       });
 
+      context.logger.info(
+        {
+          hasSession: !!session,
+          hasUser: !!session?.user,
+          sessionData: session ? { userId: session.user?.id, hasSession: !!session.session } : null,
+        },
+        "Better Auth session result",
+      );
+
       if (!session?.user) {
-        context.logger.warn("Authentication failed - No valid session");
+        context.logger.warn(
+          {
+            path: request.path,
+            hasCookies: !!request.headers.cookie,
+            cookieHeader: request.headers.cookie,
+          },
+          "Authentication failed - No valid session",
+        );
         throw new NoTokenProvided();
       }
 
@@ -76,7 +104,7 @@ export async function expressAuthentication(
 
       // Set user on request for TSOA controllers
       (request as AuthenticatedRequest).user = {
-        userId: user.id,
+        id: user.id,
         email: user.email,
         roles: user.roles || [],
         permissions: user.permissions || [],

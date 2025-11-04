@@ -1,4 +1,3 @@
-import xmlrpc from "xmlrpc";
 import type { Logger } from "pino";
 import {
   validateModel,
@@ -26,6 +25,7 @@ export interface OdooAuthResult {
   uid: number;
   database: string;
   username: string;
+  sessionId: string;
 }
 
 export interface OdooSearchOptions {
@@ -94,76 +94,81 @@ export interface OdooClient {
 }
 
 export class OdooClientService implements OdooClient {
-  private commonClient: xmlrpc.Client;
-  private objectClient: xmlrpc.Client;
   private config: OdooConnectionConfig;
   private logger: Logger;
   private uid: number | null = null;
+  private sessionId: string | null = null;
   private readonly timeout: number = 30000; // 30 seconds
 
   constructor(config: OdooConnectionConfig, logger: Logger) {
     this.config = config;
     this.logger = logger;
+  }
 
-    const hostname = new URL(config.url).hostname;
-    const isSecure = config.url.startsWith("https");
-
-    const clientOptions = {
-      host: hostname,
-      port: config.port,
-      path: "/xmlrpc/2/common",
-      timeout: this.timeout,
-    };
-
-    const objectOptions = {
-      host: hostname,
-      port: config.port,
-      path: "/xmlrpc/2/object",
-      timeout: this.timeout,
-    };
-
-    this.commonClient = isSecure
-      ? xmlrpc.createSecureClient(clientOptions)
-      : xmlrpc.createClient(clientOptions);
-
-    this.objectClient = isSecure
-      ? xmlrpc.createSecureClient(objectOptions)
-      : xmlrpc.createClient(objectOptions);
+  private get baseUrl(): string {
+    return this.config.url;
   }
 
   async authenticate(): Promise<OdooAuthResult> {
-    return new Promise((resolve, reject) => {
-      this.commonClient.methodCall(
-        "authenticate",
-        [this.config.database, this.config.username, this.config.password, {}],
-        (error, uid: number) => {
-          if (error) {
-            this.logger.error({ error, database: this.config.database }, "Odoo authentication failed");
-            return reject(new Error(`Odoo authentication failed: ${String(error)}`));
-          }
-
-          if (!uid) {
-            this.logger.warn(
-              { database: this.config.database, username: this.config.username },
-              "Invalid credentials",
-            );
-            return reject(new Error("Invalid Odoo credentials"));
-          }
-
-          this.uid = uid;
-          this.logger.info(
-            { uid, database: this.config.database, username: this.config.username },
-            "Authenticated with Odoo",
-          );
-
-          resolve({
-            uid,
-            database: this.config.database,
-            username: this.config.username,
-          });
+    try {
+      const response = await fetch(`${this.baseUrl}/web/session/authenticate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          method: "call",
+          params: {
+            db: this.config.database,
+            login: this.config.username,
+            password: this.config.password,
+          },
+          id: null,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Odoo authentication failed: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        const errorMessage =
+          typeof data.error === "object"
+            ? data.error.message || JSON.stringify(data.error)
+            : String(data.error);
+        throw new Error(`Odoo error: ${errorMessage}`);
+      }
+
+      const result = data.result as { uid: number; session_id: string };
+
+      if (!result.uid) {
+        this.logger.warn(
+          { database: this.config.database, username: this.config.username },
+          "Invalid credentials",
+        );
+        throw new Error("Invalid Odoo credentials");
+      }
+
+      this.uid = result.uid;
+      this.sessionId = result.session_id;
+      this.logger.info(
+        { uid: result.uid, database: this.config.database, username: this.config.username },
+        "Authenticated with Odoo",
       );
-    });
+
+      return {
+        uid: result.uid,
+        database: this.config.database,
+        username: this.config.username,
+        sessionId: result.session_id,
+      };
+    } catch (error) {
+      this.logger.error({ error, database: this.config.database }, "Odoo authentication failed");
+      throw error instanceof Error ? error : new Error(String(error));
+    }
   }
 
   private async ensureAuthenticated(): Promise<number> {
@@ -179,22 +184,47 @@ export class OdooClientService implements OdooClient {
     args: unknown[] = [],
     kwargs: Record<string, unknown> = {},
   ): Promise<T> {
-    const uid = await this.ensureAuthenticated();
+    await this.ensureAuthenticated();
 
-    return new Promise((resolve, reject) => {
-      this.objectClient.methodCall(
-        "execute_kw",
-        [this.config.database, uid, this.config.password, model, method, args, kwargs],
-        (error, result: T) => {
-          if (error) {
-            this.logger.error({ error, model, method }, "Odoo execute_kw failed");
-            return reject(new Error(`Odoo RPC failed: ${String(error)}`));
-          }
-
-          resolve(result);
+    try {
+      const response = await fetch(`${this.baseUrl}/web/dataset/call_kw`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `session_id=${this.sessionId}`,
         },
-      );
-    });
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          method: "call",
+          params: {
+            model,
+            method,
+            args,
+            kwargs,
+          },
+          id: null,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Odoo request failed: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        const errorMessage =
+          typeof data.error === "object"
+            ? data.error.message || JSON.stringify(data.error)
+            : String(data.error);
+        throw new Error(`Odoo error: ${errorMessage}`);
+      }
+
+      return data.result as T;
+    } catch (error) {
+      this.logger.error({ error, model, method }, "Odoo execute_kw failed");
+      throw error instanceof Error ? error : new Error(String(error));
+    }
   }
 
   async search(model: string, domain: unknown[] = [], options: OdooSearchOptions = {}): Promise<number[]> {
@@ -324,14 +354,34 @@ export class OdooClientService implements OdooClient {
     server_version_info: number[];
     protocol_version: number;
   }> {
-    return new Promise((resolve, reject) => {
-      this.commonClient.methodCall("version", [], (error, result) => {
-        if (error) {
-          return reject(new Error(`Failed to get Odoo version: ${String(error)}`));
-        }
-        resolve(result);
+    try {
+      const response = await fetch(`${this.baseUrl}/web/webclient/version_info`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          method: "call",
+          params: {},
+          id: null,
+        }),
       });
-    });
+
+      if (!response.ok) {
+        throw new Error(`Failed to get Odoo version: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
+
+      if (data.error) {
+        throw new Error(`Odoo error: ${JSON.stringify(data.error)}`);
+      }
+
+      return data.result;
+    } catch (error) {
+      throw error instanceof Error ? error : new Error(`Failed to get Odoo version: ${String(error)}`);
+    }
   }
 
   async executeKw<T = unknown>(

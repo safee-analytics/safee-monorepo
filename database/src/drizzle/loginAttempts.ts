@@ -1,8 +1,8 @@
-import { pgTable, text, timestamp, boolean, integer, uuid } from "drizzle-orm/pg-core";
+import { text, timestamp, boolean, integer, uuid } from "drizzle-orm/pg-core";
 import { users } from "./users.js";
-import { identifierTypeEnum, idpk } from "./_common.js";
+import { identifierTypeEnum, idpk, identitySchema } from "./_common.js";
 
-export const loginAttempts = pgTable("login_attempts", {
+export const loginAttempts = identitySchema.table("login_attempts", {
   id: idpk("id"),
   identifier: text("identifier").notNull(), // email or IP
   identifierType: identifierTypeEnum("identifier_type").notNull(),

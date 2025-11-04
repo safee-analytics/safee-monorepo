@@ -1,9 +1,9 @@
-import { pgTable, text, timestamp, boolean, uuid, jsonb } from "drizzle-orm/pg-core";
+import { text, timestamp, boolean, uuid, jsonb } from "drizzle-orm/pg-core";
 import { users } from "./users.js";
 import { organizations } from "./organizations.js";
-import { eventTypeEnum, riskLevelEnum, idpk } from "./_common.js";
+import { eventTypeEnum, riskLevelEnum, idpk, identitySchema } from "./_common.js";
 
-export const securityEvents = pgTable("security_events", {
+export const securityEvents = identitySchema.table("security_events", {
   id: idpk("id"),
   userId: uuid("user_id").references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
   organizationId: uuid("organization_id")

@@ -2,7 +2,6 @@ import type { DrizzleClient } from "@safee/database";
 import { schema, connect } from "@safee/database";
 import { eq, and } from "drizzle-orm";
 import crypto from "crypto";
-import xmlrpc from "xmlrpc";
 import { encryptionService } from "../encryption.js";
 import { env } from "../../../env.js";
 import { BadGateway, NotFound } from "../../errors.js";
@@ -33,55 +32,90 @@ export class OdooUserProvisioningService {
     private readonly logger?: Logger,
   ) {}
 
-  private createXmlRpcClient(host: string, port: number, path: string, secure = false): xmlrpc.Client {
-    const options = { host, port, path };
-    return secure ? xmlrpc.createSecureClient(options) : xmlrpc.createClient(options);
-  }
-
-  private async callOdooMethod(
-    path: string,
-    method: string,
-    args: unknown[],
-  ): Promise<unknown> {
-    const url = new URL(env.ODOO_URL);
-    const client = this.createXmlRpcClient(
-      url.hostname,
-      url.port ? parseInt(url.port) : 8069,
-      path,
-      url.protocol === "https:",
-    );
-
-    return new Promise((resolve, reject) => {
-      client.methodCall(method, args, (error, value) => {
-        if (error) {
-          reject(new BadGateway(`Odoo ${method} error: ${error}`));
-        } else {
-          resolve(value);
-        }
-      });
-    });
-  }
-
   /**
-   * Authenticate and get UID for a user
+   * Authenticate with Odoo and get session + UID
    */
   private async authenticate(
     databaseName: string,
     login: string,
     password: string,
-  ): Promise<number> {
-    const uid = await this.callOdooMethod("/xmlrpc/2/common", "authenticate", [
-      databaseName,
-      login,
-      password,
-      {},
-    ]);
+  ): Promise<{ uid: number; sessionId: string }> {
+    const response = await fetch(`${env.ODOO_URL}/web/session/authenticate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "call",
+        params: {
+          db: databaseName,
+          login,
+          password,
+        },
+        id: null,
+      }),
+    });
 
-    if (!uid || typeof uid !== "number") {
+    if (!response.ok) {
+      throw new BadGateway(`Odoo authentication failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new BadGateway(`Odoo authentication error: ${JSON.stringify(data.error)}`);
+    }
+
+    const result = data.result as { uid: number; session_id: string };
+
+    if (!result.uid) {
       throw new BadGateway("Failed to authenticate with Odoo");
     }
 
-    return uid;
+    return { uid: result.uid, sessionId: result.session_id };
+  }
+
+  /**
+   * Call Odoo model method via JSON-RPC
+   */
+  private async callOdooExecuteKw<T = unknown>(
+    sessionId: string,
+    model: string,
+    method: string,
+    args: unknown[],
+    kwargs: Record<string, unknown> = {},
+  ): Promise<T> {
+    const response = await fetch(`${env.ODOO_URL}/web/dataset/call_kw`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: `session_id=${sessionId}`,
+      },
+      body: JSON.stringify({
+        jsonrpc: "2.0",
+        method: "call",
+        params: {
+          model,
+          method,
+          args,
+          kwargs,
+        },
+        id: null,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new BadGateway(`Odoo ${method} failed: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    if (data.error) {
+      throw new BadGateway(`Odoo ${method} error: ${JSON.stringify(data.error)}`);
+    }
+
+    return data.result as T;
   }
 
   /**
@@ -114,31 +148,30 @@ export class OdooUserProvisioningService {
   /**
    * Get Odoo internal group IDs by XML ID
    */
-  private async getGroupIds(
-    databaseName: string,
-    adminUid: number,
-    adminPassword: string,
-    groupXmlIds: string[],
-  ): Promise<number[]> {
+  private async getGroupIds(sessionId: string, groupXmlIds: string[]): Promise<number[]> {
     const groupIds: number[] = [];
 
     for (const xmlId of groupXmlIds) {
       try {
-        const result = (await this.callOdooMethod("/xmlrpc/2/object", "execute_kw", [
-          databaseName,
-          adminUid,
-          adminPassword,
+        const [module, name] = xmlId.split(".");
+        const result = await this.callOdooExecuteKw<Array<{ res_id: number }>>(
+          sessionId,
           "ir.model.data",
           "search_read",
-          [[["name", "=", xmlId.split(".")[1]], ["module", "=", xmlId.split(".")[0]]]],
+          [
+            [
+              ["name", "=", name],
+              ["module", "=", module],
+            ],
+          ],
           { fields: ["res_id"], limit: 1 },
-        ])) as Array<{ res_id: number }>;
+        );
 
         if (result && result.length > 0) {
           groupIds.push(result[0].res_id);
         }
       } catch (error) {
-        this.logger?.warn({ xmlId }, "Failed to find group, skipping");
+        this.logger?.warn({ xmlId, error }, "Failed to find group, skipping");
       }
     }
 
@@ -181,11 +214,7 @@ export class OdooUserProvisioningService {
         "project.group_project_manager",
         "hr.group_hr_user",
       ],
-      user: [
-        "sales_team.group_sale_salesman",
-        "crm.group_sale_salesman",
-        "project.group_project_user",
-      ],
+      user: ["sales_team.group_sale_salesman", "crm.group_sale_salesman", "project.group_project_user"],
     };
 
     const groups = roleGroups[safeeRole || "user"] || roleGroups.user;
@@ -193,7 +222,7 @@ export class OdooUserProvisioningService {
   }
 
   /**
-   * Create Odoo user via XML-RPC with proper access groups
+   * Create Odoo user via JSON-RPC with proper access groups
    */
   private async createOdooUser(
     databaseName: string,
@@ -204,13 +233,13 @@ export class OdooUserProvisioningService {
     safeeRole?: string,
   ): Promise<number> {
     // Authenticate as admin
-    const adminUid = await this.authenticate(databaseName, adminLogin, adminPassword);
+    const { sessionId } = await this.authenticate(databaseName, adminLogin, adminPassword);
 
     // Get group XML IDs based on user role
     const groupXmlIds = this.getDefaultGroupsForUser(safeeRole);
 
     // Resolve XML IDs to internal IDs
-    const groupIds = await this.getGroupIds(databaseName, adminUid, adminPassword, groupXmlIds);
+    const groupIds = await this.getGroupIds(sessionId, groupXmlIds);
 
     this.logger?.info(
       { userEmail, safeeRole, groupCount: groupIds.length },
@@ -218,21 +247,14 @@ export class OdooUserProvisioningService {
     );
 
     // Create user via execute_kw
-    const userId = (await this.callOdooMethod("/xmlrpc/2/object", "execute_kw", [
-      databaseName,
-      adminUid,
-      adminPassword,
-      "res.users",
-      "create",
-      [
-        {
-          name: userName,
-          login: userEmail,
-          email: userEmail,
-          groups_id: [[6, 0, groupIds]], // Assign groups
-        },
-      ],
-    ])) as number;
+    const userId = await this.callOdooExecuteKw<number>(sessionId, "res.users", "create", [
+      {
+        name: userName,
+        login: userEmail,
+        email: userEmail,
+        groups_id: [[6, 0, groupIds]], // Assign groups
+      },
+    ]);
 
     if (!userId) {
       throw new BadGateway("Failed to create Odoo user");
@@ -251,15 +273,11 @@ export class OdooUserProvisioningService {
     userId: number,
     newPassword: string,
   ): Promise<void> {
-    const adminUid = await this.authenticate(databaseName, adminLogin, adminPassword);
+    const { sessionId } = await this.authenticate(databaseName, adminLogin, adminPassword);
 
-    await this.callOdooMethod("/xmlrpc/2/object", "execute_kw", [
-      databaseName,
-      adminUid,
-      adminPassword,
-      "res.users",
-      "write",
-      [[userId], { password: newPassword }],
+    await this.callOdooExecuteKw<boolean>(sessionId, "res.users", "write", [
+      [userId],
+      { password: newPassword },
     ]);
   }
 
@@ -289,9 +307,7 @@ export class OdooUserProvisioningService {
 
     // Check if user already has Odoo account
     const existingOdooUser = await this.drizzle.query.odooUsers.findFirst({
-      where: and(
-        eq(schema.odooUsers.userId, userId),
-      ),
+      where: and(eq(schema.odooUsers.userId, userId)),
     });
 
     if (existingOdooUser) {
@@ -315,7 +331,7 @@ export class OdooUserProvisioningService {
     this.logger?.info({ userId, role }, "Provisioning Odoo user with role");
 
     // Create user name from firstName and lastName
-    const userName = [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email;
+    const userName = user.name || user.email;
 
     // Create user in Odoo
     const odooUid = await this.createOdooUser(
@@ -349,10 +365,7 @@ export class OdooUserProvisioningService {
       lastSyncedAt: new Date(),
     });
 
-    this.logger?.info(
-      { userId, odooUid, databaseName },
-      "Odoo user provisioned successfully",
-    );
+    this.logger?.info({ userId, odooUid, databaseName }, "Odoo user provisioned successfully");
 
     return {
       odooUid,
@@ -364,10 +377,7 @@ export class OdooUserProvisioningService {
   /**
    * Get Odoo credentials for a Safee user
    */
-  async getUserCredentials(
-    userId: string,
-    organizationId: string,
-  ): Promise<OdooUserCredentials | null> {
+  async getUserCredentials(userId: string, organizationId: string): Promise<OdooUserCredentials | null> {
     // Get Odoo database
     const odooDb = await this.drizzle.query.odooDatabases.findFirst({
       where: eq(schema.odooDatabases.organizationId, organizationId),
@@ -379,10 +389,7 @@ export class OdooUserProvisioningService {
 
     // Get Odoo user mapping
     const odooUser = await this.drizzle.query.odooUsers.findFirst({
-      where: and(
-        eq(schema.odooUsers.userId, userId),
-        eq(schema.odooUsers.odooDatabaseId, odooDb.id),
-      ),
+      where: and(eq(schema.odooUsers.userId, userId), eq(schema.odooUsers.odooDatabaseId, odooDb.id)),
     });
 
     if (!odooUser) {
@@ -410,16 +417,12 @@ export class OdooUserProvisioningService {
       return;
     }
 
-    const adminUid = await this.authenticate(databaseName, adminLogin, adminPassword);
+    const { sessionId } = await this.authenticate(databaseName, adminLogin, adminPassword);
 
     // Deactivate in Odoo
-    await this.callOdooMethod("/xmlrpc/2/object", "execute_kw", [
-      databaseName,
-      adminUid,
-      adminPassword,
-      "res.users",
-      "write",
-      [[odooUser.odooUid], { active: false }],
+    await this.callOdooExecuteKw<boolean>(sessionId, "res.users", "write", [
+      [odooUser.odooUid],
+      { active: false },
     ]);
 
     // Update status in database

@@ -40,8 +40,7 @@ describe("User Integration Tests", () => {
 
       expect(user).toBeDefined();
       expect(user.email).toBe("test@example.com");
-      expect(user.firstName).toBe("John");
-      expect(user.lastName).toBe("Doe");
+      expect(user.name).toBe("John Doe");
       expect(user.organizationId).toBe(org.id);
     });
 
@@ -77,7 +76,7 @@ describe("User Integration Tests", () => {
 
       expect(user).toBeDefined();
       expect(user?.email).toBe("find@example.com");
-      expect(user?.firstName).toBe("Jane");
+      expect(user?.name).toBe("Jane");
       expect(user?.organization).toBeDefined();
       expect(user?.organization?.name).toBe("Test Org");
     });
@@ -132,13 +131,11 @@ describe("User Integration Tests", () => {
       });
 
       const updatedUser = await updateUserProfile(deps, createdUser.id, {
-        firstName: "New",
-        lastName: "Name",
+        name: "New Name",
         preferredLocale: "ar",
       });
 
-      expect(updatedUser.firstName).toBe("New");
-      expect(updatedUser.lastName).toBe("Name");
+      expect(updatedUser.name).toBe("New Name");
       expect(updatedUser.preferredLocale).toBe("ar");
     });
 
@@ -146,7 +143,7 @@ describe("User Integration Tests", () => {
       const deps = createTestDeps(db);
 
       await expect(
-        updateUserProfile(deps, "00000000-0000-0000-0000-000000000000", { firstName: "Test" }),
+        updateUserProfile(deps, "00000000-0000-0000-0000-000000000000", { name: "Test" }),
       ).rejects.toThrow("User not found");
     });
   });

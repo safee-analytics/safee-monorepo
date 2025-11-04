@@ -2,10 +2,10 @@
 
 import { SafeeLoginForm } from '@/components/auth/SafeeLoginForm'
 import { useOrgStore } from '@/stores/useOrgStore'
+import { useAuth } from '@/lib/auth/hooks'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
-// Translation strings
 const translations = {
   ar: {
     title: "تسجيل الدخول إلى حسابك",
@@ -50,45 +50,48 @@ const translations = {
 export default function LoginPage() {
   const router = useRouter()
   const { locale, setLocale } = useOrgStore()
+  const { signIn, signInWithGoogle, isAuthenticated, isLoading } = useAuth()
   const [isArabic, setIsArabic] = useState(locale === 'ar')
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (isAuthenticated && !isLoading) {
+      router.push('/dashboard')
+    }
+  }, [isAuthenticated, isLoading, router])
 
   const handleSubmit = async (email: string, password: string) => {
     try {
-      // TODO: Call your authentication API here
-      alert(`Login attempt:\nEmail: ${email}\nPassword: ${password}`)
+      setError(null)
+      const result = await signIn(email, password)
 
-      // Example: Simulate API call
-      // const response = await api.auth.login(email, password)
-      // setUser(response.user)
-      // setOrg(response.organization)
-
-      // Redirect to dashboard
-      // router.push('/org-id/hisabiq')
+      if (result.success) {
+        router.push('/dashboard')
+      } else {
+        setError(result.error || 'Login failed. Please check your credentials.')
+      }
     } catch (error) {
       console.error('Login failed:', error)
-      // Show error toast
+      setError('An unexpected error occurred. Please try again.')
     }
   }
 
   const handleGoogleLogin = async () => {
     try {
-      // TODO: Implement Google OAuth
-      alert('Google login clicked')
-      // Example: Redirect to Google OAuth
-      // window.location.href = '/api/auth/google'
+      signInWithGoogle()
     } catch (error) {
       console.error('Google login failed:', error)
+      setError('Google login failed. Please try again.')
     }
   }
 
   const handleSSOLogin = async () => {
     try {
-      // TODO: Implement SSO
-      alert('SSO login clicked')
-      // Example: Redirect to SSO provider
-      // window.location.href = '/api/auth/sso'
+      // TODO: Implement SSO (SAML/OIDC) for enterprise customers
+      setError('SSO is not yet available. Coming soon!')
     } catch (error) {
       console.error('SSO login failed:', error)
+      setError('SSO login failed. Please try again.')
     }
   }
 
@@ -106,13 +109,18 @@ export default function LoginPage() {
 
   return (
     <div dir={locale === 'ar' ? 'rtl' : 'ltr'}>
-      {/* Language switcher */}
       <button
         onClick={toggleLanguage}
         className="fixed top-4 right-4 z-50 px-4 py-2 rounded-lg bg-safee-600 hover:bg-safee-700 text-white shadow-lg transition-colors"
       >
         {isArabic ? 'English' : 'العربية'}
       </button>
+
+      {error && (
+        <div className="fixed top-20 right-4 z-50 px-4 py-3 rounded-lg bg-red-500 text-white shadow-lg max-w-md">
+          {error}
+        </div>
+      )}
 
       <SafeeLoginForm
         t={t}

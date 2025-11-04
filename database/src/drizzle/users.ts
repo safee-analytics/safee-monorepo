@@ -7,18 +7,16 @@ export const users = identitySchema.table(
   {
     id: idpk("id"),
     email: varchar("email", { length: 255 }).notNull().unique(),
-    firstName: varchar("first_name", { length: 100 }),
-    lastName: varchar("last_name", { length: 100 }),
-    // Password removed - Better Auth stores passwords in oauth_accounts table
+    name: varchar("name", { length: 255 }),
+    role: varchar("role", { length: 50 }).default("user").notNull(),
     organizationId: uuid("organization_id")
       .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" })
       .notNull(),
     preferredLocale: localeEnum("preferred_locale").default("en").notNull(),
     isActive: boolean("is_active").default(true).notNull(),
 
-    // Better Auth required fields
     emailVerified: boolean("email_verified").default(false).notNull(),
-    image: text("image"), // Profile image URL
+    image: text("image"),
 
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

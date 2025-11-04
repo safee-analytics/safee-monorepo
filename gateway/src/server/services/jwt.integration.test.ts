@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from "vitest";
 import { jwtService } from "./jwt.js";
-import { InvalidToken, TokenExpired } from "../errors.js";
-import jwt from "jsonwebtoken";
+import { InvalidToken } from "../errors.js";
+import jwt, { type JwtPayload } from "jsonwebtoken";
 import { getAuthConfig } from "../../config/index.js";
 import { connect } from "@safee/database";
 import { createTestFixtures, cleanTestData, type TestFixtures } from "@safee/database/test-helpers";
@@ -48,7 +48,16 @@ describe("JWT Service Integration Tests", () => {
       });
 
       const config = getAuthConfig();
-      const decoded = jwt.verify(accessToken, config.jwtSecret) as any;
+      const decoded = jwt.verify(accessToken, config.jwtSecret) as JwtPayload & {
+        userId: string;
+        organizationId: string;
+        email: string;
+        roles: string[];
+        permissions: string[];
+        type: string;
+        iss: string;
+        aud: string;
+      };
 
       expect(decoded.userId).toBe(fixtures.user.id);
       expect(decoded.organizationId).toBe(fixtures.organization.id);
@@ -96,7 +105,7 @@ describe("JWT Service Integration Tests", () => {
       });
 
       const config = getAuthConfig();
-      const decoded = jwt.verify(accessToken, config.jwtSecret) as any;
+      const decoded = jwt.verify(accessToken, config.jwtSecret) as JwtPayload & { sessionId?: string };
 
       expect(decoded.sessionId).toBe(sessionId);
     });
@@ -115,7 +124,7 @@ describe("JWT Service Integration Tests", () => {
       });
 
       const config = getAuthConfig();
-      const decoded = jwt.verify(accessToken, config.jwtSecret) as any;
+      const decoded = jwt.verify(accessToken, config.jwtSecret) as JwtPayload & { permissions: string[] };
 
       expect(decoded.permissions).toHaveLength(3);
       expect(decoded.permissions).toContain(fixtures.permissions.manageUsers.slug);
@@ -150,7 +159,13 @@ describe("JWT Service Integration Tests", () => {
       });
 
       const config = getAuthConfig();
-      const decoded = jwt.verify(refreshToken, config.jwtSecret) as any;
+      const decoded = jwt.verify(refreshToken, config.jwtSecret) as JwtPayload & {
+        type: string;
+        userId: string;
+        organizationId: string;
+        email: string;
+        tokenId: string;
+      };
 
       expect(decoded.type).toBe("refresh");
       expect(decoded.userId).toBe(fixtures.user.id);
@@ -177,8 +192,8 @@ describe("JWT Service Integration Tests", () => {
       });
 
       const config = getAuthConfig();
-      const decoded1 = jwt.verify(token1, config.jwtSecret) as any;
-      const decoded2 = jwt.verify(token2, config.jwtSecret) as any;
+      const decoded1 = jwt.verify(token1, config.jwtSecret) as JwtPayload & { tokenId: string };
+      const decoded2 = jwt.verify(token2, config.jwtSecret) as JwtPayload & { tokenId: string };
 
       expect(decoded1.tokenId).not.toBe(decoded2.tokenId);
     });
@@ -423,7 +438,10 @@ describe("JWT Service Integration Tests", () => {
       });
 
       const config = getAuthConfig();
-      const decoded = jwt.verify(accessToken, config.jwtSecret) as any;
+      const decoded = jwt.verify(accessToken, config.jwtSecret) as JwtPayload & {
+        exp: number;
+        iat: number;
+      };
 
       // Check that exp is set and is in the future
       expect(decoded.exp).toBeDefined();

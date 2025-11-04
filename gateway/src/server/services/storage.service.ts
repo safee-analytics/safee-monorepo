@@ -1,33 +1,34 @@
-import fs from 'fs/promises'
-import path from 'path'
-import { v4 as uuidv4 } from 'uuid'
-import type { Response } from 'express'
-import type { FileMetadata, FolderMetadata, FileSearchParams } from '../controllers/storageController.js'
+import fs from "fs/promises";
+import path from "path";
+import { v4 as uuidv4 } from "uuid";
+import type { Response } from "express";
+import type { FileMetadata, FolderMetadata, FileSearchParams } from "../controllers/storageController.js";
+import { logger } from "../utils/logger.js";
 
 export interface UploadOptions {
-  folderId?: string
-  tags?: string[]
-  metadata?: Record<string, any>
-  userId: string
+  folderId?: string;
+  tags?: string[];
+  metadata?: Record<string, unknown>;
+  userId: string;
 }
 
 export class StorageService {
-  private basePath: string
-  private metadataPath: string
+  private basePath: string;
+  private metadataPath: string;
 
   constructor() {
     // Get storage path from environment or use default
-    this.basePath = process.env.NAS_STORAGE_PATH || path.join(process.cwd(), 'storage')
-    this.metadataPath = path.join(this.basePath, '.metadata')
-    this.initializeStorage()
+    this.basePath = process.env.NAS_STORAGE_PATH || path.join(process.cwd(), "storage");
+    this.metadataPath = path.join(this.basePath, ".metadata");
+    this.initializeStorage();
   }
 
   private async initializeStorage(): Promise<void> {
     try {
-      await fs.mkdir(this.basePath, { recursive: true })
-      await fs.mkdir(this.metadataPath, { recursive: true })
+      await fs.mkdir(this.basePath, { recursive: true });
+      await fs.mkdir(this.metadataPath, { recursive: true });
     } catch (error) {
-      console.error('Failed to initialize storage:', error)
+      logger.error({ error }, "Failed to initialize storage");
     }
   }
 
@@ -35,20 +36,18 @@ export class StorageService {
    * Upload a single file
    */
   public async uploadFile(
-    file: Express.Multer.File,
-    options: UploadOptions
+    file: globalThis.Express.Multer.File,
+    options: UploadOptions,
   ): Promise<FileMetadata> {
-    const fileId = uuidv4()
-    const folderPath = options.folderId
-      ? path.join(this.basePath, options.folderId)
-      : this.basePath
+    const fileId = uuidv4();
+    const folderPath = options.folderId ? path.join(this.basePath, options.folderId) : this.basePath;
 
     // Ensure folder exists
-    await fs.mkdir(folderPath, { recursive: true })
+    await fs.mkdir(folderPath, { recursive: true });
 
     // Save file to storage
-    const filePath = path.join(folderPath, fileId)
-    await fs.writeFile(filePath, file.buffer)
+    const filePath = path.join(folderPath, fileId);
+    await fs.writeFile(filePath, file.buffer);
 
     // Create metadata
     const metadata: FileMetadata = {
@@ -63,36 +62,37 @@ export class StorageService {
       folderId: options.folderId,
       tags: options.tags,
       metadata: options.metadata,
-    }
+    };
 
     // Save metadata
-    await this.saveMetadata(fileId, metadata)
+    await this.saveMetadata(fileId, metadata);
 
-    return metadata
+    return metadata;
   }
 
   /**
    * Upload multiple files
    */
   public async uploadFiles(
-    files: Express.Multer.File[],
-    options: UploadOptions
+    files: globalThis.Express.Multer.File[],
+    options: UploadOptions,
   ): Promise<FileMetadata[]> {
-    const uploadPromises = files.map((file) => this.uploadFile(file, options))
-    return await Promise.all(uploadPromises)
+    const uploadPromises = files.map((file) => this.uploadFile(file, options));
+    return await Promise.all(uploadPromises);
   }
 
   /**
    * Get file metadata
    */
   public async getFileMetadata(fileId: string): Promise<FileMetadata> {
-    const metadataFile = path.join(this.metadataPath, `${fileId}.json`)
+    const metadataFile = path.join(this.metadataPath, `${fileId}.json`);
 
     try {
-      const data = await fs.readFile(metadataFile, 'utf-8')
-      return JSON.parse(data)
+      const data = await fs.readFile(metadataFile, "utf-8");
+      return JSON.parse(data);
     } catch (error) {
-      throw new Error(`File not found: ${fileId}`)
+      logger.debug({ error, fileId }, "File not found");
+      throw new Error(`File not found: ${fileId}`);
     }
   }
 
@@ -100,94 +100,94 @@ export class StorageService {
    * Download file
    */
   public async downloadFile(fileId: string, response: Response): Promise<void> {
-    const metadata = await this.getFileMetadata(fileId)
-    const fileBuffer = await fs.readFile(metadata.path)
+    const metadata = await this.getFileMetadata(fileId);
+    const fileBuffer = await fs.readFile(metadata.path);
 
-    response.setHeader('Content-Type', metadata.mimeType)
-    response.setHeader('Content-Disposition', `attachment; filename="${metadata.name}"`)
-    response.setHeader('Content-Length', metadata.size)
-    response.send(fileBuffer)
+    response.setHeader("Content-Type", metadata.mimeType);
+    response.setHeader("Content-Disposition", `attachment; filename="${metadata.name}"`);
+    response.setHeader("Content-Length", metadata.size);
+    response.send(fileBuffer);
   }
 
   /**
    * Delete file
    */
   public async deleteFile(fileId: string): Promise<void> {
-    const metadata = await this.getFileMetadata(fileId)
+    const metadata = await this.getFileMetadata(fileId);
 
     // Delete file
-    await fs.unlink(metadata.path)
+    await fs.unlink(metadata.path);
 
     // Delete metadata
-    const metadataFile = path.join(this.metadataPath, `${fileId}.json`)
-    await fs.unlink(metadataFile)
+    const metadataFile = path.join(this.metadataPath, `${fileId}.json`);
+    await fs.unlink(metadataFile);
   }
 
   /**
    * Search files
    */
   public async searchFiles(
-    params: FileSearchParams
+    params: FileSearchParams,
   ): Promise<{ files: FileMetadata[]; total: number; hasMore: boolean }> {
-    const allMetadataFiles = await fs.readdir(this.metadataPath)
+    const allMetadataFiles = await fs.readdir(this.metadataPath);
 
-    const filesMetadata: FileMetadata[] = []
+    const filesMetadata: FileMetadata[] = [];
 
     for (const metaFile of allMetadataFiles) {
-      if (!metaFile.endsWith('.json') || metaFile.startsWith('folder_')) continue
+      if (!metaFile.endsWith(".json") || metaFile.startsWith("folder_")) continue;
 
       try {
-        const data = await fs.readFile(path.join(this.metadataPath, metaFile), 'utf-8')
-        const metadata: FileMetadata = JSON.parse(data)
+        const data = await fs.readFile(path.join(this.metadataPath, metaFile), "utf-8");
+        const metadata: FileMetadata = JSON.parse(data);
 
         // Apply filters
         if (params.query && !metadata.name.toLowerCase().includes(params.query.toLowerCase())) {
-          continue
+          continue;
         }
 
         if (params.folderId && metadata.folderId !== params.folderId) {
-          continue
+          continue;
         }
 
         if (params.mimeTypes && !params.mimeTypes.includes(metadata.mimeType)) {
-          continue
+          continue;
         }
 
         if (params.tags && !params.tags.some((tag: string) => metadata.tags?.includes(tag))) {
-          continue
+          continue;
         }
 
         if (params.createdBy && metadata.createdBy !== params.createdBy) {
-          continue
+          continue;
         }
 
         if (params.dateFrom && new Date(metadata.createdAt) < new Date(params.dateFrom)) {
-          continue
+          continue;
         }
 
         if (params.dateTo && new Date(metadata.createdAt) > new Date(params.dateTo)) {
-          continue
+          continue;
         }
 
-        filesMetadata.push(metadata)
+        filesMetadata.push(metadata);
       } catch (error) {
-        console.error(`Error reading metadata file ${metaFile}:`, error)
+        logger.error({ error, metaFile }, "Error reading metadata file");
       }
     }
 
     // Sort by modified date (newest first)
-    filesMetadata.sort((a, b) => new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime())
+    filesMetadata.sort((a, b) => new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime());
 
     // Pagination
-    const limit = params.limit || 20
-    const offset = params.offset || 0
-    const paginatedFiles = filesMetadata.slice(offset, offset + limit)
+    const limit = params.limit || 20;
+    const offset = params.offset || 0;
+    const paginatedFiles = filesMetadata.slice(offset, offset + limit);
 
     return {
       files: paginatedFiles,
       total: filesMetadata.length,
       hasMore: offset + limit < filesMetadata.length,
-    }
+    };
   }
 
   /**
@@ -196,12 +196,14 @@ export class StorageService {
   public async createFolder(
     name: string,
     parentId: string | undefined,
-    userId: string
+    userId: string,
   ): Promise<FolderMetadata> {
-    const folderId = uuidv4()
-    const folderPath = parentId ? path.join(this.basePath, parentId, folderId) : path.join(this.basePath, folderId)
+    const folderId = uuidv4();
+    const folderPath = parentId
+      ? path.join(this.basePath, parentId, folderId)
+      : path.join(this.basePath, folderId);
 
-    await fs.mkdir(folderPath, { recursive: true })
+    await fs.mkdir(folderPath, { recursive: true });
 
     const metadata: FolderMetadata = {
       id: folderId,
@@ -210,47 +212,48 @@ export class StorageService {
       parentId,
       createdAt: new Date().toISOString(),
       modifiedAt: new Date().toISOString(),
+      createdBy: userId,
       fileCount: 0,
       subFolderCount: 0,
-    }
+    };
 
     // Save folder metadata
-    const metadataFile = path.join(this.metadataPath, `folder_${folderId}.json`)
-    await fs.writeFile(metadataFile, JSON.stringify(metadata, null, 2))
+    const metadataFile = path.join(this.metadataPath, `folder_${folderId}.json`);
+    await fs.writeFile(metadataFile, JSON.stringify(metadata, null, 2));
 
-    return metadata
+    return metadata;
   }
 
   /**
    * Get folder contents
    */
   public async getFolderContents(
-    folderId: string
+    folderId: string,
   ): Promise<{ folder: FolderMetadata; files: FileMetadata[]; subFolders: FolderMetadata[] }> {
     // Get folder metadata
-    const metadataFile = path.join(this.metadataPath, `folder_${folderId}.json`)
-    const folderData = await fs.readFile(metadataFile, 'utf-8')
-    const folder: FolderMetadata = JSON.parse(folderData)
+    const metadataFile = path.join(this.metadataPath, `folder_${folderId}.json`);
+    const folderData = await fs.readFile(metadataFile, "utf-8");
+    const folder: FolderMetadata = JSON.parse(folderData);
 
     // Get files in folder
-    const searchResult = await this.searchFiles({ folderId })
+    const searchResult = await this.searchFiles({ folderId });
 
     // Get subfolders
-    const allMetadataFiles = await fs.readdir(this.metadataPath)
-    const subFolders: FolderMetadata[] = []
+    const allMetadataFiles = await fs.readdir(this.metadataPath);
+    const subFolders: FolderMetadata[] = [];
 
     for (const metaFile of allMetadataFiles) {
-      if (!metaFile.startsWith('folder_') || !metaFile.endsWith('.json')) continue
+      if (!metaFile.startsWith("folder_") || !metaFile.endsWith(".json")) continue;
 
       try {
-        const data = await fs.readFile(path.join(this.metadataPath, metaFile), 'utf-8')
-        const folderMetadata: FolderMetadata = JSON.parse(data)
+        const data = await fs.readFile(path.join(this.metadataPath, metaFile), "utf-8");
+        const folderMetadata: FolderMetadata = JSON.parse(data);
 
         if (folderMetadata.parentId === folderId) {
-          subFolders.push(folderMetadata)
+          subFolders.push(folderMetadata);
         }
       } catch (error) {
-        console.error(`Error reading folder metadata ${metaFile}:`, error)
+        logger.error({ error, metaFile }, "Error reading folder metadata");
       }
     }
 
@@ -258,61 +261,63 @@ export class StorageService {
       folder,
       files: searchResult.files,
       subFolders,
-    }
+    };
   }
 
   /**
    * Delete folder
    */
   public async deleteFolder(folderId: string): Promise<void> {
-    const { folder, files, subFolders } = await this.getFolderContents(folderId)
+    const { folder, files, subFolders } = await this.getFolderContents(folderId);
 
     // Delete all files in folder
     for (const file of files) {
-      await this.deleteFile(file.id)
+      await this.deleteFile(file.id);
     }
 
     // Delete all subfolders
     for (const subFolder of subFolders) {
-      await this.deleteFolder(subFolder.id)
+      await this.deleteFolder(subFolder.id);
     }
 
     // Delete folder directory
-    await fs.rm(folder.path, { recursive: true, force: true })
+    await fs.rm(folder.path, { recursive: true, force: true });
 
     // Delete folder metadata
-    const metadataFile = path.join(this.metadataPath, `folder_${folderId}.json`)
-    await fs.unlink(metadataFile)
+    const metadataFile = path.join(this.metadataPath, `folder_${folderId}.json`);
+    await fs.unlink(metadataFile);
   }
 
   /**
    * Get storage quota
    */
-  public async getQuota(userId: string): Promise<{ used: number; total: number; remaining: number; unit: string }> {
+  public async getQuota(
+    userId: string,
+  ): Promise<{ used: number; total: number; remaining: number; unit: string }> {
     // Calculate used space
-    let used = 0
-    const searchResult = await this.searchFiles({ createdBy: userId, limit: 10000 })
+    let used = 0;
+    const searchResult = await this.searchFiles({ createdBy: userId, limit: 10000 });
 
     for (const file of searchResult.files) {
-      used += file.size
+      used += file.size;
     }
 
     // Get total quota from config (default 100GB)
-    const total = parseInt(process.env.STORAGE_QUOTA_BYTES || '107374182400', 10)
+    const total = parseInt(process.env.STORAGE_QUOTA_BYTES || "107374182400", 10);
 
     return {
       used,
       total,
       remaining: total - used,
-      unit: 'bytes',
-    }
+      unit: "bytes",
+    };
   }
 
   /**
    * Save metadata to file
    */
   private async saveMetadata(fileId: string, metadata: FileMetadata): Promise<void> {
-    const metadataFile = path.join(this.metadataPath, `${fileId}.json`)
-    await fs.writeFile(metadataFile, JSON.stringify(metadata, null, 2))
+    const metadataFile = path.join(this.metadataPath, `${fileId}.json`);
+    await fs.writeFile(metadataFile, JSON.stringify(metadata, null, 2));
   }
 }

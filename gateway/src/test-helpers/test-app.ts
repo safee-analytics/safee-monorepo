@@ -3,7 +3,7 @@ import { connect, redisConnect } from "@safee/database";
 import { InMemoryPubSub } from "@safee/database";
 import { JobScheduler } from "@safee/database";
 import { FileSystemStorage } from "@safee/database";
-import { pino } from "pino";
+import { pino, type Logger } from "pino";
 import { server } from "../server/index.js";
 import pg from "pg";
 
@@ -20,13 +20,13 @@ export async function createTestApp(): Promise<TestApp> {
   const TEST_REDIS_URL = process.env.REDIS_URL ?? "redis://localhost:46379";
 
   // Create test logger (silent for tests)
-  const logger = pino({ level: "silent" });
+  const logger: Logger<"http"> = pino({ level: "silent" });
 
   // Connect to test database
   const { drizzle, close: closeDb } = connect("gateway-test-app", TEST_DATABASE_URL);
 
   // Connect to test Redis
-  const redis = (await redisConnect(TEST_REDIS_URL)) as any;
+  const redis = await redisConnect(TEST_REDIS_URL);
 
   // Create pg pool
   const pool = new pg.Pool({
@@ -50,7 +50,7 @@ export async function createTestApp(): Promise<TestApp> {
 
   // Initialize the server
   const app = await server({
-    logger: logger as any,
+    logger,
     redis,
     drizzle,
     pool,

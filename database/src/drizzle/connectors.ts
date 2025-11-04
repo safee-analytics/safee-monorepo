@@ -3,7 +3,15 @@ import { identitySchema } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
 
-export const connectorTypeEnum = identitySchema.enum("connector_type", ["postgresql", "mysql", "mssql"]);
+export const connectorTypeEnum = identitySchema.enum("connector_type", [
+  "postgresql",
+  "mysql",
+  "mssql",
+  "storage_local",
+  "storage_webdav",
+  "storage_smb",
+  "storage_cloud",
+]);
 
 export const connectionStatusEnum = identitySchema.enum("connection_status", [
   "success",

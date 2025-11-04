@@ -3,12 +3,18 @@ import { users, organizations } from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
 import type { Locale } from "../drizzle/_common.js";
 
+export class OrganizationSlugConflictError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "OrganizationSlugConflictError";
+  }
+}
+
 export interface CreateUserData {
   email: string;
   firstName?: string;
   lastName?: string;
   organizationId: string;
-  // Password removed - Better Auth handles passwords in oauth_accounts table
 }
 
 export interface CreateUserWithOrgData {
@@ -16,15 +22,12 @@ export interface CreateUserWithOrgData {
   firstName?: string;
   lastName?: string;
   organizationName: string;
-  // Password removed - Better Auth handles passwords in oauth_accounts table
 }
 
 export interface UserWithOrganization {
   id: string;
   email: string;
-  firstName?: string | null;
-  lastName?: string | null;
-  // passwordHash removed - Better Auth handles passwords in oauth_accounts table
+  name?: string | null;
   organizationId: string;
   preferredLocale: Locale;
   isActive: boolean;
@@ -40,9 +43,58 @@ export interface UserWithOrganization {
 }
 
 export interface UpdateUserProfileData {
-  firstName?: string;
-  lastName?: string;
+  name?: string;
   preferredLocale?: Locale;
+}
+
+export async function createOrganization(
+  deps: DbDeps,
+  data: { name: string },
+): Promise<typeof organizations.$inferSelect> {
+  const { drizzle, logger } = deps;
+
+  const baseSlug = generateSlug(data.name);
+  let slug = baseSlug;
+  let attempts = 0;
+  const maxAttempts = 10;
+
+  while (attempts < maxAttempts) {
+    try {
+      const [newOrg] = await drizzle
+        .insert(organizations)
+        .values({
+          name: data.name,
+          slug,
+        })
+        .returning();
+
+      logger.info({ organizationId: newOrg.id, name: data.name, slug }, "Organization created successfully");
+
+      return newOrg;
+    } catch (err: unknown) {
+      const isSlugConflict =
+        err &&
+        typeof err === "object" &&
+        "code" in err &&
+        err.code === "23505" &&
+        "constraint" in err &&
+        typeof err.constraint === "string" &&
+        err.constraint.includes("slug");
+
+      if (isSlugConflict) {
+        attempts++;
+        slug = `${baseSlug}-${generateRandomString(6)}`;
+        logger.debug({ attempt: attempts, slug }, "Slug collision detected, retrying with new slug");
+        continue;
+      }
+
+      throw err;
+    }
+  }
+
+  throw new OrganizationSlugConflictError(
+    `Failed to create organization with unique slug after ${maxAttempts} attempts`,
+  );
 }
 
 export async function createUser(deps: DbDeps, userData: CreateUserData): Promise<typeof users.$inferSelect> {
@@ -58,8 +110,10 @@ export async function createUser(deps: DbDeps, userData: CreateUserData): Promis
       .insert(users)
       .values({
         email: userData.email,
-        firstName: userData.firstName,
-        lastName: userData.lastName,
+        name:
+          userData.firstName && userData.lastName
+            ? `${userData.firstName} ${userData.lastName}`
+            : (userData.firstName ?? userData.lastName ?? null),
         organizationId: userData.organizationId,
       })
       .returning();
@@ -85,50 +139,30 @@ export async function createUserWithOrganization(
       throw new Error("User with this email already exists");
     }
 
-    const slug = generateSlug(userData.organizationName);
+    const newOrg = await createOrganization(deps, { name: userData.organizationName });
 
-    const existingOrg = await drizzle
-      .select()
-      .from(organizations)
-      .where(eq(organizations.slug, slug))
-      .limit(1);
-
-    if (existingOrg.length > 0) {
-      throw new Error("Organization with this name already exists");
-    }
-
-    const result = await drizzle.transaction(async (tx) => {
-      const [newOrg] = await tx
-        .insert(organizations)
-        .values({
-          name: userData.organizationName,
-          slug,
-        })
-        .returning();
-
-      const [newUser] = await tx
-        .insert(users)
-        .values({
-          email: userData.email,
-          firstName: userData.firstName,
-          lastName: userData.lastName,
-          organizationId: newOrg.id,
-        })
-        .returning();
-
-      return { user: newUser, organization: newOrg };
-    });
+    const [newUser] = await drizzle
+      .insert(users)
+      .values({
+        email: userData.email,
+        name:
+          userData.firstName && userData.lastName
+            ? `${userData.firstName} ${userData.lastName}`
+            : (userData.firstName ?? userData.lastName ?? null),
+        organizationId: newOrg.id,
+      })
+      .returning();
 
     logger.info(
       {
-        userId: result.user.id,
-        organizationId: result.organization.id,
+        userId: newUser.id,
+        organizationId: newOrg.id,
         email: userData.email,
       },
       "User and organization created successfully",
     );
 
-    return result;
+    return { user: newUser, organization: newOrg };
   } catch (err) {
     logger.error({ error: err, email: userData.email }, "Failed to create user with organization");
     throw err;
@@ -265,4 +299,13 @@ function generateSlug(name: string): string {
     .replace(/-+/g, "-")
     .trim()
     .slice(0, 50);
+}
+
+function generateRandomString(length: number): string {
+  const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+  let result = "";
+  for (let i = 0; i < length; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
 }

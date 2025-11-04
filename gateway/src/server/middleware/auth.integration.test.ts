@@ -46,7 +46,9 @@ describe("Auth Middleware Integration Tests", () => {
     });
 
     it("should reject requests with invalid token", async () => {
-      const response = await request(app).get("/api/v1/users/me").set("Authorization", "Bearer invalid-token");
+      const response = await request(app)
+        .get("/api/v1/users/me")
+        .set("Authorization", "Bearer invalid-token");
 
       expect(response.status).toBe(401);
     });
@@ -60,7 +62,9 @@ describe("Auth Middleware Integration Tests", () => {
         permissions: ["users:read"],
       });
 
-      const response = await request(app).get("/api/v1/users/me").set("Authorization", `Bearer ${accessToken}`);
+      const response = await request(app)
+        .get("/api/v1/users/me")
+        .set("Authorization", `Bearer ${accessToken}`);
 
       // Should at least get past authentication (might get 403 for permissions or 200 for success)
       expect([200, 403]).toContain(response.status);
@@ -121,7 +125,9 @@ describe("Auth Middleware Integration Tests", () => {
         permissions: ["users:read", "users:update", "users:manage"],
       });
 
-      const response = await request(app).get("/api/v1/users/me").set("Authorization", `Bearer ${accessToken}`);
+      const response = await request(app)
+        .get("/api/v1/users/me")
+        .set("Authorization", `Bearer ${accessToken}`);
 
       expect([200, 403]).toContain(response.status);
     });
@@ -135,7 +141,9 @@ describe("Auth Middleware Integration Tests", () => {
         permissions: ["*"],
       });
 
-      const response = await request(app).get("/api/v1/users/me").set("Authorization", `Bearer ${accessToken}`);
+      const response = await request(app)
+        .get("/api/v1/users/me")
+        .set("Authorization", `Bearer ${accessToken}`);
 
       expect([200, 403]).toContain(response.status);
     });
@@ -149,7 +157,9 @@ describe("Auth Middleware Integration Tests", () => {
         permissions: ["users:*"],
       });
 
-      const response = await request(app).get("/api/v1/users/me").set("Authorization", `Bearer ${accessToken}`);
+      const response = await request(app)
+        .get("/api/v1/users/me")
+        .set("Authorization", `Bearer ${accessToken}`);
 
       expect([200, 403]).toContain(response.status);
     });

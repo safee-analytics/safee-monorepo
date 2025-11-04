@@ -41,8 +41,6 @@ export * from "./permissions.js";
 export * from "./permissionsRelations.js";
 export * from "./rolePermissions.js";
 export * from "./userRoles.js";
-export * from "./userSessions.js";
-export * from "./userSessionsRelations.js";
 export * from "./loginAttempts.js";
 export * from "./loginAttemptsRelations.js";
 export * from "./securityEvents.js";
