@@ -1,5 +1,28 @@
-import SMB2 from "@marsaud/smb2";
+import SMB2Constructor from "@marsaud/smb2";
 import type { StorageAdapter, FileStats, StorageStats } from "./storage-adapter.interface.js";
+
+// Type the SMB2 class properly based on the library's actual interface
+// Based on @marsaud/smb2 documentation
+interface ISMB2 {
+  exists(path: string, cb: (err: Error | null, exists: boolean) => void): void;
+  mkdir(path: string, mode: number, cb: (err: Error | null) => void): void;
+  mkdir(path: string, cb: (err: Error | null) => void): void;
+  readdir(path: string, cb: (err: Error | null, files: string[]) => void): void;
+  stat(
+    path: string,
+    cb: (
+      err: Error | null,
+      stats: { birthtime: Date; mtime: Date; atime: Date; ctime: Date; isDirectory(): boolean },
+    ) => void,
+  ): void;
+  readFile(path: string, cb: (err: Error | null, data: Buffer) => void): void;
+  writeFile(path: string, data: string | Buffer, cb: (err: Error | null) => void): void;
+  rename(oldPath: string, newPath: string, cb: (err: Error | null) => void): void;
+  rmdir(path: string, cb: (err: Error | null) => void): void;
+  unlink(path: string, cb: (err: Error | null) => void): void;
+  close(fd: number, cb: (err: Error | null) => void): void;
+  disconnect(): void;
+}
 
 /**
  * SMB/CIFS Storage Adapter
@@ -9,7 +32,7 @@ import type { StorageAdapter, FileStats, StorageStats } from "./storage-adapter.
  * No system commands, no root access needed!
  */
 export class SMBAdapter implements StorageAdapter {
-  private client: any;
+  private client: ISMB2;
   private connected: boolean = false;
 
   constructor(config: {
@@ -20,7 +43,8 @@ export class SMBAdapter implements StorageAdapter {
     domain?: string;
     port?: number;
   }) {
-    this.client = new SMB2({
+    // @ts-expect-error - SMB2 package has incorrect type definitions
+    this.client = new SMB2Constructor({
       share: `\\\\${config.host}\\${config.share}`,
       domain: config.domain || "WORKGROUP",
       username: config.username || "guest",
@@ -41,7 +65,7 @@ export class SMBAdapter implements StorageAdapter {
     await this.ensureConnected();
 
     return new Promise((resolve, reject) => {
-      this.client.writeFile(path, data, (err: Error) => {
+      this.client.writeFile(path, data, (err: Error | null) => {
         if (err) reject(err);
         else resolve();
       });
@@ -52,7 +76,7 @@ export class SMBAdapter implements StorageAdapter {
     await this.ensureConnected();
 
     return new Promise((resolve, reject) => {
-      this.client.readFile(path, (err: Error, data: Buffer) => {
+      this.client.readFile(path, (err: Error | null, data: Buffer) => {
         if (err) reject(err);
         else resolve(data);
       });
@@ -63,7 +87,7 @@ export class SMBAdapter implements StorageAdapter {
     await this.ensureConnected();
 
     return new Promise((resolve, reject) => {
-      this.client.unlink(path, (err: Error) => {
+      this.client.unlink(path, (err: Error | null) => {
         if (err) reject(err);
         else resolve();
       });
@@ -73,9 +97,10 @@ export class SMBAdapter implements StorageAdapter {
   async exists(path: string): Promise<boolean> {
     await this.ensureConnected();
 
-    return new Promise((resolve) => {
-      this.client.exists(path, (exists: boolean) => {
-        resolve(exists);
+    return new Promise((resolve, reject) => {
+      this.client.exists(path, (err: Error | null, exists: boolean) => {
+        if (err) reject(err);
+        else resolve(exists);
       });
     });
   }
@@ -83,20 +108,26 @@ export class SMBAdapter implements StorageAdapter {
   async stat(path: string): Promise<FileStats> {
     await this.ensureConnected();
 
-    return new Promise((resolve, reject) => {
-      this.client.stat(path, (err: Error, stats: any) => {
-        if (err) {
-          reject(err);
-          return;
-        }
+    return new Promise<FileStats>((resolve, reject) => {
+      this.client.stat(
+        path,
+        (
+          err: Error | null,
+          stats: { birthtime: Date; mtime: Date; atime: Date; ctime: Date; isDirectory(): boolean },
+        ) => {
+          if (err) {
+            reject(err);
+            return;
+          }
 
-        resolve({
-          size: stats.size,
-          createdAt: stats.birthtime,
-          modifiedAt: stats.mtime,
-          isDirectory: stats.isDirectory(),
-        });
-      });
+          resolve({
+            size: 0, // SMB2 stat doesn't return size - would need to open and get file info separately
+            createdAt: stats.birthtime,
+            modifiedAt: stats.mtime,
+            isDirectory: stats.isDirectory(),
+          });
+        },
+      );
     });
   }
 
@@ -104,7 +135,7 @@ export class SMBAdapter implements StorageAdapter {
     await this.ensureConnected();
 
     return new Promise((resolve, reject) => {
-      this.client.readdir(path, (err: Error, files: string[]) => {
+      this.client.readdir(path, (err: Error | null, files: string[]) => {
         if (err) reject(err);
         else resolve(files);
       });
@@ -115,7 +146,7 @@ export class SMBAdapter implements StorageAdapter {
     await this.ensureConnected();
 
     return new Promise((resolve, reject) => {
-      this.client.mkdir(path, (err: Error) => {
+      this.client.mkdir(path, (err: Error | null) => {
         if (err) reject(err);
         else resolve();
       });

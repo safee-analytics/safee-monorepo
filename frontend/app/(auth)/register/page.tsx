@@ -64,11 +64,11 @@ export default function RegisterPage() {
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      router.push('/dashboard')
+      router.push('/onboarding')
     }
   }, [isAuthenticated, isLoading, router])
 
-  const handleSubmit = async (name: string, organizationName: string, email: string, password: string, confirmPassword: string) => {
+  const handleSubmit = async (name: string, email: string, password: string, confirmPassword: string) => {
     try {
       setError(null)
 
@@ -82,10 +82,10 @@ export default function RegisterPage() {
         return
       }
 
-      const result = await signUp(email, password, name, organizationName)
+      const result = await signUp(email, password, name)
 
       if (result.success) {
-        router.push('/dashboard')
+        router.push('/onboarding')
       } else {
         setError(result.error || 'Registration failed. Please try again.')
       }

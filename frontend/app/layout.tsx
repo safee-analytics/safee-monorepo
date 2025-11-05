@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Cairo } from "next/font/google";
 import "./globals.css";
 import { DirectionWrapper } from "@/components/layout/DirectionWrapper";
+import { AuthProvider } from "@/lib/providers/AuthProvider";
 
 // Arabic and English font support
 const inter = Inter({
@@ -30,9 +31,11 @@ export default function RootLayout({
         className={`${inter.variable} ${cairo.variable} antialiased`}
         suppressHydrationWarning
       >
-        <DirectionWrapper>
-          {children}
-        </DirectionWrapper>
+        <AuthProvider>
+          <DirectionWrapper>
+            {children}
+          </DirectionWrapper>
+        </AuthProvider>
       </body>
     </html>
   );

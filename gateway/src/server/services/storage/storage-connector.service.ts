@@ -54,32 +54,45 @@ export class StorageConnectorService {
   /**
    * Convert connector record to storage config
    */
-  private connectorToStorageConfig(connector: any): StorageConfig {
+  private connectorToStorageConfig(connector: {
+    type: string;
+    config: {
+      basePath?: string;
+      url?: string;
+      username?: string;
+      password?: string;
+      host?: string;
+      share?: string;
+      domain?: string;
+      port?: number;
+    };
+    organizationId: string;
+  }): StorageConfig {
     switch (connector.type) {
       case "storage_local":
         return {
           type: "local",
-          basePath: connector.config.basePath || `./storage/${connector.organizationId}`,
+          basePath: (connector.config.basePath as string) || `./storage/${connector.organizationId}`,
         };
 
       case "storage_webdav":
         return {
           type: "webdav",
-          url: connector.config.url,
-          username: connector.config.username,
-          password: connector.config.password,
-          basePath: connector.config.basePath,
+          url: connector.config.url as string,
+          username: connector.config.username as string,
+          password: connector.config.password as string,
+          basePath: connector.config.basePath as string | undefined,
         };
 
       case "storage_smb":
         return {
           type: "smb",
-          host: connector.config.host,
-          share: connector.config.share,
-          username: connector.config.username,
-          password: connector.config.password,
-          domain: connector.config.domain,
-          port: connector.config.port,
+          host: connector.config.host as string,
+          share: connector.config.share as string,
+          username: connector.config.username as string | undefined,
+          password: connector.config.password as string | undefined,
+          domain: connector.config.domain as string | undefined,
+          port: connector.config.port as number | undefined,
         };
 
       case "storage_cloud":

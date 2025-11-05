@@ -1,5 +1,17 @@
 import { createClient, type WebDAVClient, type FileStat } from "webdav";
+import { z } from "zod";
 import type { StorageAdapter, FileStats, StorageStats } from "./storage-adapter.interface.js";
+
+const QuotaDataSchema = z.object({
+  available: z.union([z.string(), z.number()]),
+  used: z.number(),
+});
+
+const QuotaResponseSchema = z.union([
+  QuotaDataSchema,
+  z.object({ data: QuotaDataSchema.nullable() }),
+  z.null(),
+]);
 
 /**
  * WebDAV Storage Adapter
@@ -16,12 +28,7 @@ export class WebDAVAdapter implements StorageAdapter {
   private client: WebDAVClient;
   private basePath: string;
 
-  constructor(config: {
-    url: string;
-    username: string;
-    password: string;
-    basePath?: string;
-  }) {
+  constructor(config: { url: string; username: string; password: string; basePath?: string }) {
     this.client = createClient(config.url, {
       username: config.username,
       password: config.password,
@@ -80,11 +87,35 @@ export class WebDAVAdapter implements StorageAdapter {
 
   async getStats(): Promise<StorageStats> {
     try {
-      const quota = await this.client.getQuota();
+      const quotaResponse = await this.client.getQuota();
+      const parsed = QuotaResponseSchema.safeParse(quotaResponse);
+
+      if (!parsed.success) {
+        return { total: 0, used: 0, free: 0 };
+      }
+
+      const quota = parsed.data;
+
+      // Handle null response
+      if (quota === null) {
+        return { total: 0, used: 0, free: 0 };
+      }
+
+      // Extract quota data from wrapper if present
+      const quotaData = "data" in quota ? quota.data : quota;
+
+      if (!quotaData) {
+        return { total: 0, used: 0, free: 0 };
+      }
+
+      const available = String(quotaData.available);
+      const used = quotaData.used;
+      const total = available === "unlimited" ? 0 : parseInt(available, 10);
+
       return {
-        total: quota.available === "unlimited" ? 0 : parseInt(quota.available, 10),
-        used: quota.used,
-        free: quota.available === "unlimited" ? 0 : parseInt(quota.available, 10) - quota.used,
+        total,
+        used,
+        free: total - used,
       };
     } catch {
       // Quota not supported

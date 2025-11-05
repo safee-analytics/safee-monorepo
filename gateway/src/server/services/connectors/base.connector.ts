@@ -1,7 +1,16 @@
-import type { schema } from "@safee/database";
+import type { schema as _schema } from "@safee/database";
 
-export type ConnectorType = (typeof schema.connectorTypeEnum.enumValues)[number];
-export type ConnectionStatus = (typeof schema.connectionStatusEnum.enumValues)[number];
+// Define connector types explicitly for build-time type checking
+export type ConnectorType =
+  | "postgresql"
+  | "mysql"
+  | "mssql"
+  | "storage_local"
+  | "storage_webdav"
+  | "storage_smb"
+  | "storage_cloud";
+
+export type ConnectionStatus = "success" | "failed" | "untested";
 
 export interface ConnectorConfig {
   host?: string;

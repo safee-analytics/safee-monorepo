@@ -47,7 +47,7 @@ export function SafeeSidebar() {
     {
       icon: LayoutDashboard,
       label: t.nav.dashboard,
-      href: '/dashboard'
+      href: '/'
     },
     {
       icon: Bookmark,

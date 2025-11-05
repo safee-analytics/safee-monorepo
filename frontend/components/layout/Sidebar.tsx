@@ -100,7 +100,7 @@ export const Sidebar = () => {
   const sidebarItems = currentModule && moduleNavItems[currentModule]
     ? moduleNavItems[currentModule]
     : [
-        { icon: FiHome, title: t.nav.dashboard, href: '/dashboard' },
+        { icon: FiHome, title: t.nav.dashboard, href: '/' },
         { icon: FiBookmark, title: t.common.bookmarks, href: '/bookmarks' },
         { icon: FiBarChart, title: t.common.reports, href: '/reports' },
       ];

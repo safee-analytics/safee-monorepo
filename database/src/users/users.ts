@@ -28,7 +28,7 @@ export interface UserWithOrganization {
   id: string;
   email: string;
   name?: string | null;
-  organizationId: string;
+  organizationId: string | null;
   preferredLocale: Locale;
   isActive: boolean;
   emailVerified: boolean;
@@ -55,11 +55,24 @@ export async function createOrganization(
 
   const baseSlug = generateSlug(data.name);
   let slug = baseSlug;
-  let attempts = 0;
-  const maxAttempts = 10;
+  let counter = 0;
+  const maxAttempts = 100;
 
-  while (attempts < maxAttempts) {
+  while (counter < maxAttempts) {
     try {
+      // First check if slug exists
+      const existing = await drizzle.query.organizations.findFirst({
+        where: eq(organizations.slug, slug),
+      });
+
+      if (existing) {
+        counter++;
+        slug = `${baseSlug}-${counter}`;
+        logger.debug({ counter, slug }, "Slug collision detected, trying next increment");
+        continue;
+      }
+
+      // Slug is available, create organization
       const [newOrg] = await drizzle
         .insert(organizations)
         .values({
@@ -82,9 +95,10 @@ export async function createOrganization(
         err.constraint.includes("slug");
 
       if (isSlugConflict) {
-        attempts++;
-        slug = `${baseSlug}-${generateRandomString(6)}`;
-        logger.debug({ attempt: attempts, slug }, "Slug collision detected, retrying with new slug");
+        // Race condition - another org was created between check and insert
+        counter++;
+        slug = `${baseSlug}-${counter}`;
+        logger.debug({ counter, slug }, "Race condition on slug insert, retrying with next increment");
         continue;
       }
 
@@ -301,7 +315,7 @@ function generateSlug(name: string): string {
     .slice(0, 50);
 }
 
-function generateRandomString(length: number): string {
+function _generateRandomString(length: number): string {
   const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
   let result = "";
   for (let i = 0; i < length; i++) {

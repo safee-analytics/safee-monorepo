@@ -282,6 +282,25 @@ export class OdooUserProvisioningService {
   }
 
   /**
+   * Check if Odoo user already exists for a Safee user
+   */
+  async userExists(userId: string, organizationId: string): Promise<boolean> {
+    const odooDb = await this.drizzle.query.odooDatabases.findFirst({
+      where: eq(schema.odooDatabases.organizationId, organizationId),
+    });
+
+    if (!odooDb) {
+      return false;
+    }
+
+    const odooUser = await this.drizzle.query.odooUsers.findFirst({
+      where: and(eq(schema.odooUsers.userId, userId), eq(schema.odooUsers.odooDatabaseId, odooDb.id)),
+    });
+
+    return !!odooUser;
+  }
+
+  /**
    * Provision Odoo user for a Safee user
    */
   async provisionUser(
@@ -289,16 +308,9 @@ export class OdooUserProvisioningService {
     organizationId: string,
     safeeRole?: string,
   ): Promise<OdooUserProvisionResult> {
-    // Get Safee user details with roles
+    // Get Safee user details
     const user = await this.drizzle.query.users.findFirst({
       where: eq(schema.users.id, userId),
-      with: {
-        userRoles: {
-          with: {
-            role: true,
-          },
-        },
-      },
     });
 
     if (!user) {
@@ -325,8 +337,8 @@ export class OdooUserProvisioningService {
     // Generate password for Odoo user
     const odooPassword = this.generateSecurePassword();
 
-    // Determine role - use provided role or first role from user's roles
-    const role = safeeRole || user.userRoles?.[0]?.role?.name?.toLowerCase() || "user";
+    // Determine role - use provided role or user's role field
+    const role = safeeRole || user.role || "user";
 
     this.logger?.info({ userId, role }, "Provisioning Odoo user with role");
 

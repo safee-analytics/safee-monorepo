@@ -25,9 +25,10 @@ export class OdooDatabaseService {
     return crypto.randomBytes(32).toString("base64url");
   }
 
-  private generateDatabaseName(orgSlug: string): string {
+  private generateDatabaseName(orgSlug: string, orgId: string): string {
     const sanitized = orgSlug.toLowerCase().replace(/[^a-z0-9]/g, "_");
-    return `odoo_${sanitized}`;
+    const shortId = orgId.replace(/-/g, "").substring(0, 8);
+    return `odoo_${sanitized}_${shortId}`;
   }
 
   async provisionDatabase(organizationId: string): Promise<OdooProvisionResult> {
@@ -54,7 +55,7 @@ export class OdooDatabaseService {
       throw new OdooDatabaseAlreadyExists(organizationId);
     }
 
-    const databaseName = this.generateDatabaseName(org.slug);
+    const databaseName = this.generateDatabaseName(org.slug, org.id);
 
     const exists = await odooClient.databaseExists(databaseName);
     if (exists) {
@@ -108,7 +109,7 @@ export class OdooDatabaseService {
       throw new OrganizationNotFound();
     }
 
-    const databaseName = this.generateDatabaseName(org.slug);
+    const databaseName = this.generateDatabaseName(org.slug, org.id);
     const exists = await odooClient.databaseExists(databaseName);
 
     return {
@@ -126,7 +127,7 @@ export class OdooDatabaseService {
       throw new OrganizationNotFound();
     }
 
-    const databaseName = this.generateDatabaseName(org.slug);
+    const databaseName = this.generateDatabaseName(org.slug, org.id);
 
     await odooClient.dropDatabase(env.ODOO_ADMIN_PASSWORD, databaseName);
 

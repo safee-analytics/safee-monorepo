@@ -71,6 +71,20 @@
       "when": 1762289806985,
       "tag": "0009_neat_kylun",
       "breakpoints": false
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1762292923755,
+      "tag": "0010_chief_microchip",
+      "breakpoints": false
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1762312560841,
+      "tag": "0011_wakeful_spectrum",
+      "breakpoints": false
     }
   ]
 }

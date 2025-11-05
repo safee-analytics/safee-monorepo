@@ -85,6 +85,7 @@ export class StorageController extends Controller {
   /**
    * Get storage service for an organization
    */
+  @Security("jwt")
   private async getStorageService(organizationId: string): Promise<StorageServiceV2> {
     const adapter = await this.connectorService.getAdapter(organizationId);
     return new StorageServiceV2(adapter);
@@ -191,10 +192,7 @@ export class StorageController extends Controller {
   @Delete("files/{fileId}")
   @Security("jwt")
   @SuccessResponse("204", "File deleted successfully")
-  public async deleteFile(
-    @Path() fileId: string,
-    @Request() request: AuthenticatedRequest,
-  ): Promise<void> {
+  public async deleteFile(@Path() fileId: string, @Request() request: AuthenticatedRequest): Promise<void> {
     if (!request.user?.organizationId) {
       throw new Error("User not authenticated");
     }

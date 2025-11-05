@@ -1,9 +1,11 @@
 import { schema, eq, and, type DrizzleClient } from "@safee/database";
-import { type ConnectorMetadata, type IConnector, type ConnectorType } from "./base.connector.js";
+import {
+  type ConnectorMetadata,
+  type IConnector,
+  type ConnectorType,
+  type ConnectorConfig,
+} from "./base.connector.js";
 import { ConnectorFactory } from "./connector.factory.js";
-import type { PostgreSQLConfig } from "./postgresql.connector.js";
-import type { MySQLConfig } from "./mysql.connector.js";
-import type { MSSQLConnectorConfig } from "./mssql.connector.js";
 import { encryptionService } from "../encryption.js";
 import { z } from "zod";
 
@@ -70,7 +72,7 @@ export class ConnectorManager {
     name: string;
     description?: string;
     type: ConnectorMetadata["type"];
-    config: PostgreSQLConfig | MySQLConfig | MSSQLConnectorConfig;
+    config: ConnectorConfig;
     tags?: string[];
     metadata?: Record<string, unknown>;
     createdBy?: string;
@@ -250,7 +252,7 @@ export class ConnectorManager {
     updates: {
       name?: string;
       description?: string;
-      config?: PostgreSQLConfig | MySQLConfig | MSSQLConnectorConfig;
+      config?: ConnectorConfig;
       tags?: string[];
       metadata?: Record<string, unknown>;
       isActive?: boolean;

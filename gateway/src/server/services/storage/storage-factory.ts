@@ -68,12 +68,10 @@ export class StorageFactory {
 
       case "cloud":
         // Managed cloud storage - stored on our servers
-        return new LocalAdapter(
-          process.env.CLOUD_STORAGE_PATH || `./storage/cloud/${config.organizationId}`
-        );
+        return new LocalAdapter(process.env.CLOUD_STORAGE_PATH || `./storage/cloud/${config.organizationId}`);
 
       default:
-        throw new Error(`Unsupported storage type: ${(config as any).type}`);
+        throw new Error(`Unsupported storage type: ${(config as { type: string }).type}`);
     }
   }
 

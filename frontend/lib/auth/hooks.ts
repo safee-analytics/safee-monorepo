@@ -3,37 +3,29 @@
 import { useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/useAuthStore";
-import { authApi } from "./client";
+import { authClient } from "./client";
 
 export function useAuth() {
   const router = useRouter();
   const { user, session, isLoading, isAuthenticated, setSession, setLoading, clearAuth } = useAuthStore();
 
-  useEffect(() => {
-    const checkSession = async () => {
-      try {
-        setLoading(true);
-        const sessionData = await authApi.getSession();
-        setSession(sessionData);
-      } catch (error) {
-        console.error("Failed to check session:", error);
-        clearAuth();
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkSession();
-  }, [setSession, setLoading, clearAuth]);
-
   const signIn = useCallback(
     async (email: string, password: string) => {
       try {
         setLoading(true);
-        const response = await authApi.signIn({ email, password });
+        const response = await authClient.signIn.email({ email, password });
 
-        const sessionData = await authApi.getSession();
-        setSession(sessionData);
+        if (response.error) {
+          return {
+            success: false,
+            error: response.error.message || "Sign in failed",
+          };
+        }
+
+        const sessionData = await authClient.getSession();
+        if (sessionData.data) {
+          setSession(sessionData.data);
+        }
 
         return { success: true };
       } catch (error) {
@@ -50,13 +42,22 @@ export function useAuth() {
   );
 
   const signUp = useCallback(
-    async (email: string, password: string, name: string, organizationName: string) => {
+    async (email: string, password: string, name: string) => {
       try {
         setLoading(true);
-        await authApi.signUp({ email, password, name, organizationName });
+        const response = await authClient.signUp.email({ email, password, name });
 
-        const sessionData = await authApi.getSession();
-        setSession(sessionData);
+        if (response.error) {
+          return {
+            success: false,
+            error: response.error.message || "Sign up failed",
+          };
+        }
+
+        const sessionData = await authClient.getSession();
+        if (sessionData.data) {
+          setSession(sessionData.data);
+        }
 
         return { success: true };
       } catch (error) {
@@ -75,7 +76,7 @@ export function useAuth() {
   const signOut = useCallback(async () => {
     try {
       setLoading(true);
-      await authApi.signOut();
+      await authClient.signOut();
       clearAuth();
       router.push("/login");
     } catch (error) {
@@ -89,34 +90,30 @@ export function useAuth() {
   }, [clearAuth, router, setLoading]);
 
   const signInWithGoogle = useCallback(() => {
-    authApi.signInWithGoogle();
+    authClient.signIn.social({ provider: "google" });
   }, []);
 
   const signInWithGithub = useCallback(() => {
-    authApi.signInWithGithub();
+    authClient.signIn.social({ provider: "github" });
   }, []);
 
   const refreshSession = useCallback(async () => {
     try {
-      setLoading(true);
-      const sessionData = await authApi.getSession();
-      setSession(sessionData);
-      return !!sessionData;
+      const sessionData = await authClient.getSession();
+      if (sessionData.data) {
+        setSession(sessionData.data);
+      }
     } catch (error) {
       console.error("Failed to refresh session:", error);
       clearAuth();
-      return false;
-    } finally {
-      setLoading(false);
     }
-  }, [setSession, setLoading, clearAuth]);
+  }, [setSession, clearAuth]);
 
   return {
     user,
     session,
     isLoading,
     isAuthenticated,
-
     signIn,
     signUp,
     signOut,
@@ -126,9 +123,12 @@ export function useAuth() {
   };
 }
 
+/**
+ * Hook that requires authentication and redirects if not authenticated
+ */
 export function useRequireAuth(redirectTo: string = "/login") {
-  const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -136,15 +136,7 @@ export function useRequireAuth(redirectTo: string = "/login") {
     }
   }, [isAuthenticated, isLoading, router, redirectTo]);
 
-  return { isAuthenticated, isLoading };
-}
-
-export function useSession() {
-  const { user, session, isAuthenticated, isLoading } = useAuthStore();
-
   return {
-    user,
-    session,
     isAuthenticated,
     isLoading,
   };

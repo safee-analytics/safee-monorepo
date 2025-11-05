@@ -15,8 +15,6 @@ interface SignupFormProps {
     goBack: string;
     name: string;
     namePlaceholder: string;
-    organizationName: string;
-    organizationNamePlaceholder: string;
     email: string;
     emailPlaceholder: string;
     password: string;
@@ -31,7 +29,7 @@ interface SignupFormProps {
     termsMiddle: string;
     privacyLink: string;
   };
-  onSubmit?: (name: string, organizationName: string, email: string, password: string, confirmPassword: string) => void;
+  onSubmit?: (name: string, email: string, password: string, confirmPassword: string) => void;
   onGoogleSignup?: () => void;
   onGoBack?: () => void;
 }
@@ -41,7 +39,7 @@ export const SafeeSignupForm = ({ t, onSubmit, onGoogleSignup, onGoBack }: Signu
   const isRTL = dir === 'rtl';
 
   return (
-    <div className="bg-zinc-950 py-20 text-zinc-200 selection:bg-safee-600 min-h-screen relative overflow-hidden">
+    <div className="bg-gradient-to-br from-gray-50 to-gray-100 py-20 text-gray-900 selection:bg-safee-200 min-h-screen relative overflow-hidden">
       <BubbleButton
         className={twMerge(
           "absolute top-6 text-sm",
@@ -75,10 +73,10 @@ const Heading = ({ t }: { t: SignupFormProps['t'] }) => (
   <div>
     <SafeeLogo />
     <div className="mb-9 mt-6 space-y-1.5">
-      <h1 className="text-2xl font-semibold">{t.title}</h1>
-      <p className="text-zinc-400">
+      <h1 className="text-2xl font-semibold text-gray-900">{t.title}</h1>
+      <p className="text-gray-600">
         {t.subtitle}{" "}
-        <a href="/login" className="text-safee-400 hover:text-safee-300 transition-colors">
+        <a href="/login" className="text-safee-600 hover:text-safee-700 transition-colors">
           {t.signIn}
         </a>
       </p>
@@ -104,32 +102,31 @@ const SocialOptions = ({ t, onGoogleSignup }: {
 const Or = ({ t }: { t: SignupFormProps['t'] }) => {
   return (
     <div className="my-6 flex items-center gap-3">
-      <div className="h-[1px] w-full bg-zinc-700" />
-      <span className="text-zinc-400">{t.or}</span>
-      <div className="h-[1px] w-full bg-zinc-700" />
+      <div className="h-[1px] w-full bg-gray-300" />
+      <span className="text-gray-500">{t.or}</span>
+      <div className="h-[1px] w-full bg-gray-300" />
     </div>
   );
 };
 
 const SignupEmailForm = ({ t, onSubmit }: {
   t: SignupFormProps['t'];
-  onSubmit?: (name: string, organizationName: string, email: string, password: string, confirmPassword: string) => void
+  onSubmit?: (name: string, email: string, password: string, confirmPassword: string) => void
 }) => {
   const [name, setName] = React.useState('');
-  const [organizationName, setOrganizationName] = React.useState('');
   const [email, setEmail] = React.useState('');
   const [password, setPassword] = React.useState('');
   const [confirmPassword, setConfirmPassword] = React.useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit?.(name, organizationName, email, password, confirmPassword);
+    onSubmit?.(name, email, password, confirmPassword);
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-3">
-        <label htmlFor="name-input" className="mb-1.5 block text-zinc-400">
+        <label htmlFor="name-input" className="mb-1.5 block text-gray-700">
           {t.name}
         </label>
         <input
@@ -138,26 +135,12 @@ const SignupEmailForm = ({ t, onSubmit }: {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder={t.namePlaceholder}
-          className="w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 placeholder-zinc-500 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
+          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 placeholder-gray-400 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
           required
         />
       </div>
       <div className="mb-3">
-        <label htmlFor="organization-name-input" className="mb-1.5 block text-zinc-400">
-          {t.organizationName}
-        </label>
-        <input
-          id="organization-name-input"
-          type="text"
-          value={organizationName}
-          onChange={(e) => setOrganizationName(e.target.value)}
-          placeholder={t.organizationNamePlaceholder}
-          className="w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 placeholder-zinc-500 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
-          required
-        />
-      </div>
-      <div className="mb-3">
-        <label htmlFor="email-input" className="mb-1.5 block text-zinc-400">
+        <label htmlFor="email-input" className="mb-1.5 block text-gray-700">
           {t.email}
         </label>
         <input
@@ -166,12 +149,12 @@ const SignupEmailForm = ({ t, onSubmit }: {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t.emailPlaceholder}
-          className="w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 placeholder-zinc-500 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
+          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 placeholder-gray-400 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
           required
         />
       </div>
       <div className="mb-3">
-        <label htmlFor="password-input" className="block text-zinc-400 mb-1.5">
+        <label htmlFor="password-input" className="block text-gray-700 mb-1.5">
           {t.password}
         </label>
         <input
@@ -180,14 +163,14 @@ const SignupEmailForm = ({ t, onSubmit }: {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder={t.passwordPlaceholder}
-          className="w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 placeholder-zinc-500 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
+          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 placeholder-gray-400 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
           required
           minLength={8}
         />
-        <p className="text-xs text-zinc-500 mt-1">Must be at least 8 characters</p>
+        <p className="text-xs text-gray-500 mt-1">Must be at least 8 characters</p>
       </div>
       <div className="mb-6">
-        <label htmlFor="confirm-password-input" className="block text-zinc-400 mb-1.5">
+        <label htmlFor="confirm-password-input" className="block text-gray-700 mb-1.5">
           {t.confirmPassword}
         </label>
         <input
@@ -196,7 +179,7 @@ const SignupEmailForm = ({ t, onSubmit }: {
           value={confirmPassword}
           onChange={(e) => setConfirmPassword(e.target.value)}
           placeholder={t.confirmPasswordPlaceholder}
-          className="w-full rounded-md border border-zinc-700 bg-zinc-900 px-3 py-2 placeholder-zinc-500 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
+          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 placeholder-gray-400 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
           required
           minLength={8}
         />
@@ -209,13 +192,13 @@ const SignupEmailForm = ({ t, onSubmit }: {
 };
 
 const Terms = ({ t }: { t: SignupFormProps['t'] }) => (
-  <p className="mt-9 text-xs text-zinc-400">
+  <p className="mt-9 text-xs text-gray-600">
     {t.termsPrefix}{" "}
-    <a href="/terms" className="text-safee-400 hover:text-safee-300 transition-colors">
+    <a href="/terms" className="text-safee-600 hover:text-safee-700 transition-colors">
       {t.termsLink}
     </a>{" "}
     {t.termsMiddle}{" "}
-    <a href="/privacy" className="text-safee-400 hover:text-safee-300 transition-colors">
+    <a href="/privacy" className="text-safee-600 hover:text-safee-700 transition-colors">
       {t.privacyLink}
     </a>
   </p>
@@ -225,7 +208,7 @@ const SplashButton = ({ children, className, ...rest }: ButtonProps) => {
   return (
     <button
       className={twMerge(
-        "rounded-md bg-gradient-to-br from-safee-400 to-safee-700 px-4 py-2 text-lg text-zinc-50 ring-2 ring-safee-500/50 ring-offset-2 ring-offset-zinc-950 transition-all hover:scale-[1.02] hover:ring-transparent active:scale-[0.98] active:ring-safee-500/70",
+        "rounded-md bg-gradient-to-br from-safee-400 to-safee-700 px-4 py-2 text-lg text-zinc-50 ring-2 ring-safee-500/50 ring-offset-2 ring-offset-gray-50 transition-all hover:scale-[1.02] hover:ring-transparent active:scale-[0.98] active:ring-safee-500/70",
         className
       )}
       {...rest}
@@ -241,18 +224,18 @@ const BubbleButton = ({ children, className, ...rest }: ButtonProps) => {
       className={twMerge(
         `
         relative z-0 flex items-center gap-2 overflow-hidden whitespace-nowrap rounded-md
-        border border-zinc-700 bg-gradient-to-br from-zinc-800 to-zinc-950
+        border border-gray-300 bg-gradient-to-br from-white to-gray-50
         px-3 py-1.5
-        text-zinc-50 transition-all duration-300
+        text-gray-900 transition-all duration-300
 
         before:absolute before:inset-0
         before:-z-10 before:translate-y-[200%]
         before:scale-[2.5]
-        before:rounded-[100%] before:bg-zinc-100
+        before:rounded-[100%] before:bg-safee-100
         before:transition-transform before:duration-500
         before:content-[""]
 
-        hover:scale-105 hover:text-zinc-900
+        hover:scale-105 hover:text-safee-900
         hover:before:translate-y-[0%]
         active:scale-100`,
         className
@@ -268,7 +251,7 @@ const CornerGrid = ({ isRTL }: { isRTL: boolean }) => {
   return (
     <div
       style={{
-        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke-width='2' stroke='rgb(59 130 246 / 0.5)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e")`,
+        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke-width='2' stroke='rgb(59 130 246 / 0.3)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e")`,
       }}
       className={twMerge(
         "absolute top-0 z-0 size-[50vw]",
@@ -278,8 +261,8 @@ const CornerGrid = ({ isRTL }: { isRTL: boolean }) => {
       <div
         style={{
           backgroundImage: isRTL
-            ? "radial-gradient(100% 100% at 0% 0%, rgba(9,9,11,0), rgba(9,9,11,1))"
-            : "radial-gradient(100% 100% at 100% 0%, rgba(9,9,11,0), rgba(9,9,11,1))",
+            ? "radial-gradient(100% 100% at 0% 0%, rgba(249,250,251,0), rgba(249,250,251,1))"
+            : "radial-gradient(100% 100% at 100% 0%, rgba(249,250,251,0), rgba(249,250,251,1))",
         }}
         className="absolute inset-0"
       />
@@ -293,7 +276,7 @@ const SafeeLogo = () => {
       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-safee-500 to-safee-700 flex items-center justify-center shadow-lg shadow-safee-500/50">
         <span className="text-white font-bold text-2xl">S</span>
       </div>
-      <span className="text-2xl font-bold text-zinc-50">
+      <span className="text-2xl font-bold text-gray-900">
         Safee Analytics
       </span>
     </div>

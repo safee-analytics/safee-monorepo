@@ -1,4 +1,4 @@
-import type { ConnectorType, ConnectorMetadata, IConnector } from "./base.connector.js";
+import type { ConnectorType, ConnectorMetadata, IConnector, ConnectorConfig } from "./base.connector.js";
 import { PostgreSQLConnector, type PostgreSQLConfig } from "./postgresql.connector.js";
 import { MySQLConnector, type MySQLConfig } from "./mysql.connector.js";
 import { MSSQLConnector, type MSSQLConnectorConfig } from "./mssql.connector.js";
@@ -7,26 +7,24 @@ import { MSSQLConnector, type MSSQLConnectorConfig } from "./mssql.connector.js"
  * Factory for creating connector instances based on type
  */
 export class ConnectorFactory {
-  static create(
-    metadata: ConnectorMetadata,
-    config: PostgreSQLConfig | MySQLConfig | MSSQLConnectorConfig,
-  ): IConnector {
+  static create(metadata: ConnectorMetadata, config: ConnectorConfig): IConnector {
     switch (metadata.type) {
       case "postgresql":
-        return new PostgreSQLConnector(metadata, config);
+        return new PostgreSQLConnector(metadata, config as PostgreSQLConfig);
 
       case "mysql":
-        return new MySQLConnector(metadata, config);
+        return new MySQLConnector(metadata, config as MySQLConfig);
 
       case "mssql":
-        return new MSSQLConnector(metadata, config);
+        return new MSSQLConnector(metadata, config as MSSQLConnectorConfig);
 
-      // Add more connector types as they are implemented
-      // case "mongodb":
-      //   return new MongoDBConnector(metadata, config);
-
-      // case "odoo":
-      //   return new OdooConnector(metadata, config);
+      case "storage_local":
+      case "storage_webdav":
+      case "storage_smb":
+      case "storage_cloud":
+        throw new Error(
+          `Storage connectors (${metadata.type}) are not handled by ConnectorFactory. Use StorageConnectorService instead.`,
+        );
 
       default:
         throw new Error(`Unsupported connector type: ${metadata.type}`);
@@ -206,7 +204,7 @@ export class ConnectorFactory {
    */
   static async validateConfig(
     type: ConnectorType,
-    config: PostgreSQLConfig | MySQLConfig | MSSQLConnectorConfig,
+    config: ConnectorConfig,
   ): Promise<{
     valid: boolean;
     errors?: string[];

@@ -1,6 +1,6 @@
 import { Request as ExRequest } from "express";
 import { fromNodeHeaders } from "better-auth/node";
-import { getAuth } from "../../auth.js";
+import { getAuth } from "../../auth/index.js";
 import { getServerContext } from "../serverContext.js";
 import { NoTokenProvided, InvalidToken, InsufficientPermissions, UnknownSecurityScheme } from "../errors.js";
 
@@ -8,8 +8,7 @@ export interface AuthenticatedRequest extends ExRequest {
   user?: {
     id: string;
     email: string;
-    roles: string[];
-    permissions: string[];
+    role: string;
     organizationId: string;
   };
 }
@@ -21,9 +20,7 @@ export interface BetterAuthUser {
   emailVerified: boolean;
   createdAt: Date;
   updatedAt: Date;
-  // Add custom fields as needed
-  roles?: string[];
-  permissions?: string[];
+  role?: string;
   organizationId?: string;
 }
 
@@ -76,26 +73,19 @@ export async function expressAuthentication(
 
       const user = session.user as BetterAuthUser;
 
-      // Check permissions if scopes are provided
+      // Check roles if scopes are provided (scopes map to roles in Better Auth)
       if (scopes && scopes.length > 0) {
-        const userPermissions = user.permissions || [];
-        const hasPermission = scopes.some(
-          (scope) =>
-            userPermissions.includes("*") ||
-            userPermissions.includes(scope) ||
-            userPermissions.some(
-              (permission) => permission.endsWith("*") && scope.startsWith(permission.slice(0, -1)),
-            ),
-        );
+        const userRole = user.role || "user";
+        const hasRole = scopes.includes(userRole) || userRole === "admin"; // admin can access all
 
-        if (!hasPermission) {
+        if (!hasRole) {
           context.logger.warn(
             {
               userId: user.id,
-              requiredScopes: scopes,
-              userPermissions,
+              requiredRoles: scopes,
+              userRole,
             },
-            "Authorization failed - Insufficient permissions",
+            "Authorization failed - Insufficient role",
           );
 
           throw new InsufficientPermissions();
@@ -106,8 +96,7 @@ export async function expressAuthentication(
       (request as AuthenticatedRequest).user = {
         id: user.id,
         email: user.email,
-        roles: user.roles || [],
-        permissions: user.permissions || [],
+        role: user.role || "user",
         organizationId: user.organizationId || "",
       };
 
@@ -132,31 +121,25 @@ export async function expressAuthentication(
   throw new UnknownSecurityScheme(securityName);
 }
 
-export function requirePermissions(permissions: string[]) {
+export function requireRole(requiredRole: string) {
   return (request: AuthenticatedRequest): boolean => {
     const user = request.user;
     if (!user) {
       return false;
     }
 
-    return permissions.some(
-      (permission) =>
-        user.permissions.includes("*") ||
-        user.permissions.includes(permission) ||
-        user.permissions.some(
-          (userPerm) => userPerm.endsWith("*") && permission.startsWith(userPerm.slice(0, -1)),
-        ),
-    );
+    // Admin can access everything
+    if (user.role === "admin") {
+      return true;
+    }
+
+    return user.role === requiredRole;
   };
 }
 
-export function requireRoles(roles: string[]) {
+export function requireAdmin() {
   return (request: AuthenticatedRequest): boolean => {
     const user = request.user;
-    if (!user) {
-      return false;
-    }
-
-    return roles.some((role) => user.roles.includes(role.toLowerCase()));
+    return user?.role === "admin";
   };
 }

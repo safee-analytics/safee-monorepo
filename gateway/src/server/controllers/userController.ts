@@ -11,7 +11,7 @@ interface UserProfileResponse {
   email: string;
   name?: string | null;
   preferredLocale: Locale;
-  organizationId: string;
+  organizationId: string | null;
   organization?: {
     id: string;
     name: string;

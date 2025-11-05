@@ -20,17 +20,13 @@ import { ConnectorManager } from "../services/connectors/connector.manager.js";
 import { DataProxyService } from "../services/connectors/data-proxy.service.js";
 import { DataMapperService } from "../services/connectors/data-mapper.service.js";
 import { ConnectorFactory } from "../services/connectors/connector.factory.js";
-import type { PostgreSQLConfig } from "../services/connectors/postgresql.connector.js";
-import type { MySQLConfig } from "../services/connectors/mysql.connector.js";
-import type { MSSQLConnectorConfig } from "../services/connectors/mssql.connector.js";
-
-type ConnectorType = "postgresql" | "mysql" | "mssql";
+import type { ConnectorType, ConnectorConfig } from "../services/connectors/base.connector.js";
 
 interface CreateConnectorRequest {
   name: string;
   description?: string;
   type: ConnectorType;
-  config: PostgreSQLConfig | MySQLConfig | MSSQLConnectorConfig;
+  config: ConnectorConfig;
   tags?: string[];
   metadata?: Record<string, unknown>;
 }
@@ -38,7 +34,7 @@ interface CreateConnectorRequest {
 interface UpdateConnectorRequest {
   name?: string;
   description?: string;
-  config?: PostgreSQLConfig | MySQLConfig | MSSQLConnectorConfig;
+  config?: ConnectorConfig;
   tags?: string[];
   metadata?: Record<string, unknown>;
   isActive?: boolean;

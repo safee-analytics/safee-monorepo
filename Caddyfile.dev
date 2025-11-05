@@ -6,22 +6,44 @@
 	admin off
 }
 
-# Local development domain (explicit HTTP)
+# Landing page (marketing site)
 http://localhost:8080 {
-	# Backend API routes
-	handle /api/* {
+	reverse_proxy localhost:3002 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+	}
+
+	# Logging for development
+	log {
+		output stdout
+		format json
+		level INFO
+	}
+}
+
+# Application frontend + API (same subdomain to avoid cookie issues)
+http://app.localhost:8080 {
+	# Order matters! API routes MUST be matched first
+
+	# API documentation
+	@docs path /docs /docs/*
+	handle @docs {
 		reverse_proxy localhost:3000 {
 			header_up Host {host}
 			header_up X-Real-IP {remote_host}
 		}
 	}
 
-	# API documentation
-	handle /docs* {
-		reverse_proxy localhost:3000
+	# API routes
+	@api path /api/*
+	handle @api {
+		reverse_proxy localhost:3000 {
+			header_up Host {host}
+			header_up X-Real-IP {remote_host}
+		}
 	}
 
-	# Frontend (Next.js) - everything else
+	# All other routes go to frontend (must be last)
 	handle {
 		reverse_proxy localhost:3001 {
 			header_up Host {host}
@@ -29,7 +51,7 @@ http://localhost:8080 {
 		}
 	}
 
-	# Logging for development - JSON format (parseable and complete)
+	# Logging for development
 	log {
 		output stdout
 		format json

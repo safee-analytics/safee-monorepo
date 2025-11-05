@@ -9,9 +9,10 @@ export const users = identitySchema.table(
     email: varchar("email", { length: 255 }).notNull().unique(),
     name: varchar("name", { length: 255 }),
     role: varchar("role", { length: 50 }).default("user").notNull(),
-    organizationId: uuid("organization_id")
-      .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" })
-      .notNull(),
+    organizationId: uuid("organization_id").references(() => organizations.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
     preferredLocale: localeEnum("preferred_locale").default("en").notNull(),
     isActive: boolean("is_active").default(true).notNull(),
 

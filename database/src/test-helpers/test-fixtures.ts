@@ -1,32 +1,15 @@
 import type { InferSelectModel } from "drizzle-orm";
 import type { DrizzleClient } from "../index.js";
-import {
-  organizations,
-  users,
-  roles,
-  permissions,
-  userRoles,
-  rolePermissions,
-  type PermissionResource,
-  type PermissionAction,
-} from "../drizzle/index.js";
+import { organizations, users, members } from "../drizzle/index.js";
 
 export type TestOrganization = InferSelectModel<typeof organizations>;
 export type TestUser = InferSelectModel<typeof users>;
-export type TestRole = InferSelectModel<typeof roles>;
-export type TestPermission = InferSelectModel<typeof permissions>;
+export type TestMember = InferSelectModel<typeof members>;
 
 export interface TestFixtures {
   organization: TestOrganization;
   user: TestUser;
   adminUser: TestUser;
-  userRole: TestRole;
-  adminRole: TestRole;
-  permissions: {
-    readUsers: TestPermission;
-    updateUsers: TestPermission;
-    manageUsers: TestPermission;
-  };
 }
 
 /**
@@ -49,22 +32,23 @@ export async function createTestOrganization(
 
 /**
  * Create a test user
- * Note: Passwords are now handled by Better Auth in oauth_accounts table
+ * Note: Passwords are now handled by Better Auth
  */
 export async function createTestUser(
   db: DrizzleClient,
   organizationId: string,
   data?: {
     email?: string;
-    firstName?: string;
-    lastName?: string;
+    name?: string;
+    role?: string;
   },
 ): Promise<TestUser> {
   const [user] = await db
     .insert(users)
     .values({
       email: data?.email ?? `user-${Date.now()}@test.com`,
-      name: data?.firstName && data.lastName ? `${data.firstName} ${data.lastName}` : "Test User",
+      name: data?.name ?? "Test User",
+      role: data?.role ?? "user",
       organizationId,
       isActive: true,
     })
@@ -74,162 +58,61 @@ export async function createTestUser(
 }
 
 /**
- * Create a test role
+ * Add a user as a member of an organization with a specific role
  */
-export async function createTestRole(
+export async function addMemberToOrganization(
   db: DrizzleClient,
-  data?: { name?: string; slug?: string; description?: string },
-): Promise<TestRole> {
-  const [role] = await db
-    .insert(roles)
+  userId: string,
+  organizationId: string,
+  role = "member",
+): Promise<TestMember> {
+  const [member] = await db
+    .insert(members)
     .values({
-      name: data?.name ?? "Test Role",
-      slug: data?.slug ?? `test-role-${Date.now()}`,
-      description: data?.description ?? "Test role description",
+      userId,
+      organizationId,
+      role,
     })
     .returning();
 
-  return role;
+  return member;
 }
 
 /**
- * Create a test permission
- */
-export async function createTestPermission(
-  db: DrizzleClient,
-  data: {
-    name?: string;
-    slug: string;
-    resource: PermissionResource;
-    action: PermissionAction;
-    description?: string;
-  },
-): Promise<TestPermission> {
-  const [permission] = await db
-    .insert(permissions)
-    .values({
-      name: data.name ?? `Test Permission ${data.slug}`,
-      slug: data.slug,
-      description: data.description ?? `Test permission for ${data.resource}:${data.action}`,
-      resource: data.resource,
-      action: data.action,
-    })
-    .returning();
-
-  return permission;
-}
-
-/**
- * Assign a role to a user
- */
-export async function assignRoleToUser(db: DrizzleClient, userId: string, roleId: string): Promise<void> {
-  await db.insert(userRoles).values({ userId, roleId });
-}
-
-/**
- * Assign a permission to a role
- */
-export async function assignPermissionToRole(
-  db: DrizzleClient,
-  roleId: string,
-  permissionId: string,
-): Promise<void> {
-  await db.insert(rolePermissions).values({ roleId, permissionId });
-}
-
-/**
- * Create a complete test setup with organization, users, roles, and permissions
+ * Create a complete test setup with organization and users
  */
 export async function createTestFixtures(db: DrizzleClient): Promise<TestFixtures> {
   // Create organization
   const organization = await createTestOrganization(db);
 
-  // Create roles
-  const userRole = await createTestRole(db, {
-    name: "User",
-    slug: "user",
-    description: "Regular user",
-  });
-
-  const adminRole = await createTestRole(db, {
-    name: "Admin",
-    slug: "admin",
-    description: "Administrator",
-  });
-
-  // Create permissions
-  const readUsers = await createTestPermission(db, {
-    name: "Read Users",
-    slug: "users:read",
-    resource: "users",
-    action: "read",
-  });
-
-  const updateUsers = await createTestPermission(db, {
-    name: "Update Users",
-    slug: "users:update",
-    resource: "users",
-    action: "update",
-  });
-
-  const manageUsers = await createTestPermission(db, {
-    name: "Manage Users",
-    slug: "users:manage",
-    resource: "users",
-    action: "manage",
-  });
-
-  // Assign permissions to roles
-  await assignPermissionToRole(db, userRole.id, readUsers.id);
-  await assignPermissionToRole(db, adminRole.id, readUsers.id);
-  await assignPermissionToRole(db, adminRole.id, updateUsers.id);
-  await assignPermissionToRole(db, adminRole.id, manageUsers.id);
-
   // Create users
   const user = await createTestUser(db, organization.id, {
     email: "user@test.com",
-    firstName: "Test",
-    lastName: "User",
+    name: "Test User",
+    role: "user",
   });
 
   const adminUser = await createTestUser(db, organization.id, {
     email: "admin@test.com",
-    firstName: "Admin",
-    lastName: "User",
+    name: "Admin User",
+    role: "admin",
   });
 
-  // Assign roles to users
-  await assignRoleToUser(db, user.id, userRole.id);
-  await assignRoleToUser(db, adminUser.id, adminRole.id);
+  // Add users as members
+  await addMemberToOrganization(db, user.id, organization.id, "member");
+  await addMemberToOrganization(db, adminUser.id, organization.id, "admin");
 
   return {
     organization,
     user,
     adminUser,
-    userRole,
-    adminRole,
-    permissions: {
-      readUsers,
-      updateUsers,
-      manageUsers,
-    },
   };
 }
 
 /**
  * Clean all test data
- * Deletes in order: organizations (cascades to users, userRoles), rolePermissions, permissions, roles
  */
 export async function cleanTestData(db: DrizzleClient): Promise<void> {
-  // Delete organizations first (cascades to users and userRoles)
+  // Delete organizations first (cascades to users and members)
   await db.delete(organizations);
-
-  // Delete role permissions junction table
-  await db.delete(rolePermissions);
-
-  // Delete permissions
-  await db.delete(permissions);
-
-  // Delete roles
-  await db.delete(roles);
 }

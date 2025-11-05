@@ -38,16 +38,16 @@ export function mergeBetterAuthSpec(
     },
     components: {
       schemas: {
-        ...(tsoaSpec.components?.schemas || {}),
-        ...(betterAuthSpec.components?.schemas || {}),
+        ...(tsoaSpec.components?.schemas ?? {}),
+        ...(betterAuthSpec.components?.schemas ?? {}),
       },
       securitySchemes: {
-        ...(tsoaSpec.components?.securitySchemes || {}),
-        ...(betterAuthSpec.components?.securitySchemes || {}),
+        ...(tsoaSpec.components?.securitySchemes ?? {}),
+        ...(betterAuthSpec.components?.securitySchemes ?? {}),
       },
     },
     tags: [
-      ...(tsoaSpec.tags || []),
+      ...(tsoaSpec.tags ?? []),
       {
         name: "Authentication",
         description: "Better Auth authentication endpoints",

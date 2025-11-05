@@ -420,7 +420,7 @@ caddy-validate:
     @echo "Validating Caddyfile.dev..."
     caddy validate --config Caddyfile.dev
 
-# Run full stack with Caddy (gateway + frontend + caddy)
+# Run full stack with Caddy (landing + gateway + frontend + caddy)
 [group('caddy')]
 dev-with-caddy:
     #!/usr/bin/env bash
@@ -432,11 +432,12 @@ dev-with-caddy:
         echo "🛑 Shutting down services..."
 
         # Kill all processes on the ports
-        lsof -ti tcp:3000 tcp:3001 tcp:8080 2>/dev/null | xargs kill -9 2>/dev/null || true
+        lsof -ti tcp:3000 tcp:3001 tcp:3002 tcp:8080 2>/dev/null | xargs kill -9 2>/dev/null || true
 
         # Kill process groups
         [[ -n "$GATEWAY_PID" ]] && kill -TERM -$GATEWAY_PID 2>/dev/null || true
         [[ -n "$FRONTEND_PID" ]] && kill -TERM -$FRONTEND_PID 2>/dev/null || true
+        [[ -n "$LANDING_PID" ]] && kill -TERM -$LANDING_PID 2>/dev/null || true
         [[ -n "$CADDY_PID" ]] && kill -TERM $CADDY_PID 2>/dev/null || true
 
         sleep 1
@@ -446,31 +447,45 @@ dev-with-caddy:
     # Set trap BEFORE starting processes
     trap cleanup EXIT INT TERM
 
-    echo "Starting full stack with Caddy reverse proxy..."
+    echo "🚀 Starting full stack with Caddy reverse proxy..."
     echo ""
     echo "Services will be available at:"
-    echo "  - Main app: http://localhost:8080"
-    echo "  - API docs: http://localhost:8080/docs"
-    echo "  - Backend:  http://localhost:3000 (direct)"
-    echo "  - Frontend: http://localhost:3001 (direct)"
+    echo "  - Landing:   http://localhost:8080"
+    echo "  - App:       http://app.localhost:8080"
+    echo "  - API:       http://api.localhost:8080/api/v1"
+    echo "  - API docs:  http://api.localhost:8080/docs"
+    echo ""
+    echo "Direct access (without Caddy):"
+    echo "  - Gateway:   http://localhost:3000"
+    echo "  - Frontend:  http://localhost:3001"
+    echo "  - Landing:   http://localhost:3002"
     echo ""
     echo "Press Ctrl+C to stop all services"
     echo ""
 
     # Start backend in background (new process group)
+    echo "▶ Starting Gateway (port 3000)..."
     (cd gateway && npm run dev) &
     GATEWAY_PID=$!
 
     # Start frontend in background (new process group)
+    echo "▶ Starting Frontend (port 3001)..."
     (cd frontend && npm run dev) &
     FRONTEND_PID=$!
 
+    # Start landing page in background (new process group)
+    echo "▶ Starting Landing (port 3002)..."
+    (cd landing && npm run dev) &
+    LANDING_PID=$!
+
     # Wait for services to be ready
-    echo "Waiting for services to start..."
+    echo ""
+    echo "⏳ Waiting for services to start..."
     sleep 5
 
     # Start Caddy (foreground)
-    echo "Starting Caddy..."
+    echo "▶ Starting Caddy reverse proxy..."
+    echo ""
     caddy run --config Caddyfile.dev &
     CADDY_PID=$!
 

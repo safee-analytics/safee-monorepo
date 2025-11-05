@@ -56,7 +56,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      router.push('/dashboard')
+      router.push('/')
     }
   }, [isAuthenticated, isLoading, router])
 
@@ -66,7 +66,7 @@ export default function LoginPage() {
       const result = await signIn(email, password)
 
       if (result.success) {
-        router.push('/dashboard')
+        router.push('/')
       } else {
         setError(result.error || 'Login failed. Please check your credentials.')
       }
@@ -96,7 +96,10 @@ export default function LoginPage() {
   }
 
   const handleGoBack = () => {
-    router.push('/')
+    // Redirect to landing page (different subdomain)
+    if (typeof window !== 'undefined') {
+      window.location.href = process.env.NEXT_PUBLIC_LANDING_URL || 'http://localhost:8080'
+    }
   }
 
   const toggleLanguage = () => {

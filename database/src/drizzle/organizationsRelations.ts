@@ -9,9 +9,13 @@ import { accounts } from "./accounts.js";
 import { payrollRecords } from "./payroll.js";
 import { odooDatabases } from "./odooDatabases.js";
 import { organizationServices } from "./organizationServices.js";
+import { members } from "./members.js";
+import { invitations } from "./invitations.js";
 
 export const organizationsRelations = relations(organizations, ({ many, one }) => ({
   users: many(users),
+  members: many(members),
+  invitations: many(invitations),
   contacts: many(contacts),
   deals: many(deals),
   employees: many(employees),

@@ -2,19 +2,105 @@
 # Auto HTTPS with Let's Encrypt
 {
 	# Email for Let's Encrypt notifications
-	email admin@safee.analytics
+	email admin@safee.dev
 
 	# Use staging Let's Encrypt for testing
 	# Remove this line for production
 	# acme_ca https://acme-staging-v02.api.letsencrypt.org/directory
 }
 
-# Production domain - replace with your actual domain
-safee.analytics www.safee.analytics {
+# Landing page (marketing site)
+safee.dev www.safee.dev {
 	# Redirect www to non-www
-	@www host www.safee.analytics
-	redir @www https://safee.analytics{uri} permanent
+	@www host www.safee.dev
+	redir @www https://safee.dev{uri} permanent
 
+	# Security headers
+	header {
+		# Enable HSTS
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		# Prevent clickjacking
+		X-Frame-Options "SAMEORIGIN"
+		# Prevent MIME sniffing
+		X-Content-Type-Options "nosniff"
+		# XSS protection
+		X-XSS-Protection "1; mode=block"
+		# Referrer policy
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# Remove server header
+		-Server
+	}
+
+	# Landing page frontend
+	reverse_proxy landing:3002 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+	}
+
+	# Compression
+	encode gzip zstd
+
+	# Logging
+	log {
+		output file /var/log/caddy/landing-access.log {
+			roll_size 100mb
+			roll_keep 5
+			roll_keep_for 720h
+		}
+		format json
+		level INFO
+	}
+}
+
+# Application frontend
+app.safee.dev {
+	# Security headers
+	header {
+		# Enable HSTS
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		# Prevent clickjacking
+		X-Frame-Options "SAMEORIGIN"
+		# Prevent MIME sniffing
+		X-Content-Type-Options "nosniff"
+		# XSS protection
+		X-XSS-Protection "1; mode=block"
+		# Referrer policy
+		Referrer-Policy "strict-origin-when-cross-origin"
+		# Remove server header
+		-Server
+	}
+
+	# Frontend (Next.js)
+	reverse_proxy frontend:3001 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+
+		# Support WebSocket for Next.js hot reload
+		header_up Connection {>Connection}
+		header_up Upgrade {>Upgrade}
+	}
+
+	# Compression
+	encode gzip zstd
+
+	# Logging
+	log {
+		output file /var/log/caddy/app-access.log {
+			roll_size 100mb
+			roll_keep 5
+			roll_keep_for 720h
+		}
+		format json
+		level INFO
+	}
+}
+
+# API Gateway
+api.safee.dev {
 	# Security headers
 	header {
 		# Enable HSTS
@@ -33,7 +119,7 @@ safee.analytics www.safee.analytics {
 
 	# Backend API routes
 	handle /api/* {
-		reverse_proxy backend:3000 {
+		reverse_proxy gateway:3000 {
 			header_up Host {host}
 			header_up X-Real-IP {remote_host}
 			header_up X-Forwarded-For {remote_host}
@@ -48,21 +134,7 @@ safee.analytics www.safee.analytics {
 
 	# API documentation
 	handle /docs* {
-		reverse_proxy backend:3000
-	}
-
-	# Frontend (Next.js) - everything else
-	handle {
-		reverse_proxy frontend:3001 {
-			header_up Host {host}
-			header_up X-Real-IP {remote_host}
-			header_up X-Forwarded-For {remote_host}
-			header_up X-Forwarded-Proto {scheme}
-
-			# Support WebSocket for Next.js hot reload
-			header_up Connection {>Connection}
-			header_up Upgrade {>Upgrade}
-		}
+		reverse_proxy gateway:3000
 	}
 
 	# Compression
@@ -70,7 +142,7 @@ safee.analytics www.safee.analytics {
 
 	# Logging
 	log {
-		output file /var/log/caddy/access.log {
+		output file /var/log/caddy/api-access.log {
 			roll_size 100mb
 			roll_keep 5
 			roll_keep_for 720h
