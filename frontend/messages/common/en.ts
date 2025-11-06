@@ -21,7 +21,14 @@ export const commonEn = {
     createNew: "Create new",
     more: "More",
     hide: "Hide",
-    storage: "Storage"
+    storage: "Storage",
+    customize: "Customize",
+    customizeAppMenus: "Customize your app menus",
+    dragDropReorder: "Drag and drop to reorder apps, and pin your top apps for easy access.",
+    resetToDefault: "Reset to default",
+    autoCloseSidebar: "Auto-close sidebar",
+    autoCloseSidebarDesc: "Close sidebar when mouse leaves",
+    myApps: "My apps"
   },
   auth: {
     login: "Login",
@@ -41,9 +48,9 @@ export const commonEn = {
     audit: "Audit"
   },
   dashboard: {
-    goodMorning: "Good Morning",
-    goodAfternoon: "Good Afternoon",
-    goodEvening: "Good Evening",
+    goodMorning: "Good morning",
+    goodAfternoon: "Good afternoon",
+    goodEvening: "Good evening",
     welcomeMessage: "Select a module to get started or continue your previous work",
     recentActivity: "Recent Activity",
     viewAllActivity: "View All Activity",
@@ -64,6 +71,34 @@ export const commonEn = {
     activeDeals: "Active Deals",
     pendingTasks: "Pending Tasks",
     completedToday: "Completed Today",
-    thisWeek: "This Week"
+    thisWeek: "This Week",
+    // QuickBooks-style dashboard
+    accounting: "Accounting",
+    expenses: "Expenses & Pay Bills",
+    sales: "Sales & Get Paid",
+    customers: "Customers",
+    payroll: "Payroll",
+    team: "Team",
+    reports: "Reports",
+    createActions: "Create actions",
+    runPayroll: "Run payroll",
+    getPaidOnline: "Get paid online",
+    recordExpense: "Record expense",
+    addBankDeposit: "Add bank deposit",
+    showAll: "Show all",
+    profitLoss: "PROFIT & LOSS",
+    profitLossDesc: "See what you make & spend across all your accounts",
+    income: "Income",
+    expensesLabel: "Expenses",
+    bringTransactionsAuto: "Bring in transactions automatically",
+    expensesWidget: "EXPENSES",
+    expensesWidgetDesc: "See where your money is going",
+    bankAccounts: "BANK ACCOUNTS",
+    bankAccountsDesc: "Link your banks to see your balances in one place",
+    findYourBank: "Find your bank",
+    addWidgets: "Add widgets",
+    smartSuggestions: "Smart suggestions",
+    accountsReceivable: "Accounts receivable",
+    whySeeSuggestions: "Why am I seeing these suggestions?"
   }
 } as const

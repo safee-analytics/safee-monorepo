@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Route, Tags, Security, Query, Body, SuccessResponse } from "tsoa";
+import { Controller, Get, Post, Route, Tags, Security, Query, Body, SuccessResponse, OperationId } from "tsoa";
 import type { Invoice, InvoiceCreateRequest } from "../types/invoice.js";
 import { NotImplemented } from "../errors.js";
 
@@ -10,6 +10,7 @@ export class HisabiqController extends Controller {
    */
   @Get("invoices")
   @Security("jwt")
+  @OperationId("GetHisabiqInvoices")
   public async getInvoices(
     @Query() _page: number = 1,
     @Query() _limit: number = 20,
@@ -29,6 +30,7 @@ export class HisabiqController extends Controller {
   @Post("invoices")
   @Security("jwt")
   @SuccessResponse("201", "Invoice created successfully")
+  @OperationId("CreateHisabiqInvoice")
   public async createInvoice(@Body() _request: InvoiceCreateRequest): Promise<Invoice> {
     // TODO: Implement create invoice logic
     throw new NotImplemented();
@@ -39,6 +41,7 @@ export class HisabiqController extends Controller {
    */
   @Get("accounts")
   @Security("jwt")
+  @OperationId("GetHisabiqAccounts")
   public async getAccounts(): Promise<
     Array<{
       id: string;

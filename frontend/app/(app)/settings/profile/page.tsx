@@ -1,17 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { User, Mail, Phone, MapPin, Building, Calendar, Save, Upload, Camera } from 'lucide-react'
 import { useTranslation } from '@/lib/providers/TranslationProvider'
+import { useProfile } from '@/lib/auth/useProfile'
+import { useAuth } from '@/lib/auth/hooks'
 
 export default function ProfileSettings() {
   const { t } = useTranslation()
+  const { user } = useAuth()
+  const { fetchProfile, updateProfile, isLoading: isProfileLoading } = useProfile()
   const [isSaving, setIsSaving] = useState(false)
   const [profile, setProfile] = useState({
-    firstName: 'Mahmoud',
-    lastName: 'Abdelhadi',
-    email: 'mahmoud@safee.analytics',
+    name: '',
+    email: '',
     phone: '+971 50 123 4567',
     jobTitle: 'Senior Auditor',
     department: 'Audit',
@@ -22,11 +25,38 @@ export default function ProfileSettings() {
     bio: 'Senior auditor with 10+ years of experience in financial auditing and compliance.',
   })
 
+  // Load profile data on mount
+  useEffect(() => {
+    const loadProfile = async () => {
+      const data = await fetchProfile()
+      if (data) {
+        setProfile(prev => ({
+          ...prev,
+          name: data.name || '',
+          email: data.email || '',
+        }))
+      } else if (user) {
+        // Fallback to Better Auth session data
+        setProfile(prev => ({
+          ...prev,
+          name: user.name || '',
+          email: user.email || '',
+        }))
+      }
+    }
+    loadProfile()
+  }, [fetchProfile, user])
+
   const handleSave = async () => {
     setIsSaving(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    const result = await updateProfile({ name: profile.name })
     setIsSaving(false)
-    alert('Profile updated successfully')
+
+    if (result.success) {
+      alert('Profile updated successfully')
+    } else {
+      alert(`Failed to update profile: ${result.error}`)
+    }
   }
 
   return (
@@ -48,7 +78,7 @@ export default function ProfileSettings() {
           <div className="flex items-center gap-6">
             <div className="relative">
               <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-3xl font-bold">
-                {profile.firstName[0]}{profile.lastName[0]}
+                {profile.name ? profile.name.charAt(0).toUpperCase() : 'U'}
               </div>
               <button className="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-700 transition-colors shadow-lg">
                 <Camera className="w-4 h-4" />
@@ -68,26 +98,17 @@ export default function ProfileSettings() {
         <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Personal Information</h2>
           <div className="grid grid-cols-2 gap-4">
-            <div>
+            <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                First Name
+                <User className="w-4 h-4 inline mr-2" />
+                Full Name
               </label>
               <input
                 type="text"
-                value={profile.firstName}
-                onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
+                value={profile.name}
+                onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Last Name
-              </label>
-              <input
-                type="text"
-                value={profile.lastName}
-                onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter your full name"
               />
             </div>
             <div>
@@ -98,9 +119,12 @@ export default function ProfileSettings() {
               <input
                 type="email"
                 value={profile.email}
-                onChange={(e) => setProfile({ ...profile, email: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                readOnly
+                disabled
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                title="Email cannot be changed"
               />
+              <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

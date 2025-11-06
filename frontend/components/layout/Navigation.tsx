@@ -12,7 +12,7 @@ import { useAuth } from '@/lib/auth/hooks'
 
 export function Navigation() {
   const pathname = usePathname()
-  const { currentUser, locale, setModule, clearSession } = useOrgStore()
+  const { currentUser, currentOrg, locale, setModule, clearSession } = useOrgStore()
   const { t } = useTranslation()
   const { signOut, user } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -47,18 +47,42 @@ export function Navigation() {
   const isActive = (path: string) => pathname?.startsWith(path)
 
   return (
-    <nav className="bg-white border-b border-zinc-200 sticky top-0 z-50">
+    <nav className="bg-white">
       <div className="px-6 py-3">
         <div className="flex items-center justify-between gap-4">
           {/* Logo & Company Name */}
-          <Link href="/" className="flex items-center gap-3 flex-shrink-0">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-safee-500 to-safee-700 flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-xl">S</span>
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <Link href="/" className="flex items-center gap-2">
+              {/* Safee Logo */}
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-safee-500 to-safee-700 flex items-center justify-center shadow">
+                <span className="text-white font-bold text-base">S</span>
+              </div>
+              {/* Platform Name - Stacked */}
+              <div className="hidden sm:flex flex-col leading-tight">
+                <span className="text-sm font-bold text-gray-900">Safee</span>
+                <span className="text-xs font-semibold text-gray-600">Analytics</span>
+              </div>
+            </Link>
+
+            {/* Divider - always show */}
+            <div className="hidden sm:block w-px h-6 bg-gray-300"></div>
+
+            {/* Company Name and Logo */}
+            <div className="hidden sm:flex items-center gap-2">
+              {currentOrg?.logo && (
+                <div className="w-6 h-6 rounded overflow-hidden border border-gray-200 flex items-center justify-center bg-white">
+                  <img
+                    src={currentOrg.logo}
+                    alt={currentOrg.name}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+              )}
+              <span className="text-sm font-medium text-gray-700">
+                {currentOrg?.name || 'Organization'}
+              </span>
             </div>
-            <span className="text-lg font-semibold text-gray-900 hidden sm:block">
-              Safee Analytics
-            </span>
-          </Link>
+          </div>
 
           {/* Search Bar */}
           <div className="flex-1 max-w-2xl">

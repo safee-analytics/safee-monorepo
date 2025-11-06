@@ -21,7 +21,14 @@ export const commonAr = {
     createNew: "إنشاء جديد",
     more: "المزيد",
     hide: "إخفاء",
-    storage: "التخزين"
+    storage: "التخزين",
+    customize: "تخصيص",
+    customizeAppMenus: "تخصيص قوائم التطبيقات",
+    dragDropReorder: "اسحب وأفلت لإعادة ترتيب التطبيقات، وثبت التطبيقات المفضلة للوصول السريع.",
+    resetToDefault: "إعادة تعيين إلى الافتراضي",
+    autoCloseSidebar: "إغلاق الشريط الجانبي تلقائياً",
+    autoCloseSidebarDesc: "إغلاق الشريط الجانبي عند مغادرة الماوس",
+    myApps: "تطبيقاتي"
   },
   auth: {
     login: "تسجيل الدخول",
@@ -64,6 +71,34 @@ export const commonAr = {
     activeDeals: "الصفقات النشطة",
     pendingTasks: "المهام المعلقة",
     completedToday: "مكتمل اليوم",
-    thisWeek: "هذا الأسبوع"
+    thisWeek: "هذا الأسبوع",
+    // QuickBooks-style dashboard
+    accounting: "المحاسبة",
+    expenses: "المصروفات والفواتير",
+    sales: "المبيعات",
+    customers: "العملاء",
+    payroll: "الرواتب",
+    team: "الفريق",
+    reports: "التقارير",
+    createActions: "إجراءات سريعة",
+    runPayroll: "تشغيل الرواتب",
+    getPaidOnline: "استلام الدفع",
+    recordExpense: "تسجيل مصروف",
+    addBankDeposit: "إضافة إيداع بنكي",
+    showAll: "عرض الكل",
+    profitLoss: "الربح والخسارة",
+    profitLossDesc: "شاهد ما تكسبه وتنفقه عبر جميع حساباتك",
+    income: "الدخل",
+    expensesLabel: "المصروفات",
+    bringTransactionsAuto: "إحضار المعاملات تلقائياً",
+    expensesWidget: "المصروفات",
+    expensesWidgetDesc: "أين تذهب أموالك",
+    bankAccounts: "الحسابات البنكية",
+    bankAccountsDesc: "اربط البنوك لرؤية أرصدتك في مكان واحد",
+    findYourBank: "ابحث عن البنك",
+    addWidgets: "إضافة عناصر واجهة",
+    smartSuggestions: "اقتراحات ذكية",
+    accountsReceivable: "المستحقات",
+    whySeeSuggestions: "لماذا أرى هذه الاقتراحات؟"
   }
 } as const

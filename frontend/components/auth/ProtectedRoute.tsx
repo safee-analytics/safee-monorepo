@@ -3,6 +3,8 @@
 'use client'
 
 import { useRequireAuth } from '@/lib/auth/hooks'
+import { useState, useEffect } from 'react'
+import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -11,24 +13,23 @@ interface ProtectedRouteProps {
 }
 
 
-function LoadingSpinner() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="text-center">
-        <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-safee-600"></div>
-        <p className="mt-4 text-gray-600">Loading...</p>
-      </div>
-    </div>
-  )
-}
-
-
 export function ProtectedRoute({
   children,
   redirectTo = '/login',
-  fallback = <LoadingSpinner />,
+  fallback = <DashboardSkeleton />,
 }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading } = useRequireAuth(redirectTo)
+  const [mounted, setMounted] = useState(false)
+
+  // Wait for client-side mount to avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // During SSR or before mount, render nothing to avoid hydration mismatch
+  if (!mounted) {
+    return null
+  }
 
   if (isLoading) {
     return <>{fallback}</>

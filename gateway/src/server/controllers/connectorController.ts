@@ -13,6 +13,7 @@ import {
   Path,
   SuccessResponse,
   Request,
+  OperationId,
 } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext } from "../serverContext.js";
@@ -290,6 +291,7 @@ export class ConnectorController extends Controller {
 
   @Get("/{connectorId}/health")
   @Security("jwt")
+  @OperationId("GetConnectorHealth")
   public async getHealth(
     @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,

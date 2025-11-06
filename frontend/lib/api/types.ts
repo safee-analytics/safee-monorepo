@@ -36,15 +36,67 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sessions": {
+    "/api/v1/storage/upload": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** @description Get all active sessions for the current user */
-        get: operations["GetUserSessions"];
+        get?: never;
+        put?: never;
+        /** @description Upload a file to storage */
+        post: operations["UploadFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/storage/upload/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Upload multiple files */
+        post: operations["UploadFiles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/storage/files/{fileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get file metadata */
+        get: operations["GetFile"];
+        put?: never;
+        post?: never;
+        /** @description Delete file */
+        delete: operations["DeleteFile"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/storage/files/{fileId}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Download file */
+        get: operations["DownloadFile"];
         put?: never;
         post?: never;
         delete?: never;
@@ -53,7 +105,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sessions/{sessionId}/revoke": {
+    "/api/v1/storage/files/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Search files */
+        get: operations["SearchFiles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/storage/folders": {
         parameters: {
             query?: never;
             header?: never;
@@ -62,40 +131,41 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Revoke a specific session */
-        post: operations["RevokeSession"];
+        /** @description Create folder */
+        post: operations["CreateFolder"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/sessions/revoke-all-others": {
+    "/api/v1/storage/folders/{folderId}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /** @description Get folder contents */
+        get: operations["GetFolderContents"];
         put?: never;
-        /** @description Revoke all other sessions (keep current session active) */
-        post: operations["RevokeAllOtherSessions"];
-        delete?: never;
+        post?: never;
+        /** @description Delete folder */
+        delete: operations["DeleteFolder"];
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/sessions/current": {
+    "/api/v1/storage/quota": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** @description Get current session information */
-        get: operations["GetCurrentSession"];
+        /** @description Get storage quota information */
+        get: operations["GetQuota"];
         put?: never;
         post?: never;
         delete?: never;
@@ -179,6 +249,38 @@ export interface paths {
         put?: never;
         post?: never;
         delete: operations["DeleteDatabase"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DuplicateDatabase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/backup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BackupDatabase"];
+        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
@@ -328,6 +430,77 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/nas/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description Connect to a NAS drive
+         *     Supports SMB/CIFS, NFS, and WebDAV protocols
+         */
+        post: operations["ConnectNAS"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/nas/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description Disconnect from a NAS drive */
+        delete: operations["DisconnectNAS"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/nas/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get status of all connected NAS drives */
+        get: operations["GetAllNASStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/nas/all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description Disconnect from all NAS drives */
+        delete: operations["DisconnectAll"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/invoices": {
         parameters: {
             query?: never;
@@ -352,10 +525,10 @@ export interface paths {
             cookie?: never;
         };
         /** @description Get all invoices for the authenticated user's organization */
-        get: operations["GetInvoices"];
+        get: operations["GetHisabiqInvoices"];
         put?: never;
         /** @description Create a new invoice */
-        post: operations["CreateInvoice"];
+        post: operations["CreateHisabiqInvoice"];
         delete?: never;
         options?: never;
         head?: never;
@@ -370,7 +543,7 @@ export interface paths {
             cookie?: never;
         };
         /** @description Get chart of accounts */
-        get: operations["GetAccounts"];
+        get: operations["GetHisabiqAccounts"];
         put?: never;
         post?: never;
         delete?: never;
@@ -450,7 +623,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Get available connector types and their field definitions */
         get: operations["GetConnectorTypes"];
         put?: never;
         post?: never;
@@ -467,7 +639,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Get field definitions for a specific connector type */
         get: operations["GetFieldDefinitions"];
         put?: never;
         post?: never;
@@ -484,10 +655,8 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description List all connectors for the current organization */
         get: operations["ListConnectors"];
         put?: never;
-        /** @description Create a new connector */
         post: operations["CreateConnector"];
         delete?: never;
         options?: never;
@@ -502,12 +671,9 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Get a specific connector by ID */
         get: operations["GetConnector"];
-        /** @description Update a connector */
         put: operations["UpdateConnector"];
         post?: never;
-        /** @description Delete a connector */
         delete: operations["DeleteConnector"];
         options?: never;
         head?: never;
@@ -523,7 +689,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Test connection for a connector */
         post: operations["TestConnection"];
         delete?: never;
         options?: never;
@@ -538,8 +703,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Get health status for a connector */
-        get: operations["GetHealth"];
+        get: operations["GetConnectorHealth"];
         put?: never;
         post?: never;
         delete?: never;
@@ -557,7 +721,6 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Execute a raw SQL query on an external database */
         post: operations["ExecuteQuery"];
         delete?: never;
         options?: never;
@@ -572,7 +735,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Get schema information (tables and views) from external database */
         get: operations["GetSchema"];
         put?: never;
         post?: never;
@@ -589,7 +751,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Get table preview (structure and sample data) */
         get: operations["GetTablePreview"];
         put?: never;
         post?: never;
@@ -606,7 +767,6 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Search a table across multiple columns */
         get: operations["SearchTable"];
         put?: never;
         post?: never;
@@ -625,93 +785,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Get suggested field mappings for a target entity */
         post: operations["SuggestMappings"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/login": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["Login"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/register": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["Register"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/logout": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["Logout"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/change-password": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Change password for authenticated user */
-        post: operations["ChangePassword"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/request-password-reset": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description Request password reset (will send email in future)
-         *     For now, this endpoint logs the request for future email implementation
-         */
-        post: operations["RequestPasswordReset"];
         delete?: never;
         options?: never;
         head?: never;
@@ -743,10 +817,9 @@ export interface components {
         UserProfileResponse: {
             id: string;
             email: string;
-            firstName?: string | null;
-            lastName?: string | null;
+            name?: string | null;
             preferredLocale: components["schemas"]["Locale"];
-            organizationId: string;
+            organizationId: string | null;
             organization?: {
                 slug: string;
                 name: string;
@@ -754,33 +827,48 @@ export interface components {
             };
         };
         UpdateProfileRequest: {
-            firstName?: string;
-            lastName?: string;
+            name?: string;
             preferredLocale?: components["schemas"]["Locale"];
         };
         UpdateLocaleRequest: {
             locale: components["schemas"]["Locale"];
         };
-        SessionInfo: {
+        /** @description Construct a type with a set of properties K of type T */
+        "Record_string.unknown_": {
+            [key: string]: unknown;
+        };
+        FileMetadata: {
             id: string;
-            userId: string;
-            deviceName?: string | null;
-            ipAddress: string;
-            location?: string | null;
-            loginMethod: string;
-            /** Format: date-time */
-            lastActivity: string;
-            /** Format: date-time */
+            name: string;
+            path: string;
+            /** Format: double */
+            size: number;
+            mimeType: string;
             createdAt: string;
-            isActive: boolean;
+            modifiedAt: string;
+            createdBy: string;
+            modifiedBy?: string;
+            folderId?: string;
+            tags?: string[];
+            metadata?: components["schemas"]["Record_string.unknown_"];
         };
-        SessionListResponse: {
-            sessions: components["schemas"]["SessionInfo"][];
-            currentSessionId?: string;
+        FolderMetadata: {
+            id: string;
+            name: string;
+            path: string;
+            parentId?: string;
+            createdAt: string;
+            modifiedAt: string;
+            createdBy: string;
+            modifiedBy?: string;
+            /** Format: double */
+            fileCount: number;
+            /** Format: double */
+            subFolderCount: number;
         };
-        RevokeSessionResponse: {
-            message: string;
-            revokedSessionId: string;
+        CreateFolderRequest: {
+            name: string;
+            parentId?: string;
         };
         PayrollRecord: {
             id: string;
@@ -824,6 +912,15 @@ export interface components {
             success: boolean;
             message: string;
         };
+        OdooDuplicateResponse: {
+            success: boolean;
+            originalName: string;
+            newName: string;
+        };
+        OdooDuplicateRequest: {
+            newName: string;
+            neutralize?: boolean;
+        };
         OdooListResponse: {
             databases: string[];
         };
@@ -835,10 +932,6 @@ export interface components {
             /** Format: double */
             offset?: number;
             order?: string;
-        };
-        /** @description Construct a type with a set of properties K of type T */
-        "Record_string.unknown_": {
-            [key: string]: unknown;
         };
         OdooSearchReadRequest: {
             model: string;
@@ -878,6 +971,33 @@ export interface components {
             method: string;
             args?: unknown[];
             kwargs?: components["schemas"]["Record_string.unknown_"];
+        };
+        NASConnectionStatus: {
+            connected: boolean;
+            mountPoint?: string;
+            error?: string;
+            /** Format: double */
+            freeSpace?: number;
+            /** Format: double */
+            totalSpace?: number;
+            /** Format: double */
+            usedSpace?: number;
+        };
+        ConnectNASRequest: {
+            name: string;
+            /** @enum {string} */
+            type: "smb" | "nfs" | "webdav";
+            host: string;
+            shareName: string;
+            username?: string;
+            password?: string;
+            domain?: string;
+            mountPoint?: string;
+            /** Format: double */
+            port?: number;
+        };
+        NASStatusResponse: {
+            [key: string]: components["schemas"]["NASConnectionStatus"];
         };
         Invoice: {
             id: string;
@@ -972,7 +1092,7 @@ export interface components {
             type: "LEAD" | "CUSTOMER" | "VENDOR";
         };
         /** @enum {string} */
-        ConnectorType: "postgresql" | "mysql" | "mssql";
+        ConnectorType: "postgresql" | "mysql" | "mssql" | "storage_local" | "storage_webdav" | "storage_smb" | "storage_cloud";
         ConnectorResponse: {
             id: string;
             organizationId: string;
@@ -988,70 +1108,32 @@ export interface components {
             createdAt: string;
             updatedAt: string;
         };
-        PostgreSQLConfig: {
-            host: string;
+        ConnectorConfig: {
+            host?: string;
             /** Format: double */
-            port: number;
-            database: string;
-            username: string;
-            password: string;
+            port?: number;
+            database?: string;
+            username?: string;
+            password?: string;
             ssl?: boolean;
             url?: string;
             apiKey?: string;
             authToken?: string;
-            /** Format: double */
-            maxConnections?: number;
-            /** Format: double */
-            connectionTimeout?: number;
-        };
-        MySQLConfig: {
-            host: string;
-            /** Format: double */
-            port: number;
-            database: string;
-            username: string;
-            password: string;
-            ssl?: boolean;
-            url?: string;
-            apiKey?: string;
-            authToken?: string;
-            /** Format: double */
-            maxConnections?: number;
-            /** Format: double */
-            connectionTimeout?: number;
-        };
-        MSSQLConnectorConfig: {
-            host: string;
-            /** Format: double */
-            port: number;
-            database: string;
-            username: string;
-            password: string;
-            ssl?: boolean;
-            url?: string;
-            apiKey?: string;
-            authToken?: string;
-            encrypt?: boolean;
-            trustServerCertificate?: boolean;
-            /** Format: double */
-            maxConnections?: number;
-            /** Format: double */
-            connectionTimeout?: number;
-            /** Format: double */
-            requestTimeout?: number;
+        } & {
+            [key: string]: unknown;
         };
         CreateConnectorRequest: {
             name: string;
             description?: string;
             type: components["schemas"]["ConnectorType"];
-            config: components["schemas"]["PostgreSQLConfig"] | components["schemas"]["MySQLConfig"] | components["schemas"]["MSSQLConnectorConfig"];
+            config: components["schemas"]["ConnectorConfig"];
             tags?: string[];
             metadata?: components["schemas"]["Record_string.unknown_"];
         };
         UpdateConnectorRequest: {
             name?: string;
             description?: string;
-            config?: components["schemas"]["PostgreSQLConfig"] | components["schemas"]["MySQLConfig"] | components["schemas"]["MSSQLConnectorConfig"];
+            config?: components["schemas"]["ConnectorConfig"];
             tags?: string[];
             metadata?: components["schemas"]["Record_string.unknown_"];
             isActive?: boolean;
@@ -1098,47 +1180,6 @@ export interface components {
             sourceColumns: string[];
             /** @enum {string} */
             targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
-        };
-        LoginResponse: {
-            accessToken: string;
-            refreshToken: string;
-            /** Format: double */
-            expiresIn: number;
-            sessionId: string;
-            user: {
-                organization?: {
-                    slug: string;
-                    name: string;
-                    id: string;
-                };
-                permissions: string[];
-                roles: string[];
-                lastName?: string | null;
-                firstName?: string | null;
-                email: string;
-                id: string;
-            };
-        };
-        LoginRequest: {
-            email: string;
-            password: string;
-        };
-        RegisterRequest: {
-            email: string;
-            password: string;
-            firstName?: string;
-            lastName?: string;
-            organizationName: string;
-        };
-        PasswordResetResponse: {
-            message: string;
-        };
-        ChangePasswordRequest: {
-            currentPassword: string;
-            newPassword: string;
-        };
-        RequestPasswordResetRequest: {
-            email: string;
         };
         Account: {
             id: string;
@@ -1237,73 +1278,234 @@ export interface operations {
             };
         };
     };
-    GetUserSessions: {
+    UploadFile: {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                    folderId?: string;
+                    tags?: string;
+                    metadata?: string;
+                };
+            };
+        };
         responses: {
-            /** @description Sessions retrieved successfully */
-            200: {
+            /** @description File uploaded successfully */
+            201: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["SessionListResponse"];
+                    "application/json": components["schemas"]["FileMetadata"];
                 };
             };
         };
     };
-    RevokeSession: {
+    UploadFiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    files: string;
+                    folderId?: string;
+                    tags?: string;
+                    metadata?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Files uploaded successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileMetadata"][];
+                };
+            };
+        };
+    };
+    GetFile: {
         parameters: {
             query?: never;
             header?: never;
             path: {
-                sessionId: string;
+                fileId: string;
             };
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description Session revoked successfully */
+            /** @description Ok */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["RevokeSessionResponse"];
+                    "application/json": components["schemas"]["FileMetadata"];
                 };
             };
         };
     };
-    RevokeAllOtherSessions: {
+    DeleteFile: {
         parameters: {
             query?: never;
+            header?: never;
+            path: {
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description File deleted successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DownloadFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SearchFiles: {
+        parameters: {
+            query?: {
+                query?: string;
+                folderId?: string;
+                mimeTypes?: string[];
+                tags?: string[];
+                dateFrom?: string;
+                dateTo?: string;
+                createdBy?: string;
+                limit?: number;
+                offset?: number;
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
         requestBody?: never;
         responses: {
-            /** @description All other sessions revoked successfully */
+            /** @description Ok */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
+                        hasMore: boolean;
                         /** Format: double */
-                        revokedCount: number;
-                        message: string;
+                        total: number;
+                        files: components["schemas"]["FileMetadata"][];
                     };
                 };
             };
         };
     };
-    GetCurrentSession: {
+    CreateFolder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFolderRequest"];
+            };
+        };
+        responses: {
+            /** @description Folder created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FolderMetadata"];
+                };
+            };
+        };
+    };
+    GetFolderContents: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                folderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        subFolders: components["schemas"]["FolderMetadata"][];
+                        files: components["schemas"]["FileMetadata"][];
+                        folder: components["schemas"]["FolderMetadata"];
+                    };
+                };
+            };
+        };
+    };
+    DeleteFolder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                folderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Folder deleted successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetQuota: {
         parameters: {
             query?: never;
             header?: never;
@@ -1312,21 +1514,20 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Current session retrieved successfully */
+            /** @description Ok */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        userInfo: {
-                            permissions: string[];
-                            roles: string[];
-                            email: string;
-                            userId: string;
-                        };
-                        sessionInfo?: unknown;
-                        sessionId?: string;
+                        unit: string;
+                        /** Format: double */
+                        remaining: number;
+                        /** Format: double */
+                        total: number;
+                        /** Format: double */
+                        used: number;
                     };
                 };
             };
@@ -1472,6 +1673,53 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["OdooDeleteResponse"];
+                };
+            };
+        };
+    };
+    DuplicateDatabase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OdooDuplicateRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OdooDuplicateResponse"];
+                };
+            };
+        };
+    };
+    BackupDatabase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: string;
+                        success: boolean;
+                    };
                 };
             };
         };
@@ -1693,6 +1941,92 @@ export interface operations {
             };
         };
     };
+    ConnectNAS: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectNASRequest"];
+            };
+        };
+        responses: {
+            /** @description NAS connected successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NASConnectionStatus"];
+                };
+            };
+        };
+    };
+    DisconnectNAS: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NAS disconnected successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetAllNASStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NASStatusResponse"];
+                };
+            };
+        };
+    };
+    DisconnectAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All NAS drives disconnected */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
     GetInvoices: {
         parameters: {
             query?: {
@@ -1748,7 +2082,7 @@ export interface operations {
             };
         };
     };
-    GetInvoices: {
+    GetHisabiqInvoices: {
         parameters: {
             query?: {
                 _page?: number;
@@ -1779,7 +2113,7 @@ export interface operations {
             };
         };
     };
-    CreateInvoice: {
+    CreateHisabiqInvoice: {
         parameters: {
             query?: never;
             header?: never;
@@ -1803,7 +2137,7 @@ export interface operations {
             };
         };
     };
-    GetAccounts: {
+    GetHisabiqAccounts: {
         parameters: {
             query?: never;
             header?: never;
@@ -2224,7 +2558,7 @@ export interface operations {
             };
         };
     };
-    GetHealth: {
+    GetConnectorHealth: {
         parameters: {
             query?: never;
             header?: never;
@@ -2372,124 +2706,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FieldMapping"][];
-                };
-            };
-        };
-    };
-    Login: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["LoginRequest"];
-            };
-        };
-        responses: {
-            /** @description Login successful */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LoginResponse"];
-                };
-            };
-        };
-    };
-    Register: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RegisterRequest"];
-            };
-        };
-        responses: {
-            /** @description User registered successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["LoginResponse"];
-                };
-            };
-        };
-    };
-    Logout: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Logout successful */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    ChangePassword: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ChangePasswordRequest"];
-            };
-        };
-        responses: {
-            /** @description Password changed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PasswordResetResponse"];
-                };
-            };
-        };
-    };
-    RequestPasswordReset: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RequestPasswordResetRequest"];
-            };
-        };
-        responses: {
-            /** @description Password reset email sent (if account exists) */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PasswordResetResponse"];
                 };
             };
         };

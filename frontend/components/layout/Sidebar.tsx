@@ -20,9 +20,13 @@ import {
   FiFileText,
   FiClipboard,
   FiUserPlus,
-  FiHardDrive,
+  FiMove,
+  FiStar,
+  FiX,
+  FiSliders,
+  FiGrid,
 } from "react-icons/fi";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Reorder } from "framer-motion";
 import { useTranslation } from '@/lib/providers/TranslationProvider';
 import { useOrgStore } from '@/stores/useOrgStore';
 import { getAllModules } from '@/lib/config/modules';
@@ -39,20 +43,74 @@ export const SidebarLayout = () => {
   );
 };
 
+interface AppItem {
+  id: string
+  name: string
+  icon: IconType
+  gradient: string
+  pinned: boolean
+}
+
+const moduleIcons: Record<string, IconType> = {
+  hisabiq: FiDollarSign,
+  kanz: FiUsers,
+  nisbah: FiUserPlus,
+  audit: FiClipboard
+};
+
+const moduleColors: Record<string, string> = {
+  hisabiq: 'from-green-500 to-emerald-600',
+  kanz: 'from-indigo-500 to-indigo-600',
+  nisbah: 'from-pink-500 to-pink-600',
+  audit: 'from-orange-500 to-orange-600'
+};
+
 export const Sidebar = () => {
   const { t, locale } = useTranslation();
-  const { setModule } = useOrgStore();
+  const { setModule, sidebarAutoClose, setSidebarAutoClose, sidebarCollapsed, setSidebarCollapsed } = useOrgStore();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [showCreateMenu, setShowCreateMenu] = useState(false);
+  const [showCustomizeMenu, setShowCustomizeMenu] = useState(false);
+  const [showMyApps, setShowMyApps] = useState(false);
 
   const modules = getAllModules();
 
-  const moduleIcons: Record<string, IconType> = {
-    hisabiq: FiDollarSign,
-    kanz: FiUsers,
-    nisbah: FiUserPlus,
-    audit: FiClipboard
+  // Initialize apps list for customization
+  const defaultApps: AppItem[] = modules.map((module) => ({
+    id: module.key,
+    name: module.name[locale],
+    icon: moduleIcons[module.key] || FiClipboard,
+    gradient: moduleColors[module.key] || 'from-gray-500 to-gray-600',
+    pinned: true,
+  }));
+
+  const [apps, setApps] = useState<AppItem[]>(defaultApps);
+  const [tempApps, setTempApps] = useState<AppItem[]>(defaultApps);
+
+  const handleOpenCustomize = () => {
+    setTempApps([...apps]);
+    setShowCustomizeMenu(true);
+  };
+
+  const handleSaveCustomize = () => {
+    setApps([...tempApps]);
+    setShowCustomizeMenu(false);
+  };
+
+  const handleCancelCustomize = () => {
+    setTempApps([...apps]);
+    setShowCustomizeMenu(false);
+  };
+
+  const handleResetToDefault = () => {
+    setTempApps([...defaultApps]);
+  };
+
+  const handleTogglePin = (appId: string) => {
+    setTempApps(tempApps.map(app =>
+      app.id === appId ? { ...app, pinned: !app.pinned } : app
+    ));
   };
 
   // Detect current module from pathname
@@ -128,17 +186,28 @@ export const Sidebar = () => {
     ],
   };
 
+  const isExpanded = (open || !sidebarAutoClose) && !sidebarCollapsed;
+
   return (
     <>
       <motion.nav
         initial={false}
-        onMouseEnter={() => setOpen(true)}
-        onMouseLeave={() => setOpen(false)}
-        className="fixed top-[65px] left-0 h-[calc(100vh-65px)] border-r border-slate-300 bg-white p-2 z-40"
-        animate={{
-          width: open ? "225px" : "fit-content",
+        onMouseEnter={() => {
+          // Only auto-expand on hover if auto-close is enabled AND not manually collapsed
+          if (sidebarAutoClose && !sidebarCollapsed) {
+            setOpen(true);
+          }
         }}
-        transition={{ duration: 0.2, ease: "easeInOut" }}
+        onMouseLeave={() => {
+          if (sidebarAutoClose && !sidebarCollapsed) {
+            setOpen(false);
+          }
+        }}
+        className="h-full bg-white pt-8 px-2 pb-2"
+        animate={{
+          width: isExpanded ? "225px" : "56px",
+        }}
+        transition={{ duration: 0.15, ease: "easeOut" }}
       >
         {/* Create Button */}
         <motion.button
@@ -146,22 +215,21 @@ export const Sidebar = () => {
           onClick={() => setShowCreateMenu(!showCreateMenu)}
           className="relative flex h-12 w-full items-center justify-center rounded-full bg-safee-600 hover:bg-safee-700 text-white transition-colors mb-3"
         >
-          <motion.div
-            layout
-            className="grid h-full w-10 place-content-center text-lg"
-          >
-            <FiPlus className={`transition-transform duration-200 ${showCreateMenu ? 'rotate-45' : 'rotate-0'}`} />
-          </motion.div>
-          {open && (
-            <motion.span
+          {isExpanded ? (
+            <motion.div
               layout
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.125 }}
-              className="text-sm font-medium"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.05 }}
+              className="flex items-center gap-2"
             >
-              {t.common.create}
-            </motion.span>
+              <FiPlus className={`w-5 h-5 transition-transform duration-200 ${showCreateMenu ? 'rotate-45' : 'rotate-0'}`} />
+              <span className="text-sm font-medium">
+                {t.common.create}
+              </span>
+            </motion.div>
+          ) : (
+            <FiPlus className={`w-5 h-5 transition-transform duration-200 ${showCreateMenu ? 'rotate-45' : 'rotate-0'}`} />
           )}
         </motion.button>
 
@@ -175,7 +243,7 @@ export const Sidebar = () => {
                 Icon={item.icon}
                 title={item.title}
                 selected={pathname === item.href}
-                open={open}
+                open={isExpanded}
               />
             </Link>
           ))}
@@ -183,54 +251,160 @@ export const Sidebar = () => {
 
         <div className="border-b border-slate-300 mb-2" />
 
-        {/* Pinned Modules Section */}
-        {open && (
+        {/* My Apps Button */}
+        <motion.button
+          layout
+          onClick={() => setShowMyApps(!showMyApps)}
+          className="relative flex h-10 w-full items-center rounded-md transition-colors text-slate-500 hover:bg-slate-100"
+        >
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.125 }}
-            className="px-2 mb-2"
+            layout
+            className="grid h-full w-10 place-content-center text-lg"
           >
-            <span className="text-[10px] font-semibold text-gray-400 uppercase">
-              {t.common.pinned}
-            </span>
+            <FiGrid />
           </motion.div>
-        )}
+          {isExpanded && (
+            <motion.span
+              layout
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.125 }}
+              className="text-xs font-medium flex-1 text-left"
+            >
+              {t.common.myApps}
+            </motion.span>
+          )}
+        </motion.button>
+
+        <div className="border-b border-slate-300 mb-2" />
+
+        {/* Pinned Modules Section */}
+        <div className={`px-2 mb-2 transition-opacity ${isExpanded ? 'opacity-100' : 'opacity-0'}`}>
+          <span className="text-[10px] font-semibold text-gray-400 uppercase">
+            {t.common.pinned}
+          </span>
+        </div>
 
         {/* Pinned Modules */}
-        <div className="space-y-1 flex-1 overflow-y-auto">
-          {modules.map((module) => {
-            const Icon = moduleIcons[module.key] || FiClipboard;
+        <div className="space-y-2 flex-1 overflow-y-auto">
+          {apps.filter(app => app.pinned).map((app) => {
+            const Icon = app.icon;
+            const module = modules.find(m => m.key === app.id);
+            if (!module) return null;
+
+            const isSelected = pathname?.startsWith(module.path);
+
             return (
               <Link
-                key={module.key}
+                key={app.id}
                 href={module.path}
-                onClick={() => setModule(module.key as 'hisabiq' | 'kanz' | 'nisbah' | 'audit')}
+                onClick={() => setModule(app.id as 'hisabiq' | 'kanz' | 'nisbah' | 'audit')}
               >
-                <Option
-                  Icon={Icon}
-                  title={module.name[locale]}
-                  selected={pathname?.startsWith(module.path)}
-                  open={open}
-                />
+                <div
+                  className={`relative flex h-10 w-full items-center rounded-lg transition-all ${
+                    isSelected ? 'bg-safee-50' : 'hover:bg-gray-50'
+                  }`}
+                >
+                  {/* Logo Circle - fixed position */}
+                  <div className="w-10 flex items-center justify-center shrink-0">
+                    <div
+                      className={`grid w-8 h-8 place-content-center rounded-full bg-gradient-to-br ${app.gradient} shadow-sm hover:shadow-md transition-shadow`}
+                    >
+                      <Icon className="w-4 h-4 text-white" />
+                    </div>
+                  </div>
+
+                  {/* Module Name */}
+                  <span
+                    className={`text-xs font-medium transition-opacity overflow-hidden whitespace-nowrap ${
+                      isExpanded ? 'opacity-100' : 'opacity-0 w-0'
+                    } ${isSelected ? 'text-safee-700' : 'text-gray-700'}`}
+                  >
+                    {app.name}
+                  </span>
+                </div>
               </Link>
             );
           })}
         </div>
 
-        {/* Settings at Bottom */}
-        <div className="border-t border-slate-300 pt-2 mt-2">
+        {/* Bottom Section - Settings */}
+        <div className="border-t border-slate-300 pt-2 mt-2 pb-20">
           <Link href="/settings">
             <Option
               Icon={FiSettings}
               title={t.common.settings}
               selected={pathname?.startsWith('/settings')}
-              open={open}
+              open={isExpanded}
             />
           </Link>
         </div>
 
-        <ToggleClose open={open} setOpen={setOpen} t={t} />
+        {/* Customize Button - At the very bottom, above Hide */}
+        <motion.button
+          layout
+          onClick={handleOpenCustomize}
+          className="absolute bottom-12 left-0 right-0 border-t border-slate-300 transition-colors hover:bg-slate-100"
+        >
+          <div className="flex items-center p-2">
+            <motion.div
+              layout
+              className="grid size-10 place-content-center text-lg"
+            >
+              <FiSliders />
+            </motion.div>
+            {isExpanded && (
+              <motion.span
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.125 }}
+                className="text-xs font-medium"
+              >
+                {t.common.customize}
+              </motion.span>
+            )}
+          </div>
+        </motion.button>
+
+        {/* Hide/Expand Button - At the very bottom */}
+        <motion.button
+          layout
+          onClick={() => {
+            if (sidebarCollapsed) {
+              // Expand the sidebar
+              setSidebarCollapsed(false);
+              setOpen(true);
+            } else {
+              // Collapse the sidebar
+              setOpen(false);
+              setSidebarCollapsed(true);
+            }
+          }}
+          className="absolute bottom-0 left-0 right-0 border-t border-slate-300 transition-colors hover:bg-slate-100"
+        >
+          <div className="flex items-center p-2">
+            <motion.div
+              layout
+              className="grid size-10 place-content-center text-lg"
+            >
+              <FiChevronsRight
+                className={`transition-transform ${isExpanded && "rotate-180"}`}
+              />
+            </motion.div>
+            {isExpanded && (
+              <motion.span
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.125 }}
+                className="text-xs font-medium"
+              >
+                {t.common.hide}
+              </motion.span>
+            )}
+          </div>
+        </motion.button>
       </motion.nav>
 
       {/* Create Menu Dropdown */}
@@ -354,6 +528,199 @@ export const Sidebar = () => {
           </>
         )}
       </AnimatePresence>
+
+      {/* My Apps Menu Dropdown */}
+      <AnimatePresence>
+        {showMyApps && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setShowMyApps(false)}
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
+            />
+
+            {/* Menu */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, x: -10 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.95, x: -10 }}
+              className={`fixed ${locale === 'ar' ? 'right-20' : 'left-20'} top-[180px] z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 w-[280px]`}
+            >
+              <h3 className="text-sm font-semibold text-gray-900 mb-3 px-2">
+                {t.common.myApps}
+              </h3>
+
+              <div className="space-y-1">
+                {apps.map((app) => {
+                  const Icon = app.icon;
+                  const module = modules.find(m => m.key === app.id);
+                  if (!module) return null;
+
+                  return (
+                    <Link
+                      key={app.id}
+                      href={module.path}
+                      onClick={() => {
+                        setModule(app.id as 'hisabiq' | 'kanz' | 'nisbah' | 'audit');
+                        setShowMyApps(false);
+                      }}
+                    >
+                      <button className="w-full flex items-center gap-3 px-2 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                        {/* App Logo */}
+                        <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-sm flex-shrink-0`}>
+                          <Icon className="w-4 h-4 text-white" />
+                        </div>
+
+                        {/* App Name */}
+                        <span className="flex-1 text-left font-medium">
+                          {app.name}
+                        </span>
+
+                        {/* Pinned Star */}
+                        {app.pinned && (
+                          <FiStar className="w-3.5 h-3.5 text-yellow-500 fill-current flex-shrink-0" />
+                        )}
+                      </button>
+                    </Link>
+                  );
+                })}
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
+
+      {/* Customize Menu Modal */}
+      <AnimatePresence>
+        {showCustomizeMenu && (
+          <>
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={handleCancelCustomize}
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50"
+            />
+
+            {/* Modal */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-2xl max-h-[80vh] overflow-hidden"
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between px-8 py-6 border-b border-gray-200">
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">
+                    {t.common.customizeAppMenus}
+                  </h2>
+                  <p className="text-sm text-gray-600 mt-1">
+                    {t.common.dragDropReorder}
+                  </p>
+                </div>
+                <button
+                  onClick={handleCancelCustomize}
+                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  <FiX className="w-6 h-6 text-gray-500" />
+                </button>
+              </div>
+
+              {/* Apps List */}
+              <div className="px-8 py-6 overflow-y-auto max-h-[50vh]">
+                <Reorder.Group axis="y" values={tempApps} onReorder={setTempApps} className="space-y-2">
+                  {tempApps.map((app) => {
+                    const Icon = app.icon;
+                    return (
+                      <Reorder.Item
+                        key={app.id}
+                        value={app}
+                        className="flex items-center gap-4 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors cursor-move"
+                      >
+                        {/* Drag Handle */}
+                        <FiMove className="w-5 h-5 text-gray-400 flex-shrink-0" />
+
+                        {/* Pin Button */}
+                        <button
+                          onClick={() => handleTogglePin(app.id)}
+                          className={`p-2 rounded-lg transition-colors ${
+                            app.pinned
+                              ? 'text-yellow-500 hover:bg-yellow-50'
+                              : 'text-gray-300 hover:bg-gray-50'
+                          }`}
+                        >
+                          <FiStar className={`w-5 h-5 ${app.pinned ? 'fill-current' : ''}`} />
+                        </button>
+
+                        {/* App Logo */}
+                        <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-md flex-shrink-0`}>
+                          <Icon className="w-6 h-6 text-white" />
+                        </div>
+
+                        {/* App Name */}
+                        <span className="text-sm font-semibold text-gray-900 flex-1">
+                          {app.name}
+                        </span>
+                      </Reorder.Item>
+                    );
+                  })}
+                </Reorder.Group>
+              </div>
+
+              {/* Auto-close toggle */}
+              <div className="px-8 py-4 border-t border-gray-200">
+                <div className="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-lg">
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{t.common.autoCloseSidebar}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{t.common.autoCloseSidebarDesc}</p>
+                  </div>
+                  <button
+                    onClick={() => setSidebarAutoClose(!sidebarAutoClose)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      sidebarAutoClose ? 'bg-safee-600' : 'bg-gray-300'
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        sidebarAutoClose ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+
+              {/* Footer Actions */}
+              <div className="flex items-center justify-between px-8 py-6 border-t border-gray-200 bg-gray-50">
+                <button
+                  onClick={handleResetToDefault}
+                  className="px-4 py-2 text-sm font-medium text-safee-600 hover:bg-safee-50 rounded-lg transition-colors"
+                >
+                  {t.common.resetToDefault}
+                </button>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleCancelCustomize}
+                    className="px-6 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 border border-gray-300 rounded-lg transition-colors"
+                  >
+                    {t.common.cancel}
+                  </button>
+                  <button
+                    onClick={handleSaveCustomize}
+                    className="px-6 py-2.5 text-sm font-medium text-white bg-safee-600 hover:bg-safee-700 rounded-lg transition-colors shadow-sm"
+                  >
+                    {t.common.save}
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 };
@@ -470,44 +837,5 @@ const Logo = () => {
   );
 };
 
-const ToggleClose = ({
-  open,
-  setOpen,
-  t,
-}: {
-  open: boolean;
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  t: Messages;
-}) => {
-  return (
-    <motion.button
-      layout
-      onClick={() => setOpen((pv) => !pv)}
-      className="absolute bottom-0 left-0 right-0 border-t border-slate-300 transition-colors hover:bg-slate-100"
-    >
-      <div className="flex items-center p-2">
-        <motion.div
-          layout
-          className="grid size-10 place-content-center text-lg"
-        >
-          <FiChevronsRight
-            className={`transition-transform ${open && "rotate-180"}`}
-          />
-        </motion.div>
-        {open && (
-          <motion.span
-            layout
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.125 }}
-            className="text-xs font-medium"
-          >
-            {t.common.hide}
-          </motion.span>
-        )}
-      </div>
-    </motion.button>
-  );
-};
 
 const ExampleContent = () => <div className="h-[200vh] w-full"></div>;

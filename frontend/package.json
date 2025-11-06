@@ -7,7 +7,7 @@
     "build": "next build --turbopack",
     "start": "next start -p 3001",
     "lint": "eslint",
-    "generate:api": "openapi-typescript ../gateway/src/server/swagger.json -o ./lib/api/schema.ts"
+    "generate:api": "openapi-typescript ../gateway/src/server/swagger.json -o ./lib/api/types.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

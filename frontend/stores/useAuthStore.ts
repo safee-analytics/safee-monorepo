@@ -37,7 +37,7 @@ export const useAuthStore = create<AuthState>()(
     (set, get) => ({
       user: null,
       session: null,
-      isLoading: false,
+      isLoading: true, // Start as loading so we don't redirect before checking session
       isAuthenticated: false,
 
       setSession: (sessionData) => {

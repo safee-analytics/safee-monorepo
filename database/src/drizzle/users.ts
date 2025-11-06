@@ -19,6 +19,16 @@ export const users = identitySchema.table(
     emailVerified: boolean("email_verified").default(false).notNull(),
     image: text("image"),
 
+    // Profile fields
+    phone: varchar("phone", { length: 50 }),
+    jobTitle: varchar("job_title", { length: 255 }),
+    department: varchar("department", { length: 255 }),
+    company: varchar("company", { length: 255 }),
+    location: varchar("location", { length: 255 }),
+    bio: text("bio"),
+    timezone: varchar("timezone", { length: 100 }).default("UTC"),
+    dateFormat: varchar("date_format", { length: 50 }).default("DD/MM/YYYY"),
+
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
   },

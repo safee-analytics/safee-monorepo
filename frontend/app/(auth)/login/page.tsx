@@ -4,7 +4,7 @@ import { SafeeLoginForm } from '@/components/auth/SafeeLoginForm'
 import { useOrgStore } from '@/stores/useOrgStore'
 import { useAuth } from '@/lib/auth/hooks'
 import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 const translations = {
   ar: {
@@ -53,10 +53,27 @@ export default function LoginPage() {
   const { signIn, signInWithGoogle, isAuthenticated, isLoading } = useAuth()
   const [isArabic, setIsArabic] = useState(locale === 'ar')
   const [error, setError] = useState<string | null>(null)
+  const hasRedirected = useRef(false)
+
+  // Get redirect URL from session storage or default to '/'
+  const getRedirectUrl = () => {
+    if (typeof window !== 'undefined') {
+      const redirectUrl = sessionStorage.getItem('redirectAfterLogin') || '/'
+      return redirectUrl
+    }
+    return '/'
+  }
 
   useEffect(() => {
-    if (isAuthenticated && !isLoading) {
-      router.push('/')
+    // Only redirect once, even if the effect runs multiple times
+    if (isAuthenticated && !isLoading && !hasRedirected.current) {
+      hasRedirected.current = true
+      const redirectUrl = getRedirectUrl()
+      // Clear the redirect URL from storage
+      if (typeof window !== 'undefined') {
+        sessionStorage.removeItem('redirectAfterLogin')
+      }
+      router.push(redirectUrl)
     }
   }, [isAuthenticated, isLoading, router])
 
@@ -65,9 +82,15 @@ export default function LoginPage() {
       setError(null)
       const result = await signIn(email, password)
 
-      if (result.success) {
-        router.push('/')
-      } else {
+      if (result.success && !hasRedirected.current) {
+        hasRedirected.current = true
+        const redirectUrl = getRedirectUrl()
+        // Clear the redirect URL from storage
+        if (typeof window !== 'undefined') {
+          sessionStorage.removeItem('redirectAfterLogin')
+        }
+        router.push(redirectUrl)
+      } else if (!result.success) {
         setError(result.error || 'Login failed. Please check your credentials.')
       }
     } catch (error) {

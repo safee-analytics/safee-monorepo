@@ -4,11 +4,11 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Palette, Sun, Moon, Monitor, Type, Layout, Eye, Save } from 'lucide-react'
 import { useTranslation } from '@/lib/providers/TranslationProvider'
-import { useOrgStore } from '@/stores/useOrgStore'
+import { useProfile } from '@/lib/auth/useProfile'
 
 export default function AppearanceSettings() {
-  const { t, locale, setLocale } = useTranslation()
-  const { organizationId } = useOrgStore()
+  const { t, locale } = useTranslation()
+  const { changeLocale } = useProfile()
   const [isSaving, setIsSaving] = useState(false)
   const [appearance, setAppearance] = useState({
     theme: 'light',
@@ -54,11 +54,10 @@ export default function AppearanceSettings() {
           <div className="grid grid-cols-3 gap-4">
             <button
               onClick={() => setAppearance({ ...appearance, theme: 'light' })}
-              className={`p-4 border-2 rounded-lg transition-all ${
-                appearance.theme === 'light'
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className={`p-4 border-2 rounded-lg transition-all ${appearance.theme === 'light'
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
+                }`}
             >
               <div className="flex flex-col items-center gap-2">
                 <div className="w-12 h-12 bg-white border border-gray-300 rounded-lg flex items-center justify-center">
@@ -70,11 +69,10 @@ export default function AppearanceSettings() {
 
             <button
               onClick={() => setAppearance({ ...appearance, theme: 'dark' })}
-              className={`p-4 border-2 rounded-lg transition-all ${
-                appearance.theme === 'dark'
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className={`p-4 border-2 rounded-lg transition-all ${appearance.theme === 'dark'
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
+                }`}
             >
               <div className="flex flex-col items-center gap-2">
                 <div className="w-12 h-12 bg-gray-900 border border-gray-700 rounded-lg flex items-center justify-center">
@@ -86,11 +84,10 @@ export default function AppearanceSettings() {
 
             <button
               onClick={() => setAppearance({ ...appearance, theme: 'auto' })}
-              className={`p-4 border-2 rounded-lg transition-all ${
-                appearance.theme === 'auto'
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className={`p-4 border-2 rounded-lg transition-all ${appearance.theme === 'auto'
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
+                }`}
             >
               <div className="flex flex-col items-center gap-2">
                 <div className="w-12 h-12 bg-gradient-to-br from-white to-gray-900 border border-gray-300 rounded-lg flex items-center justify-center">
@@ -110,11 +107,10 @@ export default function AppearanceSettings() {
               <button
                 key={scheme.id}
                 onClick={() => setAppearance({ ...appearance, colorScheme: scheme.id })}
-                className={`p-3 border-2 rounded-lg transition-all ${
-                  appearance.colorScheme === scheme.id
-                    ? 'border-gray-900'
-                    : 'border-gray-200 hover:border-gray-300'
-                }`}
+                className={`p-3 border-2 rounded-lg transition-all ${appearance.colorScheme === scheme.id
+                  ? 'border-gray-900'
+                  : 'border-gray-200 hover:border-gray-300'
+                  }`}
               >
                 <div className="flex flex-col items-center gap-2">
                   <div className={`w-8 h-8 ${scheme.color} rounded-full`}></div>
@@ -130,12 +126,11 @@ export default function AppearanceSettings() {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Language</h2>
           <div className="grid grid-cols-2 gap-4">
             <button
-              onClick={() => setLocale('en')}
-              className={`p-4 border-2 rounded-lg transition-all ${
-                locale === 'en'
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              onClick={() => changeLocale('en')}
+              className={`p-4 border-2 rounded-lg transition-all ${locale === 'en'
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
+                }`}
             >
               <div className="flex items-center gap-3">
                 <div className="text-2xl">🇬🇧</div>
@@ -147,12 +142,11 @@ export default function AppearanceSettings() {
             </button>
 
             <button
-              onClick={() => setLocale('ar')}
-              className={`p-4 border-2 rounded-lg transition-all ${
-                locale === 'ar'
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              onClick={() => changeLocale('ar')}
+              className={`p-4 border-2 rounded-lg transition-all ${locale === 'ar'
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
+                }`}
             >
               <div className="flex items-center gap-3">
                 <div className="text-2xl">🇸🇦</div>
@@ -171,11 +165,10 @@ export default function AppearanceSettings() {
           <div className="grid grid-cols-3 gap-4">
             <button
               onClick={() => setAppearance({ ...appearance, fontSize: 'small' })}
-              className={`p-4 border-2 rounded-lg transition-all ${
-                appearance.fontSize === 'small'
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className={`p-4 border-2 rounded-lg transition-all ${appearance.fontSize === 'small'
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
+                }`}
             >
               <div className="flex flex-col items-center gap-2">
                 <Type className="w-4 h-4 text-gray-700" />
@@ -185,11 +178,10 @@ export default function AppearanceSettings() {
 
             <button
               onClick={() => setAppearance({ ...appearance, fontSize: 'medium' })}
-              className={`p-4 border-2 rounded-lg transition-all ${
-                appearance.fontSize === 'medium'
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className={`p-4 border-2 rounded-lg transition-all ${appearance.fontSize === 'medium'
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
+                }`}
             >
               <div className="flex flex-col items-center gap-2">
                 <Type className="w-5 h-5 text-gray-700" />
@@ -199,11 +191,10 @@ export default function AppearanceSettings() {
 
             <button
               onClick={() => setAppearance({ ...appearance, fontSize: 'large' })}
-              className={`p-4 border-2 rounded-lg transition-all ${
-                appearance.fontSize === 'large'
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className={`p-4 border-2 rounded-lg transition-all ${appearance.fontSize === 'large'
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
+                }`}
             >
               <div className="flex flex-col items-center gap-2">
                 <Type className="w-6 h-6 text-gray-700" />
@@ -219,11 +210,10 @@ export default function AppearanceSettings() {
           <div className="grid grid-cols-3 gap-4">
             <button
               onClick={() => setAppearance({ ...appearance, density: 'compact' })}
-              className={`p-4 border-2 rounded-lg transition-all ${
-                appearance.density === 'compact'
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className={`p-4 border-2 rounded-lg transition-all ${appearance.density === 'compact'
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
+                }`}
             >
               <div className="flex flex-col items-center gap-2">
                 <Layout className="w-4 h-4 text-gray-700" />
@@ -234,11 +224,10 @@ export default function AppearanceSettings() {
 
             <button
               onClick={() => setAppearance({ ...appearance, density: 'comfortable' })}
-              className={`p-4 border-2 rounded-lg transition-all ${
-                appearance.density === 'comfortable'
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className={`p-4 border-2 rounded-lg transition-all ${appearance.density === 'comfortable'
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
+                }`}
             >
               <div className="flex flex-col items-center gap-2">
                 <Layout className="w-5 h-5 text-gray-700" />
@@ -249,11 +238,10 @@ export default function AppearanceSettings() {
 
             <button
               onClick={() => setAppearance({ ...appearance, density: 'spacious' })}
-              className={`p-4 border-2 rounded-lg transition-all ${
-                appearance.density === 'spacious'
-                  ? 'border-blue-600 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+              className={`p-4 border-2 rounded-lg transition-all ${appearance.density === 'spacious'
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-gray-200 hover:border-gray-300'
+                }`}
             >
               <div className="flex flex-col items-center gap-2">
                 <Layout className="w-6 h-6 text-gray-700" />
