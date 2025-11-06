@@ -9,6 +9,8 @@ import { useState, useRef, useEffect } from 'react'
 import { getAllModules } from '@/lib/config/modules'
 import { useTranslation } from '@/lib/providers/TranslationProvider'
 import { useAuth } from '@/lib/auth/hooks'
+import { CommandPalette } from '@/components/search/CommandPalette'
+import { SearchBar } from '@/components/search/SearchBar'
 
 export function Navigation() {
   const pathname = usePathname()
@@ -17,7 +19,7 @@ export function Navigation() {
   const { signOut, user } = useAuth()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [userMenuOpen, setUserMenuOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
   const userMenuRef = useRef<HTMLDivElement>(null)
 
   // Close user menu when clicking outside
@@ -29,6 +31,18 @@ export function Navigation() {
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Close menus with ESC key
+  useEffect(() => {
+    function handleEscKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setUserMenuOpen(false)
+        setMobileMenuOpen(false)
+      }
+    }
+    document.addEventListener('keydown', handleEscKey)
+    return () => document.removeEventListener('keydown', handleEscKey)
   }, [])
 
   const handleLogout = async () => {
@@ -84,19 +98,8 @@ export function Navigation() {
             </div>
           </div>
 
-          {/* Search Bar */}
-          <div className="flex-1 max-w-2xl">
-            <div className="relative">
-              <FiSearch className={`absolute ${locale === 'ar' ? 'right-4' : 'left-4'} top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400`} />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t.common.searchPlaceholder}
-                className={`w-full ${locale === 'ar' ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-safee-500 focus:bg-white transition-all`}
-              />
-            </div>
-          </div>
+          {/* Search Bar with Dropdown */}
+          <SearchBar onOpenCommandPalette={() => setCommandPaletteOpen(true)} />
 
           {/* Right Actions */}
           <div className="flex items-center gap-3">
@@ -236,6 +239,9 @@ export function Navigation() {
           </div>
         )}
       </div>
+
+      {/* Command Palette */}
+      <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
     </nav>
   )
 }

@@ -18,3 +18,43 @@
 body {
   font-feature-settings: "rlig" 1, "calt" 1;
 }
+
+/* Command Palette (cmdk) Styles */
+[cmdk-root] {
+  max-width: 100%;
+}
+
+[cmdk-input] {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background: transparent;
+}
+
+[cmdk-input]::placeholder {
+  color: #9ca3af;
+}
+
+[cmdk-item] {
+  cursor: pointer;
+  user-select: none;
+}
+
+[cmdk-item][data-selected="true"] {
+  background-color: #f3f4f6;
+}
+
+[cmdk-separator] {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 8px 0;
+}
+
+[cmdk-group-heading] {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #9ca3af;
+  padding: 0 8px;
+  margin-bottom: 8px;
+}

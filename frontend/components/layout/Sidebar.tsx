@@ -88,6 +88,19 @@ export const Sidebar = () => {
   const [apps, setApps] = useState<AppItem[]>(defaultApps);
   const [tempApps, setTempApps] = useState<AppItem[]>(defaultApps);
 
+  // Close all menus with ESC key
+  React.useEffect(() => {
+    const handleEscKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setShowCreateMenu(false);
+        setShowCustomizeMenu(false);
+        setShowMyApps(false);
+      }
+    };
+    document.addEventListener('keydown', handleEscKey);
+    return () => document.removeEventListener('keydown', handleEscKey);
+  }, []);
+
   const handleOpenCustomize = () => {
     setTempApps([...apps]);
     setShowCustomizeMenu(true);
@@ -640,10 +653,23 @@ export const Sidebar = () => {
                       <Reorder.Item
                         key={app.id}
                         value={app}
-                        className="flex items-center gap-4 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors cursor-move"
+                        className="flex items-center gap-4 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors cursor-grab active:cursor-grabbing"
                       >
-                        {/* Drag Handle */}
-                        <FiMove className="w-5 h-5 text-gray-400 flex-shrink-0" />
+                        {/* Drag Handle - Grip Icon */}
+                        <div className="flex flex-col gap-1 flex-shrink-0 cursor-grab active:cursor-grabbing">
+                          <div className="flex gap-1">
+                            <div className="w-1 h-1 rounded-full bg-gray-400"></div>
+                            <div className="w-1 h-1 rounded-full bg-gray-400"></div>
+                          </div>
+                          <div className="flex gap-1">
+                            <div className="w-1 h-1 rounded-full bg-gray-400"></div>
+                            <div className="w-1 h-1 rounded-full bg-gray-400"></div>
+                          </div>
+                          <div className="flex gap-1">
+                            <div className="w-1 h-1 rounded-full bg-gray-400"></div>
+                            <div className="w-1 h-1 rounded-full bg-gray-400"></div>
+                          </div>
+                        </div>
 
                         {/* Pin Button */}
                         <button
