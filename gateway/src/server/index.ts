@@ -27,7 +27,7 @@ import { initServerContext } from "./serverContext.js";
 import { initOdooClientManager } from "./services/odoo/manager.service.js";
 import { hoursToMilliseconds } from "date-fns";
 import { toNodeHandler } from "better-auth/node";
-import { initAuth, getAuth } from "../auth/index.js";
+import { auth } from "../auth/index.js";
 import { mergeBetterAuthSpec } from "./mergeOpenApiSpecs.js";
 import type { OpenAPIV3 } from "openapi-types";
 
@@ -103,6 +103,7 @@ export async function server({
         process.env.CORS_ORIGIN || "http://localhost:3001",
         process.env.FRONTEND_URL || "http://localhost:3001",
         process.env.LANDING_URL || "http://localhost:3002",
+        "http://localhost:3000", // Gateway API server (for Swagger UI)
         "http://localhost:8080",
         "http://app.localhost:8080",
         "http://api.localhost:8080",
@@ -113,11 +114,8 @@ export async function server({
 
   app.use(localeMiddleware);
 
-  // Initialize Better Auth AFTER CORS and body parsing
-  initAuth(drizzle);
-  logger.info("Better Auth initialized");
-
-  app.all("/api/v1/auth/*", toNodeHandler(getAuth()));
+  // Better Auth routes
+  app.all("/api/v1/auth/*", toNodeHandler(auth));
   logger.info("Better Auth mounted at /api/v1/auth/*");
 
   logger.info("Odoo client manager initialized");
@@ -210,8 +208,7 @@ export async function server({
 
   let mergedSpec = swaggerDocument as OpenAPIV3.Document;
   try {
-    // @ts-expect-error - Better Auth OpenAPI methods may vary by version
-    const betterAuthSpec = await getAuth().api.generateOpenAPISchema?.();
+    const betterAuthSpec = await auth.api.generateOpenAPISchema?.();
 
     mergedSpec = mergeBetterAuthSpec(
       swaggerDocument as OpenAPIV3.Document,

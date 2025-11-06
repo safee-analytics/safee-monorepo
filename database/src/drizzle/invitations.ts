@@ -10,6 +10,7 @@ export const invitations = identitySchema.table("invitations", {
     .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" }),
   email: varchar("email", { length: 255 }).notNull(),
   role: varchar("role", { length: 50 }),
+  teamId: uuid("team_id"), // Optional - invite to specific team
   status: varchar("status", { length: 20 }).default("pending").notNull(),
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   inviterId: uuid("inviter_id")

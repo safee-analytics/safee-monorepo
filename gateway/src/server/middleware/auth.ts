@@ -1,6 +1,6 @@
 import { Request as ExRequest } from "express";
 import { fromNodeHeaders } from "better-auth/node";
-import { getAuth } from "../../auth/index.js";
+import { auth } from "../../auth/index.js";
 import { getServerContext } from "../serverContext.js";
 import { NoTokenProvided, InvalidToken, InsufficientPermissions, UnknownSecurityScheme } from "../errors.js";
 
@@ -46,7 +46,7 @@ export async function expressAuthentication(
         "Attempting to get session from Better Auth",
       );
 
-      const session = await getAuth().api.getSession({
+      const session = await auth.api.getSession({
         headers,
       });
 

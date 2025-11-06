@@ -8,7 +8,7 @@ export const users = identitySchema.table(
     id: idpk("id"),
     email: varchar("email", { length: 255 }).notNull().unique(),
     name: varchar("name", { length: 255 }),
-    role: varchar("role", { length: 50 }).default("user").notNull(),
+    role: varchar("role", { length: 50 }).default("user"),
     organizationId: uuid("organization_id").references(() => organizations.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
@@ -18,6 +18,18 @@ export const users = identitySchema.table(
 
     emailVerified: boolean("email_verified").default(false).notNull(),
     image: text("image"),
+
+    // Better-Auth admin plugin fields
+    banned: boolean("banned").default(false),
+    banReason: text("ban_reason"),
+    banExpires: timestamp("ban_expires", { withTimezone: true }),
+
+    // Better-Auth username plugin fields
+    username: varchar("username", { length: 255 }).unique(),
+    displayUsername: varchar("display_username", { length: 255 }),
+
+    // Better-Auth lastLoginMethod plugin field
+    lastLoginMethod: text("last_login_method"),
 
     // Profile fields
     phone: varchar("phone", { length: 50 }),
@@ -36,5 +48,6 @@ export const users = identitySchema.table(
     index("users_organization_id_idx").on(table.organizationId),
     index("users_is_active_idx").on(table.isActive),
     index("users_email_verified_idx").on(table.emailVerified),
+    index("users_username_idx").on(table.username),
   ],
 );

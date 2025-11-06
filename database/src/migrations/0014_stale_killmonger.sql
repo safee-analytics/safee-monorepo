@@ -1,0 +1,13 @@
+ALTER TABLE "identity"."users" ALTER COLUMN "role" DROP NOT NULL;
+ALTER TABLE "identity"."invitations" ADD COLUMN "team_id" uuid;
+ALTER TABLE "identity"."users" ADD COLUMN "banned" boolean DEFAULT false;
+ALTER TABLE "identity"."users" ADD COLUMN "ban_reason" text;
+ALTER TABLE "identity"."users" ADD COLUMN "ban_expires" timestamp with time zone;
+ALTER TABLE "identity"."users" ADD COLUMN "username" varchar(255);
+ALTER TABLE "identity"."users" ADD COLUMN "display_username" varchar(255);
+ALTER TABLE "identity"."users" ADD COLUMN "last_login_method" text;
+ALTER TABLE "identity"."sessions" ADD COLUMN "active_organization_id" uuid;
+ALTER TABLE "identity"."sessions" ADD COLUMN "active_team_id" uuid;
+ALTER TABLE "identity"."sessions" ADD COLUMN "impersonated_by" uuid;
+CREATE INDEX "users_username_idx" ON "identity"."users" USING btree ("username");
+ALTER TABLE "identity"."users" ADD CONSTRAINT "users_username_unique" UNIQUE("username");

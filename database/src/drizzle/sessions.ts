@@ -14,6 +14,15 @@ export const sessions = identitySchema.table("sessions", {
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
+
+  // Better-Auth organization plugin fields
+  activeOrganizationId: uuid("active_organization_id"),
+
+  // Better-Auth teams plugin fields
+  activeTeamId: uuid("active_team_id"),
+
+  // Better-Auth admin plugin fields (impersonation)
+  impersonatedBy: uuid("impersonated_by"),
 });
 
 export type Session = typeof sessions.$inferSelect;
