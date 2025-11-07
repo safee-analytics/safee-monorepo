@@ -108,17 +108,17 @@ export class StorageController extends Controller {
       throw new Error("No file provided");
     }
 
-    if (!request.user?.id || !request.user?.organizationId) {
+    if (!request.betterAuthSession?.user.id || !request.betterAuthSession?.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.user.organizationId);
+    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
 
     return await storageService.uploadFile(file, {
       folderId,
       tags: tags ? JSON.parse(tags) : undefined,
       metadata: metadata ? JSON.parse(metadata) : undefined,
-      userId: request.user.id,
+      userId: request.betterAuthSession!.user.id,
     });
   }
 
@@ -139,17 +139,17 @@ export class StorageController extends Controller {
       throw new Error("No files provided");
     }
 
-    if (!request.user?.id || !request.user?.organizationId) {
+    if (!request.betterAuthSession?.user.id || !request.betterAuthSession?.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.user.organizationId);
+    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
 
     return await storageService.uploadFiles(files, {
       folderId,
       tags: tags ? JSON.parse(tags) : undefined,
       metadata: metadata ? JSON.parse(metadata) : undefined,
-      userId: request.user.id,
+      userId: request.betterAuthSession!.user.id,
     });
   }
 
@@ -162,11 +162,11 @@ export class StorageController extends Controller {
     @Path() fileId: string,
     @Request() request: AuthenticatedRequest,
   ): Promise<FileMetadata> {
-    if (!request.user?.organizationId) {
+    if (!request.betterAuthSession?.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.user.organizationId);
+    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
     return await storageService.getFileMetadata(fileId);
   }
 
@@ -176,11 +176,11 @@ export class StorageController extends Controller {
   @Get("files/{fileId}/download")
   @Security("jwt")
   public async downloadFile(@Path() fileId: string, @Request() request: AuthenticatedRequest): Promise<void> {
-    if (!request.user?.organizationId) {
+    if (!request.betterAuthSession?.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.user.organizationId);
+    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = (request as any).res as Response;
     await storageService.downloadFile(fileId, response);
@@ -193,11 +193,11 @@ export class StorageController extends Controller {
   @Security("jwt")
   @SuccessResponse("204", "File deleted successfully")
   public async deleteFile(@Path() fileId: string, @Request() request: AuthenticatedRequest): Promise<void> {
-    if (!request.user?.organizationId) {
+    if (!request.betterAuthSession?.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.user.organizationId);
+    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
     await storageService.deleteFile(fileId);
   }
 
@@ -218,11 +218,11 @@ export class StorageController extends Controller {
     @Query() limit?: number,
     @Query() offset?: number,
   ): Promise<{ files: FileMetadata[]; total: number; hasMore: boolean }> {
-    if (!request.user?.organizationId) {
+    if (!request.betterAuthSession?.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.user.organizationId);
+    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
 
     return await storageService.searchFiles({
       query,
@@ -247,13 +247,13 @@ export class StorageController extends Controller {
     @Body() body: CreateFolderRequest,
     @Request() request: AuthenticatedRequest,
   ): Promise<FolderMetadata> {
-    if (!request.user?.id || !request.user?.organizationId) {
+    if (!request.betterAuthSession?.user.id || !request.betterAuthSession?.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.user.organizationId);
+    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
 
-    return await storageService.createFolder(body.name, body.parentId, request.user.id);
+    return await storageService.createFolder(body.name, body.parentId, request.betterAuthSession!.user.id);
   }
 
   /**
@@ -265,11 +265,11 @@ export class StorageController extends Controller {
     @Path() folderId: string,
     @Request() request: AuthenticatedRequest,
   ): Promise<{ folder: FolderMetadata; files: FileMetadata[]; subFolders: FolderMetadata[] }> {
-    if (!request.user?.organizationId) {
+    if (!request.betterAuthSession?.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.user.organizationId);
+    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
     return await storageService.getFolderContents(folderId);
   }
 
@@ -283,11 +283,11 @@ export class StorageController extends Controller {
     @Path() folderId: string,
     @Request() request: AuthenticatedRequest,
   ): Promise<void> {
-    if (!request.user?.organizationId) {
+    if (!request.betterAuthSession?.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.user.organizationId);
+    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
     await storageService.deleteFolder(folderId);
   }
 
@@ -299,12 +299,12 @@ export class StorageController extends Controller {
   public async getQuota(
     @Request() request: AuthenticatedRequest,
   ): Promise<{ used: number; total: number; remaining: number; unit: string }> {
-    if (!request.user?.id || !request.user?.organizationId) {
+    if (!request.betterAuthSession?.user.id || !request.betterAuthSession?.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.user.organizationId);
+    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
 
-    return await storageService.getQuota(request.user.id);
+    return await storageService.getQuota(request.betterAuthSession!.user.id);
   }
 }

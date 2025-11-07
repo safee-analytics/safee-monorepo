@@ -43,7 +43,7 @@ export class UserController extends Controller {
   @SuccessResponse("200", "User profile retrieved")
   public async getCurrentUser(@Request() req: AuthenticatedRequest): Promise<UserProfileResponse> {
     const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
-    const userId = req.user?.id;
+    const userId = req.betterAuthSession?.user.id;
 
     if (!userId) {
       throw new Unauthorized("User not authenticated");
@@ -78,7 +78,7 @@ export class UserController extends Controller {
     @Request() req: AuthenticatedRequest,
   ): Promise<UserProfileResponse> {
     const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
-    const userId = req.user?.id;
+    const userId = req.betterAuthSession?.user.id;
 
     if (!userId) {
       throw new Unauthorized("User not authenticated");
@@ -115,7 +115,7 @@ export class UserController extends Controller {
     @Request() req: AuthenticatedRequest,
   ): Promise<{ message: string; locale: Locale }> {
     const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
-    const userId = req.user?.id;
+    const userId = req.betterAuthSession?.user.id;
 
     if (!userId) {
       throw new Unauthorized("User not authenticated");

@@ -22,6 +22,9 @@ import { DataProxyService } from "../services/connectors/data-proxy.service.js";
 import { DataMapperService } from "../services/connectors/data-mapper.service.js";
 import { ConnectorFactory } from "../services/connectors/connector.factory.js";
 import type { ConnectorType, ConnectorConfig } from "../services/connectors/base.connector.js";
+import { odooUserProvisioningService } from "../services/odoo/user-provisioning.service.js";
+import { odooDatabaseService } from "../services/odoo/database.service.js";
+import { getOdooClientManager } from "../services/odoo/manager.service.js";
 
 interface CreateConnectorRequest {
   name: string;
@@ -115,8 +118,8 @@ export class ConnectorController extends Controller {
       dataProxyService,
       dataMapperService,
       ctx,
-      organizationId: req.user?.organizationId || "",
-      userId: req.user?.id || "",
+      organizationId: req.betterAuthSession?.session.activeOrganizationId || "",
+      userId: req.betterAuthSession?.user.id || "",
     };
   }
 
@@ -385,5 +388,92 @@ export class ConnectorController extends Controller {
     const { dataMapperService } = this.getServices(req);
 
     return dataMapperService.suggestMappings(request.sourceColumns, request.targetEntity);
+  }
+
+  /**
+   * Get Odoo web credentials for dev access
+   * Returns login, password, and web URL for accessing Odoo UI directly
+   */
+  @Get("/odoo/dev-credentials")
+  @Security("jwt")
+  public async getOdooDevCredentials(
+    @Request() req: AuthenticatedRequest,
+  ): Promise<{
+    login: string;
+    password: string;
+    webUrl: string;
+  } | null> {
+    const { userId, organizationId } = this.getServices(req);
+
+    return await odooUserProvisioningService.getOdooWebPassword(userId, organizationId);
+  }
+
+  /**
+   * Install required Odoo modules for the organization
+   * Installs: Accounting (Hisabiq), CRM (Nisbah), HR & Payroll (Kanz)
+   */
+  @Post("/odoo/install-modules")
+  @Security("jwt")
+  @SuccessResponse("200", "Modules installed successfully")
+  public async installOdooModules(
+    @Request() req: AuthenticatedRequest,
+  ): Promise<{ success: boolean; message: string }> {
+    const { organizationId, ctx } = this.getServices(req);
+
+    try {
+      await odooDatabaseService.installModulesForOrganization(organizationId);
+      ctx.logger.info({ organizationId }, "Odoo modules installed successfully");
+
+      return {
+        success: true,
+        message: "Odoo modules installed successfully",
+      };
+    } catch (error) {
+      ctx.logger.error({ organizationId, error }, "Failed to install Odoo modules");
+      this.setStatus(500);
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : "Failed to install modules",
+      };
+    }
+  }
+
+  /**
+   * Get available fields for an Odoo model (dev tool)
+   * Useful for discovering what fields exist on a model
+   */
+  @Get("/odoo/models/{modelName}/fields")
+  @Security("jwt")
+  public async getOdooModelFields(
+    @Request() req: AuthenticatedRequest,
+    @Path() modelName: string,
+    @Query() simple?: boolean,
+  ): Promise<
+    | Record<string, unknown>
+    | Array<{
+        name: string;
+        type: string;
+        label: string;
+        required?: boolean;
+        readonly?: boolean;
+      }>
+  > {
+    const { userId, organizationId } = this.getServices(req);
+
+    const client = await getOdooClientManager().getClient(userId, organizationId);
+    const fields = await client.fieldsGet(modelName);
+
+    // If simple mode, return just essential info
+    if (simple) {
+      return Object.entries(fields).map(([name, field]: [string, any]) => ({
+        name,
+        type: field.type || "unknown",
+        label: field.string || name,
+        required: field.required || false,
+        readonly: field.readonly || false,
+      }));
+    }
+
+    return fields;
   }
 }

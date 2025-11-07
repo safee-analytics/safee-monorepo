@@ -55,7 +55,7 @@
     "tsoa": "^6.6.0",
     "webdav": "^5.8.0",
     "ws": "^8.16.0",
-    "zod": "^4.0.5"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@types/bcryptjs": "^3.0.0",

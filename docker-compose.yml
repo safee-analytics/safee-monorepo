@@ -62,9 +62,11 @@ services:
       - ODOO_DB_USER=safee
       - ODOO_DB_PASSWORD=safee
       - ODOO_ADMIN_PASSWD=${ODOO_ADMIN_PASSWORD:-admin}
+      - ODOO_ADDONS_PATH=/opt/odoo/addons,/mnt/extra-addons,/mnt/custom-addons
     volumes:
       - odoo-data:/var/lib/odoo
       - ./odoo/addons:/mnt/extra-addons:ro
+      - ./odoo/custom_addons:/mnt/custom-addons:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8069/web/health"]
       interval: 10s

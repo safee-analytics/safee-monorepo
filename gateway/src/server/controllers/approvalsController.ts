@@ -88,8 +88,8 @@ export class ApprovalsController extends Controller {
     @Body() request: SubmitForApprovalRequest,
   ): Promise<SubmitForApprovalResponse> {
     const ctx = getServerContext();
-    const userId = req.user?.id || "";
-    const organizationId = req.user?.organizationId || "";
+    const userId = req.betterAuthSession?.user.id || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
 
     const rulesEngine = new ApprovalRulesEngine(ctx.drizzle);
 
@@ -156,7 +156,7 @@ export class ApprovalsController extends Controller {
     @Query() status?: "pending" | "approved" | "rejected" | "cancelled",
   ): Promise<ApprovalRequestResponse[]> {
     const ctx = getServerContext();
-    const userId = req.user?.id || "";
+    const userId = req.betterAuthSession?.user.id || "";
 
     // Find approval steps assigned to this user
     const approvalSteps = await ctx.drizzle.query.approvalSteps.findMany({
@@ -273,8 +273,8 @@ export class ApprovalsController extends Controller {
     @Body() body: ApprovalActionRequest,
   ): Promise<ApprovalActionResponse> {
     const ctx = getServerContext();
-    const userId = req.user?.id || "";
-    const organizationId = req.user?.organizationId || "";
+    const userId = req.betterAuthSession?.user.id || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
 
     // Get the approval request
     const request = await ctx.drizzle.query.approvalRequests.findFirst({
@@ -389,8 +389,8 @@ export class ApprovalsController extends Controller {
     @Body() body: ApprovalActionRequest,
   ): Promise<ApprovalActionResponse> {
     const ctx = getServerContext();
-    const userId = req.user?.id || "";
-    const organizationId = req.user?.organizationId || "";
+    const userId = req.betterAuthSession?.user.id || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
 
     // Get the approval request
     const request = await ctx.drizzle.query.approvalRequests.findFirst({
@@ -461,7 +461,7 @@ export class ApprovalsController extends Controller {
     @Body() body: DelegateApprovalRequest,
   ): Promise<ApprovalActionResponse> {
     const ctx = getServerContext();
-    const userId = req.user?.id || "";
+    const userId = req.betterAuthSession?.user.id || "";
 
     // Find pending approval step for this user
     const approvalStep = await ctx.drizzle.query.approvalSteps.findFirst({

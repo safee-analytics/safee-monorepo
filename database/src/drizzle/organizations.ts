@@ -10,5 +10,8 @@ export const organizations = identitySchema.table("organizations", {
   defaultLocale: localeEnum("default_locale").default("en").notNull(),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => /* @__PURE__ */ new Date()),
 });

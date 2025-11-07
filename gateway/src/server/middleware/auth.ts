@@ -1,34 +1,19 @@
 import { Request as ExRequest } from "express";
 import { fromNodeHeaders } from "better-auth/node";
-import { auth } from "../../auth/index.js";
+import { auth, type Session } from "../../auth/index.js";
 import { getServerContext } from "../serverContext.js";
 import { NoTokenProvided, InvalidToken, InsufficientPermissions, UnknownSecurityScheme } from "../errors.js";
+import { addAuthContextToLogger } from "./logging.js";
 
 export interface AuthenticatedRequest extends ExRequest {
-  user?: {
-    id: string;
-    email: string;
-    role: string;
-    organizationId: string;
-  };
-}
-
-export interface BetterAuthUser {
-  id: string;
-  email: string;
-  name: string;
-  emailVerified: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  role?: string;
-  organizationId?: string;
+  betterAuthSession?: Session;
 }
 
 export async function expressAuthentication(
   request: ExRequest,
   securityName: string,
   scopes?: string[],
-): Promise<BetterAuthUser> {
+): Promise<Session["user"]> {
   if (securityName === "jwt") {
     const context = getServerContext();
 
@@ -54,7 +39,13 @@ export async function expressAuthentication(
         {
           hasSession: !!session,
           hasUser: !!session?.user,
-          sessionData: session ? { userId: session.user?.id, hasSession: !!session.session } : null,
+          sessionData: session
+            ? {
+                userId: session.user?.id,
+                activeOrgId: session.session?.activeOrganizationId,
+                fullSessionKeys: Object.keys(session.session || {}),
+              }
+            : null,
         },
         "Better Auth session result",
       );
@@ -71,7 +62,7 @@ export async function expressAuthentication(
         throw new NoTokenProvided();
       }
 
-      const user = session.user as BetterAuthUser;
+      const user = session.user;
 
       // Check roles if scopes are provided (scopes map to roles in Better Auth)
       if (scopes && scopes.length > 0) {
@@ -92,13 +83,14 @@ export async function expressAuthentication(
         }
       }
 
-      // Set user on request for TSOA controllers
-      (request as AuthenticatedRequest).user = {
-        id: user.id,
-        email: user.email,
-        role: user.role || "user",
-        organizationId: user.organizationId || "",
-      };
+      // Set Better Auth session on request for TSOA controllers
+      (request as AuthenticatedRequest).betterAuthSession = session;
+
+      // Add authentication context to request-scoped logger
+      const organizationId = session.session.activeOrganizationId ?? null;
+      addAuthContextToLogger(request, user.id, organizationId);
+
+      context.logger.debug({ userId: user.id, organizationId }, "Extracted organization ID from session");
 
       context.logger.debug({ userId: user.id }, "Authentication successful");
 
@@ -123,7 +115,7 @@ export async function expressAuthentication(
 
 export function requireRole(requiredRole: string) {
   return (request: AuthenticatedRequest): boolean => {
-    const user = request.user;
+    const user = request.betterAuthSession?.user;
     if (!user) {
       return false;
     }
@@ -139,7 +131,7 @@ export function requireRole(requiredRole: string) {
 
 export function requireAdmin() {
   return (request: AuthenticatedRequest): boolean => {
-    const user = request.user;
+    const user = request.betterAuthSession?.user;
     return user?.role === "admin";
   };
 }

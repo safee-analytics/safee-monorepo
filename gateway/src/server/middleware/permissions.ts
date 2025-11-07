@@ -126,12 +126,17 @@ export async function hasRole(userId: string, organizationId: string, role: stri
  */
 export function requirePermission(action: PermissionAction, resource: PermissionResource) {
   return async (request: AuthenticatedRequest): Promise<void> => {
-    const user = request.user;
-    if (!user) {
+    const session = request.betterAuthSession;
+    if (!session) {
       throw new InsufficientPermissions();
     }
 
-    const allowed = await hasPermission(user.id, user.organizationId, action, resource);
+    const organizationId = session.session.activeOrganizationId;
+    if (!organizationId) {
+      throw new InsufficientPermissions();
+    }
+
+    const allowed = await hasPermission(session.user.id, organizationId, action, resource);
 
     if (!allowed) {
       throw new InsufficientPermissions();

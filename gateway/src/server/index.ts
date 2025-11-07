@@ -20,6 +20,8 @@ import type { RedisClient, DrizzleClient, Storage, PubSub, JobScheduler, Locale 
 import { SessionStore } from "./SessionStore.js";
 import { RegisterRoutes } from "./routes.js";
 import { localeMiddleware } from "./middleware/localeMiddleware.js";
+import { loggingMiddleware } from "./middleware/logging.js";
+import type { AuthenticatedRequest } from "./middleware/auth.js";
 import { ApiError } from "./errors.js";
 import swaggerDocument from "./swagger.json" with { type: "json" };
 import pg from "pg";
@@ -170,6 +172,9 @@ export async function server({
     );
   }
 
+  // Add request-scoped logging with request IDs
+  app.use(loggingMiddleware(logger as unknown as Logger));
+
   app.use(
     pinoHttp(
       {
@@ -181,10 +186,14 @@ export async function server({
             return req;
           },
         },
-        customProps: (req) => ({
-          userId: req.authenticatedUserId ?? "unknown",
-          organizationId: req.organizationId ?? "unknown",
-        }),
+        customProps: (req) => {
+          // Type-safe access to authenticated user data
+          const authReq = req as unknown as AuthenticatedRequest;
+          return {
+            userId: authReq.betterAuthSession?.user.id,
+            organizationId: authReq.betterAuthSession?.session.activeOrganizationId,
+          };
+        },
       },
       undefined,
     ),
@@ -257,8 +266,15 @@ export async function server({
     }
 
     logger.error(
-      { err, url: req.url, userId: req.authenticatedUserId },
-      "Error in request handler reached end of chain",
+      {
+        err,
+        errorMessage: err instanceof Error ? err.message : String(err),
+        errorStack: err instanceof Error ? err.stack : undefined,
+        url: req.url,
+        method: req.method,
+        userId: req.authenticatedUserId,
+      },
+      "Unhandled error in request handler",
     );
     return res.status(500).json({
       message: "Internal Server Error",

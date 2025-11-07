@@ -3,6 +3,7 @@ import { odooDatabaseService } from "../services/odoo/database.service.js";
 import { getOdooClientManager } from "../services/odoo/manager.service.js";
 import { OdooClient } from "../services/odoo/client.js";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
+import { BadRequest } from "../errors.js";
 
 interface OdooProvisionResponse {
   success: boolean;
@@ -96,7 +97,14 @@ export class OdooController extends Controller {
   @Post("/provision")
   @Security("jwt")
   public async provisionDatabase(@Request() request: AuthenticatedRequest): Promise<OdooProvisionResponse> {
-    const organizationId = request.user!.organizationId;
+    const organizationId = request.betterAuthSession?.session.activeOrganizationId;
+
+    if (!organizationId) {
+      throw new BadRequest(
+        "No active organization selected. Please set an active organization first.",
+        { userId: request.betterAuthSession?.user.id }
+      );
+    }
 
     const result = await odooDatabaseService.provisionDatabase(organizationId);
 
@@ -112,7 +120,7 @@ export class OdooController extends Controller {
   @Get("/info")
   @Security("jwt")
   public async getDatabaseInfo(@Request() request: AuthenticatedRequest): Promise<OdooInfoResponse> {
-    const organizationId = request.user!.organizationId;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
 
     const info = await odooDatabaseService.getDatabaseInfo(organizationId);
 
@@ -130,7 +138,7 @@ export class OdooController extends Controller {
   @Delete("/")
   @Security("jwt")
   public async deleteDatabase(@Request() request: AuthenticatedRequest): Promise<OdooDeleteResponse> {
-    const organizationId = request.user!.organizationId;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
 
     await odooDatabaseService.deleteDatabase(organizationId);
 
@@ -146,7 +154,7 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooDuplicateRequest,
   ): Promise<OdooDuplicateResponse> {
-    const organizationId = request.user!.organizationId;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
 
     const info = await odooDatabaseService.getDatabaseInfo(organizationId);
     if (!info.exists) {
@@ -175,7 +183,7 @@ export class OdooController extends Controller {
   public async backupDatabase(
     @Request() request: AuthenticatedRequest,
   ): Promise<{ success: boolean; data: string }> {
-    const organizationId = request.user!.organizationId;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
 
     const info = await odooDatabaseService.getDatabaseInfo(organizationId);
     if (!info.exists) {
@@ -231,8 +239,8 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooSearchRequest,
   ): Promise<number[]> {
-    const userId = request.user!.id;
-    const organizationId = request.user!.organizationId;
+    const userId = request.betterAuthSession!.user.id;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
     return client.search(body.model, body.domain || [], {
@@ -248,8 +256,8 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooSearchReadRequest,
   ): Promise<Record<string, unknown>[]> {
-    const userId = request.user!.id;
-    const organizationId = request.user!.organizationId;
+    const userId = request.betterAuthSession!.user.id;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
     return client.searchRead(
@@ -271,8 +279,8 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooReadRequest,
   ): Promise<Record<string, unknown>[]> {
-    const userId = request.user!.id;
-    const organizationId = request.user!.organizationId;
+    const userId = request.betterAuthSession!.user.id;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
     return client.read(body.model, body.ids, body.fields || [], body.context);
@@ -284,8 +292,8 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooCreateRequest,
   ): Promise<{ id: number }> {
-    const userId = request.user!.id;
-    const organizationId = request.user!.organizationId;
+    const userId = request.betterAuthSession!.user.id;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
     const id = await client.create(body.model, body.values, body.context);
@@ -299,8 +307,8 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooWriteRequest,
   ): Promise<{ success: boolean }> {
-    const userId = request.user!.id;
-    const organizationId = request.user!.organizationId;
+    const userId = request.betterAuthSession!.user.id;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
     const success = await client.write(body.model, body.ids, body.values, body.context);
@@ -314,8 +322,8 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooUnlinkRequest,
   ): Promise<{ success: boolean }> {
-    const userId = request.user!.id;
-    const organizationId = request.user!.organizationId;
+    const userId = request.betterAuthSession!.user.id;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
     const success = await client.unlink(body.model, body.ids, body.context);
@@ -329,8 +337,8 @@ export class OdooController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: OdooExecuteRequest,
   ): Promise<unknown> {
-    const userId = request.user!.id;
-    const organizationId = request.user!.organizationId;
+    const userId = request.betterAuthSession!.user.id;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
     return client.execute(body.model, body.method, body.args || [], body.kwargs || {});

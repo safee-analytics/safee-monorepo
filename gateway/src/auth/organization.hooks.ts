@@ -2,6 +2,10 @@ import type { OrganizationOptions } from "better-auth/plugins/organization";
 import { logger } from "../server/utils/logger.js";
 import { odooDatabaseService } from "../server/services/odoo/database.service.js";
 import { odooUserProvisioningService } from "../server/services/odoo/user-provisioning.service.js";
+import { connect, schema } from "@safee/database";
+import { eq } from "drizzle-orm";
+
+const { drizzle } = connect("organization-hooks");
 
 /**
  * Organization lifecycle hooks for Better Auth
@@ -14,6 +18,25 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
       { organizationId: organization.id, userId: user.id },
       "Organization created, provisioning Odoo",
     );
+
+    // Update user's organization_id to the newly created organization
+    // This sets the default organization for the user who created it
+    try {
+      await drizzle
+        .update(schema.users)
+        .set({ organizationId: organization.id })
+        .where(eq(schema.users.id, user.id));
+
+      logger.info(
+        { userId: user.id, organizationId: organization.id },
+        "User's default organization set to newly created organization",
+      );
+    } catch (error) {
+      logger.error(
+        { error, userId: user.id, organizationId: organization.id },
+        "Failed to update user's default organization",
+      );
+    }
 
     setImmediate(async () => {
       try {

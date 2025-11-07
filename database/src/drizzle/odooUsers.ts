@@ -23,7 +23,8 @@ export const odooUsers = identitySchema.table("odoo_users", {
   // Odoo user details
   odooUid: integer("odoo_uid").notNull(), // Odoo's internal user ID
   odooLogin: varchar("odoo_login", { length: 255 }).notNull(), // Usually email
-  odooPassword: varchar("odoo_password", { length: 512 }).notNull(), // Encrypted
+  odooPassword: varchar("odoo_password", { length: 512 }).notNull(), // Encrypted API key for RPC operations
+  odooWebPassword: varchar("odoo_web_password", { length: 512 }), // Encrypted password for web UI login
 
   // Status
   isActive: boolean("is_active").default(true).notNull(),

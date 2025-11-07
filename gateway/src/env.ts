@@ -53,6 +53,7 @@ export const DATABASE_URL = ENV !== "test" ? required("DATABASE_URL") : null;
 
 // Odoo Configuration
 export const ODOO_URL = process.env.ODOO_URL ?? "http://localhost:8069";
+export const ODOO_PORT = number("ODOO_PORT", 8069);
 export const ODOO_ADMIN_PASSWORD = process.env.ODOO_ADMIN_PASSWORD ?? "admin";
 
 // export const PUBSUB_TOPIC_PREFIX = process.env.PUBSUB_TOPIC_PREFIX ?? "colony";
@@ -91,6 +92,7 @@ export const env = {
   APPLICATION_INSIGHTS_INSTRUMENTATION_KEY,
   DATABASE_URL,
   ODOO_URL,
+  ODOO_PORT,
   ODOO_ADMIN_PASSWORD,
   USE_CLOUD_STORAGE,
   FILE_UPLOAD_BUCKET,

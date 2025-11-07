@@ -1,5 +1,6 @@
 import type { Logger } from "pino";
 import type { DrizzleClient } from "@safee/database";
+import { schema, eq, and } from "@safee/database";
 import { createOdooClient, type OdooClient, type OdooConnectionConfig } from "./client.service.js";
 import { OperationFailed } from "../../errors.js";
 import { odooUserProvisioningService } from "./user-provisioning.service.js";
@@ -64,11 +65,34 @@ export class OdooClientManager {
     const odooUrl = process.env.ODOO_URL || "http://localhost:8069";
     const odooPort = parseInt(process.env.ODOO_PORT || "8069", 10);
 
+    // Get user's email for login (stored as odooLogin)
+    const user = await this.drizzle.query.odooUsers.findFirst({
+      where: and(
+        eq(schema.odooUsers.userId, userId),
+        eq(schema.odooUsers.odooDatabaseId, (await this.drizzle.query.odooDatabases.findFirst({
+          where: eq(schema.odooDatabases.organizationId, organizationId),
+        }))!.id),
+      ),
+    });
+
+    if (!user) {
+      throw new OperationFailed("Odoo user record not found");
+    }
+
+    this.logger.info(
+      {
+        userId,
+        odooLogin: user.odooLogin,
+        odooDatabaseName: userCredentials.databaseName,
+      },
+      "Authenticating Odoo client with user credentials"
+    );
+
     const config: OdooConnectionConfig = {
       url: odooUrl,
       port: odooPort,
       database: userCredentials.databaseName,
-      username: `${userCredentials.odooUid}`, // Odoo can authenticate with UID directly
+      username: user.odooLogin, // Use login (email), not UID
       password: userCredentials.odooPassword,
     };
 
