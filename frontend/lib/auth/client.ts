@@ -16,7 +16,7 @@ const getBaseURL = () => {
 const baseURL = getBaseURL();
 
 export const authClient = createAuthClient({
-  baseURL: `${baseURL}/api/v1/auth`,
+  baseURL: `${baseURL}/api/v1`,
   plugins: [organizationClient()],
   fetchOptions: {
     credentials: "include", // Always include cookies in cross-origin requests

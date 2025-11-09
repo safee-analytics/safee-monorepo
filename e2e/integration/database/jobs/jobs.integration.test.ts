@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { connectTest, createTestDeps } from "../test-helpers/integration-setup.js";
 import {
+  connectTest,
+  createTestDeps,
   createJob,
   getJobById,
   getJobsByStatus,
@@ -12,9 +13,11 @@ import {
   failJob,
   cancelJob,
   getJobStats,
-} from "./jobs.js";
-import type { DrizzleClient } from "../index.js";
-import { organizations } from "../drizzle/index.js";
+  schema,
+  type DrizzleClient,
+} from "@safee/database";
+
+const { organizations } = schema;
 
 describe("Jobs Integration Tests", () => {
   let db: DrizzleClient;

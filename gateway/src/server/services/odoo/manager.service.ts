@@ -69,9 +69,12 @@ export class OdooClientManager {
     const user = await this.drizzle.query.odooUsers.findFirst({
       where: and(
         eq(schema.odooUsers.userId, userId),
-        eq(schema.odooUsers.odooDatabaseId, (await this.drizzle.query.odooDatabases.findFirst({
-          where: eq(schema.odooDatabases.organizationId, organizationId),
-        }))!.id),
+        eq(
+          schema.odooUsers.odooDatabaseId,
+          (await this.drizzle.query.odooDatabases.findFirst({
+            where: eq(schema.odooDatabases.organizationId, organizationId),
+          }))!.id,
+        ),
       ),
     });
 
@@ -85,7 +88,7 @@ export class OdooClientManager {
         odooLogin: user.odooLogin,
         odooDatabaseName: userCredentials.databaseName,
       },
-      "Authenticating Odoo client with user credentials"
+      "Authenticating Odoo client with user credentials",
     );
 
     const config: OdooConnectionConfig = {

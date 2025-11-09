@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { inArray } from "drizzle-orm";
-import { connectTest, createTestDeps } from "../test-helpers/integration-setup.js";
 import {
+  connectTest,
+  createTestDeps,
   createJobLog,
   getJobLogs,
   getJobErrorLogs,
@@ -11,10 +12,12 @@ import {
   logJobDebug,
   cleanupOldJobLogs,
   getJobLogsSummary,
-} from "./jobLogs.js";
-import { createJob } from "./jobs.js";
-import type { DrizzleClient } from "../index.js";
-import { organizations, jobLogs } from "../drizzle/index.js";
+  createJob,
+  schema,
+  type DrizzleClient,
+} from "@safee/database";
+
+const { organizations, jobLogs } = schema;
 
 describe("JobLogs Integration Tests", () => {
   let db: DrizzleClient;

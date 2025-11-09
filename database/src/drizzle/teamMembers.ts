@@ -7,7 +7,9 @@ import { sql } from "drizzle-orm";
 export const teamMembers = identitySchema.table(
   "team_members",
   {
-    id: uuid("id").default(sql`uuid_generate_v4()`).notNull(),
+    id: uuid("id")
+      .default(sql`uuid_generate_v4()`)
+      .notNull(),
     teamId: uuid("team_id")
       .notNull()
       .references(() => teams.id, {

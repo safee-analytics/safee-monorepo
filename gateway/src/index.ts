@@ -3,6 +3,11 @@ import { connect, redisConnect, getStorage, getDefaultPubSub, JobScheduler } fro
 import { LOG_LEVEL, ENV } from "./env.js";
 import { startServer } from "./server/index.js";
 
+// Export for testing
+export * from "./server/services/password.js";
+export * from "./server/errors.js";
+export * from "./test-helpers/test-app.js";
+
 const isDevelopment = ENV === "local" || ENV === "development";
 
 const logger = pino({

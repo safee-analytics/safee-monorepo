@@ -8,8 +8,8 @@
 
 export interface PaymentResponse {
   id?: number;
-  paymentType: 'inbound' | 'outbound' | 'transfer';
-  partnerType: 'customer' | 'supplier';
+  paymentType: "inbound" | "outbound" | "transfer";
+  partnerType: "customer" | "supplier";
   partnerId: number;
   partnerName?: string;
   amount: number;
@@ -19,7 +19,7 @@ export interface PaymentResponse {
   journalName?: string;
   paymentMethodId?: number;
   ref?: string;
-  state?: 'draft' | 'posted' | 'sent' | 'reconciled' | 'cancelled';
+  state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
 }
 
 export interface PartnerResponse {
@@ -39,7 +39,7 @@ export interface JournalResponse {
   id: number;
   name: string;
   code: string;
-  type: 'sale' | 'purchase' | 'cash' | 'bank' | 'general';
+  type: "sale" | "purchase" | "cash" | "bank" | "general";
   currencyId?: number;
   currencyName?: string;
   companyId: number;
@@ -52,8 +52,8 @@ export interface TaxResponse {
   id: number;
   name: string;
   amount: number;
-  amountType: 'percent' | 'division' | 'fixed' | 'group';
-  typeTaxUse: 'sale' | 'purchase' | 'none';
+  amountType: "percent" | "division" | "fixed" | "group";
+  typeTaxUse: "sale" | "purchase" | "none";
   active: boolean;
 }
 

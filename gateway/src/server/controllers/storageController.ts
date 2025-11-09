@@ -71,7 +71,7 @@ export interface FileSearchParams {
   offset?: number;
 }
 
-@Route("api/v1/storage")
+@Route("storage")
 @Tags("Storage")
 export class StorageController extends Controller {
   private connectorService: StorageConnectorService;
@@ -112,7 +112,9 @@ export class StorageController extends Controller {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
+    const storageService = await this.getStorageService(
+      request.betterAuthSession!.session.activeOrganizationId!,
+    );
 
     return await storageService.uploadFile(file, {
       folderId,
@@ -143,7 +145,9 @@ export class StorageController extends Controller {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
+    const storageService = await this.getStorageService(
+      request.betterAuthSession!.session.activeOrganizationId!,
+    );
 
     return await storageService.uploadFiles(files, {
       folderId,
@@ -166,7 +170,9 @@ export class StorageController extends Controller {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
+    const storageService = await this.getStorageService(
+      request.betterAuthSession!.session.activeOrganizationId!,
+    );
     return await storageService.getFileMetadata(fileId);
   }
 
@@ -180,7 +186,9 @@ export class StorageController extends Controller {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
+    const storageService = await this.getStorageService(
+      request.betterAuthSession!.session.activeOrganizationId!,
+    );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = (request as any).res as Response;
     await storageService.downloadFile(fileId, response);
@@ -197,7 +205,9 @@ export class StorageController extends Controller {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
+    const storageService = await this.getStorageService(
+      request.betterAuthSession!.session.activeOrganizationId!,
+    );
     await storageService.deleteFile(fileId);
   }
 
@@ -222,7 +232,9 @@ export class StorageController extends Controller {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
+    const storageService = await this.getStorageService(
+      request.betterAuthSession!.session.activeOrganizationId!,
+    );
 
     return await storageService.searchFiles({
       query,
@@ -251,7 +263,9 @@ export class StorageController extends Controller {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
+    const storageService = await this.getStorageService(
+      request.betterAuthSession!.session.activeOrganizationId!,
+    );
 
     return await storageService.createFolder(body.name, body.parentId, request.betterAuthSession!.user.id);
   }
@@ -269,7 +283,9 @@ export class StorageController extends Controller {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
+    const storageService = await this.getStorageService(
+      request.betterAuthSession!.session.activeOrganizationId!,
+    );
     return await storageService.getFolderContents(folderId);
   }
 
@@ -287,7 +303,9 @@ export class StorageController extends Controller {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
+    const storageService = await this.getStorageService(
+      request.betterAuthSession!.session.activeOrganizationId!,
+    );
     await storageService.deleteFolder(folderId);
   }
 
@@ -303,7 +321,9 @@ export class StorageController extends Controller {
       throw new Error("User not authenticated");
     }
 
-    const storageService = await this.getStorageService(request.betterAuthSession!.session.activeOrganizationId!);
+    const storageService = await this.getStorageService(
+      request.betterAuthSession!.session.activeOrganizationId!,
+    );
 
     return await storageService.getQuota(request.betterAuthSession!.user.id);
   }

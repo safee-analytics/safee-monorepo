@@ -78,9 +78,7 @@ export const organizationRoles = pgTable("organization_roles", {
   role: text("role").notNull(),
   permission: text("permission").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").$onUpdate(
-    () => /* @__PURE__ */ new Date(),
-  ),
+  updatedAt: timestamp("updated_at").$onUpdate(() => /* @__PURE__ */ new Date()),
 });
 
 export const teams = pgTable("teams", {
@@ -90,9 +88,7 @@ export const teams = pgTable("teams", {
     .notNull()
     .references(() => organizations.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at").notNull(),
-  updatedAt: timestamp("updated_at").$onUpdate(
-    () => /* @__PURE__ */ new Date(),
-  ),
+  updatedAt: timestamp("updated_at").$onUpdate(() => /* @__PURE__ */ new Date()),
 });
 
 export const teamMembers = pgTable("team_members", {

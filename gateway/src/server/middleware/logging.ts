@@ -38,7 +38,7 @@ export function loggingMiddleware(logger: Logger) {
         ip: req.ip,
         userAgent: req.headers["user-agent"],
       },
-      "→ Incoming request"
+      "→ Incoming request",
     );
 
     // Capture response
@@ -60,12 +60,12 @@ export function loggingMiddleware(logger: Logger) {
         {
           statusCode,
           duration,
-          userId: (req as any).authenticatedUserId,
-          organizationId: (req as any).organizationId,
+          userId: req.authenticatedUserId,
+          organizationId: req.organizationId,
           // Don't log response body for successful requests to reduce noise
           ...(statusCode >= 400 && responseBody ? { responseBody } : {}),
         },
-        `← Response ${statusCode} (${duration}ms)`
+        `← Response ${statusCode} (${duration}ms)`,
       );
     });
 

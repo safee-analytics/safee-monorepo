@@ -1,11 +1,17 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from "vitest";
-import { connectTest, createTestDeps } from "../test-helpers/integration-setup.js";
-import { JobScheduler } from "./jobScheduler.js";
-import { InMemoryPubSub } from "../pubsub/inMemoryPubSub.js";
-import { createJobSchedule } from "../jobs/jobSchedules.js";
-import { createJob, getJobById } from "../jobs/jobs.js";
-import type { DrizzleClient } from "../index.js";
-import { organizations, jobSchedules } from "../drizzle/index.js";
+import {
+  connectTest,
+  createTestDeps,
+  JobScheduler,
+  InMemoryPubSub,
+  createJobSchedule,
+  createJob,
+  getJobById,
+  schema,
+  type DrizzleClient,
+} from "@safee/database";
+
+const { organizations, jobSchedules } = schema;
 
 describe("JobScheduler Integration Tests", () => {
   let db: DrizzleClient;

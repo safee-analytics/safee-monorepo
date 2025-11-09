@@ -100,10 +100,9 @@ export class OdooController extends Controller {
     const organizationId = request.betterAuthSession?.session.activeOrganizationId;
 
     if (!organizationId) {
-      throw new BadRequest(
-        "No active organization selected. Please set an active organization first.",
-        { userId: request.betterAuthSession?.user.id }
-      );
+      throw new BadRequest("No active organization selected. Please set an active organization first.", {
+        userId: request.betterAuthSession?.user.id,
+      });
     }
 
     const result = await odooDatabaseService.provisionDatabase(organizationId);

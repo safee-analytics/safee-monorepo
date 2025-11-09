@@ -10,7 +10,7 @@ import { createSessionHooks } from "./session.hooks.js";
 const { drizzle } = connect("better-auth");
 
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL || "http://app.localhost:8080/api/v1/auth",
+  baseURL: process.env.BETTER_AUTH_URL || "http://app.localhost:8080/api/v1",
   database: drizzleAdapter(drizzle, {
     provider: "pg",
     usePlural: true,

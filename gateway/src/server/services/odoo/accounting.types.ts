@@ -8,12 +8,25 @@ export interface OdooAccount {
   id: number;
   code: string;
   name: string;
-  account_type: 'asset_receivable' | 'asset_cash' | 'asset_current' | 'asset_non_current' | 'asset_prepayments' | 'asset_fixed' |
-                 'liability_payable' | 'liability_credit_card' | 'liability_current' | 'liability_non_current' |
-                 'equity' | 'equity_unaffected' |
-                 'income' | 'income_other' |
-                 'expense' | 'expense_depreciation' | 'expense_direct_cost' |
-                 'off_balance';
+  account_type:
+    | "asset_receivable"
+    | "asset_cash"
+    | "asset_current"
+    | "asset_non_current"
+    | "asset_prepayments"
+    | "asset_fixed"
+    | "liability_payable"
+    | "liability_credit_card"
+    | "liability_current"
+    | "liability_non_current"
+    | "equity"
+    | "equity_unaffected"
+    | "income"
+    | "income_other"
+    | "expense"
+    | "expense_depreciation"
+    | "expense_direct_cost"
+    | "off_balance";
   currency_id?: [number, string];
   company_id: [number, string];
   group_id?: [number, string];
@@ -34,19 +47,19 @@ export interface OdooInvoiceLine {
 export interface OdooInvoice {
   id?: number;
   name?: string; // Invoice number (auto-generated)
-  move_type: 'out_invoice' | 'out_refund' | 'in_invoice' | 'in_refund' | 'entry';
+  move_type: "out_invoice" | "out_refund" | "in_invoice" | "in_refund" | "entry";
   partner_id: number; // Customer/Supplier ID
   invoice_date?: string; // YYYY-MM-DD
   invoice_date_due?: string; // YYYY-MM-DD
   payment_reference?: string;
   currency_id?: number;
   invoice_line_ids: Array<[0, 0, OdooInvoiceLine]>; // Odoo one2many create format
-  state?: 'draft' | 'posted' | 'cancel';
+  state?: "draft" | "posted" | "cancel";
   amount_untaxed?: number;
   amount_tax?: number;
   amount_total?: number;
   amount_residual?: number; // Amount due
-  payment_state?: 'not_paid' | 'in_payment' | 'paid' | 'partial' | 'reversed';
+  payment_state?: "not_paid" | "in_payment" | "paid" | "partial" | "reversed";
   journal_id?: number;
   company_id?: number;
   invoice_origin?: string; // Reference (e.g., Sales Order number)
@@ -56,8 +69,8 @@ export interface OdooInvoice {
 export interface OdooPayment {
   id?: number;
   name?: string;
-  payment_type: 'inbound' | 'outbound' | 'transfer';
-  partner_type: 'customer' | 'supplier';
+  payment_type: "inbound" | "outbound" | "transfer";
+  partner_type: "customer" | "supplier";
   partner_id: number | [number, string];
   amount: number;
   amount_signed?: number;
@@ -71,7 +84,7 @@ export interface OdooPayment {
   payment_method_code?: string;
   memo?: string; // Payment reference (was ref)
   payment_reference?: string;
-  state?: 'draft' | 'posted' | 'sent' | 'reconciled' | 'cancelled';
+  state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
   is_reconciled?: boolean;
   is_matched?: boolean;
   partner_bank_id?: number | [number, string];
@@ -87,7 +100,7 @@ export interface OdooJournal {
   id: number;
   name: string;
   code: string;
-  type: 'sale' | 'purchase' | 'cash' | 'bank' | 'general';
+  type: "sale" | "purchase" | "cash" | "bank" | "general";
   currency_id?: [number, string];
   company_id: [number, string];
   default_account_id: [number, string];
@@ -110,8 +123,8 @@ export interface OdooTax {
   id: number;
   name: string;
   amount: number;
-  amount_type: 'percent' | 'division' | 'fixed' | 'group';
-  type_tax_use: 'sale' | 'purchase' | 'none';
+  amount_type: "percent" | "division" | "fixed" | "group";
+  type_tax_use: "sale" | "purchase" | "none";
   active: boolean;
 }
 
@@ -185,9 +198,9 @@ export interface CreateInvoiceDTO {
 }
 
 export interface CreatePaymentDTO {
-  type: 'inbound' | 'outbound';
+  type: "inbound" | "outbound";
   partnerId: number;
-  partnerType: 'customer' | 'supplier';
+  partnerType: "customer" | "supplier";
   amount: number;
   date: string;
   journalId: number;
@@ -208,7 +221,7 @@ export interface PartnerLedgerQuery {
 }
 
 export interface FinancialReportQuery {
-  reportType: 'balance_sheet' | 'profit_loss' | 'cash_flow';
+  reportType: "balance_sheet" | "profit_loss" | "cash_flow";
   dateFrom?: string;
   dateTo?: string;
   comparisonDateFrom?: string;

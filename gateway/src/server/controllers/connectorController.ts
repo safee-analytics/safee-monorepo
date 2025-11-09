@@ -396,9 +396,7 @@ export class ConnectorController extends Controller {
    */
   @Get("/odoo/dev-credentials")
   @Security("jwt")
-  public async getOdooDevCredentials(
-    @Request() req: AuthenticatedRequest,
-  ): Promise<{
+  public async getOdooDevCredentials(@Request() req: AuthenticatedRequest): Promise<{
     login: string;
     password: string;
     webUrl: string;
@@ -465,13 +463,16 @@ export class ConnectorController extends Controller {
 
     // If simple mode, return just essential info
     if (simple) {
-      return Object.entries(fields).map(([name, field]: [string, any]) => ({
-        name,
-        type: field.type || "unknown",
-        label: field.string || name,
-        required: field.required || false,
-        readonly: field.readonly || false,
-      }));
+      return Object.entries(fields).map(([name, field]) => {
+        const fieldInfo = field as Record<string, unknown>;
+        return {
+          name,
+          type: (fieldInfo.type as string) || "unknown",
+          label: (fieldInfo.string as string) || name,
+          required: (fieldInfo.required as boolean) || false,
+          readonly: (fieldInfo.readonly as boolean) || false,
+        };
+      });
     }
 
     return fields;

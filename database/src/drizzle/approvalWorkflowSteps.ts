@@ -1,7 +1,6 @@
-import { uuid, integer, varchar, index } from "drizzle-orm/pg-core";
+import { uuid, integer, index } from "drizzle-orm/pg-core";
 import { systemSchema, idpk } from "./_common.js";
 import { approvalWorkflows } from "./approvalWorkflows.js";
-import { users } from "./users.js";
 
 export const stepTypeEnum = systemSchema.enum("step_type", ["single", "parallel", "any"]);
 export const approverTypeEnum = systemSchema.enum("approver_type", ["role", "team", "user"]);

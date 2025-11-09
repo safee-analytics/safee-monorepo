@@ -6,6 +6,7 @@ import {
   Route,
   Tags,
   Security,
+  NoSecurity,
   Query,
   Body,
   Path,
@@ -19,9 +20,6 @@ import {
   OdooSigningService,
   type CreateSignRequestDTO,
   type CreateSignTemplateDTO,
-  type OdooSignRequest,
-  type OdooSignRequestItem,
-  type OdooSignTemplate,
 } from "../services/odoo/signing.service.js";
 
 interface SignRequestResponse {
@@ -88,6 +86,7 @@ interface SignedDocumentResponse {
 @Route("sign")
 @Tags("Signing (Electronic Signatures)")
 export class SigningController extends Controller {
+  @NoSecurity()
   private async getSigningService(request: AuthenticatedRequest): Promise<OdooSigningService> {
     const userId = request.betterAuthSession!.user.id;
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
@@ -383,9 +382,7 @@ export class SigningController extends Controller {
   @Get("stats")
   @Security("jwt")
   @OperationId("GetSignatureStats")
-  public async getSignatureStats(
-    @Request() request: AuthenticatedRequest,
-  ): Promise<SigningStatsResponse> {
+  public async getSignatureStats(@Request() request: AuthenticatedRequest): Promise<SigningStatsResponse> {
     const service = await this.getSigningService(request);
     return service.getSignatureStats();
   }

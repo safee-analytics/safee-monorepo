@@ -6,7 +6,12 @@ import { odooClient } from "./client.js";
 import { createOdooClient, type OdooConnectionConfig } from "./client.service.js";
 import { encryptionService } from "../encryption.js";
 import { env } from "../../../env.js";
-import { OrganizationNotFound, OdooDatabaseAlreadyExists, OdooDatabaseNotFound, OperationFailed } from "../../errors.js";
+import {
+  OrganizationNotFound,
+  OdooDatabaseAlreadyExists,
+  OdooDatabaseNotFound,
+  OperationFailed,
+} from "../../errors.js";
 import { Logger } from "pino";
 import { getServerContext } from "../../serverContext.js";
 
@@ -18,9 +23,7 @@ export interface OdooProvisionResult {
 }
 
 export class OdooDatabaseService {
-  constructor(
-    private readonly drizzle: DrizzleClient,
-  ) {}
+  constructor(private readonly drizzle: DrizzleClient) {}
 
   private get logger(): Logger {
     return getServerContext().logger;
@@ -106,12 +109,7 @@ export class OdooDatabaseService {
 
         // Install the module using button_immediate_install
         this.logger.info({ module: module.name, moduleId }, "Triggering module installation");
-        await client.execute<boolean>(
-          "ir.module.module",
-          "button_immediate_install",
-          [[moduleId]],
-          {},
-        );
+        await client.execute<boolean>("ir.module.module", "button_immediate_install", [[moduleId]], {});
 
         this.logger.info({ module: module.name }, "Module installed successfully");
       } catch (error) {
@@ -120,30 +118,42 @@ export class OdooDatabaseService {
       }
     }
 
-    this.logger.info({ databaseName, moduleCount: modulesToInstall.length }, "All required modules installed");
+    this.logger.info(
+      { databaseName, moduleCount: modulesToInstall.length },
+      "All required modules installed",
+    );
   }
 
   async provisionDatabase(organizationId: string): Promise<OdooProvisionResult> {
-    this.logger.info({ organizationId, orgIdType: typeof organizationId }, "Starting Odoo database provisioning");
+    this.logger.info(
+      { organizationId, orgIdType: typeof organizationId },
+      "Starting Odoo database provisioning",
+    );
 
-    this.logger.debug({
-      organizationId,
-      searchingInTable: 'identity.organizations',
-      usingField: 'id',
-      query: 'eq(schema.organizations.id, organizationId)'
-    }, "Executing organization query");
+    this.logger.debug(
+      {
+        organizationId,
+        searchingInTable: "identity.organizations",
+        usingField: "id",
+        query: "eq(schema.organizations.id, organizationId)",
+      },
+      "Executing organization query",
+    );
 
     const org = await this.drizzle.query.organizations.findFirst({
       where: eq(schema.organizations.id, organizationId),
     });
 
-    this.logger.info({
-      organizationId,
-      found: !!org,
-      orgId: org?.id,
-      orgName: org?.name,
-      orgSlug: org?.slug
-    }, "Organization query result");
+    this.logger.info(
+      {
+        organizationId,
+        found: !!org,
+        orgId: org?.id,
+        orgName: org?.name,
+        orgSlug: org?.slug,
+      },
+      "Organization query result",
+    );
 
     if (!org) {
       this.logger.error({ organizationId }, "Organization not found");

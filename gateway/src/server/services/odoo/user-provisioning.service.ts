@@ -34,9 +34,7 @@ export interface OdooUserCredentials {
  * - Passwords are set in Odoo but not stored in Safee DB (user resets via Odoo if needed)
  */
 export class OdooUserProvisioningService {
-  constructor(
-    private readonly drizzle: DrizzleClient,
-  ) {}
+  constructor(private readonly drizzle: DrizzleClient) {}
 
   private get logger(): Logger {
     return getServerContext().logger;
@@ -86,9 +84,7 @@ export class OdooUserProvisioningService {
 
     // Capture all cookies from the authentication response
     const setCookieHeaders = response.headers.getSetCookie?.() || [];
-    const cookies = setCookieHeaders.length > 0
-      ? setCookieHeaders.map((cookie) => cookie.split(";")[0])
-      : [];
+    const cookies = setCookieHeaders.length > 0 ? setCookieHeaders.map((cookie) => cookie.split(";")[0]) : [];
 
     this.logger.debug({ cookieCount: cookies.length }, "Captured cookies from Odoo user provisioning auth");
 
@@ -121,9 +117,7 @@ export class OdooUserProvisioningService {
   ): Promise<T> {
     try {
       // Build cookie header from all stored cookies
-      const cookieHeader = cookies.length > 0
-        ? cookies.join("; ")
-        : `session_id=${sessionId}`;
+      const cookieHeader = cookies.length > 0 ? cookies.join("; ") : `session_id=${sessionId}`;
 
       const response = await fetch(`${env.ODOO_URL}/web/dataset/call_kw`, {
         method: "POST",
@@ -167,7 +161,16 @@ export class OdooUserProvisioningService {
           adminCredentials.adminPassword,
         );
 
-        return this.callOdooExecuteKw<T>(newSessionId, newCookies, model, method, args, kwargs, adminCredentials, retryCount + 1);
+        return this.callOdooExecuteKw<T>(
+          newSessionId,
+          newCookies,
+          model,
+          method,
+          args,
+          kwargs,
+          adminCredentials,
+          retryCount + 1,
+        );
       }
 
       throw error;
@@ -574,7 +577,10 @@ export class OdooUserProvisioningService {
       lastSyncedAt: new Date(),
     });
 
-    this.logger.info({ userId, odooUid, databaseName, keyName }, "Odoo user provisioned successfully with API key and web password");
+    this.logger.info(
+      { userId, odooUid, databaseName, keyName },
+      "Odoo user provisioned successfully with API key and web password",
+    );
 
     return {
       odooUid,
@@ -616,7 +622,10 @@ export class OdooUserProvisioningService {
   /**
    * Get Odoo web password for a user (for dev access)
    */
-  async getOdooWebPassword(userId: string, organizationId: string): Promise<{
+  async getOdooWebPassword(
+    userId: string,
+    organizationId: string,
+  ): Promise<{
     login: string;
     password: string;
     webUrl: string;

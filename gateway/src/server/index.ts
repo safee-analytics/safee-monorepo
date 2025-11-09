@@ -117,9 +117,6 @@ export async function server({
   app.use(localeMiddleware);
 
   // Better Auth routes
-  app.all("/api/v1/auth/*", toNodeHandler(auth));
-  logger.info("Better Auth mounted at /api/v1/auth/*");
-
   logger.info("Odoo client manager initialized");
 
   app.use((req, _res, next) => {
@@ -200,6 +197,8 @@ export async function server({
   );
 
   RegisterRoutes(app);
+  app.all("/api/v1/*", toNodeHandler(auth));
+  logger.info("Better Auth mounted at /api/v1/auth/*");
 
   const swaggerUiOptions = {
     explorer: true,

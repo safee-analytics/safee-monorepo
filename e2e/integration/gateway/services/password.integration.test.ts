@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { passwordService } from "./password.js";
-import { PasswordValidationFailed } from "../errors.js";
+import { passwordService, PasswordValidationFailed } from "@safee/gateway";
 
 describe("Password Service Integration Tests", () => {
   describe("hashPassword", () => {

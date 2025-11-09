@@ -25,7 +25,7 @@ export interface OdooAuthResult {
   uid: number;
   database: string;
   username: string;
-  sessionId: string;
+  sessionId: string | null;
 }
 
 export interface OdooSearchOptions {
@@ -119,7 +119,7 @@ export class OdooClientService implements OdooClient {
   async authenticate(): Promise<OdooAuthResult> {
     try {
       // Detect if this is an API key (contains underscore and is ~29 chars)
-      const isApiKey = this.config.password.includes('_') && this.config.password.length >= 25;
+      const isApiKey = this.config.password.includes("_") && this.config.password.length >= 25;
 
       if (isApiKey) {
         // For API keys, we don't need to authenticate first - just verify by making a simple call
@@ -158,21 +158,32 @@ export class OdooClientService implements OdooClient {
         const uid = data.result;
 
         if (!uid || typeof uid !== "number") {
-          this.logger.warn({
-            database: this.config.database,
-            username: this.config.username,
-            result: data.result,
-          }, "API key authentication failed - invalid UID");
+          this.logger.warn(
+            {
+              database: this.config.database,
+              username: this.config.username,
+              result: data.result,
+            },
+            "API key authentication failed - invalid UID",
+          );
           throw new Error("Invalid Odoo API key");
         }
 
-        this.logger.info({ userId: uid, database: this.config.database }, "Authenticated with Odoo via JSON-RPC (API key)");
+        this.logger.info(
+          { userId: uid, database: this.config.database },
+          "Authenticated with Odoo via JSON-RPC (API key)",
+        );
         this.uid = uid;
         this.sessionId = null; // API keys don't use session IDs
         this.cookies = [];
         this.useXmlRpc = true; // Use JSON-RPC endpoint (flag name is misleading but tracks API key mode)
 
-        return { uid, sessionId: null, cookies: [] };
+        return {
+          uid,
+          database: this.config.database,
+          username: this.config.username,
+          sessionId: null,
+        };
       }
 
       // Use web session authenticate for password authentication
@@ -207,7 +218,7 @@ export class OdooClientService implements OdooClient {
             username: this.config.username,
             errorData: data.error,
           },
-          "Odoo authentication error details"
+          "Odoo authentication error details",
         );
 
         const errorMessage =
@@ -237,12 +248,12 @@ export class OdooClientService implements OdooClient {
             cookies: this.cookies,
             sessionId: result.session_id,
           },
-          "Captured cookies from Odoo authentication"
+          "Captured cookies from Odoo authentication",
         );
       } else {
         this.logger.warn(
           { sessionId: result.session_id },
-          "No Set-Cookie headers received from Odoo authentication - will use session_id only"
+          "No Set-Cookie headers received from Odoo authentication - will use session_id only",
         );
       }
 
@@ -372,8 +383,7 @@ export class OdooClientService implements OdooClient {
     if (typeof value === "object") {
       const members = Object.entries(value as Record<string, unknown>)
         .map(
-          ([key, val]) =>
-            `<member><name>${this.escapeXml(key)}</name>${this.serializeToXml(val)}</member>`,
+          ([key, val]) => `<member><name>${this.escapeXml(key)}</name>${this.serializeToXml(val)}</member>`,
         )
         .join("");
       return `<struct>${members}</struct>`;
@@ -401,7 +411,9 @@ export class OdooClientService implements OdooClient {
     }
 
     // Extract the methodResponse > params > param > value content
-    const valueMatch = xml.match(/<methodResponse>\s*<params>\s*<param>\s*<value>([\s\S]*?)<\/value>\s*<\/param>\s*<\/params>\s*<\/methodResponse>/);
+    const valueMatch = xml.match(
+      /<methodResponse>\s*<params>\s*<param>\s*<value>([\s\S]*?)<\/value>\s*<\/param>\s*<\/params>\s*<\/methodResponse>/,
+    );
 
     if (!valueMatch) {
       this.logger.warn({ xmlSnippet: xml.substring(0, 500) }, "Could not find value in XML-RPC response");
@@ -528,9 +540,7 @@ export class OdooClientService implements OdooClient {
 
       // Use web endpoint for password authentication
       // Build cookie header from all stored cookies
-      const cookieHeader = this.cookies.length > 0
-        ? this.cookies.join("; ")
-        : `session_id=${this.sessionId}`;
+      const cookieHeader = this.cookies.length > 0 ? this.cookies.join("; ") : `session_id=${this.sessionId}`;
 
       this.logger.info(
         {
@@ -541,7 +551,7 @@ export class OdooClientService implements OdooClient {
           cookieCount: this.cookies.length,
           hasSessionId: !!this.sessionId,
         },
-        "Executing Odoo RPC call"
+        "Executing Odoo RPC call",
       );
 
       const response = await fetch(`${this.baseUrl}/web/dataset/call_kw`, {
@@ -569,7 +579,7 @@ export class OdooClientService implements OdooClient {
         try {
           errorBody = await response.text();
         } catch (e) {
-          errorBody = "Could not read error body";
+          errorBody = `Could not read error body: ${e instanceof Error ? e.message : String(e)}`;
         }
 
         this.logger.error(
@@ -582,7 +592,7 @@ export class OdooClientService implements OdooClient {
             cookieCount: this.cookies.length,
             responseBody: errorBody,
           },
-          "Odoo RPC request failed with non-OK status"
+          "Odoo RPC request failed with non-OK status",
         );
         throw new Error(`Odoo request failed: ${response.status} ${response.statusText}`);
       }
@@ -596,7 +606,7 @@ export class OdooClientService implements OdooClient {
             method,
             errorData: data.error,
           },
-          "Odoo RPC returned error in response"
+          "Odoo RPC returned error in response",
         );
 
         const errorMessage =
@@ -612,7 +622,7 @@ export class OdooClientService implements OdooClient {
       if (this.isSessionExpiredError(error) && retryCount === 0) {
         this.logger.info(
           { model, method, retryCount },
-          "Odoo session expired, re-authenticating and retrying"
+          "Odoo session expired, re-authenticating and retrying",
         );
 
         // Clear session and re-authenticate

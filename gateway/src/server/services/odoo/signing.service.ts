@@ -244,12 +244,9 @@ export class OdooSigningService {
 
     if (signer.role) {
       // Find role by name
-      const roles = await this.client.searchRead(
-        "sign.item.role",
-        [["name", "=", signer.role]],
-        ["id"],
-        { limit: 1 },
-      );
+      const roles = await this.client.searchRead("sign.item.role", [["name", "=", signer.role]], ["id"], {
+        limit: 1,
+      });
       if (roles.length > 0) {
         itemData.role_id = roles[0].id;
       }
@@ -347,10 +344,7 @@ export class OdooSigningService {
   /**
    * Get all signature templates
    */
-  async getSignTemplates(filters?: {
-    active?: boolean;
-    createdBy?: number;
-  }): Promise<OdooSignTemplate[]> {
+  async getSignTemplates(filters?: { active?: boolean; createdBy?: number }): Promise<OdooSignTemplate[]> {
     const domain: Array<[string, string, unknown]> = [];
 
     if (filters?.active !== undefined) {
@@ -520,12 +514,7 @@ export class OdooSigningService {
    * Get available signature types
    */
   async getSignatureTypes(): Promise<Array<{ id: number; name: string }>> {
-    return this.client.searchRead(
-      "sign.item.type",
-      [],
-      ["name"],
-      { order: "name" },
-    );
+    return this.client.searchRead("sign.item.type", [], ["name"], { order: "name" });
   }
 
   /**

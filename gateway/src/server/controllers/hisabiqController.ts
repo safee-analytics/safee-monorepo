@@ -5,6 +5,7 @@ import {
   Route,
   Tags,
   Security,
+  NoSecurity,
   Query,
   Body,
   Path,
@@ -35,6 +36,7 @@ import type {
 @Route("hisabiq")
 @Tags("Hisabiq (Accounting)")
 export class HisabiqController extends Controller {
+  @NoSecurity()
   private async getAccountingService(request: AuthenticatedRequest): Promise<OdooAccountingService> {
     const userId = request.betterAuthSession!.user.id;
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;

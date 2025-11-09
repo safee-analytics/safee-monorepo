@@ -1,8 +1,17 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { connectTest, createTestDeps } from "../test-helpers/integration-setup.js";
-import { createUser, getUserByEmail, getUserById, updateUserProfile, updateUserLocale } from "./users.js";
-import type { DrizzleClient } from "../index.js";
-import { organizations } from "../drizzle/index.js";
+import {
+  connectTest,
+  createTestDeps,
+  createUser,
+  getUserByEmail,
+  getUserById,
+  updateUserProfile,
+  updateUserLocale,
+  schema,
+  type DrizzleClient,
+} from "@safee/database";
+
+const { organizations, users } = schema;
 
 describe("User Integration Tests", () => {
   let db: DrizzleClient;
@@ -19,6 +28,8 @@ describe("User Integration Tests", () => {
   });
 
   beforeEach(async () => {
+    // Delete users first (child), then organizations (parent)
+    await db.delete(users);
     await db.delete(organizations);
   });
 

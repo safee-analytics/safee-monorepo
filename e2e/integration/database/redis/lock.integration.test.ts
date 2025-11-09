@@ -1,7 +1,10 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { connectTest } from "../test-helpers/integration-setup.js";
-import { acquireRedisLock, acquireRedisLockWithRetry } from "./lock.js";
-import type { RedisClient } from "../index.js";
+import {
+  connectTest,
+  acquireRedisLock,
+  acquireRedisLockWithRetry,
+  type RedisClient,
+} from "@safee/database";
 import { pino } from "pino";
 
 describe("Redis Lock Integration Tests", () => {

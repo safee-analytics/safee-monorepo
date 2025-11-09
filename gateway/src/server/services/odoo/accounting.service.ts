@@ -9,7 +9,6 @@
  * - Financial Reports
  */
 
-import { z } from "zod";
 import type { OdooClient } from "./client.service.js";
 import type {
   OdooAccount,
@@ -39,6 +38,19 @@ import {
   type OdooInvoiceLineRead,
 } from "./accounting.validation.js";
 
+// Export schemas for external use
+export {
+  odooInvoiceReadSchema,
+  odooInvoiceLineReadSchema,
+  odooPaymentReadSchema,
+  odooPartnerReadSchema,
+  odooJournalReadSchema,
+  odooTaxReadSchema,
+  odooGLEntryReadSchema,
+  type OdooInvoiceRead,
+  type OdooInvoiceLineRead,
+};
+
 export class OdooAccountingService {
   constructor(private readonly client: OdooClient) {}
 
@@ -47,10 +59,7 @@ export class OdooAccountingService {
   /**
    * Get all accounts or filter by criteria
    */
-  async getAccounts(filters?: {
-    accountType?: string;
-    onlyActive?: boolean;
-  }): Promise<OdooAccount[]> {
+  async getAccounts(filters?: { accountType?: string; onlyActive?: boolean }): Promise<OdooAccount[]> {
     const domain: Array<[string, string, unknown]> = [];
 
     if (filters?.accountType) {
@@ -90,29 +99,33 @@ export class OdooAccountingService {
    * Get a single account by ID
    */
   async getAccount(accountId: number): Promise<OdooAccount | null> {
-    const accounts = await this.client.read<OdooAccount>("account.account", [accountId], [
-      "code",
-      "name",
-      "description",
-      "account_type",
-      "internal_group",
-      "currency_id",
-      "company_currency_id",
-      "group_id",
-      "root_id",
-      "active",
-      "used",
-      "reconcile",
-      "current_balance",
-      "opening_debit",
-      "opening_credit",
-      "opening_balance",
-      "tax_ids",
-      "tag_ids",
-      "note",
-      "non_trade",
-      "include_initial_balance",
-    ]);
+    const accounts = await this.client.read<OdooAccount>(
+      "account.account",
+      [accountId],
+      [
+        "code",
+        "name",
+        "description",
+        "account_type",
+        "internal_group",
+        "currency_id",
+        "company_currency_id",
+        "group_id",
+        "root_id",
+        "active",
+        "used",
+        "reconcile",
+        "current_balance",
+        "opening_debit",
+        "opening_credit",
+        "opening_balance",
+        "tax_ids",
+        "tag_ids",
+        "note",
+        "non_trade",
+        "include_initial_balance",
+      ],
+    );
     return accounts[0] || null;
   }
 
@@ -405,24 +418,65 @@ export class OdooAccountingService {
 
   /**
    * Reconcile payment with invoices
+   * Links payment move lines with invoice move lines for proper reconciliation
    */
-  private async reconcilePaymentWithInvoices(
-    paymentId: number,
-    invoiceIds: number[],
-  ): Promise<void> {
-    // This is a simplified version - actual reconciliation in Odoo is complex
-    // You may need to use account.move.line reconciliation methods
+  private async reconcilePaymentWithInvoices(paymentId: number, invoiceIds: number[]): Promise<void> {
+    // Post the payment first to create the accounting entry
     await this.client.executeKw("account.payment", "action_post", [[paymentId]]);
 
-    // Get payment move lines
-    const payment = await this.client.read<OdooPayment>("account.payment", [paymentId], [
-      "move_id",
-    ]);
+    // Get the payment move (journal entry)
+    const payment = await this.client.read<OdooPayment>(
+      "account.payment",
+      [paymentId],
+      ["move_id", "destination_account_id"],
+    );
 
-    if (!payment[0]?.destination_account_id) return;
+    if (!payment[0]?.move_id || !payment[0]?.destination_account_id) {
+      throw new Error("Payment does not have a move or destination account");
+    }
 
-    // Match payment lines with invoice lines for reconciliation
-    // This would require more complex logic in a production system
+    const paymentMoveId = Array.isArray(payment[0].move_id) ? payment[0].move_id[0] : payment[0].move_id;
+    const destinationAccountId = Array.isArray(payment[0].destination_account_id)
+      ? payment[0].destination_account_id[0]
+      : payment[0].destination_account_id;
+
+    // Get payment move lines (account.move.line) for the receivable/payable account
+    const paymentLines = await this.client.searchRead<{ id: number; account_id: [number, string] }>(
+      "account.move.line",
+      [
+        ["move_id", "=", paymentMoveId],
+        ["account_id", "=", destinationAccountId],
+      ],
+      ["id", "account_id"],
+    );
+
+    if (paymentLines.length === 0) {
+      throw new Error("No payment lines found for reconciliation");
+    }
+
+    // Get invoice move lines for the same account
+    const invoiceLines = await this.client.searchRead<{ id: number; move_id: [number, string] }>(
+      "account.move.line",
+      [
+        ["move_id", "in", invoiceIds],
+        ["account_id", "=", destinationAccountId],
+        ["reconciled", "=", false],
+      ],
+      ["id", "move_id"],
+    );
+
+    if (invoiceLines.length === 0) {
+      throw new Error("No unreconciled invoice lines found for reconciliation");
+    }
+
+    // Collect all line IDs to reconcile
+    const lineIdsToReconcile = [
+      ...paymentLines.map((line) => line.id),
+      ...invoiceLines.map((line) => line.id),
+    ];
+
+    // Perform reconciliation using account.move.line reconcile method
+    await this.client.executeKw("account.move.line", "reconcile", [lineIdsToReconcile]);
   }
 
   // ==================== Partners (Customers/Suppliers) ====================
@@ -430,10 +484,7 @@ export class OdooAccountingService {
   /**
    * Get partners with accounting info
    */
-  async getPartners(filters?: {
-    isCustomer?: boolean;
-    isSupplier?: boolean;
-  }): Promise<OdooPartner[]> {
+  async getPartners(filters?: { isCustomer?: boolean; isSupplier?: boolean }): Promise<OdooPartner[]> {
     const domain: Array<[string, string, unknown]> = [];
 
     if (filters?.isCustomer) {
@@ -664,7 +715,10 @@ export class OdooAccountingService {
    * Get profit & loss statement
    * Simplified version - Odoo has complex P&L report generation
    */
-  async getProfitLoss(dateFrom?: string, dateTo?: string): Promise<{
+  async getProfitLoss(
+    dateFrom?: string,
+    dateTo?: string,
+  ): Promise<{
     income: number;
     expenses: number;
     netProfit: number;

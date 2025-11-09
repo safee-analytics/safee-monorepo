@@ -76,9 +76,7 @@
         "organizations_slug_unique": {
           "name": "organizations_slug_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "slug"
-          ]
+          "columns": ["slug"]
         }
       },
       "policies": {},
@@ -130,12 +128,8 @@
           "tableFrom": "members",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -144,12 +138,8 @@
           "tableFrom": "members",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -157,10 +147,7 @@
       "compositePrimaryKeys": {
         "members_organization_id_user_id_pk": {
           "name": "members_organization_id_user_id_pk",
-          "columns": [
-            "organization_id",
-            "user_id"
-          ]
+          "columns": ["organization_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -237,12 +224,8 @@
           "tableFrom": "invitations",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -251,12 +234,8 @@
           "tableFrom": "invitations",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "inviter_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["inviter_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -337,12 +316,8 @@
           "tableFrom": "odoo_databases",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -352,16 +327,12 @@
         "odoo_databases_organization_id_unique": {
           "name": "odoo_databases_organization_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "organization_id"
-          ]
+          "columns": ["organization_id"]
         },
         "odoo_databases_database_name_unique": {
           "name": "odoo_databases_database_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "database_name"
-          ]
+          "columns": ["database_name"]
         }
       },
       "policies": {},
@@ -450,12 +421,8 @@
           "tableFrom": "odoo_users",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -464,12 +431,8 @@
           "tableFrom": "odoo_users",
           "tableTo": "odoo_databases",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "odoo_database_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["odoo_database_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -597,12 +560,8 @@
           "tableFrom": "connectors",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -611,12 +570,8 @@
           "tableFrom": "connectors",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "created_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["created_by"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "cascade"
         },
@@ -625,12 +580,8 @@
           "tableFrom": "connectors",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "updated_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["updated_by"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "cascade"
         }
@@ -875,12 +826,8 @@
           "tableFrom": "users",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -890,16 +837,12 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         },
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
+          "columns": ["username"]
         }
       },
       "policies": {},
@@ -984,9 +927,7 @@
         "services_name_unique": {
           "name": "services_name_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "name"
-          ]
+          "columns": ["name"]
         }
       },
       "policies": {},
@@ -1097,12 +1038,8 @@
           "tableFrom": "organization_services",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1111,12 +1048,8 @@
           "tableFrom": "organization_services",
           "tableTo": "services",
           "schemaTo": "system",
-          "columnsFrom": [
-            "service_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["service_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1124,10 +1057,7 @@
       "compositePrimaryKeys": {
         "organization_services_organization_id_service_id_pk": {
           "name": "organization_services_organization_id_service_id_pk",
-          "columns": [
-            "organization_id",
-            "service_id"
-          ]
+          "columns": ["organization_id", "service_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1239,12 +1169,8 @@
           "tableFrom": "user_services",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1253,12 +1179,8 @@
           "tableFrom": "user_services",
           "tableTo": "services",
           "schemaTo": "system",
-          "columnsFrom": [
-            "service_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["service_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1266,10 +1188,7 @@
       "compositePrimaryKeys": {
         "user_services_user_id_service_id_pk": {
           "name": "user_services_user_id_service_id_pk",
-          "columns": [
-            "user_id",
-            "service_id"
-          ]
+          "columns": ["user_id", "service_id"]
         }
       },
       "uniqueConstraints": {},
@@ -1366,12 +1285,8 @@
           "tableFrom": "contacts",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1481,12 +1396,8 @@
           "tableFrom": "deals",
           "tableTo": "contacts",
           "schemaTo": "sales",
-          "columnsFrom": [
-            "contact_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["contact_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "cascade"
         },
@@ -1495,12 +1406,8 @@
           "tableFrom": "deals",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1639,12 +1546,8 @@
           "tableFrom": "employees",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1733,12 +1636,8 @@
           "tableFrom": "invoice_items",
           "tableTo": "invoices",
           "schemaTo": "finance",
-          "columnsFrom": [
-            "invoice_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["invoice_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1855,12 +1754,8 @@
           "tableFrom": "invoices",
           "tableTo": "contacts",
           "schemaTo": "sales",
-          "columnsFrom": [
-            "customer_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["customer_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
@@ -1869,12 +1764,8 @@
           "tableFrom": "invoices",
           "tableTo": "contacts",
           "schemaTo": "sales",
-          "columnsFrom": [
-            "supplier_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["supplier_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
@@ -1883,12 +1774,8 @@
           "tableFrom": "invoices",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1898,9 +1785,7 @@
         "invoices_number_unique": {
           "name": "invoices_number_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "number"
-          ]
+          "columns": ["number"]
         }
       },
       "policies": {},
@@ -1992,12 +1877,8 @@
           "tableFrom": "accounts",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2108,12 +1989,8 @@
           "tableFrom": "payroll_records",
           "tableTo": "employees",
           "schemaTo": "hr",
-          "columnsFrom": [
-            "employee_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["employee_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
@@ -2122,12 +1999,8 @@
           "tableFrom": "payroll_records",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2495,12 +2368,8 @@
           "tableFrom": "jobs",
           "tableTo": "job_schedules",
           "schemaTo": "jobs",
-          "columnsFrom": [
-            "schedule_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["schedule_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2509,12 +2378,8 @@
           "tableFrom": "jobs",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2622,12 +2487,8 @@
           "tableFrom": "job_logs",
           "tableTo": "jobs",
           "schemaTo": "jobs",
-          "columnsFrom": [
-            "job_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["job_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2796,12 +2657,8 @@
           "tableFrom": "audit_events",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2810,12 +2667,8 @@
           "tableFrom": "audit_events",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2902,12 +2755,8 @@
           "tableFrom": "login_attempts",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3013,12 +2862,8 @@
           "tableFrom": "security_events",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3027,12 +2872,8 @@
           "tableFrom": "security_events",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3124,12 +2965,8 @@
           "tableFrom": "sessions",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3139,9 +2976,7 @@
         "sessions_token_unique": {
           "name": "sessions_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -3241,12 +3076,8 @@
           "tableFrom": "oauth_accounts",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3446,12 +3277,8 @@
           "tableFrom": "notification_settings",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3461,9 +3288,7 @@
         "notification_settings_user_id_unique": {
           "name": "notification_settings_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id"
-          ]
+          "columns": ["user_id"]
         }
       },
       "policies": {},
@@ -3553,12 +3378,8 @@
           "tableFrom": "appearance_settings",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3568,9 +3389,7 @@
         "appearance_settings_user_id_unique": {
           "name": "appearance_settings_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id"
-          ]
+          "columns": ["user_id"]
         }
       },
       "policies": {},
@@ -3659,12 +3478,8 @@
           "tableFrom": "organization_roles",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3751,12 +3566,8 @@
           "tableFrom": "teams",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3836,12 +3647,8 @@
           "tableFrom": "team_members",
           "tableTo": "teams",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "team_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["team_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3850,12 +3657,8 @@
           "tableFrom": "team_members",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3863,10 +3666,7 @@
       "compositePrimaryKeys": {
         "team_members_team_id_user_id_pk": {
           "name": "team_members_team_id_user_id_pk",
-          "columns": [
-            "team_id",
-            "user_id"
-          ]
+          "columns": ["team_id", "user_id"]
         }
       },
       "uniqueConstraints": {},
@@ -3985,12 +3785,8 @@
           "tableFrom": "approval_workflows",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4098,12 +3894,8 @@
           "tableFrom": "approval_workflow_steps",
           "tableTo": "approval_workflows",
           "schemaTo": "system",
-          "columnsFrom": [
-            "workflow_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["workflow_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4246,12 +4038,8 @@
           "tableFrom": "approval_requests",
           "tableTo": "approval_workflows",
           "schemaTo": "system",
-          "columnsFrom": [
-            "workflow_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["workflow_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
@@ -4260,12 +4048,8 @@
           "tableFrom": "approval_requests",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "requested_by"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["requested_by"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -4400,12 +4184,8 @@
           "tableFrom": "approval_steps",
           "tableTo": "approval_requests",
           "schemaTo": "system",
-          "columnsFrom": [
-            "request_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["request_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -4414,12 +4194,8 @@
           "tableFrom": "approval_steps",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "approver_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["approver_id"],
+          "columnsTo": ["id"],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
@@ -4428,12 +4204,8 @@
           "tableFrom": "approval_steps",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "delegated_to"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["delegated_to"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "cascade"
         }
@@ -4562,12 +4334,8 @@
           "tableFrom": "approval_rules",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": [
-            "organization_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -4576,12 +4344,8 @@
           "tableFrom": "approval_rules",
           "tableTo": "approval_workflows",
           "schemaTo": "system",
-          "columnsFrom": [
-            "workflow_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["workflow_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4597,51 +4361,22 @@
     "system.action": {
       "name": "action",
       "schema": "system",
-      "values": [
-        "created",
-        "updated",
-        "deleted",
-        "completed",
-        "failed",
-        "started",
-        "cancelled",
-        "retrying"
-      ]
+      "values": ["created", "updated", "deleted", "completed", "failed", "started", "cancelled", "retrying"]
     },
     "sales.contact_type": {
       "name": "contact_type",
       "schema": "sales",
-      "values": [
-        "LEAD",
-        "PROSPECT",
-        "CUSTOMER",
-        "SUPPLIER"
-      ]
+      "values": ["LEAD", "PROSPECT", "CUSTOMER", "SUPPLIER"]
     },
     "sales.deal_stage": {
       "name": "deal_stage",
       "schema": "sales",
-      "values": [
-        "LEAD",
-        "QUALIFIED",
-        "PROPOSAL",
-        "NEGOTIATION",
-        "CLOSED_WON",
-        "CLOSED_LOST"
-      ]
+      "values": ["LEAD", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "CLOSED_WON", "CLOSED_LOST"]
     },
     "system.entity_type": {
       "name": "entity_type",
       "schema": "system",
-      "values": [
-        "job",
-        "invoice",
-        "user",
-        "organization",
-        "employee",
-        "contact",
-        "deal"
-      ]
+      "values": ["job", "invoice", "user", "organization", "employee", "contact", "deal"]
     },
     "identity.event_type": {
       "name": "event_type",
@@ -4663,74 +4398,42 @@
     "identity.identifier_type": {
       "name": "identifier_type",
       "schema": "identity",
-      "values": [
-        "email",
-        "ip"
-      ]
+      "values": ["email", "ip"]
     },
     "finance.invoice_type": {
       "name": "invoice_type",
       "schema": "finance",
-      "values": [
-        "SALES",
-        "PURCHASE"
-      ]
+      "values": ["SALES", "PURCHASE"]
     },
     "jobs.job_name": {
       "name": "job_name",
       "schema": "jobs",
-      "values": [
-        "send_email"
-      ]
+      "values": ["send_email"]
     },
     "jobs.job_status": {
       "name": "job_status",
       "schema": "jobs",
-      "values": [
-        "pending",
-        "running",
-        "completed",
-        "failed",
-        "cancelled",
-        "retrying"
-      ]
+      "values": ["pending", "running", "completed", "failed", "cancelled", "retrying"]
     },
     "jobs.job_type": {
       "name": "job_type",
       "schema": "jobs",
-      "values": [
-        "cron",
-        "scheduled",
-        "immediate",
-        "recurring"
-      ]
+      "values": ["cron", "scheduled", "immediate", "recurring"]
     },
     "identity.locale": {
       "name": "locale",
       "schema": "identity",
-      "values": [
-        "en",
-        "ar"
-      ]
+      "values": ["en", "ar"]
     },
     "jobs.log_level": {
       "name": "log_level",
       "schema": "jobs",
-      "values": [
-        "debug",
-        "info",
-        "warn",
-        "error"
-      ]
+      "values": ["debug", "info", "warn", "error"]
     },
     "identity.login_method": {
       "name": "login_method",
       "schema": "identity",
-      "values": [
-        "password",
-        "sso",
-        "mfa"
-      ]
+      "values": ["password", "sso", "mfa"]
     },
     "identity.permission_action": {
       "name": "permission_action",
@@ -4770,52 +4473,27 @@
     "jobs.priority": {
       "name": "priority",
       "schema": "jobs",
-      "values": [
-        "low",
-        "normal",
-        "high",
-        "critical"
-      ]
+      "values": ["low", "normal", "high", "critical"]
     },
     "identity.revoked_reason": {
       "name": "revoked_reason",
       "schema": "identity",
-      "values": [
-        "logout",
-        "timeout",
-        "admin",
-        "security",
-        "new_device"
-      ]
+      "values": ["logout", "timeout", "admin", "security", "new_device"]
     },
     "identity.risk_level": {
       "name": "risk_level",
       "schema": "identity",
-      "values": [
-        "low",
-        "medium",
-        "high",
-        "critical"
-      ]
+      "values": ["low", "medium", "high", "critical"]
     },
     "identity.user_role": {
       "name": "user_role",
       "schema": "identity",
-      "values": [
-        "ADMIN",
-        "MANAGER",
-        "EMPLOYEE",
-        "ACCOUNTANT"
-      ]
+      "values": ["ADMIN", "MANAGER", "EMPLOYEE", "ACCOUNTANT"]
     },
     "identity.connection_status": {
       "name": "connection_status",
       "schema": "identity",
-      "values": [
-        "success",
-        "failed",
-        "untested"
-      ]
+      "values": ["success", "failed", "untested"]
     },
     "identity.connector_type": {
       "name": "connector_type",
@@ -4859,30 +4537,17 @@
     "system.approver_type": {
       "name": "approver_type",
       "schema": "system",
-      "values": [
-        "role",
-        "team",
-        "user"
-      ]
+      "values": ["role", "team", "user"]
     },
     "system.step_type": {
       "name": "step_type",
       "schema": "system",
-      "values": [
-        "single",
-        "parallel",
-        "any"
-      ]
+      "values": ["single", "parallel", "any"]
     },
     "system.approval_status": {
       "name": "approval_status",
       "schema": "system",
-      "values": [
-        "pending",
-        "approved",
-        "rejected",
-        "cancelled"
-      ]
+      "values": ["pending", "approved", "rejected", "cancelled"]
     }
   },
   "schemas": {

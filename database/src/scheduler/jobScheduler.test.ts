@@ -12,8 +12,7 @@ import type { DbDeps } from "../deps.js";
 import { eq } from "../index.js";
 
 async function wipeSchedulerDb(drizzle: DrizzleClient) {
-  await drizzle.delete(schema.auditEvents);
-  await drizzle.delete(schema.jobLogs);
+  // Delete jobs (cascade deletes jobLogs), then jobSchedules
   await drizzle.delete(schema.jobs);
   await drizzle.delete(schema.jobSchedules);
 }

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import request from "supertest";
 import type { Application } from "express";
-import { createTestApp } from "../../test-helpers/test-app.js";
+import { createTestApp } from "@safee/gateway";
 
 describe("Locale Middleware Integration Tests", () => {
   let app: Application;

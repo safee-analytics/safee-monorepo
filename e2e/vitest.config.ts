@@ -12,8 +12,8 @@ export default defineConfig({
     },
     env: {
       NODE_ENV: "test",
-      DATABASE_URL: "postgresql://safee:safee@localhost:45432/safee",
-      REDIS_URL: "redis://localhost:46379",
+      DATABASE_URL: "postgresql://postgres:postgres@localhost:25432/safee",
+      REDIS_URL: "redis://localhost:26379",
       PUBSUB_EMULATOR_HOST: "localhost:48085",
     },
     testTimeout: 30000,

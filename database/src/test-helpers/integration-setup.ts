@@ -5,7 +5,7 @@ import type { DbDeps } from "../deps.js";
 import type { DrizzleClient, RedisClient } from "../index.js";
 
 const TEST_DATABASE_URL = process.env.DATABASE_URL ?? "postgresql://safee:safee@localhost:45432/safee";
-const TEST_REDIS_URL = process.env.REDIS_URL ?? "redis://localhost:46379";
+const TEST_REDIS_URL = process.env.REDIS_URL ?? "redis://localhost:16379";
 
 export function createTestLogger() {
   return pino({ level: "silent" }); // Silent during tests

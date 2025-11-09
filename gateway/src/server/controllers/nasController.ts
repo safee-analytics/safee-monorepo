@@ -17,7 +17,7 @@ interface NASStatusResponse {
   [name: string]: NASConnectionStatus;
 }
 
-@Route("api/v1/nas")
+@Route("nas")
 @Tags("NAS Management")
 export class NASController extends Controller {
   private nasManager: NASManager;

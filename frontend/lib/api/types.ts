@@ -4,6 +4,112 @@
  */
 
 export interface paths {
+    "/workflows": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description List all workflows */
+        get: operations["ListWorkflows"];
+        put?: never;
+        /** @description Create a new workflow */
+        post: operations["CreateWorkflow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/{workflowId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get workflow details */
+        get: operations["GetWorkflow"];
+        /** @description Update workflow */
+        put: operations["UpdateWorkflow"];
+        post?: never;
+        /** @description Delete workflow */
+        delete: operations["DeleteWorkflow"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/{workflowId}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Activate workflow */
+        post: operations["ActivateWorkflow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/{workflowId}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Deactivate workflow */
+        post: operations["DeactivateWorkflow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description List approval rules */
+        get: operations["ListRules"];
+        put?: never;
+        /** @description Create approval rule */
+        post: operations["CreateRule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/rules/{ruleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description Delete approval rule */
+        delete: operations["DeleteRule"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/users/me": {
         parameters: {
             query?: never;
@@ -36,7 +142,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/storage/upload": {
+    "/storage/upload": {
         parameters: {
             query?: never;
             header?: never;
@@ -53,7 +159,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/storage/upload/batch": {
+    "/storage/upload/batch": {
         parameters: {
             query?: never;
             header?: never;
@@ -70,7 +176,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/storage/files/{fileId}": {
+    "/storage/files/{fileId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -88,7 +194,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/storage/files/{fileId}/download": {
+    "/storage/files/{fileId}/download": {
         parameters: {
             query?: never;
             header?: never;
@@ -105,7 +211,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/storage/files/search": {
+    "/storage/files/search": {
         parameters: {
             query?: never;
             header?: never;
@@ -122,7 +228,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/storage/folders": {
+    "/storage/folders": {
         parameters: {
             query?: never;
             header?: never;
@@ -139,7 +245,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/storage/folders/{folderId}": {
+    "/storage/folders/{folderId}": {
         parameters: {
             query?: never;
             header?: never;
@@ -157,7 +263,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/storage/quota": {
+    "/storage/quota": {
         parameters: {
             query?: never;
             header?: never;
@@ -166,6 +272,182 @@ export interface paths {
         };
         /** @description Get storage quota information */
         get: operations["GetQuota"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sign/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSignRequests"];
+        put?: never;
+        post: operations["CreateSignRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sign/requests/{requestId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSignRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sign/requests/{requestId}/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SendSignRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sign/requests/{requestId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CancelSignRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sign/requests/{requestId}/signers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSignRequestSigners"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sign/requests/{requestId}/signers/{itemId}/link": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSigningLink"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sign/requests/{requestId}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["DownloadSignedDocument"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sign/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSignTemplates"];
+        put?: never;
+        post: operations["CreateSignTemplate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sign/templates/{templateId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSignTemplate"];
+        put?: never;
+        post?: never;
+        delete: operations["DeleteSignTemplate"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sign/types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSignatureTypes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/sign/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSignatureStats"];
         put?: never;
         post?: never;
         delete?: never;
@@ -430,7 +712,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/nas/connect": {
+    "/nas/connect": {
         parameters: {
             query?: never;
             header?: never;
@@ -450,7 +732,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/nas/{name}": {
+    "/nas/{name}": {
         parameters: {
             query?: never;
             header?: never;
@@ -467,7 +749,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/nas/status": {
+    "/nas/status": {
         parameters: {
             query?: never;
             header?: never;
@@ -484,7 +766,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/api/v1/nas/all": {
+    "/nas/all": {
         parameters: {
             query?: never;
             header?: never;
@@ -524,11 +806,57 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Get all invoices for the authenticated user's organization */
         get: operations["GetHisabiqInvoices"];
         put?: never;
-        /** @description Create a new invoice */
         post: operations["CreateHisabiqInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/invoices/{invoiceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetHisabiqInvoice"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/invoices/{invoiceId}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ValidateHisabiqInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/invoices/{invoiceId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CancelHisabiqInvoice"];
         delete?: never;
         options?: never;
         head?: never;
@@ -542,8 +870,167 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** @description Get chart of accounts */
         get: operations["GetHisabiqAccounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/accounts/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["SearchHisabiqAccounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetHisabiqPayments"];
+        put?: never;
+        post: operations["CreateHisabiqPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/payments/{paymentId}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ConfirmHisabiqPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/partners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetHisabiqPartners"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/journals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetHisabiqJournals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/taxes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetHisabiqTaxes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/reports/trial-balance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetHisabiqTrialBalance"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/reports/partner-ledger": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetHisabiqPartnerLedger"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/reports/profit-loss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetHisabiqProfitLoss"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hisabiq/general-ledger": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetHisabiqGeneralLedger"];
         put?: never;
         post?: never;
         delete?: never;
@@ -792,6 +1279,185 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/connectors/odoo/dev-credentials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Get Odoo web credentials for dev access
+         *     Returns login, password, and web URL for accessing Odoo UI directly
+         */
+        get: operations["GetOdooDevCredentials"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors/odoo/install-modules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description Install required Odoo modules for the organization
+         *     Installs: Accounting (Hisabiq), CRM (Nisbah), HR & Payroll (Kanz)
+         */
+        post: operations["InstallOdooModules"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors/odoo/models/{modelName}/fields": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Get available fields for an Odoo model (dev tool)
+         *     Useful for discovering what fields exist on a model
+         */
+        get: operations["GetOdooModelFields"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Submit an entity for approval */
+        post: operations["SubmitForApproval"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get pending approvals for current user */
+        get: operations["GetPendingApprovals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/{requestId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get approval request details */
+        get: operations["GetApprovalRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/{requestId}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Approve an approval request */
+        post: operations["Approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/{requestId}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Reject an approval request */
+        post: operations["Reject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/{requestId}/delegate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Delegate an approval to another user */
+        post: operations["Delegate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/history/{entityType}/{entityId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get approval history for an entity */
+        get: operations["GetApprovalHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/accounts": {
         parameters: {
             query?: never;
@@ -812,6 +1478,74 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** @enum {string} */
+        StepType: "single" | "parallel" | "any";
+        /** @enum {string} */
+        ApproverType: "role" | "team" | "user";
+        WorkflowStepResponse: {
+            id: string;
+            /** Format: double */
+            stepOrder: number;
+            stepType: components["schemas"]["StepType"];
+            approverType: components["schemas"]["ApproverType"];
+            approverId?: string;
+            /** Format: double */
+            minApprovals: number;
+            /** Format: double */
+            requiredApprovers: number;
+        };
+        WorkflowResponse: {
+            id: string;
+            name: string;
+            organizationId: string;
+            entityType: string;
+            isActive: boolean;
+            rules?: string;
+            createdAt: string;
+            updatedAt: string;
+            steps: components["schemas"]["WorkflowStepResponse"][];
+        };
+        WorkflowStepInput: {
+            /** Format: double */
+            stepOrder: number;
+            stepType: components["schemas"]["StepType"];
+            approverType: components["schemas"]["ApproverType"];
+            approverId?: string;
+            /** Format: double */
+            minApprovals?: number;
+            /** Format: double */
+            requiredApprovers?: number;
+        };
+        CreateWorkflowRequest: {
+            name: string;
+            entityType: string;
+            rules?: string;
+            steps: components["schemas"]["WorkflowStepInput"][];
+        };
+        UpdateWorkflowRequest: {
+            name?: string;
+            isActive?: boolean;
+            rules?: string;
+            steps?: components["schemas"]["WorkflowStepInput"][];
+        };
+        RuleResponse: {
+            id: string;
+            organizationId: string;
+            entityType: string;
+            ruleName: string;
+            conditions: string;
+            workflowId: string;
+            /** Format: double */
+            priority: number;
+        };
+        CreateRuleRequest: {
+            entityType: string;
+            ruleName: string;
+            conditions: string;
+            workflowId: string;
+            /** Format: double */
+            priority?: number;
+        };
         /** @enum {string} */
         Locale: "en" | "ar";
         UserProfileResponse: {
@@ -869,6 +1603,126 @@ export interface components {
         CreateFolderRequest: {
             name: string;
             parentId?: string;
+        };
+        SignRequestResponse: {
+            /** Format: double */
+            id: number;
+            reference: string;
+            /** Format: double */
+            templateId?: number;
+            templateName?: string;
+            /** @enum {string} */
+            state: "sent" | "signed" | "canceled";
+            /** Format: double */
+            createUid: number;
+            creatorName: string;
+            createDate: string;
+            completedDocument: boolean;
+            /** Format: double */
+            pendingSignatures: number;
+            /** Format: double */
+            completedSignatures: number;
+            subject: string;
+            message: string;
+        };
+        CreateSignRequestDTO: {
+            /** Format: double */
+            templateId?: number;
+            /** Format: double */
+            attachmentId?: number;
+            fileName?: string;
+            fileContent?: string;
+            subject?: string;
+            message?: string;
+            signers: {
+                role?: string;
+                name: string;
+                email: string;
+                /** Format: double */
+                partnerId?: number;
+            }[];
+            reference?: string;
+            sendSignLink?: boolean;
+        };
+        SignRequestItemResponse: {
+            /** Format: double */
+            id: number;
+            /** Format: double */
+            signRequestId: number;
+            signRequestReference: string;
+            /** Format: double */
+            partnerId: number;
+            partnerName: string;
+            /** Format: double */
+            roleId?: number;
+            roleName?: string;
+            signerEmail: string;
+            /** @enum {string} */
+            state: "sent" | "completed" | "canceled";
+            signingDate?: string;
+            accessToken: string;
+            createDate: string;
+        };
+        SigningLinkResponse: {
+            /** Format: double */
+            requestItemId: number;
+            signerEmail: string;
+            signingLink: string;
+        };
+        SignedDocumentResponse: {
+            filename: string;
+            content: string;
+            downloadUrl?: string;
+        };
+        SignTemplateResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            /** Format: double */
+            attachmentId: number;
+            attachmentName: string;
+            active: boolean;
+            /** Format: double */
+            signItemCount: number;
+            /** Format: double */
+            responsibleCount: number;
+        };
+        CreateSignTemplateDTO: {
+            name: string;
+            /** Format: double */
+            attachmentId?: number;
+            fileName?: string;
+            fileContent?: string;
+            signItems?: {
+                placeholder?: string;
+                name?: string;
+                required?: boolean;
+                /** Format: double */
+                height: number;
+                /** Format: double */
+                width: number;
+                /** Format: double */
+                posY: number;
+                /** Format: double */
+                posX: number;
+                /** Format: double */
+                page: number;
+                responsibleName: string;
+                /** @enum {string} */
+                type: "signature" | "initial" | "text" | "checkbox" | "selection";
+            }[];
+        };
+        SigningStatsResponse: {
+            /** Format: double */
+            total: number;
+            /** Format: double */
+            sent: number;
+            /** Format: double */
+            signed: number;
+            /** Format: double */
+            canceled: number;
+            /** Format: double */
+            pendingSignatures: number;
         };
         PayrollRecord: {
             id: string;
@@ -1023,6 +1877,182 @@ export interface components {
                 quantity: number;
                 description: string;
             }[];
+        };
+        /**
+         * @description Hisabiq (Accounting) API Response Types
+         *
+         *     These are simplified types for API responses that TSOA can handle.
+         *     Internal Odoo types use tuples [number, string] which TSOA doesn't support.
+         *     All fields use camelCase naming convention for JavaScript/TypeScript APIs.
+         */
+        PaymentResponse: {
+            /** Format: double */
+            id?: number;
+            /** @enum {string} */
+            paymentType: "inbound" | "outbound" | "transfer";
+            /** @enum {string} */
+            partnerType: "customer" | "supplier";
+            /** Format: double */
+            partnerId: number;
+            partnerName?: string;
+            /** Format: double */
+            amount: number;
+            /** Format: double */
+            currencyId?: number;
+            paymentDate: string;
+            /** Format: double */
+            journalId: number;
+            journalName?: string;
+            /** Format: double */
+            paymentMethodId?: number;
+            ref?: string;
+            /** @enum {string} */
+            state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
+        };
+        CreatePaymentDTO: {
+            /** @enum {string} */
+            type: "inbound" | "outbound";
+            /** Format: double */
+            partnerId: number;
+            /** @enum {string} */
+            partnerType: "customer" | "supplier";
+            /** Format: double */
+            amount: number;
+            date: string;
+            /** Format: double */
+            journalId: number;
+            reference?: string;
+            invoiceIds?: number[];
+        };
+        PartnerResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            email?: string;
+            phone?: string;
+            vat?: string;
+            /** Format: double */
+            accountReceivableId?: number;
+            /** Format: double */
+            accountPayableId?: number;
+            /** Format: double */
+            paymentTermId?: number;
+            /** Format: double */
+            customerRank?: number;
+            /** Format: double */
+            supplierRank?: number;
+        };
+        JournalResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            code: string;
+            /** @enum {string} */
+            type: "sale" | "purchase" | "cash" | "bank" | "general";
+            /** Format: double */
+            currencyId?: number;
+            currencyName?: string;
+            /** Format: double */
+            companyId: number;
+            companyName?: string;
+            /** Format: double */
+            defaultAccountId: number;
+            defaultAccountName?: string;
+        };
+        TaxResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            /** Format: double */
+            amount: number;
+            /** @enum {string} */
+            amountType: "percent" | "division" | "fixed" | "group";
+            /** @enum {string} */
+            typeTaxUse: "sale" | "purchase" | "none";
+            active: boolean;
+        };
+        AccountBalanceReportResponse: {
+            /** Format: double */
+            accountId: number;
+            accountCode: string;
+            accountName: string;
+            /** Format: double */
+            debit: number;
+            /** Format: double */
+            credit: number;
+            /** Format: double */
+            balance: number;
+        };
+        AccountBalanceQuery: {
+            accountIds?: number[];
+            dateFrom?: string;
+            dateTo?: string;
+        };
+        PartnerLedgerEntryResponse: {
+            date: string;
+            moveName: string;
+            label: string;
+            /** Format: double */
+            debit: number;
+            /** Format: double */
+            credit: number;
+            /** Format: double */
+            balance: number;
+        };
+        PartnerLedgerReportResponse: {
+            /** Format: double */
+            partnerId: number;
+            partnerName: string;
+            /** Format: double */
+            debit: number;
+            /** Format: double */
+            credit: number;
+            /** Format: double */
+            balance: number;
+            entries: components["schemas"]["PartnerLedgerEntryResponse"][];
+        };
+        PartnerLedgerQuery: {
+            /** Format: double */
+            partnerId: number;
+            dateFrom?: string;
+            dateTo?: string;
+        };
+        ProfitLossResponse: {
+            /** Format: double */
+            income: number;
+            /** Format: double */
+            expenses: number;
+            /** Format: double */
+            netProfit: number;
+        };
+        GLEntryResponse: {
+            /** Format: double */
+            id: number;
+            /** Format: double */
+            moveId: number;
+            moveName?: string;
+            date: string;
+            /** Format: double */
+            accountId: number;
+            accountName?: string;
+            /** Format: double */
+            partnerId?: number;
+            partnerName?: string;
+            name: string;
+            /** Format: double */
+            debit: number;
+            /** Format: double */
+            credit: number;
+            /** Format: double */
+            balance: number;
+            /** Format: double */
+            amountCurrency?: number;
+            /** Format: double */
+            currencyId?: number;
+            currencyName?: string;
+            /** Format: double */
+            companyId: number;
+            companyName?: string;
         };
         HealthCheck: {
             /** @enum {string} */
@@ -1181,6 +2211,69 @@ export interface components {
             /** @enum {string} */
             targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
         };
+        SubmitForApprovalResponse: {
+            requestId: string;
+            workflowId: string;
+            status: string;
+            message: string;
+        };
+        /** @description Entity data for rule evaluation */
+        EntityData: {
+            entityType: string;
+            entityId: string;
+            /** Format: double */
+            amount?: number;
+            status?: string;
+            createdBy?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        SubmitForApprovalRequest: {
+            entityType: string;
+            entityId: string;
+            entityData: components["schemas"]["EntityData"];
+        };
+        ApprovalStepResponse: {
+            id: string;
+            /** Format: double */
+            stepOrder: number;
+            approverId: string;
+            approverName?: string;
+            status: string;
+            comments?: string;
+            actionAt?: string;
+            delegatedTo?: string;
+            delegatedToName?: string;
+        };
+        ApprovalRequestResponse: {
+            id: string;
+            workflowId: string;
+            workflowName: string;
+            entityType: string;
+            entityId: string;
+            status: string;
+            requestedBy: string;
+            requestedByName?: string;
+            submittedAt: string;
+            completedAt?: string;
+            /** Format: double */
+            currentStep?: number;
+            /** Format: double */
+            totalSteps?: number;
+            steps: components["schemas"]["ApprovalStepResponse"][];
+        };
+        ApprovalActionResponse: {
+            success: boolean;
+            message: string;
+            requestStatus?: string;
+        };
+        ApprovalActionRequest: {
+            comments?: string;
+        };
+        DelegateApprovalRequest: {
+            delegateToUserId: string;
+            comments?: string;
+        };
         Account: {
             id: string;
             code: string;
@@ -1207,6 +2300,243 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    ListWorkflows: {
+        parameters: {
+            query?: {
+                entityType?: string;
+                isActive?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowResponse"][];
+                };
+            };
+        };
+    };
+    CreateWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateWorkflowRequest"];
+            };
+        };
+        responses: {
+            /** @description Workflow created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowResponse"];
+                };
+            };
+        };
+    };
+    GetWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workflowId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowResponse"];
+                };
+            };
+        };
+    };
+    UpdateWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workflowId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateWorkflowRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowResponse"];
+                };
+            };
+        };
+    };
+    DeleteWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workflowId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    ActivateWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workflowId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    DeactivateWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workflowId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    ListRules: {
+        parameters: {
+            query?: {
+                entityType?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleResponse"][];
+                };
+            };
+        };
+    };
+    CreateRule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRuleRequest"];
+            };
+        };
+        responses: {
+            /** @description Rule created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleResponse"];
+                };
+            };
+        };
+    };
+    DeleteRule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ruleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
     GetCurrentUser: {
         parameters: {
             query?: never;
@@ -1529,6 +2859,337 @@ export interface operations {
                         /** Format: double */
                         used: number;
                     };
+                };
+            };
+        };
+    };
+    GetSignRequests: {
+        parameters: {
+            query?: {
+                state?: "sent" | "signed" | "canceled";
+                templateId?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignRequestResponse"][];
+                };
+            };
+        };
+    };
+    CreateSignRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSignRequestDTO"];
+            };
+        };
+        responses: {
+            /** @description Sign request created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        reference: string;
+                        /** Format: double */
+                        id: number;
+                    };
+                };
+            };
+        };
+    };
+    GetSignRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignRequestResponse"] | null;
+                };
+            };
+        };
+    };
+    SendSignRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    CancelSignRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetSignRequestSigners: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignRequestItemResponse"][];
+                };
+            };
+        };
+    };
+    GetSigningLink: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: number;
+                itemId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SigningLinkResponse"];
+                };
+            };
+        };
+    };
+    DownloadSignedDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignedDocumentResponse"] | null;
+                };
+            };
+        };
+    };
+    GetSignTemplates: {
+        parameters: {
+            query?: {
+                active?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignTemplateResponse"][];
+                };
+            };
+        };
+    };
+    CreateSignTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateSignTemplateDTO"];
+            };
+        };
+        responses: {
+            /** @description Sign template created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        name: string;
+                        /** Format: double */
+                        id: number;
+                    };
+                };
+            };
+        };
+    };
+    GetSignTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                templateId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignTemplateResponse"] | null;
+                };
+            };
+        };
+    };
+    DeleteSignTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                templateId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetSignatureTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        name: string;
+                        /** Format: double */
+                        id: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetSignatureStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SigningStatsResponse"];
                 };
             };
         };
@@ -2085,8 +3746,12 @@ export interface operations {
     GetHisabiqInvoices: {
         parameters: {
             query?: {
-                _page?: number;
-                _limit?: number;
+                page?: number;
+                limit?: number;
+                type?: "SALES" | "PURCHASE";
+                state?: "draft" | "posted" | "cancel";
+                dateFrom?: string;
+                dateTo?: string;
             };
             header?: never;
             path?: never;
@@ -2137,9 +3802,81 @@ export interface operations {
             };
         };
     };
-    GetHisabiqAccounts: {
+    GetHisabiqInvoice: {
         parameters: {
             query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invoice"];
+                };
+            };
+        };
+    };
+    ValidateHisabiqInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    CancelHisabiqInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetHisabiqAccounts: {
+        parameters: {
+            query?: {
+                accountType?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
@@ -2159,6 +3896,272 @@ export interface operations {
                         code: string;
                         id: string;
                     }[];
+                };
+            };
+        };
+    };
+    SearchHisabiqAccounts: {
+        parameters: {
+            query: {
+                q: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        type: string;
+                        name: string;
+                        code: string;
+                        id: string;
+                    }[];
+                };
+            };
+        };
+    };
+    GetHisabiqPayments: {
+        parameters: {
+            query?: {
+                type?: "inbound" | "outbound" | "transfer";
+                state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentResponse"][];
+                };
+            };
+        };
+    };
+    CreateHisabiqPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePaymentDTO"];
+            };
+        };
+        responses: {
+            /** @description Payment created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        id: number;
+                    };
+                };
+            };
+        };
+    };
+    ConfirmHisabiqPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paymentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetHisabiqPartners: {
+        parameters: {
+            query?: {
+                isCustomer?: boolean;
+                isSupplier?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerResponse"][];
+                };
+            };
+        };
+    };
+    GetHisabiqJournals: {
+        parameters: {
+            query?: {
+                type?: "sale" | "purchase" | "cash" | "bank" | "general";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JournalResponse"][];
+                };
+            };
+        };
+    };
+    GetHisabiqTaxes: {
+        parameters: {
+            query?: {
+                typeTaxUse?: "sale" | "purchase" | "none";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaxResponse"][];
+                };
+            };
+        };
+    };
+    GetHisabiqTrialBalance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountBalanceQuery"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountBalanceReportResponse"][];
+                };
+            };
+        };
+    };
+    GetHisabiqPartnerLedger: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartnerLedgerQuery"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerLedgerReportResponse"] | null;
+                };
+            };
+        };
+    };
+    GetHisabiqProfitLoss: {
+        parameters: {
+            query?: {
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfitLossResponse"];
+                };
+            };
+        };
+    };
+    GetHisabiqGeneralLedger: {
+        parameters: {
+            query?: {
+                accountId?: number;
+                partnerId?: number;
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GLEntryResponse"][];
                 };
             };
         };
@@ -2706,6 +4709,252 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FieldMapping"][];
+                };
+            };
+        };
+    };
+    GetOdooDevCredentials: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        webUrl: string;
+                        password: string;
+                        login: string;
+                    } | null;
+                };
+            };
+        };
+    };
+    InstallOdooModules: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Modules installed successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetOdooModelFields: {
+        parameters: {
+            query?: {
+                simple?: boolean;
+            };
+            header?: never;
+            path: {
+                modelName: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Record_string.unknown_"] | {
+                        readonly?: boolean;
+                        required?: boolean;
+                        label: string;
+                        type: string;
+                        name: string;
+                    }[];
+                };
+            };
+        };
+    };
+    SubmitForApproval: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitForApprovalRequest"];
+            };
+        };
+        responses: {
+            /** @description Entity submitted for approval */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmitForApprovalResponse"];
+                };
+            };
+        };
+    };
+    GetPendingApprovals: {
+        parameters: {
+            query?: {
+                status?: "pending" | "approved" | "rejected" | "cancelled";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalRequestResponse"][];
+                };
+            };
+        };
+    };
+    GetApprovalRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalRequestResponse"];
+                };
+            };
+        };
+    };
+    Approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApprovalActionRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalActionResponse"];
+                };
+            };
+        };
+    };
+    Reject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApprovalActionRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalActionResponse"];
+                };
+            };
+        };
+    };
+    Delegate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DelegateApprovalRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalActionResponse"];
+                };
+            };
+        };
+    };
+    GetApprovalHistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entityType: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalRequestResponse"][];
                 };
             };
         };
