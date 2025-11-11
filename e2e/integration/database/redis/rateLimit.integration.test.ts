@@ -1,16 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import {
-  connectTest,
-  redisFixedWindowRateLimit,
-  type RedisClient,
-} from "@safee/database";
+import { connectTest, redisFixedWindowRateLimit, type RedisClient } from "@safee/database";
 
 describe("Redis Rate Limit Integration Tests", () => {
   let redis: RedisClient;
   let close: () => Promise<void>;
 
   beforeAll(async () => {
-    const connection = await connectTest({ withRedis: true });
+    const connection = await connectTest({ appName: "redis-rate-limit-test", withRedis: true });
     redis = connection.redis!;
     close = connection.close;
   });

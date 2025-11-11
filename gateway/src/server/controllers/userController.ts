@@ -1,7 +1,7 @@
 import { Controller, Get, Put, Route, Tags, Security, Body, SuccessResponse, Request } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext, type ServerContext } from "../serverContext.js";
-import { getUserById, updateUserProfile, updateUserLocale } from "@safee/database";
+import { getUserById, updateUserProfile, updateUserLocale, UserNotFoundError } from "@safee/database";
 import { Unauthorized, UserNotFound } from "../errors.js";
 
 type Locale = "en" | "ar";
@@ -65,6 +65,9 @@ export class UserController extends Controller {
         organization: user.organization,
       };
     } catch (error) {
+      if (error instanceof UserNotFoundError) {
+        throw new UserNotFound();
+      }
       this.context.logger.error({ error, userId }, "Failed to get current user");
       throw error;
     }
@@ -102,6 +105,9 @@ export class UserController extends Controller {
         organization: user.organization,
       };
     } catch (error) {
+      if (error instanceof UserNotFoundError) {
+        throw new UserNotFound();
+      }
       this.context.logger.error({ error, userId, request }, "Failed to update user profile");
       throw error;
     }
@@ -129,6 +135,9 @@ export class UserController extends Controller {
         locale: request.locale,
       };
     } catch (error) {
+      if (error instanceof UserNotFoundError) {
+        throw new UserNotFound();
+      }
       this.context.logger.error({ error, userId, locale: request.locale }, "Failed to update user locale");
       throw error;
     }

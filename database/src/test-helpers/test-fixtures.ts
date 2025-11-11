@@ -1,6 +1,6 @@
 import type { InferSelectModel } from "drizzle-orm";
 import type { DrizzleClient } from "../index.js";
-import { organizations, users, members } from "../drizzle/index.js";
+import { organizations, users, members, jobs } from "../drizzle/index.js";
 
 export type TestOrganization = InferSelectModel<typeof organizations>;
 export type TestUser = InferSelectModel<typeof users>;
@@ -12,9 +12,6 @@ export interface TestFixtures {
   adminUser: TestUser;
 }
 
-/**
- * Create a test organization
- */
 export async function createTestOrganization(
   db: DrizzleClient,
   data?: { name?: string; slug?: string },
@@ -30,10 +27,6 @@ export async function createTestOrganization(
   return org;
 }
 
-/**
- * Create a test user
- * Note: Passwords are now handled by Better Auth
- */
 export async function createTestUser(
   db: DrizzleClient,
   organizationId: string,
@@ -57,9 +50,6 @@ export async function createTestUser(
   return user;
 }
 
-/**
- * Add a user as a member of an organization with a specific role
- */
 export async function addMemberToOrganization(
   db: DrizzleClient,
   userId: string,
@@ -78,14 +68,9 @@ export async function addMemberToOrganization(
   return member;
 }
 
-/**
- * Create a complete test setup with organization and users
- */
 export async function createTestFixtures(db: DrizzleClient): Promise<TestFixtures> {
-  // Create organization
   const organization = await createTestOrganization(db);
 
-  // Create users
   const user = await createTestUser(db, organization.id, {
     email: "user@test.com",
     name: "Test User",
@@ -98,7 +83,6 @@ export async function createTestFixtures(db: DrizzleClient): Promise<TestFixture
     role: "admin",
   });
 
-  // Add users as members
   await addMemberToOrganization(db, user.id, organization.id, "member");
   await addMemberToOrganization(db, adminUser.id, organization.id, "admin");
 
@@ -109,10 +93,8 @@ export async function createTestFixtures(db: DrizzleClient): Promise<TestFixture
   };
 }
 
-/**
- * Clean all test data
- */
 export async function cleanTestData(db: DrizzleClient): Promise<void> {
-  // Delete organizations first (cascades to users and members)
+  await db.delete(users);
+  await db.delete(jobs);
   await db.delete(organizations);
 }

@@ -16,7 +16,7 @@ interface SwaggerRequest {
   body?: unknown;
 }
 
-import type { RedisClient, DrizzleClient, Storage, PubSub, JobScheduler, Locale } from "@safee/database";
+import type { RedisClient, DrizzleClient, Storage, PubSub, JobScheduler } from "@safee/database";
 import { SessionStore } from "./SessionStore.js";
 import { RegisterRoutes } from "./routes.js";
 import { localeMiddleware } from "./middleware/localeMiddleware.js";
@@ -51,28 +51,6 @@ type Dependencies = {
   scheduler: JobScheduler;
 };
 
-declare module "express-session" {
-  interface SessionData {
-    userId: string;
-    organizationId: string;
-  }
-}
-
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Express {
-    interface Request {
-      redis: RedisClient;
-      drizzle: DrizzleClient;
-      locale: Locale;
-
-      authenticatedUserId?: string;
-      organizationId?: string;
-      authType?: "session" | "jwt";
-    }
-  }
-}
-
 export async function server({
   logger,
   redis,
@@ -94,18 +72,16 @@ export async function server({
   app.set("trust proxy", 1);
   const odoo = initOdooClientManager(drizzle, logger as unknown as Logger);
 
-  // Parse JSON and URL-encoded bodies FIRST
   app.use(express.json({ limit: "10mb" }));
   app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-  // CORS middleware BEFORE auth routes
   app.use(
     cors({
       origin: [
         process.env.CORS_ORIGIN || "http://localhost:3001",
         process.env.FRONTEND_URL || "http://localhost:3001",
         process.env.LANDING_URL || "http://localhost:3002",
-        "http://localhost:3000", // Gateway API server (for Swagger UI)
+        "http://localhost:3000",
         "http://localhost:8080",
         "http://app.localhost:8080",
         "http://api.localhost:8080",
@@ -116,7 +92,6 @@ export async function server({
 
   app.use(localeMiddleware);
 
-  // Better Auth routes
   logger.info("Odoo client manager initialized");
 
   app.use((req, _res, next) => {
@@ -169,7 +144,6 @@ export async function server({
     );
   }
 
-  // Add request-scoped logging with request IDs
   app.use(loggingMiddleware(logger as unknown as Logger));
 
   app.use(
@@ -184,7 +158,6 @@ export async function server({
           },
         },
         customProps: (req) => {
-          // Type-safe access to authenticated user data
           const authReq = req as unknown as AuthenticatedRequest;
           return {
             userId: authReq.betterAuthSession?.user.id,
@@ -238,7 +211,7 @@ export async function server({
 
   app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof ValidateError) {
-      logger.info({ err, url: req.url, userId: req.authenticatedUserId }, "validation error");
+      logger.info({ err, url: req.url, userId: req.betterAuthSession?.user?.id }, "validation error");
       return res.status(422).json({
         message: "Validation Failed",
         details: err.fields,
@@ -250,7 +223,7 @@ export async function server({
         {
           err,
           url: req.url,
-          userId: req.authenticatedUserId,
+          userId: req.betterAuthSession?.user?.id,
           code: err.code,
           statusCode: err.statusCode,
         },
@@ -271,7 +244,7 @@ export async function server({
         errorStack: err instanceof Error ? err.stack : undefined,
         url: req.url,
         method: req.method,
-        userId: req.authenticatedUserId,
+        userId: req.betterAuthSession?.user?.id,
       },
       "Unhandled error in request handler",
     );

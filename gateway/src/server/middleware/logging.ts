@@ -6,17 +6,6 @@ import { Request, Response, NextFunction } from "express";
 import { randomUUID } from "crypto";
 import type { Logger } from "pino";
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Express {
-    interface Request {
-      requestId: string;
-      startTime: number;
-      log: Logger;
-    }
-  }
-}
-
 export function loggingMiddleware(logger: Logger) {
   return (req: Request, res: Response, next: NextFunction) => {
     // Generate unique request ID
@@ -60,8 +49,8 @@ export function loggingMiddleware(logger: Logger) {
         {
           statusCode,
           duration,
-          userId: req.authenticatedUserId,
-          organizationId: req.organizationId,
+          userId: req.betterAuthSession?.user?.id,
+          organizationId: req.betterAuthSession?.session?.activeOrganizationId,
           // Don't log response body for successful requests to reduce noise
           ...(statusCode >= 400 && responseBody ? { responseBody } : {}),
         },

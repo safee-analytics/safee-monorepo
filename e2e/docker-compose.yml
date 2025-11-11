@@ -2,13 +2,13 @@ services:
   postgres:
     image: postgres:16
     environment:
-      - "POSTGRES_USER=postgres"
-      - "POSTGRES_PASSWORD=postgres"
+      - "POSTGRES_USER=safee"
+      - "POSTGRES_PASSWORD=safee"
       - "POSTGRES_DB=safee"
     ports:
       - "25432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U safee"]
       interval: 2s
       timeout: 5s
       retries: 5
@@ -36,18 +36,20 @@ services:
     ports:
       - "18069:8069"
     environment:
-      - HOST=postgres
-      - USER=postgres
-      - PASSWORD=postgres
-      - PORT=5432
+      - ODOO_DB_HOST=postgres
+      - ODOO_DB_PORT=5432
+      - ODOO_DB_USER=safee
+      - ODOO_DB_PASSWORD=safee
+      - ODOO_ADMIN_PASSWD=admin
+      - ODOO_ADDONS_PATH=/opt/odoo/addons,/mnt/extra-addons
     volumes:
       - odoo-data:/var/lib/odoo
-      - ../odoo/addons:/mnt/extra-addons
+      - ../odoo/addons:/mnt/extra-addons:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8069/web/health"]
       interval: 10s
       timeout: 5s
-      retries: 10
+      retries: 5
       start_period: 60s
 
 volumes:

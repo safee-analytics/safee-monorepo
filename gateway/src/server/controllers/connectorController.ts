@@ -17,91 +17,36 @@ import {
 } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext } from "../serverContext.js";
-import { ConnectorManager } from "../services/connectors/connector.manager.js";
-import { DataProxyService } from "../services/connectors/data-proxy.service.js";
-import { DataMapperService } from "../services/connectors/data-mapper.service.js";
 import { ConnectorFactory } from "../services/connectors/connector.factory.js";
-import type { ConnectorType, ConnectorConfig } from "../services/connectors/base.connector.js";
-import { odooUserProvisioningService } from "../services/odoo/user-provisioning.service.js";
-import { odooDatabaseService } from "../services/odoo/database.service.js";
-import { getOdooClientManager } from "../services/odoo/manager.service.js";
-
-interface CreateConnectorRequest {
-  name: string;
-  description?: string;
-  type: ConnectorType;
-  config: ConnectorConfig;
-  tags?: string[];
-  metadata?: Record<string, unknown>;
-}
-
-interface UpdateConnectorRequest {
-  name?: string;
-  description?: string;
-  config?: ConnectorConfig;
-  tags?: string[];
-  metadata?: Record<string, unknown>;
-  isActive?: boolean;
-}
-
-interface ConnectorResponse {
-  id: string;
-  organizationId: string;
-  name: string;
-  description?: string;
-  type: ConnectorType;
-  isActive: boolean;
-  tags: string[];
-  metadata: Record<string, unknown>;
-  lastConnectionTest?: string;
-  lastConnectionStatus?: string;
-  lastConnectionError?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-interface QueryRequest {
-  sql: string;
-  params?: unknown[];
-}
-
-interface QueryResponse<T = unknown> {
-  rows: T[];
-  rowCount: number;
-  executionTime: number;
-}
-
-interface SchemaResponse {
-  tables: Array<{
-    schema: string;
-    name: string;
-    type: "table" | "view";
-  }>;
-}
-
-interface TablePreviewResponse {
-  schema: string;
-  table: string;
-  columns: Array<{
-    name: string;
-    type: string;
-    nullable: boolean;
-  }>;
-  sampleData: unknown[];
-  totalRows: number;
-}
-
-interface FieldMapping {
-  sourceColumn: string;
-  targetField: string;
-  transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean";
-  defaultValue?: unknown;
-}
-
-interface SuggestMappingsRequest {
-  sourceColumns: string[];
-  targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
-}
+import type { ConnectorType } from "../services/connectors/base.connector.js";
+import { getOdooAdminCredentials } from "../operations/getOdooAdminCredentials.js";
+import { getOdooUserWebCredentials } from "../operations/getOdooUserWebCredentials.js";
+import { listConnectors as listConnectorsOp } from "../operations/listConnectors.js";
+import { createConnector as createConnectorOp } from "../operations/createConnector.js";
+import { getConnector as getConnectorOp } from "../operations/getConnector.js";
+import { updateConnector as updateConnectorOp } from "../operations/updateConnector.js";
+import { deleteConnector as deleteConnectorOp } from "../operations/deleteConnector.js";
+import { testConnection as testConnectionOp } from "../operations/testConnection.js";
+import { getConnectorHealth as getConnectorHealthOp } from "../operations/getConnectorHealth.js";
+import { executeQuery as executeQueryOp } from "../operations/executeQuery.js";
+import { getSchema as getSchemaOp } from "../operations/getSchema.js";
+import { getTablePreview as getTablePreviewOp } from "../operations/getTablePreview.js";
+import { searchTable as searchTableOp } from "../operations/searchTable.js";
+import { suggestMappings as suggestMappingsOp } from "../operations/suggestMappings.js";
+import { getOdooDevCredentials as getOdooDevCredentialsOp } from "../operations/getOdooDevCredentials.js";
+import { installOdooModules as installOdooModulesOp } from "../operations/installOdooModules.js";
+import { getOdooModelFields as getOdooModelFieldsOp } from "../operations/getOdooModelFields.js";
+import type {
+  CreateConnectorRequest,
+  UpdateConnectorRequest,
+  ConnectorResponse,
+  QueryRequest,
+  QueryResponse,
+  SchemaResponse,
+  TablePreviewResponse,
+  FieldMapping,
+  SuggestMappingsRequest,
+} from "../dtos/connector.js";
 
 @Route("connectors")
 @Tags("Connectors")
@@ -109,14 +54,8 @@ export class ConnectorController extends Controller {
   @NoSecurity()
   private getServices(req: AuthenticatedRequest) {
     const ctx = getServerContext();
-    const connectorManager = new ConnectorManager(ctx.drizzle);
-    const dataProxyService = new DataProxyService(connectorManager);
-    const dataMapperService = new DataMapperService(dataProxyService);
 
     return {
-      connectorManager,
-      dataProxyService,
-      dataMapperService,
       ctx,
       organizationId: req.betterAuthSession?.session.activeOrganizationId || "",
       userId: req.betterAuthSession?.user.id || "",
@@ -161,30 +100,14 @@ export class ConnectorController extends Controller {
     @Query() isActive?: boolean,
     @Query() tags?: string,
   ): Promise<ConnectorResponse[]> {
-    const { connectorManager, organizationId } = this.getServices(req);
+    const { organizationId } = this.getServices(req);
 
     const filters: { type?: ConnectorType; isActive?: boolean; tags?: string[] } = {};
     if (type) filters.type = type;
     if (isActive !== undefined) filters.isActive = isActive;
     if (tags) filters.tags = tags.split(",");
 
-    const connectors = await connectorManager.listConnectors(organizationId, filters);
-
-    return connectors.map((c) => ({
-      id: c.id,
-      organizationId: c.organizationId,
-      name: c.name,
-      description: c.description || undefined,
-      type: c.type as ConnectorType,
-      isActive: c.isActive,
-      tags: (c.tags as string[]) || [],
-      metadata: (c.metadata as Record<string, unknown>) || {},
-      lastConnectionTest: c.lastConnectionTest?.toISOString(),
-      lastConnectionStatus: c.lastConnectionStatus || undefined,
-      lastConnectionError: c.lastConnectionError || undefined,
-      createdAt: c.createdAt.toISOString(),
-      updatedAt: c.updatedAt.toISOString(),
-    }));
+    return await listConnectorsOp(req.drizzle, organizationId, filters);
   }
 
   @Post("/")
@@ -194,34 +117,11 @@ export class ConnectorController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: CreateConnectorRequest,
   ): Promise<ConnectorResponse> {
-    const { connectorManager, organizationId, userId } = this.getServices(req);
-
-    const { connector } = await connectorManager.createConnector({
-      organizationId,
-      name: request.name,
-      description: request.description,
-      type: request.type,
-      config: request.config,
-      tags: request.tags,
-      metadata: request.metadata,
-      createdBy: userId,
-    });
+    const { organizationId, userId } = this.getServices(req);
 
     this.setStatus(201);
 
-    const metadata = connector.getMetadata();
-    return {
-      id: metadata.id,
-      organizationId: metadata.organizationId,
-      name: metadata.name,
-      description: metadata.description,
-      type: metadata.type,
-      isActive: metadata.isActive,
-      tags: metadata.tags,
-      metadata: metadata.metadata,
-      createdAt: metadata.createdAt.toISOString(),
-      updatedAt: metadata.updatedAt.toISOString(),
-    };
+    return await createConnectorOp(req.drizzle, organizationId, userId, request);
   }
 
   @Get("/{connectorId}")
@@ -230,23 +130,9 @@ export class ConnectorController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
   ): Promise<ConnectorResponse> {
-    const { connectorManager, organizationId } = this.getServices(req);
+    const { organizationId } = this.getServices(req);
 
-    const connector = await connectorManager.getConnector(connectorId, organizationId);
-    const metadata = connector.getMetadata();
-
-    return {
-      id: metadata.id,
-      organizationId: metadata.organizationId,
-      name: metadata.name,
-      description: metadata.description,
-      type: metadata.type,
-      isActive: metadata.isActive,
-      tags: metadata.tags,
-      metadata: metadata.metadata,
-      createdAt: metadata.createdAt.toISOString(),
-      updatedAt: metadata.updatedAt.toISOString(),
-    };
+    return await getConnectorOp(req.drizzle, connectorId, organizationId);
   }
 
   @Put("/{connectorId}")
@@ -256,12 +142,9 @@ export class ConnectorController extends Controller {
     @Path() connectorId: string,
     @Body() request: UpdateConnectorRequest,
   ): Promise<{ success: boolean }> {
-    const { connectorManager, organizationId, userId } = this.getServices(req);
+    const { organizationId, userId } = this.getServices(req);
 
-    return await connectorManager.updateConnector(connectorId, organizationId, {
-      ...request,
-      updatedBy: userId,
-    });
+    return await updateConnectorOp(req.drizzle, connectorId, organizationId, userId, request);
   }
 
   @Delete("/{connectorId}")
@@ -270,9 +153,9 @@ export class ConnectorController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
   ): Promise<{ success: boolean }> {
-    const { connectorManager, organizationId } = this.getServices(req);
+    const { organizationId } = this.getServices(req);
 
-    return await connectorManager.deleteConnector(connectorId, organizationId);
+    return await deleteConnectorOp(req.drizzle, connectorId, organizationId);
   }
 
   @Post("/{connectorId}/test")
@@ -287,9 +170,9 @@ export class ConnectorController extends Controller {
     metadata?: Record<string, unknown>;
     error?: string;
   }> {
-    const { connectorManager, organizationId } = this.getServices(req);
+    const { organizationId } = this.getServices(req);
 
-    return await connectorManager.testConnection(connectorId, organizationId);
+    return await testConnectionOp(req.drizzle, connectorId, organizationId);
   }
 
   @Get("/{connectorId}/health")
@@ -303,9 +186,9 @@ export class ConnectorController extends Controller {
     message?: string;
     details?: Record<string, unknown>;
   }> {
-    const { connectorManager, organizationId } = this.getServices(req);
+    const { organizationId } = this.getServices(req);
 
-    return await connectorManager.getConnectorHealth(connectorId, organizationId);
+    return await getConnectorHealthOp(req.drizzle, connectorId, organizationId);
   }
 
   @Post("/{connectorId}/query")
@@ -315,13 +198,9 @@ export class ConnectorController extends Controller {
     @Path() connectorId: string,
     @Body() request: QueryRequest,
   ): Promise<QueryResponse> {
-    const { dataProxyService, organizationId } = this.getServices(req);
+    const { organizationId } = this.getServices(req);
 
-    return await dataProxyService.executeQuery(organizationId, {
-      connectorId,
-      sql: request.sql,
-      params: request.params,
-    });
+    return await executeQueryOp(req.drizzle, organizationId, connectorId, request);
   }
 
   @Get("/{connectorId}/schema")
@@ -330,17 +209,9 @@ export class ConnectorController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
   ): Promise<SchemaResponse> {
-    const { dataProxyService, organizationId } = this.getServices(req);
+    const { organizationId } = this.getServices(req);
 
-    const schema = await dataProxyService.getSchema(organizationId, connectorId);
-
-    return {
-      tables: schema.tables.map((t) => ({
-        schema: t.schema,
-        name: t.name,
-        type: t.type as "table" | "view",
-      })),
-    };
+    return await getSchemaOp(req.drizzle, organizationId, connectorId);
   }
 
   @Get("/{connectorId}/schema/{schemaName}/tables/{tableName}")
@@ -352,9 +223,9 @@ export class ConnectorController extends Controller {
     @Path() tableName: string,
     @Query() limit: number = 100,
   ): Promise<TablePreviewResponse> {
-    const { dataProxyService, organizationId } = this.getServices(req);
+    const { organizationId } = this.getServices(req);
 
-    return await dataProxyService.getTablePreview(organizationId, connectorId, schemaName, tableName, limit);
+    return await getTablePreviewOp(req.drizzle, organizationId, connectorId, schemaName, tableName, limit);
   }
 
   @Get("/{connectorId}/schema/{schemaName}/tables/{tableName}/search")
@@ -368,15 +239,18 @@ export class ConnectorController extends Controller {
     @Query() searchColumns: string,
     @Query() limit: number = 50,
   ): Promise<unknown[]> {
-    const { dataProxyService, organizationId } = this.getServices(req);
+    const { organizationId } = this.getServices(req);
 
-    return await dataProxyService.searchTable(organizationId, connectorId, {
-      schema: schemaName,
-      table: tableName,
-      searchColumns: searchColumns.split(","),
+    return await searchTableOp(
+      req.drizzle,
+      organizationId,
+      connectorId,
+      schemaName,
+      tableName,
       searchTerm,
+      searchColumns.split(","),
       limit,
-    });
+    );
   }
 
   @Post("/mappings/suggest")
@@ -385,9 +259,7 @@ export class ConnectorController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: SuggestMappingsRequest,
   ): Promise<FieldMapping[]> {
-    const { dataMapperService } = this.getServices(req);
-
-    return dataMapperService.suggestMappings(request.sourceColumns, request.targetEntity);
+    return await suggestMappingsOp(req.drizzle, request);
   }
 
   /**
@@ -403,7 +275,51 @@ export class ConnectorController extends Controller {
   } | null> {
     const { userId, organizationId } = this.getServices(req);
 
-    return await odooUserProvisioningService.getOdooWebPassword(userId, organizationId);
+    return await getOdooDevCredentialsOp(req.drizzle, userId, organizationId);
+  }
+
+  /**
+   * Get Odoo user web credentials
+   * Returns the current user's login, password, and web URL for accessing Odoo UI
+   */
+  @Get("/odoo/user-credentials")
+  @Security("jwt")
+  public async getOdooUserCredentials(@Request() req: AuthenticatedRequest): Promise<{
+    login: string;
+    password: string;
+    webUrl: string;
+  } | null> {
+    const { userId, organizationId } = this.getServices(req);
+
+    return await getOdooUserWebCredentials(req.drizzle, userId, organizationId);
+  }
+
+  /**
+   * Get Odoo admin credentials
+   * Returns admin login, password, database name, and web URL for accessing Odoo database as admin
+   */
+  @Get("/odoo/admin-credentials")
+  @Security("jwt")
+  public async getOdooAdminCredentialsEndpoint(@Request() req: AuthenticatedRequest): Promise<{
+    databaseName: string;
+    adminLogin: string;
+    adminPassword: string;
+    webUrl: string;
+  } | null> {
+    const { organizationId } = this.getServices(req);
+
+    const credentials = await getOdooAdminCredentials(req.drizzle, organizationId);
+
+    if (!credentials) {
+      return null;
+    }
+
+    return {
+      databaseName: credentials.databaseName,
+      adminLogin: credentials.adminLogin,
+      adminPassword: credentials.adminPassword,
+      webUrl: `${credentials.odooUrl}/web/login?db=${credentials.databaseName}`,
+    };
   }
 
   /**
@@ -418,22 +334,13 @@ export class ConnectorController extends Controller {
   ): Promise<{ success: boolean; message: string }> {
     const { organizationId, ctx } = this.getServices(req);
 
-    try {
-      await odooDatabaseService.installModulesForOrganization(organizationId);
-      ctx.logger.info({ organizationId }, "Odoo modules installed successfully");
+    const result = await installOdooModulesOp(organizationId, ctx.logger);
 
-      return {
-        success: true,
-        message: "Odoo modules installed successfully",
-      };
-    } catch (error) {
-      ctx.logger.error({ organizationId, error }, "Failed to install Odoo modules");
+    if (!result.success) {
       this.setStatus(500);
-      return {
-        success: false,
-        message: error instanceof Error ? error.message : "Failed to install modules",
-      };
     }
+
+    return result;
   }
 
   /**
@@ -458,23 +365,6 @@ export class ConnectorController extends Controller {
   > {
     const { userId, organizationId } = this.getServices(req);
 
-    const client = await getOdooClientManager().getClient(userId, organizationId);
-    const fields = await client.fieldsGet(modelName);
-
-    // If simple mode, return just essential info
-    if (simple) {
-      return Object.entries(fields).map(([name, field]) => {
-        const fieldInfo = field as Record<string, unknown>;
-        return {
-          name,
-          type: (fieldInfo.type as string) || "unknown",
-          label: (fieldInfo.string as string) || name,
-          required: (fieldInfo.required as boolean) || false,
-          readonly: (fieldInfo.readonly as boolean) || false,
-        };
-      });
-    }
-
-    return fields;
+    return await getOdooModelFieldsOp(userId, organizationId, modelName, simple);
   }
 }

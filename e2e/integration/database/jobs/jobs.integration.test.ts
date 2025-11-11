@@ -25,7 +25,7 @@ describe("Jobs Integration Tests", () => {
   let testOrgId: string;
 
   beforeAll(async () => {
-    const connection = await connectTest();
+    const connection = await connectTest({ appName: "jobs-integration-test" });
     db = connection.drizzle;
     close = connection.close;
   });

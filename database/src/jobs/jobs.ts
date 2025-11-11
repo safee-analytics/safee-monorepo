@@ -244,29 +244,33 @@ export async function getJobStats(
     .from(jobs)
     .where(baseWhere);
 
+  // PostgreSQL count() returns strings at runtime, but Drizzle types them as numbers
+  // We need to convert to ensure proper number types, hence the eslint-disable comments
+  /* eslint-disable @typescript-eslint/no-unnecessary-type-conversion */
   const stats = {
-    total: result.total,
+    total: Number(result.total),
     byStatus: {
-      pending: result.pendingCount,
-      running: result.runningCount,
-      completed: result.completedCount,
-      failed: result.failedCount,
-      cancelled: result.cancelledCount,
-      retrying: result.retryingCount,
+      pending: Number(result.pendingCount),
+      running: Number(result.runningCount),
+      completed: Number(result.completedCount),
+      failed: Number(result.failedCount),
+      cancelled: Number(result.cancelledCount),
+      retrying: Number(result.retryingCount),
     } satisfies Record<JobStatus, number>,
     byType: {
-      cron: result.cronCount,
-      scheduled: result.scheduledCount,
-      immediate: result.immediateCount,
-      recurring: result.recurringCount,
+      cron: Number(result.cronCount),
+      scheduled: Number(result.scheduledCount),
+      immediate: Number(result.immediateCount),
+      recurring: Number(result.recurringCount),
     } satisfies Record<JobType, number>,
     byPriority: {
-      low: result.lowCount,
-      normal: result.normalCount,
-      high: result.highCount,
-      critical: result.criticalCount,
+      low: Number(result.lowCount),
+      normal: Number(result.normalCount),
+      high: Number(result.highCount),
+      critical: Number(result.criticalCount),
     } satisfies Record<Priority, number>,
   };
+  /* eslint-enable @typescript-eslint/no-unnecessary-type-conversion */
 
   logger.info({ stats }, "Retrieved job statistics");
   return stats;

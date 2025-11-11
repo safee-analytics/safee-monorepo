@@ -23,7 +23,7 @@ describe("JobSchedules Integration Tests", () => {
   let close: () => Promise<void>;
 
   beforeAll(async () => {
-    const connection = await connectTest();
+    const connection = await connectTest({ appName: "job-schedules-integration-test" });
     db = connection.drizzle;
     close = connection.close;
   });
@@ -328,7 +328,7 @@ describe("JobSchedules Integration Tests", () => {
 
       const originalUpdatedAt = schedule.updatedAt;
 
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       const updated = await updateJobSchedule(deps, schedule.id, {
         name: "Updated",

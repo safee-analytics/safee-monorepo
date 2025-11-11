@@ -1,10 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import {
-  connectTest,
-  acquireRedisLock,
-  acquireRedisLockWithRetry,
-  type RedisClient,
-} from "@safee/database";
+import { connectTest, acquireRedisLock, acquireRedisLockWithRetry, type RedisClient } from "@safee/database";
 import { pino } from "pino";
 
 describe("Redis Lock Integration Tests", () => {
@@ -13,7 +8,7 @@ describe("Redis Lock Integration Tests", () => {
   const logger = pino({ level: "silent" });
 
   beforeAll(async () => {
-    const connection = await connectTest({ withRedis: true });
+    const connection = await connectTest({ appName: "redis-lock-test", withRedis: true });
     redis = connection.redis!;
     close = connection.close;
   });

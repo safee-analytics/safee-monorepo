@@ -4,17 +4,14 @@ set dotenv-load
 
 DATABASE_URL := env("DATABASE_URL", "postgresql://postgres:postgres@localhost:15432/safee")
 DEV_DATABASE_URL := env("DEV_DB_URL", "")
-test_database_url := "postgresql://postgres:postgres@localhost:25432/safee"
+test_database_url := "postgresql://safee:safee@localhost:25432/safee"
 
-# Build anything that might be needed and then run the servers.
 
 default: build-database  prepare-gateway && run
 
-# Run the servers.
 run:
     npx tsx {{ if env("DEBUG", "") == "true" { "--inspect-brk" } else { "" } }} -r dotenv/config dev.ts
 
-# Initialize the most basic parts of the repo
 init: tsinit
     #!/usr/bin/env bash
     DIRS=$(find . -type f -name '*.env.example' -exec dirname {} \; |sed -r 's|./?||' | sort | uniq)
@@ -27,10 +24,8 @@ init: tsinit
 _all pattern mode="all" do="run":
     ruby task-runner.rb {{pattern}} {{mode}} {{do}}
 
-# Build all components of the project
 build mode="changed" do="run": (_all "^build-" mode do)
 
-# Lint all components
 lint package="" mode="changed" do="run":
     #!/usr/bin/env bash
     if [ "{{do}}" = "list" ]; then
@@ -54,10 +49,8 @@ lint package="" mode="changed" do="run":
         fi
     fi
 
-# Format all code
 fmt mode="changed" do="run": (_all "^fmt-" mode do)
 
-# Typecheck all components
 check package="" mode="changed" do="run":
     #!/usr/bin/env bash
     if [ "{{do}}" = "list" ]; then
@@ -76,8 +69,7 @@ check package="" mode="changed" do="run":
         just _all "^check-" {{mode}} {{do}}
     fi
 
-# Run all tests
-test package="" mode="changed" do="run" $DATABASE_URL=test_database_url: && stop-test
+test package="" mode="changed" do="run" $DATABASE_URL=test_database_url:
     #!/usr/bin/env bash
     if [ "{{do}}" = "list" ]; then
         if [ "{{mode}}" = "changed" ]; then
@@ -95,10 +87,8 @@ test package="" mode="changed" do="run" $DATABASE_URL=test_database_url: && stop
         just _all "^test-" {{mode}} {{do}}
     fi
 
-# Clean all
 clean: (_all "^clean-")
 
-# Install TypeScript dependencies
 [group('typescript')]
 tsinit:
     npm ci
@@ -107,7 +97,6 @@ tsinit:
 bump:
     npm run -w database bumpMigrations
 
-# Build database package
 [group('database')]
 build-database:
     npm -w database run build
@@ -117,17 +106,14 @@ build-database:
 check-database:
     npx turbo run check --filter=@safee/database
 
-# Lint database package
 [group('database')]
 lint-database: build-eslint-plugin-safee
     npx turbo run lint --filter=@safee/database
 
-# Format database package
 [group('database')]
 fmt-database:
     npx turbo run fmt --filter=@safee/database
 
-# Clean generated files from database package
 [group('database')]
 clean-database:
     npx -w database tsc --build --clean
@@ -160,8 +146,9 @@ drizzle-studio:
 start-test service="" $DATABASE_URL=test_database_url:
     docker compose -f e2e/docker-compose.yml up -d --wait {{service}}
     sleep 1
-    docker compose -f e2e/docker-compose.yml exec postgres dropdb -U postgres safee || true
-    docker compose -f e2e/docker-compose.yml exec postgres createdb -U postgres safee
+    docker compose -f e2e/docker-compose.yml exec postgres psql -U safee -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'safee' AND pid <> pg_backend_pid();" || true
+    docker compose -f e2e/docker-compose.yml exec postgres dropdb -U safee safee || true
+    docker compose -f e2e/docker-compose.yml exec postgres createdb -U safee safee
     npm run -w database migrate
 
 # Stop test Docker services
@@ -180,35 +167,30 @@ clean-test:
 test-integration: (start-test "postgres")
     docker compose -f e2e/docker-compose.yml up -d --wait redis
     cd e2e && npm run test:integration
-    docker compose -f e2e/docker-compose.yml down
 
 # Run unit tests
 [group('test')]
 test-unit: (start-test "postgres")
     docker compose -f e2e/docker-compose.yml up -d --wait redis
     cd e2e && npm run test:unit
-    docker compose -f e2e/docker-compose.yml down
 
 # Run all tests with coverage
 [group('test')]
 test-coverage: (start-test "postgres")
     docker compose -f e2e/docker-compose.yml up -d --wait redis
     cd e2e && npm run test:coverage
-    docker compose -f e2e/docker-compose.yml down
 
 # Run unit tests for database module
 [group('test')]
 test-database: build-database (start-test "postgres")
     docker compose -f e2e/docker-compose.yml up -d --wait redis
     npm -w database test
-    docker compose -f e2e/docker-compose.yml down
 
 # Run unit tests for gateway module
 [group('test')]
 test-gateway: prepare-gateway (start-test "postgres")
     docker compose -f e2e/docker-compose.yml up -d --wait redis
     npm -w gateway test
-    docker compose -f e2e/docker-compose.yml down
 
 # Run unit tests for eslint-plugin
 [group('test')]
@@ -378,35 +360,26 @@ clean-eslint-plugin-safee:
     rm -f eslint-plugin-safee/.eslintcache
     rm -rf eslint-plugin-safee/node_modules/.cache/prettier/
 
-# ==================================
-# Caddy Reverse Proxy Commands
-# ==================================
-
-# Run Caddy reverse proxy in development mode (port 8080)
 [group('caddy')]
 caddy-dev:
     @echo "Starting Caddy on http://localhost:8080"
     @echo "Make sure backend (port 3000) and frontend (port 3001) are running!"
     caddy run --config Caddyfile.dev
 
-# Run Caddy in production mode with auto HTTPS
 [group('caddy')]
 caddy-prod:
     @echo "Starting Caddy with auto HTTPS"
     @echo "Make sure to update domain in Caddyfile first!"
     sudo caddy run --config Caddyfile
 
-# Reload Caddy configuration without downtime
 [group('caddy')]
 caddy-reload:
     caddy reload --config Caddyfile
 
-# Stop Caddy
 [group('caddy')]
 caddy-stop:
     caddy stop
 
-# Format Caddyfile
 [group('caddy')]
 caddy-fmt:
     caddy fmt --overwrite Caddyfile
@@ -426,57 +399,14 @@ dev-with-caddy:
     #!/usr/bin/env bash
     set -e
 
-    # Cleanup function to kill all child processes
-    cleanup() {
-        echo ""
-        echo "🛑 Shutting down services..."
-
-        # Kill all processes on the ports
-        lsof -ti tcp:3000 tcp:3001 tcp:3002 tcp:8080 2>/dev/null | xargs kill -9 2>/dev/null || true
-
-        # Kill process groups
-        [[ -n "$GATEWAY_PID" ]] && kill -TERM -$GATEWAY_PID 2>/dev/null || true
-        [[ -n "$FRONTEND_PID" ]] && kill -TERM -$FRONTEND_PID 2>/dev/null || true
-        [[ -n "$LANDING_PID" ]] && kill -TERM -$LANDING_PID 2>/dev/null || true
-        [[ -n "$CADDY_PID" ]] && kill -TERM $CADDY_PID 2>/dev/null || true
-
-        sleep 1
-        echo "✓ All services stopped"
-    }
-
-    # Set trap BEFORE starting processes
-    trap cleanup EXIT INT TERM
-
-    echo "🚀 Starting full stack with Caddy reverse proxy..."
-    echo ""
-    echo "Services will be available at:"
-    echo "  - Landing:   http://localhost:8080"
-    echo "  - App:       http://app.localhost:8080"
-    echo "  - API:       http://api.localhost:8080/api/v1"
-    echo "  - API docs:  http://api.localhost:8080/docs"
-    echo ""
-    echo "Direct access (without Caddy):"
-    echo "  - Gateway:   http://localhost:3000"
-    echo "  - Frontend:  http://localhost:3001"
-    echo "  - Landing:   http://localhost:3002"
-    echo ""
-    echo "Press Ctrl+C to stop all services"
-    echo ""
-
-    # Start backend in background (new process group)
-    echo "▶ Starting Gateway (port 3000)..."
-    (cd gateway && npm run dev) &
-    GATEWAY_PID=$!
-
+        echo "▶ Starting Gateway (port 3000)..."
+    cd gateway && npm run dev
     # Start frontend in background (new process group)
     echo "▶ Starting Frontend (port 3001)..."
-    (cd frontend && npm run dev) &
-    FRONTEND_PID=$!
-
+    cd frontend && npm run dev 
     # Start landing page in background (new process group)
     echo "▶ Starting Landing (port 3002)..."
-    (cd landing && npm run dev) &
-    LANDING_PID=$!
+    cd landing && npm run dev   
 
     # Wait for services to be ready
     echo ""

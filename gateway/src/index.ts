@@ -57,8 +57,11 @@ async function main() {
   }
 }
 
-void main();
+// Only run main() if this file is being executed directly, not imported
+if (import.meta.url === `file://${process.argv[1]}`) {
+  void main();
 
-process.on("unhandledRejection", (err) => {
-  logger.debug(err, "Unhandled promise rejection");
-});
+  process.on("unhandledRejection", (err) => {
+    logger.debug(err, "Unhandled promise rejection");
+  });
+}

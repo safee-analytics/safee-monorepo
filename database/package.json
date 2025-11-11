@@ -69,9 +69,8 @@
   },
   "exports": {
     ".": "./build/src/index.js",
-    "./drizzle": "./build/src/drizzle.js",
     "./logging": "./build/src/logging.js",
     "./storage": "./build/src/storage/index.js",
-    "./test-helpers": "./build/src/test-helpers/test-fixtures.js"
+    "./test-helpers": "./build/src/test-helpers/index.js"
   }
 }

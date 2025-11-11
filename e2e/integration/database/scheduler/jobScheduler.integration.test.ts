@@ -21,7 +21,7 @@ describe("JobScheduler Integration Tests", () => {
   let testOrgId: string;
 
   beforeAll(async () => {
-    const connection = await connectTest();
+    const connection = await connectTest({ appName: "job-scheduler-integration-test" });
     db = connection.drizzle;
     close = connection.close;
   });

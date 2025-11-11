@@ -1,15 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { parseAcceptLanguage, isValidLocale, type Locale } from "@safee/database";
 
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace Express {
-    interface Request {
-      locale: Locale;
-    }
-  }
-}
-
 export function localeMiddleware(req: Request, _res: Response, next: NextFunction): void {
   let locale: Locale = "en";
 

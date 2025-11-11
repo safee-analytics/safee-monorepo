@@ -10,6 +10,13 @@ export class OrganizationSlugConflictError extends Error {
   }
 }
 
+export class UserNotFoundError extends Error {
+  constructor(message = "User not found") {
+    super(message);
+    this.name = "UserNotFoundError";
+  }
+}
+
 export interface CreateUserData {
   email: string;
   firstName?: string;
@@ -265,7 +272,7 @@ export async function updateUserProfile(
   try {
     const existingUser = await getUserById(deps, userId);
     if (!existingUser) {
-      throw new Error("User not found");
+      throw new UserNotFoundError();
     }
 
     const [updatedUser] = await drizzle
@@ -290,6 +297,11 @@ export async function updateUserLocale(deps: DbDeps, userId: string, locale: Loc
   const { drizzle, logger } = deps;
 
   try {
+    const existingUser = await getUserById(deps, userId);
+    if (!existingUser) {
+      throw new UserNotFoundError();
+    }
+
     await drizzle
       .update(users)
       .set({

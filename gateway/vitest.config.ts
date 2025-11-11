@@ -4,6 +4,12 @@ export default defineConfig({
   test: {
     environment: "node",
     globals: true,
+    pool: "forks",
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
@@ -17,9 +23,10 @@ export default defineConfig({
       ],
     },
     env: {
+      ENV: "test",
       NODE_ENV: "test",
-      DATABASE_URL: "postgresql://safee:safee@localhost:45432/safee",
-      REDIS_URL: "redis://localhost:46379",
+      DATABASE_URL: "postgresql://safee:safee@localhost:25432/safee",
+      REDIS_URL: "redis://localhost:26379",
       JWT_SECRET: "test-jwt-secret",
       LOG_LEVEL: "silent",
     },

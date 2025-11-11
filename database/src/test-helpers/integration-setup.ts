@@ -8,19 +8,11 @@ const TEST_DATABASE_URL = process.env.DATABASE_URL ?? "postgresql://safee:safee@
 const TEST_REDIS_URL = process.env.REDIS_URL ?? "redis://localhost:16379";
 
 export function createTestLogger() {
-  return pino({ level: "silent" }); // Silent during tests
+  return pino({ level: "silent" });
 }
 
-/**
- * Connect to test database and optionally Redis.
- * Returns drizzle client, close function, and optionally redis client.
- * Usage:
- *   const { drizzle, close, redis } = await connectTest({ withRedis: true });
- *   // ... run tests
- *   await close();
- */
-export async function connectTest(options?: { withRedis?: boolean }) {
-  const { drizzle, close: dbClose } = connect("safee-test", TEST_DATABASE_URL);
+export async function connectTest(options?: { appName: string; withRedis?: boolean }) {
+  const { drizzle, close: dbClose } = connect(options?.appName ?? "safee-test", TEST_DATABASE_URL);
 
   let redis: RedisClient | undefined;
   if (options?.withRedis) {
@@ -37,9 +29,6 @@ export async function connectTest(options?: { withRedis?: boolean }) {
   return { drizzle, close, redis };
 }
 
-/**
- * Create test deps (drizzle + logger) from an existing drizzle client
- */
 export function createTestDeps(drizzle: DrizzleClient): DbDeps {
   return {
     drizzle,

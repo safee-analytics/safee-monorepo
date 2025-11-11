@@ -18,7 +18,7 @@ describe("User Integration Tests", () => {
   let close: () => Promise<void>;
 
   beforeAll(async () => {
-    const connection = await connectTest();
+    const connection = await connectTest({ appName: "users-integration-test" });
     db = connection.drizzle;
     close = connection.close;
   });

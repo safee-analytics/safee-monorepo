@@ -4,6 +4,12 @@ export default defineConfig({
   test: {
     environment: "node",
     globals: true,
+    pool: "forks",
+    poolOptions: {
+      forks: {
+        singleFork: true,
+      },
+    },
     setupFiles: ["./setup/test-setup.ts"],
     coverage: {
       provider: "v8",
@@ -12,8 +18,10 @@ export default defineConfig({
     },
     env: {
       NODE_ENV: "test",
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:25432/safee",
+      DATABASE_URL: "postgresql://safee:safee@localhost:25432/safee",
       REDIS_URL: "redis://localhost:26379",
+      ODOO_URL: "http://localhost:18069",
+      ODOO_DB: "safee",
       PUBSUB_EMULATOR_HOST: "localhost:48085",
     },
     testTimeout: 30000,
