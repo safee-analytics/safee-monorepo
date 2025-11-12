@@ -267,7 +267,7 @@ start-e2e service="" $DATABASE_URL=test_database_url:
     docker compose -f e2e/docker-compose.yml exec postgres dropdb -U safee safee || true
     docker compose -f e2e/docker-compose.yml exec postgres createdb -U safee safee
     @echo "Running migrations..."
-    npm run -w database migrate
+    DATABASE_URL={{DATABASE_URL}} npm run -w database migrate
     @echo "✅ E2E environment ready!"
 
 # Stop e2e Docker services

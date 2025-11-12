@@ -59,9 +59,9 @@ jobs:
       - name: List tasks
         id: list
         run: |
-          echo "lint=$(just lint "" "" list)" >> "${GITHUB_OUTPUT}"
-          echo "check=$(just check "" "" list)" >> "${GITHUB_OUTPUT}"
-          echo "test=$(just test "" "" list)" >> "${GITHUB_OUTPUT}"
+          echo "lint=$(just lint all list)" >> "${GITHUB_OUTPUT}"
+          echo "check=$(just check all list)" >> "${GITHUB_OUTPUT}"
+          echo "test=$(just test all list)" >> "${GITHUB_OUTPUT}"
 
   lint-each:
     runs-on: ubuntu-latest
