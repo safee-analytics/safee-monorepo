@@ -310,17 +310,15 @@ reset-e2e-db $DATABASE_URL=test_database_url:
     npm run -w database migrate
     @echo "✅ E2E database reset complete"
 
-# Run integration tests
+# Run integration tests (manual use only, requires build first)
 [group('test')]
-test-integration: (start-e2e "postgres")
-    docker compose -f e2e/docker-compose.yml up -d --wait redis
-    cd e2e && npm run test:integration
+integration: build-database build-gateway (start-e2e "")
+    REDIS_URL=redis://localhost:26379 cd e2e && npm run test:integration
 
-# Run unit tests
+# Run unit tests (manual use only, requires build first)
 [group('test')]
-test-unit: (start-e2e "postgres")
-    docker compose -f e2e/docker-compose.yml up -d --wait redis
-    cd e2e && npm run test:unit
+unit: build-database build-gateway (start-e2e "")
+    REDIS_URL=redis://localhost:26379 cd e2e && npm run test:unit
 
 # Run all tests with coverage (manual use only, requires build first)
 [group('test')]
