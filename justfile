@@ -86,9 +86,8 @@ clean-database:
 
 # Run app-level database tests
 [group('database')]
-test-database: build-database (start-e2e "postgres")
-    docker compose -f e2e/docker-compose.yml up -d --wait redis
-    npm -w database test
+test-database: build-database (start-e2e "")
+    REDIS_URL=redis://localhost:26379 npm -w database test
 
 # Generate a new (possibly empty) migration
 [group('database')]
@@ -167,9 +166,8 @@ fmt-gateway:
 
 # Test gateway
 [group('gateway')]
-test-gateway: prepare-gateway (start-e2e "postgres")
-    docker compose -f e2e/docker-compose.yml up -d --wait redis
-    npm -w gateway test
+test-gateway: prepare-gateway (start-e2e "")
+    REDIS_URL=redis://localhost:26379 npm -w gateway test
 
 # Clean generated files from gateway
 [group('gateway')]
@@ -252,22 +250,21 @@ clean-e2e:
 
 # Run unit tests for e2e module
 [group('e2e')]
-test-e2e: build-e2e (start-e2e "postgres")
-    docker compose -f e2e/docker-compose.yml up -d --wait redis
-    npm -w e2e test
+test-e2e: build-e2e (start-e2e "")
+    REDIS_URL=redis://localhost:26379 npm -w e2e test
 
 # Start e2e Docker services (postgres, redis), reset DB, and run migrations
 [group('e2e')]
-start-e2e service="" $DATABASE_URL=test_database_url:
+start-e2e service="" $DATABASE_URL=test_database_url $REDIS_URL="redis://localhost:26379":
     @echo "Starting e2e services..."
-    docker compose -f e2e/docker-compose.yml up -d --wait {{service}}
+    docker compose -f e2e/docker-compose.yml up -d --wait postgres redis {{service}}
     sleep 1
     @echo "Resetting test database..."
     docker compose -f e2e/docker-compose.yml exec postgres psql -U safee -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'safee' AND pid <> pg_backend_pid();" || true
     docker compose -f e2e/docker-compose.yml exec postgres dropdb -U safee safee || true
     docker compose -f e2e/docker-compose.yml exec postgres createdb -U safee safee
     @echo "Running migrations..."
-    DATABASE_URL={{DATABASE_URL}} npm run -w database migrate
+    DATABASE_URL={{DATABASE_URL}} REDIS_URL={{REDIS_URL}} npm run -w database migrate
     @echo "✅ E2E environment ready!"
 
 # Stop e2e Docker services
@@ -276,6 +273,9 @@ stop-e2e:
     @echo "Stopping e2e services..."
     docker compose -f e2e/docker-compose.yml down
     @echo "✅ E2E services stopped"
+
+# Alias for CI compatibility
+stop-test: stop-e2e
 
 # Restart e2e services without resetting DB
 [group('e2e')]
