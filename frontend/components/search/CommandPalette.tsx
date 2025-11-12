@@ -1,70 +1,70 @@
-'use client'
+"use client";
 
-import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Command } from 'cmdk'
-import * as Dialog from '@radix-ui/react-dialog'
-import * as VisuallyHidden from '@radix-ui/react-visually-hidden'
-import { FiSearch, FiPlus } from 'react-icons/fi'
-import { useTranslation } from '@/lib/providers/TranslationProvider'
-import { useAuth } from '@/lib/auth/hooks'
-import { getNavigationItems, getQuickActions, getSystemActions } from './searchItems'
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Command } from "cmdk";
+import * as Dialog from "@radix-ui/react-dialog";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { FiSearch, FiPlus } from "react-icons/fi";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useAuth } from "@/lib/auth/hooks";
+import { getNavigationItems, getQuickActions, getSystemActions } from "./searchItems";
 
 interface CommandPaletteProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
-  const router = useRouter()
-  const { t } = useTranslation()
-  const { signOut } = useAuth()
-  const [search, setSearch] = useState('')
+  const router = useRouter();
+  const { t } = useTranslation();
+  const { signOut } = useAuth();
+  const [search, setSearch] = useState("");
 
   // Handle keyboard shortcuts
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault()
-        onOpenChange(!open)
+      if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
+        e.preventDefault();
+        onOpenChange(!open);
       }
-    }
+    };
 
-    document.addEventListener('keydown', down)
-    return () => document.removeEventListener('keydown', down)
-  }, [open, onOpenChange])
+    document.addEventListener("keydown", down);
+    return () => document.removeEventListener("keydown", down);
+  }, [open, onOpenChange]);
 
   // Reset search when closing
   useEffect(() => {
     if (!open) {
-      setSearch('')
+      setSearch("");
     }
-  }, [open])
+  }, [open]);
 
   const handleSelect = (path: string, isAction?: boolean) => {
-    onOpenChange(false)
+    onOpenChange(false);
 
     // Handle special action paths
-    if (path === '#logout') {
-      signOut()
-      return
+    if (path === "#logout") {
+      signOut();
+      return;
     }
-    if (path === '#export') {
-      console.log('Export data triggered')
-      return
+    if (path === "#export") {
+      console.log("Export data triggered");
+      return;
     }
-    if (path === '#theme') {
-      console.log('Theme toggle triggered')
-      return
+    if (path === "#theme") {
+      console.log("Theme toggle triggered");
+      return;
     }
 
     // Navigate to path
-    router.push(path)
-  }
+    router.push(path);
+  };
 
-  const navigationItems = getNavigationItems(t)
-  const quickActions = getQuickActions(t, signOut)
-  const systemActions = getSystemActions(t, signOut)
+  const navigationItems = getNavigationItems(t);
+  const quickActions = getQuickActions(t, signOut);
+  const systemActions = getSystemActions(t, signOut);
 
   return (
     <Command.Dialog
@@ -106,15 +106,13 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
             {/* Navigation Group */}
             <Command.Group heading="Navigation" className="px-2 py-2">
-              <div className="text-xs font-semibold text-gray-400 uppercase mb-2 px-2">
-                Navigate
-              </div>
+              <div className="text-xs font-semibold text-gray-400 uppercase mb-2 px-2">Navigate</div>
               {navigationItems.map((item) => {
-                const Icon = item.icon
+                const Icon = item.icon;
                 return (
                   <Command.Item
                     key={item.id}
-                    value={`${item.label} ${item.keywords.join(' ')}`}
+                    value={`${item.label} ${item.keywords.join(" ")}`}
                     onSelect={() => handleSelect(item.path)}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-100 data-[selected=true]:bg-gray-100 transition-colors"
                   >
@@ -123,12 +121,10 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                     </div>
                     <div className="flex-1">
                       <div className="text-sm font-medium text-gray-900">{item.label}</div>
-                      {item.description && (
-                        <div className="text-xs text-gray-500">{item.description}</div>
-                      )}
+                      {item.description && <div className="text-xs text-gray-500">{item.description}</div>}
                     </div>
                   </Command.Item>
-                )
+                );
               })}
             </Command.Group>
 
@@ -136,15 +132,13 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
             {/* Quick Actions Group */}
             <Command.Group heading="Actions" className="px-2 py-2">
-              <div className="text-xs font-semibold text-gray-400 uppercase mb-2 px-2">
-                Quick Actions
-              </div>
+              <div className="text-xs font-semibold text-gray-400 uppercase mb-2 px-2">Quick Actions</div>
               {quickActions.map((item) => {
-                const Icon = item.icon
+                const Icon = item.icon;
                 return (
                   <Command.Item
                     key={item.id}
-                    value={`${item.label} ${item.keywords.join(' ')}`}
+                    value={`${item.label} ${item.keywords.join(" ")}`}
                     onSelect={() => handleSelect(item.path)}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-safee-50 data-[selected=true]:bg-safee-50 transition-colors"
                   >
@@ -153,13 +147,11 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                     </div>
                     <div className="flex-1">
                       <div className="text-sm font-medium text-gray-900">{item.label}</div>
-                      {item.description && (
-                        <div className="text-xs text-gray-500">{item.description}</div>
-                      )}
+                      {item.description && <div className="text-xs text-gray-500">{item.description}</div>}
                     </div>
                     <FiPlus className="w-4 h-4 text-gray-400 ml-auto" />
                   </Command.Item>
-                )
+                );
               })}
             </Command.Group>
 
@@ -167,15 +159,13 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
 
             {/* System Actions Group */}
             <Command.Group heading="System" className="px-2 py-2">
-              <div className="text-xs font-semibold text-gray-400 uppercase mb-2 px-2">
-                System
-              </div>
+              <div className="text-xs font-semibold text-gray-400 uppercase mb-2 px-2">System</div>
               {systemActions.map((item) => {
-                const Icon = item.icon
+                const Icon = item.icon;
                 return (
                   <Command.Item
                     key={item.id}
-                    value={`${item.label} ${item.keywords.join(' ')}`}
+                    value={`${item.label} ${item.keywords.join(" ")}`}
                     onSelect={() => handleSelect(item.path, true)}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 data-[selected=true]:bg-gray-50 transition-colors"
                   >
@@ -184,12 +174,10 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                     </div>
                     <div className="flex-1">
                       <div className="text-sm font-medium text-gray-900">{item.label}</div>
-                      {item.description && (
-                        <div className="text-xs text-gray-500">{item.description}</div>
-                      )}
+                      {item.description && <div className="text-xs text-gray-500">{item.description}</div>}
                     </div>
                   </Command.Item>
-                )
+                );
               })}
             </Command.Group>
           </Command.List>
@@ -214,5 +202,5 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
         </div>
       </div>
     </Command.Dialog>
-  )
+  );
 }

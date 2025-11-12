@@ -8,7 +8,7 @@ export const nisbahAr = {
     createMenu: {
       lead: "عميل محتمل",
       contact: "جهة اتصال",
-      deal: "صفقة"
-    }
-  }
-} as const
+      deal: "صفقة",
+    },
+  },
+} as const;

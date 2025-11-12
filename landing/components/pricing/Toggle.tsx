@@ -30,11 +30,7 @@ export const Toggle = ({
       >
         <span className="relative z-10">Annually</span>
       </button>
-      <div
-        className={`absolute inset-0 z-0 flex ${
-          selected === "annual" ? "justify-end" : "justify-start"
-        }`}
-      >
+      <div className={`absolute inset-0 z-0 flex ${selected === "annual" ? "justify-end" : "justify-start"}`}>
         <motion.span
           layout
           transition={{ ease: "easeInOut" }}

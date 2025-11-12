@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { ReactNode } from "react";
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
@@ -35,15 +35,12 @@ interface LoginFormProps {
 
 export const SafeeLoginForm = ({ t, onSubmit, onGoogleLogin, onSSOLogin, onGoBack }: LoginFormProps) => {
   const dir = useDirection();
-  const isRTL = dir === 'rtl';
+  const isRTL = dir === "rtl";
 
   return (
     <div className="bg-gradient-to-br from-gray-50 to-gray-100 py-20 text-gray-900 selection:bg-safee-200 min-h-screen relative overflow-hidden">
       <BubbleButton
-        className={twMerge(
-          "absolute top-6 text-sm",
-          isRTL ? "right-4" : "left-4"
-        )}
+        className={twMerge("absolute top-6 text-sm", isRTL ? "right-4" : "left-4")}
         onClick={onGoBack}
       >
         {isRTL ? <FiArrowRight /> : <FiArrowLeft />}
@@ -68,7 +65,7 @@ export const SafeeLoginForm = ({ t, onSubmit, onGoogleLogin, onSSOLogin, onGoBac
   );
 };
 
-const Heading = ({ t }: { t: LoginFormProps['t'] }) => (
+const Heading = ({ t }: { t: LoginFormProps["t"] }) => (
   <div>
     <SafeeLogo />
     <div className="mb-9 mt-6 space-y-1.5">
@@ -83,29 +80,27 @@ const Heading = ({ t }: { t: LoginFormProps['t'] }) => (
   </div>
 );
 
-const SocialOptions = ({ t, onGoogleLogin, onSSOLogin }: {
-  t: LoginFormProps['t'];
+const SocialOptions = ({
+  t,
+  onGoogleLogin,
+  onSSOLogin,
+}: {
+  t: LoginFormProps["t"];
   onGoogleLogin?: () => void;
   onSSOLogin?: () => void;
 }) => (
   <div>
-    <BubbleButton
-      className="flex w-full justify-center py-3 mb-3"
-      onClick={onGoogleLogin}
-    >
+    <BubbleButton className="flex w-full justify-center py-3 mb-3" onClick={onGoogleLogin}>
       <FcGoogle className="text-xl" />
       {t.signInWithGoogle}
     </BubbleButton>
-    <BubbleButton
-      className="flex w-full justify-center py-3"
-      onClick={onSSOLogin}
-    >
+    <BubbleButton className="flex w-full justify-center py-3" onClick={onSSOLogin}>
       {t.signInWithSSO}
     </BubbleButton>
   </div>
 );
 
-const Or = ({ t }: { t: LoginFormProps['t'] }) => {
+const Or = ({ t }: { t: LoginFormProps["t"] }) => {
   return (
     <div className="my-6 flex items-center gap-3">
       <div className="h-[1px] w-full bg-gray-300" />
@@ -115,9 +110,15 @@ const Or = ({ t }: { t: LoginFormProps['t'] }) => {
   );
 };
 
-const EmailForm = ({ t, onSubmit }: { t: LoginFormProps['t']; onSubmit?: (email: string, password: string) => void }) => {
-  const [email, setEmail] = React.useState('');
-  const [password, setPassword] = React.useState('');
+const EmailForm = ({
+  t,
+  onSubmit,
+}: {
+  t: LoginFormProps["t"];
+  onSubmit?: (email: string, password: string) => void;
+}) => {
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -145,7 +146,10 @@ const EmailForm = ({ t, onSubmit }: { t: LoginFormProps['t']; onSubmit?: (email:
           <label htmlFor="password-input" className="block text-gray-700">
             {t.password}
           </label>
-          <a href="/forgot-password" className="text-sm text-safee-600 hover:text-safee-700 transition-colors">
+          <a
+            href="/forgot-password"
+            className="text-sm text-safee-600 hover:text-safee-700 transition-colors"
+          >
             {t.forgotPassword}
           </a>
         </div>
@@ -166,7 +170,7 @@ const EmailForm = ({ t, onSubmit }: { t: LoginFormProps['t']; onSubmit?: (email:
   );
 };
 
-const Terms = ({ t }: { t: LoginFormProps['t'] }) => (
+const Terms = ({ t }: { t: LoginFormProps["t"] }) => (
   <p className="mt-9 text-xs text-gray-600">
     {t.termsPrefix}{" "}
     <a href="/terms" className="text-safee-600 hover:text-safee-700 transition-colors">
@@ -184,7 +188,7 @@ const SplashButton = ({ children, className, ...rest }: ButtonProps) => {
     <button
       className={twMerge(
         "rounded-md bg-gradient-to-br from-safee-400 to-safee-700 px-4 py-2 text-lg text-zinc-50 ring-2 ring-safee-500/50 ring-offset-2 ring-offset-gray-50 transition-all hover:scale-[1.02] hover:ring-transparent active:scale-[0.98] active:ring-safee-500/70",
-        className
+        className,
       )}
       {...rest}
     >
@@ -213,7 +217,7 @@ const BubbleButton = ({ children, className, ...rest }: ButtonProps) => {
         hover:scale-105 hover:text-safee-900
         hover:before:translate-y-[0%]
         active:scale-100`,
-        className
+        className,
       )}
       {...rest}
     >
@@ -228,10 +232,7 @@ const CornerGrid = ({ isRTL }: { isRTL: boolean }) => {
       style={{
         backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' width='32' height='32' fill='none' stroke-width='2' stroke='rgb(59 130 246 / 0.3)'%3e%3cpath d='M0 .5H31.5V32'/%3e%3c/svg%3e")`,
       }}
-      className={twMerge(
-        "absolute top-0 z-0 size-[50vw]",
-        isRTL ? "left-0" : "right-0"
-      )}
+      className={twMerge("absolute top-0 z-0 size-[50vw]", isRTL ? "left-0" : "right-0")}
     >
       <div
         style={{
@@ -251,9 +252,7 @@ const SafeeLogo = () => {
       <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-safee-500 to-safee-700 flex items-center justify-center shadow-lg shadow-safee-500/50">
         <span className="text-white font-bold text-2xl">S</span>
       </div>
-      <span className="text-2xl font-bold text-gray-900">
-        Safee Analytics
-      </span>
+      <span className="text-2xl font-bold text-gray-900">Safee Analytics</span>
     </div>
   );
 };

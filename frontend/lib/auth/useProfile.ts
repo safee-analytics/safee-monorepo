@@ -70,7 +70,7 @@ export function useProfile() {
         setIsLoading(false);
       }
     },
-    [setLocale]
+    [setLocale],
   );
 
   /**
@@ -102,7 +102,7 @@ export function useProfile() {
         setIsLoading(false);
       }
     },
-    [setLocale]
+    [setLocale],
   );
 
   return {

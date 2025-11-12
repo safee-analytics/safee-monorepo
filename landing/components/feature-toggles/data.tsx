@@ -35,13 +35,10 @@ const IssuesComponent = () => {
           <span className="block text-xs text-zinc-600">Site Reliability</span>
         </div>
       </div>
-      <div className="mb-1 line-clamp-1 text-xl font-medium">
-        Bot crawlers causing latency issues
-      </div>
+      <div className="mb-1 line-clamp-1 text-xl font-medium">Bot crawlers causing latency issues</div>
       <span className="line-clamp-3 text-sm leading-relaxed text-zinc-600">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed incidunt
-        iste molestiae distinctio assumenda quos consectetur laborum eaque autem
-        libero?
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Sed incidunt iste molestiae distinctio
+        assumenda quos consectetur laborum eaque autem libero?
       </span>
       <div className="absolute bottom-0 left-0 right-0 flex items-center gap-1.5 bg-white/50 p-4 backdrop-blur">
         <span className="flex w-fit items-center gap-1 rounded bg-yellow-100 px-1.5 py-0.5 text-sm text-yellow-900">
@@ -111,9 +108,7 @@ const OverlayTask = () => {
           <span>Features</span>
         </div>
       </div>
-      <span className="mb-0.5 block text-lg font-medium">
-        Launch landing page
-      </span>
+      <span className="mb-0.5 block text-lg font-medium">Launch landing page</span>
       <span className="block text-sm text-zinc-600">December 4th, 2023</span>
     </div>
   );
@@ -123,21 +118,11 @@ const GanttComponent = () => {
   return (
     <div className="relative h-full min-w-96 p-4 pb-0 pt-0">
       <div className="grid h-full grid-cols-5">
-        <span className="block h-full w-full pt-4 text-center text-sm">
-          Sat
-        </span>
-        <span className="block h-full w-full bg-zinc-100 pt-4 text-center text-sm">
-          Sun
-        </span>
-        <span className="block h-full w-full pt-4 text-center text-sm">
-          Mon
-        </span>
-        <span className="block h-full w-full bg-zinc-100 pt-4 text-center text-sm">
-          Tue
-        </span>
-        <span className="block h-full w-full pt-4 text-center text-sm">
-          Wed
-        </span>
+        <span className="block h-full w-full pt-4 text-center text-sm">Sat</span>
+        <span className="block h-full w-full bg-zinc-100 pt-4 text-center text-sm">Sun</span>
+        <span className="block h-full w-full pt-4 text-center text-sm">Mon</span>
+        <span className="block h-full w-full bg-zinc-100 pt-4 text-center text-sm">Tue</span>
+        <span className="block h-full w-full pt-4 text-center text-sm">Wed</span>
       </div>
       <div className="absolute bottom-0 left-0 right-0 top-10 space-y-4 p-4">
         <div className="h-4 w-2/5 rounded-full bg-purple-500" />
@@ -196,20 +181,15 @@ const DocumentationComponent = () => {
       </div>
       <span className="relative mb-1.5 inline-block text-lg font-medium">
         AWS Migration Technical Proposal
-        <span className="inline-block scale-150 animate-pulse text-green-600">
-          |
-        </span>
+        <span className="inline-block scale-150 animate-pulse text-green-600">|</span>
         <BsFillCursorFill className="inline-block translate-y-full -rotate-90 text-3xl text-green-600" />
       </span>
       <br />
       <span className="relative text-xs text-zinc-600 sm:text-sm">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta hic quo
-        a officiis. Mollitia architecto sed debitis laboriosam repudiandae
-        veniam quidem nesciunt beatae quis. Esse placeat quasi inventore
-        blanditiis laboriosam?{" "}
-        <span className="inline-block scale-150 animate-pulse text-blue-600">
-          |
-        </span>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta hic quo a officiis. Mollitia
+        architecto sed debitis laboriosam repudiandae veniam quidem nesciunt beatae quis. Esse placeat quasi
+        inventore blanditiis laboriosam?{" "}
+        <span className="inline-block scale-150 animate-pulse text-blue-600">|</span>
         <BsFillCursorFill className="inline-block translate-y-full -rotate-90 text-3xl text-blue-600" />
       </span>
     </div>
@@ -238,8 +218,7 @@ export const data = [
     title: "Gantt",
     Component: GanttComponent,
     cardTitle: "Title for Gantt feature",
-    cardSubtitle:
-      "Explain what the Gantt feature and why it's different or better than your competitors.",
+    cardSubtitle: "Explain what the Gantt feature and why it's different or better than your competitors.",
   },
   {
     id: 4,

@@ -1,31 +1,31 @@
-'use client'
+"use client";
 
-import { useOrgStore } from '@/stores/useOrgStore'
-import { useEffect } from 'react'
+import { useOrgStore } from "@/stores/useOrgStore";
+import { useEffect } from "react";
 
 interface DirectionWrapperProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export const DirectionWrapper = ({ children }: DirectionWrapperProps) => {
-  const { locale } = useOrgStore()
+  const { locale } = useOrgStore();
 
   useEffect(() => {
     // Update document direction and lang attribute
-    const isRTL = locale === 'ar'
-    document.documentElement.dir = isRTL ? 'rtl' : 'ltr'
-    document.documentElement.lang = locale
+    const isRTL = locale === "ar";
+    document.documentElement.dir = isRTL ? "rtl" : "ltr";
+    document.documentElement.lang = locale;
 
     // Update font based on locale
-    const body = document.body
+    const body = document.body;
     if (isRTL) {
-      body.style.fontFamily = 'var(--font-cairo), system-ui, sans-serif'
+      body.style.fontFamily = "var(--font-cairo), system-ui, sans-serif";
     } else {
-      body.style.fontFamily = 'var(--font-inter), system-ui, sans-serif'
+      body.style.fontFamily = "var(--font-inter), system-ui, sans-serif";
     }
-  }, [locale])
+  }, [locale]);
 
-  return <>{children}</>
-}
+  return <>{children}</>;
+};
 
-export default DirectionWrapper
+export default DirectionWrapper;

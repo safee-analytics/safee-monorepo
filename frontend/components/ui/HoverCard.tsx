@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React from "react";
 import { IconType } from "react-icons";
@@ -9,20 +9,10 @@ const HoverDevCards = () => {
     <div className="p-4">
       <p className="text-xl font-semibold mb-2">Settings</p>
       <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        <Card
-          title="Account"
-          subtitle="Manage profile"
-          href="#"
-          Icon={FiUser}
-        />
+        <Card title="Account" subtitle="Manage profile" href="#" Icon={FiUser} />
         <Card title="Email" subtitle="Manage email" href="#" Icon={FiMail} />
         <Card title="Team" subtitle="Manage team" href="#" Icon={FiUsers} />
-        <Card
-          title="Billing"
-          subtitle="Manage cards"
-          href="#"
-          Icon={FiCreditCard}
-        />
+        <Card title="Billing" subtitle="Manage cards" href="#" Icon={FiCreditCard} />
       </div>
     </div>
   );
@@ -48,9 +38,7 @@ const Card = ({ title, subtitle, Icon, href }: CardType) => {
       <h3 className="font-medium text-lg text-slate-950 group-hover:text-white relative z-10 duration-300">
         {title}
       </h3>
-      <p className="text-slate-400 group-hover:text-violet-200 relative z-10 duration-300">
-        {subtitle}
-      </p>
+      <p className="text-slate-400 group-hover:text-violet-200 relative z-10 duration-300">{subtitle}</p>
     </a>
   );
 };

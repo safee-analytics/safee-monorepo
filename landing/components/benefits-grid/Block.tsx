@@ -21,10 +21,7 @@ export const Block = ({ className, ...rest }: BlockProps) => {
           boxShadow: "0px 6px 0px rgb(24, 24, 27)",
         },
       }}
-      className={twMerge(
-        "col-span-1 rounded-lg border-2 border-zinc-900 bg-white p-6",
-        className
-      )}
+      className={twMerge("col-span-1 rounded-lg border-2 border-zinc-900 bg-white p-6", className)}
       {...rest}
     />
   );

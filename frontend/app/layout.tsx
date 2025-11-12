@@ -27,14 +27,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
-      <body
-        className={`${inter.variable} ${cairo.variable} antialiased`}
-        suppressHydrationWarning
-      >
+      <body className={`${inter.variable} ${cairo.variable} antialiased`} suppressHydrationWarning>
         <AuthProvider>
-          <DirectionWrapper>
-            {children}
-          </DirectionWrapper>
+          <DirectionWrapper>{children}</DirectionWrapper>
         </AuthProvider>
       </body>
     </html>

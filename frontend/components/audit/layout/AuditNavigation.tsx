@@ -1,17 +1,17 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Search, Calendar, Bell, Settings, HelpCircle, User } from 'lucide-react'
-import { useTranslation } from '@/lib/providers/TranslationProvider'
-import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
-import { useOrgStore } from '@/stores/useOrgStore'
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Search, Calendar, Bell, Settings, HelpCircle, User } from "lucide-react";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { useOrgStore } from "@/stores/useOrgStore";
 
 export function AuditNavigation() {
-  const { t, locale } = useTranslation()
-  const { currentUser } = useOrgStore()
-  const [searchQuery, setSearchQuery] = useState('')
+  const { t, locale } = useTranslation();
+  const { currentUser } = useOrgStore();
+  const [searchQuery, setSearchQuery] = useState("");
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -22,9 +22,7 @@ export function AuditNavigation() {
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-lg">
               <span className="text-white font-bold text-xl">S</span>
             </div>
-            <span className="text-lg font-semibold text-gray-900 hidden sm:block">
-              Safee Analytics
-            </span>
+            <span className="text-lg font-semibold text-gray-900 hidden sm:block">Safee Analytics</span>
           </Link>
 
           {/* Search Bar */}
@@ -35,8 +33,12 @@ export function AuditNavigation() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={locale === 'ar' ? 'ابحث عن المعاملات وجهات الاتصال والتقارير والمزيد' : 'Navigate or search for transactions, contacts, reports, and more'}
-                className={`w-full ${locale === 'ar' ? 'pr-12 pl-4' : 'pl-12 pr-4'} py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all`}
+                placeholder={
+                  locale === "ar"
+                    ? "ابحث عن المعاملات وجهات الاتصال والتقارير والمزيد"
+                    : "Navigate or search for transactions, contacts, reports, and more"
+                }
+                className={`w-full ${locale === "ar" ? "pr-12 pl-4" : "pl-12 pr-4"} py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all`}
               />
             </div>
           </div>
@@ -47,7 +49,7 @@ export function AuditNavigation() {
 
             <button className="text-sm text-blue-600 hover:text-blue-700 font-medium hidden lg:flex items-center gap-2">
               <User className="w-4 h-4" />
-              {locale === 'ar' ? 'اتصل بالخبراء' : 'Contact experts'}
+              {locale === "ar" ? "اتصل بالخبراء" : "Contact experts"}
             </button>
 
             <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
@@ -69,11 +71,11 @@ export function AuditNavigation() {
 
             {/* User Avatar */}
             <button className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm">
-              {currentUser?.name?.charAt(0) || 'M'}
+              {currentUser?.name?.charAt(0) || "M"}
             </button>
           </div>
         </div>
       </div>
     </nav>
-  )
+  );
 }

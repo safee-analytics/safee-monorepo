@@ -9,7 +9,7 @@ export const kanzAr = {
     createMenu: {
       addEmployee: "إضافة موظف",
       logAttendance: "تسجيل حضور",
-      processPayroll: "معالجة رواتب"
-    }
-  }
-} as const
+      processPayroll: "معالجة رواتب",
+    },
+  },
+} as const;

@@ -28,7 +28,7 @@ export const commonAr = {
     resetToDefault: "إعادة تعيين إلى الافتراضي",
     autoCloseSidebar: "إغلاق الشريط الجانبي تلقائياً",
     autoCloseSidebarDesc: "إغلاق الشريط الجانبي عند مغادرة الماوس",
-    myApps: "تطبيقاتي"
+    myApps: "تطبيقاتي",
   },
   auth: {
     login: "تسجيل الدخول",
@@ -38,14 +38,14 @@ export const commonAr = {
     password: "كلمة المرور",
     forgotPassword: "نسيت كلمة المرور؟",
     signInWithGoogle: "تسجيل الدخول باستخدام Google",
-    signInWithSSO: "تسجيل الدخول باستخدام SSO"
+    signInWithSSO: "تسجيل الدخول باستخدام SSO",
   },
   nav: {
     dashboard: "لوحة التحكم",
     hisabiq: "حسابق",
     kanz: "كنز",
     nisbah: "نسبة",
-    audit: "التدقيق"
+    audit: "التدقيق",
   },
   dashboard: {
     goodMorning: "صباح الخير",
@@ -99,6 +99,6 @@ export const commonAr = {
     addWidgets: "إضافة عناصر واجهة",
     smartSuggestions: "اقتراحات ذكية",
     accountsReceivable: "المستحقات",
-    whySeeSuggestions: "لماذا أرى هذه الاقتراحات؟"
-  }
-} as const
+    whySeeSuggestions: "لماذا أرى هذه الاقتراحات؟",
+  },
+} as const;

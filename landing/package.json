@@ -6,7 +6,13 @@
     "dev": "next dev -p 3002",
     "build": "next build",
     "start": "next start -p 3002",
-    "lint": "eslint"
+    "lint": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --max-warnings 0 --fix",
+    "check": "tsc --noEmit",
+    "fmt": "prettier . --write --cache",
+    "fmt:check": "prettier . --check",
+    "clean": "tsc --build --clean && rm -rf .next && rm -rf coverage",
+    "test": "echo \"No tests yet\" && exit 0"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
@@ -24,6 +30,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.1",
+    "prettier": "^3.6.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

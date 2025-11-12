@@ -8,7 +8,7 @@ export const nisbahEn = {
     createMenu: {
       lead: "Lead",
       contact: "Contact",
-      deal: "Deal"
-    }
-  }
-} as const
+      deal: "Deal",
+    },
+  },
+} as const;

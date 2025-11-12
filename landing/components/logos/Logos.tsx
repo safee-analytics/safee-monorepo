@@ -57,13 +57,7 @@ export const Logos = () => {
   );
 };
 
-const TranslateWrapper = ({
-  children,
-  reverse,
-}: {
-  children: JSX.Element;
-  reverse?: boolean;
-}) => {
+const TranslateWrapper = ({ children, reverse }: { children: JSX.Element; reverse?: boolean }) => {
   return (
     <motion.div
       initial={{ translateX: reverse ? "-100%" : "0%" }}
@@ -80,9 +74,7 @@ const LogoItem = ({ Icon, name }: { Icon: IconType; name: string }) => {
   return (
     <span className="flex items-center justify-center gap-4 px-4 py-2 md:py-4">
       <Icon className="text-2xl text-indigo-600 md:text-3xl" />
-      <span className="whitespace-nowrap text-xl font-semibold uppercase md:text-2xl">
-        {name}
-      </span>
+      <span className="whitespace-nowrap text-xl font-semibold uppercase md:text-2xl">{name}</span>
     </span>
   );
 };

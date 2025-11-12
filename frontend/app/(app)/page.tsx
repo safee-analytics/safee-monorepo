@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { useRouter } from 'next/navigation'
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import {
   FileCheck,
   Calculator,
@@ -18,137 +18,133 @@ import {
   PieChart,
   CreditCard,
   Building2,
-} from 'lucide-react'
-import { useTranslation } from '@/lib/providers/TranslationProvider'
-import { useOrgStore } from '@/stores/useOrgStore'
-import { useAuth } from '@/lib/auth/hooks'
-import { useState } from 'react'
+} from "lucide-react";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useOrgStore } from "@/stores/useOrgStore";
+import { useAuth } from "@/lib/auth/hooks";
+import { useState } from "react";
 
 export default function HomePage() {
-  const { t } = useTranslation()
-  const router = useRouter()
-  const { currentOrg, currentUser } = useOrgStore()
-  const { user } = useAuth()
-  const [hoveredModule, setHoveredModule] = useState<string | null>(null)
+  const { t } = useTranslation();
+  const router = useRouter();
+  const { currentOrg, currentUser } = useOrgStore();
+  const { user } = useAuth();
+  const [hoveredModule, setHoveredModule] = useState<string | null>(null);
 
-  const displayUser = user || currentUser
-  const displayName = displayUser?.name?.split(' ')[0] || 'User'
+  const displayUser = user || currentUser;
+  const displayName = displayUser?.name?.split(" ")[0] || "User";
 
   // Get current time for greeting
-  const currentHour = new Date().getHours()
+  const currentHour = new Date().getHours();
   const getGreeting = () => {
     if (currentHour < 12) {
-      return t.dashboard.goodMorning
+      return t.dashboard.goodMorning;
     } else if (currentHour < 18) {
-      return t.dashboard.goodAfternoon
+      return t.dashboard.goodAfternoon;
     } else {
-      return t.dashboard.goodEvening
+      return t.dashboard.goodEvening;
     }
-  }
+  };
 
   // Module shortcuts for top bar
   const modules = [
     {
-      id: 'hisabiq',
+      id: "hisabiq",
       name: t.dashboard.accounting,
       icon: Calculator,
-      color: 'from-green-500 to-emerald-600',
-      href: '/accounting',
+      color: "from-green-500 to-emerald-600",
+      href: "/accounting",
     },
     {
-      id: 'expenses',
+      id: "expenses",
       name: t.dashboard.expenses,
       icon: Receipt,
-      color: 'from-blue-500 to-blue-600',
-      href: '/accounting/expenses',
+      color: "from-blue-500 to-blue-600",
+      href: "/accounting/expenses",
     },
     {
-      id: 'sales',
+      id: "sales",
       name: t.dashboard.sales,
       icon: ShoppingCart,
-      color: 'from-purple-500 to-purple-600',
-      href: '/accounting/sales',
+      color: "from-purple-500 to-purple-600",
+      href: "/accounting/sales",
     },
     {
-      id: 'nisbah',
+      id: "nisbah",
       name: t.dashboard.customers,
       icon: Users,
-      color: 'from-pink-500 to-pink-600',
-      href: '/crm',
+      color: "from-pink-500 to-pink-600",
+      href: "/crm",
     },
     {
-      id: 'kanz',
+      id: "kanz",
       name: t.dashboard.payroll,
       icon: DollarSign,
-      color: 'from-indigo-500 to-indigo-600',
-      href: '/hr',
+      color: "from-indigo-500 to-indigo-600",
+      href: "/hr",
     },
     {
-      id: 'team',
+      id: "team",
       name: t.dashboard.team,
       icon: Users,
-      color: 'from-cyan-500 to-cyan-600',
-      href: '/hr/team',
+      color: "from-cyan-500 to-cyan-600",
+      href: "/hr/team",
     },
     {
-      id: 'audit',
+      id: "audit",
       name: t.nav.audit,
       icon: FileCheck,
-      color: 'from-orange-500 to-orange-600',
-      href: '/audit',
+      color: "from-orange-500 to-orange-600",
+      href: "/audit",
     },
     {
-      id: 'reports',
+      id: "reports",
       name: t.dashboard.reports,
       icon: BarChart3,
-      color: 'from-teal-500 to-teal-600',
-      href: '/reports',
+      color: "from-teal-500 to-teal-600",
+      href: "/reports",
     },
-  ]
+  ];
 
   // Quick actions
   const quickActions = [
     {
-      id: 'payroll',
+      id: "payroll",
       label: t.dashboard.runPayroll,
-      onClick: () => router.push('/hr/payroll'),
+      onClick: () => router.push("/hr/payroll"),
     },
     {
-      id: 'get-paid',
+      id: "get-paid",
       label: t.dashboard.getPaidOnline,
-      onClick: () => router.push('/accounting/payments'),
+      onClick: () => router.push("/accounting/payments"),
     },
     {
-      id: 'invoice',
+      id: "invoice",
       label: t.dashboard.createInvoice,
-      onClick: () => router.push('/accounting/invoices/new'),
+      onClick: () => router.push("/accounting/invoices/new"),
     },
     {
-      id: 'expense',
+      id: "expense",
       label: t.dashboard.recordExpense,
-      onClick: () => router.push('/accounting/expenses/new'),
+      onClick: () => router.push("/accounting/expenses/new"),
     },
     {
-      id: 'bank',
+      id: "bank",
       label: t.dashboard.addBankDeposit,
-      onClick: () => router.push('/accounting/banking/deposit'),
+      onClick: () => router.push("/accounting/banking/deposit"),
     },
     {
-      id: 'show-all',
+      id: "show-all",
       label: t.dashboard.showAll,
       onClick: () => {},
     },
-  ]
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-[1600px] mx-auto p-6">
         {/* Greeting */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-6"
-        >
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {getGreeting()} {displayName}!
           </h1>
@@ -163,7 +159,7 @@ export default function HomePage() {
         >
           <div className="flex items-center gap-3 overflow-x-auto pb-4 scrollbar-hide">
             {modules.map((module) => {
-              const Icon = module.icon
+              const Icon = module.icon;
               return (
                 <button
                   key={module.id}
@@ -172,20 +168,21 @@ export default function HomePage() {
                   onMouseLeave={() => setHoveredModule(null)}
                   className={`
                     group flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all duration-200 flex-shrink-0
-                    ${hoveredModule === module.id
-                      ? 'bg-white border-safee-500 shadow-lg scale-105'
-                      : 'bg-white border-gray-200 hover:border-gray-300'
+                    ${
+                      hoveredModule === module.id
+                        ? "bg-white border-safee-500 shadow-lg scale-105"
+                        : "bg-white border-gray-200 hover:border-gray-300"
                     }
                   `}
                 >
-                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${module.color} flex items-center justify-center`}>
+                  <div
+                    className={`w-10 h-10 rounded-full bg-gradient-to-br ${module.color} flex items-center justify-center`}
+                  >
                     <Icon className="w-5 h-5 text-white" />
                   </div>
-                  <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">
-                    {module.name}
-                  </span>
+                  <span className="text-sm font-semibold text-gray-900 whitespace-nowrap">{module.name}</span>
                 </button>
-              )
+              );
             })}
             <button className="flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors flex-shrink-0">
               <Settings className="w-5 h-5 text-gray-600" />
@@ -201,9 +198,7 @@ export default function HomePage() {
           className="mb-8"
         >
           <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-gray-700 mr-2">
-              {t.dashboard.createActions}
-            </span>
+            <span className="text-sm font-semibold text-gray-700 mr-2">{t.dashboard.createActions}</span>
             {quickActions.map((action) => (
               <button
                 key={action.id}
@@ -230,9 +225,7 @@ export default function HomePage() {
                 <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
                   {t.dashboard.profitLoss}
                 </h3>
-                <p className="text-sm text-gray-600">
-                  {t.dashboard.profitLossDesc}
-                </p>
+                <p className="text-sm text-gray-600">{t.dashboard.profitLossDesc}</p>
               </div>
             </div>
 
@@ -243,7 +236,7 @@ export default function HomePage() {
                   <span className="text-lg font-semibold text-gray-900">$0</span>
                 </div>
                 <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500 rounded-full" style={{ width: '0%' }}></div>
+                  <div className="h-full bg-green-500 rounded-full" style={{ width: "0%" }}></div>
                 </div>
               </div>
 
@@ -253,7 +246,7 @@ export default function HomePage() {
                   <span className="text-lg font-semibold text-gray-900">$0</span>
                 </div>
                 <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-500 rounded-full" style={{ width: '0%' }}></div>
+                  <div className="h-full bg-red-500 rounded-full" style={{ width: "0%" }}></div>
                 </div>
               </div>
             </div>
@@ -274,9 +267,7 @@ export default function HomePage() {
               <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 {t.dashboard.expensesWidget}
               </h3>
-              <p className="text-sm text-gray-600">
-                {t.dashboard.expensesWidgetDesc}
-              </p>
+              <p className="text-sm text-gray-600">{t.dashboard.expensesWidgetDesc}</p>
             </div>
 
             <div className="flex items-center justify-center py-12">
@@ -301,9 +292,7 @@ export default function HomePage() {
               <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
                 {t.dashboard.bankAccounts}
               </h3>
-              <p className="text-sm text-gray-600">
-                {t.dashboard.bankAccountsDesc}
-              </p>
+              <p className="text-sm text-gray-600">{t.dashboard.bankAccountsDesc}</p>
             </div>
 
             <div className="space-y-3 mb-6">
@@ -327,9 +316,7 @@ export default function HomePage() {
                   <CreditCard className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">
-                    RBC Bank (CAN)
-                  </p>
+                  <p className="text-sm font-semibold text-gray-900 truncate">RBC Bank (CAN)</p>
                 </div>
                 <button className="flex-shrink-0">
                   <Plus className="w-5 h-5 text-safee-600" />
@@ -341,9 +328,7 @@ export default function HomePage() {
                   <Building2 className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">
-                    TD Canada Trust (EasyWeb)
-                  </p>
+                  <p className="text-sm font-semibold text-gray-900 truncate">TD Canada Trust (EasyWeb)</p>
                 </div>
                 <button className="flex-shrink-0">
                   <Plus className="w-5 h-5 text-safee-600" />
@@ -381,9 +366,7 @@ export default function HomePage() {
         >
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-safee-600" />
-            <h3 className="text-sm font-semibold text-gray-900">
-              {t.dashboard.smartSuggestions}
-            </h3>
+            <h3 className="text-sm font-semibold text-gray-900">{t.dashboard.smartSuggestions}</h3>
           </div>
           <div className="flex items-center gap-3">
             <button className="px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all">
@@ -409,5 +392,5 @@ export default function HomePage() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

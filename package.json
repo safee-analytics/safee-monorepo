@@ -10,7 +10,8 @@
     "jobs",
     "eslint-plugin-safee",
     "e2e",
-    "frontend"
+    "frontend",
+    "landing"
   ],
   "scripts": {
     "build": "just build",

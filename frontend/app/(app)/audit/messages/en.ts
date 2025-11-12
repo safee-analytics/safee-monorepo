@@ -4,7 +4,7 @@ export const auditEn = {
     createMenu: {
       newCase: "New case",
       uploadDocument: "Upload document",
-      createReport: "Create report"
+      createReport: "Create report",
     },
     // Dashboard
     dashboardTitle: "Dashboard Overview",
@@ -296,6 +296,6 @@ export const auditEn = {
     fileCompletedSuccessfully: "File completed successfully",
     fileArchivedSuccessfully: "File archived successfully",
     completedAt: "Completed at",
-    archivedAt: "Archived at"
-  }
-} as const
+    archivedAt: "Archived at",
+  },
+} as const;

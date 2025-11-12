@@ -7,72 +7,72 @@
 
 export const MODULES = {
   ACCOUNTING: {
-    id: 'accounting',
-    key: 'hisabiq' as const,
+    id: "accounting",
+    key: "hisabiq" as const,
     name: {
-      en: 'Accounting',
-      ar: 'المحاسبة'
+      en: "Accounting",
+      ar: "المحاسبة",
     },
-    icon: '📊',
-    path: '/accounting',
+    icon: "📊",
+    path: "/accounting",
     description: {
-      en: 'Accounting & Finance',
-      ar: 'المحاسبة والمالية'
-    }
+      en: "Accounting & Finance",
+      ar: "المحاسبة والمالية",
+    },
   },
   HR: {
-    id: 'hr',
-    key: 'kanz' as const,
+    id: "hr",
+    key: "kanz" as const,
     name: {
-      en: 'HR',
-      ar: 'الموارد البشرية'
+      en: "HR",
+      ar: "الموارد البشرية",
     },
-    icon: '👥',
-    path: '/hr',
+    icon: "👥",
+    path: "/hr",
     description: {
-      en: 'Human Resources & Payroll',
-      ar: 'الموارد البشرية والرواتب'
-    }
+      en: "Human Resources & Payroll",
+      ar: "الموارد البشرية والرواتب",
+    },
   },
   CRM: {
-    id: 'crm',
-    key: 'nisbah' as const,
+    id: "crm",
+    key: "nisbah" as const,
     name: {
-      en: 'CRM',
-      ar: 'إدارة العملاء'
+      en: "CRM",
+      ar: "إدارة العملاء",
     },
-    icon: '🤝',
-    path: '/crm',
+    icon: "🤝",
+    path: "/crm",
     description: {
-      en: 'Customer Relationship Management',
-      ar: 'إدارة علاقات العملاء'
-    }
+      en: "Customer Relationship Management",
+      ar: "إدارة علاقات العملاء",
+    },
   },
   AUDIT: {
-    id: 'audit',
-    key: 'audit' as const,
+    id: "audit",
+    key: "audit" as const,
     name: {
-      en: 'Audit',
-      ar: 'التدقيق'
+      en: "Audit",
+      ar: "التدقيق",
     },
-    icon: '🔍',
-    path: '/audit',
+    icon: "🔍",
+    path: "/audit",
     description: {
-      en: 'Audit Case Management',
-      ar: 'إدارة قضايا التدقيق'
-    }
-  }
-} as const
+      en: "Audit Case Management",
+      ar: "إدارة قضايا التدقيق",
+    },
+  },
+} as const;
 
-export type ModuleKey = typeof MODULES[keyof typeof MODULES]['key']
-export type ModulePath = typeof MODULES[keyof typeof MODULES]['path']
+export type ModuleKey = (typeof MODULES)[keyof typeof MODULES]["key"];
+export type ModulePath = (typeof MODULES)[keyof typeof MODULES]["path"];
 
 // Helper function to get module by key
 export function getModuleByKey(key: string) {
-  return Object.values(MODULES).find(m => m.key === key)
+  return Object.values(MODULES).find((m) => m.key === key);
 }
 
 // Helper function to get all modules as array
 export function getAllModules() {
-  return Object.values(MODULES)
+  return Object.values(MODULES);
 }

@@ -1,22 +1,18 @@
-'use client'
+"use client";
 
-import { Sidebar } from '@/components/layout/Sidebar'
-import { Navigation } from '@/components/layout/Navigation'
-import { TranslationProvider } from '@/lib/providers/TranslationProvider'
-import { SafeeToastContainer } from '@/components/feedback/SafeeToast'
-import { StackedNotificationsContainer } from '@/components/feedback/Toast'
-import { ProtectedRoute } from '@/components/auth'
-import { useOrgStore } from '@/stores/useOrgStore'
+import { Sidebar } from "@/components/layout/Sidebar";
+import { Navigation } from "@/components/layout/Navigation";
+import { TranslationProvider } from "@/lib/providers/TranslationProvider";
+import { SafeeToastContainer } from "@/components/feedback/SafeeToast";
+import { StackedNotificationsContainer } from "@/components/feedback/Toast";
+import { ProtectedRoute } from "@/components/auth";
+import { useOrgStore } from "@/stores/useOrgStore";
 
-export default function AppLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const { sidebarAutoClose, sidebarCollapsed } = useOrgStore()
+export default function AppLayout({ children }: { children: React.ReactNode }) {
+  const { sidebarAutoClose, sidebarCollapsed } = useOrgStore();
 
   // Sidebar is narrow if auto-close is on OR if it's manually collapsed
-  const isNarrow = sidebarAutoClose || sidebarCollapsed
+  const isNarrow = sidebarAutoClose || sidebarCollapsed;
 
   return (
     <ProtectedRoute>
@@ -35,9 +31,7 @@ export default function AppLayout({
           {/* Main Content */}
           <main
             className={`pt-[57px] transition-all duration-200 ${
-              isNarrow
-                ? 'ltr:pl-[56px] rtl:pr-[56px]'
-                : 'ltr:pl-[225px] rtl:pr-[225px]'
+              isNarrow ? "ltr:pl-[56px] rtl:pr-[56px]" : "ltr:pl-[225px] rtl:pr-[225px]"
             }`}
           >
             {children}
@@ -47,5 +41,5 @@ export default function AppLayout({
         </div>
       </TranslationProvider>
     </ProtectedRoute>
-  )
+  );
 }

@@ -1,24 +1,24 @@
-'use client'
+"use client";
 
-import { motion } from "framer-motion"
-import { ReactNode } from "react"
+import { motion } from "framer-motion";
+import { ReactNode } from "react";
 
 interface Column<T> {
-  key: string
-  header: string | ReactNode
-  render?: (row: T, index: number) => ReactNode
-  className?: string
-  headerClassName?: string
+  key: string;
+  header: string | ReactNode;
+  render?: (row: T, index: number) => ReactNode;
+  className?: string;
+  headerClassName?: string;
 }
 
 interface TableProps<T> {
-  data: T[]
-  columns: Column<T>[]
-  keyExtractor: (row: T, index: number) => string | number
-  className?: string
-  animated?: boolean
-  hoverable?: boolean
-  striped?: boolean
+  data: T[];
+  columns: Column<T>[];
+  keyExtractor: (row: T, index: number) => string | number;
+  className?: string;
+  animated?: boolean;
+  hoverable?: boolean;
+  striped?: boolean;
 }
 
 export function Table<T>({
@@ -30,8 +30,10 @@ export function Table<T>({
   hoverable = true,
   striped = false,
 }: TableProps<T>) {
-  const RowComponent = animated ? motion.tr : 'tr'
-  const rowProps = animated ? { layout: true, layoutId: (row: T, idx: number) => `row-${keyExtractor(row, idx)}` } : {}
+  const RowComponent = animated ? motion.tr : "tr";
+  const rowProps = animated
+    ? { layout: true, layoutId: (row: T, idx: number) => `row-${keyExtractor(row, idx)}` }
+    : {};
 
   return (
     <div className={`w-full bg-white shadow-lg rounded-lg overflow-x-auto ${className}`}>
@@ -41,7 +43,7 @@ export function Table<T>({
             {columns.map((column, idx) => (
               <th
                 key={`header-${column.key}-${idx}`}
-                className={`text-left p-4 font-medium uppercase tracking-wider ${column.headerClassName || ''}`}
+                className={`text-left p-4 font-medium uppercase tracking-wider ${column.headerClassName || ""}`}
               >
                 {column.header}
               </th>
@@ -51,71 +53,57 @@ export function Table<T>({
 
         <tbody>
           {data.map((row, index) => {
-            const key = keyExtractor(row, index)
+            const key = keyExtractor(row, index);
             const rowClasses = `
               text-sm transition-colors
-              ${hoverable ? 'hover:bg-gray-50' : ''}
-              ${striped && index % 2 === 1 ? 'bg-gray-50' : 'bg-white'}
-            `.trim()
+              ${hoverable ? "hover:bg-gray-50" : ""}
+              ${striped && index % 2 === 1 ? "bg-gray-50" : "bg-white"}
+            `.trim();
 
             if (animated) {
               return (
-                <motion.tr
-                  key={key}
-                  layout
-                  layoutId={`row-${key}`}
-                  className={rowClasses}
-                >
+                <motion.tr key={key} layout layoutId={`row-${key}`} className={rowClasses}>
                   {columns.map((column, colIdx) => (
-                    <td key={`cell-${key}-${column.key}-${colIdx}`} className={`p-4 ${column.className || ''}`}>
+                    <td
+                      key={`cell-${key}-${column.key}-${colIdx}`}
+                      className={`p-4 ${column.className || ""}`}
+                    >
                       {column.render
                         ? column.render(row, index)
-                        : (row as Record<string, unknown>)[column.key]
-                      }
+                        : (row as Record<string, unknown>)[column.key]}
                     </td>
                   ))}
                 </motion.tr>
-              )
+              );
             }
 
             return (
               <tr key={key} className={rowClasses}>
                 {columns.map((column, colIdx) => (
-                  <td key={`cell-${key}-${column.key}-${colIdx}`} className={`p-4 ${column.className || ''}`}>
-                    {column.render
-                      ? column.render(row, index)
-                      : (row as Record<string, unknown>)[column.key]
-                    }
+                  <td key={`cell-${key}-${column.key}-${colIdx}`} className={`p-4 ${column.className || ""}`}>
+                    {column.render ? column.render(row, index) : (row as Record<string, unknown>)[column.key]}
                   </td>
                 ))}
               </tr>
-            )
+            );
           })}
         </tbody>
       </table>
     </div>
-  )
+  );
 }
 
 // Pagination component to go with the table
 interface PaginationProps {
-  currentPage: number
-  totalPages: number
-  onPageChange: (page: number) => void
-  className?: string
+  currentPage: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
+  className?: string;
 }
 
-export function Pagination({
-  currentPage,
-  totalPages,
-  onPageChange,
-  className = ""
-}: PaginationProps) {
-  const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
-  const visiblePages = pages.slice(
-    Math.max(0, currentPage - 2),
-    Math.min(totalPages, currentPage + 1)
-  )
+export function Pagination({ currentPage, totalPages, onPageChange, className = "" }: PaginationProps) {
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  const visiblePages = pages.slice(Math.max(0, currentPage - 2), Math.min(totalPages, currentPage + 1));
 
   return (
     <div className={`flex items-center justify-between ${className}`}>
@@ -133,9 +121,7 @@ export function Pagination({
             key={page}
             onClick={() => onPageChange(page)}
             className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
-              page === currentPage
-                ? 'bg-blue-600 text-white'
-                : 'hover:bg-gray-100 text-gray-600'
+              page === currentPage ? "bg-blue-600 text-white" : "hover:bg-gray-100 text-gray-600"
             }`}
           >
             {page}
@@ -151,5 +137,5 @@ export function Pagination({
         Next
       </button>
     </div>
-  )
+  );
 }

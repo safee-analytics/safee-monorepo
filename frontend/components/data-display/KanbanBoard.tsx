@@ -1,11 +1,5 @@
-'use client'
-import React, {
-  Dispatch,
-  SetStateAction,
-  useState,
-  DragEvent,
-  FormEvent,
-} from "react";
+"use client";
+import React, { Dispatch, SetStateAction, useState, DragEvent, FormEvent } from "react";
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaFire } from "react-icons/fa";
@@ -30,13 +24,7 @@ const Board = () => {
         cards={cards}
         setCards={setCards}
       />
-      <Column
-        title="TODO"
-        column="todo"
-        headingColor="text-yellow-200"
-        cards={cards}
-        setCards={setCards}
-      />
+      <Column title="TODO" column="todo" headingColor="text-yellow-200" cards={cards} setCards={setCards} />
       <Column
         title="In progress"
         column="doing"
@@ -64,17 +52,14 @@ type ColumnProps = {
   setCards: Dispatch<SetStateAction<CardType[]>>;
 };
 
-const Column = ({
-  title,
-  headingColor,
-  cards,
-  column,
-  setCards,
-}: ColumnProps) => {
+const Column = ({ title, headingColor, cards, column, setCards }: ColumnProps) => {
   const [active, setActive] = useState(false);
 
-  const handleDragStart = (e: React.DragEvent<HTMLDivElement> | MouseEvent | TouchEvent | PointerEvent, card: CardType) => {
-    if ('dataTransfer' in e) {
+  const handleDragStart = (
+    e: React.DragEvent<HTMLDivElement> | MouseEvent | TouchEvent | PointerEvent,
+    card: CardType,
+  ) => {
+    if ("dataTransfer" in e) {
       e.dataTransfer.setData("cardId", card.id);
     }
   };
@@ -157,18 +142,14 @@ const Column = ({
       {
         offset: Number.NEGATIVE_INFINITY,
         element: indicators[indicators.length - 1],
-      }
+      },
     );
 
     return el;
   };
 
   const getIndicators = () => {
-    return Array.from(
-      document.querySelectorAll(
-        `[data-column="${column}"]`
-      ) as unknown as HTMLElement[]
-    );
+    return Array.from(document.querySelectorAll(`[data-column="${column}"]`) as unknown as HTMLElement[]);
   };
 
   const handleDragLeave = () => {
@@ -182,16 +163,13 @@ const Column = ({
     <div className="w-56 shrink-0">
       <div className="mb-3 flex items-center justify-between">
         <h3 className={`font-medium ${headingColor}`}>{title}</h3>
-        <span className="rounded text-sm text-neutral-400">
-          {filteredCards.length}
-        </span>
+        <span className="rounded text-sm text-neutral-400">{filteredCards.length}</span>
       </div>
       <div
         onDrop={handleDragEnd}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
-        className={`h-full w-full transition-colors ${active ? "bg-neutral-800/50" : "bg-neutral-800/0"
-          }`}
+        className={`h-full w-full transition-colors ${active ? "bg-neutral-800/50" : "bg-neutral-800/0"}`}
       >
         {filteredCards.map((c) => {
           return <Card key={c.id} {...c} handleDragStart={handleDragStart} />;
@@ -204,7 +182,10 @@ const Column = ({
 };
 
 type CardProps = CardType & {
-  handleDragStart: (e: React.DragEvent<HTMLDivElement> | MouseEvent | TouchEvent | PointerEvent, card: CardType) => void;
+  handleDragStart: (
+    e: React.DragEvent<HTMLDivElement> | MouseEvent | TouchEvent | PointerEvent,
+    card: CardType,
+  ) => void;
 };
 
 const Card = ({ title, id, column, handleDragStart }: CardProps) => {
@@ -239,11 +220,7 @@ const DropIndicator = ({ beforeId, column }: DropIndicatorProps) => {
   );
 };
 
-const BurnBarrel = ({
-  setCards,
-}: {
-  setCards: Dispatch<SetStateAction<CardType[]>>;
-}) => {
+const BurnBarrel = ({ setCards }: { setCards: Dispatch<SetStateAction<CardType[]>> }) => {
   const [active, setActive] = useState(false);
 
   const handleDragOver = (e: DragEvent) => {
@@ -268,10 +245,11 @@ const BurnBarrel = ({
       onDrop={handleDragEnd}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
-      className={`mt-10 grid h-56 w-56 shrink-0 place-content-center rounded border text-3xl ${active
-        ? "border-red-800 bg-red-800/20 text-red-500"
-        : "border-neutral-500 bg-neutral-500/20 text-neutral-500"
-        }`}
+      className={`mt-10 grid h-56 w-56 shrink-0 place-content-center rounded border text-3xl ${
+        active
+          ? "border-red-800 bg-red-800/20 text-red-500"
+          : "border-neutral-500 bg-neutral-500/20 text-neutral-500"
+      }`}
     >
       {active ? <FaFire className="animate-bounce" /> : <FiTrash />}
     </div>

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { motion } from "framer-motion";
 import { useState } from "react";
@@ -21,17 +21,11 @@ const Table = () => {
 
     if (direction === "up") {
       if (index > 0) {
-        [usersCopy[index], usersCopy[index - 1]] = [
-          usersCopy[index - 1],
-          usersCopy[index],
-        ];
+        [usersCopy[index], usersCopy[index - 1]] = [usersCopy[index - 1], usersCopy[index]];
       }
     } else {
       if (index < usersCopy.length - 1) {
-        [usersCopy[index], usersCopy[index + 1]] = [
-          usersCopy[index + 1],
-          usersCopy[index],
-        ];
+        [usersCopy[index], usersCopy[index + 1]] = [usersCopy[index + 1], usersCopy[index]];
       }
     }
 
@@ -53,14 +47,7 @@ const Table = () => {
 
         <tbody>
           {users.map((user, index) => {
-            return (
-              <TableRows
-                key={user.id}
-                user={user}
-                index={index}
-                shift={shift}
-              />
-            );
+            return <TableRows key={user.id} user={user} index={index} shift={shift} />;
           })}
         </tbody>
       </table>
@@ -79,21 +66,12 @@ const TableRows = ({ user, index, shift }: TableRowsProps) => {
   const maxRankOrdinal = numberToOrdinal(user.maxRank);
 
   return (
-    <motion.tr
-      layoutId={`row-${user.id}`}
-      className={`text-sm ${user.id % 2 ? "bg-slate-100" : "bg-white"}`}
-    >
+    <motion.tr layoutId={`row-${user.id}`} className={`text-sm ${user.id % 2 ? "bg-slate-100" : "bg-white"}`}>
       <td className="pl-4 w-8 text-lg">
-        <button
-          className="hover:text-violet-600"
-          onClick={() => shift(user.id, "up")}
-        >
+        <button className="hover:text-violet-600" onClick={() => shift(user.id, "up")}>
           <FiChevronUp />
         </button>
-        <button
-          className="hover:text-violet-600"
-          onClick={() => shift(user.id, "down")}
-        >
+        <button className="hover:text-violet-600" onClick={() => shift(user.id, "down")}>
           <FiChevronDown />
         </button>
       </td>
@@ -112,10 +90,7 @@ const TableRows = ({ user, index, shift }: TableRowsProps) => {
       </td>
 
       <td className="p-4">
-        <div
-          className={`flex items-center gap-2 font-medium ${rankOrdinal === "1st" && "text-violet-500"
-            }`}
-        >
+        <div className={`flex items-center gap-2 font-medium ${rankOrdinal === "1st" && "text-violet-500"}`}>
           <span>{rankOrdinal}</span>
           {rankOrdinal === "1st" && <FiAward className="text-xl" />}{" "}
         </div>
@@ -125,12 +100,13 @@ const TableRows = ({ user, index, shift }: TableRowsProps) => {
 
       <td className="p-4">
         <span
-          className={`px-2 py-1 text-xs font-medium rounded ${user.status === "online"
-            ? "bg-green-200 text-green-800"
-            : user.status === "offline"
-              ? "bg-yellow-200 text-yellow-800"
-              : "bg-slate-200 text-slate-800"
-            }`}
+          className={`px-2 py-1 text-xs font-medium rounded ${
+            user.status === "online"
+              ? "bg-green-200 text-green-800"
+              : user.status === "offline"
+                ? "bg-yellow-200 text-yellow-800"
+                : "bg-slate-200 text-slate-800"
+          }`}
         >
           {user.status}
         </span>

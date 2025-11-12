@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { AnimatePresence, useAnimate, usePresence } from "framer-motion";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -34,9 +34,7 @@ export const VanishList = () => {
   ]);
 
   const handleCheck = (id: number) => {
-    setTodos((pv) =>
-      pv.map((t) => (t.id === id ? { ...t, checked: !t.checked } : t))
-    );
+    setTodos((pv) => pv.map((t) => (t.id === id ? { ...t, checked: !t.checked } : t)));
   };
 
   const removeElement = (id: number) => {
@@ -52,11 +50,7 @@ export const VanishList = () => {
     >
       <div className="mx-auto w-full max-w-xl px-4">
         <Header />
-        <Todos
-          removeElement={removeElement}
-          todos={todos}
-          handleCheck={handleCheck}
-        />
+        <Todos removeElement={removeElement} todos={todos} handleCheck={handleCheck} />
       </div>
       <Form setTodos={setTodos} />
     </section>
@@ -156,9 +150,7 @@ const Form = ({ setTodos }: { setTodos: Dispatch<SetStateAction<TODO[]>> }) => {
         onClick={() => setVisible((pv) => !pv)}
         className="grid w-full place-content-center rounded-full border border-zinc-700 bg-zinc-900 py-3 text-lg text-white transition-colors hover:bg-zinc-800 active:bg-zinc-900"
       >
-        <FiPlus
-          className={`transition-transform ${visible ? "rotate-45" : "rotate-0"}`}
-        />
+        <FiPlus className={`transition-transform ${visible ? "rotate-45" : "rotate-0"}`} />
       </button>
     </div>
   );
@@ -229,7 +221,7 @@ const Todo = ({
           {
             ease: "easeIn",
             duration: 0.125,
-          }
+          },
         );
         await animate(
           scope.current,
@@ -239,7 +231,7 @@ const Todo = ({
           {
             ease: "easeIn",
             duration: 0.125,
-          }
+          },
         );
 
         await animate(
@@ -250,7 +242,7 @@ const Todo = ({
           },
           {
             delay: 0.75,
-          }
+          },
         );
         safeToRemove();
       };
@@ -273,11 +265,7 @@ const Todo = ({
         className="size-4 accent-indigo-400"
       />
 
-      <p
-        className={`text-white transition-colors ${checked && "text-zinc-400"}`}
-      >
-        {children}
-      </p>
+      <p className={`text-white transition-colors ${checked && "text-zinc-400"}`}>{children}</p>
       <div className="ml-auto flex gap-1.5">
         <div className="flex items-center gap-1.5 whitespace-nowrap rounded bg-zinc-800 px-1.5 py-1 text-xs text-zinc-400">
           <FiClock />

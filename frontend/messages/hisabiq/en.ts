@@ -11,7 +11,7 @@ export const hisabiqEn = {
     createMenu: {
       invoice: "Invoice",
       receivePayment: "Receive payment",
-      expense: "Expense"
-    }
-  }
-} as const
+      expense: "Expense",
+    },
+  },
+} as const;

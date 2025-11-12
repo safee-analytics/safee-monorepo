@@ -1,8 +1,8 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useParams } from 'next/navigation'
-import { motion } from 'framer-motion'
+import { useState } from "react";
+import { useParams } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   Save,
   Download,
@@ -12,115 +12,127 @@ import {
   MessageSquare,
   Archive,
   CheckCircle,
-  AlertCircle
-} from 'lucide-react'
-import { useTranslation } from '@/lib/providers/TranslationProvider'
-import { ICVScopeEditor } from '@/components/audit/ICVScopeEditor'
-import { DEFAULT_ICV_SCOPE, ICVScope } from '@/types/icv'
+  AlertCircle,
+} from "lucide-react";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { ICVScopeEditor } from "@/components/audit/ICVScopeEditor";
+import { DEFAULT_ICV_SCOPE, ICVScope } from "@/types/icv";
 
 export default function ICVScopePage() {
-  const params = useParams()
-  const { t, locale } = useTranslation()
-  const [scope, setScope] = useState<ICVScope>(DEFAULT_ICV_SCOPE)
-  const [isSaving, setIsSaving] = useState(false)
+  const params = useParams();
+  const { t, locale } = useTranslation();
+  const [scope, setScope] = useState<ICVScope>(DEFAULT_ICV_SCOPE);
+  const [isSaving, setIsSaving] = useState(false);
 
   const caseInfo = {
     id: params.id,
-    clientName: 'ALI INTERNATIONAL TRADING ESTABLISHMENT',
+    clientName: "ALI INTERNATIONAL TRADING ESTABLISHMENT",
     year: 2022,
-    createdDate: '7/29/2023',
-    createdBy: 'ADMIN',
-    dueDate: '7/31/2023',
-    status: 'File Completed'
-  }
+    createdDate: "7/29/2023",
+    createdBy: "ADMIN",
+    dueDate: "7/31/2023",
+    status: "File Completed",
+  };
 
   const handleSaveScope = async () => {
-    setIsSaving(true)
+    setIsSaving(true);
     // Simulate save
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setScope(prev => ({ ...prev, updatedAt: new Date().toISOString() }))
-    setIsSaving(false)
-  }
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setScope((prev) => ({ ...prev, updatedAt: new Date().toISOString() }));
+    setIsSaving(false);
+  };
 
   const handleExportScope = () => {
     // Export logic
-    console.log('Exporting scope...')
-  }
+    console.log("Exporting scope...");
+  };
 
   const handleCompleteFile = async () => {
     if (window.confirm(t.audit.confirmComplete)) {
-      setIsSaving(true)
+      setIsSaving(true);
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setScope(prev => ({
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setScope((prev) => ({
         ...prev,
-        status: 'Completed',
+        status: "Completed",
         completedAt: new Date().toISOString(),
-        completedBy: 'Current User',
-        updatedAt: new Date().toISOString()
-      }))
-      setIsSaving(false)
-      alert(t.audit.fileCompletedSuccessfully)
+        completedBy: "Current User",
+        updatedAt: new Date().toISOString(),
+      }));
+      setIsSaving(false);
+      alert(t.audit.fileCompletedSuccessfully);
     }
-  }
+  };
 
   const handleArchiveFile = async () => {
     if (window.confirm(t.audit.confirmArchive)) {
-      setIsSaving(true)
+      setIsSaving(true);
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000))
-      setScope(prev => ({
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      setScope((prev) => ({
         ...prev,
-        status: 'Archived',
+        status: "Archived",
         archivedAt: new Date().toISOString(),
-        archivedBy: 'Current User',
-        updatedAt: new Date().toISOString()
-      }))
-      setIsSaving(false)
-      alert(t.audit.fileArchivedSuccessfully)
+        archivedBy: "Current User",
+        updatedAt: new Date().toISOString(),
+      }));
+      setIsSaving(false);
+      alert(t.audit.fileArchivedSuccessfully);
     }
-  }
+  };
 
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
-      case 'Draft': return 'bg-gray-100 text-gray-800'
-      case 'In Progress': return 'bg-blue-100 text-blue-800'
-      case 'Under Review': return 'bg-yellow-100 text-yellow-800'
-      case 'Completed': return 'bg-green-100 text-green-800'
-      case 'Archived': return 'bg-purple-100 text-purple-800'
-      default: return 'bg-gray-100 text-gray-800'
+      case "Draft":
+        return "bg-gray-100 text-gray-800";
+      case "In Progress":
+        return "bg-blue-100 text-blue-800";
+      case "Under Review":
+        return "bg-yellow-100 text-yellow-800";
+      case "Completed":
+        return "bg-green-100 text-green-800";
+      case "Archived":
+        return "bg-purple-100 text-purple-800";
+      default:
+        return "bg-gray-100 text-gray-800";
     }
-  }
+  };
 
   const getStatusLabel = (status: string) => {
     switch (status) {
-      case 'Draft': return t.audit.statusDraft
-      case 'In Progress': return t.audit.statusInProgress
-      case 'Under Review': return t.audit.statusUnderReview
-      case 'Completed': return t.audit.statusCompleted
-      case 'Archived': return t.audit.statusArchived
-      default: return status
+      case "Draft":
+        return t.audit.statusDraft;
+      case "In Progress":
+        return t.audit.statusInProgress;
+      case "Under Review":
+        return t.audit.statusUnderReview;
+      case "Completed":
+        return t.audit.statusCompleted;
+      case "Archived":
+        return t.audit.statusArchived;
+      default:
+        return status;
     }
-  }
+  };
 
-  const isReadOnly = scope.status === 'Completed' || scope.status === 'Archived'
+  const isReadOnly = scope.status === "Completed" || scope.status === "Archived";
 
-  const completionPercentage = Math.round(
-    (scope.sections.reduce((acc, section) =>
-      acc + section.procedures.filter(p => p.isCompleted).length, 0
-    ) / scope.sections.reduce((acc, section) => acc + section.procedures.length, 0)) * 100
-  ) || 0
+  const completionPercentage =
+    Math.round(
+      (scope.sections.reduce(
+        (acc, section) => acc + section.procedures.filter((p) => p.isCompleted).length,
+        0,
+      ) /
+        scope.sections.reduce((acc, section) => acc + section.procedures.length, 0)) *
+        100,
+    ) || 0;
 
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="flex h-screen">
         {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="p-6"
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-6">
             {/* Header */}
             <div className="mb-6">
               <div className="flex items-center gap-3 mb-2">
@@ -132,20 +144,25 @@ export default function ICVScopePage() {
                     <h1 className="text-2xl font-bold text-gray-900">
                       AZ-SCR-{caseInfo.id}-{caseInfo.year}-1 Client: {caseInfo.clientName} / {caseInfo.year}
                     </h1>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadgeColor(scope.status)}`}>
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusBadgeColor(scope.status)}`}
+                    >
                       {getStatusLabel(scope.status)}
                     </span>
                   </div>
                   <p className="text-sm text-gray-600">
-                    {t.audit.createdOn}: {caseInfo.createdDate}, {t.audit.createdBy}: {caseInfo.createdBy}, {t.audit.engagementDueDate}: {caseInfo.dueDate}
+                    {t.audit.createdOn}: {caseInfo.createdDate}, {t.audit.createdBy}: {caseInfo.createdBy},{" "}
+                    {t.audit.engagementDueDate}: {caseInfo.dueDate}
                   </p>
                 </div>
-                {scope.status === 'Completed' && (
+                {scope.status === "Completed" && (
                   <div>
                     <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center border-4 border-green-600">
                       <div className="text-center">
                         <CheckCircle className="w-8 h-8 text-green-600 mx-auto" />
-                        <span className="text-xs text-green-700 font-semibold">{t.audit.qualityApproved}</span>
+                        <span className="text-xs text-green-700 font-semibold">
+                          {t.audit.qualityApproved}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -199,29 +216,31 @@ export default function ICVScopePage() {
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 className={`mb-6 p-4 rounded-lg border-l-4 ${
-                  scope.status === 'Archived'
-                    ? 'bg-purple-50 border-purple-500'
-                    : 'bg-green-50 border-green-500'
+                  scope.status === "Archived"
+                    ? "bg-purple-50 border-purple-500"
+                    : "bg-green-50 border-green-500"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  {scope.status === 'Archived' ? (
+                  {scope.status === "Archived" ? (
                     <Archive className="w-5 h-5 text-purple-600" />
                   ) : (
                     <CheckCircle className="w-5 h-5 text-green-600" />
                   )}
                   <div className="flex-1">
-                    <p className={`font-semibold ${
-                      scope.status === 'Archived' ? 'text-purple-900' : 'text-green-900'
-                    }`}>
-                      {scope.status === 'Archived'
-                        ? t.audit.statusArchived
-                        : t.audit.statusCompleted}
+                    <p
+                      className={`font-semibold ${
+                        scope.status === "Archived" ? "text-purple-900" : "text-green-900"
+                      }`}
+                    >
+                      {scope.status === "Archived" ? t.audit.statusArchived : t.audit.statusCompleted}
                     </p>
-                    <p className={`text-sm ${
-                      scope.status === 'Archived' ? 'text-purple-700' : 'text-green-700'
-                    }`}>
-                      {scope.status === 'Archived'
+                    <p
+                      className={`text-sm ${
+                        scope.status === "Archived" ? "text-purple-700" : "text-green-700"
+                      }`}
+                    >
+                      {scope.status === "Archived"
                         ? `${t.audit.archivedAt}: ${new Date(scope.archivedAt!).toLocaleString(locale)}`
                         : `${t.audit.completedAt}: ${new Date(scope.completedAt!).toLocaleString(locale)}`}
                     </p>
@@ -278,7 +297,7 @@ export default function ICVScopePage() {
               <span>{t.audit.addComments}</span>
             </button>
 
-            {scope.status !== 'Completed' && scope.status !== 'Archived' && (
+            {scope.status !== "Completed" && scope.status !== "Archived" && (
               <button
                 onClick={handleCompleteFile}
                 disabled={isSaving}
@@ -289,7 +308,7 @@ export default function ICVScopePage() {
               </button>
             )}
 
-            {scope.status === 'Completed' && (
+            {scope.status === "Completed" && (
               <button
                 onClick={handleArchiveFile}
                 disabled={isSaving}
@@ -339,5 +358,5 @@ export default function ICVScopePage() {
         </motion.div>
       </div>
     </div>
-  )
+  );
 }

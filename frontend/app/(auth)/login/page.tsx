@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { SafeeLoginForm } from '@/components/auth/SafeeLoginForm'
-import { useOrgStore } from '@/stores/useOrgStore'
-import { useAuth } from '@/lib/auth/hooks'
-import { useRouter } from 'next/navigation'
-import { useState, useEffect, useRef } from 'react'
+import { SafeeLoginForm } from "@/components/auth/SafeeLoginForm";
+import { useOrgStore } from "@/stores/useOrgStore";
+import { useAuth } from "@/lib/auth/hooks";
+import { useRouter } from "next/navigation";
+import { useState, useEffect, useRef } from "react";
 
 const translations = {
   ar: {
@@ -45,101 +45,102 @@ const translations = {
     termsMiddle: "and",
     privacyLink: "Privacy Policy",
   },
-}
+};
 
 export default function LoginPage() {
-  const router = useRouter()
-  const { locale, setLocale } = useOrgStore()
-  const { signIn, signInWithGoogle, isAuthenticated, isLoading } = useAuth()
-  const [isArabic, setIsArabic] = useState(locale === 'ar')
-  const [error, setError] = useState<string | null>(null)
-  const hasRedirected = useRef(false)
+  const router = useRouter();
+  const { locale, setLocale } = useOrgStore();
+  const { signIn, signInWithGoogle, isAuthenticated, isLoading } = useAuth();
+  const [isArabic, setIsArabic] = useState(locale === "ar");
+  const [error, setError] = useState<string | null>(null);
+  const hasRedirected = useRef(false);
 
   // Get redirect URL from session storage or default to '/'
   const getRedirectUrl = () => {
-    if (typeof window !== 'undefined') {
-      const redirectUrl = sessionStorage.getItem('redirectAfterLogin') || '/'
-      return redirectUrl
+    if (typeof window !== "undefined") {
+      const redirectUrl = sessionStorage.getItem("redirectAfterLogin") || "/";
+      return redirectUrl;
     }
-    return '/'
-  }
+    return "/";
+  };
 
   useEffect(() => {
     // Only redirect once, even if the effect runs multiple times
     if (isAuthenticated && !isLoading && !hasRedirected.current) {
-      hasRedirected.current = true
-      const redirectUrl = getRedirectUrl()
+      hasRedirected.current = true;
+      const redirectUrl = getRedirectUrl();
       // Clear the redirect URL from storage
-      if (typeof window !== 'undefined') {
-        sessionStorage.removeItem('redirectAfterLogin')
+      if (typeof window !== "undefined") {
+        sessionStorage.removeItem("redirectAfterLogin");
       }
-      router.push(redirectUrl)
+      router.push(redirectUrl);
     }
-  }, [isAuthenticated, isLoading, router])
+  }, [isAuthenticated, isLoading, router]);
 
   const handleSubmit = async (email: string, password: string) => {
     try {
-      setError(null)
-      const result = await signIn(email, password)
+      setError(null);
+      const result = await signIn(email, password);
 
       if (result.success && !hasRedirected.current) {
-        hasRedirected.current = true
-        const redirectUrl = getRedirectUrl()
+        hasRedirected.current = true;
+        const redirectUrl = getRedirectUrl();
         // Clear the redirect URL from storage
-        if (typeof window !== 'undefined') {
-          sessionStorage.removeItem('redirectAfterLogin')
+        if (typeof window !== "undefined") {
+          sessionStorage.removeItem("redirectAfterLogin");
         }
-        router.push(redirectUrl)
+        router.push(redirectUrl);
       } else if (!result.success) {
-        setError(result.error || 'Login failed. Please check your credentials.')
+        setError(result.error || "Login failed. Please check your credentials.");
       }
     } catch (error) {
-      console.error('Login failed:', error)
-      setError('An unexpected error occurred. Please try again.')
+      console.error("Login failed:", error);
+      setError("An unexpected error occurred. Please try again.");
     }
-  }
+  };
 
   const handleGoogleLogin = async () => {
     try {
-      signInWithGoogle()
+      signInWithGoogle();
     } catch (error) {
-      console.error('Google login failed:', error)
-      setError('Google login failed. Please try again.')
+      console.error("Google login failed:", error);
+      setError("Google login failed. Please try again.");
     }
-  }
+  };
 
   const handleSSOLogin = async () => {
     try {
       // TODO: Implement SSO (SAML/OIDC) for enterprise customers
-      setError('SSO is not yet available. Coming soon!')
+      setError("SSO is not yet available. Coming soon!");
     } catch (error) {
-      console.error('SSO login failed:', error)
-      setError('SSO login failed. Please try again.')
+      console.error("SSO login failed:", error);
+      setError("SSO login failed. Please try again.");
     }
-  }
+  };
 
   const handleGoBack = () => {
     // Redirect to landing page (different subdomain)
-    if (typeof window !== 'undefined') {
-      window.location.href = process.env.NEXT_PUBLIC_LANDING_URL || 'http://localhost:8080'
+    if (typeof window !== "undefined") {
+      window.location.href = process.env.NEXT_PUBLIC_LANDING_URL || "http://localhost:8080";
     }
-  }
+  };
 
   const toggleLanguage = () => {
-    const newLocale = isArabic ? 'en' : 'ar'
-    setLocale(newLocale)
-    setIsArabic(!isArabic)
-  }
+    const newLocale = isArabic ? "en" : "ar";
+    setLocale(newLocale);
+    setIsArabic(!isArabic);
+  };
 
-  const t = translations[locale]
+  const t = translations[locale];
 
   return (
-    <div dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+    <div dir={locale === "ar" ? "rtl" : "ltr"} suppressHydrationWarning>
       <button
         onClick={toggleLanguage}
         className="fixed top-4 right-4 z-50 px-4 py-2 rounded-lg bg-safee-600 hover:bg-safee-700 text-white shadow-lg transition-colors"
+        suppressHydrationWarning
       >
-        {isArabic ? 'English' : 'العربية'}
+        {isArabic ? "English" : "العربية"}
       </button>
 
       {error && (
@@ -156,5 +157,5 @@ export default function LoginPage() {
         onGoBack={handleGoBack}
       />
     </div>
-  )
+  );
 }

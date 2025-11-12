@@ -63,10 +63,7 @@ const TopLink = ({
   setHovered: Dispatch<SetStateAction<null | string>>;
   title: string;
 }) => (
-  <span
-    onMouseEnter={() => setHovered(title)}
-    className="cursor-pointer text-zinc-950"
-  >
+  <span onMouseEnter={() => setHovered(title)} className="cursor-pointer text-zinc-950">
     {children}
   </span>
 );

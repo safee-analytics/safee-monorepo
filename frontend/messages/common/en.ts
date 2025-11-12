@@ -28,7 +28,7 @@ export const commonEn = {
     resetToDefault: "Reset to default",
     autoCloseSidebar: "Auto-close sidebar",
     autoCloseSidebarDesc: "Close sidebar when mouse leaves",
-    myApps: "My apps"
+    myApps: "My apps",
   },
   auth: {
     login: "Login",
@@ -38,14 +38,14 @@ export const commonEn = {
     password: "Password",
     forgotPassword: "Forgot Password?",
     signInWithGoogle: "Sign in with Google",
-    signInWithSSO: "Sign in with SSO"
+    signInWithSSO: "Sign in with SSO",
   },
   nav: {
     dashboard: "Dashboard",
     hisabiq: "Hisabiq",
     kanz: "Kanz",
     nisbah: "Nisbah",
-    audit: "Audit"
+    audit: "Audit",
   },
   dashboard: {
     goodMorning: "Good morning",
@@ -99,6 +99,6 @@ export const commonEn = {
     addWidgets: "Add widgets",
     smartSuggestions: "Smart suggestions",
     accountsReceivable: "Accounts receivable",
-    whySeeSuggestions: "Why am I seeing these suggestions?"
-  }
-} as const
+    whySeeSuggestions: "Why am I seeing these suggestions?",
+  },
+} as const;

@@ -1,11 +1,7 @@
-'use client'
+"use client";
 
 import React, { useEffect, useState } from "react";
-import {
-  motion,
-  useAnimate,
-  Transition,
-} from "framer-motion";
+import { motion, useAnimate, Transition } from "framer-motion";
 
 export const Example = () => {
   return (
@@ -27,14 +23,12 @@ const TRANSITION: Transition = {
 };
 
 const ShuffleLoader = () => {
-  const [blocks, setBlocks] = useState(
-    Array.from(Array(NUM_BLOCKS).keys()).map((n) => ({ id: n }))
-  );
+  const [blocks, setBlocks] = useState(Array.from(Array(NUM_BLOCKS).keys()).map((n) => ({ id: n })));
   const [scope, animate] = useAnimate();
 
   useEffect(() => {
     shuffle();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const shuffle = async () => {
@@ -43,11 +37,7 @@ const ShuffleLoader = () => {
 
       animate(`[data-block-id="${first.id}"]`, { y: -BLOCK_SIZE }, TRANSITION);
 
-      await animate(
-        `[data-block-id="${second.id}"]`,
-        { y: BLOCK_SIZE },
-        TRANSITION
-      );
+      await animate(`[data-block-id="${second.id}"]`, { y: BLOCK_SIZE }, TRANSITION);
 
       await delay(DURATION_IN_MS);
 

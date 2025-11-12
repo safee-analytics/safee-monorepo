@@ -11,13 +11,11 @@ export const BlogCarousel = () => {
   const [ref, { width }] = useMeasure();
   const [offset, setOffset] = useState(0);
 
-  const CARD_BUFFER =
-    width > BREAKPOINTS.lg ? 3 : width > BREAKPOINTS.sm ? 2 : 1;
+  const CARD_BUFFER = width > BREAKPOINTS.lg ? 3 : width > BREAKPOINTS.sm ? 2 : 1;
 
   const CAN_SHIFT_LEFT = offset < 0;
 
-  const CAN_SHIFT_RIGHT =
-    Math.abs(offset) < CARD_SIZE * (posts.length - CARD_BUFFER);
+  const CAN_SHIFT_RIGHT = Math.abs(offset) < CARD_SIZE * (posts.length - CARD_BUFFER);
 
   const shiftLeft = () => {
     if (!CAN_SHIFT_LEFT) {

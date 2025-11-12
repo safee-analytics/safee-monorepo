@@ -9,7 +9,7 @@ export const kanzEn = {
     createMenu: {
       addEmployee: "Add employee",
       logAttendance: "Log attendance",
-      processPayroll: "Process payroll"
-    }
-  }
-} as const
+      processPayroll: "Process payroll",
+    },
+  },
+} as const;

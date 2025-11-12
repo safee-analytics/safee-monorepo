@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { SafeeSignupForm } from '@/components/auth/SafeeSignupForm'
-import { useAuth } from '@/lib/auth/hooks'
-import { useOrgStore } from '@/stores/useOrgStore'
-import { useRouter } from 'next/navigation'
-import { useState, useEffect } from 'react'
+import { SafeeSignupForm } from "@/components/auth/SafeeSignupForm";
+import { useAuth } from "@/lib/auth/hooks";
+import { useOrgStore } from "@/stores/useOrgStore";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 const translations = {
   ar: {
@@ -53,77 +53,77 @@ const translations = {
     termsMiddle: "and",
     privacyLink: "Privacy Policy",
   },
-}
+};
 
 export default function RegisterPage() {
-  const router = useRouter()
-  const { locale, setLocale } = useOrgStore()
-  const { signUp, signInWithGoogle, isAuthenticated, isLoading } = useAuth()
-  const [isArabic, setIsArabic] = useState(locale === 'ar')
-  const [error, setError] = useState<string | null>(null)
+  const router = useRouter();
+  const { locale, setLocale } = useOrgStore();
+  const { signUp, signInWithGoogle, isAuthenticated, isLoading } = useAuth();
+  const [isArabic, setIsArabic] = useState(locale === "ar");
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (isAuthenticated && !isLoading) {
-      router.push('/onboarding')
+      router.push("/onboarding");
     }
-  }, [isAuthenticated, isLoading, router])
+  }, [isAuthenticated, isLoading, router]);
 
   const handleSubmit = async (name: string, email: string, password: string, confirmPassword: string) => {
     try {
-      setError(null)
+      setError(null);
 
       if (password !== confirmPassword) {
-        setError('Passwords do not match')
-        return
+        setError("Passwords do not match");
+        return;
       }
 
       if (password.length < 8) {
-        setError('Password must be at least 8 characters')
-        return
+        setError("Password must be at least 8 characters");
+        return;
       }
 
-      const result = await signUp(email, password, name)
+      const result = await signUp(email, password, name);
 
       if (result.success) {
-        router.push('/onboarding')
+        router.push("/onboarding");
       } else {
-        setError(result.error || 'Registration failed. Please try again.')
+        setError(result.error || "Registration failed. Please try again.");
       }
     } catch (error) {
-      console.error('Registration failed:', error)
-      setError('An unexpected error occurred. Please try again.')
+      console.error("Registration failed:", error);
+      setError("An unexpected error occurred. Please try again.");
     }
-  }
+  };
 
   const handleGoogleSignUp = async () => {
     try {
-      signInWithGoogle()
+      signInWithGoogle();
     } catch (error) {
-      console.error('Google signup failed:', error)
-      setError('Google signup failed. Please try again.')
+      console.error("Google signup failed:", error);
+      setError("Google signup failed. Please try again.");
     }
-  }
+  };
 
   const handleGoBack = () => {
-    router.push('/')
-  }
+    router.push("/");
+  };
 
   const toggleLanguage = () => {
-    const newLocale = isArabic ? 'en' : 'ar'
-    setLocale(newLocale)
-    setIsArabic(!isArabic)
-  }
+    const newLocale = isArabic ? "en" : "ar";
+    setLocale(newLocale);
+    setIsArabic(!isArabic);
+  };
 
-  const t = translations[locale]
+  const t = translations[locale];
 
   return (
-    <div dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+    <div dir={locale === "ar" ? "rtl" : "ltr"}>
       {/* Language switcher */}
       <button
         onClick={toggleLanguage}
         className="fixed top-4 right-4 z-50 px-4 py-2 rounded-lg bg-safee-600 hover:bg-safee-700 text-white shadow-lg transition-colors"
       >
-        {isArabic ? 'English' : 'العربية'}
+        {isArabic ? "English" : "العربية"}
       </button>
 
       {error && (
@@ -139,5 +139,5 @@ export default function RegisterPage() {
         onGoBack={handleGoBack}
       />
     </div>
-  )
+  );
 }

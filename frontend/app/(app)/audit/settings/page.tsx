@@ -1,38 +1,56 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Settings as SettingsIcon, Users, Shield, Bell, Link2, FileCheck, CreditCard, Database, Save } from 'lucide-react'
+import { useState } from "react";
+import {
+  Settings as SettingsIcon,
+  Users,
+  Shield,
+  Bell,
+  Link2,
+  FileCheck,
+  CreditCard,
+  Database,
+  Save,
+} from "lucide-react";
 
-type SettingsTab = 'general' | 'users' | 'security' | 'notifications' | 'integrations' | 'audit' | 'billing' | 'backup'
+type SettingsTab =
+  | "general"
+  | "users"
+  | "security"
+  | "notifications"
+  | "integrations"
+  | "audit"
+  | "billing"
+  | "backup";
 
 export default function Settings() {
-  const [activeTab, setActiveTab] = useState<SettingsTab>('general')
+  const [activeTab, setActiveTab] = useState<SettingsTab>("general");
 
   // Form states
-  const [companyName, setCompanyName] = useState('AuditPro Solutions')
-  const [registrationNumber, setRegistrationNumber] = useState('REG-123456789')
-  const [primaryEmail, setPrimaryEmail] = useState('admin@auditpro.com')
-  const [phoneNumber, setPhoneNumber] = useState('+1 (555) 123-4567')
-  const [address, setAddress] = useState('123 Business District, Suite 400\nNew York, NY 10001')
-  const [timeZone, setTimeZone] = useState('utc-5')
-  const [dateFormat, setDateFormat] = useState('MM/DD/YYYY')
-  const [currency, setCurrency] = useState('USD')
-  const [auditDuration, setAuditDuration] = useState('30')
-  const [riskFramework, setRiskFramework] = useState('coso')
-  const [autoAssignAuditors, setAutoAssignAuditors] = useState(true)
-  const [autoProgressNotifications, setAutoProgressNotifications] = useState(true)
-  const [maxFileSize, setMaxFileSize] = useState('50')
+  const [companyName, setCompanyName] = useState("AuditPro Solutions");
+  const [registrationNumber, setRegistrationNumber] = useState("REG-123456789");
+  const [primaryEmail, setPrimaryEmail] = useState("admin@auditpro.com");
+  const [phoneNumber, setPhoneNumber] = useState("+1 (555) 123-4567");
+  const [address, setAddress] = useState("123 Business District, Suite 400\nNew York, NY 10001");
+  const [timeZone, setTimeZone] = useState("utc-5");
+  const [dateFormat, setDateFormat] = useState("MM/DD/YYYY");
+  const [currency, setCurrency] = useState("USD");
+  const [auditDuration, setAuditDuration] = useState("30");
+  const [riskFramework, setRiskFramework] = useState("coso");
+  const [autoAssignAuditors, setAutoAssignAuditors] = useState(true);
+  const [autoProgressNotifications, setAutoProgressNotifications] = useState(true);
+  const [maxFileSize, setMaxFileSize] = useState("50");
 
   const tabs = [
-    { id: 'general' as const, name: 'General Settings', icon: SettingsIcon },
-    { id: 'users' as const, name: 'User Management', icon: Users },
-    { id: 'security' as const, name: 'Security', icon: Shield },
-    { id: 'notifications' as const, name: 'Notifications', icon: Bell },
-    { id: 'integrations' as const, name: 'Integrations', icon: Link2 },
-    { id: 'audit' as const, name: 'Audit Settings', icon: FileCheck },
-    { id: 'billing' as const, name: 'Billing & Plans', icon: CreditCard },
-    { id: 'backup' as const, name: 'Backup & Recovery', icon: Database }
-  ]
+    { id: "general" as const, name: "General Settings", icon: SettingsIcon },
+    { id: "users" as const, name: "User Management", icon: Users },
+    { id: "security" as const, name: "Security", icon: Shield },
+    { id: "notifications" as const, name: "Notifications", icon: Bell },
+    { id: "integrations" as const, name: "Integrations", icon: Link2 },
+    { id: "audit" as const, name: "Audit Settings", icon: FileCheck },
+    { id: "billing" as const, name: "Billing & Plans", icon: CreditCard },
+    { id: "backup" as const, name: "Backup & Recovery", icon: Database },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -41,21 +59,19 @@ export default function Settings() {
         <div className="w-64 bg-white border-r border-gray-200 p-4 overflow-y-auto">
           <div className="space-y-1">
             {tabs.map((tab) => {
-              const Icon = tab.icon
+              const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
                   className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
-                    activeTab === tab.id
-                      ? 'bg-blue-50 text-blue-600'
-                      : 'text-gray-700 hover:bg-gray-100'
+                    activeTab === tab.id ? "bg-blue-50 text-blue-600" : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
                   <Icon className="w-4 h-4" />
                   {tab.name}
                 </button>
-              )
+              );
             })}
           </div>
         </div>
@@ -67,7 +83,9 @@ export default function Settings() {
             <div className="mb-6 flex items-start justify-between">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">Configuration Settings</h1>
-                <p className="text-gray-600">Manage your application settings, preferences, and integrations.</p>
+                <p className="text-gray-600">
+                  Manage your application settings, preferences, and integrations.
+                </p>
               </div>
               <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
                 <Save className="w-4 h-4" />
@@ -76,7 +94,7 @@ export default function Settings() {
             </div>
 
             {/* General Settings Content */}
-            {activeTab === 'general' && (
+            {activeTab === "general" && (
               <div className="space-y-6">
                 {/* Company Information */}
                 <div className="bg-white rounded-xl border border-gray-200 p-6">
@@ -94,7 +112,9 @@ export default function Settings() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Registration Number</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Registration Number
+                      </label>
                       <input
                         type="text"
                         value={registrationNumber}
@@ -142,7 +162,9 @@ export default function Settings() {
                   <div className="space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-1">Time Zone</label>
-                      <p className="text-xs text-gray-500 mb-2">Set your organization&apos;s default time zone</p>
+                      <p className="text-xs text-gray-500 mb-2">
+                        Set your organization&apos;s default time zone
+                      </p>
                       <select
                         value={timeZone}
                         onChange={(e) => setTimeZone(e.target.value)}
@@ -193,7 +215,9 @@ export default function Settings() {
 
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Default Audit Duration (Days)</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Default Audit Duration (Days)
+                      </label>
                       <input
                         type="number"
                         value={auditDuration}
@@ -203,7 +227,9 @@ export default function Settings() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Risk Assessment Framework</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Risk Assessment Framework
+                      </label>
                       <select
                         value={riskFramework}
                         onChange={(e) => setRiskFramework(e.target.value)}
@@ -245,7 +271,9 @@ export default function Settings() {
                   <h2 className="text-lg font-semibold text-gray-900 mb-6">Document Management</h2>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Maximum File Size (MB)</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Maximum File Size (MB)
+                    </label>
                     <input
                       type="number"
                       value={maxFileSize}
@@ -258,21 +286,21 @@ export default function Settings() {
             )}
 
             {/* Placeholder content for other tabs */}
-            {activeTab !== 'general' && (
+            {activeTab !== "general" && (
               <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
                 <div className="max-w-md mx-auto">
                   <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    {tabs.find(t => t.id === activeTab)?.icon && (
+                    {tabs.find((t) => t.id === activeTab)?.icon && (
                       <div className="text-gray-400">
                         {(() => {
-                          const Tab = tabs.find(t => t.id === activeTab)!.icon
-                          return <Tab className="w-8 h-8" />
+                          const Tab = tabs.find((t) => t.id === activeTab)!.icon;
+                          return <Tab className="w-8 h-8" />;
                         })()}
                       </div>
                     )}
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                    {tabs.find(t => t.id === activeTab)?.name}
+                    {tabs.find((t) => t.id === activeTab)?.name}
                   </h3>
                   <p className="text-gray-600">
                     This section is under development and will be available soon.
@@ -284,5 +312,5 @@ export default function Settings() {
         </div>
       </div>
     </div>
-  )
+  );
 }

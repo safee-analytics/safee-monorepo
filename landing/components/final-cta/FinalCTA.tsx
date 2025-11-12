@@ -12,8 +12,7 @@ export const FinalCTA = () => {
         <LogoLarge />
         <SectionHeading>Ready to go?</SectionHeading>
         <p className="mx-auto mb-8 text-center text-base leading-relaxed md:text-xl md:leading-relaxed">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe,
-          blanditiis?
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Saepe, blanditiis?
         </p>
         <Button intent="primary">
           <span className="font-bold">Get started - </span> no CC required

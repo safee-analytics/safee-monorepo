@@ -159,11 +159,11 @@ export function useRequireAuth(redirectTo: string = "/login") {
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       // Store full URL (with query params) in session storage so we can redirect back after login
-      if (typeof window !== 'undefined' && pathname) {
+      if (typeof window !== "undefined" && pathname) {
         const fullUrl = window.location.pathname + window.location.search;
         // Only store if it's not the login page itself
-        if (pathname !== redirectTo && pathname !== '/') {
-          sessionStorage.setItem('redirectAfterLogin', fullUrl);
+        if (pathname !== redirectTo && pathname !== "/") {
+          sessionStorage.setItem("redirectAfterLogin", fullUrl);
         }
       }
       router.push(redirectTo);

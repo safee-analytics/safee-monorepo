@@ -16,13 +16,7 @@ type LinkType = {
   sublinks: { title: string; href: string }[];
 };
 
-export const ExpandableNavBar = ({
-  children,
-  links,
-}: {
-  children?: ReactNode;
-  links: LinkType[];
-}) => {
+export const ExpandableNavBar = ({ children, links }: { children?: ReactNode; links: LinkType[] }) => {
   const [hovered, setHovered] = useState<string | null>(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
@@ -31,16 +25,13 @@ export const ExpandableNavBar = ({
     const link = links.find((l) => l.title === hovered);
 
     return link ? link.sublinks : [];
-  }, [hovered]);
+  }, [hovered, links]);
 
   return (
     <>
       <div className="bg-indigo-600 pt-2">
         <Announcement />
-        <nav
-          onMouseLeave={() => setHovered(null)}
-          className="rounded-t-2xl bg-white p-4"
-        >
+        <nav onMouseLeave={() => setHovered(null)} className="rounded-t-2xl bg-white p-4">
           <div className="flex items-start justify-between">
             <div className="flex items-start">
               <Logo />
@@ -63,10 +54,7 @@ export const ExpandableNavBar = ({
                 </Button>
               </Link>
             </div>
-            <button
-              onClick={() => setMobileNavOpen((pv) => !pv)}
-              className="mt-0.5 block text-2xl md:hidden"
-            >
+            <button onClick={() => setMobileNavOpen((pv) => !pv)} className="mt-0.5 block text-2xl md:hidden">
               <FiMenu />
             </button>
           </div>

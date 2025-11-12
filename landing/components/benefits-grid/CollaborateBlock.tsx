@@ -36,9 +36,7 @@ export const CollaborateBlock = () => (
       </div>
       <div>
         <CardTitle>Collaborate seamlessly</CardTitle>
-        <CardSubtitle>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        </CardSubtitle>
+        <CardSubtitle>Lorem ipsum dolor sit amet consectetur adipisicing elit.</CardSubtitle>
       </div>
     </div>
   </Block>
@@ -51,24 +49,14 @@ type CursorProps = {
   nameText: string;
 };
 
-const Cursor = ({
-  wrapperClassName,
-  cursorClassName,
-  nameClassName,
-  nameText,
-}: CursorProps) => {
+const Cursor = ({ wrapperClassName, cursorClassName, nameClassName, nameText }: CursorProps) => {
   return (
     <div className={twMerge("absolute left-[60%] top-[60%]", wrapperClassName)}>
-      <BsFillCursorFill
-        className={twMerge(
-          "-rotate-90 text-4xl text-pink-500",
-          cursorClassName
-        )}
-      />
+      <BsFillCursorFill className={twMerge("-rotate-90 text-4xl text-pink-500", cursorClassName)} />
       <span
         className={twMerge(
           "block translate-x-1/2 whitespace-nowrap rounded border border-pink-900 bg-pink-200 px-1.5 py-0.5 text-xs text-pink-900",
-          nameClassName
+          nameClassName,
         )}
       >
         {nameText}

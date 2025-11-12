@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
 import React, { Dispatch, SetStateAction, useState } from "react";
 import { IconType } from "react-icons";
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   FiBarChart,
   FiChevronDown,
@@ -27,10 +27,10 @@ import {
   FiGrid,
 } from "react-icons/fi";
 import { motion, AnimatePresence, Reorder } from "framer-motion";
-import { useTranslation } from '@/lib/providers/TranslationProvider';
-import { useOrgStore } from '@/stores/useOrgStore';
-import { getAllModules } from '@/lib/config/modules';
-import arMessages from '@/messages/ar';
+import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useOrgStore } from "@/stores/useOrgStore";
+import { getAllModules } from "@/lib/config/modules";
+import arMessages from "@/messages/ar";
 
 type Messages = typeof arMessages;
 
@@ -44,30 +44,31 @@ export const SidebarLayout = () => {
 };
 
 interface AppItem {
-  id: string
-  name: string
-  icon: IconType
-  gradient: string
-  pinned: boolean
+  id: string;
+  name: string;
+  icon: IconType;
+  gradient: string;
+  pinned: boolean;
 }
 
 const moduleIcons: Record<string, IconType> = {
   hisabiq: FiDollarSign,
   kanz: FiUsers,
   nisbah: FiUserPlus,
-  audit: FiClipboard
+  audit: FiClipboard,
 };
 
 const moduleColors: Record<string, string> = {
-  hisabiq: 'from-green-500 to-emerald-600',
-  kanz: 'from-indigo-500 to-indigo-600',
-  nisbah: 'from-pink-500 to-pink-600',
-  audit: 'from-orange-500 to-orange-600'
+  hisabiq: "from-green-500 to-emerald-600",
+  kanz: "from-indigo-500 to-indigo-600",
+  nisbah: "from-pink-500 to-pink-600",
+  audit: "from-orange-500 to-orange-600",
 };
 
 export const Sidebar = () => {
   const { t, locale } = useTranslation();
-  const { setModule, sidebarAutoClose, setSidebarAutoClose, sidebarCollapsed, setSidebarCollapsed } = useOrgStore();
+  const { setModule, sidebarAutoClose, setSidebarAutoClose, sidebarCollapsed, setSidebarCollapsed } =
+    useOrgStore();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [showCreateMenu, setShowCreateMenu] = useState(false);
@@ -81,7 +82,7 @@ export const Sidebar = () => {
     id: module.key,
     name: module.name[locale],
     icon: moduleIcons[module.key] || FiClipboard,
-    gradient: moduleColors[module.key] || 'from-gray-500 to-gray-600',
+    gradient: moduleColors[module.key] || "from-gray-500 to-gray-600",
     pinned: true,
   }));
 
@@ -91,14 +92,14 @@ export const Sidebar = () => {
   // Close all menus with ESC key
   React.useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         setShowCreateMenu(false);
         setShowCustomizeMenu(false);
         setShowMyApps(false);
       }
     };
-    document.addEventListener('keydown', handleEscKey);
-    return () => document.removeEventListener('keydown', handleEscKey);
+    document.addEventListener("keydown", handleEscKey);
+    return () => document.removeEventListener("keydown", handleEscKey);
   }, []);
 
   const handleOpenCustomize = () => {
@@ -121,17 +122,15 @@ export const Sidebar = () => {
   };
 
   const handleTogglePin = (appId: string) => {
-    setTempApps(tempApps.map(app =>
-      app.id === appId ? { ...app, pinned: !app.pinned } : app
-    ));
+    setTempApps(tempApps.map((app) => (app.id === appId ? { ...app, pinned: !app.pinned } : app)));
   };
 
   // Detect current module from pathname
   const getCurrentModule = () => {
-    if (pathname?.startsWith('/audit')) return 'audit';
-    if (pathname?.startsWith('/hisabiq')) return 'hisabiq';
-    if (pathname?.startsWith('/kanz')) return 'kanz';
-    if (pathname?.startsWith('/nisbah')) return 'nisbah';
+    if (pathname?.startsWith("/audit")) return "audit";
+    if (pathname?.startsWith("/hisabiq")) return "hisabiq";
+    if (pathname?.startsWith("/kanz")) return "kanz";
+    if (pathname?.startsWith("/nisbah")) return "nisbah";
     return null;
   };
 
@@ -140,41 +139,42 @@ export const Sidebar = () => {
   // Module-specific navigation items
   const moduleNavItems: Record<string, Array<{ icon: IconType; title: string; href: string }>> = {
     audit: [
-      { icon: FiHome, title: t.audit.dashboardTitle, href: '/audit/dashboard' },
-      { icon: FiClipboard, title: t.audit.caseManagement, href: '/audit/cases' },
-      { icon: FiFileText, title: t.audit.documentRepository, href: '/audit/documents' },
-      { icon: FiBarChart, title: t.audit.auditReports, href: '/audit/reports' },
-      { icon: FiClipboard, title: t.audit.auditPlanning, href: '/audit/planning' },
-      { icon: FiUsers, title: t.audit.teamManagement, href: '/audit/team' },
-      { icon: FiSettings, title: t.audit.configurationSettings, href: '/audit/settings' },
+      { icon: FiHome, title: t.audit.dashboardTitle, href: "/audit/dashboard" },
+      { icon: FiClipboard, title: t.audit.caseManagement, href: "/audit/cases" },
+      { icon: FiFileText, title: t.audit.documentRepository, href: "/audit/documents" },
+      { icon: FiBarChart, title: t.audit.auditReports, href: "/audit/reports" },
+      { icon: FiClipboard, title: t.audit.auditPlanning, href: "/audit/planning" },
+      { icon: FiUsers, title: t.audit.teamManagement, href: "/audit/team" },
+      { icon: FiSettings, title: t.audit.configurationSettings, href: "/audit/settings" },
     ],
     hisabiq: [
-      { icon: FiHome, title: t.nav.dashboard, href: '/hisabiq/dashboard' },
-      { icon: FiFileText, title: 'Invoices', href: '/hisabiq/invoices' },
-      { icon: FiDollarSign, title: 'Expenses', href: '/hisabiq/expenses' },
-      { icon: FiBarChart, title: t.common.reports, href: '/hisabiq/reports' },
+      { icon: FiHome, title: t.nav.dashboard, href: "/hisabiq/dashboard" },
+      { icon: FiFileText, title: "Invoices", href: "/hisabiq/invoices" },
+      { icon: FiDollarSign, title: "Expenses", href: "/hisabiq/expenses" },
+      { icon: FiBarChart, title: t.common.reports, href: "/hisabiq/reports" },
     ],
     kanz: [
-      { icon: FiHome, title: t.nav.dashboard, href: '/kanz/dashboard' },
-      { icon: FiUsers, title: 'Employees', href: '/kanz/employees' },
-      { icon: FiClipboard, title: 'Attendance', href: '/kanz/attendance' },
-      { icon: FiDollarSign, title: 'Payroll', href: '/kanz/payroll' },
+      { icon: FiHome, title: t.nav.dashboard, href: "/kanz/dashboard" },
+      { icon: FiUsers, title: "Employees", href: "/kanz/employees" },
+      { icon: FiClipboard, title: "Attendance", href: "/kanz/attendance" },
+      { icon: FiDollarSign, title: "Payroll", href: "/kanz/payroll" },
     ],
     nisbah: [
-      { icon: FiHome, title: t.nav.dashboard, href: '/nisbah/dashboard' },
-      { icon: FiUserPlus, title: 'Leads', href: '/nisbah/leads' },
-      { icon: FiUsers, title: 'Contacts', href: '/nisbah/contacts' },
-      { icon: FiDollarSign, title: 'Deals', href: '/nisbah/deals' },
+      { icon: FiHome, title: t.nav.dashboard, href: "/nisbah/dashboard" },
+      { icon: FiUserPlus, title: "Leads", href: "/nisbah/leads" },
+      { icon: FiUsers, title: "Contacts", href: "/nisbah/contacts" },
+      { icon: FiDollarSign, title: "Deals", href: "/nisbah/deals" },
     ],
   };
 
-  const sidebarItems = currentModule && moduleNavItems[currentModule]
-    ? moduleNavItems[currentModule]
-    : [
-        { icon: FiHome, title: t.nav.dashboard, href: '/' },
-        { icon: FiBookmark, title: t.common.bookmarks, href: '/bookmarks' },
-        { icon: FiBarChart, title: t.common.reports, href: '/reports' },
-      ];
+  const sidebarItems =
+    currentModule && moduleNavItems[currentModule]
+      ? moduleNavItems[currentModule]
+      : [
+          { icon: FiHome, title: t.nav.dashboard, href: "/" },
+          { icon: FiBookmark, title: t.common.bookmarks, href: "/bookmarks" },
+          { icon: FiBarChart, title: t.common.reports, href: "/reports" },
+        ];
 
   const createMenuItems = {
     hisabiq: [
@@ -236,13 +236,15 @@ export const Sidebar = () => {
               transition={{ delay: 0.05 }}
               className="flex items-center gap-2"
             >
-              <FiPlus className={`w-5 h-5 transition-transform duration-200 ${showCreateMenu ? 'rotate-45' : 'rotate-0'}`} />
-              <span className="text-sm font-medium">
-                {t.common.create}
-              </span>
+              <FiPlus
+                className={`w-5 h-5 transition-transform duration-200 ${showCreateMenu ? "rotate-45" : "rotate-0"}`}
+              />
+              <span className="text-sm font-medium">{t.common.create}</span>
             </motion.div>
           ) : (
-            <FiPlus className={`w-5 h-5 transition-transform duration-200 ${showCreateMenu ? 'rotate-45' : 'rotate-0'}`} />
+            <FiPlus
+              className={`w-5 h-5 transition-transform duration-200 ${showCreateMenu ? "rotate-45" : "rotate-0"}`}
+            />
           )}
         </motion.button>
 
@@ -270,10 +272,7 @@ export const Sidebar = () => {
           onClick={() => setShowMyApps(!showMyApps)}
           className="relative flex h-10 w-full items-center rounded-md transition-colors text-slate-500 hover:bg-slate-100"
         >
-          <motion.div
-            layout
-            className="grid h-full w-10 place-content-center text-lg"
-          >
+          <motion.div layout className="grid h-full w-10 place-content-center text-lg">
             <FiGrid />
           </motion.div>
           {isExpanded && (
@@ -292,53 +291,53 @@ export const Sidebar = () => {
         <div className="border-b border-slate-300 mb-2" />
 
         {/* Pinned Modules Section */}
-        <div className={`px-2 mb-2 transition-opacity ${isExpanded ? 'opacity-100' : 'opacity-0'}`}>
-          <span className="text-[10px] font-semibold text-gray-400 uppercase">
-            {t.common.pinned}
-          </span>
+        <div className={`px-2 mb-2 transition-opacity ${isExpanded ? "opacity-100" : "opacity-0"}`}>
+          <span className="text-[10px] font-semibold text-gray-400 uppercase">{t.common.pinned}</span>
         </div>
 
         {/* Pinned Modules */}
         <div className="space-y-2 flex-1 overflow-y-auto">
-          {apps.filter(app => app.pinned).map((app) => {
-            const Icon = app.icon;
-            const module = modules.find(m => m.key === app.id);
-            if (!module) return null;
+          {apps
+            .filter((app) => app.pinned)
+            .map((app) => {
+              const Icon = app.icon;
+              const module = modules.find((m) => m.key === app.id);
+              if (!module) return null;
 
-            const isSelected = pathname?.startsWith(module.path);
+              const isSelected = pathname?.startsWith(module.path);
 
-            return (
-              <Link
-                key={app.id}
-                href={module.path}
-                onClick={() => setModule(app.id as 'hisabiq' | 'kanz' | 'nisbah' | 'audit')}
-              >
-                <div
-                  className={`relative flex h-10 w-full items-center rounded-lg transition-all ${
-                    isSelected ? 'bg-safee-50' : 'hover:bg-gray-50'
-                  }`}
+              return (
+                <Link
+                  key={app.id}
+                  href={module.path}
+                  onClick={() => setModule(app.id as "hisabiq" | "kanz" | "nisbah" | "audit")}
                 >
-                  {/* Logo Circle - fixed position */}
-                  <div className="w-10 flex items-center justify-center shrink-0">
-                    <div
-                      className={`grid w-8 h-8 place-content-center rounded-full bg-gradient-to-br ${app.gradient} shadow-sm hover:shadow-md transition-shadow`}
-                    >
-                      <Icon className="w-4 h-4 text-white" />
-                    </div>
-                  </div>
-
-                  {/* Module Name */}
-                  <span
-                    className={`text-xs font-medium transition-opacity overflow-hidden whitespace-nowrap ${
-                      isExpanded ? 'opacity-100' : 'opacity-0 w-0'
-                    } ${isSelected ? 'text-safee-700' : 'text-gray-700'}`}
+                  <div
+                    className={`relative flex h-10 w-full items-center rounded-lg transition-all ${
+                      isSelected ? "bg-safee-50" : "hover:bg-gray-50"
+                    }`}
                   >
-                    {app.name}
-                  </span>
-                </div>
-              </Link>
-            );
-          })}
+                    {/* Logo Circle - fixed position */}
+                    <div className="w-10 flex items-center justify-center shrink-0">
+                      <div
+                        className={`grid w-8 h-8 place-content-center rounded-full bg-gradient-to-br ${app.gradient} shadow-sm hover:shadow-md transition-shadow`}
+                      >
+                        <Icon className="w-4 h-4 text-white" />
+                      </div>
+                    </div>
+
+                    {/* Module Name */}
+                    <span
+                      className={`text-xs font-medium transition-opacity overflow-hidden whitespace-nowrap ${
+                        isExpanded ? "opacity-100" : "opacity-0 w-0"
+                      } ${isSelected ? "text-safee-700" : "text-gray-700"}`}
+                    >
+                      {app.name}
+                    </span>
+                  </div>
+                </Link>
+              );
+            })}
         </div>
 
         {/* Bottom Section - Settings */}
@@ -347,7 +346,7 @@ export const Sidebar = () => {
             <Option
               Icon={FiSettings}
               title={t.common.settings}
-              selected={pathname?.startsWith('/settings')}
+              selected={pathname?.startsWith("/settings")}
               open={isExpanded}
             />
           </Link>
@@ -360,10 +359,7 @@ export const Sidebar = () => {
           className="absolute bottom-12 left-0 right-0 border-t border-slate-300 transition-colors hover:bg-slate-100"
         >
           <div className="flex items-center p-2">
-            <motion.div
-              layout
-              className="grid size-10 place-content-center text-lg"
-            >
+            <motion.div layout className="grid size-10 place-content-center text-lg">
               <FiSliders />
             </motion.div>
             {isExpanded && (
@@ -397,13 +393,8 @@ export const Sidebar = () => {
           className="absolute bottom-0 left-0 right-0 border-t border-slate-300 transition-colors hover:bg-slate-100"
         >
           <div className="flex items-center p-2">
-            <motion.div
-              layout
-              className="grid size-10 place-content-center text-lg"
-            >
-              <FiChevronsRight
-                className={`transition-transform ${isExpanded && "rotate-180"}`}
-              />
+            <motion.div layout className="grid size-10 place-content-center text-lg">
+              <FiChevronsRight className={`transition-transform ${isExpanded && "rotate-180"}`} />
             </motion.div>
             {isExpanded && (
               <motion.span
@@ -438,11 +429,9 @@ export const Sidebar = () => {
               initial={{ opacity: 0, scale: 0.95, x: -10 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.95, x: -10 }}
-              className={`fixed ${locale === 'ar' ? 'right-20' : 'left-20'} top-28 z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-6 w-[500px]`}
+              className={`fixed ${locale === "ar" ? "right-20" : "left-20"} top-28 z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-6 w-[500px]`}
             >
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">
-                {t.common.createNew}
-              </h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-6">{t.common.createNew}</h3>
 
               <div className="grid grid-cols-2 gap-6">
                 {/* Hisabiq */}
@@ -560,16 +549,14 @@ export const Sidebar = () => {
               initial={{ opacity: 0, scale: 0.95, x: -10 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.95, x: -10 }}
-              className={`fixed ${locale === 'ar' ? 'right-20' : 'left-20'} top-[180px] z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 w-[280px]`}
+              className={`fixed ${locale === "ar" ? "right-20" : "left-20"} top-[180px] z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 w-[280px]`}
             >
-              <h3 className="text-sm font-semibold text-gray-900 mb-3 px-2">
-                {t.common.myApps}
-              </h3>
+              <h3 className="text-sm font-semibold text-gray-900 mb-3 px-2">{t.common.myApps}</h3>
 
               <div className="space-y-1">
                 {apps.map((app) => {
                   const Icon = app.icon;
-                  const module = modules.find(m => m.key === app.id);
+                  const module = modules.find((m) => m.key === app.id);
                   if (!module) return null;
 
                   return (
@@ -577,20 +564,20 @@ export const Sidebar = () => {
                       key={app.id}
                       href={module.path}
                       onClick={() => {
-                        setModule(app.id as 'hisabiq' | 'kanz' | 'nisbah' | 'audit');
+                        setModule(app.id as "hisabiq" | "kanz" | "nisbah" | "audit");
                         setShowMyApps(false);
                       }}
                     >
                       <button className="w-full flex items-center gap-3 px-2 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
                         {/* App Logo */}
-                        <div className={`w-8 h-8 rounded-full bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-sm flex-shrink-0`}>
+                        <div
+                          className={`w-8 h-8 rounded-full bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-sm flex-shrink-0`}
+                        >
                           <Icon className="w-4 h-4 text-white" />
                         </div>
 
                         {/* App Name */}
-                        <span className="flex-1 text-left font-medium">
-                          {app.name}
-                        </span>
+                        <span className="flex-1 text-left font-medium">{app.name}</span>
 
                         {/* Pinned Star */}
                         {app.pinned && (
@@ -629,12 +616,8 @@ export const Sidebar = () => {
               {/* Header */}
               <div className="flex items-center justify-between px-8 py-6 border-b border-gray-200">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    {t.common.customizeAppMenus}
-                  </h2>
-                  <p className="text-sm text-gray-600 mt-1">
-                    {t.common.dragDropReorder}
-                  </p>
+                  <h2 className="text-2xl font-bold text-gray-900">{t.common.customizeAppMenus}</h2>
+                  <p className="text-sm text-gray-600 mt-1">{t.common.dragDropReorder}</p>
                 </div>
                 <button
                   onClick={handleCancelCustomize}
@@ -676,22 +659,22 @@ export const Sidebar = () => {
                           onClick={() => handleTogglePin(app.id)}
                           className={`p-2 rounded-lg transition-colors ${
                             app.pinned
-                              ? 'text-yellow-500 hover:bg-yellow-50'
-                              : 'text-gray-300 hover:bg-gray-50'
+                              ? "text-yellow-500 hover:bg-yellow-50"
+                              : "text-gray-300 hover:bg-gray-50"
                           }`}
                         >
-                          <FiStar className={`w-5 h-5 ${app.pinned ? 'fill-current' : ''}`} />
+                          <FiStar className={`w-5 h-5 ${app.pinned ? "fill-current" : ""}`} />
                         </button>
 
                         {/* App Logo */}
-                        <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-md flex-shrink-0`}>
+                        <div
+                          className={`w-12 h-12 rounded-full bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-md flex-shrink-0`}
+                        >
                           <Icon className="w-6 h-6 text-white" />
                         </div>
 
                         {/* App Name */}
-                        <span className="text-sm font-semibold text-gray-900 flex-1">
-                          {app.name}
-                        </span>
+                        <span className="text-sm font-semibold text-gray-900 flex-1">{app.name}</span>
                       </Reorder.Item>
                     );
                   })}
@@ -708,12 +691,12 @@ export const Sidebar = () => {
                   <button
                     onClick={() => setSidebarAutoClose(!sidebarAutoClose)}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      sidebarAutoClose ? 'bg-safee-600' : 'bg-gray-300'
+                      sidebarAutoClose ? "bg-safee-600" : "bg-gray-300"
                     }`}
                   >
                     <span
                       className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        sidebarAutoClose ? 'translate-x-6' : 'translate-x-1'
+                        sidebarAutoClose ? "translate-x-6" : "translate-x-1"
                       }`}
                     />
                   </button>
@@ -766,10 +749,7 @@ const Option = ({
 }) => {
   const content = (
     <>
-      <motion.div
-        layout
-        className="grid h-full w-10 place-content-center text-lg"
-      >
+      <motion.div layout className="grid h-full w-10 place-content-center text-lg">
         <Icon />
       </motion.div>
       {open && (
@@ -838,10 +818,7 @@ const TitleSection = ({ open }: { open: boolean }) => {
 const Logo = () => {
   // Temp logo from https://logoipsum.com/
   return (
-    <motion.div
-      layout
-      className="grid size-10 shrink-0 place-content-center rounded-md bg-indigo-600"
-    >
+    <motion.div layout className="grid size-10 shrink-0 place-content-center rounded-md bg-indigo-600">
       <svg
         width="24"
         height="auto"
@@ -850,10 +827,7 @@ const Logo = () => {
         xmlns="http://www.w3.org/2000/svg"
         className="fill-slate-50"
       >
-        <path
-          d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z"
-          stopColor="#000000"
-        ></path>
+        <path d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z" stopColor="#000000"></path>
         <path
           d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z"
           stopColor="#000000"
@@ -862,6 +836,5 @@ const Logo = () => {
     </motion.div>
   );
 };
-
 
 const ExampleContent = () => <div className="h-[200vh] w-full"></div>;

@@ -4,7 +4,7 @@ export const auditAr = {
     createMenu: {
       newCase: "حالة جديدة",
       uploadDocument: "تحميل مستند",
-      createReport: "إنشاء تقرير"
+      createReport: "إنشاء تقرير",
     },
     // Dashboard
     dashboardTitle: "نظرة عامة على لوحة التحكم",
@@ -296,6 +296,6 @@ export const auditAr = {
     fileCompletedSuccessfully: "تم إتمام الملف بنجاح",
     fileArchivedSuccessfully: "تم أرشفة الملف بنجاح",
     completedAt: "تم الإتمام في",
-    archivedAt: "تم الأرشفة في"
-  }
-} as const
+    archivedAt: "تم الأرشفة في",
+  },
+} as const;

@@ -1,137 +1,135 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { FileText, Clock, CheckCircle, AlertTriangle, List, LayoutGrid, Download } from 'lucide-react'
-import { StatCard } from '@/components/audit/ui/StatCard'
-import { StatusBadge } from '@/components/audit/ui/StatusBadge'
-import { PriorityBadge } from '@/components/audit/ui/PriorityBadge'
-import { CaseStatus, CasePriority } from '@/types/audit'
+import { useState } from "react";
+import { FileText, Clock, CheckCircle, AlertTriangle, List, LayoutGrid, Download } from "lucide-react";
+import { StatCard } from "@/components/audit/ui/StatCard";
+import { StatusBadge } from "@/components/audit/ui/StatusBadge";
+import { PriorityBadge } from "@/components/audit/ui/PriorityBadge";
+import { CaseStatus, CasePriority } from "@/types/audit";
 
 interface CaseRow {
-  id: string
-  caseId: string
-  auditType: string
-  companyName: string
-  industry: string
+  id: string;
+  caseId: string;
+  auditType: string;
+  companyName: string;
+  industry: string;
   assignee: {
-    name: string
-    avatar: string
-  }
-  status: CaseStatus
-  priority: CasePriority
-  dueDate: string
-  progress: number
-  icon: string
-  iconBg: string
+    name: string;
+    avatar: string;
+  };
+  status: CaseStatus;
+  priority: CasePriority;
+  dueDate: string;
+  progress: number;
+  icon: string;
+  iconBg: string;
 }
 
 export default function CaseManagement() {
-  const [selectedCases, setSelectedCases] = useState<string[]>([])
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [priorityFilter, setPriorityFilter] = useState('all')
-  const [assigneeFilter, setAssigneeFilter] = useState('all')
-  const [dueDateFilter, setDueDateFilter] = useState('')
+  const [selectedCases, setSelectedCases] = useState<string[]>([]);
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [assigneeFilter, setAssigneeFilter] = useState("all");
+  const [dueDateFilter, setDueDateFilter] = useState("");
 
   const stats = {
     totalCases: 47,
     activeCases: 24,
     completedCases: 18,
-    overdueCases: 5
-  }
+    overdueCases: 5,
+  };
 
   const cases: CaseRow[] = [
     {
-      id: '1',
-      caseId: 'CASE-001',
-      auditType: 'Annual Financial Audit',
-      companyName: 'ABC Corporation',
-      industry: 'Technology',
+      id: "1",
+      caseId: "CASE-001",
+      auditType: "Annual Financial Audit",
+      companyName: "ABC Corporation",
+      industry: "Technology",
       assignee: {
-        name: 'Michael Chen',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael'
+        name: "Michael Chen",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
       },
-      status: 'in-progress',
-      priority: 'high',
-      dueDate: 'Dec 15, 2024',
+      status: "in-progress",
+      priority: "high",
+      dueDate: "Dec 15, 2024",
       progress: 65,
-      icon: '📊',
-      iconBg: 'bg-blue-100'
+      icon: "📊",
+      iconBg: "bg-blue-100",
     },
     {
-      id: '2',
-      caseId: 'CASE-002',
-      auditType: 'Inventory Audit',
-      companyName: 'XYZ Retail Ltd',
-      industry: 'Retail',
+      id: "2",
+      caseId: "CASE-002",
+      auditType: "Inventory Audit",
+      companyName: "XYZ Retail Ltd",
+      industry: "Retail",
       assignee: {
-        name: 'Emma Rodriguez',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma'
+        name: "Emma Rodriguez",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
       },
-      status: 'completed',
-      priority: 'medium',
-      dueDate: 'Dec 10, 2024',
+      status: "completed",
+      priority: "medium",
+      dueDate: "Dec 10, 2024",
       progress: 100,
-      icon: '🏪',
-      iconBg: 'bg-green-100'
+      icon: "🏪",
+      iconBg: "bg-green-100",
     },
     {
-      id: '3',
-      caseId: 'CASE-003',
-      auditType: 'Compliance Audit',
-      companyName: 'Manufacturing Co',
-      industry: 'Manufacturing',
+      id: "3",
+      caseId: "CASE-003",
+      auditType: "Compliance Audit",
+      companyName: "Manufacturing Co",
+      industry: "Manufacturing",
       assignee: {
-        name: 'David Kim',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David'
+        name: "David Kim",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
       },
-      status: 'overdue',
-      priority: 'high',
-      dueDate: 'Dec 8, 2024',
+      status: "overdue",
+      priority: "high",
+      dueDate: "Dec 8, 2024",
       progress: 45,
-      icon: '🏭',
-      iconBg: 'bg-red-100'
+      icon: "🏭",
+      iconBg: "bg-red-100",
     },
     {
-      id: '4',
-      caseId: 'CASE-004',
-      auditType: 'Risk Assessment',
-      companyName: 'Financial Services Inc',
-      industry: 'Finance',
+      id: "4",
+      caseId: "CASE-004",
+      auditType: "Risk Assessment",
+      companyName: "Financial Services Inc",
+      industry: "Finance",
       assignee: {
-        name: 'Lisa Thompson',
-        avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa'
+        name: "Lisa Thompson",
+        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa",
       },
-      status: 'in-review',
-      priority: 'medium',
-      dueDate: 'Dec 20, 2024',
+      status: "in-review",
+      priority: "medium",
+      dueDate: "Dec 20, 2024",
       progress: 80,
-      icon: '🏦',
-      iconBg: 'bg-yellow-100'
-    }
-  ]
+      icon: "🏦",
+      iconBg: "bg-yellow-100",
+    },
+  ];
 
   const toggleCaseSelection = (caseId: string) => {
-    setSelectedCases(prev =>
-      prev.includes(caseId)
-        ? prev.filter(id => id !== caseId)
-        : [...prev, caseId]
-    )
-  }
+    setSelectedCases((prev) =>
+      prev.includes(caseId) ? prev.filter((id) => id !== caseId) : [...prev, caseId],
+    );
+  };
 
   const toggleAllCases = () => {
     if (selectedCases.length === cases.length) {
-      setSelectedCases([])
+      setSelectedCases([]);
     } else {
-      setSelectedCases(cases.map(c => c.id))
+      setSelectedCases(cases.map((c) => c.id));
     }
-  }
+  };
 
   const clearFilters = () => {
-    setStatusFilter('all')
-    setPriorityFilter('all')
-    setAssigneeFilter('all')
-    setDueDateFilter('')
-  }
+    setStatusFilter("all");
+    setPriorityFilter("all");
+    setAssigneeFilter("all");
+    setDueDateFilter("");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -140,7 +138,9 @@ export default function CaseManagement() {
         <div className="mb-6 flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Case Management</h1>
-            <p className="text-gray-600">Manage all your audit cases, track progress, and monitor deadlines.</p>
+            <p className="text-gray-600">
+              Manage all your audit cases, track progress, and monitor deadlines.
+            </p>
           </div>
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
             <span className="text-lg">+</span>
@@ -325,7 +325,9 @@ export default function CaseManagement() {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl ${caseRow.iconBg}`}>
+                        <div
+                          className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl ${caseRow.iconBg}`}
+                        >
                           {caseRow.icon}
                         </div>
                         <div>
@@ -357,7 +359,9 @@ export default function CaseManagement() {
                       <PriorityBadge priority={caseRow.priority} />
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`text-sm ${caseRow.status === 'overdue' ? 'text-red-600 font-medium' : 'text-gray-900'}`}>
+                      <span
+                        className={`text-sm ${caseRow.status === "overdue" ? "text-red-600 font-medium" : "text-gray-900"}`}
+                      >
                         {caseRow.dueDate}
                       </span>
                     </td>
@@ -366,9 +370,11 @@ export default function CaseManagement() {
                         <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
                           <div
                             className={`h-full ${
-                              caseRow.status === 'completed' ? 'bg-green-500' :
-                              caseRow.status === 'overdue' ? 'bg-red-500' :
-                              'bg-blue-500'
+                              caseRow.status === "completed"
+                                ? "bg-green-500"
+                                : caseRow.status === "overdue"
+                                  ? "bg-red-500"
+                                  : "bg-blue-500"
                             }`}
                             style={{ width: `${caseRow.progress}%` }}
                           />
@@ -383,5 +389,5 @@ export default function CaseManagement() {
         </div>
       </div>
     </div>
-  )
+  );
 }

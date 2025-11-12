@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 // Auth Components
 import { DarkGridAuth } from "@/components/auth/LoginForm";
@@ -31,12 +31,13 @@ import Link from "next/link";
 import SlideInNotifications from "@/components/feedback/SlideInToast";
 
 export default function ComponentGallery() {
-  const { locale } = useOrgStore()
+  const { locale } = useOrgStore();
 
   const translations = {
     ar: {
       title: "معرض مكونات Safee Analytics",
-      description: "جميع المكونات جاهزة للاختبار. استخدم زر تبديل اللغة في الأعلى للتبديل بين العربية والإنجليزية.",
+      description:
+        "جميع المكونات جاهزة للاختبار. استخدم زر تبديل اللغة في الأعلى للتبديل بين العربية والإنجليزية.",
       backHome: "العودة للصفحة الرئيسية",
       auth: "مكونات المصادقة",
       layout: "مكونات التخطيط",
@@ -46,7 +47,8 @@ export default function ComponentGallery() {
     },
     en: {
       title: "Safee Analytics Component Gallery",
-      description: "All components are imported and ready for testing. Use the language switcher at the top to toggle between Arabic and English.",
+      description:
+        "All components are imported and ready for testing. Use the language switcher at the top to toggle between Arabic and English.",
       backHome: "Back to Home",
       auth: "Authentication Components",
       layout: "Layout Components",
@@ -54,9 +56,9 @@ export default function ComponentGallery() {
       feedback: "Feedback Components",
       ui: "UI Elements",
     },
-  }
+  };
 
-  const t = translations[locale]
+  const t = translations[locale];
 
   return (
     <div className="p-8 space-y-8 min-h-screen bg-gradient-to-br from-zinc-50 to-zinc-100">
@@ -119,10 +121,8 @@ export default function ComponentGallery() {
         <section className="bg-white rounded-lg shadow-md p-6 mb-8">
           <h2 className="text-2xl font-semibold mb-4 text-zinc-800">{t.feedback}</h2>
           <SafeeToastContainer
-            notifications={[
-              { id: "1", type: "success", message: "Action completed" }
-            ]}
-            onRemove={() => { }}
+            notifications={[{ id: "1", type: "success", message: "Action completed" }]}
+            onRemove={() => {}}
           />
           <StackedNotifications />
           <SlideInNotifications />

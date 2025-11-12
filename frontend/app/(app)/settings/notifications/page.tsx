@@ -1,13 +1,13 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Bell, Mail, MessageSquare, Volume2, Save } from 'lucide-react'
-import { useTranslation } from '@/lib/providers/TranslationProvider'
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Bell, Mail, MessageSquare, Volume2, Save } from "lucide-react";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
 
 export default function NotificationsSettings() {
-  const { t } = useTranslation()
-  const [isSaving, setIsSaving] = useState(false)
+  const { t } = useTranslation();
+  const [isSaving, setIsSaving] = useState(false);
   const [notifications, setNotifications] = useState({
     emailNotifications: true,
     pushNotifications: true,
@@ -21,18 +21,18 @@ export default function NotificationsSettings() {
       teamMentions: true,
       deadlineReminders: true,
     },
-    frequency: 'instant',
+    frequency: "instant",
     quietHoursEnabled: false,
-    quietHoursStart: '22:00',
-    quietHoursEnd: '08:00',
-  })
+    quietHoursStart: "22:00",
+    quietHoursEnd: "08:00",
+  });
 
   const handleSave = async () => {
-    setIsSaving(true)
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-    setIsSaving(false)
-    alert('Notification settings updated successfully')
-  }
+    setIsSaving(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsSaving(false);
+    alert("Notification settings updated successfully");
+  };
 
   const toggleNotificationType = (type: keyof typeof notifications.notificationTypes) => {
     setNotifications({
@@ -41,16 +41,12 @@ export default function NotificationsSettings() {
         ...notifications.notificationTypes,
         [type]: !notifications.notificationTypes[type],
       },
-    })
-  }
+    });
+  };
 
   return (
     <div className="p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-4xl"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl">
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Notification Settings</h1>
@@ -73,7 +69,9 @@ export default function NotificationsSettings() {
                 <input
                   type="checkbox"
                   checked={notifications.emailNotifications}
-                  onChange={(e) => setNotifications({ ...notifications, emailNotifications: e.target.checked })}
+                  onChange={(e) =>
+                    setNotifications({ ...notifications, emailNotifications: e.target.checked })
+                  }
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -92,7 +90,9 @@ export default function NotificationsSettings() {
                 <input
                   type="checkbox"
                   checked={notifications.pushNotifications}
-                  onChange={(e) => setNotifications({ ...notifications, pushNotifications: e.target.checked })}
+                  onChange={(e) =>
+                    setNotifications({ ...notifications, pushNotifications: e.target.checked })
+                  }
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -147,7 +147,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.notificationTypes.auditUpdates}
-                onChange={() => toggleNotificationType('auditUpdates')}
+                onChange={() => toggleNotificationType("auditUpdates")}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
               <span className="text-gray-900">Audit case updates and status changes</span>
@@ -156,7 +156,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.notificationTypes.documentUploads}
-                onChange={() => toggleNotificationType('documentUploads')}
+                onChange={() => toggleNotificationType("documentUploads")}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
               <span className="text-gray-900">New document uploads</span>
@@ -165,7 +165,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.notificationTypes.taskAssignments}
-                onChange={() => toggleNotificationType('taskAssignments')}
+                onChange={() => toggleNotificationType("taskAssignments")}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
               <span className="text-gray-900">Task assignments and updates</span>
@@ -174,7 +174,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.notificationTypes.systemAlerts}
-                onChange={() => toggleNotificationType('systemAlerts')}
+                onChange={() => toggleNotificationType("systemAlerts")}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
               <span className="text-gray-900">System alerts and announcements</span>
@@ -183,7 +183,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.notificationTypes.teamMentions}
-                onChange={() => toggleNotificationType('teamMentions')}
+                onChange={() => toggleNotificationType("teamMentions")}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
               <span className="text-gray-900">Team mentions and comments</span>
@@ -192,7 +192,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.notificationTypes.deadlineReminders}
-                onChange={() => toggleNotificationType('deadlineReminders')}
+                onChange={() => toggleNotificationType("deadlineReminders")}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
               <span className="text-gray-900">Deadline reminders</span>
@@ -209,7 +209,7 @@ export default function NotificationsSettings() {
                 type="radio"
                 name="frequency"
                 value="instant"
-                checked={notifications.frequency === 'instant'}
+                checked={notifications.frequency === "instant"}
                 onChange={(e) => setNotifications({ ...notifications, frequency: e.target.value })}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
               />
@@ -223,7 +223,7 @@ export default function NotificationsSettings() {
                 type="radio"
                 name="frequency"
                 value="hourly"
-                checked={notifications.frequency === 'hourly'}
+                checked={notifications.frequency === "hourly"}
                 onChange={(e) => setNotifications({ ...notifications, frequency: e.target.value })}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
               />
@@ -237,7 +237,7 @@ export default function NotificationsSettings() {
                 type="radio"
                 name="frequency"
                 value="daily"
-                checked={notifications.frequency === 'daily'}
+                checked={notifications.frequency === "daily"}
                 onChange={(e) => setNotifications({ ...notifications, frequency: e.target.value })}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
               />
@@ -269,9 +269,7 @@ export default function NotificationsSettings() {
           {notifications.quietHoursEnabled && (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Start Time
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Start Time</label>
                 <input
                   type="time"
                   value={notifications.quietHoursStart}
@@ -280,9 +278,7 @@ export default function NotificationsSettings() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  End Time
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">End Time</label>
                 <input
                   type="time"
                   value={notifications.quietHoursEnd}
@@ -302,10 +298,10 @@ export default function NotificationsSettings() {
             className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
-            {isSaving ? 'Saving...' : 'Save Changes'}
+            {isSaving ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </motion.div>
     </div>
-  )
+  );
 }

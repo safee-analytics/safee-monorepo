@@ -1,9 +1,9 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Plus,
   Bookmark,
@@ -15,66 +15,66 @@ import {
   Users,
   ClipboardList,
   Calendar,
-  FileCheck
-} from 'lucide-react'
-import { useTranslation } from '@/lib/providers/TranslationProvider'
+  FileCheck,
+} from "lucide-react";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
 
 export function AuditSidebar() {
-  const { t, locale } = useTranslation()
-  const pathname = usePathname()
-  const [showCreateMenu, setShowCreateMenu] = useState(false)
+  const { t, locale } = useTranslation();
+  const pathname = usePathname();
+  const [showCreateMenu, setShowCreateMenu] = useState(false);
 
   const sidebarItems = [
     {
       icon: LayoutDashboard,
-      label: locale === 'ar' ? 'لوحة التحكم' : 'Dashboard',
-      href: '/audit/dashboard'
+      label: locale === "ar" ? "لوحة التحكم" : "Dashboard",
+      href: "/audit/dashboard",
     },
     {
       icon: FileText,
-      label: locale === 'ar' ? 'الحالات' : 'Cases',
-      href: '/audit/cases'
+      label: locale === "ar" ? "الحالات" : "Cases",
+      href: "/audit/cases",
     },
     {
       icon: BarChart3,
-      label: locale === 'ar' ? 'التقارير' : 'Reports',
-      href: '/audit/reports'
+      label: locale === "ar" ? "التقارير" : "Reports",
+      href: "/audit/reports",
     },
-  ]
+  ];
 
   const pinnedItems = [
     {
       icon: ClipboardList,
-      label: locale === 'ar' ? 'التخطيط' : 'Planning',
-      href: '/audit/planning',
-      color: 'bg-green-100 text-green-700'
+      label: locale === "ar" ? "التخطيط" : "Planning",
+      href: "/audit/planning",
+      color: "bg-green-100 text-green-700",
     },
     {
       icon: FolderOpen,
-      label: locale === 'ar' ? 'المستندات' : 'Documents',
-      href: '/audit/documents',
-      color: 'bg-blue-100 text-blue-700'
+      label: locale === "ar" ? "المستندات" : "Documents",
+      href: "/audit/documents",
+      color: "bg-blue-100 text-blue-700",
     },
     {
       icon: Users,
-      label: locale === 'ar' ? 'الفريق' : 'Team',
-      href: '/audit/team',
-      color: 'bg-purple-100 text-purple-700'
+      label: locale === "ar" ? "الفريق" : "Team",
+      href: "/audit/team",
+      color: "bg-purple-100 text-purple-700",
     },
-  ]
+  ];
 
   const createMenuItems = {
     cases: [
-      { label: locale === 'ar' ? 'حالة جديدة' : 'New case', icon: FileText },
-      { label: locale === 'ar' ? 'من قالب' : 'From template', icon: FileCheck },
-      { label: locale === 'ar' ? 'طلب مراجعة' : 'Request review', icon: ClipboardList },
+      { label: locale === "ar" ? "حالة جديدة" : "New case", icon: FileText },
+      { label: locale === "ar" ? "من قالب" : "From template", icon: FileCheck },
+      { label: locale === "ar" ? "طلب مراجعة" : "Request review", icon: ClipboardList },
     ],
     documents: [
-      { label: locale === 'ar' ? 'تحميل مستند' : 'Upload document', icon: FolderOpen },
-      { label: locale === 'ar' ? 'إنشاء تقرير' : 'Create report', icon: BarChart3 },
-      { label: locale === 'ar' ? 'جدولة اجتماع' : 'Schedule meeting', icon: Calendar },
+      { label: locale === "ar" ? "تحميل مستند" : "Upload document", icon: FolderOpen },
+      { label: locale === "ar" ? "إنشاء تقرير" : "Create report", icon: BarChart3 },
+      { label: locale === "ar" ? "جدولة اجتماع" : "Schedule meeting", icon: Calendar },
     ],
-  }
+  };
 
   return (
     <>
@@ -87,34 +87,34 @@ export function AuditSidebar() {
           onClick={() => setShowCreateMenu(!showCreateMenu)}
           className="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg transition-all hover:scale-105"
         >
-          <Plus className={`w-6 h-6 transition-transform ${showCreateMenu ? 'rotate-45' : 'rotate-0'}`} />
+          <Plus className={`w-6 h-6 transition-transform ${showCreateMenu ? "rotate-45" : "rotate-0"}`} />
         </button>
 
         <div className="w-10 h-px bg-gray-200 my-2" />
 
         {/* Main Nav Items */}
         {sidebarItems.map((item) => {
-          const Icon = item.icon
-          const isActive = pathname === item.href
+          const Icon = item.icon;
+          const isActive = pathname === item.href;
           return (
             <Link
               key={item.href}
               href={item.href}
               className={`w-12 h-12 rounded-lg flex flex-col items-center justify-center gap-0.5 transition-all group relative ${
-                isActive
-                  ? 'bg-blue-50 text-blue-600'
-                  : 'text-gray-600 hover:bg-gray-100'
+                isActive ? "bg-blue-50 text-blue-600" : "text-gray-600 hover:bg-gray-100"
               }`}
             >
               <Icon className="w-5 h-5" />
               <span className="text-[9px] font-medium">{item.label}</span>
 
               {/* Tooltip on hover */}
-              <div className={`absolute ${locale === 'ar' ? 'right-full mr-2' : 'left-full ml-2'} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity`}>
+              <div
+                className={`absolute ${locale === "ar" ? "right-full mr-2" : "left-full ml-2"} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity`}
+              >
                 {item.label}
               </div>
             </Link>
-          )
+          );
         })}
 
         <div className="w-10 h-px bg-gray-200 my-2" />
@@ -122,29 +122,29 @@ export function AuditSidebar() {
         {/* Pinned Section */}
         <div className="flex-1 flex flex-col gap-2">
           <div className="px-2 text-[9px] font-semibold text-gray-400 uppercase">
-            {locale === 'ar' ? 'مثبت' : 'Pinned'}
+            {locale === "ar" ? "مثبت" : "Pinned"}
           </div>
           {pinnedItems.map((item) => {
-            const Icon = item.icon
-            const isActive = pathname === item.href
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 className={`w-12 h-12 rounded-lg flex items-center justify-center transition-all relative group ${
-                  isActive
-                    ? item.color
-                    : 'text-gray-600 hover:bg-gray-100'
+                  isActive ? item.color : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
                 <Icon className="w-5 h-5" />
 
                 {/* Tooltip */}
-                <div className={`absolute ${locale === 'ar' ? 'right-full mr-2' : 'left-full ml-2'} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity`}>
+                <div
+                  className={`absolute ${locale === "ar" ? "right-full mr-2" : "left-full ml-2"} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity`}
+                >
                   {item.label}
                 </div>
               </Link>
-            )
+            );
           })}
         </div>
 
@@ -175,21 +175,21 @@ export function AuditSidebar() {
               initial={{ opacity: 0, scale: 0.95, y: -10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              className={`fixed ${locale === 'ar' ? 'right-20' : 'left-20'} top-24 z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-6 w-96`}
+              className={`fixed ${locale === "ar" ? "right-20" : "left-20"} top-24 z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-6 w-96`}
             >
               <h3 className="text-lg font-semibold text-gray-900 mb-4">
-                {locale === 'ar' ? 'إنشاء جديد' : 'Create new'}
+                {locale === "ar" ? "إنشاء جديد" : "Create new"}
               </h3>
 
               <div className="space-y-6">
                 {/* Cases Section */}
                 <div>
                   <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">
-                    {locale === 'ar' ? 'الحالات' : 'Cases'}
+                    {locale === "ar" ? "الحالات" : "Cases"}
                   </h4>
                   <div className="space-y-1">
                     {createMenuItems.cases.map((item, idx) => {
-                      const Icon = item.icon
+                      const Icon = item.icon;
                       return (
                         <button
                           key={idx}
@@ -199,7 +199,7 @@ export function AuditSidebar() {
                           <Icon className="w-4 h-4 text-gray-400" />
                           {item.label}
                         </button>
-                      )
+                      );
                     })}
                   </div>
                 </div>
@@ -207,11 +207,11 @@ export function AuditSidebar() {
                 {/* Documents Section */}
                 <div>
                   <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2">
-                    {locale === 'ar' ? 'المستندات' : 'Documents'}
+                    {locale === "ar" ? "المستندات" : "Documents"}
                   </h4>
                   <div className="space-y-1">
                     {createMenuItems.documents.map((item, idx) => {
-                      const Icon = item.icon
+                      const Icon = item.icon;
                       return (
                         <button
                           key={idx}
@@ -221,7 +221,7 @@ export function AuditSidebar() {
                           <Icon className="w-4 h-4 text-gray-400" />
                           {item.label}
                         </button>
-                      )
+                      );
                     })}
                   </div>
                 </div>
@@ -231,5 +231,5 @@ export function AuditSidebar() {
         )}
       </AnimatePresence>
     </>
-  )
+  );
 }

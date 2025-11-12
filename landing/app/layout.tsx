@@ -9,7 +9,8 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Safee Analytics - Smart Business Solutions",
-  description: "Integrated business management platform for MENA region. Accounting, HR, Payroll, and CRM - all in one place.",
+  description:
+    "Integrated business management platform for MENA region. Accounting, HR, Payroll, and CRM - all in one place.",
 };
 
 export default function RootLayout({
@@ -19,9 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} font-sans antialiased`}>
-        {children}
-      </body>
+      <body className={`${inter.variable} font-sans antialiased`}>{children}</body>
     </html>
   );
 }

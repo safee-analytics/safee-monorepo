@@ -1,56 +1,56 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Plus, Save, CheckCircle, Edit2, X } from 'lucide-react'
+import { useState } from "react";
+import { Plus, Save, CheckCircle, Edit2, X } from "lucide-react";
 
 interface Objective {
-  id: string
-  title: string
-  description: string
+  id: string;
+  title: string;
+  description: string;
 }
 
 interface TeamMember {
-  id: string
-  name: string
-  role: string
-  avatar: string
-  hoursAllocated: number
+  id: string;
+  name: string;
+  role: string;
+  avatar: string;
+  hoursAllocated: number;
 }
 
 export default function AuditPlanning() {
-  const [clientName, setClientName] = useState('ABC Corporation Ltd.')
-  const [auditType, setAuditType] = useState('financial')
-  const [auditYear, setAuditYear] = useState('2024')
-  const [startDate, setStartDate] = useState('2024-01-15')
-  const [targetCompletion, setTargetCompletion] = useState('2024-03-31')
-  const [materialityThreshold, setMaterialityThreshold] = useState('50000')
-  const [totalBudget, setTotalBudget] = useState('85000')
-  const [totalHours, setTotalHours] = useState('480')
+  const [clientName, setClientName] = useState("ABC Corporation Ltd.");
+  const [auditType, setAuditType] = useState("financial");
+  const [auditYear, setAuditYear] = useState("2024");
+  const [startDate, setStartDate] = useState("2024-01-15");
+  const [targetCompletion, setTargetCompletion] = useState("2024-03-31");
+  const [materialityThreshold, setMaterialityThreshold] = useState("50000");
+  const [totalBudget, setTotalBudget] = useState("85000");
+  const [totalHours, setTotalHours] = useState("480");
 
   const [objectives, setObjectives] = useState<Objective[]>([
     {
-      id: '1',
-      title: 'Financial Statement Accuracy',
-      description: 'Verify the accuracy and completeness of financial statements'
+      id: "1",
+      title: "Financial Statement Accuracy",
+      description: "Verify the accuracy and completeness of financial statements",
     },
     {
-      id: '2',
-      title: 'Internal Controls Assessment',
-      description: 'Evaluate the effectiveness of internal control systems'
+      id: "2",
+      title: "Internal Controls Assessment",
+      description: "Evaluate the effectiveness of internal control systems",
     },
     {
-      id: '3',
-      title: 'Compliance Verification',
-      description: 'Ensure compliance with regulatory requirements'
-    }
-  ])
+      id: "3",
+      title: "Compliance Verification",
+      description: "Ensure compliance with regulatory requirements",
+    },
+  ]);
 
   const [businessUnits, setBusinessUnits] = useState({
     headquarters: true,
     manufacturing: true,
     salesMarketing: false,
-    itDepartment: true
-  })
+    itDepartment: true,
+  });
 
   const [financialAreas, setFinancialAreas] = useState({
     revenue: true,
@@ -58,58 +58,58 @@ export default function AuditPlanning() {
     cashFlow: true,
     expenses: false,
     liabilities: false,
-    equity: false
-  })
+    equity: false,
+  });
 
   const [teamMembers] = useState<TeamMember[]>([
     {
-      id: '1',
-      name: 'Sarah Wilson',
-      role: 'Audit Manager',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah',
-      hoursAllocated: 120
+      id: "1",
+      name: "Sarah Wilson",
+      role: "Audit Manager",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
+      hoursAllocated: 120,
     },
     {
-      id: '2',
-      name: 'Michael Chen',
-      role: 'Senior Auditor',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael',
-      hoursAllocated: 200
+      id: "2",
+      name: "Michael Chen",
+      role: "Senior Auditor",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+      hoursAllocated: 200,
     },
     {
-      id: '3',
-      name: 'Emma Rodriguez',
-      role: 'Junior Auditor',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma',
-      hoursAllocated: 160
-    }
-  ])
+      id: "3",
+      name: "Emma Rodriguez",
+      role: "Junior Auditor",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
+      hoursAllocated: 160,
+    },
+  ]);
 
   const [phaseBreakdown] = useState([
-    { name: 'Planning', hours: 96, color: 'bg-blue-500' },
-    { name: 'Fieldwork', hours: 288, color: 'bg-yellow-500' },
-    { name: 'Reporting', hours: 96, color: 'bg-green-500' }
-  ])
+    { name: "Planning", hours: 96, color: "bg-blue-500" },
+    { name: "Fieldwork", hours: 288, color: "bg-yellow-500" },
+    { name: "Reporting", hours: 96, color: "bg-green-500" },
+  ]);
 
   const keyMetrics = {
-    revenue: '$125M',
+    revenue: "$125M",
     employees: 450,
     locations: 12,
-    riskLevel: 'Medium'
-  }
+    riskLevel: "Medium",
+  };
 
   const addObjective = () => {
     const newObjective: Objective = {
       id: String(objectives.length + 1),
-      title: 'New Objective',
-      description: 'Description here'
-    }
-    setObjectives([...objectives, newObjective])
-  }
+      title: "New Objective",
+      description: "Description here",
+    };
+    setObjectives([...objectives, newObjective]);
+  };
 
   const removeObjective = (id: string) => {
-    setObjectives(objectives.filter(obj => obj.id !== id))
-  }
+    setObjectives(objectives.filter((obj) => obj.id !== id));
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -118,7 +118,9 @@ export default function AuditPlanning() {
         <div className="mb-6 flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Audit Planning</h1>
-            <p className="text-gray-600">Define objectives, scope, and allocate resources for your audit engagement.</p>
+            <p className="text-gray-600">
+              Define objectives, scope, and allocate resources for your audit engagement.
+            </p>
           </div>
           <div className="flex items-center gap-3">
             <button className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
@@ -226,7 +228,10 @@ export default function AuditPlanning() {
 
               <div className="space-y-3">
                 {objectives.map((objective, idx) => (
-                  <div key={objective.id} className="flex items-start gap-3 p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
+                  <div
+                    key={objective.id}
+                    className="flex items-start gap-3 p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors"
+                  >
                     <div className="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center font-semibold text-sm flex-shrink-0">
                       {idx + 1}
                     </div>
@@ -262,7 +267,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={businessUnits.headquarters}
-                        onChange={(e) => setBusinessUnits({ ...businessUnits, headquarters: e.target.checked })}
+                        onChange={(e) =>
+                          setBusinessUnits({ ...businessUnits, headquarters: e.target.checked })
+                        }
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Corporate Headquarters</span>
@@ -271,7 +278,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={businessUnits.manufacturing}
-                        onChange={(e) => setBusinessUnits({ ...businessUnits, manufacturing: e.target.checked })}
+                        onChange={(e) =>
+                          setBusinessUnits({ ...businessUnits, manufacturing: e.target.checked })
+                        }
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Manufacturing Division</span>
@@ -280,7 +289,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={businessUnits.salesMarketing}
-                        onChange={(e) => setBusinessUnits({ ...businessUnits, salesMarketing: e.target.checked })}
+                        onChange={(e) =>
+                          setBusinessUnits({ ...businessUnits, salesMarketing: e.target.checked })
+                        }
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Sales & Marketing</span>
@@ -289,7 +300,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={businessUnits.itDepartment}
-                        onChange={(e) => setBusinessUnits({ ...businessUnits, itDepartment: e.target.checked })}
+                        onChange={(e) =>
+                          setBusinessUnits({ ...businessUnits, itDepartment: e.target.checked })
+                        }
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">IT Department</span>
@@ -340,7 +353,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={financialAreas.liabilities}
-                        onChange={(e) => setFinancialAreas({ ...financialAreas, liabilities: e.target.checked })}
+                        onChange={(e) =>
+                          setFinancialAreas({ ...financialAreas, liabilities: e.target.checked })
+                        }
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Liabilities</span>
@@ -383,12 +398,11 @@ export default function AuditPlanning() {
                   <h3 className="text-sm font-semibold text-gray-900 mb-4">Team Assignment</h3>
                   <div className="space-y-3">
                     {teamMembers.map((member) => (
-                      <div key={member.id} className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg">
-                        <img
-                          src={member.avatar}
-                          alt={member.name}
-                          className="w-10 h-10 rounded-full"
-                        />
+                      <div
+                        key={member.id}
+                        className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg"
+                      >
+                        <img src={member.avatar} alt={member.name} className="w-10 h-10 rounded-full" />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-gray-900">{member.name}</p>
                           <p className="text-xs text-gray-600">{member.role}</p>
@@ -463,7 +477,9 @@ export default function AuditPlanning() {
             {/* Risk Assessment */}
             <div className="bg-white rounded-xl border border-gray-200 p-6">
               <h2 className="text-lg font-semibold text-gray-900 mb-4">Risk Assessment</h2>
-              <p className="text-sm text-gray-600">Risk assessment section will be completed after initial planning.</p>
+              <p className="text-sm text-gray-600">
+                Risk assessment section will be completed after initial planning.
+              </p>
             </div>
           </div>
 
@@ -500,5 +516,5 @@ export default function AuditPlanning() {
         </div>
       </div>
     </div>
-  )
+  );
 }

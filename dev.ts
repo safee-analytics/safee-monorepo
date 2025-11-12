@@ -35,7 +35,17 @@ const apps = [
   {
     name: "@safee/gateway",
     command: "npm run -w gateway dev",
-    env: { ...process.env, LOG_LEVEL: logLevel("safee-backend") },
+    env: { ...process.env, LOG_LEVEL: logLevel("gateway") },
+  },
+  {
+    name: "@safee/frontend",
+    command: "npm run -w frontend dev",
+    env: { ...process.env, LOG_LEVEL: logLevel("frontend") },
+  },
+  {
+    name: "@safee/landing",
+    command: "npm run -w landing dev",
+    env: { ...process.env, LOG_LEVEL: logLevel("landing") },
   },
 ];
 

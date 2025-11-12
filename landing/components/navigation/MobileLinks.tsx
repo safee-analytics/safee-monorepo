@@ -4,13 +4,7 @@ import React from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { LinkType } from "./constants";
 
-export const MobileLinks = ({
-  links,
-  open,
-}: {
-  links: LinkType[];
-  open: boolean;
-}) => {
+export const MobileLinks = ({ links, open }: { links: LinkType[]; open: boolean }) => {
   return (
     <AnimatePresence mode="popLayout">
       {open && (
@@ -31,11 +25,7 @@ export const MobileLinks = ({
               <div key={l.title} className="space-y-1.5">
                 <span className="text-md block font-semibold">{l.title}</span>
                 {l.sublinks.map((sl) => (
-                  <a
-                    className="text-md block text-zinc-600"
-                    href={sl.href}
-                    key={sl.title}
-                  >
+                  <a className="text-md block text-zinc-600" href={sl.href} key={sl.title}>
                     {sl.title}
                   </a>
                 ))}

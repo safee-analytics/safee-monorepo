@@ -21,17 +21,10 @@ interface AllTheProvidersProps {
 export function AllTheProviders({ children }: AllTheProvidersProps) {
   const queryClient = createTestQueryClient();
 
-  return (
-    <QueryClientProvider client={queryClient}>
-      {children}
-    </QueryClientProvider>
-  );
+  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
 }
 
-export function customRender(
-  ui: ReactElement,
-  options?: Omit<RenderOptions, "wrapper">,
-) {
+export function customRender(ui: ReactElement, options?: Omit<RenderOptions, "wrapper">) {
   return render(ui, { wrapper: AllTheProviders, ...options });
 }
 

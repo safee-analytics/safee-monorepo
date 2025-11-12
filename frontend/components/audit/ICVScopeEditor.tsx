@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2,
   Circle,
@@ -14,109 +14,103 @@ import {
   Paperclip,
   MessageSquare,
   FileText,
-  Eye
-} from 'lucide-react'
-import { useTranslation } from '@/lib/providers/TranslationProvider'
-import { ICVSection, ICVProcedure } from '@/types/icv'
-import { CollapsibleChevron } from '@/components/ui/DirectionalChevron'
+  Eye,
+} from "lucide-react";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { ICVSection, ICVProcedure } from "@/types/icv";
+import { CollapsibleChevron } from "@/components/ui/DirectionalChevron";
 
 interface ICVScopeEditorProps {
-  sections: ICVSection[]
-  onSectionsChange: (sections: ICVSection[]) => void
-  readOnly?: boolean
+  sections: ICVSection[];
+  onSectionsChange: (sections: ICVSection[]) => void;
+  readOnly?: boolean;
 }
 
 export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }: ICVScopeEditorProps) {
-  const { t, locale } = useTranslation()
-  const [editingProcedure, setEditingProcedure] = useState<string | null>(null)
-  const [editText, setEditText] = useState('')
+  const { t, locale } = useTranslation();
+  const [editingProcedure, setEditingProcedure] = useState<string | null>(null);
+  const [editText, setEditText] = useState("");
 
   const toggleSection = (sectionId: string) => {
     onSectionsChange(
-      sections.map(section =>
-        section.id === sectionId
-          ? { ...section, isCollapsed: !section.isCollapsed }
-          : section
-      )
-    )
-  }
+      sections.map((section) =>
+        section.id === sectionId ? { ...section, isCollapsed: !section.isCollapsed } : section,
+      ),
+    );
+  };
 
   const toggleProcedureComplete = (sectionId: string, procedureId: string) => {
     onSectionsChange(
-      sections.map(section => {
+      sections.map((section) => {
         if (section.id === sectionId) {
-          const updatedProcedures = section.procedures.map(proc =>
-            proc.id === procedureId
-              ? { ...proc, isCompleted: !proc.isCompleted }
-              : proc
-          )
-          const allComplete = updatedProcedures.every(p => p.isCompleted)
-          return { ...section, procedures: updatedProcedures, isCompleted: allComplete }
+          const updatedProcedures = section.procedures.map((proc) =>
+            proc.id === procedureId ? { ...proc, isCompleted: !proc.isCompleted } : proc,
+          );
+          const allComplete = updatedProcedures.every((p) => p.isCompleted);
+          return { ...section, procedures: updatedProcedures, isCompleted: allComplete };
         }
-        return section
-      })
-    )
-  }
+        return section;
+      }),
+    );
+  };
 
   const addProcedure = (sectionId: string) => {
     const newProcedure: ICVProcedure = {
       id: `proc-${Date.now()}`,
-      step: '',
+      step: "",
       description: t.audit.newProcedure,
       isRequired: false,
       isCompleted: false,
       attachments: [],
       observations: [],
       reviewComments: [],
-      canEdit: true
-    }
+      canEdit: true,
+    };
 
     onSectionsChange(
-      sections.map(section =>
+      sections.map((section) =>
         section.id === sectionId
           ? { ...section, procedures: [...section.procedures, newProcedure] }
-          : section
-      )
-    )
-  }
+          : section,
+      ),
+    );
+  };
 
   const removeProcedure = (sectionId: string, procedureId: string) => {
     onSectionsChange(
-      sections.map(section =>
+      sections.map((section) =>
         section.id === sectionId
-          ? { ...section, procedures: section.procedures.filter(p => p.id !== procedureId) }
-          : section
-      )
-    )
-  }
+          ? { ...section, procedures: section.procedures.filter((p) => p.id !== procedureId) }
+          : section,
+      ),
+    );
+  };
 
   const startEditProcedure = (procedure: ICVProcedure) => {
-    setEditingProcedure(procedure.id)
-    setEditText(procedure.description)
-  }
+    setEditingProcedure(procedure.id);
+    setEditText(procedure.description);
+  };
 
   const saveProcedureEdit = (sectionId: string, procedureId: string) => {
     onSectionsChange(
-      sections.map(section =>
+      sections.map((section) =>
         section.id === sectionId
           ? {
               ...section,
-              procedures: section.procedures.map(proc =>
-                proc.id === procedureId
-                  ? { ...proc, description: editText }
-                  : proc
-              )
+              procedures: section.procedures.map((proc) =>
+                proc.id === procedureId ? { ...proc, description: editText } : proc,
+              ),
             }
-          : section
-      )
-    )
-    setEditingProcedure(null)
-  }
+          : section,
+      ),
+    );
+    setEditingProcedure(null);
+  };
 
   const cancelEdit = () => {
-    setEditingProcedure(null)
-    setEditText('')
-  }
+    setEditingProcedure(null);
+    setEditText("");
+  };
 
   return (
     <div className="space-y-3">
@@ -141,7 +135,7 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
               )}
               <h3 className="font-semibold text-gray-900">{section.name}</h3>
               <span className="text-xs text-gray-500">
-                ({section.procedures.filter(p => p.isCompleted).length}/{section.procedures.length})
+                ({section.procedures.filter((p) => p.isCompleted).length}/{section.procedures.length})
               </span>
             </div>
             <CollapsibleChevron isExpanded={!section.isCollapsed} className="w-5 h-5 text-gray-500" />
@@ -152,7 +146,7 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
             {!section.isCollapsed && (
               <motion.div
                 initial={{ height: 0, opacity: 0 }}
-                animate={{ height: 'auto', opacity: 1 }}
+                animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{ duration: 0.2 }}
                 className="border-t border-gray-200"
@@ -162,11 +156,21 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
                     <table className="w-full">
                       <thead className="bg-gray-50">
                         <tr>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">{t.audit.step}</th>
-                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">{t.audit.procedure}</th>
-                          <th className="px-4 py-3 text-center text-xs font-medium text-gray-600 uppercase">{t.audit.resultReport}</th>
-                          <th className="px-4 py-3 text-center text-xs font-medium text-gray-600 uppercase">{t.audit.status}</th>
-                          <th className="px-4 py-3 text-center text-xs font-medium text-gray-600 uppercase">{t.audit.actions}</th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">
+                            {t.audit.step}
+                          </th>
+                          <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">
+                            {t.audit.procedure}
+                          </th>
+                          <th className="px-4 py-3 text-center text-xs font-medium text-gray-600 uppercase">
+                            {t.audit.resultReport}
+                          </th>
+                          <th className="px-4 py-3 text-center text-xs font-medium text-gray-600 uppercase">
+                            {t.audit.status}
+                          </th>
+                          <th className="px-4 py-3 text-center text-xs font-medium text-gray-600 uppercase">
+                            {t.audit.actions}
+                          </th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-gray-200">
@@ -217,9 +221,13 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
                               </div>
                             </td>
                             <td className="px-4 py-3 text-center">
-                              <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${
-                                procedure.isCompleted ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'
-                              }`}>
+                              <span
+                                className={`inline-block px-2 py-1 rounded text-xs font-medium ${
+                                  procedure.isCompleted
+                                    ? "bg-green-100 text-green-800"
+                                    : "bg-gray-100 text-gray-600"
+                                }`}
+                              >
                                 {procedure.isCompleted ? t.audit.completed : t.audit.pending}
                               </span>
                             </td>
@@ -247,8 +255,8 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
                                       onClick={() => toggleProcedureComplete(section.id, procedure.id)}
                                       className={`px-3 py-1 text-xs rounded transition-colors ${
                                         procedure.isCompleted
-                                          ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                                          : 'bg-green-100 text-green-800 hover:bg-green-200'
+                                          ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
+                                          : "bg-green-100 text-green-800 hover:bg-green-200"
                                       }`}
                                     >
                                       {procedure.isCompleted ? t.audit.revokeReview : t.audit.complete}
@@ -294,5 +302,5 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
         </motion.div>
       ))}
     </div>
-  )
+  );
 }

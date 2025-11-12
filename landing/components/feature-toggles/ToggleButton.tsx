@@ -12,11 +12,7 @@ export const ToggleButton = ({
   id: number;
 }) => {
   return (
-    <div
-      className={`rounded-lg transition-colors ${
-        selected === id ? "bg-indigo-600" : "bg-zinc-900"
-      }`}
-    >
+    <div className={`rounded-lg transition-colors ${selected === id ? "bg-indigo-600" : "bg-zinc-900"}`}>
       <button
         onClick={() => setSelected(id)}
         className={`w-full origin-top-left rounded-lg border py-3 text-xs font-medium transition-all md:text-base ${

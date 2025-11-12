@@ -1,13 +1,11 @@
-'use client'
+"use client";
 
 import { AnimatePresence, motion } from "framer-motion";
 import { FiAlertCircle, FiX } from "react-icons/fi";
 import { useEffect, useState } from "react";
 
 const StackedNotifications = () => {
-  const [notification, setNotification] = useState<NotificationType | null>(
-    null
-  );
+  const [notification, setNotification] = useState<NotificationType | null>(null);
 
   const removeNotif = () => {
     setNotification(null);
@@ -15,13 +13,7 @@ const StackedNotifications = () => {
 
   return (
     <AnimatePresence>
-      {notification && (
-        <Notification
-          removeNotif={removeNotif}
-          key={notification.id}
-          {...notification}
-        />
-      )}
+      {notification && <Notification removeNotif={removeNotif} key={notification.id} {...notification} />}
     </AnimatePresence>
   );
 };
@@ -35,10 +27,7 @@ type NotificationType = {
   text: string;
 };
 
-const Notification = ({
-  text,
-  removeNotif,
-}: Omit<NotificationType, 'id'> & { removeNotif: () => void }) => {
+const Notification = ({ text, removeNotif }: Omit<NotificationType, "id"> & { removeNotif: () => void }) => {
   useEffect(() => {
     const timeoutRef = setTimeout(() => {
       removeNotif();

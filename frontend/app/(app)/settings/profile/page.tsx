@@ -1,71 +1,67 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { motion } from 'framer-motion'
-import { User, Mail, Phone, MapPin, Building, Calendar, Save, Upload, Camera } from 'lucide-react'
-import { useTranslation } from '@/lib/providers/TranslationProvider'
-import { useProfile } from '@/lib/auth/useProfile'
-import { useAuth } from '@/lib/auth/hooks'
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import { User, Mail, Phone, MapPin, Building, Calendar, Save, Upload, Camera } from "lucide-react";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useProfile } from "@/lib/auth/useProfile";
+import { useAuth } from "@/lib/auth/hooks";
 
 export default function ProfileSettings() {
-  const { t } = useTranslation()
-  const { user } = useAuth()
-  const { fetchProfile, updateProfile, isLoading: isProfileLoading } = useProfile()
-  const [isSaving, setIsSaving] = useState(false)
+  const { t } = useTranslation();
+  const { user } = useAuth();
+  const { fetchProfile, updateProfile, isLoading: isProfileLoading } = useProfile();
+  const [isSaving, setIsSaving] = useState(false);
   const [profile, setProfile] = useState({
-    name: '',
-    email: '',
-    phone: '+971 50 123 4567',
-    jobTitle: 'Senior Auditor',
-    department: 'Audit',
-    company: 'Safee Analytics',
-    location: 'Dubai, UAE',
-    timezone: 'Asia/Dubai',
-    dateFormat: 'DD/MM/YYYY',
-    bio: 'Senior auditor with 10+ years of experience in financial auditing and compliance.',
-  })
+    name: "",
+    email: "",
+    phone: "+971 50 123 4567",
+    jobTitle: "Senior Auditor",
+    department: "Audit",
+    company: "Safee Analytics",
+    location: "Dubai, UAE",
+    timezone: "Asia/Dubai",
+    dateFormat: "DD/MM/YYYY",
+    bio: "Senior auditor with 10+ years of experience in financial auditing and compliance.",
+  });
 
   // Load profile data on mount
   useEffect(() => {
     const loadProfile = async () => {
-      const data = await fetchProfile()
+      const data = await fetchProfile();
       if (data) {
-        setProfile(prev => ({
+        setProfile((prev) => ({
           ...prev,
-          name: data.name || '',
-          email: data.email || '',
-        }))
+          name: data.name || "",
+          email: data.email || "",
+        }));
       } else if (user) {
         // Fallback to Better Auth session data
-        setProfile(prev => ({
+        setProfile((prev) => ({
           ...prev,
-          name: user.name || '',
-          email: user.email || '',
-        }))
+          name: user.name || "",
+          email: user.email || "",
+        }));
       }
-    }
-    loadProfile()
-  }, [fetchProfile, user])
+    };
+    loadProfile();
+  }, [fetchProfile, user]);
 
   const handleSave = async () => {
-    setIsSaving(true)
-    const result = await updateProfile({ name: profile.name })
-    setIsSaving(false)
+    setIsSaving(true);
+    const result = await updateProfile({ name: profile.name });
+    setIsSaving(false);
 
     if (result.success) {
-      alert('Profile updated successfully')
+      alert("Profile updated successfully");
     } else {
-      alert(`Failed to update profile: ${result.error}`)
+      alert(`Failed to update profile: ${result.error}`);
     }
-  }
+  };
 
   return (
     <div className="p-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="max-w-4xl"
-      >
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl">
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Profile Settings</h1>
@@ -78,7 +74,7 @@ export default function ProfileSettings() {
           <div className="flex items-center gap-6">
             <div className="relative">
               <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-3xl font-bold">
-                {profile.name ? profile.name.charAt(0).toUpperCase() : 'U'}
+                {profile.name ? profile.name.charAt(0).toUpperCase() : "U"}
               </div>
               <button className="absolute bottom-0 right-0 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white hover:bg-blue-700 transition-colors shadow-lg">
                 <Camera className="w-4 h-4" />
@@ -139,9 +135,7 @@ export default function ProfileSettings() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Job Title
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Job Title</label>
               <input
                 type="text"
                 value={profile.jobTitle}
@@ -150,9 +144,7 @@ export default function ProfileSettings() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Department
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Department</label>
               <input
                 type="text"
                 value={profile.department}
@@ -185,9 +177,7 @@ export default function ProfileSettings() {
               />
             </div>
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Bio
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Bio</label>
               <textarea
                 value={profile.bio}
                 onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
@@ -203,9 +193,7 @@ export default function ProfileSettings() {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Regional Settings</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Timezone
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Timezone</label>
               <select
                 value={profile.timezone}
                 onChange={(e) => setProfile({ ...profile, timezone: e.target.value })}
@@ -243,10 +231,10 @@ export default function ProfileSettings() {
             className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
-            {isSaving ? 'Saving...' : 'Save Changes'}
+            {isSaving ? "Saving..." : "Save Changes"}
           </button>
         </div>
       </motion.div>
     </div>
-  )
+  );
 }

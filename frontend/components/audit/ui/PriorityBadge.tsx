@@ -1,38 +1,40 @@
-import { cn } from '@/lib/utils'
-import { CasePriority } from '@/types/audit'
+import { cn } from "@/lib/utils";
+import { CasePriority } from "@/types/audit";
 
 interface PriorityBadgeProps {
-  priority: CasePriority
+  priority: CasePriority;
 }
 
 const priorityConfig = {
   high: {
-    bg: 'bg-red-100',
-    text: 'text-red-700',
-    label: 'High'
+    bg: "bg-red-100",
+    text: "text-red-700",
+    label: "High",
   },
   medium: {
-    bg: 'bg-yellow-100',
-    text: 'text-yellow-700',
-    label: 'Medium'
+    bg: "bg-yellow-100",
+    text: "text-yellow-700",
+    label: "Medium",
   },
   low: {
-    bg: 'bg-green-100',
-    text: 'text-green-700',
-    label: 'Low'
-  }
-}
+    bg: "bg-green-100",
+    text: "text-green-700",
+    label: "Low",
+  },
+};
 
 export function PriorityBadge({ priority }: PriorityBadgeProps) {
-  const config = priorityConfig[priority]
+  const config = priorityConfig[priority];
 
   return (
-    <span className={cn(
-      "inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium",
-      config.bg,
-      config.text
-    )}>
+    <span
+      className={cn(
+        "inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium",
+        config.bg,
+        config.text,
+      )}
+    >
       {config.label}
     </span>
-  )
+  );
 }

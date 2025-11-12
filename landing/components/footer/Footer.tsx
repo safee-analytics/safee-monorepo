@@ -71,9 +71,7 @@ const LogoColumn = () => {
   return (
     <div className="col-span-6 md:col-span-4">
       <LogoSmall />
-      <span className="mt-3 inline-block text-xs">
-        © Safee Analytics - All rights reserved.
-      </span>
+      <span className="mt-3 inline-block text-xs">© Safee Analytics - All rights reserved.</span>
     </div>
   );
 };

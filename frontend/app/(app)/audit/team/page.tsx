@@ -1,150 +1,151 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Search, Users, UserCheck, Clock, Shield } from 'lucide-react'
-import { StatusBadge } from '@/components/audit/ui/StatusBadge'
+import { useState } from "react";
+import { Search, Users, UserCheck, Clock, Shield } from "lucide-react";
+import { StatusBadge } from "@/components/audit/ui/StatusBadge";
 
 interface TeamMember {
-  id: string
-  name: string
-  email: string
-  role: string
-  department: string
-  status: 'active' | 'away'
-  lastActive: string
-  avatar: string
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  department: string;
+  status: "active" | "away";
+  lastActive: string;
+  avatar: string;
 }
 
 interface Role {
-  name: string
-  userCount: number
-  description: string
-  permissions: string[]
-  color: string
+  name: string;
+  userCount: number;
+  description: string;
+  permissions: string[];
+  color: string;
 }
 
 export default function TeamManagement() {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [roleFilter, setRoleFilter] = useState('all')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [searchQuery, setSearchQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
   const stats = {
     totalUsers: 48,
-    totalUsersChange: '+8% from last month',
+    totalUsersChange: "+8% from last month",
     activeUsers: 42,
-    activityRate: '87% activity rate',
+    activityRate: "87% activity rate",
     pendingInvites: 6,
-    pendingNote: 'Expire soon',
+    pendingNote: "Expire soon",
     adminRoles: 8,
-    adminNote: 'Different roles'
-  }
+    adminNote: "Different roles",
+  };
 
   const teamMembers: TeamMember[] = [
     {
-      id: '1',
-      name: 'Sarah Wilson',
-      email: 'sarah.wilson@company.com',
-      role: 'Senior Auditor',
-      department: 'Financial Audit',
-      status: 'active',
-      lastActive: '2 hours ago',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah'
+      id: "1",
+      name: "Sarah Wilson",
+      email: "sarah.wilson@company.com",
+      role: "Senior Auditor",
+      department: "Financial Audit",
+      status: "active",
+      lastActive: "2 hours ago",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
     },
     {
-      id: '2',
-      name: 'Michael Chen',
-      email: 'michael.chen@company.com',
-      role: 'Audit Manager',
-      department: 'Operations',
-      status: 'active',
-      lastActive: '5 hours ago',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Michael'
+      id: "2",
+      name: "Michael Chen",
+      email: "michael.chen@company.com",
+      role: "Audit Manager",
+      department: "Operations",
+      status: "active",
+      lastActive: "5 hours ago",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
     },
     {
-      id: '3',
-      name: 'Emma Rodriguez',
-      email: 'emma.rodriguez@company.com',
-      role: 'Junior Auditor',
-      department: 'Compliance',
-      status: 'active',
-      lastActive: '1 day ago',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Emma'
+      id: "3",
+      name: "Emma Rodriguez",
+      email: "emma.rodriguez@company.com",
+      role: "Junior Auditor",
+      department: "Compliance",
+      status: "active",
+      lastActive: "1 day ago",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
     },
     {
-      id: '4',
-      name: 'David Kim',
-      email: 'david.kim@company.com',
-      role: 'Senior Auditor',
-      department: 'Risk Assessment',
-      status: 'away',
-      lastActive: '3 days ago',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=David'
+      id: "4",
+      name: "David Kim",
+      email: "david.kim@company.com",
+      role: "Senior Auditor",
+      department: "Risk Assessment",
+      status: "away",
+      lastActive: "3 days ago",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
     },
     {
-      id: '5',
-      name: 'Lisa Thompson',
-      email: 'lisa.thompson@company.com',
-      role: 'System Admin',
-      department: 'IT Security',
-      status: 'active',
-      lastActive: '30 minutes ago',
-      avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa'
-    }
-  ]
+      id: "5",
+      name: "Lisa Thompson",
+      email: "lisa.thompson@company.com",
+      role: "System Admin",
+      department: "IT Security",
+      status: "active",
+      lastActive: "30 minutes ago",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa",
+    },
+  ];
 
   const roles: Role[] = [
     {
-      name: 'System Admin',
+      name: "System Admin",
       userCount: 3,
-      description: 'Full system access and user management',
-      permissions: ['All Permissions'],
-      color: 'text-red-600'
+      description: "Full system access and user management",
+      permissions: ["All Permissions"],
+      color: "text-red-600",
     },
     {
-      name: 'Audit Manager',
+      name: "Audit Manager",
       userCount: 8,
-      description: 'Manage audit processes and teams',
-      permissions: ['Create Audits', 'Assign Tasks', 'View Reports'],
-      color: 'text-blue-600'
+      description: "Manage audit processes and teams",
+      permissions: ["Create Audits", "Assign Tasks", "View Reports"],
+      color: "text-blue-600",
     },
     {
-      name: 'Senior Auditor',
+      name: "Senior Auditor",
       userCount: 15,
-      description: 'Lead audit activities and review work',
-      permissions: ['Execute Audits', 'Review Work', 'Generate Reports'],
-      color: 'text-purple-600'
+      description: "Lead audit activities and review work",
+      permissions: ["Execute Audits", "Review Work", "Generate Reports"],
+      color: "text-purple-600",
     },
     {
-      name: 'Junior Auditor',
+      name: "Junior Auditor",
       userCount: 22,
-      description: 'Perform audit tasks and data entry',
-      permissions: ['Data Entry', 'Basic Testing', 'Documentation'],
-      color: 'text-green-600'
-    }
-  ]
+      description: "Perform audit tasks and data entry",
+      permissions: ["Data Entry", "Basic Testing", "Documentation"],
+      color: "text-green-600",
+    },
+  ];
 
   const getRoleBadgeColor = (role: string) => {
     const colors: { [key: string]: string } = {
-      'System Admin': 'bg-red-100 text-red-700',
-      'Audit Manager': 'bg-blue-100 text-blue-700',
-      'Senior Auditor': 'bg-purple-100 text-purple-700',
-      'Junior Auditor': 'bg-green-100 text-green-700'
-    }
-    return colors[role] || 'bg-gray-100 text-gray-700'
-  }
+      "System Admin": "bg-red-100 text-red-700",
+      "Audit Manager": "bg-blue-100 text-blue-700",
+      "Senior Auditor": "bg-purple-100 text-purple-700",
+      "Junior Auditor": "bg-green-100 text-green-700",
+    };
+    return colors[role] || "bg-gray-100 text-gray-700";
+  };
 
   // Filter team members based on search query and filters
   const filteredTeamMembers = teamMembers.filter((member) => {
-    const matchesSearch = searchQuery === '' ||
+    const matchesSearch =
+      searchQuery === "" ||
       member.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       member.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      member.department.toLowerCase().includes(searchQuery.toLowerCase())
+      member.department.toLowerCase().includes(searchQuery.toLowerCase());
 
-    const matchesRole = roleFilter === 'all' || member.role.toLowerCase().includes(roleFilter)
-    const matchesStatus = statusFilter === 'all' || member.status === statusFilter
+    const matchesRole = roleFilter === "all" || member.role.toLowerCase().includes(roleFilter);
+    const matchesStatus = statusFilter === "all" || member.status === statusFilter;
 
-    return matchesSearch && matchesRole && matchesStatus
-  })
+    return matchesSearch && matchesRole && matchesStatus;
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -153,7 +154,9 @@ export default function TeamManagement() {
         <div className="mb-6 flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">User & Role Management</h1>
-            <p className="text-gray-600">Manage team members, permissions, and role assignments for audit cases.</p>
+            <p className="text-gray-600">
+              Manage team members, permissions, and role assignments for audit cases.
+            </p>
           </div>
           <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
             <Users className="w-4 h-4" />
@@ -284,11 +287,7 @@ export default function TeamManagement() {
                       <tr key={member.id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <img
-                              src={member.avatar}
-                              alt={member.name}
-                              className="w-10 h-10 rounded-full"
-                            />
+                            <img src={member.avatar} alt={member.name} className="w-10 h-10 rounded-full" />
                             <div>
                               <p className="text-sm font-medium text-gray-900">{member.name}</p>
                               <p className="text-xs text-gray-600">{member.email}</p>
@@ -296,7 +295,9 @@ export default function TeamManagement() {
                           </div>
                         </td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium ${getRoleBadgeColor(member.role)}`}>
+                          <span
+                            className={`inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium ${getRoleBadgeColor(member.role)}`}
+                          >
                             {member.role}
                           </span>
                         </td>
@@ -322,11 +323,13 @@ export default function TeamManagement() {
                     Previous
                   </button>
                   <button className="w-8 h-8 rounded bg-blue-600 text-white text-sm font-medium">1</button>
-                  <button className="w-8 h-8 rounded hover:bg-gray-100 text-sm font-medium text-gray-600">2</button>
-                  <button className="w-8 h-8 rounded hover:bg-gray-100 text-sm font-medium text-gray-600">3</button>
-                  <button className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900">
-                    Next
+                  <button className="w-8 h-8 rounded hover:bg-gray-100 text-sm font-medium text-gray-600">
+                    2
                   </button>
+                  <button className="w-8 h-8 rounded hover:bg-gray-100 text-sm font-medium text-gray-600">
+                    3
+                  </button>
+                  <button className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900">Next</button>
                 </div>
               </div>
             </div>
@@ -339,15 +342,23 @@ export default function TeamManagement() {
 
               <div className="space-y-4">
                 {roles.map((role, idx) => (
-                  <div key={idx} className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+                  <div
+                    key={idx}
+                    className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors"
+                  >
                     <div className="flex items-start justify-between mb-2">
                       <h3 className="text-sm font-semibold text-gray-900">{role.name}</h3>
-                      <span className={`text-xs px-2 py-0.5 rounded-full ${
-                        role.name === 'System Admin' ? 'bg-red-100 text-red-700' :
-                        role.name === 'Audit Manager' ? 'bg-blue-100 text-blue-700' :
-                        role.name === 'Senior Auditor' ? 'bg-purple-100 text-purple-700' :
-                        'bg-green-100 text-green-700'
-                      }`}>
+                      <span
+                        className={`text-xs px-2 py-0.5 rounded-full ${
+                          role.name === "System Admin"
+                            ? "bg-red-100 text-red-700"
+                            : role.name === "Audit Manager"
+                              ? "bg-blue-100 text-blue-700"
+                              : role.name === "Senior Auditor"
+                                ? "bg-purple-100 text-purple-700"
+                                : "bg-green-100 text-green-700"
+                        }`}
+                      >
                         {role.userCount} users
                       </span>
                     </div>
@@ -376,5 +387,5 @@ export default function TeamManagement() {
         </div>
       </div>
     </div>
-  )
+  );
 }

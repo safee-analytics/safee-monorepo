@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SettingsPage() {
-  const router = useRouter()
+  const router = useRouter();
 
   useEffect(() => {
     // Redirect to profile settings by default
-    router.push('/settings/profile')
-  }, [router])
+    router.push("/settings/profile");
+  }, [router]);
 
-  return null
+  return null;
 }

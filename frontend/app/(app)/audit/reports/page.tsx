@@ -1,77 +1,75 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { Filter, FileDown, TrendingUp, DollarSign, AlertTriangle, CheckCircle2 } from 'lucide-react'
+import { useState } from "react";
+import { Filter, FileDown, TrendingUp, DollarSign, AlertTriangle, CheckCircle2 } from "lucide-react";
 
 export default function AuditReports() {
-  const [reportType, setReportType] = useState('financial')
-  const [timePeriod, setTimePeriod] = useState('last-30')
-  const [client, setClient] = useState('all')
-  const [status, setStatus] = useState('all')
-  const [autoRefresh, setAutoRefresh] = useState(true)
-  const [trendView, setTrendView] = useState('monthly')
+  const [reportType, setReportType] = useState("financial");
+  const [timePeriod, setTimePeriod] = useState("last-30");
+  const [client, setClient] = useState("all");
+  const [status, setStatus] = useState("all");
+  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [trendView, setTrendView] = useState("monthly");
 
   const auditTrendsData = {
     monthly: [
-      { month: 'Jan', completed: 12, findings: 8 },
-      { month: 'Feb', completed: 15, findings: 10 },
-      { month: 'Mar', completed: 18, findings: 12 },
-      { month: 'Apr', completed: 22, findings: 15 },
-      { month: 'May', completed: 20, findings: 13 },
-      { month: 'Jun', completed: 25, findings: 17 },
-      { month: 'Jul', completed: 24, findings: 16 },
-      { month: 'Aug', completed: 28, findings: 19 },
-      { month: 'Sep', completed: 26, findings: 18 },
-      { month: 'Oct', completed: 23, findings: 15 },
-      { month: 'Nov', completed: 27, findings: 19 },
-      { month: 'Dec', completed: 30, findings: 20 }
-    ]
-  }
+      { month: "Jan", completed: 12, findings: 8 },
+      { month: "Feb", completed: 15, findings: 10 },
+      { month: "Mar", completed: 18, findings: 12 },
+      { month: "Apr", completed: 22, findings: 15 },
+      { month: "May", completed: 20, findings: 13 },
+      { month: "Jun", completed: 25, findings: 17 },
+      { month: "Jul", completed: 24, findings: 16 },
+      { month: "Aug", completed: 28, findings: 19 },
+      { month: "Sep", completed: 26, findings: 18 },
+      { month: "Oct", completed: 23, findings: 15 },
+      { month: "Nov", completed: 27, findings: 19 },
+      { month: "Dec", completed: 30, findings: 20 },
+    ],
+  };
 
   const complianceScores = [
-    { framework: 'SOX', score: 92 },
-    { framework: 'GAAP', score: 88 },
-    { framework: 'IFRS', score: 90 },
-    { framework: 'PCAOB', score: 85 },
-    { framework: 'SEC', score: 87 }
-  ]
+    { framework: "SOX", score: 92 },
+    { framework: "GAAP", score: 88 },
+    { framework: "IFRS", score: 90 },
+    { framework: "PCAOB", score: 85 },
+    { framework: "SEC", score: 87 },
+  ];
 
   const generatedReports = [
     {
-      id: '1',
-      name: 'Financial Audit - ABC Corp',
-      generated: 'Dec 12, 2024',
+      id: "1",
+      name: "Financial Audit - ABC Corp",
+      generated: "Dec 12, 2024",
       pages: 24,
-      size: '2.4 MB',
-      status: 'Completed',
-      icon: '📄',
-      color: 'bg-blue-100'
+      size: "2.4 MB",
+      status: "Completed",
+      icon: "📄",
+      color: "bg-blue-100",
     },
     {
-      id: '2',
-      name: 'Risk Assessment - XYZ Ltd',
-      generated: 'Dec 10, 2024',
+      id: "2",
+      name: "Risk Assessment - XYZ Ltd",
+      generated: "Dec 10, 2024",
       pages: 18,
-      size: '1.8 MB',
-      status: 'In Review',
-      icon: '📊',
-      color: 'bg-yellow-100'
+      size: "1.8 MB",
+      status: "In Review",
+      icon: "📊",
+      color: "bg-yellow-100",
     },
     {
-      id: '3',
-      name: 'Compliance Report - MFG Co',
-      generated: 'Dec 8, 2024',
+      id: "3",
+      name: "Compliance Report - MFG Co",
+      generated: "Dec 8, 2024",
       pages: 32,
-      size: '3.2 MB',
-      status: 'Completed',
-      icon: '📋',
-      color: 'bg-green-100'
-    }
-  ]
+      size: "3.2 MB",
+      status: "Completed",
+      icon: "📋",
+      color: "bg-green-100",
+    },
+  ];
 
-  const maxTrendValue = Math.max(
-    ...auditTrendsData.monthly.map(d => Math.max(d.completed, d.findings))
-  )
+  const maxTrendValue = Math.max(...auditTrendsData.monthly.map((d) => Math.max(d.completed, d.findings)));
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -106,12 +104,12 @@ export default function AuditReports() {
               <button
                 onClick={() => setAutoRefresh(!autoRefresh)}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  autoRefresh ? 'bg-blue-600' : 'bg-gray-300'
+                  autoRefresh ? "bg-blue-600" : "bg-gray-300"
                 }`}
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    autoRefresh ? 'translate-x-6' : 'translate-x-1'
+                    autoRefresh ? "translate-x-6" : "translate-x-1"
                   }`}
                 />
               </button>
@@ -188,14 +186,7 @@ export default function AuditReports() {
             {/* Gauge Chart */}
             <div className="relative w-48 h-48 mx-auto mb-4">
               <svg className="w-full h-full transform -rotate-90">
-                <circle
-                  cx="96"
-                  cy="96"
-                  r="80"
-                  stroke="#e5e7eb"
-                  strokeWidth="16"
-                  fill="none"
-                />
+                <circle cx="96" cy="96" r="80" stroke="#e5e7eb" strokeWidth="16" fill="none" />
                 <circle
                   cx="96"
                   cy="96"
@@ -229,7 +220,7 @@ export default function AuditReports() {
                   <span className="text-sm font-bold text-red-600">12%</span>
                 </div>
                 <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-500" style={{ width: '12%' }} />
+                  <div className="h-full bg-red-500" style={{ width: "12%" }} />
                 </div>
               </div>
 
@@ -239,7 +230,7 @@ export default function AuditReports() {
                   <span className="text-sm font-bold text-yellow-600">35%</span>
                 </div>
                 <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-yellow-500" style={{ width: '35%' }} />
+                  <div className="h-full bg-yellow-500" style={{ width: "35%" }} />
                 </div>
               </div>
 
@@ -249,7 +240,7 @@ export default function AuditReports() {
                   <span className="text-sm font-bold text-green-600">53%</span>
                 </div>
                 <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500" style={{ width: '53%' }} />
+                  <div className="h-full bg-green-500" style={{ width: "53%" }} />
                 </div>
               </div>
 
@@ -323,25 +314,25 @@ export default function AuditReports() {
               <h2 className="text-lg font-semibold text-gray-900">Audit Trends</h2>
               <div className="flex items-center gap-2 bg-blue-100 rounded-lg p-1">
                 <button
-                  onClick={() => setTrendView('monthly')}
+                  onClick={() => setTrendView("monthly")}
                   className={`px-3 py-1 rounded text-sm font-medium ${
-                    trendView === 'monthly' ? 'bg-blue-600 text-white' : 'text-gray-700'
+                    trendView === "monthly" ? "bg-blue-600 text-white" : "text-gray-700"
                   }`}
                 >
                   Monthly
                 </button>
                 <button
-                  onClick={() => setTrendView('quarterly')}
+                  onClick={() => setTrendView("quarterly")}
                   className={`px-3 py-1 rounded text-sm font-medium ${
-                    trendView === 'quarterly' ? 'bg-blue-600 text-white' : 'text-gray-700'
+                    trendView === "quarterly" ? "bg-blue-600 text-white" : "text-gray-700"
                   }`}
                 >
                   Quarterly
                 </button>
                 <button
-                  onClick={() => setTrendView('yearly')}
+                  onClick={() => setTrendView("yearly")}
                   className={`px-3 py-1 rounded text-sm font-medium ${
-                    trendView === 'yearly' ? 'bg-blue-600 text-white' : 'text-gray-700'
+                    trendView === "yearly" ? "bg-blue-600 text-white" : "text-gray-700"
                   }`}
                 >
                   Yearly
@@ -369,11 +360,11 @@ export default function AuditReports() {
                 <polyline
                   points={auditTrendsData.monthly
                     .map((d, i) => {
-                      const x = 60 + (i * 700) / 12
-                      const y = 232 - (d.completed / maxTrendValue) * 180
-                      return `${x},${y}`
+                      const x = 60 + (i * 700) / 12;
+                      const y = 232 - (d.completed / maxTrendValue) * 180;
+                      return `${x},${y}`;
                     })
-                    .join(' ')}
+                    .join(" ")}
                   fill="none"
                   stroke="#10b981"
                   strokeWidth="2"
@@ -384,11 +375,11 @@ export default function AuditReports() {
                 <polyline
                   points={auditTrendsData.monthly
                     .map((d, i) => {
-                      const x = 60 + (i * 700) / 12
-                      const y = 232 - (d.findings / maxTrendValue) * 180
-                      return `${x},${y}`
+                      const x = 60 + (i * 700) / 12;
+                      const y = 232 - (d.findings / maxTrendValue) * 180;
+                      return `${x},${y}`;
                     })
-                    .join(' ')}
+                    .join(" ")}
                   fill="none"
                   stroke="#f97316"
                   strokeWidth="2"
@@ -431,7 +422,7 @@ export default function AuditReports() {
             <div className="h-64 flex items-end justify-between gap-4">
               {complianceScores.map((item, idx) => (
                 <div key={idx} className="flex-1 flex flex-col items-center">
-                  <div className="relative w-full" style={{ height: '180px' }}>
+                  <div className="relative w-full" style={{ height: "180px" }}>
                     <div className="absolute bottom-0 w-full flex flex-col items-center">
                       <span className="text-sm font-bold text-gray-900 mb-2">{item.score}</span>
                       <div
@@ -467,9 +458,14 @@ export default function AuditReports() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {generatedReports.map((report) => (
-              <div key={report.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow">
+              <div
+                key={report.id}
+                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
+              >
                 <div className="flex items-start gap-3 mb-3">
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${report.color}`}>
+                  <div
+                    className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${report.color}`}
+                  >
                     {report.icon}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -484,9 +480,13 @@ export default function AuditReports() {
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className={`text-xs px-2 py-1 rounded ${
-                    report.status === 'Completed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
-                  }`}>
+                  <span
+                    className={`text-xs px-2 py-1 rounded ${
+                      report.status === "Completed"
+                        ? "bg-green-100 text-green-700"
+                        : "bg-yellow-100 text-yellow-700"
+                    }`}
+                  >
                     {report.status}
                   </span>
                   <div className="flex items-center gap-2">
@@ -504,5 +504,5 @@ export default function AuditReports() {
         </div>
       </div>
     </div>
-  )
+  );
 }

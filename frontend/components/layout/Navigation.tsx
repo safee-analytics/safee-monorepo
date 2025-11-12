@@ -1,64 +1,75 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { useOrgStore } from '@/stores/useOrgStore'
-import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher'
-import { FiUser, FiLogOut, FiMenu, FiX, FiSearch, FiCalendar, FiBell, FiSettings, FiHelpCircle, FiChevronDown } from 'react-icons/fi'
-import { useState, useRef, useEffect } from 'react'
-import { getAllModules } from '@/lib/config/modules'
-import { useTranslation } from '@/lib/providers/TranslationProvider'
-import { useAuth } from '@/lib/auth/hooks'
-import { CommandPalette } from '@/components/search/CommandPalette'
-import { SearchBar } from '@/components/search/SearchBar'
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useOrgStore } from "@/stores/useOrgStore";
+import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import {
+  FiUser,
+  FiLogOut,
+  FiMenu,
+  FiX,
+  FiSearch,
+  FiCalendar,
+  FiBell,
+  FiSettings,
+  FiHelpCircle,
+  FiChevronDown,
+} from "react-icons/fi";
+import { useState, useRef, useEffect } from "react";
+import { getAllModules } from "@/lib/config/modules";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useAuth } from "@/lib/auth/hooks";
+import { CommandPalette } from "@/components/search/CommandPalette";
+import { SearchBar } from "@/components/search/SearchBar";
 
 export function Navigation() {
-  const pathname = usePathname()
-  const { currentUser, currentOrg, locale, setModule, clearSession } = useOrgStore()
-  const { t } = useTranslation()
-  const { signOut, user } = useAuth()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [userMenuOpen, setUserMenuOpen] = useState(false)
-  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false)
-  const userMenuRef = useRef<HTMLDivElement>(null)
+  const pathname = usePathname();
+  const { currentUser, currentOrg, locale, setModule, clearSession } = useOrgStore();
+  const { t } = useTranslation();
+  const { signOut, user } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Close user menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
-        setUserMenuOpen(false)
+        setUserMenuOpen(false);
       }
     }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   // Close menus with ESC key
   useEffect(() => {
     function handleEscKey(event: KeyboardEvent) {
-      if (event.key === 'Escape') {
-        setUserMenuOpen(false)
-        setMobileMenuOpen(false)
+      if (event.key === "Escape") {
+        setUserMenuOpen(false);
+        setMobileMenuOpen(false);
       }
     }
-    document.addEventListener('keydown', handleEscKey)
-    return () => document.removeEventListener('keydown', handleEscKey)
-  }, [])
+    document.addEventListener("keydown", handleEscKey);
+    return () => document.removeEventListener("keydown", handleEscKey);
+  }, []);
 
   const handleLogout = async () => {
-    await signOut()
-    clearSession()
-    setUserMenuOpen(false)
-  }
+    await signOut();
+    clearSession();
+    setUserMenuOpen(false);
+  };
 
-  const modules = getAllModules().map(m => ({
+  const modules = getAllModules().map((m) => ({
     id: m.key,
     name: m.name[locale],
     icon: m.icon,
-    href: m.path
-  }))
+    href: m.path,
+  }));
 
-  const isActive = (path: string) => pathname?.startsWith(path)
+  const isActive = (path: string) => pathname?.startsWith(path);
 
   return (
     <nav className="bg-white">
@@ -85,16 +96,10 @@ export function Navigation() {
             <div className="hidden sm:flex items-center gap-2">
               {currentOrg?.logo && (
                 <div className="w-6 h-6 rounded overflow-hidden border border-gray-200 flex items-center justify-center bg-white">
-                  <img
-                    src={currentOrg.logo}
-                    alt={currentOrg.name}
-                    className="w-full h-full object-contain"
-                  />
+                  <img src={currentOrg.logo} alt={currentOrg.name} className="w-full h-full object-contain" />
                 </div>
               )}
-              <span className="text-sm font-medium text-gray-700">
-                {currentOrg?.name || 'Organization'}
-              </span>
+              <span className="text-sm font-medium text-gray-700">{currentOrg?.name || "Organization"}</span>
             </div>
           </div>
 
@@ -135,9 +140,11 @@ export function Navigation() {
                   className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   <div className="w-9 h-9 rounded-full bg-gradient-to-br from-safee-500 to-purple-600 flex items-center justify-center text-white font-semibold text-sm shadow-md">
-                    {(user?.name || currentUser?.name)?.charAt(0) || 'U'}
+                    {(user?.name || currentUser?.name)?.charAt(0) || "U"}
                   </div>
-                  <FiChevronDown className={`w-4 h-4 text-gray-600 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
+                  <FiChevronDown
+                    className={`w-4 h-4 text-gray-600 transition-transform ${userMenuOpen ? "rotate-180" : ""}`}
+                  />
                 </button>
 
                 {/* Dropdown Menu */}
@@ -199,15 +206,12 @@ export function Navigation() {
                   key={module.id}
                   href={module.href}
                   onClick={() => {
-                    setModule(module.id)
-                    setMobileMenuOpen(false)
+                    setModule(module.id);
+                    setMobileMenuOpen(false);
                   }}
                   className={`
                     flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-all
-                    ${isActive(module.href)
-                      ? 'bg-safee-50 text-safee-700'
-                      : 'text-zinc-600 hover:bg-zinc-50'
-                    }
+                    ${isActive(module.href) ? "bg-safee-50 text-safee-700" : "text-zinc-600 hover:bg-zinc-50"}
                   `}
                 >
                   <span className="text-2xl">{module.icon}</span>
@@ -224,9 +228,9 @@ export function Navigation() {
                   </div>
                   <button
                     onClick={async () => {
-                      await signOut()
-                      clearSession()
-                      setMobileMenuOpen(false)
+                      await signOut();
+                      clearSession();
+                      setMobileMenuOpen(false);
                     }}
                     className="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg"
                   >
@@ -243,5 +247,5 @@ export function Navigation() {
       {/* Command Palette */}
       <CommandPalette open={commandPaletteOpen} onOpenChange={setCommandPaletteOpen} />
     </nav>
-  )
+  );
 }

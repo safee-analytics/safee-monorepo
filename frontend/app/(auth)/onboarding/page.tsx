@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useOrgStore } from '@/stores/useOrgStore'
-import { motion } from 'framer-motion'
-import { twMerge } from 'tailwind-merge'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useOrgStore } from "@/stores/useOrgStore";
+import { motion } from "framer-motion";
+import { twMerge } from "tailwind-merge";
 
 const translations = {
   ar: {
@@ -29,66 +29,69 @@ const translations = {
     continue: "Continue",
     skip: "Skip for now",
   },
-}
+};
 
 export default function OnboardingPage() {
-  const router = useRouter()
-  const { locale } = useOrgStore()
-  const [organizationName, setOrganizationName] = useState('')
-  const [organizationSlug, setOrganizationSlug] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter();
+  const { locale } = useOrgStore();
+  const [organizationName, setOrganizationName] = useState("");
+  const [organizationSlug, setOrganizationSlug] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const t = translations[locale]
+  const t = translations[locale];
 
   // Auto-generate slug from organization name
   const handleNameChange = (value: string) => {
-    setOrganizationName(value)
+    setOrganizationName(value);
     const slug = value
       .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
+      .replace(/[^a-z0-9\s-]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
       .trim()
-      .slice(0, 50)
-    setOrganizationSlug(slug)
-  }
+      .slice(0, 50);
+    setOrganizationSlug(slug);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError(null)
-    setIsLoading(true)
+    e.preventDefault();
+    setError(null);
+    setIsLoading(true);
 
     try {
       // Import authClient
-      const { authClient } = await import('@/lib/auth/client')
+      const { authClient } = await import("@/lib/auth/client");
 
       // Call Better Auth organization creation API
       const response = await authClient.organization.create({
         name: organizationName,
         slug: organizationSlug,
-      })
+      });
 
       if (response.error) {
-        throw new Error(response.error.message || 'Failed to create organization')
+        throw new Error(response.error.message || "Failed to create organization");
       }
 
       // Success - redirect to dashboard
-      router.push('/')
+      router.push("/");
     } catch (err) {
-      console.error('Organization creation failed:', err)
-      setError(err instanceof Error ? err.message : 'Failed to create organization')
+      console.error("Organization creation failed:", err);
+      setError(err instanceof Error ? err.message : "Failed to create organization");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleSkip = () => {
-    router.push('/dashboard')
-  }
+    router.push("/dashboard");
+  };
 
   return (
-    <div className="bg-zinc-950 min-h-screen flex items-center justify-center p-4" dir={locale === 'ar' ? 'rtl' : 'ltr'}>
+    <div
+      className="bg-zinc-950 min-h-screen flex items-center justify-center p-4"
+      dir={locale === "ar" ? "rtl" : "ltr"}
+    >
       {error && (
         <div className="fixed top-4 right-4 z-50 px-4 py-3 rounded-lg bg-red-500 text-white shadow-lg max-w-md">
           {error}
@@ -98,7 +101,7 @@ export default function OnboardingPage() {
       <motion.div
         initial={{ opacity: 0, y: 25 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: 'easeInOut' }}
+        transition={{ duration: 0.8, ease: "easeInOut" }}
         className="w-full max-w-xl bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-2xl"
       >
         <div className="mb-8">
@@ -153,10 +156,10 @@ export default function OnboardingPage() {
               disabled={isLoading}
               className={twMerge(
                 "flex-1 rounded-lg bg-gradient-to-br from-safee-400 to-safee-700 px-6 py-3 text-lg font-semibold text-zinc-50 ring-2 ring-safee-500/50 ring-offset-2 ring-offset-zinc-900 transition-all hover:scale-[1.02] hover:ring-transparent active:scale-[0.98] active:ring-safee-500/70",
-                isLoading && "opacity-50 cursor-not-allowed"
+                isLoading && "opacity-50 cursor-not-allowed",
               )}
             >
-              {isLoading ? 'Creating...' : t.continue}
+              {isLoading ? "Creating..." : t.continue}
             </button>
 
             <button
@@ -171,5 +174,5 @@ export default function OnboardingPage() {
         </form>
       </motion.div>
     </div>
-  )
+  );
 }

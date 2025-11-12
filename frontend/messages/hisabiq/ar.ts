@@ -11,7 +11,7 @@ export const hisabiqAr = {
     createMenu: {
       invoice: "فاتورة",
       receivePayment: "استلام دفعة",
-      expense: "مصروف"
-    }
-  }
-} as const
+      expense: "مصروف",
+    },
+  },
+} as const;

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React, { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -8,10 +8,7 @@ const SteppedProgress = () => {
   const numSteps = 4;
 
   const handleSetStep = (num: -1 | 1) => {
-    if (
-      (stepsComplete === 0 && num === -1) ||
-      (stepsComplete === numSteps && num === 1)
-    ) {
+    if ((stepsComplete === 0 && num === -1) || (stepsComplete === numSteps && num === 1)) {
       return;
     }
 
@@ -30,10 +27,7 @@ const SteppedProgress = () => {
           >
             Prev
           </button>
-          <button
-            className="px-4 py-1 rounded bg-black text-white"
-            onClick={() => handleSetStep(1)}
-          >
+          <button className="px-4 py-1 rounded bg-black text-white" onClick={() => handleSetStep(1)}>
             Next
           </button>
         </div>
@@ -42,13 +36,7 @@ const SteppedProgress = () => {
   );
 };
 
-const Steps = ({
-  numSteps,
-  stepsComplete,
-}: {
-  numSteps: number;
-  stepsComplete: number;
-}) => {
+const Steps = ({ numSteps, stepsComplete }: { numSteps: number; stepsComplete: number }) => {
   const stepArray = Array.from(Array(numSteps).keys());
 
   return (
@@ -79,10 +67,9 @@ const Step = ({ num, isActive }: { num: number; isActive: boolean }) => {
   return (
     <div className="relative">
       <div
-        className={`w-10 h-10 flex items-center justify-center shrink-0 border-2 rounded-full font-semibold text-sm relative z-10 transition-colors duration-300 ${isActive
-            ? "border-indigo-600 bg-indigo-600 text-white"
-            : "border-gray-300 text-gray-300"
-          }`}
+        className={`w-10 h-10 flex items-center justify-center shrink-0 border-2 rounded-full font-semibold text-sm relative z-10 transition-colors duration-300 ${
+          isActive ? "border-indigo-600 bg-indigo-600 text-white" : "border-gray-300 text-gray-300"
+        }`}
       >
         <AnimatePresence mode="wait">
           {isActive ? (
@@ -115,9 +102,7 @@ const Step = ({ num, isActive }: { num: number; isActive: boolean }) => {
           )}
         </AnimatePresence>
       </div>
-      {isActive && (
-        <div className="absolute z-0 -inset-1.5 bg-indigo-100 rounded-full animate-pulse" />
-      )}
+      {isActive && <div className="absolute z-0 -inset-1.5 bg-indigo-100 rounded-full animate-pulse" />}
     </div>
   );
 };
