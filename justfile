@@ -322,23 +322,20 @@ test-unit: (start-e2e "postgres")
     docker compose -f e2e/docker-compose.yml up -d --wait redis
     cd e2e && npm run test:unit
 
-# Run all tests with coverage
+# Run all tests with coverage (manual use only, requires build first)
 [group('test')]
-test-coverage: (start-e2e "postgres")
-    docker compose -f e2e/docker-compose.yml up -d --wait redis
-    cd e2e && npm run test:coverage
+coverage: build-database build-gateway (start-e2e "")
+    REDIS_URL=redis://localhost:26379 cd e2e && npm run test:coverage
 
-# Run tests in watch mode
+# Run tests in watch mode (manual use only, requires build first)
 [group('test')]
-test-watch: (start-e2e "postgres")
-    docker compose -f e2e/docker-compose.yml up -d --wait redis
-    cd e2e && npm run test:watch
+watch: build-database build-gateway (start-e2e "")
+    REDIS_URL=redis://localhost:26379 cd e2e && npm run test:watch
 
-# Open Vitest UI
+# Open Vitest UI (manual use only, requires build first)
 [group('test')]
-test-ui: (start-e2e "postgres")
-    docker compose -f e2e/docker-compose.yml up -d --wait redis
-    cd e2e && npm run test:ui
+ui: build-database build-gateway (start-e2e "")
+    REDIS_URL=redis://localhost:26379 cd e2e && npm run test:ui
 
 # ============================================================================
 # Frontend
