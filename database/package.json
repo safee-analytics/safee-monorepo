@@ -22,7 +22,7 @@
     "test:services:logs": "docker-compose -f docker-compose.test.yml logs -f",
     "test:migrate": "DATABASE_URL=postgresql://safee:safee@localhost:45432/safee npx drizzle-kit migrate",
     "test:setup": "npm run test:services:up && sleep 3 && npm run test:migrate",
-    "migrate": "npx drizzle-kit migrate",
+    "migrate": "NODE_OPTIONS='-r dotenv/config' npx drizzle-kit migrate",
     "postmigrate": "tsx -r dotenv/config src/private/postmigrate.ts",
     "bumpMigrations": "tsx -r dotenv/config src/private/bumpMigrations.ts",
     "generate-migration": "npx drizzle-kit generate",
