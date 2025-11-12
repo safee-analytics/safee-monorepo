@@ -11,7 +11,7 @@ import { ShiftHightlightTabs } from "@/components/layout/Tabs";
 // Data Display Components
 import { CustomKanban } from "@/components/data-display/KanbanBoard";
 import ShuffleSortTable from "@/components/data-display/DataTable";
-import { FlipCalendarExample } from "@/components/data-display/Calendar";
+// import { FlipCalendarExample } from "@/components/data-display/Calendar"; // TODO: Create Calendar component
 
 // Feedback Components
 import { SafeeToastContainer } from "@/components/feedback/SafeeToast";
@@ -114,7 +114,7 @@ export default function ComponentGallery() {
           <h2 className="text-2xl font-semibold mb-4 text-zinc-800">{t.dataDisplay}</h2>
           <CustomKanban />
           <ShuffleSortTable />
-          <FlipCalendarExample />
+          {/* <FlipCalendarExample /> */}
         </section>
 
         {/* Feedback Components */}
