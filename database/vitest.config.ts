@@ -17,7 +17,7 @@ export default defineConfig({
     env: {
       NODE_ENV: "test",
       DATABASE_URL: "postgresql://safee:safee@localhost:45432/safee",
-      REDIS_URL: "redis://localhost:16379",
+      REDIS_URL: "redis://localhost:26379",
     },
     testTimeout: 10000,
     // Only run unit tests (no integration tests that require Docker)

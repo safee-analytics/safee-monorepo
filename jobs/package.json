@@ -10,7 +10,7 @@
     "fmt:check": "prettier . --check",
     "check": "tsc --noEmit",
     "build": "tsc --build .",
-    "test": "vitest"
+    "test": "vitest run --passWithNoTests"
   },
   "type": "module",
   "keywords": [
