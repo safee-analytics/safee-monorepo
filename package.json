@@ -11,7 +11,8 @@
     "eslint-plugin-safee",
     "e2e",
     "frontend",
-    "landing"
+    "landing",
+    "ui"
   ],
   "scripts": {
     "build": "just build",

@@ -74,7 +74,6 @@ export class OdooDatabaseService {
       { name: "crm", description: "CRM (Nisbah)" },
       { name: "hr", description: "Human Resources (Kanz)" },
       { name: "hr_payroll", description: "Payroll (Kanz)" },
-      { name: "sign", description: "Electronic Signatures" },
       { name: "website", description: "Website Builder" },
       { name: "portal", description: "Customer Portal" },
       { name: "api_key_service", description: "API Key Service (Safee Custom)" },

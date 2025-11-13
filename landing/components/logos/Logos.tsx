@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { ReactElement } from "react";
 import {
   SiNike,
   Si3M,
@@ -57,7 +58,7 @@ export const Logos = () => {
   );
 };
 
-const TranslateWrapper = ({ children, reverse }: { children: JSX.Element; reverse?: boolean }) => {
+const TranslateWrapper = ({ children, reverse }: { children: ReactElement; reverse?: boolean }) => {
   return (
     <motion.div
       initial={{ translateX: reverse ? "-100%" : "0%" }}

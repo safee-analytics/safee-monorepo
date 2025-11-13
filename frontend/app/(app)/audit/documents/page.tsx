@@ -99,7 +99,7 @@ export default function DocumentRepository() {
       const matchesSearch = node.name.toLowerCase().includes(query.toLowerCase());
       const childResult = node.children
         ? filterFolders(node.children, query)
-        : { nodes: [], matchedIds: new Set() };
+        : { nodes: [], matchedIds: new Set<string>() };
 
       if (matchesSearch || childResult.nodes.length > 0) {
         if (matchesSearch) matchedIds.add(node.id);

@@ -273,7 +273,6 @@ export class OdooUserProvisioningService {
         "account.group_account_manager", // Full accounting admin
         "sales_team.group_sale_manager", // CRM manager
         "hr.group_hr_manager", // HR manager
-        "sign.group_sign_manager", // Signing manager
       ],
       accountant: [
         "account.group_account_manager", // Full accounting access

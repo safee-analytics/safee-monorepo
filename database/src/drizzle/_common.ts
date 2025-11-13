@@ -14,6 +14,7 @@ export const hrSchema = pgSchema("hr");
 export const salesSchema = pgSchema("sales");
 export const systemSchema = pgSchema("system");
 export const jobsSchema = pgSchema("jobs");
+export const auditSchema = pgSchema("audit");
 
 export const userRoleEnum = identitySchema.enum("user_role", ["ADMIN", "MANAGER", "EMPLOYEE", "ACCOUNTANT"]);
 
@@ -127,6 +128,34 @@ export const riskLevelEnum = identitySchema.enum("risk_level", ["low", "medium",
 
 export const localeEnum = identitySchema.enum("locale", ["en", "ar"]);
 
+export const caseStatusEnum = auditSchema.enum("case_status", [
+  "pending",
+  "in-progress",
+  "under-review",
+  "completed",
+  "overdue",
+  "archived",
+]);
+
+export const casePriorityEnum = auditSchema.enum("case_priority", ["low", "medium", "high", "critical"]);
+
+export const auditStatusEnum = auditSchema.enum("audit_status", [
+  "draft",
+  "in-progress",
+  "under-review",
+  "completed",
+  "archived",
+]);
+
+export const noteTypeEnum = auditSchema.enum("note_type", [
+  "observation",
+  "review_comment",
+  "general",
+  "memo",
+]);
+
+export const assignmentRoleEnum = auditSchema.enum("assignment_role", ["lead", "reviewer", "team_member"]);
+
 export type InvoiceType = (typeof invoiceTypeEnum.enumValues)[number];
 export type ContactType = (typeof contactTypeEnum.enumValues)[number];
 export type DealStage = (typeof dealStageEnum.enumValues)[number];
@@ -146,6 +175,11 @@ export type IdentifierType = (typeof identifierTypeEnum.enumValues)[number];
 export type EventType = (typeof eventTypeEnum.enumValues)[number];
 export type RiskLevel = (typeof riskLevelEnum.enumValues)[number];
 export type Locale = (typeof localeEnum.enumValues)[number];
+export type CaseStatus = (typeof caseStatusEnum.enumValues)[number];
+export type CasePriority = (typeof casePriorityEnum.enumValues)[number];
+export type AuditStatus = (typeof auditStatusEnum.enumValues)[number];
+export type NoteType = (typeof noteTypeEnum.enumValues)[number];
+export type AssignmentRole = (typeof assignmentRoleEnum.enumValues)[number];
 
 export const schemas = {
   identity: identitySchema,
@@ -154,4 +188,5 @@ export const schemas = {
   sales: salesSchema,
   system: systemSchema,
   jobs: jobsSchema,
+  audit: auditSchema,
 } as const;
