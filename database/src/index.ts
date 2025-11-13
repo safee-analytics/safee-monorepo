@@ -30,6 +30,8 @@ export * from "./users/index.js";
 
 export * from "./sessions/index.js";
 
+export * from "./cases/index.js";
+
 export * from "./general-utils/i18n.js";
 
 export * from "./email/index.js";
