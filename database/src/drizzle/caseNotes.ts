@@ -19,7 +19,7 @@ export const caseNotes = auditSchema.table(
     noteType: noteTypeEnum("note_type").notNull(), // 'observation', 'review_comment', 'general', 'memo'
     content: text("content").notNull(),
     createdBy: uuid("created_by")
-      .references(() => users.id)
+      .references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" })
       .notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

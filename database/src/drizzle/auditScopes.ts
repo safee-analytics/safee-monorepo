@@ -21,10 +21,13 @@ export const auditScopes = auditSchema.table(
     status: auditStatusEnum("status").notNull().default("draft"),
     metadata: jsonb("metadata").default({}).$type<Record<string, unknown>>(), // Flexible audit-type-specific data
     createdBy: uuid("created_by")
-      .references(() => users.id)
+      .references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" })
       .notNull(),
-    completedBy: uuid("completed_by").references(() => users.id),
-    archivedBy: uuid("archived_by").references(() => users.id),
+    completedBy: uuid("completed_by").references(() => users.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
+    archivedBy: uuid("archived_by").references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
     completedAt: timestamp("completed_at", { withTimezone: true }),

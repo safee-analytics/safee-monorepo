@@ -1,114 +1,88 @@
 "use client";
 
-import { useState } from "react";
-import { FileText, Clock, CheckCircle, AlertTriangle, List, LayoutGrid, Download } from "lucide-react";
-import { StatCard } from "@/components/audit/ui/StatCard";
-import { StatusBadge } from "@/components/audit/ui/StatusBadge";
-import { PriorityBadge } from "@/components/audit/ui/PriorityBadge";
-import { CaseStatus, CasePriority } from "@/types/audit";
+import { useState, useMemo } from "react";
+import { useCases } from "@/lib/api/hooks";
+import { CaseStats } from "@/components/audit/cases/CaseStats";
+import { CaseFilters } from "@/components/audit/cases/CaseFilters";
+import { CaseTable, type CaseRow } from "@/components/audit/cases/CaseTable";
+import { CreateCaseModal } from "@/components/audit/cases/CreateCaseModal";
+import type { components } from "@/lib/api/types";
 
-interface CaseRow {
-  id: string;
-  caseId: string;
-  auditType: string;
-  companyName: string;
-  industry: string;
-  assignee: {
-    name: string;
-    avatar: string;
-  };
-  status: CaseStatus;
-  priority: CasePriority;
-  dueDate: string;
-  progress: number;
-  icon: string;
-  iconBg: string;
-}
+type CaseStatus = components["schemas"]["CaseResponse"]["status"];
+type CasePriority = components["schemas"]["CaseResponse"]["priority"];
 
 export default function CaseManagement() {
   const [selectedCases, setSelectedCases] = useState<string[]>([]);
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [priorityFilter, setPriorityFilter] = useState("all");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<CaseStatus | "all">("all");
+  const [priorityFilter, setPriorityFilter] = useState<CasePriority | "all">("all");
   const [assigneeFilter, setAssigneeFilter] = useState("all");
   const [dueDateFilter, setDueDateFilter] = useState("");
 
-  const stats = {
-    totalCases: 47,
-    activeCases: 24,
-    completedCases: 18,
-    overdueCases: 5,
-  };
+  // Fetch all cases from API (no filters on API call)
+  const { data: apiCases, isLoading, refetch } = useCases();
 
-  const cases: CaseRow[] = [
-    {
-      id: "1",
-      caseId: "CASE-001",
-      auditType: "Annual Financial Audit",
-      companyName: "ABC Corporation",
-      industry: "Technology",
+  // Map API cases to CaseRow format, apply client-side filters, and calculate stats
+  const { cases, stats } = useMemo(() => {
+    let mappedCases: CaseRow[] = (apiCases ?? []).map((caseData) => ({
+      id: caseData.id,
+      caseId: caseData.caseNumber,
+      auditType: caseData.auditType,
+      companyName: caseData.clientName,
+      industry: "General",
       assignee: {
-        name: "Michael Chen",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
+        name: caseData.createdBy,
+        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${caseData.createdBy}`,
       },
-      status: "in-progress",
-      priority: "high",
-      dueDate: "Dec 15, 2024",
-      progress: 65,
-      icon: "📊",
+      status:
+        caseData.status === "in-progress"
+          ? "in-progress"
+          : caseData.status === "completed"
+            ? "completed"
+            : caseData.status === "overdue"
+              ? "overdue"
+              : caseData.status === "under-review"
+                ? "in-review"
+                : "in-progress",
+      priority: caseData.priority,
+      dueDate: caseData.dueDate ? new Date(caseData.dueDate).toLocaleDateString() : "N/A",
+      progress:
+        caseData.status === "completed"
+          ? 100
+          : caseData.status === "under-review"
+            ? 80
+            : caseData.status === "in-progress"
+              ? 50
+              : 10,
+      icon: "📋",
       iconBg: "bg-blue-100",
-    },
-    {
-      id: "2",
-      caseId: "CASE-002",
-      auditType: "Inventory Audit",
-      companyName: "XYZ Retail Ltd",
-      industry: "Retail",
-      assignee: {
-        name: "Emma Rodriguez",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
-      },
-      status: "completed",
-      priority: "medium",
-      dueDate: "Dec 10, 2024",
-      progress: 100,
-      icon: "🏪",
-      iconBg: "bg-green-100",
-    },
-    {
-      id: "3",
-      caseId: "CASE-003",
-      auditType: "Compliance Audit",
-      companyName: "Manufacturing Co",
-      industry: "Manufacturing",
-      assignee: {
-        name: "David Kim",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-      },
-      status: "overdue",
-      priority: "high",
-      dueDate: "Dec 8, 2024",
-      progress: 45,
-      icon: "🏭",
-      iconBg: "bg-red-100",
-    },
-    {
-      id: "4",
-      caseId: "CASE-004",
-      auditType: "Risk Assessment",
-      companyName: "Financial Services Inc",
-      industry: "Finance",
-      assignee: {
-        name: "Lisa Thompson",
-        avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa",
-      },
-      status: "in-review",
-      priority: "medium",
-      dueDate: "Dec 20, 2024",
-      progress: 80,
-      icon: "🏦",
-      iconBg: "bg-yellow-100",
-    },
-  ];
+    }));
+
+    // Apply client-side filters
+    if (statusFilter !== "all") {
+      mappedCases = mappedCases.filter((c) => c.status === statusFilter);
+    }
+    if (priorityFilter !== "all") {
+      mappedCases = mappedCases.filter((c) => c.priority === priorityFilter);
+    }
+    if (assigneeFilter !== "all") {
+      mappedCases = mappedCases.filter((c) =>
+        c.assignee.name.toLowerCase().includes(assigneeFilter.toLowerCase()),
+      );
+    }
+    if (dueDateFilter) {
+      mappedCases = mappedCases.filter((c) => c.dueDate === dueDateFilter);
+    }
+
+    const calculatedStats = {
+      totalCases: mappedCases.length,
+      activeCases: mappedCases.filter((c) => c.status === "in-progress").length,
+      completedCases: mappedCases.filter((c) => c.status === "completed").length,
+      overdueCases: mappedCases.filter((c) => c.status === "overdue").length,
+    };
+
+    return { cases: mappedCases, stats: calculatedStats };
+  }, [apiCases, statusFilter, priorityFilter, assigneeFilter, dueDateFilter]);
 
   const toggleCaseSelection = (caseId: string) => {
     setSelectedCases((prev) =>
@@ -142,7 +116,10 @@ export default function CaseManagement() {
               Manage all your audit cases, track progress, and monitor deadlines.
             </p>
           </div>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors cursor-pointer"
+          >
             <span className="text-lg">+</span>
             New Case
           </button>
@@ -150,244 +127,102 @@ export default function CaseManagement() {
 
         {/* Filter Tabs */}
         <div className="mb-6 flex items-center gap-4">
-          <button className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-white transition-colors">
+          <button
+            onClick={() => setStatusFilter("all")}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
+              statusFilter === "all" ? "bg-white text-blue-600 shadow-sm" : "text-gray-700 hover:bg-white"
+            }`}
+          >
             All Cases
           </button>
-          <button className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-white transition-colors">
+          <button
+            onClick={() => setStatusFilter("in-progress")}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
+              statusFilter === "in-progress"
+                ? "bg-white text-blue-600 shadow-sm"
+                : "text-gray-700 hover:bg-white"
+            }`}
+          >
             Active
           </button>
-          <button className="px-4 py-2 rounded-lg font-medium text-gray-700 hover:bg-white transition-colors">
+          <button
+            onClick={() => setStatusFilter("completed")}
+            className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
+              statusFilter === "completed"
+                ? "bg-white text-blue-600 shadow-sm"
+                : "text-gray-700 hover:bg-white"
+            }`}
+          >
             Completed
           </button>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <StatCard
-            title="Total Cases"
-            value={stats.totalCases}
-            icon={FileText}
-            iconBgColor="bg-blue-100"
-            iconColor="text-blue-600"
-          />
-          <StatCard
-            title="Active"
-            value={stats.activeCases}
-            icon={Clock}
-            iconBgColor="bg-yellow-100"
-            iconColor="text-yellow-600"
-          />
-          <StatCard
-            title="Completed"
-            value={stats.completedCases}
-            icon={CheckCircle}
-            iconBgColor="bg-green-100"
-            iconColor="text-green-600"
-          />
-          <StatCard
-            title="Overdue"
-            value={stats.overdueCases}
-            icon={AlertTriangle}
-            iconBgColor="bg-red-100"
-            iconColor="text-red-600"
-          />
-        </div>
+        {/* Loading State */}
+        {isLoading && (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        )}
 
-        {/* Filters */}
-        <div className="bg-white rounded-xl border border-gray-200 p-4 mb-6">
-          <div className="flex flex-wrap items-center gap-4">
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-gray-700">Status:</label>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
-              >
-                <option value="all">All Status</option>
-                <option value="in-progress">In Progress</option>
-                <option value="completed">Completed</option>
-                <option value="overdue">Overdue</option>
-                <option value="in-review">In Review</option>
-              </select>
-            </div>
+        {!isLoading && (
+          <>
+            {/* Stats Grid */}
+            <CaseStats
+              totalCases={stats.totalCases}
+              activeCases={stats.activeCases}
+              completedCases={stats.completedCases}
+              overdueCases={stats.overdueCases}
+            />
 
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-gray-700">Priority:</label>
-              <select
-                value={priorityFilter}
-                onChange={(e) => setPriorityFilter(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
-              >
-                <option value="all">All Priorities</option>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
-              </select>
-            </div>
+            {/* Filters */}
+            <CaseFilters
+              statusFilter={statusFilter}
+              priorityFilter={priorityFilter}
+              assigneeFilter={assigneeFilter}
+              dueDateFilter={dueDateFilter}
+              onStatusChange={setStatusFilter}
+              onPriorityChange={setPriorityFilter}
+              onAssigneeChange={setAssigneeFilter}
+              onDueDateChange={setDueDateFilter}
+              onClearFilters={clearFilters}
+            />
 
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-gray-700">Assignee:</label>
-              <select
-                value={assigneeFilter}
-                onChange={(e) => setAssigneeFilter(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
-              >
-                <option value="all">All Team Members</option>
-                <option value="michael">Michael Chen</option>
-                <option value="emma">Emma Rodriguez</option>
-                <option value="david">David Kim</option>
-                <option value="lisa">Lisa Thompson</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <label className="text-sm font-medium text-gray-700">Due Date:</label>
-              <input
-                type="date"
-                value={dueDateFilter}
-                onChange={(e) => setDueDateFilter(e.target.value)}
-                className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
-                placeholder="mm/dd/yyyy"
+            {/* Table or Empty State */}
+            {cases.length > 0 ? (
+              <CaseTable
+                cases={cases}
+                selectedCases={selectedCases}
+                onToggleCaseSelection={toggleCaseSelection}
+                onToggleAllCases={toggleAllCases}
               />
-            </div>
-
-            <button
-              onClick={clearFilters}
-              className="text-sm text-blue-600 hover:text-blue-700 font-medium ml-auto"
-            >
-              Clear Filters
-            </button>
-          </div>
-        </div>
-
-        {/* Table */}
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-          <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-            <h2 className="text-lg font-semibold text-gray-900">All Cases</h2>
-            <div className="flex items-center gap-2">
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <List className="w-5 h-5 text-gray-600" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <LayoutGrid className="w-5 h-5 text-gray-600" />
-              </button>
-              <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-                <Download className="w-5 h-5 text-gray-600" />
-              </button>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="px-6 py-3 text-left">
-                    <input
-                      type="checkbox"
-                      checked={selectedCases.length === cases.length}
-                      onChange={toggleAllCases}
-                      className="rounded border-gray-300"
-                    />
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Case Details
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Client
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Assignee
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Status
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Priority
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Due Date
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Progress
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {cases.map((caseRow) => (
-                  <tr key={caseRow.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
-                      <input
-                        type="checkbox"
-                        checked={selectedCases.includes(caseRow.id)}
-                        onChange={() => toggleCaseSelection(caseRow.id)}
-                        className="rounded border-gray-300"
-                      />
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-3">
-                        <div
-                          className={`w-10 h-10 rounded-lg flex items-center justify-center text-xl ${caseRow.iconBg}`}
-                        >
-                          {caseRow.icon}
-                        </div>
-                        <div>
-                          <p className="text-sm font-semibold text-gray-900">{caseRow.caseId}</p>
-                          <p className="text-xs text-gray-600">{caseRow.auditType}</p>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">{caseRow.companyName}</p>
-                        <p className="text-xs text-gray-600">{caseRow.industry}</p>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <img
-                          src={caseRow.assignee.avatar}
-                          alt={caseRow.assignee.name}
-                          className="w-8 h-8 rounded-full"
-                        />
-                        <span className="text-sm text-gray-900">{caseRow.assignee.name}</span>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4">
-                      <StatusBadge status={caseRow.status} />
-                    </td>
-                    <td className="px-6 py-4">
-                      <PriorityBadge priority={caseRow.priority} />
-                    </td>
-                    <td className="px-6 py-4">
-                      <span
-                        className={`text-sm ${caseRow.status === "overdue" ? "text-red-600 font-medium" : "text-gray-900"}`}
-                      >
-                        {caseRow.dueDate}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${
-                              caseRow.status === "completed"
-                                ? "bg-green-500"
-                                : caseRow.status === "overdue"
-                                  ? "bg-red-500"
-                                  : "bg-blue-500"
-                            }`}
-                            style={{ width: `${caseRow.progress}%` }}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+            ) : (
+              <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+                <div className="max-w-md mx-auto">
+                  <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-3xl">📋</span>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">No cases found</h3>
+                  <p className="text-gray-600 mb-6">
+                    {statusFilter !== "all" ||
+                    priorityFilter !== "all" ||
+                    assigneeFilter !== "all" ||
+                    dueDateFilter
+                      ? "Try adjusting your filters to see more results"
+                      : "Get started by creating your first case"}
+                  </p>
+                </div>
+              </div>
+            )}
+          </>
+        )}
       </div>
+
+      {/* Create Case Modal */}
+      <CreateCaseModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={() => refetch()}
+      />
     </div>
   );
 }

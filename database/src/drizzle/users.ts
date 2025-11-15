@@ -43,11 +43,13 @@ export const users = identitySchema.table(
 
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => [
     index("users_organization_id_idx").on(table.organizationId),
     index("users_is_active_idx").on(table.isActive),
     index("users_email_verified_idx").on(table.emailVerified),
     index("users_username_idx").on(table.username),
+    index("users_deleted_at_idx").on(table.deletedAt),
   ],
 );

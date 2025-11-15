@@ -34,6 +34,23 @@ export interface UpdateCaseRequest {
 }
 
 // Template DTOs
+export type TemplateStructure = {
+  sections: Array<{
+    name: string;
+    description?: string;
+    sortOrder: number;
+    settings?: Record<string, unknown>;
+    procedures: Array<{
+      referenceNumber: string;
+      title: string;
+      description?: string;
+      requirements?: Record<string, unknown>;
+      sortOrder: number;
+    }>;
+  }>;
+  settings?: Record<string, unknown>;
+};
+
 export interface TemplateResponse {
   id: string;
   organizationId?: string;
@@ -44,22 +61,7 @@ export interface TemplateResponse {
   version: string;
   isActive: boolean;
   isPublic: boolean;
-  structure: {
-    sections: Array<{
-      name: string;
-      description?: string;
-      sortOrder: number;
-      settings?: Record<string, unknown>;
-      procedures: Array<{
-        referenceNumber: string;
-        title: string;
-        description?: string;
-        requirements?: Record<string, unknown>;
-        sortOrder: number;
-      }>;
-    }>;
-    settings?: Record<string, unknown>;
-  };
+  structure: TemplateStructure;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
@@ -74,22 +76,7 @@ export interface CreateTemplateRequest {
   version?: string;
   isActive?: boolean;
   isPublic?: boolean;
-  structure: {
-    sections: Array<{
-      name: string;
-      description?: string;
-      sortOrder: number;
-      settings?: Record<string, unknown>;
-      procedures: Array<{
-        referenceNumber: string;
-        title: string;
-        description?: string;
-        requirements?: Record<string, unknown>;
-        sortOrder: number;
-      }>;
-    }>;
-    settings?: Record<string, unknown>;
-  };
+  structure: TemplateStructure;
 }
 
 // Scope DTOs

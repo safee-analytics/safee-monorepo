@@ -14,21 +14,16 @@ import {
 } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import {
-  createCase,
   getCaseById,
   getCasesByOrganization,
-  updateCase,
-  deleteCase,
   createTemplate,
   getTemplateById,
   getPublicTemplates,
   createScope,
-  createScopeFromTemplate,
   getScopesByCase,
   updateScopeStatus,
   getSectionsByScopeId,
   getProceduresBySectionId,
-  completeProcedure,
   createDocument,
   getDocumentsByCase,
   softDeleteDocument,
@@ -40,6 +35,11 @@ import {
   deleteAssignment,
   getHistoryByCase,
 } from "@safee/database";
+import { createCase as createCaseOp } from "../operations/cases/createCase.js";
+import { updateCase as updateCaseOp } from "../operations/cases/updateCase.js";
+import { deleteCase as deleteCaseOp } from "../operations/cases/deleteCase.js";
+import { createScopeFromTemplate as createScopeFromTemplateOp } from "../operations/cases/createScopeFromTemplate.js";
+import { completeProcedure as completeProcedureOp } from "../operations/cases/completeProcedure.js";
 import type {
   CaseResponse,
   CreateCaseRequest,
@@ -101,106 +101,14 @@ export class CasesController extends Controller {
   ): Promise<CaseResponse> {
     const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
     const userId = req.betterAuthSession?.user.id || "";
-    const deps = { drizzle: req.drizzle, logger: req.logger };
 
     this.setStatus(201);
 
-    const newCase = await createCase(deps, {
-      organizationId,
-      caseNumber: request.caseNumber,
-      clientName: request.clientName,
-      auditType: request.auditType,
-      status: request.status,
-      priority: request.priority,
-      dueDate: request.dueDate ? new Date(request.dueDate) : undefined,
-      createdBy: userId,
-    });
-
-    return {
-      id: newCase.id,
-      organizationId: newCase.organizationId,
-      caseNumber: newCase.caseNumber,
-      clientName: newCase.clientName,
-      auditType: newCase.auditType,
-      status: newCase.status,
-      priority: newCase.priority,
-      dueDate: newCase.dueDate?.toISOString(),
-      completedDate: newCase.completedDate?.toISOString(),
-      createdBy: newCase.createdBy,
-      createdAt: newCase.createdAt.toISOString(),
-      updatedAt: newCase.updatedAt.toISOString(),
-    };
-  }
-
-  @Get("/{caseId}")
-  @Security("jwt")
-  public async getCase(@Request() req: AuthenticatedRequest, @Path() caseId: string): Promise<CaseResponse> {
-    const deps = { drizzle: req.drizzle, logger: req.logger };
-
-    const foundCase = await getCaseById(deps, caseId);
-    if (!foundCase) {
-      this.setStatus(404);
-      throw new Error("Case not found");
-    }
-
-    return {
-      id: foundCase.id,
-      organizationId: foundCase.organizationId,
-      caseNumber: foundCase.caseNumber,
-      clientName: foundCase.clientName,
-      auditType: foundCase.auditType,
-      status: foundCase.status,
-      priority: foundCase.priority,
-      dueDate: foundCase.dueDate?.toISOString(),
-      completedDate: foundCase.completedDate?.toISOString(),
-      createdBy: foundCase.createdBy,
-      createdAt: foundCase.createdAt.toISOString(),
-      updatedAt: foundCase.updatedAt.toISOString(),
-    };
-  }
-
-  @Put("/{caseId}")
-  @Security("jwt")
-  public async updateCase(
-    @Request() req: AuthenticatedRequest,
-    @Path() caseId: string,
-    @Body() request: UpdateCaseRequest,
-  ): Promise<CaseResponse> {
-    const deps = { drizzle: req.drizzle, logger: req.logger };
-
-    const updated = await updateCase(deps, caseId, {
-      ...request,
-      dueDate: request.dueDate ? new Date(request.dueDate) : undefined,
-      completedDate: request.completedDate ? new Date(request.completedDate) : undefined,
-    });
-
-    return {
-      id: updated.id,
-      organizationId: updated.organizationId,
-      caseNumber: updated.caseNumber,
-      clientName: updated.clientName,
-      auditType: updated.auditType,
-      status: updated.status,
-      priority: updated.priority,
-      dueDate: updated.dueDate?.toISOString(),
-      completedDate: updated.completedDate?.toISOString(),
-      createdBy: updated.createdBy,
-      createdAt: updated.createdAt.toISOString(),
-      updatedAt: updated.updatedAt.toISOString(),
-    };
-  }
-
-  @Delete("/{caseId}")
-  @Security("jwt")
-  public async deleteCase(@Request() req: AuthenticatedRequest, @Path() caseId: string): Promise<{ success: boolean }> {
-    const deps = { drizzle: req.drizzle, logger: req.logger };
-
-    await deleteCase(deps, caseId);
-
-    return { success: true };
+    return await createCaseOp(req.drizzle, organizationId, userId, request);
   }
 
   // ============= TEMPLATE MANAGEMENT =============
+  // NOTE: Template routes must come BEFORE {caseId} routes to avoid route conflicts
 
   @Get("/templates")
   @Security("jwt")
@@ -300,11 +208,66 @@ export class CasesController extends Controller {
     };
   }
 
+  @Get("/{caseId}")
+  @Security("jwt")
+  public async getCase(@Request() req: AuthenticatedRequest, @Path() caseId: string): Promise<CaseResponse> {
+    const deps = { drizzle: req.drizzle, logger: req.logger };
+
+    const foundCase = await getCaseById(deps, caseId);
+    if (!foundCase) {
+      this.setStatus(404);
+      throw new Error("Case not found");
+    }
+
+    return {
+      id: foundCase.id,
+      organizationId: foundCase.organizationId,
+      caseNumber: foundCase.caseNumber,
+      clientName: foundCase.clientName,
+      auditType: foundCase.auditType,
+      status: foundCase.status,
+      priority: foundCase.priority,
+      dueDate: foundCase.dueDate?.toISOString(),
+      completedDate: foundCase.completedDate?.toISOString(),
+      createdBy: foundCase.createdBy,
+      createdAt: foundCase.createdAt.toISOString(),
+      updatedAt: foundCase.updatedAt.toISOString(),
+    };
+  }
+
+  @Put("/{caseId}")
+  @Security("jwt")
+  public async updateCase(
+    @Request() req: AuthenticatedRequest,
+    @Path() caseId: string,
+    @Body() request: UpdateCaseRequest,
+  ): Promise<CaseResponse> {
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const userId = req.betterAuthSession?.user.id || "";
+
+    return await updateCaseOp(req.drizzle, organizationId, userId, caseId, request);
+  }
+
+  @Delete("/{caseId}")
+  @Security("jwt")
+  public async deleteCase(
+    @Request() req: AuthenticatedRequest,
+    @Path() caseId: string,
+  ): Promise<{ success: boolean }> {
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const userId = req.betterAuthSession?.user.id || "";
+
+    return await deleteCaseOp(req.drizzle, organizationId, userId, caseId);
+  }
+
   // ============= SCOPE MANAGEMENT =============
 
   @Get("/{caseId}/scopes")
   @Security("jwt")
-  public async listScopes(@Request() req: AuthenticatedRequest, @Path() caseId: string): Promise<ScopeResponse[]> {
+  public async listScopes(
+    @Request() req: AuthenticatedRequest,
+    @Path() caseId: string,
+  ): Promise<ScopeResponse[]> {
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     const scopes = await getScopesByCase(deps, caseId);
@@ -375,29 +338,12 @@ export class CasesController extends Controller {
     @Path() caseId: string,
     @Body() request: CreateScopeFromTemplateRequest,
   ): Promise<ScopeResponse> {
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
     const userId = req.betterAuthSession?.user.id || "";
-    const deps = { drizzle: req.drizzle, logger: req.logger };
 
     this.setStatus(201);
 
-    const scope = await createScopeFromTemplate(deps, caseId, request.templateId, userId);
-
-    return {
-      id: scope.id,
-      caseId: scope.caseId,
-      templateId: scope.templateId ?? undefined,
-      name: scope.name,
-      description: scope.description ?? undefined,
-      status: scope.status,
-      metadata: scope.metadata as Record<string, unknown>,
-      createdBy: scope.createdBy,
-      completedBy: scope.completedBy ?? undefined,
-      archivedBy: scope.archivedBy ?? undefined,
-      createdAt: scope.createdAt.toISOString(),
-      updatedAt: scope.updatedAt.toISOString(),
-      completedAt: scope.completedAt?.toISOString(),
-      archivedAt: scope.archivedAt?.toISOString(),
-    };
+    return await createScopeFromTemplateOp(req.drizzle, organizationId, userId, caseId, request.templateId);
   }
 
   @Put("/{caseId}/scopes/{scopeId}/status")
@@ -501,31 +447,8 @@ export class CasesController extends Controller {
     @Body() request: CompleteProcedureRequest,
   ): Promise<ProcedureResponse> {
     const userId = req.betterAuthSession?.user.id || "";
-    const deps = { drizzle: req.drizzle, logger: req.logger };
 
-    const procedure = await completeProcedure(deps, procedureId, {
-      completedBy: userId,
-      fieldData: request.fieldData,
-      memo: request.memo,
-    });
-
-    return {
-      id: procedure.id,
-      sectionId: procedure.sectionId,
-      referenceNumber: procedure.referenceNumber,
-      title: procedure.title,
-      description: procedure.description ?? undefined,
-      requirements: procedure.requirements as Record<string, unknown>,
-      sortOrder: procedure.sortOrder,
-      isCompleted: procedure.isCompleted,
-      completedBy: procedure.completedBy ?? undefined,
-      completedAt: procedure.completedAt?.toISOString(),
-      memo: procedure.memo ?? undefined,
-      fieldData: procedure.fieldData as Record<string, unknown>,
-      canEdit: procedure.canEdit,
-      createdAt: procedure.createdAt.toISOString(),
-      updatedAt: procedure.updatedAt.toISOString(),
-    };
+    return await completeProcedureOp(req.drizzle, userId, caseId, procedureId, request);
   }
 
   // ============= DOCUMENTS =============
@@ -615,7 +538,10 @@ export class CasesController extends Controller {
 
   @Get("/{caseId}/notes")
   @Security("jwt")
-  public async listNotes(@Request() req: AuthenticatedRequest, @Path() caseId: string): Promise<NoteResponse[]> {
+  public async listNotes(
+    @Request() req: AuthenticatedRequest,
+    @Path() caseId: string,
+  ): Promise<NoteResponse[]> {
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     const notes = await getNotesByCase(deps, caseId);
@@ -762,7 +688,10 @@ export class CasesController extends Controller {
 
   @Get("/{caseId}/history")
   @Security("jwt")
-  public async getHistory(@Request() req: AuthenticatedRequest, @Path() caseId: string): Promise<HistoryResponse[]> {
+  public async getHistory(
+    @Request() req: AuthenticatedRequest,
+    @Path() caseId: string,
+  ): Promise<HistoryResponse[]> {
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     const history = await getHistoryByCase(deps, caseId);

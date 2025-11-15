@@ -1,7 +1,7 @@
-import { describe, it, before, after, beforeEach } from "node:test";
-import assert from "node:assert";
+import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { pino } from "pino";
 import { testConnect } from "../drizzle/testConnect.js";
+import { nukeDatabase } from "../test-helpers/test-fixtures.js";
 import type { DrizzleClient } from "../drizzle.js";
 import {
   createJob,
@@ -18,30 +18,24 @@ import {
 import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
 
-async function wipeJobsDb(drizzle: DrizzleClient) {
-  // Delete jobs (cascade deletes jobLogs), then jobSchedules
-  await drizzle.delete(schema.jobs);
-  await drizzle.delete(schema.jobSchedules);
-}
-
 void describe("Jobs", async () => {
   let drizzle: DrizzleClient;
   let close: () => Promise<void>;
   const logger = pino({ level: "silent" });
   let deps: DbDeps;
 
-  before(async () => {
+  beforeAll(async () => {
     ({ drizzle, close } = testConnect("jobs-test"));
     deps = { drizzle, logger };
   });
 
-  after(async () => {
+  afterAll(async () => {
     await close();
   });
 
   void describe("createJob", async () => {
     beforeEach(async () => {
-      await wipeJobsDb(drizzle);
+      await nukeDatabase(drizzle);
     });
 
     void it("creates job successfully", async () => {
@@ -55,13 +49,13 @@ void describe("Jobs", async () => {
 
       const job = await createJob(deps, jobData);
 
-      assert.ok(job.id);
-      assert.strictEqual(job.jobName, "send_email");
-      assert.strictEqual(job.status, "pending");
-      assert.strictEqual(job.type, "immediate");
-      assert.strictEqual(job.priority, "normal");
-      assert.deepStrictEqual(job.payload, { customData: "test" });
-      assert.strictEqual(job.maxRetries, 3);
+      expect(job.id).toBeTruthy();
+      expect(job.jobName).toBe("send_email");
+      expect(job.status).toBe("pending");
+      expect(job.type).toBe("immediate");
+      expect(job.priority).toBe("normal");
+      expect(job.payload).toEqual({ customData: "test" });
+      expect(job.maxRetries).toBe(3);
     });
   });
 
@@ -69,7 +63,7 @@ void describe("Jobs", async () => {
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
-      await wipeJobsDb(drizzle);
+      await nukeDatabase(drizzle);
 
       testJob = await createJob(deps, {
         jobName: "send_email" as const,
@@ -82,14 +76,14 @@ void describe("Jobs", async () => {
     void it("retrieves job by ID", async () => {
       const retrievedJob = await getJobById(deps, testJob.id);
 
-      assert.ok(retrievedJob);
-      assert.strictEqual(retrievedJob.id, testJob.id);
-      assert.strictEqual(retrievedJob.jobName, "send_email");
+      expect(retrievedJob).toBeTruthy();
+      expect(retrievedJob!.id).toBe(testJob.id);
+      expect(retrievedJob!.jobName).toBe("send_email");
     });
 
     void it("returns undefined for non-existent job", async () => {
-      const job = await getJobById(deps, "nonexistent-id");
-      assert.strictEqual(job, undefined);
+      const job = await getJobById(deps, "00000000-0000-0000-0000-000000000000");
+      expect(job).toBe(undefined);
     });
   });
 
@@ -97,7 +91,7 @@ void describe("Jobs", async () => {
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
-      await wipeJobsDb(drizzle);
+      await nukeDatabase(drizzle);
 
       testJob = await createJob(deps, {
         jobName: "send_email" as const,
@@ -110,9 +104,9 @@ void describe("Jobs", async () => {
     void it("starts job correctly", async () => {
       const startedJob = await startJob(deps, testJob.id);
 
-      assert.strictEqual(startedJob.status, "running");
-      assert.strictEqual(startedJob.attempts, 1);
-      assert.ok(startedJob.startedAt);
+      expect(startedJob.status).toBe("running");
+      expect(startedJob.attempts).toBe(1);
+      expect(startedJob.startedAt).toBeTruthy();
     });
 
     void it("completes job with result", async () => {
@@ -121,9 +115,9 @@ void describe("Jobs", async () => {
 
       const completedJob = await completeJob(deps, testJob.id, result);
 
-      assert.strictEqual(completedJob.status, "completed");
-      assert.deepStrictEqual(completedJob.result, result);
-      assert.ok(completedJob.completedAt);
+      expect(completedJob.status).toBe("completed");
+      expect(completedJob.result).toEqual(result);
+      expect(completedJob.completedAt).toBeTruthy();
     });
 
     void it("fails job without retry", async () => {
@@ -131,9 +125,9 @@ void describe("Jobs", async () => {
 
       const failedJob = await failJob(deps, testJob.id, "Processing failed", false);
 
-      assert.strictEqual(failedJob.status, "failed");
-      assert.strictEqual(failedJob.error, "Processing failed");
-      assert.ok(failedJob.completedAt);
+      expect(failedJob.status).toBe("failed");
+      expect(failedJob.error).toBe("Processing failed");
+      expect(failedJob.completedAt).toBeTruthy();
     });
 
     void it("fails job with retry", async () => {
@@ -141,29 +135,28 @@ void describe("Jobs", async () => {
 
       const retryJob = await failJob(deps, testJob.id, "Temporary failure", true);
 
-      assert.strictEqual(retryJob.status, "retrying");
-      assert.strictEqual(retryJob.error, "Temporary failure");
-      assert.strictEqual(retryJob.completedAt, null);
+      expect(retryJob.status).toBe("retrying");
+      expect(retryJob.error).toBe("Temporary failure");
+      expect(retryJob.completedAt).toBe(null);
     });
 
     void it("cancels job", async () => {
       const cancelledJob = await cancelJob(deps, testJob.id);
 
-      assert.strictEqual(cancelledJob.status, "cancelled");
-      assert.ok(cancelledJob.completedAt);
+      expect(cancelledJob.status).toBe("cancelled");
+      expect(cancelledJob.completedAt).toBeTruthy();
     });
 
     void it("throws error when updating non-existent job", async () => {
-      await assert.rejects(
-        async () => await updateJobStatus(deps, "nonexistent-id", "running"),
-        /Job with ID 'nonexistent-id' not found/,
+      await expect(updateJobStatus(deps, "00000000-0000-0000-0000-000000000000", "running")).rejects.toThrow(
+        /Job with ID '00000000-0000-0000-0000-000000000000' not found/,
       );
     });
   });
 
   void describe("getPendingJobs", async () => {
     beforeEach(async () => {
-      await wipeJobsDb(drizzle);
+      await nukeDatabase(drizzle);
 
       await createJob(deps, {
         jobName: "send_email" as const,
@@ -191,14 +184,14 @@ void describe("Jobs", async () => {
     void it("returns pending jobs ordered by priority", async () => {
       const pendingJobs = await getPendingJobs(deps, 10);
 
-      assert.ok(pendingJobs.length >= 2);
+      expect(pendingJobs.length >= 2).toBeTruthy();
       const priorities = pendingJobs.map((job) => job.priority);
-      assert.strictEqual(priorities[0], "high");
+      expect(priorities[0]).toBe("high");
     });
 
     void it("respects limit parameter", async () => {
       const pendingJobs = await getPendingJobs(deps, 1);
-      assert.strictEqual(pendingJobs.length, 1);
+      expect(pendingJobs.length).toBe(1);
     });
 
     void it("only returns jobs scheduled for now or past", async () => {
@@ -207,7 +200,7 @@ void describe("Jobs", async () => {
 
       for (const job of pendingJobs) {
         if (job.scheduledFor) {
-          assert.ok(job.scheduledFor.getTime() <= now.getTime());
+          expect(job.scheduledFor.getTime() <= now.getTime()).toBeTruthy();
         }
       }
     });
@@ -215,7 +208,7 @@ void describe("Jobs", async () => {
 
   void describe("getRetryableJobs", async () => {
     beforeEach(async () => {
-      await wipeJobsDb(drizzle);
+      await nukeDatabase(drizzle);
     });
 
     void it("finds failed jobs with remaining retries", async () => {
@@ -232,9 +225,9 @@ void describe("Jobs", async () => {
       const retryableJobs = await getRetryableJobs(deps, 10);
       const testJob = retryableJobs.find((j) => j.id === job.id);
 
-      assert.ok(testJob);
-      assert.strictEqual(testJob.status, "failed");
-      assert.ok(testJob.attempts < testJob.maxRetries);
+      expect(testJob).toBeTruthy();
+      expect(testJob!.status).toBe("failed");
+      expect(testJob!.attempts < testJob!.maxRetries).toBeTruthy();
     });
 
     void it("excludes jobs that have exhausted retries", async () => {
@@ -251,13 +244,13 @@ void describe("Jobs", async () => {
       const retryableJobs = await getRetryableJobs(deps, 10);
       const testJob = retryableJobs.find((j) => j.id === job.id);
 
-      assert.strictEqual(testJob, undefined);
+      expect(testJob).toBe(undefined);
     });
   });
 
   void describe("getJobStats", async () => {
     beforeEach(async () => {
-      await wipeJobsDb(drizzle);
+      await nukeDatabase(drizzle);
 
       const job1 = await createJob(deps, {
         jobName: "send_email" as const,
@@ -280,24 +273,32 @@ void describe("Jobs", async () => {
     void it("aggregates job statistics correctly", async () => {
       const stats = await getJobStats(deps);
 
-      assert.ok(stats.total >= 2);
-      assert.ok(stats.byStatus.completed >= 1);
-      assert.ok(stats.byStatus.failed >= 1);
-      assert.ok(stats.byType.immediate >= 1);
-      assert.ok(stats.byType.cron >= 1);
-      assert.ok(stats.byPriority.high >= 1);
-      assert.ok(stats.byPriority.normal >= 1);
+      expect(stats.total >= 2).toBeTruthy();
+      expect(stats.byStatus.completed >= 1).toBeTruthy();
+      expect(stats.byStatus.failed >= 1).toBeTruthy();
+      expect(stats.byType.immediate >= 1).toBeTruthy();
+      expect(stats.byType.cron >= 1).toBeTruthy();
+      expect(stats.byPriority.high >= 1).toBeTruthy();
+      expect(stats.byPriority.normal >= 1).toBeTruthy();
     });
 
     void it("returns empty stats for empty database", async () => {
-      await wipeJobsDb(drizzle);
+      await nukeDatabase(drizzle);
 
       const stats = await getJobStats(deps);
 
-      assert.strictEqual(stats.total, 0);
-      assert.deepStrictEqual(stats.byStatus, {});
-      assert.deepStrictEqual(stats.byType, {});
-      assert.deepStrictEqual(stats.byPriority, {});
+      expect(stats.total).toBe(0);
+      // Empty database still returns structure with zero counts
+      expect(stats.byStatus).toEqual({
+        pending: 0,
+        running: 0,
+        completed: 0,
+        failed: 0,
+        cancelled: 0,
+        retrying: 0,
+      });
+      expect(stats.byType).toEqual({ cron: 0, immediate: 0, scheduled: 0, recurring: 0 });
+      expect(stats.byPriority).toEqual({ low: 0, normal: 0, high: 0, critical: 0 });
     });
   });
 });

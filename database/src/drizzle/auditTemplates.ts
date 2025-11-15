@@ -50,7 +50,7 @@ export const auditTemplates = auditSchema.table(
       settings?: Record<string, unknown>;
     }>(),
     createdBy: uuid("created_by")
-      .references(() => users.id)
+      .references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" })
       .notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),

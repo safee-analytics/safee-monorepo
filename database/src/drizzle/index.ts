@@ -49,6 +49,8 @@ export * from "./oauthAccounts.js";
 export * from "./oauthAccountsRelations.js";
 export * from "./verifications.js";
 export * from "./verificationsRelations.js";
+export * from "./notifications.js";
+export * from "./notificationsRelations.js";
 export * from "./notificationSettings.js";
 export * from "./appearanceSettings.js";
 export * from "./organizationRoles.js";

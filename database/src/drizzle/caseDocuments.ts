@@ -1,4 +1,13 @@
-import { uuid, varchar, timestamp, boolean, bigint, integer, index, type AnyPgColumn } from "drizzle-orm/pg-core";
+import {
+  uuid,
+  varchar,
+  timestamp,
+  boolean,
+  bigint,
+  integer,
+  index,
+  type AnyPgColumn,
+} from "drizzle-orm/pg-core";
 import { auditSchema, idpk } from "./_common.js";
 import { cases } from "./cases.js";
 import { auditProcedures } from "./auditProcedures.js";
@@ -21,9 +30,11 @@ export const caseDocuments = auditSchema.table(
     fileType: varchar("file_type", { length: 100 }).notNull(), // MIME type
     storagePath: varchar("storage_path", { length: 500 }).notNull(), // Path in storage system
     version: integer("version").notNull().default(1),
-    parentDocumentId: uuid("parent_document_id").references((): AnyPgColumn => caseDocuments.id, { onDelete: "set null" }), // For versioning - self-reference
+    parentDocumentId: uuid("parent_document_id").references((): AnyPgColumn => caseDocuments.id, {
+      onDelete: "set null",
+    }), // For versioning - self-reference
     uploadedBy: uuid("uploaded_by")
-      .references(() => users.id)
+      .references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" })
       .notNull(),
     uploadedAt: timestamp("uploaded_at", { withTimezone: true }).defaultNow().notNull(),
     isDeleted: boolean("is_deleted").notNull().default(false), // Soft delete

@@ -1,5 +1,4 @@
-import { describe, it, beforeEach, afterEach } from "node:test";
-import assert from "node:assert";
+import { describe, it, beforeEach, afterEach, expect } from "vitest";
 import { InMemoryPubSub } from "./inMemoryPubSub.js";
 import { RedisPubSub } from "./redisPubSub.js";
 import { getDefaultPubSub, createPubSub } from "./index.js";
@@ -28,11 +27,11 @@ await describe("Local Pub/Sub Adapters", async () => {
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      assert.ok(receivedMessage);
+      expect(receivedMessage).toBeTruthy();
       const message = receivedMessage as { data: string; attributes: { type: string }; id: string };
-      assert.strictEqual(message.data, "Hello World");
-      assert.strictEqual(message.attributes.type, "test");
-      assert.strictEqual(message.id, messageId);
+      expect(message.data).toBe("Hello World");
+      expect(message.attributes.type).toBe("test");
+      expect(message.id).toBe(messageId);
     });
 
     await it("should handle JSON messages", async () => {
@@ -45,11 +44,11 @@ await describe("Local Pub/Sub Adapters", async () => {
       await pubsub.publish("json", { userId: 123, action: "login" });
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      assert.ok(receivedMessage);
+      expect(receivedMessage).toBeTruthy();
       const message = receivedMessage as { data: string };
       const data = JSON.parse(message.data) as { userId: number; action: string };
-      assert.strictEqual(data.userId, 123);
-      assert.strictEqual(data.action, "login");
+      expect(data.userId).toBe(123);
+      expect(data.action).toBe("login");
     });
 
     await it("should handle Buffer messages", async () => {
@@ -63,10 +62,10 @@ await describe("Local Pub/Sub Adapters", async () => {
       await pubsub.publish("buffer", buffer);
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      assert.ok(receivedMessage);
+      expect(receivedMessage).toBeTruthy();
       const message = receivedMessage as { data: Buffer };
-      assert.ok(Buffer.isBuffer(message.data));
-      assert.strictEqual(message.data.toString(), "binary data");
+      expect(Buffer.isBuffer(message.data)).toBeTruthy();
+      expect(message.data.toString()).toBe("binary data");
     });
   });
 
@@ -104,10 +103,10 @@ await describe("Local Pub/Sub Adapters", async () => {
       await pubsub.publish("redis-test", "Redis Hello", { source: "test" });
       await new Promise((resolve) => setTimeout(resolve, 500));
 
-      assert.ok(receivedMessage);
+      expect(receivedMessage).toBeTruthy();
       const message = receivedMessage as { data: string; attributes: { source: string } };
-      assert.strictEqual(message.data, "Redis Hello");
-      assert.strictEqual(message.attributes.source, "test");
+      expect(message.data).toBe("Redis Hello");
+      expect(message.attributes.source).toBe("test");
     });
 
     await it("should persist messages in queue", async () => {
@@ -122,8 +121,8 @@ await describe("Local Pub/Sub Adapters", async () => {
           getQueueStats: (topic: string) => Promise<{ queueLength: number; topic: string }>;
         }
       ).getQueueStats("queue-test");
-      assert.strictEqual(stats.queueLength, 1);
-      assert.strictEqual(stats.topic, "queue-test");
+      expect(stats.queueLength).toBe(1);
+      expect(stats.topic).toBe("queue-test");
 
       await (pubsub as unknown as { clearQueue: (topic: string) => Promise<void> }).clearQueue("queue-test");
       const clearedStats = await (
@@ -131,28 +130,28 @@ await describe("Local Pub/Sub Adapters", async () => {
           getQueueStats: (topic: string) => Promise<{ queueLength: number; topic: string }>;
         }
       ).getQueueStats("queue-test");
-      assert.strictEqual(clearedStats.queueLength, 0);
+      expect(clearedStats.queueLength).toBe(0);
     });
   });
 
   await describe("Factory Functions", async () => {
     await it("should create memory adapter", () => {
       const pubsub = createPubSub({ provider: "memory" });
-      assert.ok(pubsub instanceof InMemoryPubSub);
+      expect(pubsub instanceof InMemoryPubSub).toBeTruthy();
     });
 
     await it("should create redis adapter", () => {
       const pubsub = createPubSub({ provider: "redis" });
-      assert.ok(pubsub instanceof RedisPubSub);
+      expect(pubsub instanceof RedisPubSub).toBeTruthy();
     });
 
     await it("should get default adapter based on environment", () => {
       const pubsub = getDefaultPubSub();
-      assert.ok(pubsub);
+      expect(pubsub).toBeTruthy();
 
       // Should be either InMemoryPubSub or RedisPubSub for local development
       const isLocalAdapter = pubsub instanceof InMemoryPubSub || pubsub instanceof RedisPubSub;
-      assert.ok(isLocalAdapter);
+      expect(isLocalAdapter).toBeTruthy();
     });
   });
 
@@ -213,12 +212,12 @@ await describe("Local Pub/Sub Adapters", async () => {
       // Wait for processing
       await new Promise((resolve) => setTimeout(resolve, 200));
 
-      assert.strictEqual(processedJobs.length, 2);
-      assert.ok(processedJobs.includes("test-job-1"));
-      assert.ok(processedJobs.includes("test-job-2"));
+      expect(processedJobs.length).toBe(2);
+      expect(processedJobs.includes("test-job-1")).toBeTruthy();
+      expect(processedJobs.includes("test-job-2")).toBeTruthy();
 
-      assert.strictEqual(jobEvents.length, 2);
-      assert.ok(jobEvents.every((event) => (event as { type: string }).type === "job.completed"));
+      expect(jobEvents.length).toBe(2);
+      expect(jobEvents.every((event) => (event as { type: string }).type === "job.completed"));
     });
   });
 });

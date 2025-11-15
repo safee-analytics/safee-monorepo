@@ -199,7 +199,7 @@ export async function server({
     logger.warn({ err }, "Could not generate Better Auth OpenAPI spec, using TSOA spec only");
   }
 
-  app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(mergedSpec, swaggerUiOptions));
+  app.use("/docs", swaggerUi.serve, swaggerUi.setup(mergedSpec, swaggerUiOptions));
 
   app.get("/", (_req, res) => {
     res.json({
@@ -266,11 +266,11 @@ export async function server({
 export async function startServer(deps: Dependencies) {
   const app = await server(deps);
 
-  app.listen(PORT, HOST, () => {
+  const httpServer = app.listen(PORT, HOST, () => {
     deps.logger.info("Server listening on %s:%s", HOST, PORT);
     deps.logger.info("API Documentation available at: http://%s:%s/docs", HOST, PORT);
     deps.logger.info("Health Check available at: http://%s:%s/api/v1/health", HOST, PORT);
   });
 
-  return app;
+  return httpServer;
 }

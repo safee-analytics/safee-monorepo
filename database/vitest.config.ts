@@ -7,20 +7,24 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
-      exclude: [
-        "node_modules/**",
-        "build/**",
-        "**/*.d.ts",
-        "src/private/**", // Migration scripts
-      ],
+      exclude: ["node_modules/**", "build/**", "**/*.d.ts", "src/private/**"],
     },
     env: {
       NODE_ENV: "test",
-      DATABASE_URL: "postgresql://safee:safee@localhost:45432/safee",
+      DATABASE_URL: "postgresql://safee:safee@localhost:25432/safee",
       REDIS_URL: "redis://localhost:26379",
     },
     testTimeout: 10000,
-    // Only run unit tests (no integration tests that require Docker)
     exclude: ["**/integration/**", "**/e2e/**", "node_modules/**", "build/**"],
+    fileParallelism: false,
+    maxConcurrency: 1,
+    pool: "forks",
+    poolOptions: {
+      forks: {
+        singleFork: true,
+        maxForks: 1,
+        minForks: 1,
+      },
+    },
   },
 });

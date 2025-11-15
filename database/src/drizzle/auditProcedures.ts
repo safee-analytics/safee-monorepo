@@ -46,7 +46,10 @@ export const auditProcedures = auditSchema.table(
     }>(),
     sortOrder: integer("sort_order").notNull().default(0),
     isCompleted: boolean("is_completed").notNull().default(false),
-    completedBy: uuid("completed_by").references(() => users.id),
+    completedBy: uuid("completed_by").references(() => users.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
     completedAt: timestamp("completed_at", { withTimezone: true }),
     memo: text("memo"), // Auditor's private notes
     fieldData: jsonb("field_data").default({}).$type<Record<string, unknown>>(), // Stores custom field values

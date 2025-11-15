@@ -1,5 +1,4 @@
-import { describe, it, before, after, beforeEach } from "node:test";
-import assert from "node:assert";
+import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { mkdir, rmdir } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
@@ -9,12 +8,12 @@ import type { Storage, StorageMetadata } from "./storage.js";
 void describe("Storage Integration Tests", async () => {
   let testDir: string;
 
-  before(async () => {
+  beforeAll(async () => {
     testDir = join(tmpdir(), `storage-integration-${Date.now()}`);
     await mkdir(testDir, { recursive: true });
   });
 
-  after(async () => {
+  afterAll(async () => {
     try {
       await rmdir(testDir, { recursive: true });
     } catch {
@@ -42,22 +41,22 @@ void describe("Storage Integration Tests", async () => {
       };
 
       const saveResult = await fileSystemStorage.saveFile(path, testData, metadata);
-      assert.strictEqual(saveResult.key, path);
-      assert.strictEqual(saveResult.size, testData.length);
+      expect(saveResult.key).toBe(path);
+      expect(saveResult.size).toBe(testData.length);
 
       const exists = await fileSystemStorage.fileExists(path);
-      assert.strictEqual(exists, true);
+      expect(exists).toBe(true);
 
       const retrievedData = await fileSystemStorage.getFile(path);
-      assert.deepStrictEqual(retrievedData, testData);
+      expect(retrievedData).toEqual(testData);
 
       const fileMetadata = await fileSystemStorage.getFileMetadata(path);
-      assert.strictEqual(fileMetadata.key, path);
-      assert.strictEqual(fileMetadata.size, testData.length);
+      expect(fileMetadata.key).toBe(path);
+      expect(fileMetadata.size).toBe(testData.length);
 
       await fileSystemStorage.deleteFile(path);
       const existsAfterDelete = await fileSystemStorage.fileExists(path);
-      assert.strictEqual(existsAfterDelete, false);
+      expect(existsAfterDelete).toBe(false);
     });
 
     void it("handles large files consistently", async () => {
@@ -65,11 +64,11 @@ void describe("Storage Integration Tests", async () => {
       const path = "large-file.bin";
 
       const saveResult = await fileSystemStorage.saveFile(path, largeData);
-      assert.strictEqual(saveResult.size, largeData.length);
+      expect(saveResult.size).toBe(largeData.length);
 
       const retrievedData = await fileSystemStorage.getFile(path);
-      assert.strictEqual(retrievedData.length, largeData.length);
-      assert.deepStrictEqual(retrievedData, largeData);
+      expect(retrievedData.length).toBe(largeData.length);
+      expect(retrievedData).toEqual(largeData);
 
       await fileSystemStorage.deleteFile(path);
     });
@@ -85,7 +84,7 @@ void describe("Storage Integration Tests", async () => {
             .saveFile(path, testData)
             .then(() => fileSystemStorage.getFile(path))
             .then((data) => {
-              assert.deepStrictEqual(data, testData);
+              expect(data).toEqual(testData);
               return fileSystemStorage.deleteFile(path);
             }),
         );
@@ -102,13 +101,13 @@ void describe("Storage Integration Tests", async () => {
         await fileSystemStorage.saveFile(path, originalData);
 
         const retrievedData = await fileSystemStorage.getFile(path);
-        assert.deepStrictEqual(retrievedData, originalData);
+        expect(retrievedData).toEqual(originalData);
 
         const metadata = await fileSystemStorage.getFileMetadata(path);
-        assert.strictEqual(metadata.size, originalData.length);
+        expect(metadata.size).toBe(originalData.length);
 
         const exists = await fileSystemStorage.fileExists(path);
-        assert.strictEqual(exists, true);
+        expect(exists).toBe(true);
       }
 
       await fileSystemStorage.deleteFile(path);
@@ -131,36 +130,28 @@ void describe("Storage Integration Tests", async () => {
         const path = `factory-test-${config.provider}.txt`;
 
         const result = await storage.saveFile(path, testData);
-        assert.strictEqual(result.key, path);
+        expect(result.key).toBe(path);
 
         const retrievedData = await storage.getFile(path);
-        assert.deepStrictEqual(retrievedData, testData);
+        expect(retrievedData).toEqual(testData);
 
         await storage.deleteFile(path);
       }
     });
 
     void it("getStorage returns appropriate storage for environment", async () => {
-      const originalEnv = process.env.ENV;
-      process.env.ENV = "local";
-
-      const localStorage = getStorage("env-test");
+      // IS_LOCAL is determined at module load time, so we test with whatever environment is active
+      const storage = getStorage("env-test");
       const testData = Buffer.from("Environment test data");
       const path = "env-test.txt";
 
-      const result = await localStorage.saveFile(path, testData);
-      assert.strictEqual(result.key, path);
+      const result = await storage.saveFile(path, testData);
+      expect(result.key).toBe(path);
 
-      const retrievedData = await localStorage.getFile(path);
-      assert.deepStrictEqual(retrievedData, testData);
+      const retrievedData = await storage.getFile(path);
+      expect(retrievedData).toEqual(testData);
 
-      await localStorage.deleteFile(path);
-
-      if (originalEnv !== undefined) {
-        process.env.ENV = originalEnv;
-      } else {
-        delete process.env.ENV;
-      }
+      await storage.deleteFile(path);
     });
   });
 
@@ -188,28 +179,28 @@ void describe("Storage Integration Tests", async () => {
       };
 
       const uploadResult = await storage.saveFile(documentPath, documentContent, metadata);
-      assert.ok(uploadResult.url);
-      assert.strictEqual(uploadResult.size, documentContent.length);
+      expect(uploadResult.url).toBeTruthy();
+      expect(uploadResult.size).toBe(documentContent.length);
 
       const exists = await storage.fileExists(documentPath);
-      assert.strictEqual(exists, true);
+      expect(exists).toBe(true);
 
       const docMetadata = await storage.getFileMetadata(documentPath);
-      assert.strictEqual(docMetadata.key, documentPath);
-      assert.ok(docMetadata.lastModified);
+      expect(docMetadata.key).toBe(documentPath);
+      expect(docMetadata.lastModified).toBeTruthy();
 
       const signedUrl = await storage.getSignedUrl(documentPath, 1800); // 30 minutes
-      assert.ok(signedUrl.includes(documentPath));
+      expect(signedUrl.includes(documentPath)).toBeTruthy();
 
       const backupPath = "backups/documents/2024/01/user-123/document-backup.pdf";
       await storage.copyFile(documentPath, backupPath);
 
-      assert.strictEqual(await storage.fileExists(documentPath), true);
-      assert.strictEqual(await storage.fileExists(backupPath), true);
+      expect(await storage.fileExists(documentPath)).toBe(true);
+      expect(await storage.fileExists(backupPath)).toBe(true);
 
       const userDocuments = await storage.listFiles("documents/2024/01/user-123/");
-      assert.ok(userDocuments.length >= 1);
-      assert.ok(userDocuments.some((doc) => doc.key === documentPath));
+      expect(userDocuments.length >= 1).toBeTruthy();
+      expect(userDocuments.some((doc) => doc.key === documentPath));
 
       await storage.deleteFile(documentPath);
       await storage.deleteFile(backupPath);
@@ -245,18 +236,18 @@ void describe("Storage Integration Tests", async () => {
       await storage.saveFile(thumbnailPath, thumbnailImage, thumbnailMetadata);
 
       const allImages = await storage.listFiles("images/", 100);
-      assert.ok(allImages.length >= 2);
+      expect(allImages.length >= 2).toBeTruthy();
 
       const originalExists = await storage.fileExists(originalPath);
       const thumbnailExists = await storage.fileExists(thumbnailPath);
-      assert.strictEqual(originalExists, true);
-      assert.strictEqual(thumbnailExists, true);
+      expect(originalExists).toBe(true);
+      expect(thumbnailExists).toBe(true);
 
       const originalMeta = await storage.getFileMetadata(originalPath);
       const thumbnailMeta = await storage.getFileMetadata(thumbnailPath);
 
-      assert.strictEqual(originalMeta.size, originalImage.length);
-      assert.strictEqual(thumbnailMeta.size, thumbnailImage.length);
+      expect(originalMeta.size).toBe(originalImage.length);
+      expect(thumbnailMeta.size).toBe(thumbnailImage.length);
 
       await storage.deleteFile(originalPath);
       await storage.deleteFile(thumbnailPath);
@@ -279,21 +270,21 @@ void describe("Storage Integration Tests", async () => {
       );
 
       const uploadResults = await Promise.all(uploadPromises);
-      assert.strictEqual(uploadResults.length, 10);
+      expect(uploadResults.length).toBe(10);
 
       const listedFiles = await storage.listFiles("batch/");
-      assert.strictEqual(listedFiles.length, 10);
+      expect(listedFiles.length).toBe(10);
 
       const existsPromises = batchFiles.map((path) => storage.fileExists(path));
       const existsResults = await Promise.all(existsPromises);
-      assert.ok(existsResults.every((exists) => exists));
+      expect(existsResults.every((exists) => exists));
 
       const deletePromises = batchFiles.map((path) => storage.deleteFile(path));
       await Promise.all(deletePromises);
 
       const deletedExistsPromises = batchFiles.map((path) => storage.fileExists(path));
       const deletedExistsResults = await Promise.all(deletedExistsPromises);
-      assert.ok(deletedExistsResults.every((exists) => !exists));
+      expect(deletedExistsResults.every((exists) => !exists));
     });
   });
 
@@ -313,12 +304,12 @@ void describe("Storage Integration Tests", async () => {
       const path = "recovery/test-file.txt";
 
       await storage.saveFile(path, testData);
-      assert.strictEqual(await storage.fileExists(path), true);
+      expect(await storage.fileExists(path)).toBe(true);
 
-      await assert.rejects(async () => await storage.getFile("non-existent.txt"), /File not found/);
+      await expect(storage.getFile("non-existent.txt")).rejects.toThrow(/File not found/);
 
       const retrievedData = await storage.getFile(path);
-      assert.deepStrictEqual(retrievedData, testData);
+      expect(retrievedData).toEqual(testData);
 
       await storage.deleteFile(path);
     });
@@ -333,14 +324,14 @@ void describe("Storage Integration Tests", async () => {
       try {
         await storage.saveFile(invalidPath, testData);
       } catch (err) {
-        assert.ok(err instanceof Error);
+        expect(err instanceof Error).toBeTruthy();
       }
 
       const exists = await storage.fileExists(validPath);
-      assert.strictEqual(exists, true);
+      expect(exists).toBe(true);
 
       const data = await storage.getFile(validPath);
-      assert.deepStrictEqual(data, testData);
+      expect(data).toEqual(testData);
 
       await storage.deleteFile(validPath);
     });

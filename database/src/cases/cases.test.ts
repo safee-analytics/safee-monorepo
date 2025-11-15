@@ -1,5 +1,4 @@
-import { describe, it, before, after, beforeEach } from "node:test";
-import assert from "node:assert";
+import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { pino } from "pino";
 import { testConnect } from "../drizzle/testConnect.js";
 import type { DrizzleClient } from "../drizzle.js";
@@ -8,6 +7,7 @@ import type { DbDeps } from "../deps.js";
 import {
   createTestOrganization,
   createTestUser,
+  nukeDatabase,
   type TestOrganization,
   type TestUser,
 } from "../test-helpers/test-fixtures.js";
@@ -22,7 +22,6 @@ import {
   getPublicTemplates,
   createScope,
   createScopeFromTemplate,
-  getScopesByCase,
   updateScopeStatus,
   createSection,
   getSectionsByScopeId,
@@ -33,7 +32,6 @@ import {
   getDocumentsByCase,
   softDeleteDocument,
   createNote,
-  getNotesByCase,
   updateNote,
   createAssignment,
   getAssignmentsByCase,
@@ -42,21 +40,6 @@ import {
   getHistoryByCase,
 } from "./cases.js";
 import type { TemplateStructure } from "./types.js";
-
-async function wipeAllTestData(drizzle: DrizzleClient) {
-  // Delete in proper order to handle foreign key constraints
-  await drizzle.delete(schema.caseHistory);
-  await drizzle.delete(schema.caseAssignments);
-  await drizzle.delete(schema.caseNotes);
-  await drizzle.delete(schema.caseDocuments);
-  await drizzle.delete(schema.auditProcedures);
-  await drizzle.delete(schema.auditSections);
-  await drizzle.delete(schema.auditScopes);
-  await drizzle.delete(schema.auditTemplates);
-  await drizzle.delete(schema.cases);
-  await drizzle.delete(schema.users);
-  await drizzle.delete(schema.organizations);
-}
 
 void describe("Cases Module", async () => {
   let drizzle: DrizzleClient;
@@ -67,18 +50,18 @@ void describe("Cases Module", async () => {
   let testUser: TestUser;
   let testAdminUser: TestUser;
 
-  before(async () => {
+  beforeAll(async () => {
     ({ drizzle, close } = testConnect("cases-test"));
     deps = { drizzle, logger };
   });
 
-  after(async () => {
+  afterAll(async () => {
     await close();
   });
 
   beforeEach(async () => {
     // Clean all data before each test
-    await wipeAllTestData(drizzle);
+    await nukeDatabase(drizzle);
 
     // Create fresh test fixtures for each test
     testOrg = await createTestOrganization(drizzle);
@@ -100,11 +83,11 @@ void describe("Cases Module", async () => {
 
       const newCase = await createCase(deps, caseData);
 
-      assert.ok(newCase.id);
-      assert.strictEqual(newCase.caseNumber, "CASE-001");
-      assert.strictEqual(newCase.clientName, "Test Client");
-      assert.strictEqual(newCase.auditType, "ICV");
-      assert.strictEqual(newCase.status, "pending");
+      expect(newCase.id).toBeTruthy();
+      expect(newCase.caseNumber).toBe("CASE-001");
+      expect(newCase.clientName).toBe("Test Client");
+      expect(newCase.auditType).toBe("ICV");
+      expect(newCase.status).toBe("pending");
     });
 
     void it("gets case by ID", async () => {
@@ -119,9 +102,9 @@ void describe("Cases Module", async () => {
       const created = await createCase(deps, caseData);
       const found = await getCaseById(deps, created.id);
 
-      assert.ok(found);
-      assert.strictEqual(found.id, created.id);
-      assert.strictEqual(found.caseNumber, "CASE-002");
+      expect(found).toBeTruthy();
+      expect(found!.id).toBe(created.id);
+      expect(found!.caseNumber).toBe("CASE-002");
     });
 
     void it("gets cases by organization", async () => {
@@ -143,9 +126,9 @@ void describe("Cases Module", async () => {
 
       const cases = await getCasesByOrganization(deps, testOrg.id);
 
-      assert.strictEqual(cases.length, 2);
-      assert.ok(cases.some((c) => c.caseNumber === "CASE-003"));
-      assert.ok(cases.some((c) => c.caseNumber === "CASE-004"));
+      expect(cases.length).toBe(2);
+      expect(cases.some((c) => c.caseNumber === "CASE-003")).toBeTruthy();
+      expect(cases.some((c) => c.caseNumber === "CASE-004")).toBeTruthy();
     });
 
     void it("updates case", async () => {
@@ -162,8 +145,8 @@ void describe("Cases Module", async () => {
         priority: "high",
       });
 
-      assert.strictEqual(updated.status, "in-progress");
-      assert.strictEqual(updated.priority, "high");
+      expect(updated.status).toBe("in-progress");
+      expect(updated.priority).toBe("high");
     });
 
     void it("deletes case", async () => {
@@ -178,7 +161,7 @@ void describe("Cases Module", async () => {
       await deleteCase(deps, created.id);
 
       const found = await getCaseById(deps, created.id);
-      assert.strictEqual(found, undefined);
+      expect(found).toBe(undefined);
     });
   });
 
@@ -210,10 +193,10 @@ void describe("Cases Module", async () => {
 
       const template = await createTemplate(deps, templateData);
 
-      assert.ok(template.id);
-      assert.strictEqual(template.name, "Test Template");
-      assert.strictEqual(template.auditType, "ICV");
-      assert.ok(template.structure.sections.length > 0);
+      expect(template.id).toBeTruthy();
+      expect(template.name).toBe("Test Template");
+      expect(template.auditType).toBe("ICV");
+      expect(template.structure.sections.length > 0).toBeTruthy();
     });
 
     void it("gets template by ID", async () => {
@@ -243,9 +226,9 @@ void describe("Cases Module", async () => {
 
       const found = await getTemplateById(deps, created.id);
 
-      assert.ok(found);
-      assert.strictEqual(found.id, created.id);
-      assert.strictEqual(found.name, "Template 2");
+      expect(found).toBeTruthy();
+      expect(found!.id).toBe(created.id);
+      expect(found!.name).toBe("Template 2");
     });
 
     void it("gets public templates", async () => {
@@ -276,8 +259,8 @@ void describe("Cases Module", async () => {
 
       const publicTemplates = await getPublicTemplates(deps);
 
-      assert.ok(publicTemplates.length > 0);
-      assert.ok(publicTemplates.some((t) => t.name === "Public Template"));
+      expect(publicTemplates.length > 0).toBeTruthy();
+      expect(publicTemplates.some((t) => t.name === "Public Template"));
     });
   });
 
@@ -298,9 +281,9 @@ void describe("Cases Module", async () => {
         createdBy: testUser.id,
       });
 
-      assert.ok(scope.id);
-      assert.strictEqual(scope.name, "ICV Scope");
-      assert.strictEqual(scope.status, "draft");
+      expect(scope.id).toBeTruthy();
+      expect(scope.name).toBe("ICV Scope");
+      expect(scope.status).toBe("draft");
     });
 
     void it("creates scope from template", async () => {
@@ -343,17 +326,17 @@ void describe("Cases Module", async () => {
 
       const scope = await createScopeFromTemplate(deps, testCase.id, template.id, testUser.id);
 
-      assert.ok(scope.id);
-      assert.strictEqual(scope.templateId, template.id);
+      expect(scope.id).toBeTruthy();
+      expect(scope.templateId).toBe(template.id);
 
       const sections = await getSectionsByScopeId(deps, scope.id);
-      assert.strictEqual(sections.length, 1);
-      assert.strictEqual(sections[0].name, "Section 1");
+      expect(sections.length).toBe(1);
+      expect(sections[0].name).toBe("Section 1");
 
       const procedures = await getProceduresBySectionId(deps, sections[0].id);
-      assert.strictEqual(procedures.length, 2);
-      assert.ok(procedures.some((p) => p.referenceNumber === "1.1"));
-      assert.ok(procedures.some((p) => p.referenceNumber === "1.2"));
+      expect(procedures.length).toBe(2);
+      expect(procedures.some((p) => p.referenceNumber === "1.1"));
+      expect(procedures.some((p) => p.referenceNumber === "1.2"));
     });
 
     void it("updates scope status", async () => {
@@ -374,9 +357,9 @@ void describe("Cases Module", async () => {
 
       const updated = await updateScopeStatus(deps, scope.id, "completed", testUser.id);
 
-      assert.strictEqual(updated.status, "completed");
-      assert.strictEqual(updated.completedBy, testUser.id);
-      assert.ok(updated.completedAt);
+      expect(updated.status).toBe("completed");
+      expect(updated.completedBy).toBe(testUser.id);
+      expect(updated.completedAt).toBeTruthy();
     });
   });
 
@@ -416,11 +399,11 @@ void describe("Cases Module", async () => {
         memo: "Test memo",
       });
 
-      assert.strictEqual(completed.isCompleted, true);
-      assert.strictEqual(completed.completedBy, testUser.id);
-      assert.ok(completed.completedAt);
-      assert.deepStrictEqual(completed.fieldData, { customField1: "value1", customField2: 123 });
-      assert.strictEqual(completed.memo, "Test memo");
+      expect(completed.isCompleted).toBe(true);
+      expect(completed.completedBy).toBe(testUser.id);
+      expect(completed.completedAt).toBeTruthy();
+      expect(completed.fieldData).toEqual({ customField1: "value1", customField2: 123 });
+      expect(completed.memo).toBe("Test memo");
     });
   });
 
@@ -443,16 +426,16 @@ void describe("Cases Module", async () => {
         uploadedBy: testUser.id,
       });
 
-      assert.ok(document.id);
-      assert.strictEqual(document.fileName, "test.pdf");
+      expect(document.id).toBeTruthy();
+      expect(document.fileName).toBe("test.pdf");
 
       let documents = await getDocumentsByCase(deps, testCase.id);
-      assert.strictEqual(documents.length, 1);
+      expect(documents.length).toBe(1);
 
       await softDeleteDocument(deps, document.id);
 
       documents = await getDocumentsByCase(deps, testCase.id);
-      assert.strictEqual(documents.length, 0);
+      expect(documents.length).toBe(0);
     });
   });
 
@@ -473,16 +456,16 @@ void describe("Cases Module", async () => {
         createdBy: testUser.id,
       });
 
-      assert.ok(note.id);
-      assert.strictEqual(note.content, "Initial observation");
-      assert.strictEqual(note.isEdited, false);
+      expect(note.id).toBeTruthy();
+      expect(note.content).toBe("Initial observation");
+      expect(note.isEdited).toBe(false);
 
       const updated = await updateNote(deps, note.id, {
         content: "Updated observation",
       });
 
-      assert.strictEqual(updated.content, "Updated observation");
-      assert.strictEqual(updated.isEdited, true);
+      expect(updated.content).toBe("Updated observation");
+      expect(updated.isEdited).toBe(true);
     });
   });
 
@@ -503,16 +486,16 @@ void describe("Cases Module", async () => {
         assignedBy: testAdminUser.id,
       });
 
-      assert.strictEqual(assignment.caseId, testCase.id);
-      assert.strictEqual(assignment.role, "lead");
+      expect(assignment.caseId).toBe(testCase.id);
+      expect(assignment.role).toBe("lead");
 
       let assignments = await getAssignmentsByCase(deps, testCase.id);
-      assert.strictEqual(assignments.length, 1);
+      expect(assignments.length).toBe(1);
 
       await deleteAssignment(deps, testCase.id, testUser.id);
 
       assignments = await getAssignmentsByCase(deps, testCase.id);
-      assert.strictEqual(assignments.length, 0);
+      expect(assignments.length).toBe(0);
     });
   });
 
@@ -536,14 +519,14 @@ void describe("Cases Module", async () => {
         changedBy: testUser.id,
       });
 
-      assert.ok(history.id);
-      assert.strictEqual(history.action, "updated");
-      assert.deepStrictEqual(history.changesBefore, { status: "pending" });
-      assert.deepStrictEqual(history.changesAfter, { status: "in-progress" });
+      expect(history.id).toBeTruthy();
+      expect(history.action).toBe("updated");
+      expect(history.changesBefore).toEqual({ status: "pending" });
+      expect(history.changesAfter).toEqual({ status: "in-progress" });
 
       const caseHistory = await getHistoryByCase(deps, testCase.id);
-      assert.strictEqual(caseHistory.length, 1);
-      assert.strictEqual(caseHistory[0].action, "updated");
+      expect(caseHistory.length).toBe(1);
+      expect(caseHistory[0].action).toBe("updated");
     });
   });
 });

@@ -1,5 +1,4 @@
-import { describe, it } from "node:test";
-import assert from "node:assert";
+import { describe, it, expect } from "vitest";
 import { getTimeWindows } from "./getTimeWindows.js";
 
 function createUtcDate({
@@ -20,8 +19,8 @@ function createUtcDate({
   return new Date(Date.UTC(year, month, day, hour, minute, second, 0));
 }
 
-await describe("getTimeWindows", async () => {
-  await it("should return consistent windows", () => {
+void describe("getTimeWindows", () => {
+  void it("should return consistent windows", () => {
     const baseDate = {
       year: 2024,
       month: 0,
@@ -42,9 +41,9 @@ await describe("getTimeWindows", async () => {
       nextWindow: createUtcDate({ ...baseDate, second: 0, minute: 2 }),
     };
 
-    assert.deepStrictEqual(result1, expectedWindows);
-    assert.deepStrictEqual(result2, expectedWindows);
+    expect(result1).toEqual(expectedWindows);
+    expect(result2).toEqual(expectedWindows);
 
-    assert.deepStrictEqual(result3.lastWindow, expectedWindows.nextWindow);
+    expect(result3.lastWindow).toEqual(expectedWindows.nextWindow);
   });
 });

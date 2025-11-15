@@ -1,4 +1,4 @@
-import { uuid, varchar, timestamp, boolean, text, index } from "drizzle-orm/pg-core";
+import { uuid, varchar, timestamp, boolean, jsonb, index } from "drizzle-orm/pg-core";
 import { systemSchema, idpk, entityTypeEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 
@@ -15,7 +15,7 @@ export const approvalWorkflows = systemSchema.table(
       }),
     entityType: entityTypeEnum("entity_type").notNull(),
     isActive: boolean("is_active").default(true).notNull(),
-    rules: text("rules"), // JSON string for flexible rule configuration
+    rules: jsonb("rules"), // JSONB for flexible rule configuration
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
   },

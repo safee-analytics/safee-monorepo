@@ -156,6 +156,14 @@ export const noteTypeEnum = auditSchema.enum("note_type", [
 
 export const assignmentRoleEnum = auditSchema.enum("assignment_role", ["lead", "reviewer", "team_member"]);
 
+export const approvalStatusEnum = systemSchema.enum("approval_status", [
+  "pending",
+  "approved",
+  "rejected",
+  "cancelled",
+]);
+
+export type ApprovalStatus = (typeof approvalStatusEnum.enumValues)[number];
 export type InvoiceType = (typeof invoiceTypeEnum.enumValues)[number];
 export type ContactType = (typeof contactTypeEnum.enumValues)[number];
 export type DealStage = (typeof dealStageEnum.enumValues)[number];

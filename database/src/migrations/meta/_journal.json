@@ -120,6 +120,48 @@
       "when": 1763006466017,
       "tag": "0016_lying_gertrude_yorkes",
       "breakpoints": false
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1763011284067,
+      "tag": "0017_early_songbird",
+      "breakpoints": false
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1763087282383,
+      "tag": "0018_military_eddie_brock",
+      "breakpoints": false
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1763088045475,
+      "tag": "0019_polite_roxanne_simpson",
+      "breakpoints": false
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1763093348850,
+      "tag": "0020_far_nighthawk",
+      "breakpoints": false
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1763093606540,
+      "tag": "0021_overjoyed_madame_hydra",
+      "breakpoints": false
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1763173839787,
+      "tag": "0022_fast_mantis",
+      "breakpoints": false
     }
   ]
 }

@@ -123,7 +123,10 @@ export type CreateCaseInput = NewCase;
 export type UpdateCaseInput = Partial<Omit<NewCase, "organizationId" | "createdBy">>;
 
 export type CreateTemplateInput = NewAuditTemplate;
-export type CreateScopeInput = Omit<NewAuditScope, "completedBy" | "archivedBy" | "completedAt" | "archivedAt">;
+export type CreateScopeInput = Omit<
+  NewAuditScope,
+  "completedBy" | "archivedBy" | "completedAt" | "archivedAt"
+>;
 export type CreateSectionInput = NewAuditSection;
 export type CreateProcedureInput = Omit<NewAuditProcedure, "isCompleted" | "completedBy" | "completedAt">;
 export type CompleteProcedureInput = {

@@ -96,7 +96,10 @@ export async function getTemplateById(deps: DbDeps, templateId: string): Promise
   });
 }
 
-export async function getTemplatesByOrganization(deps: DbDeps, organizationId: string): Promise<AuditTemplate[]> {
+export async function getTemplatesByOrganization(
+  deps: DbDeps,
+  organizationId: string,
+): Promise<AuditTemplate[]> {
   return deps.drizzle.query.auditTemplates.findMany({
     where: eq(auditTemplates.organizationId, organizationId),
     orderBy: [desc(auditTemplates.createdAt)],
@@ -240,7 +243,10 @@ export async function createProcedure(deps: DbDeps, input: CreateProcedureInput)
   return procedure;
 }
 
-export async function getProcedureById(deps: DbDeps, procedureId: string): Promise<AuditProcedure | undefined> {
+export async function getProcedureById(
+  deps: DbDeps,
+  procedureId: string,
+): Promise<AuditProcedure | undefined> {
   return deps.drizzle.query.auditProcedures.findFirst({
     where: eq(auditProcedures.id, procedureId),
   });

@@ -32,6 +32,8 @@ export * from "./sessions/index.js";
 
 export * from "./cases/index.js";
 
+export * from "./approvals.js";
+
 export * from "./general-utils/i18n.js";
 
 export * from "./email/index.js";

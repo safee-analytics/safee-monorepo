@@ -20,7 +20,7 @@ export const caseHistory = auditSchema.table(
     changesBefore: jsonb("changes_before").$type<Record<string, unknown>>(), // State before change
     changesAfter: jsonb("changes_after").$type<Record<string, unknown>>(), // State after change
     changedBy: uuid("changed_by")
-      .references(() => users.id)
+      .references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" })
       .notNull(),
     changedAt: timestamp("changed_at", { withTimezone: true }).defaultNow().notNull(),
   },

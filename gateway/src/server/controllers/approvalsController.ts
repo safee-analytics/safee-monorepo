@@ -12,11 +12,16 @@ import {
   Request,
 } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
-import { getServerContext } from "../serverContext.js";
-import { ApprovalRulesEngine, type EntityData } from "../services/approval-rules-engine.js";
-import { schema } from "@safee/database";
-import { eq, and, or, desc } from "drizzle-orm";
-import { canApprove } from "../middleware/permissions.js";
+import {
+  getApprovalRequestsByApprover,
+  getApprovalRequestById,
+  getApprovalHistoryByEntity,
+} from "@safee/database";
+import { submitForApproval as submitForApprovalOp } from "../operations/approvals/submitForApproval.js";
+import { approve as approveOp } from "../operations/approvals/approve.js";
+import { reject as rejectOp } from "../operations/approvals/reject.js";
+import { delegate as delegateOp } from "../operations/approvals/delegate.js";
+import type { EntityData } from "../services/approval-rules-engine.js";
 
 interface SubmitForApprovalRequest {
   entityType: string;
@@ -87,63 +92,13 @@ export class ApprovalsController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: SubmitForApprovalRequest,
   ): Promise<SubmitForApprovalResponse> {
-    const ctx = getServerContext();
     const userId = req.betterAuthSession?.user.id || "";
     const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
 
-    const rulesEngine = new ApprovalRulesEngine(ctx.drizzle);
-
-    // Find matching workflow
-    const match = await rulesEngine.findMatchingWorkflow(organizationId, request.entityData);
-
-    if (!match) {
-      throw new Error("No matching approval workflow found for this entity");
-    }
-
-    // Create approval request
-    const [approvalRequest] = await ctx.drizzle
-      .insert(schema.approvalRequests)
-      .values({
-        workflowId: match.workflowId,
-        entityType: request.entityType as never,
-        entityId: request.entityId,
-        status: "pending",
-        requestedBy: userId,
-        submittedAt: new Date(),
-      })
-      .returning();
-
-    // Get workflow steps
-    const steps = await rulesEngine.getWorkflowSteps(match.workflowId);
-
-    if (steps.length === 0) {
-      throw new Error("Workflow has no steps configured");
-    }
-
-    // Create approval steps for the first workflow step
-    const firstStep = steps[0];
-    const { approverIds } = await rulesEngine.getRequiredApprovers(firstStep.id, organizationId);
-
-    // Create an approval step for each approver
-    await Promise.all(
-      approverIds.map((approverId) =>
-        ctx.drizzle.insert(schema.approvalSteps).values({
-          requestId: approvalRequest.id,
-          stepOrder: firstStep.stepOrder,
-          approverId,
-          status: "pending",
-        }),
-      ),
-    );
+    const result = await submitForApprovalOp(req.drizzle, organizationId, userId, request);
 
     this.setStatus(201);
-
-    return {
-      requestId: approvalRequest.id,
-      workflowId: match.workflowId,
-      status: "pending",
-      message: `Entity submitted for approval. Awaiting approval from ${approverIds.length} approver(s).`,
-    };
+    return result;
   }
 
   /**
@@ -155,31 +110,11 @@ export class ApprovalsController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Query() status?: "pending" | "approved" | "rejected" | "cancelled",
   ): Promise<ApprovalRequestResponse[]> {
-    const ctx = getServerContext();
     const userId = req.betterAuthSession?.user.id || "";
+    const deps = { drizzle: req.drizzle, logger: req.logger };
 
     // Find approval steps assigned to this user
-    const approvalSteps = await ctx.drizzle.query.approvalSteps.findMany({
-      where: and(
-        eq(schema.approvalSteps.approverId, userId),
-        status ? eq(schema.approvalSteps.status, status as never) : undefined,
-      ),
-      with: {
-        request: {
-          with: {
-            workflow: true,
-            requestedByUser: true,
-            steps: {
-              with: {
-                approver: true,
-                delegatedToUser: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: [desc(schema.approvalSteps.actionAt)],
-    });
+    const approvalSteps = await getApprovalRequestsByApprover(deps, userId, status);
 
     // Transform to response format
     return approvalSteps.map((step) => ({
@@ -216,22 +151,9 @@ export class ApprovalsController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Path() requestId: string,
   ): Promise<ApprovalRequestResponse> {
-    const ctx = getServerContext();
+    const deps = { drizzle: req.drizzle, logger: req.logger };
 
-    const request = await ctx.drizzle.query.approvalRequests.findFirst({
-      where: eq(schema.approvalRequests.id, requestId),
-      with: {
-        workflow: true,
-        requestedByUser: true,
-        steps: {
-          with: {
-            approver: true,
-            delegatedToUser: true,
-          },
-          orderBy: [schema.approvalSteps.stepOrder],
-        },
-      },
-    });
+    const request = await getApprovalRequestById(deps, requestId);
 
     if (!request) {
       throw new Error("Approval request not found");
@@ -272,110 +194,10 @@ export class ApprovalsController extends Controller {
     @Path() requestId: string,
     @Body() body: ApprovalActionRequest,
   ): Promise<ApprovalActionResponse> {
-    const ctx = getServerContext();
     const userId = req.betterAuthSession?.user.id || "";
     const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
 
-    // Get the approval request
-    const request = await ctx.drizzle.query.approvalRequests.findFirst({
-      where: eq(schema.approvalRequests.id, requestId),
-      with: {
-        workflow: {
-          with: {
-            steps: true,
-          },
-        },
-      },
-    });
-
-    if (!request) {
-      throw new Error("Approval request not found");
-    }
-
-    if (request.status !== "pending") {
-      throw new Error(`Cannot approve request with status: ${request.status}`);
-    }
-
-    // Find pending approval step for this user
-    const approvalStep = await ctx.drizzle.query.approvalSteps.findFirst({
-      where: and(
-        eq(schema.approvalSteps.requestId, requestId),
-        or(eq(schema.approvalSteps.approverId, userId), eq(schema.approvalSteps.delegatedTo, userId)),
-        eq(schema.approvalSteps.status, "pending" as never),
-      ),
-    });
-
-    if (!approvalStep) {
-      throw new Error("No pending approval step found for this user");
-    }
-
-    // Check permission
-    const hasPermission = await canApprove(userId, organizationId, request.entityType);
-    if (!hasPermission) {
-      throw new Error("Insufficient permissions to approve this entity");
-    }
-
-    // Update approval step
-    await ctx.drizzle
-      .update(schema.approvalSteps)
-      .set({
-        status: "approved",
-        comments: body.comments || null,
-        actionAt: new Date(),
-      })
-      .where(eq(schema.approvalSteps.id, approvalStep.id));
-
-    // Check if current step is complete
-    const rulesEngine = new ApprovalRulesEngine(ctx.drizzle);
-    const stepComplete = await rulesEngine.isStepComplete(requestId, approvalStep.stepOrder);
-
-    if (stepComplete) {
-      // Move to next step or complete workflow
-      const nextStep = await rulesEngine.getNextStep(requestId, approvalStep.stepOrder);
-
-      if (nextStep) {
-        // Create approval steps for next workflow step
-        const { approverIds } = await rulesEngine.getRequiredApprovers(nextStep.id, organizationId);
-
-        await Promise.all(
-          approverIds.map((approverId) =>
-            ctx.drizzle.insert(schema.approvalSteps).values({
-              requestId: request.id,
-              stepOrder: nextStep.stepOrder,
-              approverId,
-              status: "pending",
-            }),
-          ),
-        );
-
-        return {
-          success: true,
-          message: `Approval recorded. Moving to next step (${nextStep.stepOrder}).`,
-          requestStatus: "pending",
-        };
-      } else {
-        // No more steps - workflow complete
-        await ctx.drizzle
-          .update(schema.approvalRequests)
-          .set({
-            status: "approved",
-            completedAt: new Date(),
-          })
-          .where(eq(schema.approvalRequests.id, requestId));
-
-        return {
-          success: true,
-          message: "Approval completed. All workflow steps approved.",
-          requestStatus: "approved",
-        };
-      }
-    }
-
-    return {
-      success: true,
-      message: "Approval recorded. Awaiting additional approvals for this step.",
-      requestStatus: "pending",
-    };
+    return await approveOp(req.drizzle, organizationId, userId, requestId, body);
   }
 
   /**
@@ -388,66 +210,10 @@ export class ApprovalsController extends Controller {
     @Path() requestId: string,
     @Body() body: ApprovalActionRequest,
   ): Promise<ApprovalActionResponse> {
-    const ctx = getServerContext();
     const userId = req.betterAuthSession?.user.id || "";
     const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
 
-    // Get the approval request
-    const request = await ctx.drizzle.query.approvalRequests.findFirst({
-      where: eq(schema.approvalRequests.id, requestId),
-    });
-
-    if (!request) {
-      throw new Error("Approval request not found");
-    }
-
-    if (request.status !== "pending") {
-      throw new Error(`Cannot reject request with status: ${request.status}`);
-    }
-
-    // Find pending approval step for this user
-    const approvalStep = await ctx.drizzle.query.approvalSteps.findFirst({
-      where: and(
-        eq(schema.approvalSteps.requestId, requestId),
-        or(eq(schema.approvalSteps.approverId, userId), eq(schema.approvalSteps.delegatedTo, userId)),
-        eq(schema.approvalSteps.status, "pending" as never),
-      ),
-    });
-
-    if (!approvalStep) {
-      throw new Error("No pending approval step found for this user");
-    }
-
-    // Check permission
-    const hasPermission = await canApprove(userId, organizationId, request.entityType);
-    if (!hasPermission) {
-      throw new Error("Insufficient permissions to reject this entity");
-    }
-
-    // Update approval step
-    await ctx.drizzle
-      .update(schema.approvalSteps)
-      .set({
-        status: "rejected",
-        comments: body.comments || null,
-        actionAt: new Date(),
-      })
-      .where(eq(schema.approvalSteps.id, approvalStep.id));
-
-    // Reject the entire request
-    await ctx.drizzle
-      .update(schema.approvalRequests)
-      .set({
-        status: "rejected",
-        completedAt: new Date(),
-      })
-      .where(eq(schema.approvalRequests.id, requestId));
-
-    return {
-      success: true,
-      message: "Approval request rejected.",
-      requestStatus: "rejected",
-    };
+    return await rejectOp(req.drizzle, organizationId, userId, requestId, body);
   }
 
   /**
@@ -460,35 +226,9 @@ export class ApprovalsController extends Controller {
     @Path() requestId: string,
     @Body() body: DelegateApprovalRequest,
   ): Promise<ApprovalActionResponse> {
-    const ctx = getServerContext();
     const userId = req.betterAuthSession?.user.id || "";
 
-    // Find pending approval step for this user
-    const approvalStep = await ctx.drizzle.query.approvalSteps.findFirst({
-      where: and(
-        eq(schema.approvalSteps.requestId, requestId),
-        eq(schema.approvalSteps.approverId, userId),
-        eq(schema.approvalSteps.status, "pending" as never),
-      ),
-    });
-
-    if (!approvalStep) {
-      throw new Error("No pending approval step found for this user");
-    }
-
-    // Update approval step to delegate
-    await ctx.drizzle
-      .update(schema.approvalSteps)
-      .set({
-        delegatedTo: body.delegateToUserId,
-        comments: body.comments || null,
-      })
-      .where(eq(schema.approvalSteps.id, approvalStep.id));
-
-    return {
-      success: true,
-      message: "Approval delegated successfully.",
-    };
+    return await delegateOp(req.drizzle, userId, requestId, body);
   }
 
   /**
@@ -501,26 +241,9 @@ export class ApprovalsController extends Controller {
     @Path() entityType: string,
     @Path() entityId: string,
   ): Promise<ApprovalRequestResponse[]> {
-    const ctx = getServerContext();
+    const deps = { drizzle: req.drizzle, logger: req.logger };
 
-    const requests = await ctx.drizzle.query.approvalRequests.findMany({
-      where: and(
-        eq(schema.approvalRequests.entityType, entityType as never),
-        eq(schema.approvalRequests.entityId, entityId),
-      ),
-      with: {
-        workflow: true,
-        requestedByUser: true,
-        steps: {
-          with: {
-            approver: true,
-            delegatedToUser: true,
-          },
-          orderBy: [schema.approvalSteps.stepOrder],
-        },
-      },
-      orderBy: [desc(schema.approvalRequests.submittedAt)],
-    });
+    const requests = await getApprovalHistoryByEntity(deps, entityType, entityId);
 
     return requests.map((request) => ({
       id: request.id,

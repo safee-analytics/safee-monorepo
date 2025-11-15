@@ -1,5 +1,4 @@
-import { describe, it } from "node:test";
-import assert from "node:assert";
+import { describe, it, expect } from "vitest";
 import { AzureBlobStorage } from "./azureBlobStorage.js";
 import { GoogleCloudStorage } from "./googleCloudStorage.js";
 
@@ -7,15 +6,13 @@ void describe("Cloud Storage Adapters", async () => {
   void describe("AzureBlobStorage", async () => {
     void describe("constructor", async () => {
       void it("throws error without connection string", () => {
-        assert.throws(
-          () => new AzureBlobStorage("test-container", {}),
+        expect(() => new AzureBlobStorage("test-container", {})).toThrow(
           /Account name is required when not using connection string/,
         );
       });
 
       void it("throws error with empty connection string", () => {
-        assert.throws(
-          () => new AzureBlobStorage("test-container", ""),
+        expect(() => new AzureBlobStorage("test-container", "")).toThrow(
           /Azure Blob Storage connection string is required/,
         );
       });
@@ -27,7 +24,7 @@ void describe("Cloud Storage Adapters", async () => {
         // This will create an instance but actual Azure operations will fail
         // since the credentials are fake, which is expected for unit tests
         const storage = new AzureBlobStorage("test-container", connectionString);
-        assert.ok(storage);
+        expect(storage).toBeTruthy();
       });
 
       void it("parses connection string correctly", () => {
@@ -35,7 +32,7 @@ void describe("Cloud Storage Adapters", async () => {
           "DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=mykey123;EndpointSuffix=core.windows.net";
 
         const storage = new AzureBlobStorage("test-container", connectionString);
-        assert.ok(storage);
+        expect(storage).toBeTruthy();
       });
     });
 
@@ -45,7 +42,7 @@ void describe("Cloud Storage Adapters", async () => {
           "DefaultEndpointsProtocol=https;AccountName=test;AccountKey=dGVzdA==;EndpointSuffix=core.windows.net";
         const storage = new AzureBlobStorage("test", connectionString);
 
-        assert.ok(storage);
+        expect(storage).toBeTruthy();
       });
     });
   });
@@ -54,26 +51,26 @@ void describe("Cloud Storage Adapters", async () => {
     void describe("constructor", async () => {
       void it("creates instance with bucket name", () => {
         const storage = new GoogleCloudStorage("test-bucket");
-        assert.ok(storage);
+        expect(storage).toBeTruthy();
       });
 
       void it("creates instance with bucket name and project ID", () => {
         const storage = new GoogleCloudStorage("test-bucket", { projectId: "test-project" });
-        assert.ok(storage);
+        expect(storage).toBeTruthy();
       });
 
       void it("handles bucket name validation", () => {
         // Google Cloud Storage has specific bucket naming requirements
         // but the constructor doesn't validate this, actual operations would fail
         const storage = new GoogleCloudStorage("invalid_bucket_name!");
-        assert.ok(storage);
+        expect(storage).toBeTruthy();
       });
     });
 
     void describe("basic functionality", async () => {
       void it("should create storage instances", () => {
         const storage = new GoogleCloudStorage("test-bucket", {});
-        assert.ok(storage);
+        expect(storage).toBeTruthy();
       });
     });
 
@@ -91,7 +88,7 @@ void describe("Cloud Storage Adapters", async () => {
         ];
 
         for (const path of testPaths) {
-          assert.ok(typeof path === "string" && path.length > 0);
+          expect(typeof path === "string" && path.length > 0).toBeTruthy();
         }
       });
     });
@@ -116,8 +113,8 @@ void describe("Cloud Storage Adapters", async () => {
       ];
 
       for (const method of requiredMethods) {
-        assert.ok(typeof azureStorage[method as keyof typeof azureStorage] === "function");
-        assert.ok(typeof gcpStorage[method as keyof typeof gcpStorage] === "function");
+        expect(typeof azureStorage[method as keyof typeof azureStorage] === "function").toBeTruthy();
+        expect(typeof gcpStorage[method as keyof typeof gcpStorage] === "function").toBeTruthy();
       }
     });
 
@@ -127,8 +124,8 @@ void describe("Cloud Storage Adapters", async () => {
       const azureStorage = new AzureBlobStorage("test", connectionString);
       const gcpStorage = new GoogleCloudStorage("test", {});
 
-      assert.ok(azureStorage);
-      assert.ok(gcpStorage);
+      expect(azureStorage).toBeTruthy();
+      expect(gcpStorage).toBeTruthy();
     });
   });
 
@@ -143,9 +140,9 @@ void describe("Cloud Storage Adapters", async () => {
       for (const connectionString of invalidConnectionStrings) {
         try {
           const storage = new AzureBlobStorage("test", connectionString);
-          assert.ok(storage);
+          expect(storage).toBeTruthy();
         } catch (err) {
-          assert.ok(err instanceof Error);
+          expect(err instanceof Error).toBeTruthy();
         }
       }
     });
@@ -154,9 +151,9 @@ void describe("Cloud Storage Adapters", async () => {
       const connectionString =
         "DefaultEndpointsProtocol=https;AccountName=test;AccountKey=dGVzdA==;EndpointSuffix=core.windows.net";
 
-      assert.throws(() => new AzureBlobStorage("", connectionString), /Container name is required/);
+      expect(() => new AzureBlobStorage("", connectionString)).toThrow(/Container name is required/);
 
-      assert.throws(() => new GoogleCloudStorage("", {}), /A bucket name is needed to use Cloud Storage/);
+      expect(() => new GoogleCloudStorage("", {})).toThrow(/A bucket name is needed to use Cloud Storage/);
     });
   });
 });

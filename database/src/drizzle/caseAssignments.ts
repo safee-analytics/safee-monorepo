@@ -18,7 +18,7 @@ export const caseAssignments = auditSchema.table(
       .notNull(),
     role: assignmentRoleEnum("role").notNull(), // 'lead', 'reviewer', 'team_member'
     assignedBy: uuid("assigned_by")
-      .references(() => users.id)
+      .references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" })
       .notNull(),
     assignedAt: timestamp("assigned_at", { withTimezone: true }).defaultNow().notNull(),
   },
