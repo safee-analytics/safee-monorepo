@@ -250,6 +250,9 @@ void describe("Job Logs", async () => {
       await createJobLog(deps, testJob.id, "info", "Old log 2");
       await createJobLog(deps, testJob.id, "info", "Recent log");
 
+      // Wait a bit to ensure logs have timestamps before cutoff
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
       // Set cutoff to current time (should delete all existing logs)
       const cutoffDate = new Date();
 
