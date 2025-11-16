@@ -34,16 +34,7 @@ export default function CaseManagement() {
         name: caseData.createdBy,
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${caseData.createdBy}`,
       },
-      status:
-        caseData.status === "in-progress"
-          ? "in-progress"
-          : caseData.status === "completed"
-            ? "completed"
-            : caseData.status === "overdue"
-              ? "overdue"
-              : caseData.status === "under-review"
-                ? "in-review"
-                : "in-progress",
+      status: caseData.status,
       priority: caseData.priority,
       dueDate: caseData.dueDate ? new Date(caseData.dueDate).toLocaleDateString() : "N/A",
       progress:

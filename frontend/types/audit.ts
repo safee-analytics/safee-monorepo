@@ -1,5 +1,5 @@
-export type CaseStatus = "in-progress" | "completed" | "overdue" | "pending" | "in-review";
-export type CasePriority = "high" | "medium" | "low";
+export type CaseStatus = "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
+export type CasePriority = "low" | "medium" | "high" | "critical";
 export type NotificationType = "deadline" | "review" | "completed" | "team" | "warning";
 
 export interface AuditCase {

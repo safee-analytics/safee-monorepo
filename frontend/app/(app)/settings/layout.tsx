@@ -3,7 +3,7 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { User, Bell, Shield, HardDrive, Globe, Palette, Key, Database, Lock } from "lucide-react";
+import { User, Bell, Shield, HardDrive, Globe, Palette, Key, Database, Lock, Users } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 
 interface SettingLink {
@@ -26,6 +26,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
       restricted: false,
     },
     { href: "/settings/appearance", label: "Appearance", icon: Palette, restricted: false },
+    { href: "/settings/team", label: "Team", icon: Users, restricted: true },
     { href: "/settings/security", label: "Security", icon: Shield, restricted: true },
     { href: "/settings/storage", label: t.common.storage || "Storage", icon: HardDrive, restricted: true },
     { href: "/settings/integrations", label: "Integrations", icon: Globe, restricted: true },
@@ -33,7 +34,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
     { href: "/settings/database", label: "Database", icon: Database, restricted: true },
   ];
 
-  const isActive = (href: string) => pathname === href;
+  const isActive = (href: string) => pathname === href || pathname?.startsWith(href + "/");
 
   return (
     <div className="min-h-screen bg-gray-50">

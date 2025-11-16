@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, ReactNode } from "react";
+import { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { Lock, ShieldAlert } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
+import { useUserProfile, useOrganizationMembers } from "@/lib/api/hooks";
 
 interface SettingsPermissionGateProps {
   children: ReactNode;
@@ -13,25 +14,19 @@ export function SettingsPermissionGate({
   children,
   allowedRoles = ["owner", "admin"],
 }: SettingsPermissionGateProps) {
-  const [hasPermission, setHasPermission] = useState(false);
-  const [userRole, setUserRole] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(true);
+  // Get current user profile
+  const { data: currentUser, isLoading: userLoading } = useUserProfile();
+  const orgId = currentUser?.organizationId;
 
-  useEffect(() => {
-    const checkPermissions = async () => {
-      // TODO: Replace with actual API call to get user role from backend
-      // For now, simulating with localStorage
-      await new Promise((resolve) => setTimeout(resolve, 300));
+  // Get organization members to find user's role
+  const { data: members, isLoading: membersLoading } = useOrganizationMembers(orgId || "");
 
-      // In production, this would come from your auth system/JWT token
-      const role = localStorage.getItem("userRole") || "user"; // Default to 'user' for testing
-      setUserRole(role);
-      setHasPermission(allowedRoles.includes(role));
-      setIsLoading(false);
-    };
+  const isLoading = userLoading || membersLoading;
 
-    checkPermissions();
-  }, [allowedRoles]);
+  // Find current user's role in the organization
+  const currentMember = members?.find((m) => m.userId === currentUser?.id);
+  const userRole = currentMember?.role || "user";
+  const hasPermission = allowedRoles.includes(userRole);
 
   // Loading state
   if (isLoading) {

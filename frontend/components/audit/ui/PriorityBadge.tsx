@@ -5,7 +5,12 @@ interface PriorityBadgeProps {
   priority: CasePriority;
 }
 
-const priorityConfig = {
+const priorityConfig: Record<CasePriority, { bg: string; text: string; label: string }> = {
+  critical: {
+    bg: "bg-red-200",
+    text: "text-red-900",
+    label: "Critical",
+  },
   high: {
     bg: "bg-red-100",
     text: "text-red-700",

@@ -1,7 +1,6 @@
 import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { pino } from "pino";
 import { testConnect } from "../drizzle/testConnect.js";
-import { nukeDatabase } from "../test-helpers/test-fixtures.js";
 import type { DrizzleClient } from "../drizzle.js";
 import {
   createJobLog,
@@ -19,7 +18,6 @@ import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
 
 async function wipeJobLogsDb(drizzle: DrizzleClient) {
-  // Delete jobs (cascade deletes jobLogs), then jobSchedules
   await drizzle.delete(schema.jobs);
   await drizzle.delete(schema.jobSchedules);
 }
@@ -153,7 +151,6 @@ void describe("Job Logs", async () => {
     void it("returns logs ordered by creation time descending", async () => {
       const logs = await getJobLogs(deps, testJob.id);
 
-      // Should be ordered by creation time (newest first)
       for (let i = 1; i < logs.length; i++) {
         expect(logs[i - 1].createdAt >= logs[i].createdAt).toBeTruthy();
       }

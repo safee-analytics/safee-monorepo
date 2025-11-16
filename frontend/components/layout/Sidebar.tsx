@@ -144,7 +144,6 @@ export const Sidebar = () => {
       { icon: FiFileText, title: t.audit.documentRepository, href: "/audit/documents" },
       { icon: FiBarChart, title: t.audit.auditReports, href: "/audit/reports" },
       { icon: FiClipboard, title: t.audit.auditPlanning, href: "/audit/planning" },
-      { icon: FiUsers, title: t.audit.teamManagement, href: "/audit/team" },
       { icon: FiSettings, title: t.audit.configurationSettings, href: "/audit/settings" },
     ],
     hisabiq: [

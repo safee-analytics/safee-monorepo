@@ -1,10 +1,12 @@
+import { CaseStatus, CasePriority } from "@/types/audit";
+
 interface CaseFiltersProps {
-  statusFilter: string;
-  priorityFilter: string;
+  statusFilter: CaseStatus | "all";
+  priorityFilter: CasePriority | "all";
   assigneeFilter: string;
   dueDateFilter: string;
-  onStatusChange: (value: string) => void;
-  onPriorityChange: (value: string) => void;
+  onStatusChange: (value: CaseStatus | "all") => void;
+  onPriorityChange: (value: CasePriority | "all") => void;
   onAssigneeChange: (value: string) => void;
   onDueDateChange: (value: string) => void;
   onClearFilters: () => void;
@@ -28,14 +30,16 @@ export function CaseFilters({
           <label className="text-sm font-medium text-gray-700">Status:</label>
           <select
             value={statusFilter}
-            onChange={(e) => onStatusChange(e.target.value)}
+            onChange={(e) => onStatusChange(e.target.value as CaseStatus | "all")}
             className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
           >
             <option value="all">All Status</option>
+            <option value="pending">Pending</option>
             <option value="in-progress">In Progress</option>
+            <option value="under-review">Under Review</option>
             <option value="completed">Completed</option>
             <option value="overdue">Overdue</option>
-            <option value="in-review">In Review</option>
+            <option value="archived">Archived</option>
           </select>
         </div>
 
@@ -43,10 +47,11 @@ export function CaseFilters({
           <label className="text-sm font-medium text-gray-700">Priority:</label>
           <select
             value={priorityFilter}
-            onChange={(e) => onPriorityChange(e.target.value)}
+            onChange={(e) => onPriorityChange(e.target.value as CasePriority | "all")}
             className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm"
           >
             <option value="all">All Priorities</option>
+            <option value="critical">Critical</option>
             <option value="high">High</option>
             <option value="medium">Medium</option>
             <option value="low">Low</option>

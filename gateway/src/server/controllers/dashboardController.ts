@@ -60,7 +60,7 @@ export interface UnreadNotificationsCountResponse {
   count: number;
 }
 
-@Route("api/v1/dashboard")
+@Route("dashboard")
 @Tags("Dashboard")
 export class DashboardController extends Controller {
   /**
