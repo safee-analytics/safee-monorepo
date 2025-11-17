@@ -2,11 +2,11 @@
 
 import { useOrgStore } from "@/stores/useOrgStore";
 import { useEffect } from "react";
-import { useProfile } from "@/lib/auth/useProfile";
+import { useUpdateUserLocale } from "@/lib/api/hooks/user";
 
 export const LanguageSwitcher = () => {
   const { locale } = useOrgStore();
-  const { changeLocale } = useProfile();
+  const updateLocaleMutation = useUpdateUserLocale();
   const isArabic = locale === "ar";
 
   // Update document direction whenever locale changes
@@ -18,7 +18,7 @@ export const LanguageSwitcher = () => {
   const toggleLanguage = async () => {
     const newLocale = isArabic ? "en" : "ar";
     // Persist to API (also updates store)
-    await changeLocale(newLocale);
+    await updateLocaleMutation.mutateAsync(newLocale);
   };
 
   return (

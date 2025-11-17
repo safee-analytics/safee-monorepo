@@ -2,7 +2,6 @@ import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { pino } from "pino";
 import { testConnect } from "../drizzle/testConnect.js";
 import type { DrizzleClient } from "../drizzle.js";
-import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
 import {
   createTestOrganization,
@@ -41,7 +40,7 @@ import {
 } from "./cases.js";
 import type { TemplateStructure } from "./types.js";
 
-void describe("Cases Module", async () => {
+describe("Cases Module", async () => {
   let drizzle: DrizzleClient;
   let close: () => Promise<void>;
   const logger = pino({ level: "silent" });
@@ -60,17 +59,15 @@ void describe("Cases Module", async () => {
   });
 
   beforeEach(async () => {
-    // Clean all data before each test
     await nukeDatabase(drizzle);
 
-    // Create fresh test fixtures for each test
     testOrg = await createTestOrganization(drizzle);
-    testUser = await createTestUser(drizzle, testOrg.id);
-    testAdminUser = await createTestUser(drizzle, testOrg.id, { role: "admin" });
+    testUser = await createTestUser(drizzle);
+    testAdminUser = await createTestUser(drizzle, { role: "admin" });
   });
 
-  void describe("Case Management", async () => {
-    void it("creates case successfully", async () => {
+  describe("Case Management", async () => {
+    it("creates case successfully", async () => {
       const caseData = {
         organizationId: testOrg.id,
         caseNumber: "CASE-001",
@@ -90,7 +87,7 @@ void describe("Cases Module", async () => {
       expect(newCase.status).toBe("pending");
     });
 
-    void it("gets case by ID", async () => {
+    it("gets case by ID", async () => {
       const caseData = {
         organizationId: testOrg.id,
         caseNumber: "CASE-002",
@@ -107,7 +104,7 @@ void describe("Cases Module", async () => {
       expect(found!.caseNumber).toBe("CASE-002");
     });
 
-    void it("gets cases by organization", async () => {
+    it("gets cases by organization", async () => {
       await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-003",
@@ -131,7 +128,7 @@ void describe("Cases Module", async () => {
       expect(cases.some((c) => c.caseNumber === "CASE-004")).toBeTruthy();
     });
 
-    void it("updates case", async () => {
+    it("updates case", async () => {
       const created = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-005",
@@ -149,7 +146,7 @@ void describe("Cases Module", async () => {
       expect(updated.priority).toBe("high");
     });
 
-    void it("deletes case", async () => {
+    it("deletes case", async () => {
       const created = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-006",
@@ -165,8 +162,8 @@ void describe("Cases Module", async () => {
     });
   });
 
-  void describe("Template Management", async () => {
-    void it("creates template successfully", async () => {
+  describe("Template Management", async () => {
+    it("creates template successfully", async () => {
       const structure: TemplateStructure = {
         sections: [
           {
@@ -199,7 +196,7 @@ void describe("Cases Module", async () => {
       expect(template.structure.sections.length > 0).toBeTruthy();
     });
 
-    void it("gets template by ID", async () => {
+    it("gets template by ID", async () => {
       const structure: TemplateStructure = {
         sections: [
           {
@@ -231,7 +228,7 @@ void describe("Cases Module", async () => {
       expect(found!.name).toBe("Template 2");
     });
 
-    void it("gets public templates", async () => {
+    it("gets public templates", async () => {
       const structure: TemplateStructure = {
         sections: [
           {
@@ -264,8 +261,8 @@ void describe("Cases Module", async () => {
     });
   });
 
-  void describe("Scope Management", async () => {
-    void it("creates scope successfully", async () => {
+  describe("Scope Management", async () => {
+    it("creates scope successfully", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-007",
@@ -286,7 +283,7 @@ void describe("Cases Module", async () => {
       expect(scope.status).toBe("draft");
     });
 
-    void it("creates scope from template", async () => {
+    it("creates scope from template", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-008",
@@ -339,7 +336,7 @@ void describe("Cases Module", async () => {
       expect(procedures.some((p) => p.referenceNumber === "1.2"));
     });
 
-    void it("updates scope status", async () => {
+    it("updates scope status", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-009",
@@ -363,8 +360,8 @@ void describe("Cases Module", async () => {
     });
   });
 
-  void describe("Procedure Management", async () => {
-    void it("completes procedure with field data", async () => {
+  describe("Procedure Management", async () => {
+    it("completes procedure with field data", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-010",
@@ -407,8 +404,8 @@ void describe("Cases Module", async () => {
     });
   });
 
-  void describe("Document Management", async () => {
-    void it("creates and soft deletes document", async () => {
+  describe("Document Management", async () => {
+    it("creates and soft deletes document", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-011",
@@ -439,8 +436,8 @@ void describe("Cases Module", async () => {
     });
   });
 
-  void describe("Note Management", async () => {
-    void it("creates and updates note", async () => {
+  describe("Note Management", async () => {
+    it("creates and updates note", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-012",
@@ -469,8 +466,8 @@ void describe("Cases Module", async () => {
     });
   });
 
-  void describe("Assignment Management", async () => {
-    void it("creates and deletes assignment", async () => {
+  describe("Assignment Management", async () => {
+    it("creates and deletes assignment", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-013",
@@ -499,8 +496,8 @@ void describe("Cases Module", async () => {
     });
   });
 
-  void describe("History Management", async () => {
-    void it("creates history entry with changes", async () => {
+  describe("History Management", async () => {
+    it("creates history entry with changes", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-014",

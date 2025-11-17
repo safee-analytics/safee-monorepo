@@ -16,6 +16,7 @@ import {
   ClipboardList,
   Calendar,
   FileCheck,
+  Grid3x3,
 } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 
@@ -27,17 +28,22 @@ export function AuditSidebar() {
   const sidebarItems = [
     {
       icon: LayoutDashboard,
-      label: locale === "ar" ? "لوحة التحكم" : "Dashboard",
+      label: t.nav.dashboard,
+      href: "/",
+    },
+    {
+      icon: Grid3x3,
+      label: t.audit.casesOverview,
       href: "/audit/dashboard",
     },
     {
       icon: FileText,
-      label: locale === "ar" ? "الحالات" : "Cases",
+      label: t.audit.caseManagement,
       href: "/audit/cases",
     },
     {
       icon: BarChart3,
-      label: locale === "ar" ? "التقارير" : "Reports",
+      label: t.audit.auditReports,
       href: "/audit/reports",
     },
   ];
@@ -147,14 +153,6 @@ export function AuditSidebar() {
             );
           })}
         </div>
-
-        {/* Settings at Bottom */}
-        <Link
-          href="/audit/settings"
-          className="w-12 h-12 rounded-lg flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-all"
-        >
-          <Settings className="w-5 h-5" />
-        </Link>
       </motion.aside>
 
       {/* Create Menu Dropdown */}

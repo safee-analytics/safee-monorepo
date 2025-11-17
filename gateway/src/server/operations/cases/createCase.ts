@@ -12,13 +12,31 @@ export async function createCase(
 ): Promise<CaseResponse> {
   const logger = pino();
 
-  // Validation: Case number format
-  if (!/^[A-Z0-9-]+$/.test(request.caseNumber)) {
+  let caseNumber = request.caseNumber;
+  if (!caseNumber) {
+    const latestCase = await drizzle.query.cases.findFirst({
+      where: eq(schema.cases.organizationId, organizationId),
+      orderBy: (cases, { desc }) => [desc(cases.createdAt)],
+    });
+
+    let nextNumber = 1;
+    if (latestCase?.caseNumber) {
+      const match = latestCase.caseNumber.match(/CASE-(\d+)/);
+      if (match) {
+        nextNumber = parseInt(match[1], 10) + 1;
+      }
+    }
+
+    caseNumber = `CASE-${String(nextNumber).padStart(3, "0")}`;
+  }
+
+  // Validation: Case number format (if provided manually)
+  if (request.caseNumber && !/^[A-Z0-9-]+$/.test(caseNumber)) {
     throw new InvalidInput("Case number must contain only uppercase letters, numbers, and hyphens");
   }
 
   // Validation: Case number length
-  if (request.caseNumber.length < 3 || request.caseNumber.length > 50) {
+  if (caseNumber.length < 3 || caseNumber.length > 50) {
     throw new InvalidInput("Case number must be between 3 and 50 characters");
   }
 
@@ -48,20 +66,16 @@ export async function createCase(
 
     // Validation: Check for duplicate case number in the organization
     const existingCase = await drizzle.query.cases.findFirst({
-      where: and(
-        eq(schema.cases.organizationId, organizationId),
-        eq(schema.cases.caseNumber, request.caseNumber),
-      ),
+      where: and(eq(schema.cases.organizationId, organizationId), eq(schema.cases.caseNumber, caseNumber)),
     });
 
     if (existingCase) {
       throw new InvalidInput("A case with this case number already exists");
     }
 
-    // Create the case
     const newCase = await dbCreateCase(deps, {
       organizationId,
-      caseNumber: request.caseNumber,
+      caseNumber,
       clientName: request.clientName.trim(),
       auditType: request.auditType.trim(),
       status: request.status ?? "pending",
@@ -70,7 +84,6 @@ export async function createCase(
       createdBy: userId,
     });
 
-    // Create history entry for case creation
     await createHistoryEntry(deps, {
       caseId: newCase.id,
       entityType: "case",
@@ -111,7 +124,6 @@ export async function createCase(
       updatedAt: newCase.updatedAt.toISOString(),
     };
   } catch (err) {
-    // Re-throw validation errors as-is
     if (err instanceof InvalidInput) {
       throw err;
     }

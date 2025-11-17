@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { motion } from "framer-motion";
 import { ShieldAlert } from "lucide-react";
-import { useUserProfile, useOrganizationMembers } from "@/lib/api/hooks";
+import { useSession, useOrganizationMembers } from "@/lib/api/hooks";
 
 interface SettingsPermissionGateProps {
   children: ReactNode;
@@ -14,17 +14,18 @@ export function SettingsPermissionGate({
   children,
   allowedRoles = ["owner", "admin"],
 }: SettingsPermissionGateProps) {
-  // Get current user profile
-  const { data: currentUser, isLoading: userLoading } = useUserProfile();
-  const orgId = currentUser?.organizationId;
+  // Get current session from Better Auth
+  const { data: session, isPending: sessionLoading, error: sessionError } = useSession();
+  const user = session?.user;
+  const activeOrgId = session?.session.activeOrganizationId;
 
   // Get organization members to find user's role
-  const { data: members, isLoading: membersLoading } = useOrganizationMembers(orgId || "");
+  const { data: members, isLoading: membersLoading } = useOrganizationMembers(activeOrgId || "");
 
-  const isLoading = userLoading || membersLoading;
+  const isLoading = sessionLoading || membersLoading;
 
   // Find current user's role in the organization
-  const currentMember = members?.find((m) => m.userId === currentUser?.id);
+  const currentMember = members?.find((m) => m.userId === user?.id);
   const userRole = currentMember?.role || "user";
   const hasPermission = allowedRoles.includes(userRole);
 

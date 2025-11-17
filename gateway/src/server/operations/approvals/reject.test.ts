@@ -28,15 +28,13 @@ void describe("reject operation", async () => {
   beforeEach(async () => {
     await nukeDatabase(drizzle);
 
-    // Create test data
     testOrg = await createTestOrganization(drizzle);
-    testUser = await createTestUser(drizzle, testOrg.id, { email: "requester@test.com", name: "Requester" });
-    approverUser = await createTestUser(drizzle, testOrg.id, {
+    testUser = await createTestUser(drizzle, { email: "requester@test.com", name: "Requester" });
+    approverUser = await createTestUser(drizzle, {
       email: "approver@test.com",
       name: "Approver",
     });
 
-    // Add users as members of the organization
     await addMemberToOrganization(drizzle, testUser.id, testOrg.id, "member");
     await addMemberToOrganization(drizzle, approverUser.id, testOrg.id, "member");
   });
@@ -46,7 +44,6 @@ void describe("reject operation", async () => {
   });
 
   void it("should reject a pending approval request successfully", async () => {
-    // Setup: Create workflow and submit for approval
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
@@ -56,7 +53,6 @@ void describe("reject operation", async () => {
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    // Test: Reject the request
     const result = await reject(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {
       comments: "Not approved - missing documentation",
     });
@@ -65,7 +61,6 @@ void describe("reject operation", async () => {
     expect(result.message).toContain("rejected");
     expect(result.requestStatus).toBe("rejected");
 
-    // Verify approval step was updated
     const approvalStep = await drizzle.query.approvalSteps.findFirst({
       where: (steps, { eq, and }) =>
         and(eq(steps.requestId, submitResult.requestId), eq(steps.approverId, approverUser.id)),
@@ -75,7 +70,6 @@ void describe("reject operation", async () => {
     expect(approvalStep?.comments).toBe("Not approved - missing documentation");
     expect(approvalStep?.actionAt).toBeDefined();
 
-    // Verify approval request was updated
     const approvalRequest = await drizzle.query.approvalRequests.findFirst({
       where: (requests, { eq }) => eq(requests.id, submitResult.requestId),
     });
@@ -95,7 +89,6 @@ void describe("reject operation", async () => {
   });
 
   void it("should throw InvalidInput when trying to reject non-pending request", async () => {
-    // Setup: Create workflow, submit, and reject
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
@@ -105,12 +98,10 @@ void describe("reject operation", async () => {
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    // Reject once
     await reject(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {
       comments: "First rejection",
     });
 
-    // Try to reject again
     await expect(
       reject(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {
         comments: "Second rejection",
@@ -119,7 +110,6 @@ void describe("reject operation", async () => {
   });
 
   void it("should throw NotFound when user has no pending approval step", async () => {
-    // Setup: Create workflow and submit for approval
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
@@ -129,8 +119,7 @@ void describe("reject operation", async () => {
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    // Test: Try to reject with a different user
-    const otherUser = await createTestUser(drizzle, testOrg.id, { email: "other@test.com", name: "Other" });
+    const otherUser = await createTestUser(drizzle, { email: "other@test.com", name: "Other" });
     await addMemberToOrganization(drizzle, otherUser.id, testOrg.id, "member");
 
     await expect(
@@ -141,7 +130,6 @@ void describe("reject operation", async () => {
   });
 
   void it("should handle rejection with no comments", async () => {
-    // Setup: Create workflow and submit for approval
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
@@ -151,13 +139,11 @@ void describe("reject operation", async () => {
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    // Test: Reject without comments
     const result = await reject(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {});
 
     expect(result.success).toBe(true);
     expect(result.requestStatus).toBe("rejected");
 
-    // Verify no comments were saved
     const approvalStep = await drizzle.query.approvalSteps.findFirst({
       where: (steps, { eq, and }) =>
         and(eq(steps.requestId, submitResult.requestId), eq(steps.approverId, approverUser.id)),
@@ -167,7 +153,6 @@ void describe("reject operation", async () => {
   });
 
   void it("should allow delegated user to reject", async () => {
-    // Setup: Create workflow and submit for approval
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
@@ -177,8 +162,7 @@ void describe("reject operation", async () => {
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    // Delegate to another user
-    const delegateUser = await createTestUser(drizzle, testOrg.id, {
+    const delegateUser = await createTestUser(drizzle, {
       email: "delegate@test.com",
       name: "Delegate",
     });
@@ -189,7 +173,6 @@ void describe("reject operation", async () => {
       .set({ delegatedTo: delegateUser.id })
       .where(eq(schema.approvalSteps.requestId, submitResult.requestId));
 
-    // Test: Reject as delegated user
     const result = await reject(drizzle, testOrg.id, delegateUser.id, submitResult.requestId, {
       comments: "Rejected by delegate",
     });

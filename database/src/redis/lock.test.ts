@@ -94,8 +94,8 @@ describe("Redis Lock", () => {
 
     it("should retry and acquire lock on second attempt", async () => {
       vi.mocked(mockRedis.set)
-        .mockResolvedValueOnce(null) // First attempt fails
-        .mockResolvedValueOnce("OK"); // Second attempt succeeds
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce("OK");
 
       const promise = acquireRedisLockWithRetry({
         redis: mockRedis,
@@ -134,7 +134,7 @@ describe("Redis Lock", () => {
       const result = await promise;
 
       expect(result).toBe(false);
-      expect(mockRedis.set).toHaveBeenCalledTimes(3); // Initial + 2 retries
+      expect(mockRedis.set).toHaveBeenCalledTimes(3);
       expect(mockLogger.info).toHaveBeenCalledWith(
         { lockName: "test-lock" },
         "Failed to get lock even after retries",
@@ -153,11 +153,9 @@ describe("Redis Lock", () => {
         logger: mockLogger,
       });
 
-      // Advance less than timeout
       await vi.advanceTimersByTimeAsync(1000);
       expect(mockRedis.set).toHaveBeenCalledTimes(1);
 
-      // Advance remaining time
       await vi.advanceTimersByTimeAsync(1000);
       await promise;
 
@@ -181,7 +179,7 @@ describe("Redis Lock", () => {
       }
       await promise;
 
-      expect(mockRedis.set).toHaveBeenCalledTimes(6); // Initial + 5 retries
+      expect(mockRedis.set).toHaveBeenCalledTimes(6);
     });
 
     it("should work without logger", async () => {
@@ -193,7 +191,6 @@ describe("Redis Lock", () => {
         maxLockTimeSeconds: 30,
         maxRetries: 1,
         timeoutAfterRetry: 100,
-        // No logger provided
       });
 
       await vi.advanceTimersByTimeAsync(100);
@@ -205,10 +202,10 @@ describe("Redis Lock", () => {
 
     it("should acquire lock on final retry attempt", async () => {
       vi.mocked(mockRedis.set)
-        .mockResolvedValueOnce(null) // Initial attempt fails
-        .mockResolvedValueOnce(null) // First retry fails
-        .mockResolvedValueOnce(null) // Second retry fails
-        .mockResolvedValueOnce("OK"); // Third retry succeeds
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce("OK");
 
       const promise = acquireRedisLockWithRetry({
         redis: mockRedis,

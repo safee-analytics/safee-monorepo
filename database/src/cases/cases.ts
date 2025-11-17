@@ -34,10 +34,6 @@ import type {
   CaseHistory,
 } from "./types.js";
 
-/**
- * Case Management Functions
- */
-
 export async function createCase(deps: DbDeps, input: CreateCaseInput): Promise<Case> {
   const [newCase] = await deps.drizzle
     .insert(cases)
@@ -56,10 +52,23 @@ export async function getCaseById(deps: DbDeps, caseId: string): Promise<Case | 
   return result;
 }
 
-export async function getCasesByOrganization(deps: DbDeps, organizationId: string): Promise<Case[]> {
+export async function getCasesByOrganization(deps: DbDeps, organizationId: string) {
   return deps.drizzle.query.cases.findMany({
     where: eq(cases.organizationId, organizationId),
     orderBy: [desc(cases.createdAt)],
+    with: {
+      assignments: {
+        with: {
+          user: {
+            columns: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+      },
+    },
   });
 }
 
@@ -80,10 +89,6 @@ export async function updateCase(deps: DbDeps, caseId: string, input: UpdateCase
 export async function deleteCase(deps: DbDeps, caseId: string): Promise<void> {
   await deps.drizzle.delete(cases).where(eq(cases.id, caseId));
 }
-
-/**
- * Template Management Functions
- */
 
 export async function createTemplate(deps: DbDeps, input: CreateTemplateInput): Promise<AuditTemplate> {
   const [template] = await deps.drizzle.insert(auditTemplates).values(input).returning();
@@ -113,10 +118,6 @@ export async function getPublicTemplates(deps: DbDeps): Promise<AuditTemplate[]>
   });
 }
 
-/**
- * Scope Management Functions
- */
-
 export async function createScope(deps: DbDeps, input: CreateScopeInput): Promise<AuditScope> {
   const [scope] = await deps.drizzle.insert(auditScopes).values(input).returning();
   return scope;
@@ -128,13 +129,10 @@ export async function createScopeFromTemplate(
   templateId: string,
   createdBy: string,
 ): Promise<AuditScope> {
-  // Get the template
   const template = await getTemplateById(deps, templateId);
   if (!template) {
     throw new Error(`Template ${templateId} not found`);
   }
-
-  // Create the scope
   const [scope] = await deps.drizzle
     .insert(auditScopes)
     .values({

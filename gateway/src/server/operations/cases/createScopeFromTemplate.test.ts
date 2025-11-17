@@ -28,7 +28,7 @@ void describe("createScopeFromTemplate operation", async () => {
     await nukeDatabase(drizzle);
 
     testOrg = await createTestOrganization(drizzle);
-    testUser = await createTestUser(drizzle, testOrg.id);
+    testUser = await createTestUser(drizzle);
   });
 
   afterAll(async () => {
@@ -195,7 +195,7 @@ void describe("createScopeFromTemplate operation", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
     const testOrg2 = await createTestOrganization(drizzle);
-    const testUser2 = await createTestUser(drizzle, testOrg2.id);
+    const testUser2 = await createTestUser(drizzle);
 
     const testCase = await createCase(drizzle, testOrg2.id, testUser2.id, {
       caseNumber: "CASE-005",
@@ -207,7 +207,6 @@ void describe("createScopeFromTemplate operation", async () => {
       sections: [],
     };
 
-    // Private template from testOrg
     const template = await dbCreateTemplate(deps, {
       organizationId: testOrg.id,
       name: "Private Template",
@@ -227,7 +226,7 @@ void describe("createScopeFromTemplate operation", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
     const testOrg2 = await createTestOrganization(drizzle);
-    const testUser2 = await createTestUser(drizzle, testOrg2.id);
+    const testUser2 = await createTestUser(drizzle);
 
     const testCase = await createCase(drizzle, testOrg2.id, testUser2.id, {
       caseNumber: "CASE-006",
@@ -245,7 +244,6 @@ void describe("createScopeFromTemplate operation", async () => {
       ],
     };
 
-    // Public template from testOrg
     const template = await dbCreateTemplate(deps, {
       organizationId: testOrg.id,
       name: "Public Template",

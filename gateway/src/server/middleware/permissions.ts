@@ -51,7 +51,6 @@ export async function hasPermission(
   const ctx = getServerContext();
 
   try {
-    // Get user's member record to check role
     const member = await ctx.drizzle.query.members.findFirst({
       where: and(eq(schema.members.userId, userId), eq(schema.members.organizationId, organizationId)),
     });
@@ -60,17 +59,14 @@ export async function hasPermission(
       return false;
     }
 
-    // Admin and owner have all permissions
     if (member.role === "admin" || member.role === "owner") {
       return true;
     }
 
-    // Manager has most permissions except manage
     if (member.role === "member" && action === "manage") {
       return false;
     }
 
-    // For now, return true for other roles
     // TODO: Implement fine-grained permission checking with Better-Auth dynamic access control
     return true;
   } catch (error) {

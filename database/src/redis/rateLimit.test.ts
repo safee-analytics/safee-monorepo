@@ -226,7 +226,6 @@ describe("Redis Rate Limit", () => {
 
   describe("Rate Limit Scenarios", () => {
     it("should handle login rate limiting scenario", async () => {
-      // Simulate 5 failed login attempts
       for (let i = 1; i <= 5; i++) {
         mockMulti.exec.mockResolvedValue([i, "OK"]);
 
@@ -243,7 +242,6 @@ describe("Redis Rate Limit", () => {
     });
 
     it("should handle API rate limiting scenario", async () => {
-      // Simulate API requests up to and over the limit
       const maxRequests = 100;
 
       for (let i = 1; i <= 105; i++) {

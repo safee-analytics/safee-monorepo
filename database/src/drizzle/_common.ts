@@ -139,6 +139,10 @@ export const caseStatusEnum = auditSchema.enum("case_status", [
 
 export const casePriorityEnum = auditSchema.enum("case_priority", ["low", "medium", "high", "critical"]);
 
+// Export enum values for frontend validation
+export const CASE_STATUSES = caseStatusEnum.enumValues;
+export const CASE_PRIORITIES = casePriorityEnum.enumValues;
+
 export const auditStatusEnum = auditSchema.enum("audit_status", [
   "draft",
   "in-progress",

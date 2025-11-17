@@ -14,12 +14,10 @@ export async function updateCase(
   const logger = pino();
   const deps = { drizzle, logger };
 
-  // Get existing case
   let existingCase;
   try {
     existingCase = await getCaseById(deps, caseId);
   } catch {
-    // If query fails (e.g., invalid UUID format), treat as not found
     throw new NotFound("Case not found");
   }
 
@@ -69,7 +67,6 @@ export async function updateCase(
   }
 
   if (request.status === "completed" && !request.completedDate && !existingCase.completedDate) {
-    // Auto-set completed date if marking as completed
     request.completedDate = new Date().toISOString();
   }
 
@@ -80,7 +77,6 @@ export async function updateCase(
   }
 
   try {
-    // Track changes for history
     const changesBefore: Record<string, unknown> = {};
     const changesAfter: Record<string, unknown> = {};
 
@@ -101,7 +97,6 @@ export async function updateCase(
       changesAfter.priority = request.priority;
     }
 
-    // Update the case
     const updated = await dbUpdateCase(deps, caseId, {
       ...request,
       caseNumber: request.caseNumber?.trim(),
@@ -111,7 +106,6 @@ export async function updateCase(
       completedDate: request.completedDate ? new Date(request.completedDate) : undefined,
     });
 
-    // Create history entry if there were changes
     if (Object.keys(changesAfter).length > 0) {
       await createHistoryEntry(deps, {
         caseId: updated.id,

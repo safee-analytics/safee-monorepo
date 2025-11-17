@@ -23,7 +23,6 @@ export async function reject(
   const logger = pino();
 
   try {
-    // Get the approval request
     const approvalRequest = await drizzle.query.approvalRequests.findFirst({
       where: eq(schema.approvalRequests.id, requestId),
     });
@@ -36,7 +35,6 @@ export async function reject(
       throw new InvalidInput(`Cannot reject request with status: ${approvalRequest.status}`);
     }
 
-    // Find pending approval step for this user
     const approvalStep = await drizzle.query.approvalSteps.findFirst({
       where: and(eq(schema.approvalSteps.requestId, requestId), eq(schema.approvalSteps.status, "pending")),
     });
@@ -45,7 +43,6 @@ export async function reject(
       throw new NotFound("No pending approval step found for this request");
     }
 
-    // Check if user is the approver or delegated user
     const isApprover = approvalStep.approverId === userId;
     const isDelegated = approvalStep.delegatedTo === userId;
 
@@ -53,7 +50,6 @@ export async function reject(
       throw new NotFound("No pending approval step found for this user");
     }
 
-    // Check if user has permission to reject
     const member = await drizzle.query.members.findFirst({
       where: and(eq(schema.members.userId, userId), eq(schema.members.organizationId, organizationId)),
     });
@@ -62,7 +58,6 @@ export async function reject(
       throw new InsufficientPermissions("User is not a member of this organization");
     }
 
-    // Update approval step
     await drizzle
       .update(schema.approvalSteps)
       .set({
@@ -72,7 +67,6 @@ export async function reject(
       })
       .where(eq(schema.approvalSteps.id, approvalStep.id));
 
-    // Reject the entire request
     await drizzle
       .update(schema.approvalRequests)
       .set({
@@ -96,7 +90,6 @@ export async function reject(
       requestStatus: "rejected",
     };
   } catch (error) {
-    // Re-throw domain errors as-is
     if (
       error instanceof InvalidInput ||
       error instanceof NotFound ||

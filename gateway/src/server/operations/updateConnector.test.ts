@@ -114,7 +114,6 @@ void describe("updateConnector", async () => {
 
     expect(result.success).toBe(true);
 
-    // Config is stored encrypted, so we can't directly compare
     const updated = await drizzle.query.connectors.findFirst({
       where: eq(schema.connectors.id, connector.id),
     });

@@ -7,6 +7,9 @@ export const queryKeys = {
     all: ["notifications"] as const,
     unreadCount: ["notifications", "unread-count"] as const,
   },
+  activity: {
+    all: ["activity"] as const,
+  },
   storage: {
     files: (folderId?: string) => ["storage", "files", folderId] as const,
     file: (fileId: string) => ["storage", "file", fileId] as const,

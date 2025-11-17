@@ -49,8 +49,8 @@ export default function NotificationsSettings() {
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Notification Settings</h1>
-          <p className="text-gray-600">Manage how you receive notifications and alerts</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t.settings.notifications.title}</h1>
+          <p className="text-gray-600">{t.settings.notifications.subtitle}</p>
         </div>
 
         {/* Notification Channels */}

@@ -24,9 +24,8 @@ void describe("createCase operation", async () => {
   beforeEach(async () => {
     await nukeDatabase(drizzle);
 
-    // Create test data using helpers
     testOrg = await createTestOrganization(drizzle);
-    testUser = await createTestUser(drizzle, testOrg.id);
+    testUser = await createTestUser(drizzle);
   });
 
   afterAll(async () => {

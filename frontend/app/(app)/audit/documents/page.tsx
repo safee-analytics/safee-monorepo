@@ -34,7 +34,6 @@ export default function DocumentRepository() {
   const [currentPathIds, _setCurrentPathIds] = useState(["all-documents", "active-cases"]);
   const [expandedFolders, setExpandedFolders] = useState<Set<string>>(new Set(["1", "2", "6"]));
 
-  // Generate folder structure with current translations
   const folders: FolderNode[] = [
     {
       id: "1",
@@ -64,7 +63,6 @@ export default function DocumentRepository() {
     },
   ];
 
-  // Map path IDs to translated names
   const pathIdToName: Record<string, string> = {
     "all-documents": t.audit.allDocuments,
     "active-cases": t.audit.activeAudits,
@@ -121,7 +119,6 @@ export default function DocumentRepository() {
     const { nodes: filteredNodes, matchedIds } =
       level === 0 ? filterFolders(nodes, folderSearchQuery) : { nodes, matchedIds: new Set() };
 
-    // Auto-expand matched folders when searching
     if (folderSearchQuery && matchedIds.size > 0) {
       matchedIds.forEach((id) => expandedFolders.add(id));
     }
@@ -239,7 +236,6 @@ export default function DocumentRepository() {
     return iconMap[type] || iconMap.pdf;
   };
 
-  // Table columns configuration
   const columns = [
     {
       key: "name",
@@ -305,7 +301,6 @@ export default function DocumentRepository() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="flex h-screen">
-        {/* Left Sidebar - Folder Structure */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -313,7 +308,6 @@ export default function DocumentRepository() {
         >
           <h2 className="text-sm font-semibold text-gray-900 mb-4 px-2">{t.audit.folderStructure}</h2>
 
-          {/* Folder Search */}
           <div className="mb-4 px-2">
             <div className="relative">
               <Search
@@ -356,10 +350,8 @@ export default function DocumentRepository() {
           </div>
         </motion.div>
 
-        {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="p-6">
-            {/* Header */}
             <div className="mb-6">
               <div className="flex items-start justify-between mb-4">
                 <div>
@@ -372,7 +364,6 @@ export default function DocumentRepository() {
                 </button>
               </div>
 
-              {/* Breadcrumb */}
               <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
                 {currentPath.map((path, idx) => (
                   <div key={idx} className="flex items-center gap-2">
@@ -388,7 +379,6 @@ export default function DocumentRepository() {
                 ))}
               </div>
 
-              {/* Search and View Controls */}
               <div className="flex items-center gap-4">
                 <div className="flex-1 relative">
                   <Search
@@ -425,7 +415,6 @@ export default function DocumentRepository() {
               </div>
             </div>
 
-            {/* Documents Table */}
             <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
               <div className="p-4 border-b border-gray-200">
                 <p className="text-sm text-gray-600">
@@ -447,7 +436,6 @@ export default function DocumentRepository() {
                 />
               </div>
 
-              {/* Pagination */}
               <div className="p-4 border-t border-gray-200">
                 <Pagination currentPage={currentPage} totalPages={26} onPageChange={setCurrentPage} />
               </div>

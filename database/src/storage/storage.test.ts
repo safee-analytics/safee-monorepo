@@ -6,7 +6,7 @@ import { FileSystemStorage } from "./fileSystemStorage.js";
 import { createStorage, getStorage } from "./index.js";
 import type { StorageMetadata } from "./storage.js";
 
-void describe("Storage System", async () => {
+describe("Storage System", async () => {
   let testDir: string;
   let storage: FileSystemStorage;
 
@@ -19,7 +19,6 @@ void describe("Storage System", async () => {
     try {
       await rmdir(testDir, { recursive: true });
     } catch {
-      // Ignore cleanup errors
     }
   });
 
@@ -27,9 +26,9 @@ void describe("Storage System", async () => {
     storage = new FileSystemStorage("/public", "test-bucket", testDir);
   });
 
-  void describe("FileSystemStorage", async () => {
-    void describe("saveFile", async () => {
-      void it("saves file successfully", async () => {
+  describe("FileSystemStorage", async () => {
+    describe("saveFile", async () => {
+      it("saves file successfully", async () => {
         const testData = Buffer.from("Hello, World!");
         const path = "test-file.txt";
 
@@ -44,7 +43,7 @@ void describe("Storage System", async () => {
         expect(result.lastModified).toBeTruthy();
       });
 
-      void it("saves file with metadata", async () => {
+      it("saves file with metadata", async () => {
         const testData = Buffer.from("Test content");
         const path = "test-with-metadata.txt";
         const metadata: StorageMetadata = {
@@ -58,7 +57,7 @@ void describe("Storage System", async () => {
         expect(result.size).toBe(testData.length);
       });
 
-      void it("creates nested directories", async () => {
+      it("creates nested directories", async () => {
         const testData = Buffer.from("Nested content");
         const path = "folder/subfolder/nested-file.txt";
 
@@ -68,7 +67,7 @@ void describe("Storage System", async () => {
         expect(result.url.includes("folder/subfolder/nested-file.txt")).toBeTruthy();
       });
 
-      void it("overwrites existing files", async () => {
+      it("overwrites existing files", async () => {
         const path = "overwrite-test.txt";
         const originalData = Buffer.from("Original content");
         const newData = Buffer.from("New content");
@@ -83,8 +82,8 @@ void describe("Storage System", async () => {
       });
     });
 
-    void describe("getFile", async () => {
-      void it("retrieves existing file", async () => {
+    describe("getFile", async () => {
+      it("retrieves existing file", async () => {
         const testData = Buffer.from("Test file content");
         const path = "retrieve-test.txt";
 
@@ -95,13 +94,13 @@ void describe("Storage System", async () => {
         expect(result.toString()).toBe("Test file content");
       });
 
-      void it("throws error for non-existent file", async () => {
+      it("throws error for non-existent file", async () => {
         const path = "non-existent.txt";
 
         await expect(storage.getFile(path)).rejects.toThrow(/File not found: non-existent.txt/);
       });
 
-      void it("retrieves binary file correctly", async () => {
+      it("retrieves binary file correctly", async () => {
         const binaryData = Buffer.from([0, 1, 2, 3, 255, 254, 253]);
         const path = "binary-test.bin";
 
@@ -112,8 +111,8 @@ void describe("Storage System", async () => {
       });
     });
 
-    void describe("fileExists", async () => {
-      void it("returns true for existing file", async () => {
+    describe("fileExists", async () => {
+      it("returns true for existing file", async () => {
         const testData = Buffer.from("Exists test");
         const path = "exists-test.txt";
 
@@ -123,7 +122,7 @@ void describe("Storage System", async () => {
         expect(exists).toBe(true);
       });
 
-      void it("returns false for non-existent file", async () => {
+      it("returns false for non-existent file", async () => {
         const path = "does-not-exist.txt";
 
         const exists = await storage.fileExists(path);
@@ -131,7 +130,7 @@ void describe("Storage System", async () => {
         expect(exists).toBe(false);
       });
 
-      void it("returns false for directory", async () => {
+      it("returns false for directory", async () => {
         const dirPath = "test-directory";
 
         const exists = await storage.fileExists(dirPath);
@@ -140,8 +139,8 @@ void describe("Storage System", async () => {
       });
     });
 
-    void describe("deleteFile", async () => {
-      void it("deletes existing file", async () => {
+    describe("deleteFile", async () => {
+      it("deletes existing file", async () => {
         const testData = Buffer.from("Delete test");
         const path = "delete-test.txt";
 
@@ -152,13 +151,13 @@ void describe("Storage System", async () => {
         expect(await storage.fileExists(path)).toBe(false);
       });
 
-      void it("does not throw error when deleting non-existent file", async () => {
+      it("does not throw error when deleting non-existent file", async () => {
         const path = "non-existent-delete.txt";
 
         await storage.deleteFile(path);
       });
 
-      void it("deletes file in nested directory", async () => {
+      it("deletes file in nested directory", async () => {
         const testData = Buffer.from("Nested delete test");
         const path = "nested/deep/delete-nested.txt";
 
@@ -170,8 +169,8 @@ void describe("Storage System", async () => {
       });
     });
 
-    void describe("getFileMetadata", async () => {
-      void it("returns metadata for existing file", async () => {
+    describe("getFileMetadata", async () => {
+      it("returns metadata for existing file", async () => {
         const testData = Buffer.from("Metadata test content");
         const path = "metadata-test.txt";
 
@@ -187,7 +186,7 @@ void describe("Storage System", async () => {
         expect(metadata.etag).toBe(saveResult.etag);
       });
 
-      void it("throws error for non-existent file", async () => {
+      it("throws error for non-existent file", async () => {
         const path = "non-existent-metadata.txt";
 
         await expect(storage.getFileMetadata(path)).rejects.toThrow(
@@ -196,7 +195,7 @@ void describe("Storage System", async () => {
       });
     });
 
-    void describe("listFiles", async () => {
+    describe("listFiles", async () => {
       beforeEach(async () => {
         const testFiles = [
           { path: "file1.txt", content: "Content 1" },
@@ -211,7 +210,7 @@ void describe("Storage System", async () => {
         }
       });
 
-      void it("lists all files without prefix", async () => {
+      it("lists all files without prefix", async () => {
         const files = await storage.listFiles();
 
         expect(files.length >= 5).toBeTruthy();
@@ -221,7 +220,7 @@ void describe("Storage System", async () => {
         expect(paths.includes("folder/subfolder/file4.txt")).toBeTruthy();
       });
 
-      void it("lists files with prefix", async () => {
+      it("lists files with prefix", async () => {
         const files = await storage.listFiles("folder/");
 
         expect(files.length >= 2).toBeTruthy();
@@ -231,13 +230,13 @@ void describe("Storage System", async () => {
         expect(paths.includes("folder/subfolder/file4.txt")).toBeTruthy();
       });
 
-      void it("respects limit parameter", async () => {
+      it("respects limit parameter", async () => {
         const files = await storage.listFiles(undefined, 2);
 
         expect(files.length).toBe(2);
       });
 
-      void it("returns file metadata in results", async () => {
+      it("returns file metadata in results", async () => {
         const files = await storage.listFiles("file1");
 
         expect(files.length).toBe(1);
@@ -250,15 +249,15 @@ void describe("Storage System", async () => {
         expect(file.lastModified).toBeTruthy();
       });
 
-      void it("returns empty array for non-existent prefix", async () => {
+      it("returns empty array for non-existent prefix", async () => {
         const files = await storage.listFiles("nonexistent/");
 
         expect(files.length).toBe(0);
       });
     });
 
-    void describe("getSignedUrl", async () => {
-      void it("generates signed URL with default expiry", async () => {
+    describe("getSignedUrl", async () => {
+      it("generates signed URL with default expiry", async () => {
         const path = "signed-url-test.txt";
         const testData = Buffer.from("Signed URL test");
 
@@ -270,7 +269,7 @@ void describe("Storage System", async () => {
         expect(signedUrl.includes("signature=")).toBeTruthy();
       });
 
-      void it("generates signed URL with custom expiry", async () => {
+      it("generates signed URL with custom expiry", async () => {
         const path = "custom-expiry.txt";
         const testData = Buffer.from("Custom expiry test");
         const expiresIn = 1800;
@@ -288,7 +287,7 @@ void describe("Storage System", async () => {
         expect(Math.abs(expires - expectedExpires) < 5000).toBeTruthy(); // Within 5 seconds
       });
 
-      void it("generates different signatures for different files", async () => {
+      it("generates different signatures for different files", async () => {
         const path1 = "signed1.txt";
         const path2 = "signed2.txt";
 
@@ -307,8 +306,8 @@ void describe("Storage System", async () => {
       });
     });
 
-    void describe("copyFile", async () => {
-      void it("copies file successfully", async () => {
+    describe("copyFile", async () => {
+      it("copies file successfully", async () => {
         const sourceData = Buffer.from("Source file content");
         const sourcePath = "source.txt";
         const destPath = "destination.txt";
@@ -326,7 +325,7 @@ void describe("Storage System", async () => {
         expect(originalData).toEqual(sourceData);
       });
 
-      void it("copies file to nested directory", async () => {
+      it("copies file to nested directory", async () => {
         const sourceData = Buffer.from("Copy to nested");
         const sourcePath = "copy-source.txt";
         const destPath = "nested/deep/copy-dest.txt";
@@ -341,7 +340,7 @@ void describe("Storage System", async () => {
         expect(copiedData).toEqual(sourceData);
       });
 
-      void it("overwrites existing destination file", async () => {
+      it("overwrites existing destination file", async () => {
         const sourceData = Buffer.from("New content");
         const oldData = Buffer.from("Old content");
         const sourcePath = "copy-source-overwrite.txt";
@@ -356,7 +355,7 @@ void describe("Storage System", async () => {
         expect(finalData).toEqual(sourceData);
       });
 
-      void it("throws error when source file does not exist", async () => {
+      it("throws error when source file does not exist", async () => {
         const sourcePath = "non-existent-source.txt";
         const destPath = "copy-dest.txt";
 
@@ -367,9 +366,9 @@ void describe("Storage System", async () => {
     });
   });
 
-  void describe("Storage Factory", async () => {
-    void describe("createStorage", async () => {
-      void it("creates FileSystemStorage", () => {
+  describe("Storage Factory", async () => {
+    describe("createStorage", async () => {
+      it("creates FileSystemStorage", () => {
         const storage = createStorage({
           provider: "filesystem",
           bucket: "test-bucket",
@@ -379,7 +378,7 @@ void describe("Storage System", async () => {
         expect(storage instanceof FileSystemStorage).toBeTruthy();
       });
 
-      void it("creates AzureBlobStorage with connection string", () => {
+      it("creates AzureBlobStorage with connection string", () => {
         const mockConnectionString =
           "DefaultEndpointsProtocol=https;AccountName=test;AccountKey=test123;EndpointSuffix=core.windows.net";
 
@@ -393,7 +392,7 @@ void describe("Storage System", async () => {
         expect(storage).toBeTruthy();
       });
 
-      void it("throws error for Azure without connection string", () => {
+      it("throws error for Azure without connection string", () => {
         expect(() =>
           createStorage({
             provider: "azure",
@@ -402,7 +401,7 @@ void describe("Storage System", async () => {
         ).toThrow(/Azure Blob Storage requires a connection string/);
       });
 
-      void it("creates GoogleCloudStorage", () => {
+      it("creates GoogleCloudStorage", () => {
         const storage = createStorage({
           provider: "google",
           bucket: "test-bucket",
@@ -413,7 +412,7 @@ void describe("Storage System", async () => {
         expect(storage).toBeTruthy();
       });
 
-      void it("throws error for unsupported provider", () => {
+      it("throws error for unsupported provider", () => {
         expect(() =>
           createStorage({
             provider: "unsupported" as "filesystem" | "azure" | "google",
@@ -423,8 +422,8 @@ void describe("Storage System", async () => {
       });
     });
 
-    void describe("getStorage", async () => {
-      void it("returns FileSystemStorage for local environment", () => {
+    describe("getStorage", async () => {
+      it("returns FileSystemStorage for local environment", () => {
         const originalEnv = process.env.ENV;
         process.env.ENV = "local";
 
@@ -439,7 +438,7 @@ void describe("Storage System", async () => {
         }
       });
 
-      void it("returns storage based on environment at module load time", () => {
+      it("returns storage based on environment at module load time", () => {
         // IS_LOCAL is determined at module load time, not dynamically
         // In test environment, IS_LOCAL is true, so FileSystemStorage is returned
         const storage = getStorage("test-bucket");
@@ -450,8 +449,8 @@ void describe("Storage System", async () => {
     });
   });
 
-  void describe("Edge Cases", async () => {
-    void it("handles empty file", async () => {
+  describe("Edge Cases", async () => {
+    it("handles empty file", async () => {
       const emptyData = Buffer.alloc(0);
       const path = "empty-file.txt";
 
@@ -462,7 +461,7 @@ void describe("Storage System", async () => {
       expect(retrievedData.length).toBe(0);
     });
 
-    void it("handles large file names", async () => {
+    it("handles large file names", async () => {
       const testData = Buffer.from("Large filename test");
       const longName = `${"a".repeat(200)}.txt`;
 
@@ -473,7 +472,7 @@ void describe("Storage System", async () => {
       expect(exists).toBe(true);
     });
 
-    void it("handles special characters in filename", async () => {
+    it("handles special characters in filename", async () => {
       const testData = Buffer.from("Special chars test");
       const specialPath = "file with spaces & symbols-123_test.txt";
 
@@ -484,7 +483,7 @@ void describe("Storage System", async () => {
       expect(retrievedData).toEqual(testData);
     });
 
-    void it("handles concurrent file operations", async () => {
+    it("handles concurrent file operations", async () => {
       const testData = Buffer.from("Concurrent test");
       const operations = [];
 

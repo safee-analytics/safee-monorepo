@@ -24,7 +24,6 @@ export async function approve(
   const logger = pino();
 
   try {
-    // Get the approval request
     const approvalRequest = await drizzle.query.approvalRequests.findFirst({
       where: eq(schema.approvalRequests.id, requestId),
       with: {
@@ -44,7 +43,6 @@ export async function approve(
       throw new InvalidInput(`Cannot approve request with status: ${approvalRequest.status}`);
     }
 
-    // Find pending approval step for this user
     const approvalStep = await drizzle.query.approvalSteps.findFirst({
       where: and(eq(schema.approvalSteps.requestId, requestId), eq(schema.approvalSteps.status, "pending")),
     });
@@ -53,7 +51,6 @@ export async function approve(
       throw new NotFound("No pending approval step found for this request");
     }
 
-    // Check if user is the approver or delegated user
     const isApprover = approvalStep.approverId === userId;
     const isDelegated = approvalStep.delegatedTo === userId;
 
@@ -61,7 +58,6 @@ export async function approve(
       throw new NotFound("No pending approval step found for this user");
     }
 
-    // Check if user has permission to approve
     const member = await drizzle.query.members.findFirst({
       where: and(eq(schema.members.userId, userId), eq(schema.members.organizationId, organizationId)),
     });
@@ -70,7 +66,6 @@ export async function approve(
       throw new InsufficientPermissions("User is not a member of this organization");
     }
 
-    // Update approval step
     await drizzle
       .update(schema.approvalSteps)
       .set({
@@ -80,16 +75,13 @@ export async function approve(
       })
       .where(eq(schema.approvalSteps.id, approvalStep.id));
 
-    // Check if current step is complete
     const rulesEngine = new ApprovalRulesEngine(drizzle);
     const stepComplete = await rulesEngine.isStepComplete(requestId, approvalStep.stepOrder);
 
     if (stepComplete) {
-      // Move to next step or complete workflow
       const nextStep = await rulesEngine.getNextStep(requestId, approvalStep.stepOrder);
 
       if (nextStep) {
-        // Create approval steps for next workflow step
         const { approverIds } = await rulesEngine.getRequiredApprovers(nextStep.id, organizationId);
 
         await Promise.all(
@@ -119,7 +111,6 @@ export async function approve(
           requestStatus: "pending",
         };
       } else {
-        // No more steps - workflow complete
         await drizzle
           .update(schema.approvalRequests)
           .set({
@@ -161,7 +152,6 @@ export async function approve(
       requestStatus: "pending",
     };
   } catch (error) {
-    // Re-throw domain errors as-is
     if (
       error instanceof InvalidInput ||
       error instanceof NotFound ||

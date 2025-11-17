@@ -22,7 +22,6 @@ export async function expressAuthentication(
     const context = getServerContext();
 
     try {
-      // Get session from Better Auth using request headers
       const headers = fromNodeHeaders(request.headers);
       context.logger.info(
         {
@@ -68,7 +67,6 @@ export async function expressAuthentication(
 
       const user = session.user;
 
-      // Check roles if scopes are provided (scopes map to roles in Better Auth)
       if (scopes && scopes.length > 0) {
         const userRole = user.role || "user";
         const hasRole = scopes.includes(userRole) || userRole === "admin"; // admin can access all

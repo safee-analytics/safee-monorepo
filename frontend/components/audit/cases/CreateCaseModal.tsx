@@ -18,7 +18,6 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
   const createCase = useCreateCase();
 
   const [formData, setFormData] = useState({
-    caseNumber: "",
     clientName: "",
     auditType: "",
     priority: "medium" as CasePriority,
@@ -30,9 +29,6 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.caseNumber.trim()) {
-      newErrors.caseNumber = "Case number is required";
-    }
     if (!formData.clientName.trim()) {
       newErrors.clientName = "Client name is required";
     }
@@ -52,8 +48,8 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
     }
 
     try {
+      // Backend will auto-generate the case number sequentially
       await createCase.mutateAsync({
-        caseNumber: formData.caseNumber,
         clientName: formData.clientName,
         auditType: formData.auditType,
         status: "pending",
@@ -63,7 +59,6 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
 
       // Reset form
       setFormData({
-        caseNumber: "",
         clientName: "",
         auditType: "",
         priority: "medium",
@@ -83,7 +78,6 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
   const handleClose = () => {
     if (!createCase.isPending) {
       setFormData({
-        caseNumber: "",
         clientName: "",
         auditType: "",
         priority: "medium",
@@ -127,25 +121,6 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
-          {/* Case Number */}
-          <div>
-            <label htmlFor="caseNumber" className="block text-sm font-medium text-gray-700 mb-2">
-              Case Number <span className="text-red-500">*</span>
-            </label>
-            <input
-              type="text"
-              id="caseNumber"
-              value={formData.caseNumber}
-              onChange={(e) => setFormData({ ...formData, caseNumber: e.target.value })}
-              className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.caseNumber ? "border-red-500" : "border-gray-300"
-              }`}
-              placeholder="e.g., CASE-001"
-              autoFocus
-            />
-            {errors.caseNumber && <p className="text-red-500 text-sm mt-1">{errors.caseNumber}</p>}
-          </div>
-
           {/* Client Name */}
           <div>
             <label htmlFor="clientName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -160,6 +135,7 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
                 errors.clientName ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="e.g., ABC Corporation"
+              autoFocus
             />
             {errors.clientName && <p className="text-red-500 text-sm mt-1">{errors.clientName}</p>}
           </div>

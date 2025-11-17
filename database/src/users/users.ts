@@ -21,7 +21,6 @@ export interface CreateUserData {
   email: string;
   firstName?: string;
   lastName?: string;
-  organizationId: string;
 }
 
 export interface CreateUserWithOrgData {
@@ -35,18 +34,12 @@ export interface UserWithOrganization {
   id: string;
   email: string;
   name?: string | null;
-  organizationId: string | null;
   preferredLocale: Locale;
   isActive: boolean;
   emailVerified: boolean;
   image?: string | null;
   createdAt: Date;
   updatedAt: Date;
-  organization?: {
-    id: string;
-    name: string;
-    slug: string;
-  };
 }
 
 export interface UpdateUserProfileData {
@@ -67,7 +60,6 @@ export async function createOrganization(
 
   while (counter < maxAttempts) {
     try {
-      // First check if slug exists
       const existing = await drizzle.query.organizations.findFirst({
         where: eq(organizations.slug, slug),
       });
@@ -79,7 +71,6 @@ export async function createOrganization(
         continue;
       }
 
-      // Slug is available, create organization
       const [newOrg] = await drizzle
         .insert(organizations)
         .values({
@@ -102,7 +93,6 @@ export async function createOrganization(
         err.constraint.includes("slug");
 
       if (isSlugConflict) {
-        // Race condition - another org was created between check and insert
         counter++;
         slug = `${baseSlug}-${counter}`;
         logger.debug({ counter, slug }, "Race condition on slug insert, retrying with next increment");
@@ -135,7 +125,6 @@ export async function createUser(deps: DbDeps, userData: CreateUserData): Promis
           userData.firstName && userData.lastName
             ? `${userData.firstName} ${userData.lastName}`
             : (userData.firstName ?? userData.lastName ?? null),
-        organizationId: userData.organizationId,
       })
       .returning();
 
@@ -170,7 +159,6 @@ export async function createUserWithOrganization(
           userData.firstName && userData.lastName
             ? `${userData.firstName} ${userData.lastName}`
             : (userData.firstName ?? userData.lastName ?? null),
-        organizationId: newOrg.id,
       })
       .returning();
 
@@ -194,32 +182,15 @@ export async function getUserByEmail(deps: DbDeps, email: string): Promise<UserW
   const { drizzle, logger } = deps;
 
   try {
-    const result = await drizzle
-      .select({
-        user: users,
-        organization: organizations,
-      })
-      .from(users)
-      .leftJoin(organizations, eq(users.organizationId, organizations.id))
-      .where(eq(users.email, email))
-      .limit(1);
+    const user = await drizzle.query.users.findFirst({
+      where: eq(users.email, email),
+    });
 
-    if (result.length === 0) {
+    if (!user) {
       return null;
     }
 
-    const { user, organization } = result[0];
-
-    return {
-      ...user,
-      organization: organization
-        ? {
-            id: organization.id,
-            name: organization.name,
-            slug: organization.slug,
-          }
-        : undefined,
-    };
+    return user;
   } catch (err) {
     logger.error({ error: err, email }, "Failed to get user by email");
     throw err;
@@ -230,32 +201,15 @@ export async function getUserById(deps: DbDeps, id: string): Promise<UserWithOrg
   const { drizzle, logger } = deps;
 
   try {
-    const result = await drizzle
-      .select({
-        user: users,
-        organization: organizations,
-      })
-      .from(users)
-      .leftJoin(organizations, eq(users.organizationId, organizations.id))
-      .where(eq(users.id, id))
-      .limit(1);
+    const user = await drizzle.query.users.findFirst({
+      where: eq(users.id, id),
+    });
 
-    if (result.length === 0) {
+    if (!user) {
       return null;
     }
 
-    const { user, organization } = result[0];
-
-    return {
-      ...user,
-      organization: organization
-        ? {
-            id: organization.id,
-            name: organization.name,
-            slug: organization.slug,
-          }
-        : undefined,
-    };
+    return user;
   } catch (err) {
     logger.error({ error: err, userId: id }, "Failed to get user by ID");
     throw err;

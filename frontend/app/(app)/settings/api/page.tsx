@@ -137,8 +137,8 @@ export default function APIKeysSettings() {
           <div className="mb-6">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900 mb-2">API Keys</h1>
-                <p className="text-gray-600">Manage API keys for programmatic access to Safee</p>
+                <h1 className="text-2xl font-bold text-gray-900 mb-2">{t.settings.api.title}</h1>
+                <p className="text-gray-600">{t.settings.api.subtitle}</p>
               </div>
               <button
                 onClick={() => setShowCreateModal(true)}

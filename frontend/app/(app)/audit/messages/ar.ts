@@ -9,6 +9,8 @@ export const auditAr = {
     // Dashboard
     dashboardTitle: "نظرة عامة على لوحة التحكم",
     dashboardSubtitle: "مرحباً بعودتك، إليك ما يحدث مع عمليات التدقيق اليوم.",
+    casesOverviewTitle: "نظرة عامة على الحالات",
+    casesOverviewSubtitle: "مراقبة وإدارة جميع حالات التدقيق، تتبع التقدم، ومراجعة نشاط الفريق",
     activeCases: "الحالات النشطة",
     pendingReviews: "المراجعات المعلقة",
     completedAudits: "عمليات التدقيق المكتملة",
@@ -28,6 +30,7 @@ export const auditAr = {
     inProgress: "قيد التنفيذ",
     pending: "معلق",
     // Cases
+    casesOverview: "نظرة عامة على الحالات",
     caseManagement: "إدارة الحالات",
     caseManagementSubtitle: "إدارة جميع حالات التدقيق الخاصة بك، وتتبع التقدم، ومراقبة المواعيد النهائية.",
     newCase: "حالة جديدة",

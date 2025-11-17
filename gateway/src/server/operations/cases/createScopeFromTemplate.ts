@@ -19,12 +19,10 @@ export async function createScopeFromTemplate(
   const logger = pino();
   const deps = { drizzle, logger };
 
-  // Get and validate case
   let existingCase;
   try {
     existingCase = await getCaseById(deps, caseId);
   } catch {
-    // If query fails (e.g., invalid UUID format), treat as not found
     throw new NotFound("Case not found");
   }
 
@@ -37,12 +35,10 @@ export async function createScopeFromTemplate(
     throw new InsufficientPermissions("You don't have permission to create scopes for this case");
   }
 
-  // Get and validate template
   let template;
   try {
     template = await getTemplateById(deps, templateId);
   } catch {
-    // If query fails (e.g., invalid UUID format), treat as not found
     throw new NotFound("Template not found");
   }
 
@@ -74,10 +70,8 @@ export async function createScopeFromTemplate(
   }
 
   try {
-    // Create scope from template
     const scope = await dbCreateScopeFromTemplate(deps, caseId, templateId, userId);
 
-    // Create history entry
     await createHistoryEntry(deps, {
       caseId,
       entityType: "scope",

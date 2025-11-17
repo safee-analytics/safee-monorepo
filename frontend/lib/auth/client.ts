@@ -1,5 +1,5 @@
 import { createAuthClient } from "better-auth/react";
-import { organizationClient } from "better-auth/client/plugins";
+import type { Auth } from "@safee/gateway/auth";
 
 const getBaseURL = () => {
   if (process.env.NEXT_PUBLIC_API_URL) {
@@ -15,32 +15,19 @@ const getBaseURL = () => {
 
 const baseURL = getBaseURL();
 
-export const authClient = createAuthClient({
+/**
+ * Better Auth client with type safety from the gateway auth instance.
+ * This ensures the frontend always matches the backend's auth configuration.
+ */
+export const authClient = createAuthClient<Auth>({
   baseURL: `${baseURL}/api/v1`,
-  plugins: [organizationClient()],
   fetchOptions: {
     credentials: "include", // Always include cookies in cross-origin requests
   },
 });
 
-export type Session = {
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    emailVerified: boolean;
-    image?: string;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  session: {
-    id: string;
-    userId: string;
-    expiresAt: Date;
-    ipAddress?: string;
-    userAgent?: string;
-  };
-};
+// Re-export types inferred from the gateway auth instance
+export type Session = typeof authClient.$Infer.Session;
 
 export type AuthError = {
   message: string;

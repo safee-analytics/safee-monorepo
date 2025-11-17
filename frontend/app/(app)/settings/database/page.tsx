@@ -98,7 +98,7 @@ export default function DatabaseSettings() {
     alert("Backup completed successfully");
   };
 
-  const handleRestore = async (backupId: string) => {
+  const handleRestore = async (_backupId: string) => {
     if (
       confirm(
         "Are you sure you want to restore this backup? This will replace your current database with the backup data.",
@@ -128,8 +128,8 @@ export default function DatabaseSettings() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-5xl">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Database Settings</h1>
-            <p className="text-gray-600">Manage backups, maintenance, and database configuration</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">{t.settings.database.title}</h1>
+            <p className="text-gray-600">{t.settings.database.subtitle}</p>
           </div>
 
           {/* Database Health */}

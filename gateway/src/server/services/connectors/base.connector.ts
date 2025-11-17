@@ -1,6 +1,5 @@
 import type { schema as _schema } from "@safee/database";
 
-// Define connector types explicitly for build-time type checking
 export type ConnectorType =
   | "postgresql"
   | "mysql"
@@ -46,43 +45,19 @@ export interface ConnectorMetadata {
   updatedAt: Date;
 }
 
-/**
- * Base interface for all connectors
- */
 export interface IConnector {
-  /**
-   * Get connector metadata
-   */
   getMetadata(): ConnectorMetadata;
 
-  /**
-   * Test the connection to the external system
-   */
   testConnection(): Promise<ConnectionTestResult>;
 
-  /**
-   * Connect to the external system
-   */
   connect(): Promise<void>;
 
-  /**
-   * Disconnect from the external system
-   */
   disconnect(): Promise<void>;
 
-  /**
-   * Check if connector is currently connected
-   */
   isConnected(): boolean;
 
-  /**
-   * Validate the connector configuration
-   */
   validateConfig(config: ConnectorConfig): Promise<{ valid: boolean; errors?: string[] }>;
 
-  /**
-   * Get health status
-   */
   getHealthStatus(): Promise<{
     healthy: boolean;
     message?: string;
@@ -90,9 +65,6 @@ export interface IConnector {
   }>;
 }
 
-/**
- * Abstract base class for all connectors
- */
 export abstract class BaseConnector implements IConnector {
   protected connected: boolean = false;
   protected config: ConnectorConfig;

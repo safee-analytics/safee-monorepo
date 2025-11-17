@@ -3,17 +3,16 @@ import {
   interpolateTemplate,
   buildNotificationFromTemplate,
   NOTIFICATION_TEMPLATES,
-  type TemplateVariables,
 } from "./notificationTemplates.js";
 
-void describe("Notification Templates", () => {
-  void describe("interpolateTemplate", () => {
-    void it("should replace single variable", () => {
+describe("Notification Templates", () => {
+  describe("interpolateTemplate", () => {
+    it("should replace single variable", () => {
       const result = interpolateTemplate("Hello {{name}}", { name: "John" });
       expect(result).toBe("Hello John");
     });
 
-    void it("should replace multiple variables", () => {
+    it("should replace multiple variables", () => {
       const result = interpolateTemplate("{{greeting}} {{name}}, your order {{orderId}} is ready", {
         greeting: "Hello",
         name: "Jane",
@@ -22,39 +21,39 @@ void describe("Notification Templates", () => {
       expect(result).toBe("Hello Jane, your order 12345 is ready");
     });
 
-    void it("should handle numeric variables", () => {
+    it("should handle numeric variables", () => {
       const result = interpolateTemplate("You have {{count}} unread messages", { count: 42 });
       expect(result).toBe("You have 42 unread messages");
     });
 
-    void it("should leave undefined variables unchanged", () => {
+    it("should leave undefined variables unchanged", () => {
       const result = interpolateTemplate("Hello {{name}}, {{greeting}}", { name: "John" });
       expect(result).toBe("Hello John, {{greeting}}");
     });
 
-    void it("should handle empty template", () => {
+    it("should handle empty template", () => {
       const result = interpolateTemplate("", { name: "John" });
       expect(result).toBe("");
     });
 
-    void it("should handle template with no variables", () => {
+    it("should handle template with no variables", () => {
       const result = interpolateTemplate("Hello World", { name: "John" });
       expect(result).toBe("Hello World");
     });
 
-    void it("should handle empty variables object", () => {
+    it("should handle empty variables object", () => {
       const result = interpolateTemplate("Hello {{name}}", {});
       expect(result).toBe("Hello {{name}}");
     });
 
-    void it("should handle repeated variables", () => {
+    it("should handle repeated variables", () => {
       const result = interpolateTemplate("{{name}} loves {{name}}", { name: "Alice" });
       expect(result).toBe("Alice loves Alice");
     });
   });
 
-  void describe("buildNotificationFromTemplate", () => {
-    void it("should build notification from CASE_CREATED template", () => {
+  describe("buildNotificationFromTemplate", () => {
+    it("should build notification from CASE_CREATED template", () => {
       const notification = buildNotificationFromTemplate("CASE_CREATED", {
         caseNumber: "CASE-001",
         clientName: "Acme Corp",
@@ -71,7 +70,7 @@ void describe("Notification Templates", () => {
       });
     });
 
-    void it("should build notification from CASE_ASSIGNED template", () => {
+    it("should build notification from CASE_ASSIGNED template", () => {
       const notification = buildNotificationFromTemplate("CASE_ASSIGNED", {
         caseNumber: "CASE-002",
         clientName: "Beta Inc",
@@ -88,7 +87,7 @@ void describe("Notification Templates", () => {
       });
     });
 
-    void it("should build notification from DEADLINE_APPROACHING template", () => {
+    it("should build notification from DEADLINE_APPROACHING template", () => {
       const notification = buildNotificationFromTemplate("DEADLINE_APPROACHING", {
         caseNumber: "CASE-003",
         clientName: "Gamma LLC",
@@ -106,7 +105,7 @@ void describe("Notification Templates", () => {
       });
     });
 
-    void it("should build notification from CASE_COMPLETED template", () => {
+    it("should build notification from CASE_COMPLETED template", () => {
       const notification = buildNotificationFromTemplate("CASE_COMPLETED", {
         userName: "John Doe",
         caseNumber: "CASE-004",
@@ -124,7 +123,7 @@ void describe("Notification Templates", () => {
       });
     });
 
-    void it("should build notification from REVIEW_REQUIRED template", () => {
+    it("should build notification from REVIEW_REQUIRED template", () => {
       const notification = buildNotificationFromTemplate("REVIEW_REQUIRED", {
         caseNumber: "CASE-005",
         caseId: "mno-345",
@@ -140,7 +139,7 @@ void describe("Notification Templates", () => {
       });
     });
 
-    void it("should build notification from DOCUMENT_UPLOADED template", () => {
+    it("should build notification from DOCUMENT_UPLOADED template", () => {
       const notification = buildNotificationFromTemplate("DOCUMENT_UPLOADED", {
         userName: "Jane Smith",
         caseNumber: "CASE-006",
@@ -157,7 +156,7 @@ void describe("Notification Templates", () => {
       });
     });
 
-    void it("should build notification from APPROVAL_PENDING template", () => {
+    it("should build notification from APPROVAL_PENDING template", () => {
       const notification = buildNotificationFromTemplate("APPROVAL_PENDING", {
         itemDescription: "Budget Request #123",
         approvalId: "apr-001",
@@ -173,10 +172,9 @@ void describe("Notification Templates", () => {
       });
     });
 
-    void it("should handle missing variables gracefully", () => {
+    it("should handle missing variables gracefully", () => {
       const notification = buildNotificationFromTemplate("CASE_CREATED", {
         caseNumber: "CASE-007",
-        // Missing clientName and caseId
       });
 
       expect(notification.description).toBe("Case CASE-007 for {{clientName}} has been created");
@@ -184,8 +182,8 @@ void describe("Notification Templates", () => {
     });
   });
 
-  void describe("NOTIFICATION_TEMPLATES", () => {
-    void it("should have all required templates", () => {
+  describe("NOTIFICATION_TEMPLATES", () => {
+    it("should have all required templates", () => {
       const expectedTemplates = [
         "CASE_CREATED",
         "CASE_ASSIGNED",
@@ -210,7 +208,7 @@ void describe("Notification Templates", () => {
       }
     });
 
-    void it("should have unique types for each template category", () => {
+    it("should have unique types for each template category", () => {
       expect(NOTIFICATION_TEMPLATES.CASE_CREATED.type).toBe("case_created");
       expect(NOTIFICATION_TEMPLATES.CASE_ASSIGNED.type).toBe("assignment");
       expect(NOTIFICATION_TEMPLATES.DEADLINE_APPROACHING.type).toBe("deadline");
@@ -220,7 +218,7 @@ void describe("Notification Templates", () => {
       expect(NOTIFICATION_TEMPLATES.APPROVAL_PENDING.type).toBe("approval");
     });
 
-    void it("should have action labels for all case-related templates", () => {
+    it("should have action labels for all case-related templates", () => {
       const caseTemplates = [
         "CASE_CREATED",
         "CASE_ASSIGNED",
@@ -231,13 +229,13 @@ void describe("Notification Templates", () => {
       ];
 
       for (const templateKey of caseTemplates) {
-        const template = NOTIFICATION_TEMPLATES[templateKey as keyof typeof NOTIFICATION_TEMPLATES];
+        const template = NOTIFICATION_TEMPLATES[templateKey];
         expect(template.actionLabel).toBeDefined();
         expect(template.actionUrlPattern).toBeDefined();
       }
     });
 
-    void it("should have consistent URL patterns for case templates", () => {
+    it("should have consistent URL patterns for case templates", () => {
       const caseTemplates = [
         "CASE_CREATED",
         "CASE_ASSIGNED",
@@ -250,12 +248,12 @@ void describe("Notification Templates", () => {
       ];
 
       for (const templateKey of caseTemplates) {
-        const template = NOTIFICATION_TEMPLATES[templateKey as keyof typeof NOTIFICATION_TEMPLATES];
+        const template = NOTIFICATION_TEMPLATES[templateKey];
         expect(template.actionUrlPattern).toContain("/audit/cases/{{caseId}}");
       }
     });
 
-    void it("should have correct related entity types", () => {
+    it("should have correct related entity types", () => {
       expect(NOTIFICATION_TEMPLATES.CASE_CREATED.relatedEntityType).toBe("case");
       expect(NOTIFICATION_TEMPLATES.DOCUMENT_UPLOADED.relatedEntityType).toBe("document");
       expect(NOTIFICATION_TEMPLATES.TEAM_MEMBER_ADDED.relatedEntityType).toBe("user");

@@ -26,7 +26,7 @@ void describe("updateCase operation", async () => {
     await nukeDatabase(drizzle);
 
     testOrg = await createTestOrganization(drizzle);
-    testUser = await createTestUser(drizzle, testOrg.id);
+    testUser = await createTestUser(drizzle);
   });
 
   afterAll(async () => {

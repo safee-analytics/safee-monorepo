@@ -54,7 +54,6 @@ export async function createTestOrganization(
 
 export async function createTestUser(
   db: DrizzleClient,
-  organizationId: string,
   data?: {
     email?: string;
     name?: string;
@@ -68,7 +67,6 @@ export async function createTestUser(
       email: data?.email ?? `user-${Date.now()}-${testCounter}@test.com`,
       name: data?.name ?? "Test User",
       role: data?.role ?? "user",
-      organizationId,
       isActive: true,
     })
     .returning();
@@ -97,13 +95,13 @@ export async function addMemberToOrganization(
 export async function createTestFixtures(db: DrizzleClient): Promise<TestFixtures> {
   const organization = await createTestOrganization(db);
 
-  const user = await createTestUser(db, organization.id, {
+  const user = await createTestUser(db, {
     email: "user@test.com",
     name: "Test User",
     role: "user",
   });
 
-  const adminUser = await createTestUser(db, organization.id, {
+  const adminUser = await createTestUser(db, {
     email: "admin@test.com",
     name: "Admin User",
     role: "admin",

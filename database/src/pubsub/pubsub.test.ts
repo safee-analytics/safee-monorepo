@@ -3,8 +3,8 @@ import { InMemoryPubSub } from "./inMemoryPubSub.js";
 import { RedisPubSub } from "./redisPubSub.js";
 import { getDefaultPubSub, createPubSub } from "./index.js";
 
-await describe("Local Pub/Sub Adapters", async () => {
-  await describe("InMemoryPubSub", async () => {
+describe("Local Pub/Sub Adapters", async () => {
+  describe("InMemoryPubSub", async () => {
     let pubsub: InMemoryPubSub;
 
     beforeEach(() => {
@@ -15,7 +15,7 @@ await describe("Local Pub/Sub Adapters", async () => {
       await pubsub.close();
     });
 
-    await it("should publish and receive messages", async () => {
+    it("should publish and receive messages", async () => {
       let receivedMessage: unknown = null;
 
       await pubsub.createTopic("test-topic");
@@ -34,7 +34,7 @@ await describe("Local Pub/Sub Adapters", async () => {
       expect(message.id).toBe(messageId);
     });
 
-    await it("should handle JSON messages", async () => {
+    it("should handle JSON messages", async () => {
       let receivedMessage: unknown = null;
 
       await pubsub.subscribe("json-worker", async (message) => {
@@ -51,7 +51,7 @@ await describe("Local Pub/Sub Adapters", async () => {
       expect(data.action).toBe("login");
     });
 
-    await it("should handle Buffer messages", async () => {
+    it("should handle Buffer messages", async () => {
       let receivedMessage: unknown = null;
 
       await pubsub.subscribe("buffer-worker", async (message) => {
@@ -69,7 +69,7 @@ await describe("Local Pub/Sub Adapters", async () => {
     });
   });
 
-  await describe("RedisPubSub", async () => {
+  describe("RedisPubSub", async () => {
     let pubsub: RedisPubSub | undefined;
 
     beforeEach(() => {
@@ -85,7 +85,7 @@ await describe("Local Pub/Sub Adapters", async () => {
       }
     });
 
-    await it("should publish and receive messages via Redis", async () => {
+    it("should publish and receive messages via Redis", async () => {
       if (!process.env.REDIS_URL || !pubsub) {
         return;
       }
@@ -109,7 +109,7 @@ await describe("Local Pub/Sub Adapters", async () => {
       expect(message.attributes.source).toBe("test");
     });
 
-    await it("should persist messages in queue", async () => {
+    it("should persist messages in queue", async () => {
       if (!process.env.REDIS_URL || !pubsub) {
         return;
       }
@@ -134,18 +134,18 @@ await describe("Local Pub/Sub Adapters", async () => {
     });
   });
 
-  await describe("Factory Functions", async () => {
-    await it("should create memory adapter", () => {
+  describe("Factory Functions", async () => {
+    it("should create memory adapter", () => {
       const pubsub = createPubSub({ provider: "memory" });
       expect(pubsub instanceof InMemoryPubSub).toBeTruthy();
     });
 
-    await it("should create redis adapter", () => {
+    it("should create redis adapter", () => {
       const pubsub = createPubSub({ provider: "redis" });
       expect(pubsub instanceof RedisPubSub).toBeTruthy();
     });
 
-    await it("should get default adapter based on environment", () => {
+    it("should get default adapter based on environment", () => {
       const pubsub = getDefaultPubSub();
       expect(pubsub).toBeTruthy();
 
@@ -155,7 +155,7 @@ await describe("Local Pub/Sub Adapters", async () => {
     });
   });
 
-  await describe("Job Scheduler Integration", async () => {
+  describe("Job Scheduler Integration", async () => {
     let pubsub: InMemoryPubSub;
 
     beforeEach(() => {
@@ -166,7 +166,7 @@ await describe("Local Pub/Sub Adapters", async () => {
       await pubsub.close();
     });
 
-    await it("should simulate job processing workflow", async () => {
+    it("should simulate job processing workflow", async () => {
       const processedJobs: string[] = [];
       const jobEvents: unknown[] = [];
 

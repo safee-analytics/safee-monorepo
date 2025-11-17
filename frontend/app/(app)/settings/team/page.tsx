@@ -1,14 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Users, UserCheck, Clock, Shield, UserPlus, Mail } from "lucide-react";
-import { StatusBadge } from "@/components/audit/ui/StatusBadge";
+import { Search, Users, UserCheck, Clock, Shield, UserPlus } from "lucide-react";
 import {
+  useSession,
   useOrganizationMembers,
   useInviteMember,
   useRemoveMember,
   useUpdateMemberRole,
-  useUserProfile,
 } from "@/lib/api/hooks";
 import Link from "next/link";
 
@@ -17,17 +16,14 @@ export default function TeamManagement() {
   const [roleFilter, setRoleFilter] = useState("all");
   const [showInviteModal, setShowInviteModal] = useState(false);
 
-  // Get current user to determine organization
-  const { data: currentUser } = useUserProfile();
-  const orgId = currentUser?.organizationId;
+  const { data: session } = useSession();
+  const orgId = session?.session.activeOrganizationId;
 
-  // Fetch organization members
   const { data: members, isLoading } = useOrganizationMembers(orgId || "");
   const inviteMemberMutation = useInviteMember();
   const removeMemberMutation = useRemoveMember();
   const updateMemberRoleMutation = useUpdateMemberRole();
 
-  // Calculate stats from real data
   const stats = {
     totalUsers: members?.length || 0,
     totalUsersChange: "+8% from last month", // TODO: Calculate from historical data
@@ -49,7 +45,6 @@ export default function TeamManagement() {
     return colors[role] || "bg-gray-100 text-gray-700";
   };
 
-  // Filter members based on search query and role filter
   const filteredMembers = (members || []).filter((member) => {
     const matchesSearch =
       searchQuery === "" ||
@@ -88,7 +83,6 @@ export default function TeamManagement() {
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Team Management</h1>
@@ -112,7 +106,6 @@ export default function TeamManagement() {
         </div>
       </div>
 
-      {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-2">
@@ -151,7 +144,6 @@ export default function TeamManagement() {
         </div>
       </div>
 
-      {/* Filters */}
       <div className="bg-white p-4 rounded-xl border border-gray-200">
         <div className="flex items-center gap-4">
           <div className="flex-1 relative">
@@ -178,7 +170,6 @@ export default function TeamManagement() {
         </div>
       </div>
 
-      {/* Team Members Table */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -228,7 +219,9 @@ export default function TeamManagement() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`px-2.5 py-1 rounded-md text-xs font-medium ${getRoleBadgeColor(member.role)}`}>
+                      <span
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium ${getRoleBadgeColor(member.role)}`}
+                      >
                         {member.role}
                       </span>
                     </td>
@@ -265,7 +258,6 @@ export default function TeamManagement() {
         </div>
       </div>
 
-      {/* Invite Modal (Simple version - can be enhanced with a proper modal component) */}
       {showInviteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl p-6 max-w-md w-full">

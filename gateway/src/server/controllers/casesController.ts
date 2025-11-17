@@ -89,6 +89,17 @@ export class CasesController extends Controller {
       createdBy: c.createdBy,
       createdAt: c.createdAt.toISOString(),
       updatedAt: c.updatedAt.toISOString(),
+      assignments: c.assignments?.map((a) => ({
+        userId: a.userId,
+        role: a.role,
+        user: a.user
+          ? {
+              id: a.user.id,
+              name: a.user.name,
+              email: a.user.email,
+            }
+          : undefined,
+      })),
     }));
   }
 

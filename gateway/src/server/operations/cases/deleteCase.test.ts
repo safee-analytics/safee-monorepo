@@ -27,7 +27,7 @@ void describe("deleteCase operation", async () => {
     await nukeDatabase(drizzle);
 
     testOrg = await createTestOrganization(drizzle);
-    testUser = await createTestUser(drizzle, testOrg.id);
+    testUser = await createTestUser(drizzle);
   });
 
   afterAll(async () => {
@@ -59,9 +59,8 @@ void describe("deleteCase operation", async () => {
 
     await deleteCase(drizzle, testOrg.id, testUser.id, created.id);
 
-    // History should be deleted with case (cascade), but we can check it was created
-    // by looking at the operation not throwing an error
-    expect(true).toBe(true); // Deletion succeeded
+    // History should be deleted with case (cascade)
+    expect(true).toBe(true);
   });
 
   void it("should throw NotFound for non-existent case", async () => {
@@ -92,7 +91,6 @@ void describe("deleteCase operation", async () => {
       auditType: "ICV",
     });
 
-    // Create an active scope
     await dbCreateScope(deps, {
       caseId: created.id,
       name: "Active Scope",
@@ -115,7 +113,6 @@ void describe("deleteCase operation", async () => {
       auditType: "ICV",
     });
 
-    // Create an archived scope
     await dbCreateScope(deps, {
       caseId: created.id,
       name: "Archived Scope",

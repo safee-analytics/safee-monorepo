@@ -17,12 +17,10 @@ export async function deleteCase(
   const logger = pino();
   const deps = { drizzle, logger };
 
-  // Get existing case
   let existingCase;
   try {
     existingCase = await getCaseById(deps, caseId);
   } catch {
-    // If query fails (e.g., invalid UUID format), treat as not found
     throw new NotFound("Case not found");
   }
 
@@ -51,7 +49,6 @@ export async function deleteCase(
   }
 
   try {
-    // Create history entry before deletion
     await createHistoryEntry(deps, {
       caseId: existingCase.id,
       entityType: "case",
@@ -65,7 +62,6 @@ export async function deleteCase(
       changedBy: userId,
     });
 
-    // Delete the case (cascades to related entities)
     await dbDeleteCase(deps, caseId);
 
     logger.info(

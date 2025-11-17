@@ -35,7 +35,7 @@ void describe("completeProcedure operation", async () => {
     await nukeDatabase(drizzle);
 
     testOrg = await createTestOrganization(drizzle);
-    testUser = await createTestUser(drizzle, testOrg.id);
+    testUser = await createTestUser(drizzle);
   });
 
   afterAll(async () => {
@@ -171,12 +171,9 @@ void describe("completeProcedure operation", async () => {
       sortOrder: 1,
     });
 
-    // Complete once
     await completeProcedure(drizzle, testUser.id, testCase.id, procedure.id, {
       memo: "First completion",
     });
-
-    // Try to complete again
     await expect(
       completeProcedure(drizzle, testUser.id, testCase.id, procedure.id, {
         memo: "Second completion",
@@ -207,7 +204,6 @@ void describe("completeProcedure operation", async () => {
       sortOrder: 1,
     });
 
-    // Create non-editable procedure
     const [procedure] = await drizzle
       .insert(schema.auditProcedures)
       .values({
@@ -249,7 +245,6 @@ void describe("completeProcedure operation", async () => {
       sortOrder: 1,
     });
 
-    // Create procedure with isRequired = true
     const [procedure] = await drizzle
       .insert(schema.auditProcedures)
       .values({
@@ -264,7 +259,6 @@ void describe("completeProcedure operation", async () => {
     await expect(
       completeProcedure(drizzle, testUser.id, testCase.id, procedure.id, {
         memo: "Test",
-        // No fieldData provided
       }),
     ).rejects.toThrow("Field data is required for this procedure");
   });
@@ -292,7 +286,6 @@ void describe("completeProcedure operation", async () => {
       sortOrder: 1,
     });
 
-    // Create procedure with requiresObservations = true
     const [procedure] = await drizzle
       .insert(schema.auditProcedures)
       .values({
@@ -307,7 +300,6 @@ void describe("completeProcedure operation", async () => {
     await expect(
       completeProcedure(drizzle, testUser.id, testCase.id, procedure.id, {
         fieldData: { test: "data" },
-        // No memo provided
       }),
     ).rejects.toThrow("Observations/memo is required for this procedure");
   });
@@ -342,9 +334,7 @@ void describe("completeProcedure operation", async () => {
       sortOrder: 1,
     });
 
-    const result = await completeProcedure(drizzle, testUser.id, testCase.id, procedure.id, {
-      // No field data or memo
-    });
+    const result = await completeProcedure(drizzle, testUser.id, testCase.id, procedure.id, {});
 
     expect(result.isCompleted).toBe(true);
   });

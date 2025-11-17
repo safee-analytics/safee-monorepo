@@ -17,12 +17,9 @@ export interface CreateNotificationParams {
 }
 
 export interface NotificationServiceDeps extends DbDeps {
-  pubsub?: PubSub; // Optional: for real-time delivery
+  pubsub?: PubSub;
 }
 
-/**
- * Check if user has enabled this type of notification
- */
 async function isNotificationEnabled(
   deps: DbDeps,
   userId: string,
@@ -34,12 +31,9 @@ async function isNotificationEnabled(
     where: eq(notificationSettings.userId, userId),
   });
 
-  // If no settings found, default to enabled
   if (!settings) {
     return true;
   }
-
-  // Map notification types to settings fields
   const typeToSettingMap: Record<string, keyof typeof settings> = {
     case_created: "auditCaseUpdates",
     case_update: "auditCaseUpdates",
@@ -57,9 +51,6 @@ async function isNotificationEnabled(
   return typeof value === "boolean" ? value : true;
 }
 
-/**
- * Create a notification with user preference checking
- */
 export async function createNotification(
   deps: NotificationServiceDeps,
   params: CreateNotificationParams,
@@ -67,17 +58,12 @@ export async function createNotification(
   const { drizzle, pubsub } = deps;
   const { organizationId, userId, templateKey, variables, relatedEntityId } = params;
 
-  // Build notification from template
   const notificationData = buildNotificationFromTemplate(templateKey, variables);
 
-  // Check user preferences
   const isEnabled = await isNotificationEnabled(deps, userId, notificationData.type);
   if (!isEnabled) {
-    // User has disabled this type of notification
     return null;
   }
-
-  // Create notification in database
   const [notification] = await drizzle
     .insert(notifications)
     .values({
@@ -94,7 +80,6 @@ export async function createNotification(
     })
     .returning({ id: notifications.id });
 
-  // Publish to pubsub for real-time delivery (if available)
   if (pubsub) {
     await pubsub.publish("notifications", {
       notificationId: notification.id,
@@ -108,9 +93,6 @@ export async function createNotification(
   return notification.id;
 }
 
-/**
- * Create notifications for multiple users (e.g., team members)
- */
 export async function createNotificationsForUsers(
   deps: NotificationServiceDeps,
   params: Omit<CreateNotificationParams, "userId"> & { userIds: string[] },
@@ -131,9 +113,6 @@ export async function createNotificationsForUsers(
   return notificationIds;
 }
 
-/**
- * Helper function to create case-related notifications
- */
 export async function notifyCaseCreated(
   deps: NotificationServiceDeps,
   params: {

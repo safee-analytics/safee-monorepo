@@ -1,79 +1,129 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { useCases } from "@/lib/api/hooks";
 import { CaseStats } from "@/components/audit/cases/CaseStats";
-import { CaseFilters } from "@/components/audit/cases/CaseFilters";
+import { CaseFilters, type FilterToken } from "@/components/audit/cases/CaseFilters";
 import { CaseTable, type CaseRow } from "@/components/audit/cases/CaseTable";
+import { CaseGrid } from "@/components/audit/cases/CaseGrid";
+import { CaseKanban } from "@/components/audit/cases/CaseKanban";
 import { CreateCaseModal } from "@/components/audit/cases/CreateCaseModal";
-import type { components } from "@/lib/api/types";
-
-type CaseStatus = components["schemas"]["CaseResponse"]["status"];
-type CasePriority = components["schemas"]["CaseResponse"]["priority"];
+import { CasePreviewDrawer } from "@/components/audit/cases/CasePreviewDrawer";
+import { CaseStatusSchema, CasePrioritySchema } from "@/lib/api/schemas";
 
 export default function CaseManagement() {
+  const searchParams = useSearchParams();
   const [selectedCases, setSelectedCases] = useState<string[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<CaseStatus | "all">("all");
-  const [priorityFilter, setPriorityFilter] = useState<CasePriority | "all">("all");
-  const [assigneeFilter, setAssigneeFilter] = useState("all");
-  const [dueDateFilter, setDueDateFilter] = useState("");
+  const [filters, setFilters] = useState<FilterToken[]>([]);
+  const [activeStatusTab, setActiveStatusTab] = useState<"all" | "active" | "completed">("all");
+  const [viewMode, setViewMode] = useState<"list" | "grid" | "kanban">("list");
+  const [previewCase, setPreviewCase] = useState<CaseRow | null>(null);
 
-  // Fetch all cases from API (no filters on API call)
+  useEffect(() => {
+    const statusParam = searchParams.get("status");
+    if (statusParam === "in-progress") {
+      setActiveStatusTab("active");
+    } else if (statusParam === "completed") {
+      setActiveStatusTab("completed");
+    } else if (statusParam === "under-review") {
+      // Add filter token for under-review since it's not a tab
+      setFilters([{ type: "status", value: "under-review", display: "Under Review" }]);
+    }
+  }, [searchParams]);
+
   const { data: apiCases, isLoading, refetch } = useCases();
 
-  // Map API cases to CaseRow format, apply client-side filters, and calculate stats
-  const { cases, stats } = useMemo(() => {
-    let mappedCases: CaseRow[] = (apiCases ?? []).map((caseData) => ({
-      id: caseData.id,
-      caseId: caseData.caseNumber,
-      auditType: caseData.auditType,
-      companyName: caseData.clientName,
-      industry: "General",
-      assignee: {
-        name: caseData.createdBy,
-        avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${caseData.createdBy}`,
-      },
-      status: caseData.status,
-      priority: caseData.priority,
-      dueDate: caseData.dueDate ? new Date(caseData.dueDate).toLocaleDateString() : "N/A",
-      progress:
-        caseData.status === "completed"
-          ? 100
-          : caseData.status === "under-review"
-            ? 80
-            : caseData.status === "in-progress"
-              ? 50
-              : 10,
-      icon: "📋",
-      iconBg: "bg-blue-100",
-    }));
+  const { cases, stats, availableAssignees } = useMemo(() => {
+    let mappedCases: CaseRow[] = (apiCases ?? []).map((caseData) => {
+      // Get the lead assignee from assignments (prefer lead role, fallback to any assignee)
+      const leadAssignment = caseData.assignments?.find((a) => a.role === "lead");
+      const anyAssignment = caseData.assignments?.[0];
+      const assignment = leadAssignment || anyAssignment;
 
-    // Apply client-side filters
-    if (statusFilter !== "all") {
-      mappedCases = mappedCases.filter((c) => c.status === statusFilter);
+      const assigneeName = assignment?.user?.name || assignment?.user?.email || "Unassigned";
+      const assigneeId = assignment?.userId || caseData.createdBy;
+
+      return {
+        id: caseData.id,
+        caseId: caseData.caseNumber,
+        auditType: caseData.auditType,
+        companyName: caseData.clientName,
+        industry: "General",
+        assignee: {
+          name: assigneeName,
+          avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${assigneeId}`,
+          id: assigneeId,
+        },
+        status: caseData.status,
+        priority: caseData.priority,
+        dueDate: caseData.dueDate ? new Date(caseData.dueDate).toLocaleDateString() : "N/A",
+        progress:
+          caseData.status === "completed"
+            ? 100
+            : caseData.status === "under-review"
+              ? 80
+              : caseData.status === "in-progress"
+                ? 50
+                : 10,
+        icon: "📋",
+        iconBg: "bg-blue-100",
+      };
+    });
+
+    const assigneeMap = new Map<string, string>();
+    apiCases?.forEach((caseData) => {
+      caseData.assignments?.forEach((assignment) => {
+        if (assignment.user && assignment.userId) {
+          assigneeMap.set(assignment.userId, assignment.user.name || assignment.user.email);
+        }
+      });
+    });
+    const uniqueAssignees = Array.from(assigneeMap.entries()).map(([id, name]) => ({ id, name }));
+
+    if (activeStatusTab === "active") {
+      mappedCases = mappedCases.filter((c) => c.status === "in-progress");
+    } else if (activeStatusTab === "completed") {
+      mappedCases = mappedCases.filter((c) => c.status === "completed");
     }
-    if (priorityFilter !== "all") {
-      mappedCases = mappedCases.filter((c) => c.priority === priorityFilter);
-    }
-    if (assigneeFilter !== "all") {
-      mappedCases = mappedCases.filter((c) =>
-        c.assignee.name.toLowerCase().includes(assigneeFilter.toLowerCase()),
-      );
-    }
-    if (dueDateFilter) {
-      mappedCases = mappedCases.filter((c) => c.dueDate === dueDateFilter);
-    }
+
+    filters.forEach((filter) => {
+      if (filter.type === "status") {
+        const validStatus = CaseStatusSchema.safeParse(filter.value);
+        if (validStatus.success) {
+          mappedCases = mappedCases.filter((c) => c.status === validStatus.data);
+        }
+      } else if (filter.type === "priority") {
+        const validPriority = CasePrioritySchema.safeParse(filter.value);
+        if (validPriority.success) {
+          mappedCases = mappedCases.filter((c) => c.priority === validPriority.data);
+        }
+      } else if (filter.type === "assignee") {
+        mappedCases = mappedCases.filter((c) =>
+          c.assignee.name.toLowerCase().includes(filter.value.toLowerCase()),
+        );
+      } else if (filter.type === "text") {
+        const searchText = filter.value.toLowerCase();
+        mappedCases = mappedCases.filter(
+          (c) =>
+            c.caseId.toLowerCase().includes(searchText) ||
+            c.companyName.toLowerCase().includes(searchText) ||
+            c.auditType.toLowerCase().includes(searchText) ||
+            c.assignee.name.toLowerCase().includes(searchText),
+        );
+      }
+    });
 
     const calculatedStats = {
-      totalCases: mappedCases.length,
-      activeCases: mappedCases.filter((c) => c.status === "in-progress").length,
-      completedCases: mappedCases.filter((c) => c.status === "completed").length,
-      overdueCases: mappedCases.filter((c) => c.status === "overdue").length,
+      totalCases: (apiCases ?? []).length,
+      activeCases: (apiCases ?? []).filter((c) => c.status === "in-progress").length,
+      completedCases: (apiCases ?? []).filter((c) => c.status === "completed").length,
+      overdueCases: (apiCases ?? []).filter((c) => c.status === "overdue").length,
     };
 
-    return { cases: mappedCases, stats: calculatedStats };
-  }, [apiCases, statusFilter, priorityFilter, assigneeFilter, dueDateFilter]);
+    return { cases: mappedCases, stats: calculatedStats, availableAssignees: uniqueAssignees };
+  }, [apiCases, filters, activeStatusTab]);
 
   const toggleCaseSelection = (caseId: string) => {
     setSelectedCases((prev) =>
@@ -89,17 +139,16 @@ export default function CaseManagement() {
     }
   };
 
-  const clearFilters = () => {
-    setStatusFilter("all");
-    setPriorityFilter("all");
-    setAssigneeFilter("all");
-    setDueDateFilter("");
+  const handleCaseClick = (caseId: string) => {
+    const caseData = cases.find((c) => c.id === caseId);
+    if (caseData) {
+      setPreviewCase(caseData);
+    }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
         <div className="mb-6 flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Case Management</h1>
@@ -116,20 +165,19 @@ export default function CaseManagement() {
           </button>
         </div>
 
-        {/* Filter Tabs */}
         <div className="mb-6 flex items-center gap-4">
           <button
-            onClick={() => setStatusFilter("all")}
+            onClick={() => setActiveStatusTab("all")}
             className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-              statusFilter === "all" ? "bg-white text-blue-600 shadow-sm" : "text-gray-700 hover:bg-white"
+              activeStatusTab === "all" ? "bg-white text-blue-600 shadow-sm" : "text-gray-700 hover:bg-white"
             }`}
           >
             All Cases
           </button>
           <button
-            onClick={() => setStatusFilter("in-progress")}
+            onClick={() => setActiveStatusTab("active")}
             className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-              statusFilter === "in-progress"
+              activeStatusTab === "active"
                 ? "bg-white text-blue-600 shadow-sm"
                 : "text-gray-700 hover:bg-white"
             }`}
@@ -137,9 +185,9 @@ export default function CaseManagement() {
             Active
           </button>
           <button
-            onClick={() => setStatusFilter("completed")}
+            onClick={() => setActiveStatusTab("completed")}
             className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
-              statusFilter === "completed"
+              activeStatusTab === "completed"
                 ? "bg-white text-blue-600 shadow-sm"
                 : "text-gray-700 hover:bg-white"
             }`}
@@ -148,7 +196,6 @@ export default function CaseManagement() {
           </button>
         </div>
 
-        {/* Loading State */}
         {isLoading && (
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -157,7 +204,6 @@ export default function CaseManagement() {
 
         {!isLoading && (
           <>
-            {/* Stats Grid */}
             <CaseStats
               totalCases={stats.totalCases}
               activeCases={stats.activeCases}
@@ -165,27 +211,106 @@ export default function CaseManagement() {
               overdueCases={stats.overdueCases}
             />
 
-            {/* Filters */}
-            <CaseFilters
-              statusFilter={statusFilter}
-              priorityFilter={priorityFilter}
-              assigneeFilter={assigneeFilter}
-              dueDateFilter={dueDateFilter}
-              onStatusChange={setStatusFilter}
-              onPriorityChange={setPriorityFilter}
-              onAssigneeChange={setAssigneeFilter}
-              onDueDateChange={setDueDateFilter}
-              onClearFilters={clearFilters}
-            />
+            <CaseFilters onFiltersChange={setFilters} availableAssignees={availableAssignees} />
 
-            {/* Table or Empty State */}
+            <div className="mb-4 flex items-center justify-end">
+              <div className="flex items-center bg-white rounded-lg border border-gray-300 p-1 gap-1">
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`p-2 rounded transition-colors ${
+                    viewMode === "list"
+                      ? "bg-blue-100 text-blue-600"
+                      : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                  }`}
+                  title="List view"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M4 6h16M4 12h16M4 18h16"></path>
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`p-2 rounded transition-colors ${
+                    viewMode === "grid"
+                      ? "bg-blue-100 text-blue-600"
+                      : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                  }`}
+                  title="Grid view"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M4 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM14 5a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zM14 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"></path>
+                  </svg>
+                </button>
+                <button
+                  onClick={() => setViewMode("kanban")}
+                  className={`p-2 rounded transition-colors ${
+                    viewMode === "kanban"
+                      ? "bg-blue-100 text-blue-600"
+                      : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
+                  }`}
+                  title="Kanban view"
+                >
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
             {cases.length > 0 ? (
-              <CaseTable
-                cases={cases}
-                selectedCases={selectedCases}
-                onToggleCaseSelection={toggleCaseSelection}
-                onToggleAllCases={toggleAllCases}
-              />
+              <>
+                {viewMode === "list" && (
+                  <CaseTable
+                    cases={cases}
+                    selectedCases={selectedCases}
+                    onToggleCaseSelection={toggleCaseSelection}
+                    onToggleAllCases={toggleAllCases}
+                    availableUsers={availableAssignees}
+                    onUpdate={refetch}
+                    onCaseClick={handleCaseClick}
+                  />
+                )}
+                {viewMode === "grid" && (
+                  <CaseGrid
+                    cases={cases}
+                    availableUsers={availableAssignees}
+                    onUpdate={refetch}
+                    onCaseClick={handleCaseClick}
+                  />
+                )}
+                {viewMode === "kanban" && (
+                  <CaseKanban
+                    cases={cases}
+                    availableUsers={availableAssignees}
+                    onUpdate={refetch}
+                    onCaseClick={handleCaseClick}
+                  />
+                )}
+              </>
             ) : (
               <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
                 <div className="max-w-md mx-auto">
@@ -194,10 +319,7 @@ export default function CaseManagement() {
                   </div>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">No cases found</h3>
                   <p className="text-gray-600 mb-6">
-                    {statusFilter !== "all" ||
-                    priorityFilter !== "all" ||
-                    assigneeFilter !== "all" ||
-                    dueDateFilter
+                    {filters.length > 0
                       ? "Try adjusting your filters to see more results"
                       : "Get started by creating your first case"}
                   </p>
@@ -208,11 +330,30 @@ export default function CaseManagement() {
         )}
       </div>
 
-      {/* Create Case Modal */}
       <CreateCaseModal
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={() => refetch()}
+      />
+
+      <CasePreviewDrawer
+        isOpen={!!previewCase}
+        onClose={() => setPreviewCase(null)}
+        caseData={
+          previewCase
+            ? {
+                id: previewCase.id,
+                caseNumber: previewCase.caseId,
+                clientName: previewCase.companyName,
+                auditType: previewCase.auditType,
+                status: previewCase.status,
+                priority: previewCase.priority,
+                dueDate: previewCase.dueDate,
+                assignee: previewCase.assignee,
+                progress: previewCase.progress,
+              }
+            : null
+        }
       />
     </div>
   );

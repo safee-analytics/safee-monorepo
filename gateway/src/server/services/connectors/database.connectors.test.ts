@@ -4,7 +4,6 @@ import { MySQLConnector, type MySQLConfig } from "./mysql.connector.js";
 import { MSSQLConnector, type MSSQLConnectorConfig } from "./mssql.connector.js";
 import type { ConnectorMetadata } from "./base.connector.js";
 
-// Mock database drivers
 vi.mock("pg", () => ({
   Pool: vi.fn().mockImplementation(() => ({
     connect: vi.fn().mockResolvedValue({

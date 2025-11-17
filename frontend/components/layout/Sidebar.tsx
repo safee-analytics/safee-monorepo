@@ -139,12 +139,12 @@ export const Sidebar = () => {
   // Module-specific navigation items
   const moduleNavItems: Record<string, Array<{ icon: IconType; title: string; href: string }>> = {
     audit: [
-      { icon: FiHome, title: t.audit.dashboardTitle, href: "/audit/dashboard" },
+      { icon: FiHome, title: t.nav.dashboard, href: "/" },
+      { icon: FiGrid, title: t.audit.casesOverview, href: "/audit/dashboard" },
       { icon: FiClipboard, title: t.audit.caseManagement, href: "/audit/cases" },
       { icon: FiFileText, title: t.audit.documentRepository, href: "/audit/documents" },
       { icon: FiBarChart, title: t.audit.auditReports, href: "/audit/reports" },
       { icon: FiClipboard, title: t.audit.auditPlanning, href: "/audit/planning" },
-      { icon: FiSettings, title: t.audit.configurationSettings, href: "/audit/settings" },
     ],
     hisabiq: [
       { icon: FiHome, title: t.nav.dashboard, href: "/hisabiq/dashboard" },

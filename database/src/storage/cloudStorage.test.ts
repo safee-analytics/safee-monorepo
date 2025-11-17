@@ -2,32 +2,30 @@ import { describe, it, expect } from "vitest";
 import { AzureBlobStorage } from "./azureBlobStorage.js";
 import { GoogleCloudStorage } from "./googleCloudStorage.js";
 
-void describe("Cloud Storage Adapters", async () => {
-  void describe("AzureBlobStorage", async () => {
-    void describe("constructor", async () => {
-      void it("throws error without connection string", () => {
+describe("Cloud Storage Adapters", async () => {
+  describe("AzureBlobStorage", async () => {
+    describe("constructor", async () => {
+      it("throws error without connection string", () => {
         expect(() => new AzureBlobStorage("test-container", {})).toThrow(
           /Account name is required when not using connection string/,
         );
       });
 
-      void it("throws error with empty connection string", () => {
+      it("throws error with empty connection string", () => {
         expect(() => new AzureBlobStorage("test-container", "")).toThrow(
           /Azure Blob Storage connection string is required/,
         );
       });
 
-      void it("creates instance with valid connection string", () => {
+      it("creates instance with valid connection string", () => {
         const connectionString =
           "DefaultEndpointsProtocol=https;AccountName=testaccount;AccountKey=dGVzdGtleQ==;EndpointSuffix=core.windows.net";
 
-        // This will create an instance but actual Azure operations will fail
-        // since the credentials are fake, which is expected for unit tests
         const storage = new AzureBlobStorage("test-container", connectionString);
         expect(storage).toBeTruthy();
       });
 
-      void it("parses connection string correctly", () => {
+      it("parses connection string correctly", () => {
         const connectionString =
           "DefaultEndpointsProtocol=https;AccountName=myaccount;AccountKey=mykey123;EndpointSuffix=core.windows.net";
 
@@ -36,8 +34,8 @@ void describe("Cloud Storage Adapters", async () => {
       });
     });
 
-    void describe("basic functionality", async () => {
-      void it("should create storage instances", () => {
+    describe("basic functionality", async () => {
+      it("should create storage instances", () => {
         const connectionString =
           "DefaultEndpointsProtocol=https;AccountName=test;AccountKey=dGVzdA==;EndpointSuffix=core.windows.net";
         const storage = new AzureBlobStorage("test", connectionString);
@@ -47,35 +45,33 @@ void describe("Cloud Storage Adapters", async () => {
     });
   });
 
-  void describe("GoogleCloudStorage", async () => {
-    void describe("constructor", async () => {
-      void it("creates instance with bucket name", () => {
+  describe("GoogleCloudStorage", async () => {
+    describe("constructor", async () => {
+      it("creates instance with bucket name", () => {
         const storage = new GoogleCloudStorage("test-bucket");
         expect(storage).toBeTruthy();
       });
 
-      void it("creates instance with bucket name and project ID", () => {
+      it("creates instance with bucket name and project ID", () => {
         const storage = new GoogleCloudStorage("test-bucket", { projectId: "test-project" });
         expect(storage).toBeTruthy();
       });
 
-      void it("handles bucket name validation", () => {
-        // Google Cloud Storage has specific bucket naming requirements
-        // but the constructor doesn't validate this, actual operations would fail
+      it("handles bucket name validation", () => {
         const storage = new GoogleCloudStorage("invalid_bucket_name!");
         expect(storage).toBeTruthy();
       });
     });
 
-    void describe("basic functionality", async () => {
-      void it("should create storage instances", () => {
+    describe("basic functionality", async () => {
+      it("should create storage instances", () => {
         const storage = new GoogleCloudStorage("test-bucket", {});
         expect(storage).toBeTruthy();
       });
     });
 
-    void describe("path validation", async () => {
-      void it("should handle various path formats", () => {
+    describe("path validation", async () => {
+      it("should handle various path formats", () => {
         const testPaths = [
           "simple-file.txt",
           "folder/file.txt",
@@ -94,8 +90,8 @@ void describe("Cloud Storage Adapters", async () => {
     });
   });
 
-  void describe("Storage Provider Comparison", async () => {
-    void it("both providers should implement the same interface", () => {
+  describe("Storage Provider Comparison", async () => {
+    it("both providers should implement the same interface", () => {
       const connectionString =
         "DefaultEndpointsProtocol=https;AccountName=test;AccountKey=dGVzdA==;EndpointSuffix=core.windows.net";
       const azureStorage = new AzureBlobStorage("test", connectionString);
@@ -118,7 +114,7 @@ void describe("Cloud Storage Adapters", async () => {
       }
     });
 
-    void it("both providers should create instances successfully", () => {
+    it("both providers should create instances successfully", () => {
       const connectionString =
         "DefaultEndpointsProtocol=https;AccountName=test;AccountKey=dGVzdA==;EndpointSuffix=core.windows.net";
       const azureStorage = new AzureBlobStorage("test", connectionString);
@@ -129,8 +125,8 @@ void describe("Cloud Storage Adapters", async () => {
     });
   });
 
-  void describe("Error Handling", async () => {
-    void it("Azure storage handles invalid connection strings gracefully", () => {
+  describe("Error Handling", async () => {
+    it("Azure storage handles invalid connection strings gracefully", () => {
       const invalidConnectionStrings = [
         "invalid-connection-string",
         "AccountName=test",
@@ -147,7 +143,7 @@ void describe("Cloud Storage Adapters", async () => {
       }
     });
 
-    void it("validates container/bucket names", () => {
+    it("validates container/bucket names", () => {
       const connectionString =
         "DefaultEndpointsProtocol=https;AccountName=test;AccountKey=dGVzdA==;EndpointSuffix=core.windows.net";
 

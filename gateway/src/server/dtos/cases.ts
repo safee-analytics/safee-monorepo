@@ -12,10 +12,19 @@ export interface CaseResponse {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
+  assignments?: Array<{
+    userId: string;
+    role: "lead" | "reviewer" | "team_member";
+    user?: {
+      id: string;
+      name: string | null;
+      email: string;
+    };
+  }>;
 }
 
 export interface CreateCaseRequest {
-  caseNumber: string;
+  caseNumber?: string; // Optional - will be auto-generated if not provided
   clientName: string;
   auditType: string;
   status?: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";

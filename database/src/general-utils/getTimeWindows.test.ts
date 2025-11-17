@@ -19,8 +19,8 @@ function createUtcDate({
   return new Date(Date.UTC(year, month, day, hour, minute, second, 0));
 }
 
-void describe("getTimeWindows", () => {
-  void it("should return consistent windows", () => {
+describe("getTimeWindows", () => {
+  it("should return consistent windows", () => {
     const baseDate = {
       year: 2024,
       month: 0,

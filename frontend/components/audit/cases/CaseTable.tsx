@@ -1,7 +1,8 @@
-import { List, LayoutGrid, Download } from "lucide-react";
 import { StatusBadge } from "@/components/audit/ui/StatusBadge";
 import { PriorityBadge } from "@/components/audit/ui/PriorityBadge";
 import { CaseStatus, CasePriority } from "@/types/audit";
+import { InlineStatus, InlinePriority, InlineAssignee, InlineDueDate } from "./InlineEditFields";
+import { useRouter } from "next/navigation";
 
 export interface CaseRow {
   id: string;
@@ -12,6 +13,7 @@ export interface CaseRow {
   assignee: {
     name: string;
     avatar: string;
+    id?: string;
   };
   status: CaseStatus;
   priority: CasePriority;
@@ -26,26 +28,32 @@ interface CaseTableProps {
   selectedCases: string[];
   onToggleCaseSelection: (caseId: string) => void;
   onToggleAllCases: () => void;
+  availableUsers?: { id: string; name: string }[];
+  onUpdate?: () => void;
+  onCaseClick?: (caseId: string) => void;
 }
 
-export function CaseTable({ cases, selectedCases, onToggleCaseSelection, onToggleAllCases }: CaseTableProps) {
+export function CaseTable({
+  cases,
+  selectedCases,
+  onToggleCaseSelection,
+  onToggleAllCases,
+  availableUsers = [],
+  onUpdate,
+  onCaseClick,
+}: CaseTableProps) {
+  const router = useRouter();
+
+  const handleRowClick = (caseId: string) => {
+    if (onCaseClick) {
+      onCaseClick(caseId);
+    } else {
+      router.push(`/audit/cases/${caseId}`);
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-      <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-gray-900">All Cases</h2>
-        <div className="flex items-center gap-2">
-          <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
-            <List className="w-5 h-5 text-gray-600" />
-          </button>
-          <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
-            <LayoutGrid className="w-5 h-5 text-gray-600" />
-          </button>
-          <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors cursor-pointer">
-            <Download className="w-5 h-5 text-gray-600" />
-          </button>
-        </div>
-      </div>
-
       <div className="overflow-x-auto">
         <table className="w-full">
           <thead className="bg-gray-50 border-b border-gray-200">
@@ -83,8 +91,12 @@ export function CaseTable({ cases, selectedCases, onToggleCaseSelection, onToggl
           </thead>
           <tbody className="divide-y divide-gray-200">
             {cases.map((caseRow) => (
-              <tr key={caseRow.id} className="hover:bg-gray-50 transition-colors cursor-pointer">
-                <td className="px-6 py-4">
+              <tr
+                key={caseRow.id}
+                onClick={() => handleRowClick(caseRow.id)}
+                className="hover:bg-gray-50 transition-colors cursor-pointer"
+              >
+                <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
                   <input
                     type="checkbox"
                     checked={selectedCases.includes(caseRow.id)}
@@ -111,28 +123,26 @@ export function CaseTable({ cases, selectedCases, onToggleCaseSelection, onToggl
                     <p className="text-xs text-gray-600">{caseRow.industry}</p>
                   </div>
                 </td>
-                <td className="px-6 py-4">
-                  <div className="flex items-center gap-2">
-                    <img
-                      src={caseRow.assignee.avatar}
-                      alt={caseRow.assignee.name}
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <span className="text-sm text-gray-900">{caseRow.assignee.name}</span>
-                  </div>
+                <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                  <InlineAssignee
+                    caseId={caseRow.id}
+                    currentAssignee={caseRow.assignee}
+                    availableUsers={availableUsers}
+                    onUpdate={onUpdate}
+                  />
                 </td>
-                <td className="px-6 py-4">
-                  <StatusBadge status={caseRow.status} />
+                <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                  <InlineStatus caseId={caseRow.id} currentStatus={caseRow.status} onUpdate={onUpdate} />
                 </td>
-                <td className="px-6 py-4">
-                  <PriorityBadge priority={caseRow.priority} />
+                <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                  <InlinePriority
+                    caseId={caseRow.id}
+                    currentPriority={caseRow.priority}
+                    onUpdate={onUpdate}
+                  />
                 </td>
-                <td className="px-6 py-4">
-                  <span
-                    className={`text-sm ${caseRow.status === "overdue" ? "text-red-600 font-medium" : "text-gray-900"}`}
-                  >
-                    {caseRow.dueDate}
-                  </span>
+                <td className="px-6 py-4" onClick={(e) => e.stopPropagation()}>
+                  <InlineDueDate caseId={caseRow.id} currentDueDate={caseRow.dueDate} onUpdate={onUpdate} />
                 </td>
                 <td className="px-6 py-4">
                   <div className="flex items-center gap-2">

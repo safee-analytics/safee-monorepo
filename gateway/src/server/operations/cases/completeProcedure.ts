@@ -18,12 +18,10 @@ export async function completeProcedure(
   const logger = pino();
   const deps = { drizzle, logger };
 
-  // Get existing procedure
   let existingProcedure;
   try {
     existingProcedure = await getProcedureById(deps, procedureId);
   } catch (err) {
-    // If query fails (e.g., invalid UUID format), treat as not found
     logger.error({ error: err }, "Failed to get procedure");
     throw new NotFound("Procedure not found");
   }
@@ -64,7 +62,6 @@ export async function completeProcedure(
       memo: request.memo,
     });
 
-    // Create history entry
     await createHistoryEntry(deps, {
       caseId,
       entityType: "procedure",

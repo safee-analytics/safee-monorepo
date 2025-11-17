@@ -43,14 +43,12 @@ export async function submitForApproval(
   try {
     const rulesEngine = new ApprovalRulesEngine(drizzle);
 
-    // Find matching workflow
     const match = await rulesEngine.findMatchingWorkflow(organizationId, request.entityData);
 
     if (!match) {
       throw new NotFound("No matching approval workflow found for this entity");
     }
 
-    // Create approval request
     const [approvalRequest] = await drizzle
       .insert(schema.approvalRequests)
       .values({
@@ -63,14 +61,12 @@ export async function submitForApproval(
       })
       .returning();
 
-    // Get workflow steps
     const steps = await rulesEngine.getWorkflowSteps(match.workflowId);
 
     if (steps.length === 0) {
       throw new InvalidInput("Workflow has no steps configured");
     }
 
-    // Create approval steps for the first workflow step
     const firstStep = steps[0];
     const { approverIds } = await rulesEngine.getRequiredApprovers(firstStep.id, organizationId);
 
@@ -78,7 +74,6 @@ export async function submitForApproval(
       throw new InvalidInput("No approvers found for the first workflow step");
     }
 
-    // Create an approval step for each approver
     await Promise.all(
       approverIds.map((approverId) =>
         drizzle.insert(schema.approvalSteps).values({
@@ -109,7 +104,6 @@ export async function submitForApproval(
       message: `Entity submitted for approval. Awaiting approval from ${approverIds.length} approver(s).`,
     };
   } catch (error) {
-    // Re-throw validation errors as-is
     if (error instanceof InvalidInput || error instanceof NotFound) {
       throw error;
     }

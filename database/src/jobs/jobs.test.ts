@@ -18,7 +18,7 @@ import {
 import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
 
-void describe("Jobs", async () => {
+describe("Jobs", async () => {
   let drizzle: DrizzleClient;
   let close: () => Promise<void>;
   const logger = pino({ level: "silent" });
@@ -33,12 +33,12 @@ void describe("Jobs", async () => {
     await close();
   });
 
-  void describe("createJob", async () => {
+  describe("createJob", async () => {
     beforeEach(async () => {
       await nukeDatabase(drizzle);
     });
 
-    void it("creates job successfully", async () => {
+    it("creates job successfully", async () => {
       const jobData = {
         jobName: "send_email" as const,
         type: "immediate" as const,
@@ -59,7 +59,7 @@ void describe("Jobs", async () => {
     });
   });
 
-  void describe("getJobById", async () => {
+  describe("getJobById", async () => {
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
@@ -73,7 +73,7 @@ void describe("Jobs", async () => {
       });
     });
 
-    void it("retrieves job by ID", async () => {
+    it("retrieves job by ID", async () => {
       const retrievedJob = await getJobById(deps, testJob.id);
 
       expect(retrievedJob).toBeTruthy();
@@ -81,13 +81,13 @@ void describe("Jobs", async () => {
       expect(retrievedJob!.jobName).toBe("send_email");
     });
 
-    void it("returns undefined for non-existent job", async () => {
+    it("returns undefined for non-existent job", async () => {
       const job = await getJobById(deps, "00000000-0000-0000-0000-000000000000");
       expect(job).toBe(undefined);
     });
   });
 
-  void describe("job status updates", async () => {
+  describe("job status updates", async () => {
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
@@ -101,7 +101,7 @@ void describe("Jobs", async () => {
       });
     });
 
-    void it("starts job correctly", async () => {
+    it("starts job correctly", async () => {
       const startedJob = await startJob(deps, testJob.id);
 
       expect(startedJob.status).toBe("running");
@@ -109,7 +109,7 @@ void describe("Jobs", async () => {
       expect(startedJob.startedAt).toBeTruthy();
     });
 
-    void it("completes job with result", async () => {
+    it("completes job with result", async () => {
       await startJob(deps, testJob.id);
       const result = { output: "success", processed: 100 };
 
@@ -120,7 +120,7 @@ void describe("Jobs", async () => {
       expect(completedJob.completedAt).toBeTruthy();
     });
 
-    void it("fails job without retry", async () => {
+    it("fails job without retry", async () => {
       await startJob(deps, testJob.id);
 
       const failedJob = await failJob(deps, testJob.id, "Processing failed", false);
@@ -130,7 +130,7 @@ void describe("Jobs", async () => {
       expect(failedJob.completedAt).toBeTruthy();
     });
 
-    void it("fails job with retry", async () => {
+    it("fails job with retry", async () => {
       await startJob(deps, testJob.id);
 
       const retryJob = await failJob(deps, testJob.id, "Temporary failure", true);
@@ -140,21 +140,21 @@ void describe("Jobs", async () => {
       expect(retryJob.completedAt).toBe(null);
     });
 
-    void it("cancels job", async () => {
+    it("cancels job", async () => {
       const cancelledJob = await cancelJob(deps, testJob.id);
 
       expect(cancelledJob.status).toBe("cancelled");
       expect(cancelledJob.completedAt).toBeTruthy();
     });
 
-    void it("throws error when updating non-existent job", async () => {
+    it("throws error when updating non-existent job", async () => {
       await expect(updateJobStatus(deps, "00000000-0000-0000-0000-000000000000", "running")).rejects.toThrow(
         /Job with ID '00000000-0000-0000-0000-000000000000' not found/,
       );
     });
   });
 
-  void describe("getPendingJobs", async () => {
+  describe("getPendingJobs", async () => {
     beforeEach(async () => {
       await nukeDatabase(drizzle);
 
@@ -181,7 +181,7 @@ void describe("Jobs", async () => {
       });
     });
 
-    void it("returns pending jobs ordered by priority", async () => {
+    it("returns pending jobs ordered by priority", async () => {
       const pendingJobs = await getPendingJobs(deps, 10);
 
       expect(pendingJobs.length >= 2).toBeTruthy();
@@ -189,12 +189,12 @@ void describe("Jobs", async () => {
       expect(priorities[0]).toBe("high");
     });
 
-    void it("respects limit parameter", async () => {
+    it("respects limit parameter", async () => {
       const pendingJobs = await getPendingJobs(deps, 1);
       expect(pendingJobs.length).toBe(1);
     });
 
-    void it("only returns jobs scheduled for now or past", async () => {
+    it("only returns jobs scheduled for now or past", async () => {
       const pendingJobs = await getPendingJobs(deps, 10);
       const now = new Date();
 
@@ -206,12 +206,12 @@ void describe("Jobs", async () => {
     });
   });
 
-  void describe("getRetryableJobs", async () => {
+  describe("getRetryableJobs", async () => {
     beforeEach(async () => {
       await nukeDatabase(drizzle);
     });
 
-    void it("finds failed jobs with remaining retries", async () => {
+    it("finds failed jobs with remaining retries", async () => {
       const job = await createJob(deps, {
         jobName: "send_email" as const,
         type: "immediate" as const,
@@ -230,7 +230,7 @@ void describe("Jobs", async () => {
       expect(testJob!.attempts < testJob!.maxRetries).toBeTruthy();
     });
 
-    void it("excludes jobs that have exhausted retries", async () => {
+    it("excludes jobs that have exhausted retries", async () => {
       const job = await createJob(deps, {
         jobName: "send_email" as const,
         type: "immediate" as const,
@@ -248,7 +248,7 @@ void describe("Jobs", async () => {
     });
   });
 
-  void describe("getJobStats", async () => {
+  describe("getJobStats", async () => {
     beforeEach(async () => {
       await nukeDatabase(drizzle);
 
@@ -270,7 +270,7 @@ void describe("Jobs", async () => {
       await failJob(deps, job2.id, "Test error", false);
     });
 
-    void it("aggregates job statistics correctly", async () => {
+    it("aggregates job statistics correctly", async () => {
       const stats = await getJobStats(deps);
 
       expect(stats.total >= 2).toBeTruthy();
@@ -282,7 +282,7 @@ void describe("Jobs", async () => {
       expect(stats.byPriority.normal >= 1).toBeTruthy();
     });
 
-    void it("returns empty stats for empty database", async () => {
+    it("returns empty stats for empty database", async () => {
       await nukeDatabase(drizzle);
 
       const stats = await getJobStats(deps);

@@ -11,7 +11,7 @@ import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
 import { eq } from "../index.js";
 
-void describe("Job Scheduler", async () => {
+describe("Job Scheduler", async () => {
   let drizzle: DrizzleClient;
   let close: () => Promise<void>;
   const logger = pino({ level: "silent" });
@@ -41,8 +41,8 @@ void describe("Job Scheduler", async () => {
     });
   });
 
-  void describe("scheduler lifecycle", async () => {
-    void it("starts and stops scheduler successfully", async () => {
+  describe("scheduler lifecycle", async () => {
+    it("starts and stops scheduler successfully", async () => {
       await scheduler.start(deps);
 
       await pubsub.publish("test-job-queue", "test-message");
@@ -51,7 +51,7 @@ void describe("Job Scheduler", async () => {
       await scheduler.stop();
     });
 
-    void it("handles multiple start calls gracefully", async () => {
+    it("handles multiple start calls gracefully", async () => {
       await scheduler.start(deps);
 
       await scheduler.start(deps);
@@ -59,17 +59,17 @@ void describe("Job Scheduler", async () => {
       await scheduler.stop();
     });
 
-    void it("handles stop without start", async () => {
+    it("handles stop without start", async () => {
       await scheduler.stop();
     });
   });
 
-  void describe("job scheduling", async () => {
-    void it("schedules active job with cron expression", async () => {
+  describe("job scheduling", async () => {
+    it("schedules active job with cron expression", async () => {
       const testJobSchedule = await createJobSchedule(deps, {
         name: "ActiveJobSchedule",
         jobName: "send_email" as const,
-        cronExpression: "0 9 * * *", // 9 AM daily
+        cronExpression: "0 9 * * *",
         timezone: "UTC",
         isActive: true,
       });
@@ -79,12 +79,12 @@ void describe("Job Scheduler", async () => {
       await scheduler.stop();
     });
 
-    void it("does not schedule inactive job", async () => {
+    it("does not schedule inactive job", async () => {
       const testJobSchedule = await createJobSchedule(deps, {
         name: "InactiveSchedule",
         jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
-        isActive: false, // Create as inactive
+        isActive: false,
       });
 
       await scheduler.start(deps);
@@ -92,11 +92,11 @@ void describe("Job Scheduler", async () => {
       await scheduler.stop();
     });
 
-    void it("does not schedule job without cron expression", async () => {
+    it("does not schedule job without cron expression", async () => {
       const testJobSchedule = await createJobSchedule(deps, {
         name: "NoCronSchedule",
         jobName: "send_email" as const,
-        cronExpression: null, // No cron expression
+        cronExpression: null,
         isActive: true,
       });
 
@@ -105,13 +105,13 @@ void describe("Job Scheduler", async () => {
       await scheduler.stop();
     });
 
-    void it("handles non-existent schedule gracefully", async () => {
+    it("handles non-existent schedule gracefully", async () => {
       await scheduler.start(deps);
       await scheduler.scheduleJob(deps, "00000000-0000-0000-0000-000000000000");
       await scheduler.stop();
     });
 
-    void it("updates existing cron job when rescheduling", async () => {
+    it("updates existing cron job when rescheduling", async () => {
       const testJobSchedule = await createJobSchedule(deps, {
         name: "RescheduleTest",
         jobName: "send_email" as const,
@@ -124,7 +124,7 @@ void describe("Job Scheduler", async () => {
 
       await drizzle
         .update(schema.jobSchedules)
-        .set({ cronExpression: "0 10 * * *" }) // 10 AM daily
+        .set({ cronExpression: "0 10 * * *" })
         .where(eq(schema.jobSchedules.id, testJobSchedule.id));
 
       await scheduler.scheduleJob(deps, testJobSchedule.id);
@@ -132,8 +132,8 @@ void describe("Job Scheduler", async () => {
     });
   });
 
-  void describe("job unscheduling", async () => {
-    void it("unschedules existing job", async () => {
+  describe("job unscheduling", async () => {
+    it("unschedules existing job", async () => {
       const testJobSchedule = await createJobSchedule(deps, {
         name: "UnscheduleTest",
         jobName: "send_email" as const,
@@ -148,15 +148,15 @@ void describe("Job Scheduler", async () => {
       await scheduler.stop();
     });
 
-    void it("handles unscheduling non-existent job gracefully", async () => {
+    it("handles unscheduling non-existent job gracefully", async () => {
       await scheduler.start(deps);
       await scheduler.unscheduleJob("00000000-0000-0000-0000-000000000000");
       await scheduler.stop();
     });
   });
 
-  void describe("job queueing", async () => {
-    void it("queues job for immediate execution", async () => {
+  describe("job queueing", async () => {
+    it("queues job for immediate execution", async () => {
       let queuedMessage: { jobId: string; type: string } | null = null;
 
       await scheduler.start(deps);
@@ -178,8 +178,8 @@ void describe("Job Scheduler", async () => {
     });
   });
 
-  void describe("job processing", async () => {
-    void it("processes job successfully", async () => {
+  describe("job processing", async () => {
+    it("processes job successfully", async () => {
       const { createJob } = await import("../jobs/jobs.js");
       const testJob = await createJob(deps, {
         jobName: "send_email" as const,
@@ -221,7 +221,7 @@ void describe("Job Scheduler", async () => {
       await scheduler.stop();
     });
 
-    void it("handles job processing failure", async () => {
+    it("handles job processing failure", async () => {
       await scheduler.start(deps);
 
       const invalidJobId = "invalid-job-id";
@@ -233,12 +233,12 @@ void describe("Job Scheduler", async () => {
     });
   });
 
-  void describe("cron job execution", async () => {
-    void it("creates job instance when cron job executes", async () => {
+  describe("cron job execution", async () => {
+    it("creates job instance when cron job executes", async () => {
       const testJobSchedule = await createJobSchedule(deps, {
         name: "CronExecutionSchedule",
         jobName: "send_email" as const,
-        cronExpression: "* * * * *", // Every minute
+        cronExpression: "* * * * *",
         timezone: "UTC",
         isActive: true,
       });
@@ -250,11 +250,11 @@ void describe("Job Scheduler", async () => {
       await scheduler.stop();
     });
 
-    void it("updates schedule run times after cron execution", async () => {
+    it("updates schedule run times after cron execution", async () => {
       const testJobSchedule = await createJobSchedule(deps, {
         name: "CronExecutionRunTimeSchedule",
         jobName: "send_email" as const,
-        cronExpression: "* * * * *", // Every minute
+        cronExpression: "* * * * *",
         timezone: "UTC",
         isActive: true,
       });
@@ -280,8 +280,8 @@ void describe("Job Scheduler", async () => {
     });
   });
 
-  void describe("loading schedules on start", async () => {
-    void it("loads only active schedules with cron expressions on start", async () => {
+  describe("loading schedules on start", async () => {
+    it("loads only active schedules with cron expressions on start", async () => {
       await createJobSchedule(deps, {
         name: "LoadActiveSchedule1",
         jobName: "send_email" as const,
@@ -311,8 +311,6 @@ void describe("Job Scheduler", async () => {
       });
 
       await scheduler.start(deps);
-
-      // No direct way to verify cronJobs count since it's private
 
       await scheduler.stop();
     });

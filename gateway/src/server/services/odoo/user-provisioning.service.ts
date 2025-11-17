@@ -17,22 +17,9 @@ export interface OdooUserProvisionResult {
 export interface OdooUserCredentials {
   databaseName: string;
   odooUid: number;
-  odooPassword: string; // API key for authentication
+  odooPassword: string;
 }
 
-/**
- * Service to provision and manage Odoo users for Safee users
- * Creates individual Odoo users for each Safee user to enable:
- * - User-level audit trails in Odoo
- * - Per-user permissions and access control
- * - Accurate sales attribution and performance tracking
- *
- * Authentication Strategy:
- * - Password: Set in Odoo for web UI access (users click "View in Odoo")
- * - API Key: Generated and stored for RPC operations (no session expiry)
- * - API keys are stored encrypted in odooPassword field
- * - Passwords are set in Odoo but not stored in Safee DB (user resets via Odoo if needed)
- */
 export class OdooUserProvisioningService {
   constructor(private readonly drizzle: DrizzleClient) {}
 
@@ -40,10 +27,6 @@ export class OdooUserProvisioningService {
     return getServerContext().logger;
   }
 
-  /**
-   * Authenticate with Odoo and get session + UID
-   * Returns uid, sessionId, and cookies from Set-Cookie headers
-   */
   private async authenticate(
     databaseName: string,
     login: string,
@@ -82,7 +65,6 @@ export class OdooUserProvisioningService {
       throw new BadGateway("Failed to authenticate with Odoo");
     }
 
-    // Capture all cookies from the authentication response
     const setCookieHeaders = response.headers.getSetCookie?.() || [];
     const cookies = setCookieHeaders.length > 0 ? setCookieHeaders.map((cookie) => cookie.split(";")[0]) : [];
 

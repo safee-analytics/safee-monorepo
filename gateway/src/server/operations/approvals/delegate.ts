@@ -22,7 +22,6 @@ export async function delegate(
   const logger = pino();
 
   try {
-    // Find pending approval step for this user
     const approvalStep = await drizzle.query.approvalSteps.findFirst({
       where: and(
         eq(schema.approvalSteps.requestId, requestId),
@@ -35,7 +34,6 @@ export async function delegate(
       throw new NotFound("No pending approval step found for this user");
     }
 
-    // Update approval step to delegate
     await drizzle
       .update(schema.approvalSteps)
       .set({
@@ -58,7 +56,6 @@ export async function delegate(
       message: "Approval delegated successfully.",
     };
   } catch (error) {
-    // Re-throw domain errors as-is
     if (error instanceof NotFound) {
       throw error;
     }

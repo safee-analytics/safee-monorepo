@@ -1,138 +1,84 @@
 "use client";
 
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAuthStore } from "@/stores/useAuthStore";
-import { authClient } from "./client";
+import { useSession, useSignIn, useSignUp, useSignOut, useSignInWithGoogle } from "@/lib/api/hooks";
 
+/**
+ * Main auth hook that provides authentication functionality
+ * Now powered by React Query for better caching and state management
+ */
 export function useAuth() {
   const router = useRouter();
-  const store = useAuthStore();
-  const { user, session, isLoading, isAuthenticated, setSession, setLoading, clearAuth } = store;
-  const hasInitialized = useRef(false);
+  const { data: session, isPending: sessionLoading, error: sessionError } = useSession();
+  const signInMutation = useSignIn();
+  const signUpMutation = useSignUp();
+  const signOutMutation = useSignOut();
+  const googleSignInMutation = useSignInWithGoogle();
 
-  // Initialize session on mount - check if existing session is still valid
-  useEffect(() => {
-    if (hasInitialized.current) return;
-
-    const initializeAuth = async () => {
-      try {
-        const sessionData = await authClient.getSession();
-        if (sessionData.data) {
-          setSession(sessionData.data);
-        } else {
-          clearAuth();
-        }
-      } catch (error) {
-        // Silently fail if backend not available
-      } finally {
-        setLoading(false);
-        hasInitialized.current = true;
-      }
-    };
-
-    initializeAuth();
-  }, [setSession, setLoading, clearAuth]);
+  const user = session?.user;
+  const isAuthenticated = !!user;
+  const isLoading = sessionLoading || signInMutation.isPending || signUpMutation.isPending;
 
   const signIn = useCallback(
     async (email: string, password: string) => {
       try {
-        setLoading(true);
-        const response = await authClient.signIn.email({ email, password });
-
-        if (response.error) {
-          return {
-            success: false,
-            error: response.error.message || "Sign in failed",
-          };
-        }
-
-        const sessionData = await authClient.getSession();
-        if (sessionData.data) {
-          setSession(sessionData.data);
-        }
-
+        await signInMutation.mutateAsync({ email, password });
         return { success: true };
       } catch (error) {
-        console.error("Sign in error:", error);
         return {
           success: false,
           error: error instanceof Error ? error.message : "Sign in failed",
         };
-      } finally {
-        setLoading(false);
       }
     },
-    [setSession, setLoading],
+    [signInMutation],
   );
 
   const signUp = useCallback(
     async (email: string, password: string, name: string) => {
       try {
-        setLoading(true);
-        const response = await authClient.signUp.email({ email, password, name });
-
-        if (response.error) {
-          return {
-            success: false,
-            error: response.error.message || "Sign up failed",
-          };
-        }
-
-        const sessionData = await authClient.getSession();
-        if (sessionData.data) {
-          setSession(sessionData.data);
-        }
-
+        await signUpMutation.mutateAsync({ email, password, name });
         return { success: true };
       } catch (error) {
-        console.error("Sign up error:", error);
         return {
           success: false,
           error: error instanceof Error ? error.message : "Sign up failed",
         };
-      } finally {
-        setLoading(false);
       }
     },
-    [setSession, setLoading],
+    [signUpMutation],
   );
 
   const signOut = useCallback(async () => {
     try {
-      setLoading(true);
-      await authClient.signOut();
-      clearAuth();
+      await signOutMutation.mutateAsync();
       router.push("/login");
     } catch (error) {
       console.error("Sign out error:", error);
-      // Clear auth anyway on client side
-      clearAuth();
+      // Try to redirect anyway
       router.push("/login");
-    } finally {
-      setLoading(false);
     }
-  }, [clearAuth, router, setLoading]);
+  }, [signOutMutation, router]);
 
-  const signInWithGoogle = useCallback(() => {
-    authClient.signIn.social({ provider: "google" });
-  }, []);
+  const signInWithGoogle = useCallback(async () => {
+    try {
+      await googleSignInMutation.mutateAsync();
+    } catch (error) {
+      console.error("Google sign in error:", error);
+      throw error;
+    }
+  }, [googleSignInMutation]);
 
   const signInWithGithub = useCallback(() => {
-    authClient.signIn.social({ provider: "github" });
+    // TODO: Add GitHub provider to Better Auth config
+    console.warn("GitHub sign in not yet configured");
   }, []);
 
   const refreshSession = useCallback(async () => {
-    try {
-      const sessionData = await authClient.getSession();
-      if (sessionData.data) {
-        setSession(sessionData.data);
-      }
-    } catch (error) {
-      console.error("Failed to refresh session:", error);
-      clearAuth();
-    }
-  }, [setSession, clearAuth]);
+    // React Query handles this automatically with refetch
+    // This is a no-op for backwards compatibility
+  }, []);
 
   return {
     user,
@@ -145,6 +91,7 @@ export function useAuth() {
     signInWithGoogle,
     signInWithGithub,
     refreshSession,
+    sessionError,
   };
 }
 

@@ -6,6 +6,7 @@ export * from "./errors.js";
 export * from "./drizzle.js";
 export * from "./deps.js";
 export type { Locale } from "./drizzle/_common.js";
+export { CASE_STATUSES, CASE_PRIORITIES } from "./drizzle/_common.js";
 export type RedisClient = Awaited<ReturnType<typeof redisConnect>>;
 
 export function conditionalCount(column: Column, value: unknown) {

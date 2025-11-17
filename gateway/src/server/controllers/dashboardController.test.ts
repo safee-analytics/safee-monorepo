@@ -24,7 +24,7 @@ void describe("Dashboard Controller Database Functions", async () => {
   let close: () => Promise<void>;
   let testOrg: TestOrganization;
   let testUser: TestUser;
-  const logger = pino({ level: "silent" }); // Silent logger for tests
+  const logger = pino({ level: "silent" });
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest());
@@ -37,7 +37,7 @@ void describe("Dashboard Controller Database Functions", async () => {
   beforeEach(async () => {
     await nukeDatabase(drizzle);
     testOrg = await createTestOrganization(drizzle);
-    testUser = await createTestUser(drizzle, testOrg.id);
+    testUser = await createTestUser(drizzle);
   });
 
   void describe("getCaseStats", () => {
@@ -57,7 +57,6 @@ void describe("Dashboard Controller Database Functions", async () => {
     void it("should return correct stats when cases exist", async () => {
       const deps = { drizzle, logger };
 
-      // Create test cases with different statuses
       await drizzle.insert(schema.cases).values([
         {
           organizationId: testOrg.id,
@@ -112,13 +111,12 @@ void describe("Dashboard Controller Database Functions", async () => {
       expect(stats.pendingReviews).toBe(1);
       expect(stats.completedAudits).toBe(2);
       expect(stats.totalCases).toBe(5);
-      expect(stats.completionRate).toBe(40); // 2/5 = 40%
+      expect(stats.completionRate).toBe(40);
     });
 
     void it("should calculate completion rate correctly", async () => {
       const deps = { drizzle, logger };
 
-      // Create 3 completed, 1 in-progress
       await drizzle.insert(schema.cases).values([
         {
           organizationId: testOrg.id,
@@ -160,14 +158,13 @@ void describe("Dashboard Controller Database Functions", async () => {
 
       const stats = await getCaseStats(deps, testOrg.id);
 
-      expect(stats.completionRate).toBe(75); // 3/4 = 75%
+      expect(stats.completionRate).toBe(75);
     });
 
     void it("should only count cases for the specified organization", async () => {
       const deps = { drizzle, logger };
       const otherOrg = await createTestOrganization(drizzle);
 
-      // Create case for testOrg
       await drizzle.insert(schema.cases).values({
         organizationId: testOrg.id,
         caseNumber: "CASE-001",
@@ -178,7 +175,6 @@ void describe("Dashboard Controller Database Functions", async () => {
         createdBy: testUser.id,
       });
 
-      // Create case for otherOrg
       await drizzle.insert(schema.cases).values({
         organizationId: otherOrg.id,
         caseNumber: "CASE-002",
@@ -207,7 +203,6 @@ void describe("Dashboard Controller Database Functions", async () => {
     void it("should return recent cases ordered by updatedAt desc", async () => {
       const deps = { drizzle, logger };
 
-      // Create cases with different update times
       const [case1] = await drizzle
         .insert(schema.cases)
         .values({
@@ -253,7 +248,6 @@ void describe("Dashboard Controller Database Functions", async () => {
       const activity = await getRecentCaseActivity(deps, testOrg.id, 10);
 
       expect(activity).toHaveLength(3);
-      // Should be ordered by updatedAt descending
       expect(activity[0].caseId).toBe(case2.id);
       expect(activity[1].caseId).toBe(case3.id);
       expect(activity[2].caseId).toBe(case1.id);
@@ -262,7 +256,6 @@ void describe("Dashboard Controller Database Functions", async () => {
     void it("should respect the limit parameter", async () => {
       const deps = { drizzle, logger };
 
-      // Create 5 cases
       for (let i = 1; i <= 5; i++) {
         await drizzle.insert(schema.cases).values({
           organizationId: testOrg.id,
@@ -421,7 +414,7 @@ void describe("Dashboard Controller Database Functions", async () => {
 
     void it("should only mark notification for the specific user", async () => {
       const deps = { drizzle, logger };
-      const otherUser = await createTestUser(drizzle, testOrg.id);
+      const otherUser = await createTestUser(drizzle);
 
       const [notification] = await drizzle
         .insert(schema.notifications)
@@ -435,7 +428,6 @@ void describe("Dashboard Controller Database Functions", async () => {
         })
         .returning();
 
-      // Try to mark as read with wrong user
       await markNotificationAsRead(deps, notification.id, testUser.id);
 
       const [updated] = await drizzle
@@ -443,7 +435,6 @@ void describe("Dashboard Controller Database Functions", async () => {
         .from(schema.notifications)
         .where(eq(schema.notifications.id, notification.id));
 
-      // Should still be unread since wrong user tried to mark it
       expect(updated.isRead).toBe(false);
     });
   });
@@ -493,7 +484,7 @@ void describe("Dashboard Controller Database Functions", async () => {
 
     void it("should only count notifications for the specific user and organization", async () => {
       const deps = { drizzle, logger };
-      const otherUser = await createTestUser(drizzle, testOrg.id);
+      const otherUser = await createTestUser(drizzle);
       const otherOrg = await createTestOrganization(drizzle);
 
       await drizzle.insert(schema.notifications).values([

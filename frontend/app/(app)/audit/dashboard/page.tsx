@@ -7,140 +7,176 @@ import { NotificationCard } from "@/components/audit/ui/NotificationCard";
 import { CaseCard } from "@/components/audit/ui/CaseCard";
 import { ActivityItem } from "@/components/audit/ui/ActivityItem";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useCases, useNotifications, useActivity } from "@/lib/api/hooks";
+import { useMemo } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function AuditDashboard() {
   const { t } = useTranslation();
-  // Mock data - will be replaced with API calls
-  const stats = {
-    activeCases: 24,
-    activeCasesChange: "+12% from last month",
-    pendingReviews: 8,
-    completedAudits: 156,
-    completionRate: "96% completion rate",
-    teamMembers: 12,
-    activeToday: "8 active today",
+  const router = useRouter();
+
+  const { data: apiCases, isLoading: casesLoading } = useCases();
+  const { data: notifications, isLoading: notificationsLoading } = useNotifications();
+  const { data: activity, isLoading: activityLoading } = useActivity();
+
+  const isLoading = casesLoading || notificationsLoading || activityLoading;
+
+  const trackNavigation = (eventName: string, metadata?: Record<string, unknown>) => {
+    if (process.env.NODE_ENV === "development") {
+      // eslint-disable-next-line no-console
+      console.log("Navigation Event:", { eventName, metadata, timestamp: new Date().toISOString() });
+    }
   };
 
-  const recentNotifications = [
-    {
-      id: "1",
-      type: "deadline" as const,
-      title: "Audit deadline approaching",
-      description: "ABC Corp audit due in 2 days",
-      timestamp: "2 hours ago",
-    },
-    {
-      id: "2",
-      type: "review" as const,
-      title: "Review required",
-      description: "Financial statements need approval",
-      timestamp: "4 hours ago",
-    },
-    {
-      id: "3",
-      type: "completed" as const,
-      title: "Audit completed",
-      description: "XYZ Ltd audit successfully finished",
-      timestamp: "6 hours ago",
-    },
-    {
-      id: "4",
-      type: "team" as const,
-      title: "New team member",
-      description: "John Smith joined the audit team",
-      timestamp: "1 day ago",
-    },
-  ];
+  const handleConditionalNavigation = (e: React.MouseEvent, path: string, requiresPermission?: string) => {
+    e.preventDefault();
 
-  const recentCases = [
-    {
-      id: "1",
-      companyName: "ABC Corporation",
-      auditType: "Annual Financial Audit",
-      status: "in-progress" as const,
-      dueDate: "Dec 15",
-      icon: "📊",
-      iconBg: "bg-blue-100",
-    },
-    {
-      id: "2",
-      companyName: "XYZ Retail Ltd",
-      auditType: "Inventory Audit",
-      status: "completed" as const,
-      completedDate: "Dec 10",
-      icon: "🏪",
-      iconBg: "bg-green-100",
-    },
-    {
-      id: "3",
-      companyName: "Manufacturing Co",
-      auditType: "Compliance Audit",
-      status: "overdue" as const,
-      dueDate: "Dec 8",
-      icon: "🏭",
-      iconBg: "bg-red-100",
-    },
-  ];
+    const hasPermission = true;
 
-  const teamActivity = [
-    {
-      id: "1",
-      userId: "1",
-      userName: "Michael Chen",
-      userAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Michael",
-      action: "Completed review",
-      description: "Completed ABC Corp review",
-      timestamp: "2 hours ago",
-      icon: "check" as const,
-    },
-    {
-      id: "2",
-      userId: "2",
-      userName: "Emma Rodriguez",
-      userAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emma",
-      action: "Started audit",
-      description: "Started inventory audit",
-      timestamp: "4 hours ago",
-      icon: "play" as const,
-    },
-    {
-      id: "3",
-      userId: "3",
-      userName: "David Kim",
-      userAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
-      action: "Updated assessment",
-      description: "Updated risk assessment",
-      timestamp: "6 hours ago",
-      icon: "edit" as const,
-    },
-    {
-      id: "4",
-      userId: "4",
-      userName: "Lisa Thompson",
-      userAvatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Lisa",
-      action: "Uploaded documents",
-      description: "Uploaded financial documents",
-      timestamp: "1 day ago",
-      icon: "upload" as const,
-    },
-  ];
+    if (requiresPermission && !hasPermission) {
+      console.warn("Navigation blocked: Insufficient permissions", { path, requiresPermission });
+      return;
+    }
 
-  const chartData = [
-    { month: "Jan", completed: 12, inProgress: 8, pending: 3 },
-    { month: "Feb", completed: 15, inProgress: 6, pending: 4 },
-    { month: "Mar", completed: 18, inProgress: 9, pending: 2 },
-    { month: "Apr", completed: 22, inProgress: 7, pending: 5 },
-    { month: "May", completed: 19, inProgress: 10, pending: 3 },
-    { month: "Jun", completed: 28, inProgress: 8, pending: 6 },
-    { month: "Jul", completed: 25, inProgress: 9, pending: 4 },
-    { month: "Aug", completed: 23, inProgress: 11, pending: 2 },
-    { month: "Sep", completed: 20, inProgress: 9, pending: 5 },
-    { month: "Oct", completed: 18, inProgress: 12, pending: 3 },
-    { month: "Nov", completed: 22, inProgress: 7, pending: 6 },
-    { month: "Dec", completed: 27, inProgress: 8, pending: 4 },
-  ];
+    trackNavigation("navigation_allowed", { path, requiresPermission });
+    router.push(path);
+  };
 
-  const maxValue = Math.max(...chartData.map((d) => d.completed + d.inProgress + d.pending));
+  const stats = useMemo(() => {
+    if (!apiCases) {
+      return {
+        activeCases: 0,
+        activeCasesChange: "from last month",
+        pendingReviews: 0,
+        completedAudits: 0,
+        completionRate: "0% completion rate",
+        teamMembers: 0,
+        activeToday: "0 active today",
+      };
+    }
+
+    const activeCases = apiCases.filter((c) => c.status === "in-progress").length;
+    const completedAudits = apiCases.filter((c) => c.status === "completed").length;
+    const pendingReviews = apiCases.filter((c) => c.status === "under-review").length;
+    const totalCases = apiCases.length;
+    const completionRate = totalCases > 0 ? Math.round((completedAudits / totalCases) * 100) : 0;
+
+    // Get unique team members from assignments
+    const uniqueMembers = new Set<string>();
+    apiCases.forEach((c) => {
+      c.assignments?.forEach((a) => {
+        if (a.userId) uniqueMembers.add(a.userId);
+      });
+    });
+
+    return {
+      activeCases,
+      activeCasesChange: "from last month",
+      pendingReviews,
+      completedAudits,
+      completionRate: `${completionRate}% completion rate`,
+      teamMembers: uniqueMembers.size,
+      activeToday: `${uniqueMembers.size} active today`,
+    };
+  }, [apiCases]);
+
+  // Map real notifications to dashboard format
+  const recentNotifications = useMemo(() => {
+    if (!notifications) return [];
+
+    return notifications.slice(0, 4).map((notification) => ({
+      id: notification.id,
+      type: notification.type as "deadline" | "review" | "completed" | "team",
+      title: notification.title,
+      description: notification.message,
+      timestamp: new Date(notification.createdAt).toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      }),
+    }));
+  }, [notifications]);
+
+  const recentCases = useMemo(() => {
+    if (!apiCases) return [];
+
+    return apiCases.slice(0, 3).map((caseData) => ({
+      id: caseData.id,
+      companyName: caseData.clientName,
+      auditType: caseData.auditType,
+      status: caseData.status as "in-progress" | "completed" | "overdue",
+      dueDate: caseData.dueDate
+        ? new Date(caseData.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })
+        : "No date",
+      completedDate:
+        caseData.status === "completed"
+          ? new Date().toLocaleDateString("en-US", { month: "short", day: "numeric" })
+          : undefined,
+      icon: "📋",
+      iconBg:
+        caseData.status === "completed"
+          ? "bg-green-100"
+          : caseData.status === "overdue"
+            ? "bg-red-100"
+            : "bg-blue-100",
+    }));
+  }, [apiCases]);
+
+  const teamActivity = useMemo(() => {
+    if (!activity) return [];
+
+    return activity.slice(0, 4).map((item) => ({
+      id: item.id,
+      userId: item.userId,
+      userName: item.userName,
+      userAvatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.userName}`,
+      action: item.action,
+      description: item.description,
+      timestamp: new Date(item.createdAt).toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true,
+      }),
+      icon: (item.actionType || "check") as "check" | "play" | "edit" | "upload",
+    }));
+  }, [activity]);
+
+  const chartData = useMemo(() => {
+    if (!apiCases) return [];
+
+    const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const currentYear = new Date().getFullYear();
+
+    return months.map((month, index) => {
+      const casesInMonth = apiCases.filter((c) => {
+        if (!c.createdAt) return false;
+        const caseDate = new Date(c.createdAt);
+        return caseDate.getMonth() === index && caseDate.getFullYear() === currentYear;
+      });
+
+      return {
+        month,
+        completed: casesInMonth.filter((c) => c.status === "completed").length,
+        inProgress: casesInMonth.filter((c) => c.status === "in-progress").length,
+        pending: casesInMonth.filter((c) => c.status === "pending" || c.status === "under-review").length,
+      };
+    });
+  }, [apiCases]);
+
+  const maxValue = Math.max(...chartData.map((d) => d.completed + d.inProgress + d.pending), 1);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -152,8 +188,8 @@ export default function AuditDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.audit.dashboardTitle}</h1>
-          <p className="text-gray-600">{t.audit.dashboardSubtitle}</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.audit.casesOverviewTitle}</h1>
+          <p className="text-gray-600">{t.audit.casesOverviewSubtitle}</p>
         </motion.div>
 
         {/* Stats Grid */}
@@ -172,54 +208,84 @@ export default function AuditDashboard() {
           }}
         >
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
-            <StatCard
-              title={t.audit.activeCases}
-              value={stats.activeCases}
-              subtitle={t.audit.fromLastMonth}
-              icon={FileText}
-              iconBgColor="bg-blue-100"
-              iconColor="text-blue-600"
-              trend={{ value: "+12%", positive: true }}
-            />
+            <Link
+              href="/audit/cases?status=in-progress"
+              onClick={() =>
+                trackNavigation("stat_card_clicked", { cardName: "Active Cases", status: "in-progress" })
+              }
+              className="block cursor-pointer transition-transform hover:scale-105"
+            >
+              <StatCard
+                title={t.audit.activeCases}
+                value={stats.activeCases}
+                subtitle={t.audit.fromLastMonth}
+                icon={FileText}
+                iconBgColor="bg-blue-100"
+                iconColor="text-blue-600"
+                trend={{ value: "+12%", positive: true }}
+              />
+            </Link>
           </motion.div>
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
-            <StatCard
-              title={t.audit.pendingReviews}
-              value={stats.pendingReviews}
-              subtitle={t.audit.overdue}
-              icon={AlertCircle}
-              iconBgColor="bg-yellow-100"
-              iconColor="text-yellow-600"
-            />
+            <Link
+              href="/audit/cases?status=under-review"
+              onClick={() =>
+                trackNavigation("stat_card_clicked", { cardName: "Pending Reviews", status: "under-review" })
+              }
+              className="block cursor-pointer transition-transform hover:scale-105"
+            >
+              <StatCard
+                title={t.audit.pendingReviews}
+                value={stats.pendingReviews}
+                subtitle={t.audit.overdue}
+                icon={AlertCircle}
+                iconBgColor="bg-yellow-100"
+                iconColor="text-yellow-600"
+              />
+            </Link>
           </motion.div>
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
-            <StatCard
-              title={t.audit.completedAudits}
-              value={stats.completedAudits}
-              subtitle={t.audit.completionRate}
-              icon={CheckCircle}
-              iconBgColor="bg-green-100"
-              iconColor="text-green-600"
-            />
+            <Link
+              href="/audit/cases?status=completed"
+              onClick={() =>
+                trackNavigation("stat_card_clicked", { cardName: "Completed Audits", status: "completed" })
+              }
+              className="block cursor-pointer transition-transform hover:scale-105"
+            >
+              <StatCard
+                title={t.audit.completedAudits}
+                value={stats.completedAudits}
+                subtitle={t.audit.completionRate}
+                icon={CheckCircle}
+                iconBgColor="bg-green-100"
+                iconColor="text-green-600"
+              />
+            </Link>
           </motion.div>
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
-            <StatCard
-              title={t.audit.teamMembers}
-              value={stats.teamMembers}
-              subtitle={t.audit.activeToday}
-              icon={Users}
-              iconBgColor="bg-purple-100"
-              iconColor="text-purple-600"
-            />
+            <Link
+              href="/audit/team"
+              onClick={(e) => handleConditionalNavigation(e, "/audit/team", "view_team")}
+              className="block cursor-pointer transition-transform hover:scale-105"
+            >
+              <StatCard
+                title={t.audit.teamMembers}
+                value={stats.teamMembers}
+                subtitle={t.audit.activeToday}
+                icon={Users}
+                iconBgColor="bg-purple-100"
+                iconColor="text-purple-600"
+              />
+            </Link>
           </motion.div>
         </motion.div>
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-          {/* Audit Progress Chart */}
+          {/* Cases Progress Chart */}
           <div className="lg:col-span-2 bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-lg font-semibold text-gray-900">Audit Progress Overview</h2>
+              <h2 className="text-lg font-semibold text-gray-900">Cases Progress</h2>
               <select className="text-sm border border-gray-300 rounded-lg px-3 py-1.5 text-gray-700">
                 <option>Last 30 days</option>
                 <option>Last 90 days</option>
@@ -284,12 +350,20 @@ export default function AuditDashboard() {
             </div>
             <div className="space-y-3">
               {recentNotifications.map((notification) => (
-                <NotificationCard key={notification.id} {...notification} />
+                <div
+                  key={notification.id}
+                  className="cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <NotificationCard {...notification} />
+                </div>
               ))}
             </div>
-            <button className="w-full text-center text-sm text-blue-600 hover:text-blue-700 font-medium mt-4">
+            <Link
+              href="/notifications"
+              className="block w-full text-center text-sm text-blue-600 hover:text-blue-700 font-medium mt-4"
+            >
               View all notifications
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -299,11 +373,19 @@ export default function AuditDashboard() {
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900">Recent Cases</h2>
-              <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">View all</button>
+              <Link href="/audit/cases" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                View all
+              </Link>
             </div>
             <div>
               {recentCases.map((caseItem) => (
-                <CaseCard key={caseItem.id} {...caseItem} />
+                <Link
+                  key={caseItem.id}
+                  href={`/audit/cases/${caseItem.id}`}
+                  className="block cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <CaseCard {...caseItem} />
+                </Link>
               ))}
             </div>
           </div>
@@ -312,11 +394,18 @@ export default function AuditDashboard() {
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-lg font-semibold text-gray-900">Team Activity</h2>
-              <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">View team</button>
+              <Link href="/audit/team" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+                View team
+              </Link>
             </div>
             <div>
               {teamActivity.map((activity) => (
-                <ActivityItem key={activity.id} {...activity} />
+                <div
+                  key={activity.id}
+                  className="cursor-pointer hover:bg-gray-50 rounded-lg transition-colors"
+                >
+                  <ActivityItem {...activity} />
+                </div>
               ))}
             </div>
           </div>

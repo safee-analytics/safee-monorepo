@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { type DrizzleClient, schema, eq, connectTest } from "../index.js";
 import { pino } from "pino";
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import {
   createTestOrganization,
   createTestUser,
@@ -15,7 +15,7 @@ import {
   getUnreadNotificationsCount,
 } from "./notifications.js";
 
-void describe("Notification CRUD Functions", async () => {
+describe("Notification CRUD Functions", async () => {
   let drizzle: DrizzleClient;
   let close: () => Promise<void>;
   let testOrg: TestOrganization;
@@ -34,19 +34,19 @@ void describe("Notification CRUD Functions", async () => {
   beforeEach(async () => {
     await nukeDatabase(drizzle);
     testOrg = await createTestOrganization(drizzle);
-    testUser = await createTestUser(drizzle, testOrg.id);
-    testUser2 = await createTestUser(drizzle, testOrg.id);
+    testUser = await createTestUser(drizzle);
+    testUser2 = await createTestUser(drizzle);
   });
 
-  void describe("getRecentNotifications", () => {
-    void it("should return empty array when no notifications exist", async () => {
+  describe("getRecentNotifications", () => {
+    it("should return empty array when no notifications exist", async () => {
       const deps = { drizzle, logger };
       const notifications = await getRecentNotifications(deps, testUser.id, testOrg.id, 10);
 
       expect(notifications).toEqual([]);
     });
 
-    void it("should return notifications for the user", async () => {
+    it("should return notifications for the user", async () => {
       const deps = { drizzle, logger };
 
       await drizzle.insert(schema.notifications).values({
@@ -66,7 +66,7 @@ void describe("Notification CRUD Functions", async () => {
       expect(notifications[0].isRead).toBe(false);
     });
 
-    void it("should order notifications by createdAt desc", async () => {
+    it("should order notifications by createdAt desc", async () => {
       const deps = { drizzle, logger };
 
       await drizzle.insert(schema.notifications).values([
@@ -107,10 +107,9 @@ void describe("Notification CRUD Functions", async () => {
       expect(notifications[2].title).toBe("Notification 1");
     });
 
-    void it("should respect the limit parameter", async () => {
+    it("should respect the limit parameter", async () => {
       const deps = { drizzle, logger };
 
-      // Create 5 notifications
       for (let i = 1; i <= 5; i++) {
         await drizzle.insert(schema.notifications).values({
           organizationId: testOrg.id,
@@ -127,7 +126,7 @@ void describe("Notification CRUD Functions", async () => {
       expect(notifications).toHaveLength(3);
     });
 
-    void it("should include action button data", async () => {
+    it("should include action button data", async () => {
       const deps = { drizzle, logger };
 
       await drizzle.insert(schema.notifications).values({
@@ -147,10 +146,9 @@ void describe("Notification CRUD Functions", async () => {
       expect(notifications[0].actionUrl).toBe("/audit/cases/123");
     });
 
-    void it("should only return notifications for the specific user", async () => {
+    it("should only return notifications for the specific user", async () => {
       const deps = { drizzle, logger };
 
-      // Create notification for testUser
       await drizzle.insert(schema.notifications).values({
         organizationId: testOrg.id,
         userId: testUser.id,
@@ -160,7 +158,6 @@ void describe("Notification CRUD Functions", async () => {
         isRead: false,
       });
 
-      // Create notification for testUser2
       await drizzle.insert(schema.notifications).values({
         organizationId: testOrg.id,
         userId: testUser2.id,
@@ -176,11 +173,10 @@ void describe("Notification CRUD Functions", async () => {
       expect(notifications[0].title).toBe("For User 1");
     });
 
-    void it("should only return notifications for the specific organization", async () => {
+    it("should only return notifications for the specific organization", async () => {
       const deps = { drizzle, logger };
       const testOrg2 = await createTestOrganization(drizzle);
 
-      // Create notification for testOrg
       await drizzle.insert(schema.notifications).values({
         organizationId: testOrg.id,
         userId: testUser.id,
@@ -190,7 +186,6 @@ void describe("Notification CRUD Functions", async () => {
         isRead: false,
       });
 
-      // Create notification for testOrg2
       await drizzle.insert(schema.notifications).values({
         organizationId: testOrg2.id,
         userId: testUser.id,
@@ -206,10 +201,9 @@ void describe("Notification CRUD Functions", async () => {
       expect(notifications[0].title).toBe("For Org 1");
     });
 
-    void it("should include relatedEntity fields when provided", async () => {
+    it("should include relatedEntity fields when provided", async () => {
       const deps = { drizzle, logger };
 
-      // Create a test case to use as related entity
       const [testCase] = await drizzle
         .insert(schema.cases)
         .values({
@@ -241,8 +235,8 @@ void describe("Notification CRUD Functions", async () => {
     });
   });
 
-  void describe("markNotificationAsRead", () => {
-    void it("should mark notification as read", async () => {
+  describe("markNotificationAsRead", () => {
+    it("should mark notification as read", async () => {
       const deps = { drizzle, logger };
 
       const [notification] = await drizzle
@@ -269,7 +263,7 @@ void describe("Notification CRUD Functions", async () => {
       expect(updated.readAt).toBeInstanceOf(Date);
     });
 
-    void it("should only mark notification for the specific user", async () => {
+    it("should only mark notification for the specific user", async () => {
       const deps = { drizzle, logger };
 
       const [notification] = await drizzle
@@ -284,7 +278,6 @@ void describe("Notification CRUD Functions", async () => {
         })
         .returning();
 
-      // Try to mark as read with wrong user
       await markNotificationAsRead(deps, notification.id, testUser.id);
 
       const [updated] = await drizzle
@@ -292,19 +285,17 @@ void describe("Notification CRUD Functions", async () => {
         .from(schema.notifications)
         .where(eq(schema.notifications.id, notification.id));
 
-      // Should still be unread since wrong user tried to mark it
       expect(updated.isRead).toBe(false);
     });
 
-    void it("should not throw error when marking non-existent notification", async () => {
+    it("should not throw error when marking non-existent notification", async () => {
       const deps = { drizzle, logger };
 
-      // Should not throw - using a valid UUID that doesn't exist
       const nonExistentId = randomUUID();
       await expect(markNotificationAsRead(deps, nonExistentId, testUser.id)).resolves.toBeUndefined();
     });
 
-    void it("should update readAt timestamp", async () => {
+    it("should update readAt timestamp", async () => {
       const deps = { drizzle, logger };
 
       const [notification] = await drizzle
@@ -334,15 +325,15 @@ void describe("Notification CRUD Functions", async () => {
     });
   });
 
-  void describe("getUnreadNotificationsCount", () => {
-    void it("should return 0 when no unread notifications exist", async () => {
+  describe("getUnreadNotificationsCount", () => {
+    it("should return 0 when no unread notifications exist", async () => {
       const deps = { drizzle, logger };
       const count = await getUnreadNotificationsCount(deps, testUser.id, testOrg.id);
 
       expect(count).toBe(0);
     });
 
-    void it("should return correct count of unread notifications", async () => {
+    it("should return correct count of unread notifications", async () => {
       const deps = { drizzle, logger };
 
       await drizzle.insert(schema.notifications).values([
@@ -377,7 +368,7 @@ void describe("Notification CRUD Functions", async () => {
       expect(count).toBe(2);
     });
 
-    void it("should only count notifications for the specific user and organization", async () => {
+    it("should only count notifications for the specific user and organization", async () => {
       const deps = { drizzle, logger };
       const testOrg2 = await createTestOrganization(drizzle);
 
@@ -413,7 +404,7 @@ void describe("Notification CRUD Functions", async () => {
       expect(count).toBe(1);
     });
 
-    void it("should not count read notifications", async () => {
+    it("should not count read notifications", async () => {
       const deps = { drizzle, logger };
 
       await drizzle.insert(schema.notifications).values([
@@ -440,7 +431,7 @@ void describe("Notification CRUD Functions", async () => {
       expect(count).toBe(0);
     });
 
-    void it("should update count after marking notification as read", async () => {
+    it("should update count after marking notification as read", async () => {
       const deps = { drizzle, logger };
 
       const [notification] = await drizzle

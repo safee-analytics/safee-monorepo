@@ -3,7 +3,19 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { User, Bell, Shield, HardDrive, Globe, Palette, Key, Database, Lock, Users } from "lucide-react";
+import {
+  User,
+  Bell,
+  Shield,
+  HardDrive,
+  Globe,
+  Palette,
+  Key,
+  Database,
+  Lock,
+  Users,
+  FileText,
+} from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 
 interface SettingLink {
@@ -27,6 +39,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
     },
     { href: "/settings/appearance", label: "Appearance", icon: Palette, restricted: false },
     { href: "/settings/team", label: "Team", icon: Users, restricted: true },
+    { href: "/settings/audit-logs", label: "Audit Logs", icon: FileText, restricted: true },
     { href: "/settings/security", label: "Security", icon: Shield, restricted: true },
     { href: "/settings/storage", label: t.common.storage || "Storage", icon: HardDrive, restricted: true },
     { href: "/settings/integrations", label: "Integrations", icon: Globe, restricted: true },

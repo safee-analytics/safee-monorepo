@@ -19,11 +19,9 @@ import { schema, workflowRulesSchema, ruleSchema } from "@safee/database";
 import { eq, and } from "drizzle-orm";
 import { z } from "zod";
 
-// Define types directly for TSOA
 type StepType = "single" | "parallel" | "any";
 type ApproverType = "role" | "team" | "user";
 
-// Workflow-level configuration - define locally for TSOA
 interface WorkflowRules {
   autoApprove?: boolean;
   requireComments?: boolean;
@@ -34,7 +32,6 @@ interface WorkflowRules {
   notifyOnComplete?: boolean;
 }
 
-// Rule condition for approval rules - discriminated union
 type RuleCondition =
   | {
       type: "amount";
@@ -61,13 +58,11 @@ type RuleCondition =
       value: string | number | boolean;
     };
 
-// Rule structure for approval matching
 interface Rule {
   conditions: RuleCondition[];
   logic?: "AND" | "OR";
 }
 
-// Zod schemas for validation
 const stepTypeSchema = z.enum(["single", "parallel", "any"]);
 const approverTypeSchema = z.enum(["role", "team", "user"]);
 

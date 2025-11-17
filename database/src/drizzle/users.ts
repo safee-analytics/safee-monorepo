@@ -1,6 +1,5 @@
-import { uuid, varchar, timestamp, boolean, index, text } from "drizzle-orm/pg-core";
+import { varchar, timestamp, boolean, index, text } from "drizzle-orm/pg-core";
 import { identitySchema, idpk, localeEnum } from "./_common.js";
-import { organizations } from "./organizations.js";
 
 export const users = identitySchema.table(
   "users",
@@ -9,10 +8,6 @@ export const users = identitySchema.table(
     email: varchar("email", { length: 255 }).notNull().unique(),
     name: varchar("name", { length: 255 }),
     role: varchar("role", { length: 50 }).default("user"),
-    organizationId: uuid("organization_id").references(() => organizations.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
     preferredLocale: localeEnum("preferred_locale").default("en").notNull(),
     isActive: boolean("is_active").default(true).notNull(),
 
@@ -46,7 +41,6 @@ export const users = identitySchema.table(
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => [
-    index("users_organization_id_idx").on(table.organizationId),
     index("users_is_active_idx").on(table.isActive),
     index("users_email_verified_idx").on(table.emailVerified),
     index("users_username_idx").on(table.username),

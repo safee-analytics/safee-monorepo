@@ -9,6 +9,8 @@ export const auditEn = {
     // Dashboard
     dashboardTitle: "Dashboard Overview",
     dashboardSubtitle: "Welcome back, here's what's happening with your audits today.",
+    casesOverviewTitle: "Cases Overview",
+    casesOverviewSubtitle: "Monitor and manage all audit cases, track progress, and review team activity",
     activeCases: "Active Cases",
     pendingReviews: "Pending Reviews",
     completedAudits: "Completed Audits",
@@ -28,6 +30,7 @@ export const auditEn = {
     inProgress: "In Progress",
     pending: "Pending",
     // Cases
+    casesOverview: "Cases Overview",
     caseManagement: "Case Management",
     caseManagementSubtitle: "Manage all your audit cases, track progress, and monitor deadlines.",
     newCase: "New Case",

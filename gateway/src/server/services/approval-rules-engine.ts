@@ -30,7 +30,6 @@ export class ApprovalRulesEngine {
     entityData: EntityData,
   ): Promise<{ workflowId: string; workflow: unknown } | null> {
     try {
-      // Get all active rules for this entity type, ordered by priority (highest first)
       const rules = await this.drizzle.query.approvalRules.findMany({
         where: and(
           eq(schema.approvalRules.organizationId, organizationId),
@@ -47,7 +46,6 @@ export class ApprovalRulesEngine {
         return null;
       }
 
-      // Evaluate rules in priority order
       for (const rule of rules) {
         if (!rule.workflow.isActive) {
           continue;
@@ -84,12 +82,10 @@ export class ApprovalRulesEngine {
 
   private parseRuleConditions(conditions: unknown): Rule {
     try {
-      // Parse and validate with Zod
       const parsed = ruleSchema.parse(conditions);
       return parsed;
     } catch (error) {
       logger.error({ error, conditions, conditionsType: typeof conditions }, "Error parsing rule conditions");
-      // Return empty rule so it doesn't match
       return { conditions: [], logic: "AND" };
     }
   }

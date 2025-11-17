@@ -4,11 +4,12 @@ import { useState } from "react";
 import { Shield, Plus, Edit2, Trash2, ArrowLeft, Check, X } from "lucide-react";
 import Link from "next/link";
 import {
+  useSession,
   useOrganizationRoles,
+  useOrganizationMembers,
   useCreateRole,
   useUpdateRolePermissions,
   useDeleteRole,
-  useUserProfile,
 } from "@/lib/api/hooks";
 
 const AVAILABLE_PERMISSIONS = [
@@ -46,17 +47,15 @@ export default function RoleManagement() {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingRole, setEditingRole] = useState<string | null>(null);
 
-  // Get current user to determine organization
-  const { data: currentUser } = useUserProfile();
-  const orgId = currentUser?.organizationId;
+  const { data: session } = useSession();
+  const orgId = session?.session.activeOrganizationId;
 
-  // Fetch roles
   const { data: roles, isLoading } = useOrganizationRoles(orgId || "");
+  const { data: members } = useOrganizationMembers(orgId || "");
   const createRoleMutation = useCreateRole();
   const updateRoleMutation = useUpdateRolePermissions();
   const deleteRoleMutation = useDeleteRole();
 
-  // Group roles by role name
   const groupedRoles = (roles || []).reduce(
     (acc, role) => {
       if (!acc[role.role]) {
@@ -71,7 +70,6 @@ export default function RoleManagement() {
   const handleCreateRole = (roleName: string, permissions: string[]) => {
     if (!orgId) return;
 
-    // Create multiple entries (one per permission) - this is how Better Auth's schema works
     Promise.all(
       permissions.map((permission) =>
         createRoleMutation.mutateAsync({
@@ -89,23 +87,33 @@ export default function RoleManagement() {
   const handleUpdateRole = (roleName: string, permissions: string[]) => {
     if (!orgId) return;
 
-    // Delete existing permissions and recreate
     const existingRoles = groupedRoles[roleName] || [];
-    Promise.all(existingRoles.map((r) => deleteRoleMutation.mutateAsync({ orgId, roleId: r.id })))
-      .then(() =>
-        Promise.all(
-          permissions.map((permission) =>
-            createRoleMutation.mutateAsync({
-              orgId,
-              role: roleName,
-              permission,
-            }),
-          ),
-        ),
-      )
+
+    updateRoleMutation
+      .mutateAsync({
+        orgId,
+        role: roleName,
+        permissions,
+      })
       .then(() => {
         setEditingRole(null);
-        // TODO: Show success toast
+      })
+      .catch(() => {
+        Promise.all(existingRoles.map((r) => deleteRoleMutation.mutateAsync({ orgId, roleId: r.id })))
+          .then(() =>
+            Promise.all(
+              permissions.map((permission) =>
+                createRoleMutation.mutateAsync({
+                  orgId,
+                  role: roleName,
+                  permission,
+                }),
+              ),
+            ),
+          )
+          .then(() => {
+            setEditingRole(null);
+          });
       });
   };
 
@@ -122,8 +130,8 @@ export default function RoleManagement() {
   };
 
   const getRoleUserCount = (roleName: string): number => {
-    // TODO: Get actual member count from API
-    return 0;
+    if (!members) return 0;
+    return members.filter((member) => member.role === roleName).length;
   };
 
   return (
@@ -131,10 +139,7 @@ export default function RoleManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link
-            href="/settings/team"
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
+          <Link href="/settings/team" className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <ArrowLeft className="w-5 h-5 text-gray-600" />
           </Link>
           <div>
@@ -297,7 +302,10 @@ function RolePermissionEditor({
         >
           Save
         </button>
-        <button onClick={onCancel} className="px-3 py-1.5 border border-gray-300 text-sm rounded hover:bg-gray-50">
+        <button
+          onClick={onCancel}
+          className="px-3 py-1.5 border border-gray-300 text-sm rounded hover:bg-gray-50"
+        >
           Cancel
         </button>
       </div>

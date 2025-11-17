@@ -26,10 +26,9 @@ void describe("submitForApproval operation", async () => {
   beforeEach(async () => {
     await nukeDatabase(drizzle);
 
-    // Create test data
     testOrg = await createTestOrganization(drizzle);
-    testUser = await createTestUser(drizzle, testOrg.id, { email: "requester@test.com", name: "Requester" });
-    approverUser = await createTestUser(drizzle, testOrg.id, {
+    testUser = await createTestUser(drizzle, { email: "requester@test.com", name: "Requester" });
+    approverUser = await createTestUser(drizzle, {
       email: "approver@test.com",
       name: "Approver",
     });
@@ -42,7 +41,6 @@ void describe("submitForApproval operation", async () => {
   void it("should submit an entity for approval successfully", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
 
-    // Use a valid UUID for entityId
     const entityId = crypto.randomUUID();
 
     const result = await submitForApproval(drizzle, testOrg.id, testUser.id, {
@@ -57,7 +55,6 @@ void describe("submitForApproval operation", async () => {
     expect(result.message).toContain("submitted for approval");
     expect(result.message).toContain("1 approver(s)");
 
-    // Verify approval request was created
     const approvalRequest = await drizzle.query.approvalRequests.findFirst({
       where: (requests, { eq }) => eq(requests.id, result.requestId),
     });
@@ -68,7 +65,6 @@ void describe("submitForApproval operation", async () => {
     expect(approvalRequest?.entityId).toBe(entityId);
     expect(approvalRequest?.requestedBy).toBe(testUser.id);
 
-    // Verify approval step was created
     const approvalSteps = await drizzle.query.approvalSteps.findMany({
       where: (steps, { eq }) => eq(steps.requestId, result.requestId),
     });
@@ -102,7 +98,6 @@ void describe("submitForApproval operation", async () => {
   });
 
   void it("should throw NotFound when no workflow matches entity data", async () => {
-    // Don't create a workflow, so no match will be found
     const entityId = crypto.randomUUID();
     await expect(
       submitForApproval(drizzle, testOrg.id, testUser.id, {
@@ -114,7 +109,6 @@ void describe("submitForApproval operation", async () => {
   });
 
   void it("should throw NotFound when no matching workflow exists", async () => {
-    // Don't create any workflow
     const entityId = crypto.randomUUID();
 
     await expect(
@@ -127,7 +121,6 @@ void describe("submitForApproval operation", async () => {
   });
 
   void it("should throw InvalidInput when workflow has no steps", async () => {
-    // Create workflow without steps
     const [workflow] = await drizzle
       .insert(schema.approvalWorkflows)
       .values({
@@ -139,7 +132,6 @@ void describe("submitForApproval operation", async () => {
       })
       .returning();
 
-    // Create approval rule with manual type
     await drizzle.insert(schema.approvalRules).values({
       organizationId: testOrg.id,
       entityType: "invoice" as never,
@@ -163,7 +155,6 @@ void describe("submitForApproval operation", async () => {
   });
 
   void it("should create workflow with parallel approval type", async () => {
-    // Test parallel approval workflow (multiple approvals required for same step)
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id, {
       stepType: "parallel",
       minApprovals: 1,
@@ -180,7 +171,6 @@ void describe("submitForApproval operation", async () => {
     expect(result.workflowId).toBeDefined();
     expect(result.status).toBe("pending");
 
-    // Verify approval step was created
     const approvalSteps = await drizzle.query.approvalSteps.findMany({
       where: (steps, { eq }) => eq(steps.requestId, result.requestId),
     });
@@ -189,7 +179,6 @@ void describe("submitForApproval operation", async () => {
   });
 
   void it("should handle workflow for different entity types", async () => {
-    // Create workflow for employee entity type
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id, { entityType: "employee" });
 
     const entityId = crypto.randomUUID();
@@ -202,7 +191,6 @@ void describe("submitForApproval operation", async () => {
     expect(result.requestId).toBeDefined();
     expect(result.status).toBe("pending");
 
-    // Verify correct entity type was stored
     const approvalRequest = await drizzle.query.approvalRequests.findFirst({
       where: (requests, { eq }) => eq(requests.id, result.requestId),
     });

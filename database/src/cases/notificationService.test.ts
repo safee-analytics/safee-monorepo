@@ -19,7 +19,7 @@ import {
 } from "./notificationService.js";
 import type { PubSub } from "../pubsub/index.js";
 
-void describe("Notification Service", async () => {
+describe("Notification Service", async () => {
   let drizzle: DrizzleClient;
   let close: () => Promise<void>;
   let testOrg: TestOrganization;
@@ -38,12 +38,12 @@ void describe("Notification Service", async () => {
   beforeEach(async () => {
     await nukeDatabase(drizzle);
     testOrg = await createTestOrganization(drizzle);
-    testUser = await createTestUser(drizzle, testOrg.id);
-    testUser2 = await createTestUser(drizzle, testOrg.id);
+    testUser = await createTestUser(drizzle);
+    testUser2 = await createTestUser(drizzle);
   });
 
-  void describe("createNotification", () => {
-    void it("should create notification from template", async () => {
+  describe("createNotification", () => {
+    it("should create notification from template", async () => {
       const deps: NotificationServiceDeps = { drizzle, logger };
 
       const notificationId = await createNotification(deps, {
@@ -72,13 +72,12 @@ void describe("Notification Service", async () => {
       expect(notification!.actionUrl).toBe("/audit/cases/123");
     });
 
-    void it("should return null when user has disabled notification type", async () => {
+    it("should return null when user has disabled notification type", async () => {
       const deps: NotificationServiceDeps = { drizzle, logger };
 
-      // Create notification settings that disable case updates
       await drizzle.insert(schema.notificationSettings).values({
         userId: testUser.id,
-        auditCaseUpdates: false, // Disable case updates
+        auditCaseUpdates: false,
         taskAssignments: true,
         deadlineReminders: true,
         documentUploads: true,
@@ -105,7 +104,7 @@ void describe("Notification Service", async () => {
       expect(notifications).toHaveLength(0);
     });
 
-    void it("should create notification when user has enabled notification type", async () => {
+    it("should create notification when user has enabled notification type", async () => {
       const deps: NotificationServiceDeps = { drizzle, logger };
 
       await drizzle.insert(schema.notificationSettings).values({
@@ -133,7 +132,7 @@ void describe("Notification Service", async () => {
       expect(notificationId).not.toBeNull();
     });
 
-    void it("should default to enabled when no settings exist", async () => {
+    it("should default to enabled when no settings exist", async () => {
       const deps: NotificationServiceDeps = { drizzle, logger };
 
       const notificationId = await createNotification(deps, {
@@ -151,7 +150,7 @@ void describe("Notification Service", async () => {
       expect(notificationId).not.toBeNull();
     });
 
-    void it("should publish to pubsub when provided", async () => {
+    it("should publish to pubsub when provided", async () => {
       const mockPubsub: PubSub = {
         publish: vi.fn().mockResolvedValue(undefined),
         subscribe: vi.fn(),
@@ -183,7 +182,7 @@ void describe("Notification Service", async () => {
       });
     });
 
-    void it("should not publish to pubsub when notification is disabled", async () => {
+    it("should not publish to pubsub when notification is disabled", async () => {
       const mockPubsub: PubSub = {
         publish: vi.fn().mockResolvedValue(undefined),
         subscribe: vi.fn(),
@@ -194,7 +193,6 @@ void describe("Notification Service", async () => {
 
       const deps: NotificationServiceDeps = { drizzle, logger, pubsub: mockPubsub };
 
-      // Disable notifications
       await drizzle.insert(schema.notificationSettings).values({
         userId: testUser.id,
         auditCaseUpdates: false,
@@ -220,10 +218,9 @@ void describe("Notification Service", async () => {
       expect(mockPubsub.publish).not.toHaveBeenCalled();
     });
 
-    void it("should include relatedEntityId when provided", async () => {
+    it("should include relatedEntityId when provided", async () => {
       const deps: NotificationServiceDeps = { drizzle, logger };
 
-      // Create a test case
       const [testCase] = await drizzle
         .insert(schema.cases)
         .values({
@@ -258,8 +255,8 @@ void describe("Notification Service", async () => {
     });
   });
 
-  void describe("createNotificationsForUsers", () => {
-    void it("should create notifications for multiple users", async () => {
+  describe("createNotificationsForUsers", () => {
+    it("should create notifications for multiple users", async () => {
       const deps: NotificationServiceDeps = { drizzle, logger };
 
       const notificationIds = await createNotificationsForUsers(deps, {
@@ -283,10 +280,9 @@ void describe("Notification Service", async () => {
       expect(notifications.map((n) => n.userId).sort()).toEqual([testUser.id, testUser2.id].sort());
     });
 
-    void it("should skip users who have disabled the notification type", async () => {
+    it("should skip users who have disabled the notification type", async () => {
       const deps: NotificationServiceDeps = { drizzle, logger };
 
-      // Disable notifications for testUser2
       await drizzle.insert(schema.notificationSettings).values({
         userId: testUser2.id,
         auditCaseUpdates: false,
@@ -319,11 +315,10 @@ void describe("Notification Service", async () => {
     });
   });
 
-  void describe("notifyCaseCreated", () => {
-    void it("should create case created notification", async () => {
+  describe("notifyCaseCreated", () => {
+    it("should create case created notification", async () => {
       const deps: NotificationServiceDeps = { drizzle, logger };
 
-      // Create a test case
       const [testCase] = await drizzle
         .insert(schema.cases)
         .values({
@@ -358,11 +353,10 @@ void describe("Notification Service", async () => {
     });
   });
 
-  void describe("notifyCaseAssigned", () => {
-    void it("should create case assigned notification", async () => {
+  describe("notifyCaseAssigned", () => {
+    it("should create case assigned notification", async () => {
       const deps: NotificationServiceDeps = { drizzle, logger };
 
-      // Create a test case
       const [testCase] = await drizzle
         .insert(schema.cases)
         .values({
@@ -397,11 +391,10 @@ void describe("Notification Service", async () => {
     });
   });
 
-  void describe("notifyDeadlineApproaching", () => {
-    void it("should create deadline notifications for multiple users", async () => {
+  describe("notifyDeadlineApproaching", () => {
+    it("should create deadline notifications for multiple users", async () => {
       const deps: NotificationServiceDeps = { drizzle, logger };
 
-      // Create a test case
       const [testCase] = await drizzle
         .insert(schema.cases)
         .values({
@@ -437,11 +430,10 @@ void describe("Notification Service", async () => {
     });
   });
 
-  void describe("notifyCaseCompleted", () => {
-    void it("should create case completed notifications for multiple users", async () => {
+  describe("notifyCaseCompleted", () => {
+    it("should create case completed notifications for multiple users", async () => {
       const deps: NotificationServiceDeps = { drizzle, logger };
 
-      // Create a test case
       const [testCase] = await drizzle
         .insert(schema.cases)
         .values({

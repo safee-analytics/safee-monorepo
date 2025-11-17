@@ -58,7 +58,7 @@ export default function StorageSettings() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
 
       alert("Storage configuration saved successfully");
-    } catch (error) {
+    } catch (_error) {
       alert("Failed to save configuration");
     } finally {
       setIsSaving(false);

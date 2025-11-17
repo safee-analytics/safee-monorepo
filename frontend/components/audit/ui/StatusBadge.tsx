@@ -1,6 +1,14 @@
 import { cn } from "@/lib/utils";
 
-type StatusType = "completed" | "in-progress" | "pending" | "overdue" | "under-review" | "archived" | "active" | "away";
+type StatusType =
+  | "completed"
+  | "in-progress"
+  | "pending"
+  | "overdue"
+  | "under-review"
+  | "archived"
+  | "active"
+  | "away";
 
 interface StatusBadgeProps {
   status: StatusType;

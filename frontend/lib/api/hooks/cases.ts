@@ -83,7 +83,7 @@ export function useDeleteCase() {
 
   return useMutation({
     mutationFn: async (caseId: string) => {
-      const { data, error} = await apiClient.DELETE("/cases/{caseId}", {
+      const { data, error } = await apiClient.DELETE("/cases/{caseId}", {
         params: {
           path: { caseId },
         },
@@ -314,7 +314,9 @@ export function useCompleteProcedure() {
       queryClient.invalidateQueries({
         queryKey: queryKeys.cases.procedures(variables.caseId, variables.scopeId, variables.sectionId),
       });
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.sections(variables.caseId, variables.scopeId) });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.cases.sections(variables.caseId, variables.scopeId),
+      });
       queryClient.invalidateQueries({ queryKey: queryKeys.cases.scopes(variables.caseId) });
       queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
     },

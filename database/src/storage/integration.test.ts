@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { createStorage, getStorage } from "./index.js";
 import type { Storage, StorageMetadata } from "./storage.js";
 
-void describe("Storage Integration Tests", async () => {
+describe("Storage Integration Tests", async () => {
   let testDir: string;
 
   beforeAll(async () => {
@@ -17,11 +17,10 @@ void describe("Storage Integration Tests", async () => {
     try {
       await rmdir(testDir, { recursive: true });
     } catch {
-      // Ignore cleanup errors
     }
   });
 
-  void describe("Cross-Provider Consistency", async () => {
+  describe("Cross-Provider Consistency", async () => {
     let fileSystemStorage: Storage;
 
     beforeEach(() => {
@@ -32,7 +31,7 @@ void describe("Storage Integration Tests", async () => {
       });
     });
 
-    void it("consistent file operations across providers", async () => {
+    it("consistent file operations across providers", async () => {
       const testData = Buffer.from("Consistent test data");
       const path = "consistency-test.txt";
       const metadata: StorageMetadata = {
@@ -59,7 +58,7 @@ void describe("Storage Integration Tests", async () => {
       expect(existsAfterDelete).toBe(false);
     });
 
-    void it("handles large files consistently", async () => {
+    it("handles large files consistently", async () => {
       const largeData = Buffer.alloc(1024 * 1024, "A"); // 1MB of "A"s
       const path = "large-file.bin";
 
@@ -73,7 +72,7 @@ void describe("Storage Integration Tests", async () => {
       await fileSystemStorage.deleteFile(path);
     });
 
-    void it("handles concurrent operations consistently", async () => {
+    it("handles concurrent operations consistently", async () => {
       const operations = [];
       const testData = Buffer.from("Concurrent data");
 
@@ -93,7 +92,7 @@ void describe("Storage Integration Tests", async () => {
       await Promise.all(operations);
     });
 
-    void it("maintains file integrity across operations", async () => {
+    it("maintains file integrity across operations", async () => {
       const originalData = Buffer.from("Original file content for integrity test");
       const path = "integrity-test.txt";
 
@@ -114,8 +113,8 @@ void describe("Storage Integration Tests", async () => {
     });
   });
 
-  void describe("Factory Function Integration", async () => {
-    void it("createStorage returns working storage instances", async () => {
+  describe("Factory Function Integration", async () => {
+    it("createStorage returns working storage instances", async () => {
       const configs = [
         {
           provider: "filesystem" as const,
@@ -139,7 +138,7 @@ void describe("Storage Integration Tests", async () => {
       }
     });
 
-    void it("getStorage returns appropriate storage for environment", async () => {
+    it("getStorage returns appropriate storage for environment", async () => {
       // IS_LOCAL is determined at module load time, so we test with whatever environment is active
       const storage = getStorage("env-test");
       const testData = Buffer.from("Environment test data");
@@ -155,7 +154,7 @@ void describe("Storage Integration Tests", async () => {
     });
   });
 
-  void describe("Real-World Use Cases", async () => {
+  describe("Real-World Use Cases", async () => {
     let storage: Storage;
 
     beforeEach(() => {
@@ -166,7 +165,7 @@ void describe("Storage Integration Tests", async () => {
       });
     });
 
-    void it("handles document storage workflow", async () => {
+    it("handles document storage workflow", async () => {
       const documentContent = Buffer.from("This is a test document with some content.");
       const documentPath = "documents/2024/01/user-123/document.pdf";
       const metadata: StorageMetadata = {
@@ -206,7 +205,7 @@ void describe("Storage Integration Tests", async () => {
       await storage.deleteFile(backupPath);
     });
 
-    void it("handles image processing workflow", async () => {
+    it("handles image processing workflow", async () => {
       const originalImage = Buffer.from("fake-image-data-original");
       const thumbnailImage = Buffer.from("fake-image-data-thumb");
       const originalPath = "images/uploads/2024/image-456.jpg";
@@ -253,7 +252,7 @@ void describe("Storage Integration Tests", async () => {
       await storage.deleteFile(thumbnailPath);
     });
 
-    void it("handles batch file operations", async () => {
+    it("handles batch file operations", async () => {
       const batchFiles = [];
       const batchData = Buffer.from("Batch file content");
 
@@ -288,7 +287,7 @@ void describe("Storage Integration Tests", async () => {
     });
   });
 
-  void describe("Error Recovery", async () => {
+  describe("Error Recovery", async () => {
     let storage: Storage;
 
     beforeEach(() => {
@@ -299,7 +298,7 @@ void describe("Storage Integration Tests", async () => {
       });
     });
 
-    void it("recovers from interrupted operations", async () => {
+    it("recovers from interrupted operations", async () => {
       const testData = Buffer.from("Recovery test data");
       const path = "recovery/test-file.txt";
 
@@ -314,7 +313,7 @@ void describe("Storage Integration Tests", async () => {
       await storage.deleteFile(path);
     });
 
-    void it("handles cleanup after failed operations", async () => {
+    it("handles cleanup after failed operations", async () => {
       const testData = Buffer.from("Cleanup test data");
       const validPath = "cleanup/valid-file.txt";
       const invalidPath = ""; // Invalid path
