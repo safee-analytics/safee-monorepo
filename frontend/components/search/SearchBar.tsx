@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FiSearch, FiClock, FiCommand, FiHash, FiX, FiSun, FiMoon } from "react-icons/fi";
+import { FiSearch, FiClock, FiCommand, FiHash, FiX, type IconType } from "react-icons/fi";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useAuth } from "@/lib/auth/hooks";
 import { getNavigationItems, getQuickActions, getSystemActions } from "./searchItems";
@@ -20,7 +20,7 @@ interface RecentSearch {
 interface SearchResult {
   id: string;
   type: "navigation" | "action" | "recent" | "entity";
-  icon: any;
+  icon: IconType;
   label: string;
   description?: string;
   action: () => void;
@@ -106,14 +106,14 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
 
   // Get search items from shared configuration
   const handleExport = () => {
-    console.log("Export data triggered");
+    console.warn("Export data triggered - implementation pending");
     // TODO: Implement actual export logic
   };
 
   const handleThemeToggle = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
-    console.log("Theme changed to:", newTheme);
+    console.warn("Theme changed to:", newTheme, "- implementation pending");
     // TODO: Implement actual theme switching
   };
 

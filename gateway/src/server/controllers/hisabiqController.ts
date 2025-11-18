@@ -184,6 +184,187 @@ export class HisabiqController extends Controller {
     return { success: true };
   }
 
+  @Post("invoices/{invoiceId}/refund")
+  @Security("jwt")
+  @OperationId("RefundHisabiqInvoice")
+  public async refundInvoice(
+    @Request() request: AuthenticatedRequest,
+    @Path() invoiceId: string,
+    @Body() refundRequest: { reason?: string; date?: string; journalId?: number },
+  ): Promise<{ refundId: number }> {
+    const service = await this.getAccountingService(request);
+    const refundId = await service.createRefund(Number.parseInt(invoiceId), refundRequest);
+    return { refundId };
+  }
+
+  @Get("invoices/{invoiceId}/pdf")
+  @Security("jwt")
+  @OperationId("GetHisabiqInvoicePDF")
+  public async getInvoicePDF(
+    @Request() request: AuthenticatedRequest,
+    @Path() invoiceId: string,
+  ): Promise<Buffer> {
+    const service = await this.getAccountingService(request);
+    this.setHeader("Content-Type", "application/pdf");
+    this.setHeader("Content-Disposition", `attachment; filename="invoice-${invoiceId}.pdf"`);
+    return service.getInvoicePDF(Number.parseInt(invoiceId));
+  }
+
+  // ==================== Vendor Bills ====================
+
+  @Get("bills")
+  @Security("jwt")
+  @OperationId("GetHisabiqBills")
+  public async getBills(
+    @Request() request: AuthenticatedRequest,
+    @Query() page: number = 1,
+    @Query() limit: number = 20,
+    @Query() state?: "draft" | "posted" | "cancel",
+    @Query() dateFrom?: string,
+    @Query() dateTo?: string,
+  ): Promise<{
+    bills: Invoice[];
+    total: number;
+    page: number;
+    limit: number;
+  }> {
+    const service = await this.getAccountingService(request);
+
+    const odooBills = await service.getInvoices({
+      moveType: "in_invoice",
+      state,
+      dateFrom,
+      dateTo,
+    });
+
+    const bills: Invoice[] = odooBills.map((bill) => ({
+      id: bill.id ? bill.id.toString() : "",
+      number: bill.name || "Draft",
+      type: "PURCHASE",
+      date: bill.invoice_date || "",
+      total: bill.amount_total || 0,
+      status: bill.state || "draft",
+    }));
+
+    return {
+      bills,
+      total: bills.length,
+      page,
+      limit,
+    };
+  }
+
+  @Get("bills/{billId}")
+  @Security("jwt")
+  @OperationId("GetHisabiqBill")
+  public async getBill(@Request() request: AuthenticatedRequest, @Path() billId: string): Promise<Invoice> {
+    const service = await this.getAccountingService(request);
+    const bill = await service.getInvoice(Number.parseInt(billId));
+
+    if (!bill) {
+      this.setStatus(404);
+      throw new Error("Bill not found");
+    }
+
+    return {
+      id: bill.id ? bill.id.toString() : "",
+      number: bill.name || "Draft",
+      type: "PURCHASE",
+      date: bill.invoice_date || "",
+      total: bill.amount_total || 0,
+      status: bill.state || "draft",
+    };
+  }
+
+  @Post("bills")
+  @Security("jwt")
+  @SuccessResponse("201", "Bill created successfully")
+  @OperationId("CreateHisabiqBill")
+  public async createBill(
+    @Request() request: AuthenticatedRequest,
+    @Body() billRequest: InvoiceCreateRequest,
+  ): Promise<Invoice> {
+    const service = await this.getAccountingService(request);
+
+    const supplierId = Number.parseInt(billRequest.supplierId || "0");
+
+    const billId = await service.createInvoice({
+      moveType: "in_invoice",
+      supplierId,
+      invoiceDate: billRequest.date,
+      dueDate: billRequest.dueDate,
+      lines: billRequest.items.map((item) => ({
+        description: item.description,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+      })),
+    });
+
+    const odooBill = await service.getInvoice(billId);
+
+    if (!odooBill) {
+      this.setStatus(500);
+      throw new Error("Failed to fetch created bill");
+    }
+
+    this.setStatus(201);
+    return {
+      id: odooBill.id ? odooBill.id.toString() : "",
+      number: odooBill.name || "Draft",
+      type: "PURCHASE",
+      date: odooBill.invoice_date || billRequest.date,
+      total: odooBill.amount_total || 0,
+      status: odooBill.state || "draft",
+    };
+  }
+
+  @Post("bills/{billId}/validate")
+  @Security("jwt")
+  @OperationId("ValidateHisabiqBill")
+  public async validateBill(
+    @Request() request: AuthenticatedRequest,
+    @Path() billId: string,
+  ): Promise<{ success: boolean }> {
+    const service = await this.getAccountingService(request);
+    await service.postInvoice(Number.parseInt(billId));
+    return { success: true };
+  }
+
+  @Post("bills/{billId}/cancel")
+  @Security("jwt")
+  @OperationId("CancelHisabiqBill")
+  public async cancelBill(
+    @Request() request: AuthenticatedRequest,
+    @Path() billId: string,
+  ): Promise<{ success: boolean }> {
+    const service = await this.getAccountingService(request);
+    await service.cancelInvoice(Number.parseInt(billId));
+    return { success: true };
+  }
+
+  @Post("bills/{billId}/refund")
+  @Security("jwt")
+  @OperationId("RefundHisabiqBill")
+  public async refundBill(
+    @Request() request: AuthenticatedRequest,
+    @Path() billId: string,
+    @Body() refundRequest: { reason?: string; date?: string; journalId?: number },
+  ): Promise<{ refundId: number }> {
+    const service = await this.getAccountingService(request);
+    const refundId = await service.createRefund(Number.parseInt(billId), refundRequest);
+    return { refundId };
+  }
+
+  @Get("bills/{billId}/pdf")
+  @Security("jwt")
+  @OperationId("GetHisabiqBillPDF")
+  public async getBillPDF(@Request() request: AuthenticatedRequest, @Path() billId: string): Promise<Buffer> {
+    const service = await this.getAccountingService(request);
+    this.setHeader("Content-Type", "application/pdf");
+    this.setHeader("Content-Disposition", `attachment; filename="bill-${billId}.pdf"`);
+    return service.getInvoicePDF(Number.parseInt(billId));
+  }
+
   @Get("accounts")
   @Security("jwt")
   @OperationId("GetHisabiqAccounts")
@@ -481,5 +662,298 @@ export class HisabiqController extends Controller {
       companyId: Array.isArray(e.company_id) ? e.company_id[0] : e.company_id,
       companyName: Array.isArray(e.company_id) ? e.company_id[1] : undefined,
     }));
+  }
+
+  // ==================== Payment Terms ====================
+
+  @Get("payment-terms")
+  @Security("jwt")
+  @OperationId("GetHisabiqPaymentTerms")
+  public async getPaymentTerms(
+    @Request() request: AuthenticatedRequest,
+  ): Promise<Array<{ id: number; name: string; note?: string }>> {
+    const service = await this.getAccountingService(request);
+    return service.getPaymentTerms();
+  }
+
+  // ==================== Aged Reports ====================
+
+  @Get("reports/aged-receivable")
+  @Security("jwt")
+  @OperationId("GetHisabiqAgedReceivable")
+  public async getAgedReceivable(
+    @Request() request: AuthenticatedRequest,
+    @Query() asOfDate?: string,
+  ): Promise<
+    Array<{
+      partnerId: number;
+      partnerName: string;
+      current: number;
+      days_1_30: number;
+      days_31_60: number;
+      days_61_90: number;
+      days_over_90: number;
+      total: number;
+    }>
+  > {
+    const service = await this.getAccountingService(request);
+    return service.getAgedReceivables(asOfDate);
+  }
+
+  @Get("reports/aged-payable")
+  @Security("jwt")
+  @OperationId("GetHisabiqAgedPayable")
+  public async getAgedPayable(
+    @Request() request: AuthenticatedRequest,
+    @Query() asOfDate?: string,
+  ): Promise<
+    Array<{
+      partnerId: number;
+      partnerName: string;
+      current: number;
+      days_1_30: number;
+      days_31_60: number;
+      days_61_90: number;
+      days_over_90: number;
+      total: number;
+    }>
+  > {
+    const service = await this.getAccountingService(request);
+    return service.getAgedPayables(asOfDate);
+  }
+
+  // ==================== Bank Reconciliation ====================
+
+  @Get("bank-statements")
+  @Security("jwt")
+  @OperationId("GetHisabiqBankStatements")
+  public async getBankStatements(
+    @Request() request: AuthenticatedRequest,
+    @Query() journalId?: number,
+    @Query() dateFrom?: string,
+    @Query() dateTo?: string,
+    @Query() state?: "open" | "confirm",
+  ): Promise<
+    Array<{
+      id: number;
+      name: string;
+      journalId: number;
+      journalName: string;
+      date: string;
+      balanceStart: number;
+      balanceEndReal: number;
+      balanceEnd: number;
+      state: string;
+    }>
+  > {
+    const service = await this.getAccountingService(request);
+    return service.getBankStatements({ journalId, dateFrom, dateTo, state });
+  }
+
+  @Get("bank-statements/{statementId}/lines")
+  @Security("jwt")
+  @OperationId("GetHisabiqBankStatementLines")
+  public async getBankStatementLines(
+    @Request() request: AuthenticatedRequest,
+    @Path() statementId: number,
+  ): Promise<
+    Array<{
+      id: number;
+      date: string;
+      paymentRef: string;
+      partnerName?: string;
+      amount: number;
+      isReconciled: boolean;
+    }>
+  > {
+    const service = await this.getAccountingService(request);
+    return service.getBankStatementLines(statementId);
+  }
+
+  @Get("bank-statements/lines/{lineId}/suggestions")
+  @Security("jwt")
+  @OperationId("GetHisabiqReconciliationSuggestions")
+  public async getReconciliationSuggestions(
+    @Request() request: AuthenticatedRequest,
+    @Path() lineId: number,
+  ): Promise<
+    Array<{
+      moveId: number;
+      moveName: string;
+      partnerName: string;
+      date: string;
+      amount: number;
+    }>
+  > {
+    const service = await this.getAccountingService(request);
+    return service.getReconciliationSuggestions(lineId);
+  }
+
+  @Post("bank-statements/lines/{lineId}/reconcile")
+  @Security("jwt")
+  @OperationId("ReconcileBankStatementLine")
+  public async reconcileBankStatementLine(
+    @Request() request: AuthenticatedRequest,
+    @Path() lineId: number,
+    @Body() body: { moveIds: number[] },
+  ): Promise<{ success: boolean; message?: string }> {
+    const service = await this.getAccountingService(request);
+    return service.reconcileBankStatementLine(lineId, body.moveIds);
+  }
+
+  // ==================== Multi-Currency ====================
+
+  @Get("currencies")
+  @Security("jwt")
+  @OperationId("GetHisabiqCurrencies")
+  public async getCurrencies(
+    @Request() request: AuthenticatedRequest,
+    @Query() onlyActive: boolean = true,
+  ): Promise<
+    Array<{
+      id: number;
+      name: string;
+      symbol: string;
+      position: "after" | "before";
+      rounding: number;
+      active: boolean;
+    }>
+  > {
+    const service = await this.getAccountingService(request);
+    return service.getCurrencies(onlyActive);
+  }
+
+  @Get("currency-rates")
+  @Security("jwt")
+  @OperationId("GetHisabiqCurrencyRates")
+  public async getCurrencyRates(
+    @Request() request: AuthenticatedRequest,
+    @Query() currencyId?: number,
+    @Query() dateFrom?: string,
+    @Query() dateTo?: string,
+  ): Promise<
+    Array<{
+      id: number;
+      currencyId: number;
+      currencyName: string;
+      name: string;
+      rate: number;
+      companyId: number;
+    }>
+  > {
+    const service = await this.getAccountingService(request);
+    return service.getCurrencyRates(currencyId, dateFrom, dateTo);
+  }
+
+  @Post("currency-convert")
+  @Security("jwt")
+  @OperationId("ConvertCurrency")
+  public async convertCurrency(
+    @Request() request: AuthenticatedRequest,
+    @Body() body: { amount: number; fromCurrencyId: number; toCurrencyId: number; date?: string },
+  ): Promise<{ convertedAmount: number; rate: number }> {
+    const service = await this.getAccountingService(request);
+    return service.convertCurrency(body.amount, body.fromCurrencyId, body.toCurrencyId, body.date);
+  }
+
+  // ==================== Batch Operations ====================
+
+  @Post("invoices/batch-validate")
+  @Security("jwt")
+  @OperationId("BatchValidateInvoices")
+  public async batchValidateInvoices(
+    @Request() request: AuthenticatedRequest,
+    @Body() body: { invoiceIds: number[] },
+  ): Promise<{
+    success: number[];
+    failed: Array<{ id: number; error: string }>;
+  }> {
+    const service = await this.getAccountingService(request);
+    return service.batchValidateInvoices(body.invoiceIds);
+  }
+
+  @Post("invoices/batch-cancel")
+  @Security("jwt")
+  @OperationId("BatchCancelInvoices")
+  public async batchCancelInvoices(
+    @Request() request: AuthenticatedRequest,
+    @Body() body: { invoiceIds: number[] },
+  ): Promise<{
+    success: number[];
+    failed: Array<{ id: number; error: string }>;
+  }> {
+    const service = await this.getAccountingService(request);
+    return service.batchCancelInvoices(body.invoiceIds);
+  }
+
+  @Post("invoices/batch-create")
+  @Security("jwt")
+  @SuccessResponse("201", "Invoices created")
+  @OperationId("BatchCreateInvoices")
+  public async batchCreateInvoices(
+    @Request() request: AuthenticatedRequest,
+    @Body() body: { invoices: InvoiceCreateRequest[] },
+  ): Promise<{
+    success: Array<{ index: number; id: number }>;
+    failed: Array<{ index: number; error: string }>;
+  }> {
+    const service = await this.getAccountingService(request);
+
+    const dtos = body.invoices.map((inv) => ({
+      moveType: inv.type === "SALES" ? ("out_invoice" as const) : ("in_invoice" as const),
+      customerId: inv.type === "SALES" ? Number.parseInt(inv.customerId || "0") : undefined,
+      supplierId: inv.type === "PURCHASE" ? Number.parseInt(inv.supplierId || "0") : undefined,
+      invoiceDate: inv.date,
+      dueDate: inv.dueDate,
+      lines: inv.items.map((item) => ({
+        description: item.description,
+        quantity: item.quantity,
+        unitPrice: item.unitPrice,
+      })),
+    }));
+
+    this.setStatus(201);
+    return service.batchCreateInvoices(dtos);
+  }
+
+  @Post("payments/batch-create")
+  @Security("jwt")
+  @SuccessResponse("201", "Payments created")
+  @OperationId("BatchCreatePayments")
+  public async batchCreatePayments(
+    @Request() request: AuthenticatedRequest,
+    @Body()
+    body: {
+      payments: Array<{
+        type: "inbound" | "outbound";
+        partnerId: number;
+        partnerType: "customer" | "supplier";
+        amount: number;
+        date: string;
+        journalId: number;
+        reference?: string;
+      }>;
+    },
+  ): Promise<{
+    success: Array<{ index: number; id: number }>;
+    failed: Array<{ index: number; error: string }>;
+  }> {
+    const service = await this.getAccountingService(request);
+    this.setStatus(201);
+    return service.batchCreatePayments(body.payments);
+  }
+
+  @Post("payments/batch-confirm")
+  @Security("jwt")
+  @OperationId("BatchConfirmPayments")
+  public async batchConfirmPayments(
+    @Request() request: AuthenticatedRequest,
+    @Body() body: { paymentIds: number[] },
+  ): Promise<{
+    success: number[];
+    failed: Array<{ id: number; error: string }>;
+  }> {
+    const service = await this.getAccountingService(request);
+    return service.batchConfirmPayments(body.paymentIds);
   }
 }

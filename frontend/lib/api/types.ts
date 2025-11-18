@@ -687,6 +687,134 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/hisabiq/invoices/{invoiceId}/refund": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["RefundHisabiqInvoice"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices/{invoiceId}/pdf": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqInvoicePDF"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bills": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqBills"];
+    put?: never;
+    post: operations["CreateHisabiqBill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bills/{billId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqBill"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bills/{billId}/validate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ValidateHisabiqBill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bills/{billId}/cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["CancelHisabiqBill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bills/{billId}/refund": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["RefundHisabiqBill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bills/{billId}/pdf": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqBillPDF"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/hisabiq/accounts": {
     parameters: {
       query?: never;
@@ -857,6 +985,246 @@ export interface paths {
     get: operations["GetHisabiqGeneralLedger"];
     put?: never;
     post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/payment-terms": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqPaymentTerms"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/reports/aged-receivable": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqAgedReceivable"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/reports/aged-payable": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqAgedPayable"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bank-statements": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqBankStatements"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bank-statements/{statementId}/lines": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqBankStatementLines"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bank-statements/lines/{lineId}/suggestions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqReconciliationSuggestions"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bank-statements/lines/{lineId}/reconcile": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ReconcileBankStatementLine"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/currencies": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqCurrencies"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/currency-rates": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqCurrencyRates"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/currency-convert": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ConvertCurrency"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices/batch-validate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchValidateInvoices"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices/batch-cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchCancelInvoices"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices/batch-create": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchCreateInvoices"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/payments/batch-create": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchCreatePayments"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/payments/batch-confirm": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchConfirmPayments"];
     delete?: never;
     options?: never;
     head?: never;
@@ -3984,6 +4352,246 @@ export interface operations {
       };
     };
   };
+  RefundHisabiqInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** Format: double */
+          journalId?: number;
+          date?: string;
+          reason?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            refundId: number;
+          };
+        };
+      };
+    };
+  };
+  GetHisabiqInvoicePDF: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": string;
+        };
+      };
+    };
+  };
+  GetHisabiqBills: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        state?: "draft" | "posted" | "cancel";
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            limit: number;
+            /** Format: double */
+            page: number;
+            /** Format: double */
+            total: number;
+            bills: components["schemas"]["Invoice"][];
+          };
+        };
+      };
+    };
+  };
+  CreateHisabiqBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["InvoiceCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Bill created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Invoice"];
+        };
+      };
+    };
+  };
+  GetHisabiqBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Invoice"];
+        };
+      };
+    };
+  };
+  ValidateHisabiqBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  CancelHisabiqBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  RefundHisabiqBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** Format: double */
+          journalId?: number;
+          date?: string;
+          reason?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            refundId: number;
+          };
+        };
+      };
+    };
+  };
+  GetHisabiqBillPDF: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": string;
+        };
+      };
+    };
+  };
   GetHisabiqAccounts: {
     parameters: {
       query?: {
@@ -4274,6 +4882,531 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["GLEntryResponse"][];
+        };
+      };
+    };
+  };
+  GetHisabiqPaymentTerms: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            note?: string;
+            name: string;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqAgedReceivable: {
+    parameters: {
+      query?: {
+        asOfDate?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            total: number;
+            /** Format: double */
+            days_over_90: number;
+            /** Format: double */
+            days_61_90: number;
+            /** Format: double */
+            days_31_60: number;
+            /** Format: double */
+            days_1_30: number;
+            /** Format: double */
+            current: number;
+            partnerName: string;
+            /** Format: double */
+            partnerId: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqAgedPayable: {
+    parameters: {
+      query?: {
+        asOfDate?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            total: number;
+            /** Format: double */
+            days_over_90: number;
+            /** Format: double */
+            days_61_90: number;
+            /** Format: double */
+            days_31_60: number;
+            /** Format: double */
+            days_1_30: number;
+            /** Format: double */
+            current: number;
+            partnerName: string;
+            /** Format: double */
+            partnerId: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqBankStatements: {
+    parameters: {
+      query?: {
+        journalId?: number;
+        dateFrom?: string;
+        dateTo?: string;
+        state?: "open" | "confirm";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            state: string;
+            /** Format: double */
+            balanceEnd: number;
+            /** Format: double */
+            balanceEndReal: number;
+            /** Format: double */
+            balanceStart: number;
+            date: string;
+            journalName: string;
+            /** Format: double */
+            journalId: number;
+            name: string;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqBankStatementLines: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        statementId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            isReconciled: boolean;
+            /** Format: double */
+            amount: number;
+            partnerName?: string;
+            paymentRef: string;
+            date: string;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqReconciliationSuggestions: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        lineId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            amount: number;
+            date: string;
+            partnerName: string;
+            moveName: string;
+            /** Format: double */
+            moveId: number;
+          }[];
+        };
+      };
+    };
+  };
+  ReconcileBankStatementLine: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        lineId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          moveIds: number[];
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message?: string;
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  GetHisabiqCurrencies: {
+    parameters: {
+      query?: {
+        onlyActive?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            active: boolean;
+            /** Format: double */
+            rounding: number;
+            /** @enum {string} */
+            position: "after" | "before";
+            symbol: string;
+            name: string;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqCurrencyRates: {
+    parameters: {
+      query?: {
+        currencyId?: number;
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            companyId: number;
+            /** Format: double */
+            rate: number;
+            name: string;
+            currencyName: string;
+            /** Format: double */
+            currencyId: number;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  ConvertCurrency: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          date?: string;
+          /** Format: double */
+          toCurrencyId: number;
+          /** Format: double */
+          fromCurrencyId: number;
+          /** Format: double */
+          amount: number;
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            rate: number;
+            /** Format: double */
+            convertedAmount: number;
+          };
+        };
+      };
+    };
+  };
+  BatchValidateInvoices: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          invoiceIds: number[];
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              id: number;
+            }[];
+            success: number[];
+          };
+        };
+      };
+    };
+  };
+  BatchCancelInvoices: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          invoiceIds: number[];
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              id: number;
+            }[];
+            success: number[];
+          };
+        };
+      };
+    };
+  };
+  BatchCreateInvoices: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          invoices: components["schemas"]["InvoiceCreateRequest"][];
+        };
+      };
+    };
+    responses: {
+      /** @description Invoices created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              index: number;
+            }[];
+            success: {
+              /** Format: double */
+              id: number;
+              /** Format: double */
+              index: number;
+            }[];
+          };
+        };
+      };
+    };
+  };
+  BatchCreatePayments: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          payments: {
+            reference?: string;
+            /** Format: double */
+            journalId: number;
+            date: string;
+            /** Format: double */
+            amount: number;
+            /** @enum {string} */
+            partnerType: "customer" | "supplier";
+            /** Format: double */
+            partnerId: number;
+            /** @enum {string} */
+            type: "inbound" | "outbound";
+          }[];
+        };
+      };
+    };
+    responses: {
+      /** @description Payments created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              index: number;
+            }[];
+            success: {
+              /** Format: double */
+              id: number;
+              /** Format: double */
+              index: number;
+            }[];
+          };
+        };
+      };
+    };
+  };
+  BatchConfirmPayments: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          paymentIds: number[];
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              id: number;
+            }[];
+            success: number[];
+          };
         };
       };
     };

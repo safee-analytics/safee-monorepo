@@ -1,8 +1,7 @@
-import { StatusBadge } from "@/components/audit/ui/StatusBadge";
-import { PriorityBadge } from "@/components/audit/ui/PriorityBadge";
 import { CaseStatus, CasePriority } from "@/types/audit";
 import { InlineStatus, InlinePriority, InlineAssignee, InlineDueDate } from "./InlineEditFields";
 import { useRouter } from "next/navigation";
+import { InlineCreateRow } from "@safee/ui";
 
 export interface CaseRow {
   id: string;
@@ -31,6 +30,7 @@ interface CaseTableProps {
   availableUsers?: { id: string; name: string }[];
   onUpdate?: () => void;
   onCaseClick?: (caseId: string) => void;
+  onCreateCase?: (title: string) => void | Promise<void>;
 }
 
 export function CaseTable({
@@ -41,6 +41,7 @@ export function CaseTable({
   availableUsers = [],
   onUpdate,
   onCaseClick,
+  onCreateCase,
 }: CaseTableProps) {
   const router = useRouter();
 
@@ -162,6 +163,16 @@ export function CaseTable({
                 </td>
               </tr>
             ))}
+
+            {/* Inline Create Row - Jira style quick add */}
+            {onCreateCase && (
+              <InlineCreateRow
+                onSubmit={onCreateCase}
+                placeholder="Type case title and press Enter..."
+                buttonText="Add new case"
+                columns={8}
+              />
+            )}
           </tbody>
         </table>
       </div>

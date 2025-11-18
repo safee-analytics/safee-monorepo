@@ -10,14 +10,25 @@ export interface FilterToken {
   avatarId?: string; // For assignee filters
 }
 
+export interface AssigneeFilterToken extends FilterToken {
+  type: "assignee";
+  avatarId: string;
+}
+
+// Type guard for assignee filters
+function isAssigneeFilter(filter: FilterToken): filter is AssigneeFilterToken {
+  return filter.type === "assignee" && !!filter.avatarId;
+}
+
 interface CaseFiltersProps {
+  filters?: FilterToken[];
   onFiltersChange: (filters: FilterToken[]) => void;
   availableAssignees?: Array<{ id: string; name: string }>;
 }
 
-export function CaseFilters({ onFiltersChange, availableAssignees = [] }: CaseFiltersProps) {
+export function CaseFilters({ filters: externalFilters = [], onFiltersChange, availableAssignees = [] }: CaseFiltersProps) {
   const [searchText, setSearchText] = useState("");
-  const [filters, setFilters] = useState<FilterToken[]>([]);
+  const [filters, setFilters] = useState<FilterToken[]>(externalFilters);
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const [showPriorityMenu, setShowPriorityMenu] = useState(false);
   const [showAssigneeMenu, setShowAssigneeMenu] = useState(false);
@@ -27,6 +38,18 @@ export function CaseFilters({ onFiltersChange, availableAssignees = [] }: CaseFi
   const statusMenuRef = useRef<HTMLDivElement>(null);
   const priorityMenuRef = useRef<HTMLDivElement>(null);
   const assigneeMenuRef = useRef<HTMLDivElement>(null);
+
+  // Sync internal state with external filters prop
+  useEffect(() => {
+    setFilters(externalFilters);
+    // Update search text if there's a text filter
+    const textFilter = externalFilters.find((f) => f.type === "text");
+    if (textFilter) {
+      setSearchText(textFilter.value);
+    } else {
+      setSearchText("");
+    }
+  }, [externalFilters]);
 
   // Close menus when clicking outside
   useEffect(() => {
@@ -70,7 +93,7 @@ export function CaseFilters({ onFiltersChange, availableAssignees = [] }: CaseFi
     };
   }, []);
 
-  const statusOptions = [
+  const statusOptions: Array<{ value: CaseStatus; label: string; color: string }> = [
     { value: "pending", label: "Pending", color: "bg-gray-100 text-gray-700" },
     { value: "in-progress", label: "In Progress", color: "bg-blue-100 text-blue-700" },
     { value: "under-review", label: "Under Review", color: "bg-yellow-100 text-yellow-700" },
@@ -79,7 +102,7 @@ export function CaseFilters({ onFiltersChange, availableAssignees = [] }: CaseFi
     { value: "archived", label: "Archived", color: "bg-gray-100 text-gray-500" },
   ];
 
-  const priorityOptions = [
+  const priorityOptions: Array<{ value: CasePriority; label: string; icon: string }> = [
     { value: "critical", label: "Critical", icon: "🔴" },
     { value: "high", label: "High", icon: "🟠" },
     { value: "medium", label: "Medium", icon: "🟡" },
@@ -91,10 +114,12 @@ export function CaseFilters({ onFiltersChange, availableAssignees = [] }: CaseFi
     const exists = filters.some((f) => f.type === type && f.value === value);
     if (exists) return;
 
-    const newFilter: FilterToken = { type, value, display };
+    let newFilter: FilterToken;
     // Store avatar ID for assignee filters
     if (type === "assignee" && avatarId) {
-      (newFilter as any).avatarId = avatarId;
+      newFilter = { type, value, display, avatarId };
+    } else {
+      newFilter = { type, value, display };
     }
 
     const newFilters = [...filters, newFilter];
@@ -542,7 +567,7 @@ export function CaseFilters({ onFiltersChange, availableAssignees = [] }: CaseFi
               key={index}
               className={`inline-flex items-center gap-1.5 px-2 py-1 rounded border text-xs font-medium ${getFilterColor(filter.type)}`}
             >
-              {filter.type === "assignee" && filter.avatarId && (
+              {isAssigneeFilter(filter) && (
                 <img
                   src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${filter.avatarId}`}
                   alt={filter.display}

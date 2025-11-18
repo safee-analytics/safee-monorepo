@@ -1,6 +1,6 @@
 import type { InferSelectModel } from "drizzle-orm";
 import type { DrizzleClient } from "../index.js";
-import { organizations, users, members, jobs } from "../drizzle/index.js";
+import { organizations, users, members, jobs, jobSchedules } from "../drizzle/index.js";
 import { approvalWorkflows } from "../drizzle/approvalWorkflows.js";
 import { approvalWorkflowSteps } from "../drizzle/approvalWorkflowSteps.js";
 import { approvalRules } from "../drizzle/approvalRules.js";
@@ -230,6 +230,7 @@ export async function nukeDatabase(db: DrizzleClient): Promise<void> {
   await db.delete(oauthAccounts);
   await db.delete(sessions);
   await db.delete(jobs);
+  await db.delete(jobSchedules);
   await db.delete(members);
   await db.delete(users);
   await db.delete(organizations);

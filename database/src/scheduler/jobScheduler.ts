@@ -129,6 +129,7 @@ export class JobScheduler {
   }
 
   async queueJob(jobId: string): Promise<void> {
+    this.assertValidJobId(jobId);
     logger.debug({ jobId }, "Queueing job for execution");
 
     await this.pubsub.publish(this.topics.jobQueue, JSON.stringify({ jobId }));
@@ -193,6 +194,7 @@ export class JobScheduler {
 
       try {
         const { jobId } = JSON.parse(message.data.toString()) as { jobId: string };
+        this.assertValidJobId(jobId);
         await this.processJob(deps, jobId);
       } catch (err) {
         logger.error({ error: err, messageId: message.id }, "Error processing job queue message");
@@ -260,4 +262,14 @@ export class JobScheduler {
     const tempJob = new CronJob(cronExpression, () => {}, null, false, timezone);
     return tempJob.nextDate().toJSDate();
   }
+
+  private assertValidJobId(jobId: string): void {
+    if (!uuidRegex.test(jobId)) {
+      const error = new Error(`Invalid job ID format: ${jobId}`);
+      logger.error({ jobId, err: error }, "Invalid job ID format");
+      throw error;
+    }
+  }
 }
+
+const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;

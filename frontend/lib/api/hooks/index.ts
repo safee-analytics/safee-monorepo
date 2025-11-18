@@ -22,3 +22,6 @@ export * from "./cases";
 
 // Re-export workflow and approval hooks
 export * from "./workflows";
+
+// Re-export accounting hooks
+export * from "./accounting";

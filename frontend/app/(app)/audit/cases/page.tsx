@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useMemo, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
-import { useCases } from "@/lib/api/hooks";
+import { useSearchParams, useRouter } from "next/navigation";
+import { useCases, useCreateCase } from "@/lib/api/hooks";
 import { CaseStats } from "@/components/audit/cases/CaseStats";
 import { CaseFilters, type FilterToken } from "@/components/audit/cases/CaseFilters";
 import { CaseTable, type CaseRow } from "@/components/audit/cases/CaseTable";
@@ -11,9 +11,11 @@ import { CaseKanban } from "@/components/audit/cases/CaseKanban";
 import { CreateCaseModal } from "@/components/audit/cases/CreateCaseModal";
 import { CasePreviewDrawer } from "@/components/audit/cases/CasePreviewDrawer";
 import { CaseStatusSchema, CasePrioritySchema } from "@/lib/api/schemas";
+import { useToast } from "@safee/ui";
 
 export default function CaseManagement() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [selectedCases, setSelectedCases] = useState<string[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [filters, setFilters] = useState<FilterToken[]>([]);
@@ -30,12 +32,58 @@ export default function CaseManagement() {
     } else if (statusParam === "under-review") {
       // Add filter token for under-review since it's not a tab
       setFilters([{ type: "status", value: "under-review", display: "Under Review" }]);
+    } else {
+      setActiveStatusTab("all");
     }
   }, [searchParams]);
 
-  const { data: apiCases, isLoading, refetch } = useCases();
+  // Build API filters from URL and filter tokens
+  const apiFilters = useMemo(() => {
+    const result: { status?: string; priority?: string; assignedTo?: string } = {};
+
+    // Get status from URL
+    const statusParam = searchParams.get("status");
+    if (statusParam) {
+      result.status = statusParam;
+    }
+
+    // Add filters from filter tokens (can override URL params)
+    filters.forEach((filter) => {
+      if (filter.type === "status") {
+        result.status = filter.value;
+      } else if (filter.type === "priority") {
+        result.priority = filter.value;
+      } else if (filter.type === "assignee") {
+        result.assignedTo = filter.value;
+      }
+    });
+
+    return Object.keys(result).length > 0 ? result : undefined;
+  }, [searchParams, filters]);
+
+  const { data: apiCases, isLoading, refetch } = useCases(apiFilters);
+  const createCaseMutation = useCreateCase();
+  const toast = useToast();
+
+  const handleQuickCreate = async (title: string) => {
+    try {
+      await createCaseMutation.mutateAsync({
+        clientName: title,
+        auditType: "Financial Audit",
+        status: "pending",
+        priority: "medium",
+        dueDate: undefined,
+      });
+      toast.success("Case created successfully!");
+      refetch();
+    } catch (error) {
+      toast.error("Failed to create case");
+      console.error("Failed to create case:", error);
+    }
+  };
 
   const { cases, stats, availableAssignees } = useMemo(() => {
+    // Map API cases to table rows
     let mappedCases: CaseRow[] = (apiCases ?? []).map((caseData) => {
       // Get the lead assignee from assignments (prefer lead role, fallback to any assignee)
       const leadAssignment = caseData.assignments?.find((a) => a.role === "lead");
@@ -72,6 +120,7 @@ export default function CaseManagement() {
       };
     });
 
+    // Extract unique assignees for filter dropdown
     const assigneeMap = new Map<string, string>();
     apiCases?.forEach((caseData) => {
       caseData.assignments?.forEach((assignment) => {
@@ -82,28 +131,9 @@ export default function CaseManagement() {
     });
     const uniqueAssignees = Array.from(assigneeMap.entries()).map(([id, name]) => ({ id, name }));
 
-    if (activeStatusTab === "active") {
-      mappedCases = mappedCases.filter((c) => c.status === "in-progress");
-    } else if (activeStatusTab === "completed") {
-      mappedCases = mappedCases.filter((c) => c.status === "completed");
-    }
-
+    // Apply client-side filters only for non-API filters (like text search)
     filters.forEach((filter) => {
-      if (filter.type === "status") {
-        const validStatus = CaseStatusSchema.safeParse(filter.value);
-        if (validStatus.success) {
-          mappedCases = mappedCases.filter((c) => c.status === validStatus.data);
-        }
-      } else if (filter.type === "priority") {
-        const validPriority = CasePrioritySchema.safeParse(filter.value);
-        if (validPriority.success) {
-          mappedCases = mappedCases.filter((c) => c.priority === validPriority.data);
-        }
-      } else if (filter.type === "assignee") {
-        mappedCases = mappedCases.filter((c) =>
-          c.assignee.name.toLowerCase().includes(filter.value.toLowerCase()),
-        );
-      } else if (filter.type === "text") {
+      if (filter.type === "text") {
         const searchText = filter.value.toLowerCase();
         mappedCases = mappedCases.filter(
           (c) =>
@@ -115,6 +145,7 @@ export default function CaseManagement() {
       }
     });
 
+    // Calculate stats from all cases (not filtered)
     const calculatedStats = {
       totalCases: (apiCases ?? []).length,
       activeCases: (apiCases ?? []).filter((c) => c.status === "in-progress").length,
@@ -123,7 +154,7 @@ export default function CaseManagement() {
     };
 
     return { cases: mappedCases, stats: calculatedStats, availableAssignees: uniqueAssignees };
-  }, [apiCases, filters, activeStatusTab]);
+  }, [apiCases, filters]);
 
   const toggleCaseSelection = (caseId: string) => {
     setSelectedCases((prev) =>
@@ -167,7 +198,10 @@ export default function CaseManagement() {
 
         <div className="mb-6 flex items-center gap-4">
           <button
-            onClick={() => setActiveStatusTab("all")}
+            onClick={() => {
+              setActiveStatusTab("all");
+              router.push("/audit/cases");
+            }}
             className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
               activeStatusTab === "all" ? "bg-white text-blue-600 shadow-sm" : "text-gray-700 hover:bg-white"
             }`}
@@ -175,7 +209,10 @@ export default function CaseManagement() {
             All Cases
           </button>
           <button
-            onClick={() => setActiveStatusTab("active")}
+            onClick={() => {
+              setActiveStatusTab("active");
+              router.push("/audit/cases?status=in-progress");
+            }}
             className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
               activeStatusTab === "active"
                 ? "bg-white text-blue-600 shadow-sm"
@@ -185,7 +222,10 @@ export default function CaseManagement() {
             Active
           </button>
           <button
-            onClick={() => setActiveStatusTab("completed")}
+            onClick={() => {
+              setActiveStatusTab("completed");
+              router.push("/audit/cases?status=completed");
+            }}
             className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
               activeStatusTab === "completed"
                 ? "bg-white text-blue-600 shadow-sm"
@@ -211,7 +251,7 @@ export default function CaseManagement() {
               overdueCases={stats.overdueCases}
             />
 
-            <CaseFilters onFiltersChange={setFilters} availableAssignees={availableAssignees} />
+            <CaseFilters filters={filters} onFiltersChange={setFilters} availableAssignees={availableAssignees} />
 
             <div className="mb-4 flex items-center justify-end">
               <div className="flex items-center bg-white rounded-lg border border-gray-300 p-1 gap-1">
@@ -292,6 +332,7 @@ export default function CaseManagement() {
                     availableUsers={availableAssignees}
                     onUpdate={refetch}
                     onCaseClick={handleCaseClick}
+                    onCreateCase={handleQuickCreate}
                   />
                 )}
                 {viewMode === "grid" && (

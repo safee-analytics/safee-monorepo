@@ -1,9 +1,13 @@
 /**
  * Zod schemas for API validation
- * Uses enum values from the database package for type safety
+ * Note: These enums are duplicated from the database package to avoid importing server-side code
+ * Keep in sync with database/src/drizzle/_common.ts
  */
 import { z } from "zod";
-import { CASE_STATUSES, CASE_PRIORITIES } from "@safee/database";
+
+// Case enum values - synced with database package
+const CASE_STATUSES = ["new", "in-progress", "pending", "completed", "overdue", "archived"] as const;
+const CASE_PRIORITIES = ["low", "medium", "high", "critical"] as const;
 
 // Case validation schemas
 export const CaseStatusSchema = z.enum(CASE_STATUSES);

@@ -36,7 +36,10 @@ export function ActivityItem({
       <div className="flex-1 min-w-0">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <p className="text-sm font-medium text-gray-900">{userName}</p>
+            <p className="text-sm">
+              <span className="font-medium text-gray-900">{userName}</span>
+              <span className="text-gray-600"> {action}</span>
+            </p>
             <p className="text-xs text-gray-600">{description}</p>
             <p className="text-xs text-gray-500 mt-1">{timestamp}</p>
           </div>

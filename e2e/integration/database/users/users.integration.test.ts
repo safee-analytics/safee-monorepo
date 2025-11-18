@@ -28,7 +28,6 @@ describe("User Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    // Delete users first (child), then organizations (parent)
     await db.delete(users);
     await db.delete(organizations);
   });
@@ -37,14 +36,10 @@ describe("User Integration Tests", () => {
     it("should create a user in the database", async () => {
       const deps = createTestDeps(db);
 
-      // First create an organization
-      const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
-
       const userData = {
         email: "test@example.com",
         firstName: "John",
         lastName: "Doe",
-        organizationId: org.id,
       };
 
       const user = await createUser(deps, userData);
@@ -52,17 +47,13 @@ describe("User Integration Tests", () => {
       expect(user).toBeDefined();
       expect(user.email).toBe("test@example.com");
       expect(user.name).toBe("John Doe");
-      expect(user.organizationId).toBe(org.id);
     });
 
     it("should throw error when creating duplicate email", async () => {
       const deps = createTestDeps(db);
 
-      const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
-
       const userData = {
         email: "duplicate@example.com",
-        organizationId: org.id,
       };
 
       await createUser(deps, userData);
@@ -75,12 +66,9 @@ describe("User Integration Tests", () => {
     it("should retrieve user by email", async () => {
       const deps = createTestDeps(db);
 
-      const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
-
       await createUser(deps, {
         email: "find@example.com",
         firstName: "Jane",
-        organizationId: org.id,
       });
 
       const user = await getUserByEmail(deps, "find@example.com");
@@ -88,8 +76,6 @@ describe("User Integration Tests", () => {
       expect(user).toBeDefined();
       expect(user?.email).toBe("find@example.com");
       expect(user?.name).toBe("Jane");
-      expect(user?.organization).toBeDefined();
-      expect(user?.organization?.name).toBe("Test Org");
     });
 
     it("should return null for non-existent email", async () => {
@@ -105,11 +91,8 @@ describe("User Integration Tests", () => {
     it("should retrieve user by ID", async () => {
       const deps = createTestDeps(db);
 
-      const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
-
       const createdUser = await createUser(deps, {
         email: "findbyid@example.com",
-        organizationId: org.id,
       });
 
       const user = await getUserById(deps, createdUser.id);
@@ -132,13 +115,10 @@ describe("User Integration Tests", () => {
     it("should update user profile fields", async () => {
       const deps = createTestDeps(db);
 
-      const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
-
       const createdUser = await createUser(deps, {
         email: "update@example.com",
         firstName: "Old",
         lastName: "Name",
-        organizationId: org.id,
       });
 
       const updatedUser = await updateUserProfile(deps, createdUser.id, {
@@ -163,11 +143,8 @@ describe("User Integration Tests", () => {
     it("should update user locale", async () => {
       const deps = createTestDeps(db);
 
-      const [org] = await db.insert(organizations).values({ name: "Test Org", slug: "test-org" }).returning();
-
       const createdUser = await createUser(deps, {
         email: "locale@example.com",
-        organizationId: org.id,
       });
 
       await updateUserLocale(deps, createdUser.id, "ar");

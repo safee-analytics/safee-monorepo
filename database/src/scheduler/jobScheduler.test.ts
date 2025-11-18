@@ -10,6 +10,7 @@ import { InMemoryPubSub } from "../pubsub/inMemoryPubSub.js";
 import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
 import { eq } from "../index.js";
+import { randomUUID } from "node:crypto";
 
 describe("Job Scheduler", async () => {
   let drizzle: DrizzleClient;
@@ -167,13 +168,20 @@ describe("Job Scheduler", async () => {
         queuedMessage = parsed;
       });
 
-      await scheduler.queueJob("test-job-id");
+      const jobId = randomUUID();
+      await scheduler.queueJob(jobId);
 
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       expect(queuedMessage, "Message should have been queued").toBeTruthy();
-      expect(queuedMessage!.jobId).toBe("test-job-id");
+      expect(queuedMessage!.jobId).toBe(jobId);
 
+      await scheduler.stop();
+    });
+
+    it("rejects non-UUID job IDs", async () => {
+      await scheduler.start(deps);
+      await expect(scheduler.queueJob("not-a-valid-id")).rejects.toThrow(/Invalid job ID/);
       await scheduler.stop();
     });
   });
@@ -224,7 +232,7 @@ describe("Job Scheduler", async () => {
     it("handles job processing failure", async () => {
       await scheduler.start(deps);
 
-      const invalidJobId = "invalid-job-id";
+      const invalidJobId = randomUUID();
       await scheduler.queueJob(invalidJobId);
 
       await new Promise((resolve) => setTimeout(resolve, 200));

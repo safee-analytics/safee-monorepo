@@ -58,4 +58,28 @@ async function waitForServices() {
       await new Promise((resolve) => setTimeout(resolve, retryDelay));
     }
   }
+
+  // Wait for Odoo (only required for e2e tests, not integration tests)
+  // Skip Odoo check unless explicitly required via REQUIRE_ODOO env var
+  if (process.env.REQUIRE_ODOO === "true") {
+    const odooHealthUrl = new URL("/web/health", process.env.ODOO_URL || "http://localhost:8069").toString();
+
+    for (let i = 0; i < maxRetries; i++) {
+      try {
+        const response = await fetch(odooHealthUrl);
+        if (response.ok) {
+          console.log("✅ Odoo is ready");
+          break;
+        }
+        throw new Error(`Unexpected status ${response.status}`);
+      } catch (error) {
+        if (i === maxRetries - 1) {
+          throw new Error(`Odoo not ready after ${maxRetries} attempts: ${error}`);
+        }
+        await new Promise((resolve) => setTimeout(resolve, retryDelay));
+      }
+    }
+  } else {
+    console.log("⏭️  Skipping Odoo check (not required for integration tests)");
+  }
 }

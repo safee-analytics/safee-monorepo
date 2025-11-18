@@ -39,9 +39,7 @@ export function useUpdateUserProfile() {
     mutationFn: async (
       profile: paths["/users/me"]["patch"]["requestBody"]["content"]["application/json"],
     ) => {
-      const { data, error } = await apiClient.PATCH("/users/me", {
-        body: profile,
-      });
+      const { data, error } = await updateUserProfile(profile);
       if (error) throw new Error(handleApiError(error));
       return data;
     },

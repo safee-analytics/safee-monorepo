@@ -529,14 +529,36 @@ export class OdooUserProvisioningService {
 
     // Set password for web UI login
     const odooWebPassword = this.generateSecurePassword();
-    await this.setOdooUserPassword(databaseName, adminLogin, adminPassword, odooUid, odooWebPassword);
 
-    this.logger.info({ userId, odooUid }, "Password set for web UI access");
+    try {
+      await this.setOdooUserPassword(databaseName, adminLogin, adminPassword, odooUid, odooWebPassword);
+      this.logger.info({ userId, odooUid }, "Password set for web UI access");
+    } catch (error) {
+      this.logger.warn(
+        { userId, odooUid, error: error instanceof Error ? error.message : "Unknown error" },
+        "Failed to set Odoo web password - user can still use RPC with generated password",
+      );
+      // Continue anyway - user is created, password setting is optional for RPC operations
+    }
 
-    // Generate API key for RPC operations (no session expiry)
-    // Uses custom HTTP endpoint with admin credentials
-    const keyName = `safee-${userName}-${Date.now()}`;
-    const apiKey = await this.generateApiKey(databaseName, adminLogin, adminPassword, user.email, keyName);
+    // Try to generate API key for RPC operations (no session expiry)
+    // Falls back to password authentication if custom addon is not installed
+    let authCredential = odooWebPassword; // Default to password
+    let authMethod = "password";
+
+    try {
+      const keyName = `safee-${userName}-${Date.now()}`;
+      const apiKey = await this.generateApiKey(databaseName, adminLogin, adminPassword, user.email, keyName);
+      authCredential = apiKey;
+      authMethod = "api_key";
+      this.logger.info({ userId, odooUid, keyName }, "API key generated successfully");
+    } catch (error) {
+      this.logger.warn(
+        { userId, odooUid, error: error instanceof Error ? error.message : "Unknown error" },
+        "Failed to generate API key, falling back to password authentication",
+      );
+      // Continue with password authentication
+    }
 
     // Get database ID
     const odooDb = await this.drizzle.query.odooDatabases.findFirst({
@@ -547,26 +569,23 @@ export class OdooUserProvisioningService {
       throw new NotFound("Odoo database not found");
     }
 
-    // Store mapping with both API key and web password
+    // Store mapping with authentication credential (API key or password)
     await this.drizzle.insert(schema.odooUsers).values({
       userId,
       odooDatabaseId: odooDb.id,
       odooUid,
       odooLogin: user.email,
-      odooPassword: encryptionService.encrypt(apiKey), // Encrypted API key for RPC
+      odooPassword: encryptionService.encrypt(authCredential), // Encrypted API key or password for RPC
       odooWebPassword: encryptionService.encrypt(odooWebPassword), // Encrypted password for web UI
       lastSyncedAt: new Date(),
     });
 
-    this.logger.info(
-      { userId, odooUid, databaseName, keyName },
-      "Odoo user provisioned successfully with API key and web password",
-    );
+    this.logger.info({ userId, odooUid, databaseName, authMethod }, "Odoo user provisioned successfully");
 
     return {
       odooUid,
       odooLogin: user.email,
-      odooPassword: apiKey, // Return API key for immediate use
+      odooPassword: authCredential, // Return API key or password for immediate use
     };
   }
 

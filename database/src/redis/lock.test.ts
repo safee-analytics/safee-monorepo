@@ -93,9 +93,7 @@ describe("Redis Lock", () => {
     });
 
     it("should retry and acquire lock on second attempt", async () => {
-      vi.mocked(mockRedis.set)
-        .mockResolvedValueOnce(null)
-        .mockResolvedValueOnce("OK");
+      vi.mocked(mockRedis.set).mockResolvedValueOnce(null).mockResolvedValueOnce("OK");
 
       const promise = acquireRedisLockWithRetry({
         redis: mockRedis,

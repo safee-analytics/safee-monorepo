@@ -31,13 +31,13 @@ const errorMiddleware: Middleware = {
 const loggingMiddleware: Middleware = {
   async onRequest({ request }) {
     if (process.env.NODE_ENV === "development") {
-      console.log(`[API] ${request.method} ${request.url}`);
+      console.warn(`[API] ${request.method} ${request.url}`);
     }
     return request;
   },
   async onResponse({ response }) {
     if (process.env.NODE_ENV === "development") {
-      console.log(`[API] ${response.status} ${response.url}`);
+      console.warn(`[API] ${response.status} ${response.url}`);
     }
     return response;
   },

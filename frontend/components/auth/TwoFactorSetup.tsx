@@ -48,6 +48,7 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
       setSecret(result.secret);
       setStep("qr");
     } catch (error) {
+      console.error("Failed to enable 2FA:", error);
       alert("Failed to enable 2FA. Please check your password.");
     }
   };
@@ -61,6 +62,7 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
       setBackupCodes(codes.backupCodes || []);
       setStep("backup");
     } catch (error) {
+      console.error("Invalid 2FA code:", error);
       alert("Invalid code. Please try again.");
       setOtpCode("");
     }

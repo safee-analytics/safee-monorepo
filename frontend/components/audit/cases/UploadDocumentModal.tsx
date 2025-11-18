@@ -193,8 +193,8 @@ export function UploadDocumentModal({ isOpen, onClose, onUpload }: UploadDocumen
             <div className="text-sm text-blue-900">
               <p className="font-medium mb-1">Document Review Process</p>
               <p className="text-blue-700">
-                Once uploaded, documents will be marked as "Pending" and require review and approval before
-                they can be used in workflow steps.
+                Once uploaded, documents will be marked as &ldquo;Pending&rdquo; and require review and
+                approval before they can be used in workflow steps.
               </p>
             </div>
           </div>

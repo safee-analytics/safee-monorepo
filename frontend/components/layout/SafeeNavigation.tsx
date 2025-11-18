@@ -35,9 +35,10 @@ export function SafeeNavigation() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={
-                  locale === "ar"
+                  t.common?.searchPlaceholder ||
+                  (locale === "ar"
                     ? "ابحث عن المعاملات، جهات الاتصال، التقارير والمزيد"
-                    : "Navigate or search for transactions, contacts, reports, and more"
+                    : "Navigate or search for transactions, contacts, reports, and more")
                 }
                 className={`w-full ${locale === "ar" ? "pr-12 pl-4" : "pl-12 pr-4"} py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-safee-500 focus:bg-white transition-all`}
               />
@@ -50,7 +51,7 @@ export function SafeeNavigation() {
 
             <button className="text-sm text-safee-600 hover:text-safee-700 font-medium hidden lg:flex items-center gap-2">
               <User className="w-4 h-4" />
-              {locale === "ar" ? "اتصل بالخبراء" : "Contact experts"}
+              {t.common?.contactExperts || (locale === "ar" ? "اتصل بالخبراء" : "Contact experts")}
             </button>
 
             <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">

@@ -51,6 +51,7 @@ export interface OdooInvoice {
   partner_id: number; // Customer/Supplier ID
   invoice_date?: string; // YYYY-MM-DD
   invoice_date_due?: string; // YYYY-MM-DD
+  invoice_payment_term_id?: number; // Payment term
   payment_reference?: string;
   currency_id?: number;
   invoice_line_ids: Array<[0, 0, OdooInvoiceLine]>; // Odoo one2many create format
@@ -182,11 +183,14 @@ export interface OdooFinancialReport {
 // DTOs for API requests
 
 export interface CreateInvoiceDTO {
-  customerId: number;
+  moveType?: "out_invoice" | "in_invoice" | "out_refund" | "in_refund";
+  customerId?: number; // For out_invoice, out_refund
+  supplierId?: number; // For in_invoice, in_refund
   invoiceDate?: string;
   dueDate?: string;
   reference?: string;
   notes?: string;
+  paymentTermId?: number;
   lines: Array<{
     description: string;
     quantity: number;
@@ -195,6 +199,12 @@ export interface CreateInvoiceDTO {
     taxIds?: number[];
     productId?: number;
   }>;
+}
+
+export interface CreateRefundDTO {
+  reason?: string;
+  date?: string;
+  journalId?: number;
 }
 
 export interface CreatePaymentDTO {

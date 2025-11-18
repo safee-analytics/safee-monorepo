@@ -13,10 +13,16 @@ export async function cacheFunctionCall<T>(
 
   const res = await redis.get(key);
   if (res) {
+    let parsedJson: unknown;
     try {
-      const parsedRes = schema.safeParse(JSON.parse(res));
-      if (parsedRes.success) return parsedRes.data;
+      parsedJson = JSON.parse(res);
     } catch {
+      parsedJson = null;
+    }
+
+    if (parsedJson !== null) {
+      const parsedRes = schema.safeParse(parsedJson);
+      if (parsedRes.success) return parsedRes.data;
     }
   }
 

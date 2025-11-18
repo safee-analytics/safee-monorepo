@@ -25,6 +25,7 @@ export function TwoFactorVerification({ isOpen, onClose, onSuccess, email }: Two
       await verify2FAMutation.mutateAsync(codeToVerify);
       onSuccess();
     } catch (error) {
+      console.error("2FA verification failed:", error);
       alert("Invalid code. Please try again.");
       if (useBackupCode) {
         setBackupCode("");

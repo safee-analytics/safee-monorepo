@@ -14,10 +14,7 @@ export class StorageConnectorService {
     if (cached) return cached;
 
     const connector = await this.drizzle.query.connectors.findFirst({
-      where: and(
-        eq(schema.connectors.organizationId, organizationId),
-        eq(schema.connectors.isActive, true),
-      ),
+      where: and(eq(schema.connectors.organizationId, organizationId), eq(schema.connectors.isActive, true)),
     });
 
     if (!connector) {

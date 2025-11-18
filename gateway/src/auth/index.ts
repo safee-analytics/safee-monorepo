@@ -39,6 +39,16 @@ export const auth = betterAuth({
           return 50; // Default limit for all organizations
         },
       },
+      schema: {
+        organization: {
+          fields: {
+            name: "string",
+            slug: "string",
+            logo: "string",
+            metadata: "string",
+          },
+        },
+      },
     }),
   ],
   databaseHooks: createSessionHooks(drizzle),

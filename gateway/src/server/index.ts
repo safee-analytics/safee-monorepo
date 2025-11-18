@@ -258,7 +258,6 @@ export async function server({
   });
 
   await scheduler.start({ drizzle, logger: logger as unknown as Logger });
-  logger.info("Job scheduler started");
 
   return app;
 }

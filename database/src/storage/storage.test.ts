@@ -18,7 +18,10 @@ describe("Storage System", async () => {
   afterAll(async () => {
     try {
       await rmdir(testDir, { recursive: true });
-    } catch {
+    } catch (err) {
+      if ((err as NodeJS.ErrnoException).code !== "ENOENT") {
+        throw err;
+      }
     }
   });
 

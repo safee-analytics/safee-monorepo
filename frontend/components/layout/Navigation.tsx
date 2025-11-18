@@ -43,6 +43,7 @@ export function Navigation() {
   const currentMember = members?.find((m) => m.userId === user?.id);
   const userRole = currentMember?.role;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
@@ -117,11 +118,21 @@ export function Navigation() {
             </div>
           </div>
 
-          {/* Search Bar with Dropdown */}
-          <SearchBar onOpenCommandPalette={() => setCommandPaletteOpen(true)} />
+          {/* Search Bar with Dropdown - Hidden on mobile */}
+          <div className="hidden md:block flex-1 max-w-2xl">
+            <SearchBar onOpenCommandPalette={() => setCommandPaletteOpen(true)} />
+          </div>
 
           {/* Right Actions */}
           <div className="flex items-center gap-3">
+            {/* Mobile Search Toggle */}
+            <button
+              onClick={() => setMobileSearchOpen(!mobileSearchOpen)}
+              className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            >
+              <FiSearch className="w-5 h-5" />
+            </button>
+
             <LanguageSwitcher />
 
             <button className="text-sm text-safee-600 hover:text-safee-700 font-medium hidden lg:flex items-center gap-2">
@@ -217,6 +228,13 @@ export function Navigation() {
             </button>
           </div>
         </div>
+
+        {/* Mobile Search Bar */}
+        {mobileSearchOpen && (
+          <div className="md:hidden py-3 border-t border-gray-200">
+            <SearchBar onOpenCommandPalette={() => setCommandPaletteOpen(true)} />
+          </div>
+        )}
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (

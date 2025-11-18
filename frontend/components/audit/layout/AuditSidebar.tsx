@@ -128,7 +128,7 @@ export function AuditSidebar() {
         {/* Pinned Section */}
         <div className="flex-1 flex flex-col gap-2">
           <div className="px-2 text-[9px] font-semibold text-gray-400 uppercase">
-            {locale === "ar" ? "مثبت" : "Pinned"}
+            {t.common?.pinned || (locale === "ar" ? "مثبت" : "Pinned")}
           </div>
           {pinnedItems.map((item) => {
             const Icon = item.icon;
@@ -152,6 +152,35 @@ export function AuditSidebar() {
               </Link>
             );
           })}
+        </div>
+
+        {/* Bottom Actions */}
+        <div className="flex flex-col gap-2 mt-auto pt-2 border-t border-gray-200">
+          {/* Bookmarks Button */}
+          <Link
+            href="/audit/bookmarks"
+            className="w-12 h-12 rounded-lg flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-all relative group"
+          >
+            <Bookmark className="w-5 h-5" />
+            <div
+              className={`absolute ${locale === "ar" ? "right-full mr-2" : "left-full ml-2"} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity`}
+            >
+              {t.common?.bookmarks || (locale === "ar" ? "الإشارات المرجعية" : "Bookmarks")}
+            </div>
+          </Link>
+
+          {/* Settings Button */}
+          <Link
+            href="/settings"
+            className="w-12 h-12 rounded-lg flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-all relative group"
+          >
+            <Settings className="w-5 h-5" />
+            <div
+              className={`absolute ${locale === "ar" ? "right-full mr-2" : "left-full ml-2"} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity`}
+            >
+              {t.common?.settings || (locale === "ar" ? "الإعدادات" : "Settings")}
+            </div>
+          </Link>
         </div>
       </motion.aside>
 

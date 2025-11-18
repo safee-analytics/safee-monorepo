@@ -12,11 +12,9 @@ import {
   activateJobSchedule,
   deactivateJobSchedule,
   deleteJobSchedule,
-  schema,
   type DrizzleClient,
 } from "@safee/database";
-
-const { jobSchedules } = schema;
+import { nukeDatabase } from "@safee/database/test-helpers";
 
 describe("JobSchedules Integration Tests", () => {
   let db: DrizzleClient;
@@ -34,7 +32,7 @@ describe("JobSchedules Integration Tests", () => {
 
   beforeEach(async () => {
     // Clean table
-    await db.delete(jobSchedules);
+    await nukeDatabase(db);
   });
 
   describe("createJobSchedule", () => {

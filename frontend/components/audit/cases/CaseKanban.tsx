@@ -63,7 +63,12 @@ export function CaseKanban({ cases, onCaseClick, availableUsers = [], onUpdate }
                       </div>
                       <span className="font-semibold text-sm text-gray-900">{caseItem.caseId}</span>
                     </div>
-                    <div onClick={(e) => e.stopPropagation()}>
+                    <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                      <InlineStatus
+                        caseId={caseItem.id}
+                        currentStatus={caseItem.status}
+                        onUpdate={onUpdate}
+                      />
                       <InlinePriority
                         caseId={caseItem.id}
                         currentPriority={caseItem.priority}

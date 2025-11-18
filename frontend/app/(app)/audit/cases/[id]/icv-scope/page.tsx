@@ -44,7 +44,7 @@ export default function ICVScopePage() {
 
   const handleExportScope = () => {
     // Export logic
-    console.log("Exporting scope...");
+    console.warn("Exporting scope - implementation pending");
   };
 
   const handleCompleteFile = async () => {

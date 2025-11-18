@@ -1,12 +1,26 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import type { CaseRow } from "./CaseTable";
+import { z } from "zod";
 import { useUpdateCase, useAssignCase, useRemoveCaseAssignment } from "@/lib/api/hooks";
 import type { components } from "@/lib/api/types";
+import { StatusBadge } from "@/components/audit/ui/StatusBadge";
+import { PriorityBadge } from "@/components/audit/ui/PriorityBadge";
 
 type CaseStatus = components["schemas"]["CaseResponse"]["status"];
 type CasePriority = components["schemas"]["CaseResponse"]["priority"];
+
+// Zod schemas for validation
+const StatusBadgeStatusSchema = z.enum([
+  "completed",
+  "in-progress",
+  "pending",
+  "overdue",
+  "under-review",
+  "archived",
+]);
+
+const PriorityBadgePrioritySchema = z.enum(["low", "medium", "high", "critical"]);
 
 interface InlineStatusProps {
   caseId: string;
@@ -28,8 +42,6 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
     { value: "overdue", label: "Overdue", color: "bg-red-100 text-red-700" },
     { value: "archived", label: "Archived", color: "bg-gray-100 text-gray-500" },
   ];
-
-  const currentStatusObj = statuses.find((s) => s.value === status) || statuses[0];
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -58,13 +70,17 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
     }
   };
 
+  // Validate status for StatusBadge component
+  const validatedStatus = StatusBadgeStatusSchema.safeParse(status);
+  const badgeStatus = validatedStatus.success ? validatedStatus.data : "pending";
+
   return (
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`px-3 py-1 rounded-full text-xs font-medium ${currentStatusObj.color} hover:opacity-80 transition-opacity cursor-pointer`}
+        className="hover:opacity-80 transition-opacity cursor-pointer"
       >
-        {currentStatusObj.label}
+        <StatusBadge status={badgeStatus} />
       </button>
 
       {isOpen && (
@@ -77,15 +93,24 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
         >
           {statuses
             .filter((s) => s.value !== status)
-            .map((s) => (
-              <button
-                key={s.value}
-                onClick={() => handleStatusChange(s.value)}
-                className="px-2 py-1.5 text-left text-sm hover:bg-gray-50 transition-colors whitespace-nowrap"
-              >
-                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${s.color}`}>{s.label}</span>
-              </button>
-            ))}
+            .map((s) => {
+              const validatedStatus = StatusBadgeStatusSchema.safeParse(s.value);
+              return (
+                <button
+                  key={s.value}
+                  onClick={() => handleStatusChange(s.value)}
+                  className="px-2 py-1.5 text-left text-sm hover:bg-gray-50 transition-colors whitespace-nowrap"
+                >
+                  {validatedStatus.success ? (
+                    <StatusBadge status={validatedStatus.data} />
+                  ) : (
+                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${s.color}`}>
+                      {s.label}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
         </div>
       )}
     </div>
@@ -111,7 +136,9 @@ export function InlinePriority({ caseId, currentPriority, onUpdate }: InlinePrio
     { value: "critical", label: "Critical", color: "text-red-600 bg-red-100", icon: "🔴" },
   ];
 
-  const currentPriorityObj = priorities.find((p) => p.value === priority) || priorities[1];
+  // Validate priority for PriorityBadge component
+  const validatedPriority = PriorityBadgePrioritySchema.safeParse(priority);
+  const badgePriority = validatedPriority.success ? validatedPriority.data : "medium";
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -144,10 +171,9 @@ export function InlinePriority({ caseId, currentPriority, onUpdate }: InlinePrio
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`px-3 py-1 rounded-full text-xs font-medium ${currentPriorityObj.color} hover:opacity-80 transition-opacity cursor-pointer flex items-center gap-1`}
+        className="hover:opacity-80 transition-opacity cursor-pointer"
       >
-        <span>{currentPriorityObj.icon}</span>
-        {currentPriorityObj.label}
+        <PriorityBadge priority={badgePriority} />
       </button>
 
       {isOpen && (
@@ -160,16 +186,27 @@ export function InlinePriority({ caseId, currentPriority, onUpdate }: InlinePrio
         >
           {priorities
             .filter((p) => p.value !== priority)
-            .map((p) => (
-              <button
-                key={p.value}
-                onClick={() => handlePriorityChange(p.value)}
-                className="px-2 py-1.5 text-left text-sm hover:bg-gray-50 transition-colors flex items-center gap-2 whitespace-nowrap"
-              >
-                <span>{p.icon}</span>
-                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${p.color}`}>{p.label}</span>
-              </button>
-            ))}
+            .map((p) => {
+              const validatedPriority = PriorityBadgePrioritySchema.safeParse(p.value);
+              return (
+                <button
+                  key={p.value}
+                  onClick={() => handlePriorityChange(p.value)}
+                  className="px-2 py-1.5 text-left text-sm hover:bg-gray-50 transition-colors whitespace-nowrap"
+                >
+                  {validatedPriority.success ? (
+                    <PriorityBadge priority={validatedPriority.data} />
+                  ) : (
+                    <span className="flex items-center gap-2">
+                      <span>{p.icon}</span>
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${p.color}`}>
+                        {p.label}
+                      </span>
+                    </span>
+                  )}
+                </button>
+              );
+            })}
         </div>
       )}
     </div>

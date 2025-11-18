@@ -32,7 +32,7 @@ import { useOrgStore } from "@/stores/useOrgStore";
 import { getAllModules } from "@/lib/config/modules";
 import arMessages from "@/messages/ar";
 
-type Messages = typeof arMessages;
+
 
 export const SidebarLayout = () => {
   return (
@@ -56,6 +56,11 @@ const moduleIcons: Record<string, IconType> = {
   kanz: FiUsers,
   nisbah: FiUserPlus,
   audit: FiClipboard,
+  // Additional icons for future modules/features
+  analytics: FiMonitor,
+  shop: FiShoppingCart,
+  tags: FiTag,
+  reorder: FiMove,
 };
 
 const moduleColors: Record<string, string> = {
@@ -77,7 +82,6 @@ export const Sidebar = () => {
 
   const modules = getAllModules();
 
-  // Initialize apps list for customization
   const defaultApps: AppItem[] = modules.map((module) => ({
     id: module.key,
     name: module.name[locale],
@@ -89,7 +93,6 @@ export const Sidebar = () => {
   const [apps, setApps] = useState<AppItem[]>(defaultApps);
   const [tempApps, setTempApps] = useState<AppItem[]>(defaultApps);
 
-  // Close all menus with ESC key
   React.useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
@@ -125,7 +128,6 @@ export const Sidebar = () => {
     setTempApps(tempApps.map((app) => (app.id === appId ? { ...app, pinned: !app.pinned } : app)));
   };
 
-  // Detect current module from pathname
   const getCurrentModule = () => {
     if (pathname?.startsWith("/audit")) return "audit";
     if (pathname?.startsWith("/hisabiq")) return "hisabiq";
@@ -136,7 +138,6 @@ export const Sidebar = () => {
 
   const currentModule = getCurrentModule();
 
-  // Module-specific navigation items
   const moduleNavItems: Record<string, Array<{ icon: IconType; title: string; href: string }>> = {
     audit: [
       { icon: FiHome, title: t.nav.dashboard, href: "/" },
@@ -170,10 +171,10 @@ export const Sidebar = () => {
     currentModule && moduleNavItems[currentModule]
       ? moduleNavItems[currentModule]
       : [
-          { icon: FiHome, title: t.nav.dashboard, href: "/" },
-          { icon: FiBookmark, title: t.common.bookmarks, href: "/bookmarks" },
-          { icon: FiBarChart, title: t.common.reports, href: "/reports" },
-        ];
+        { icon: FiHome, title: t.nav.dashboard, href: "/" },
+        { icon: FiBookmark, title: t.common.bookmarks, href: "/bookmarks" },
+        { icon: FiBarChart, title: t.common.reports, href: "/reports" },
+      ];
 
   const createMenuItems = {
     hisabiq: [
@@ -205,7 +206,6 @@ export const Sidebar = () => {
       <motion.nav
         initial={false}
         onMouseEnter={() => {
-          // Only auto-expand on hover if auto-close is enabled AND not manually collapsed
           if (sidebarAutoClose && !sidebarCollapsed) {
             setOpen(true);
           }
@@ -215,13 +215,14 @@ export const Sidebar = () => {
             setOpen(false);
           }
         }}
-        className="h-full bg-white pt-8 px-2 pb-2"
+        className="h-full bg-white pt-4 px-2 pb-2"
         animate={{
           width: isExpanded ? "225px" : "56px",
         }}
         transition={{ duration: 0.15, ease: "easeOut" }}
       >
-        {/* Create Button */}
+        <TitleSection />
+
         <motion.button
           layout
           onClick={() => setShowCreateMenu(!showCreateMenu)}
@@ -300,21 +301,20 @@ export const Sidebar = () => {
             .filter((app) => app.pinned)
             .map((app) => {
               const Icon = app.icon;
-              const module = modules.find((m) => m.key === app.id);
-              if (!module) return null;
+              const moduleData = modules.find((m) => m.key === app.id);
+              if (!moduleData) return null;
 
-              const isSelected = pathname?.startsWith(module.path);
+              const isSelected = pathname?.startsWith(moduleData.path);
 
               return (
                 <Link
                   key={app.id}
-                  href={module.path}
+                  href={moduleData.path}
                   onClick={() => setModule(app.id as "hisabiq" | "kanz" | "nisbah" | "audit")}
                 >
                   <div
-                    className={`relative flex h-10 w-full items-center rounded-lg transition-all ${
-                      isSelected ? "bg-safee-50" : "hover:bg-gray-50"
-                    }`}
+                    className={`relative flex h-10 w-full items-center rounded-lg transition-all ${isSelected ? "bg-safee-50" : "hover:bg-gray-50"
+                      }`}
                   >
                     {/* Logo Circle - fixed position */}
                     <div className="w-10 flex items-center justify-center shrink-0">
@@ -327,9 +327,8 @@ export const Sidebar = () => {
 
                     {/* Module Name */}
                     <span
-                      className={`text-xs font-medium transition-opacity overflow-hidden whitespace-nowrap ${
-                        isExpanded ? "opacity-100" : "opacity-0 w-0"
-                      } ${isSelected ? "text-safee-700" : "text-gray-700"}`}
+                      className={`text-xs font-medium transition-opacity overflow-hidden whitespace-nowrap ${isExpanded ? "opacity-100" : "opacity-0 w-0"
+                        } ${isSelected ? "text-safee-700" : "text-gray-700"}`}
                     >
                       {app.name}
                     </span>
@@ -555,20 +554,19 @@ export const Sidebar = () => {
               <div className="space-y-1">
                 {apps.map((app) => {
                   const Icon = app.icon;
-                  const module = modules.find((m) => m.key === app.id);
-                  if (!module) return null;
+                  const moduleData = modules.find((m) => m.key === app.id);
+                  if (!moduleData) return null;
 
                   return (
                     <Link
                       key={app.id}
-                      href={module.path}
+                      href={moduleData.path}
                       onClick={() => {
                         setModule(app.id as "hisabiq" | "kanz" | "nisbah" | "audit");
                         setShowMyApps(false);
                       }}
                     >
                       <button className="w-full flex items-center gap-3 px-2 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                        {/* App Logo */}
                         <div
                           className={`w-8 h-8 rounded-full bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-sm flex-shrink-0`}
                         >
@@ -656,16 +654,14 @@ export const Sidebar = () => {
                         {/* Pin Button */}
                         <button
                           onClick={() => handleTogglePin(app.id)}
-                          className={`p-2 rounded-lg transition-colors ${
-                            app.pinned
-                              ? "text-yellow-500 hover:bg-yellow-50"
-                              : "text-gray-300 hover:bg-gray-50"
-                          }`}
+                          className={`p-2 rounded-lg transition-colors ${app.pinned
+                            ? "text-yellow-500 hover:bg-yellow-50"
+                            : "text-gray-300 hover:bg-gray-50"
+                            }`}
                         >
                           <FiStar className={`w-5 h-5 ${app.pinned ? "fill-current" : ""}`} />
                         </button>
 
-                        {/* App Logo */}
                         <div
                           className={`w-12 h-12 rounded-full bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-md flex-shrink-0`}
                         >
@@ -689,14 +685,12 @@ export const Sidebar = () => {
                   </div>
                   <button
                     onClick={() => setSidebarAutoClose(!sidebarAutoClose)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                      sidebarAutoClose ? "bg-safee-600" : "bg-gray-300"
-                    }`}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${sidebarAutoClose ? "bg-safee-600" : "bg-gray-300"
+                      }`}
                   >
                     <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                        sidebarAutoClose ? "translate-x-6" : "translate-x-1"
-                      }`}
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${sidebarAutoClose ? "translate-x-6" : "translate-x-1"
+                        }`}
                     />
                   </button>
                 </div>
@@ -790,50 +784,18 @@ const Option = ({
   );
 };
 
-const TitleSection = ({ open }: { open: boolean }) => {
+const TitleSection = () => {
   return (
     <div className="mb-3 border-b border-slate-300 pb-3">
       <div className="flex cursor-pointer items-center justify-between rounded-md transition-colors hover:bg-slate-100">
         <div className="flex items-center gap-2">
-          <Logo />
-          {open && (
-            <motion.div
-              layout
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.125 }}
-            >
-              <span className="block text-xs font-semibold">TomIsLoading</span>
-              <span className="block text-xs text-slate-500">Pro Plan</span>
-            </motion.div>
-          )}
+
         </div>
-        {open && <FiChevronDown className="mr-2" />}
       </div>
     </div>
   );
 };
 
-const Logo = () => {
-  // Temp logo from https://logoipsum.com/
-  return (
-    <motion.div layout className="grid size-10 shrink-0 place-content-center rounded-md bg-indigo-600">
-      <svg
-        width="24"
-        height="auto"
-        viewBox="0 0 50 39"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-        className="fill-slate-50"
-      >
-        <path d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z" stopColor="#000000"></path>
-        <path
-          d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z"
-          stopColor="#000000"
-        ></path>
-      </svg>
-    </motion.div>
-  );
-};
+
 
 const ExampleContent = () => <div className="h-[200vh] w-full"></div>;
