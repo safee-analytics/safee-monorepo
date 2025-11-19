@@ -5,7 +5,7 @@ import { Phone, ArrowRight } from "lucide-react";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import OtpInput from "react-otp-input";
-import { useSendPhoneVerification, useSignInWithPhone } from "@/lib/api/hooks";
+import { useSendPhoneVerification, useVerifyPhoneNumber } from "@/lib/api/hooks";
 
 interface PhoneAuthFormProps {
   onSuccess?: () => void;
@@ -18,7 +18,7 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
   const [verificationCode, setVerificationCode] = useState("");
 
   const sendVerificationMutation = useSendPhoneVerification();
-  const signInWithPhoneMutation = useSignInWithPhone();
+  const verifyPhoneMutation = useVerifyPhoneNumber();
 
   const handleSendCode = async () => {
     if (!phoneNumber) {
@@ -37,7 +37,7 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
 
   const handleVerifyAndSignIn = async () => {
     try {
-      await signInWithPhoneMutation.mutateAsync({
+      await verifyPhoneMutation.mutateAsync({
         phoneNumber,
         code: verificationCode,
       });
@@ -45,7 +45,7 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
     } catch (error) {
       alert("Invalid verification code. Please try again.");
       setVerificationCode("");
-      console.error("Phone sign-in error:", error);
+      console.error("Phone verification error:", error);
     }
   };
 
@@ -126,10 +126,10 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
 
           <button
             onClick={handleVerifyAndSignIn}
-            disabled={verificationCode.length !== 6 || signInWithPhoneMutation.isPending}
+            disabled={verificationCode.length !== 6 || verifyPhoneMutation.isPending}
             className="w-full px-4 py-2 bg-safee-600 text-white rounded-lg hover:bg-safee-700 disabled:opacity-50"
           >
-            {signInWithPhoneMutation.isPending ? "Verifying..." : "Verify & Sign In"}
+            {verifyPhoneMutation.isPending ? "Verifying..." : "Verify & Sign In"}
           </button>
 
           <button

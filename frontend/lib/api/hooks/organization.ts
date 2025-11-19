@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth/client";
+import { apiClient, handleApiError } from "../client";
 
 // Query keys for organization-related data
 export const organizationQueryKeys = {
@@ -12,10 +13,6 @@ export const organizationQueryKeys = {
   role: (orgId: string, roleId: string) => ["organization", orgId, "roles", roleId] as const,
 } as const;
 
-// All hooks use Better Auth's organizationClient plugin
-// No custom backend needed - Better Auth provides everything!
-
-// Active Organization Hooks
 export function useActiveOrganization() {
   // Get the active organization ID from the session
   const { data: session } = authClient.useSession();
@@ -25,9 +22,7 @@ export function useActiveOrganization() {
     queryKey: organizationQueryKeys.organization(activeOrgId || ""),
     queryFn: async () => {
       if (!activeOrgId) return null;
-      const { data, error } = await authClient.organization.get({
-        organizationId: activeOrgId,
-      });
+      const { data, error } = await authClient.organization.getFullOrganization();
       if (error) throw new Error(error.message);
       return data;
     },
@@ -47,53 +42,39 @@ export function useSetActiveOrganization() {
       return data;
     },
     onSuccess: () => {
-      // Invalidate all queries since active org changed
       queryClient.invalidateQueries();
     },
   });
 }
 
-// Organization Members
-
-/**
- * List all members of an organization
- */
 export function useOrganizationMembers(orgId: string) {
+  const { data: session } = authClient.useSession();
+  const activeOrgId = session?.session?.activeOrganizationId;
+
   return useQuery({
     queryKey: organizationQueryKeys.members(orgId),
     queryFn: async () => {
-      // Better Auth's listMembers is a GET request with query parameter
-      const response = await fetch(`/api/v1/organization/list-members?organizationId=${orgId}`, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch members: ${response.statusText}`);
+      if (orgId !== activeOrgId) {
+        throw new Error("Can only list members for active organization. Set it as active first.");
       }
 
-      const result = await response.json();
+      const { data, error } = await authClient.organization.listMembers();
+      if (error) throw new Error(error.message);
 
-      // Better Auth returns { members: [...] }, not a direct array
-      return Array.isArray(result) ? result : result.members || [];
+      return data?.members ?? [];
     },
-    enabled: !!orgId,
+    enabled: !!orgId && orgId === activeOrgId,
   });
 }
 
-/**
- * Get single member details
- */
 export function useOrganizationMember(orgId: string, userId: string) {
   return useQuery({
     queryKey: organizationQueryKeys.member(orgId, userId),
     queryFn: async () => {
-      const { data, error } = await authClient.organization.getMember({
-        organizationId: orgId,
-        userId,
-      });
+      // Get all members and filter for the specific user
+      const { data, error } = await authClient.organization.listMembers();
       if (error) throw new Error(error.message);
-      return data;
+      return data?.members?.find((m) => m.userId === userId) ?? null;
     },
     enabled: !!orgId && !!userId,
   });
@@ -113,7 +94,7 @@ export function useInviteMember() {
       const { data, error } = await authClient.organization.inviteMember({
         organizationId: orgId,
         email: invitation.email,
-        role: invitation.role,
+        role: invitation.role as "member" | "admin" | "owner",
       });
       if (error) throw new Error(error.message);
       return data;
@@ -132,8 +113,8 @@ export function useUpdateMemberRole() {
     mutationFn: async ({ orgId, userId, role }: { orgId: string; userId: string; role: string }) => {
       const { data, error } = await authClient.organization.updateMemberRole({
         organizationId: orgId,
-        userId,
-        role,
+        memberId: userId,
+        role: role as "member" | "admin" | "owner",
       });
       if (error) throw new Error(error.message);
       return data;
@@ -154,7 +135,7 @@ export function useRemoveMember() {
     mutationFn: async ({ orgId, userId }: { orgId: string; userId: string }) => {
       const { data, error } = await authClient.organization.removeMember({
         organizationId: orgId,
-        userId,
+        memberIdOrEmail: userId,
       });
       if (error) throw new Error(error.message);
       return data;
@@ -165,14 +146,11 @@ export function useRemoveMember() {
   });
 }
 
-// Organization Invitations
 export function useOrganizationInvitations(orgId: string) {
   return useQuery({
     queryKey: organizationQueryKeys.invitations(orgId),
     queryFn: async () => {
-      const { data, error } = await authClient.organization.listInvitations({
-        organizationId: orgId,
-      });
+      const { data, error } = await authClient.organization.listInvitations();
       if (error) throw new Error(error.message);
       return data;
     },
@@ -185,7 +163,6 @@ export function useCancelInvitation() {
 
   return useMutation({
     mutationFn: async ({ orgId, invitationId }: { orgId: string; invitationId: string }) => {
-      // Log operation for audit trail and debugging
       console.warn(`Canceling invitation ${invitationId} for organization ${orgId}`);
 
       const { data, error } = await authClient.organization.cancelInvitation({
@@ -205,9 +182,6 @@ export function useCancelInvitation() {
   });
 }
 
-/**
- * Accept invitation to join organization
- */
 export function useAcceptInvitation() {
   const queryClient = useQueryClient();
 
@@ -225,9 +199,6 @@ export function useAcceptInvitation() {
   });
 }
 
-/**
- * Reject invitation to join organization
- */
 export function useRejectInvitation() {
   return useMutation({
     mutationFn: async ({ invitationId }: { invitationId: string }) => {
@@ -240,11 +211,6 @@ export function useRejectInvitation() {
   });
 }
 
-// Organization Management
-
-/**
- * List all organizations user belongs to
- */
 export function useListOrganizations() {
   return useQuery({
     queryKey: organizationQueryKeys.all,
@@ -256,34 +222,32 @@ export function useListOrganizations() {
   });
 }
 
-/**
- * Get single organization details
- */
 export function useOrganization(orgId: string) {
   return useQuery({
     queryKey: organizationQueryKeys.organization(orgId),
     queryFn: async () => {
-      const { data, error } = await authClient.organization.get({
-        organizationId: orgId,
-      });
+      // List all organizations user belongs to
+      const { data: orgs, error } = await authClient.organization.list();
       if (error) throw new Error(error.message);
-      return data;
+
+      // Find the specific organization by ID
+      const org = orgs?.find((o) => o.id === orgId);
+      return org ?? null;
     },
     enabled: !!orgId,
   });
 }
 
-/**
- * Create new organization
- */
 export function useCreateOrganization() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ name, slug }: { name: string; slug?: string }) => {
+    mutationFn: async ({ name, slug, logo }: { name: string; slug: string; logo?: string }) => {
       const { data, error } = await authClient.organization.create({
         name,
         slug,
+        ...(logo && { logo }),
+        keepCurrentActiveOrganization: false,
       });
       if (error) throw new Error(error.message);
       return data;
@@ -294,18 +258,28 @@ export function useCreateOrganization() {
   });
 }
 
-/**
- * Update organization details
- */
 export function useUpdateOrganization() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ orgId, name, slug }: { orgId: string; name?: string; slug?: string }) => {
+    mutationFn: async ({
+      orgId,
+      name,
+      slug,
+    }: {
+      orgId: string;
+      name?: string;
+      slug?: string;
+      logo?: string;
+      metadata?: Record<string, unknown>;
+    }) => {
       const { data, error } = await authClient.organization.update({
         organizationId: orgId,
-        name,
-        slug,
+
+        data: {
+          name,
+          slug,
+        },
       });
       if (error) throw new Error(error.message);
       return data;
@@ -317,9 +291,6 @@ export function useUpdateOrganization() {
   });
 }
 
-/**
- * Delete organization
- */
 export function useDeleteOrganization() {
   const queryClient = useQueryClient();
 
@@ -337,9 +308,6 @@ export function useDeleteOrganization() {
   });
 }
 
-/**
- * Leave organization (for members)
- */
 export function useLeaveOrganization() {
   const queryClient = useQueryClient();
 
@@ -357,24 +325,23 @@ export function useLeaveOrganization() {
   });
 }
 
-// Custom Organization Roles (Permission Mappings)
 export function useOrganizationRoles(orgId: string) {
+  const { data: session } = authClient.useSession();
+  const activeOrgId = session?.session?.activeOrganizationId;
+
   return useQuery({
     queryKey: organizationQueryKeys.roles(orgId),
     queryFn: async () => {
-      // Better Auth's listRoles is a GET request
-      const response = await fetch(`/api/v1/organization/list-roles?organizationId=${orgId}`, {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (!response.ok) {
-        throw new Error(`Failed to fetch roles: ${response.statusText}`);
+      // Verify requested org is the active one
+      if (orgId !== activeOrgId) {
+        throw new Error("Can only list roles for active organization. Set it as active first.");
       }
 
-      return response.json();
+      const { data, error } = await authClient.organization.listRoles();
+      if (error) throw new Error(error.message);
+      return data;
     },
-    enabled: !!orgId,
+    enabled: !!orgId && orgId === activeOrgId,
   });
 }
 
@@ -382,24 +349,31 @@ export function useCreateRole() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ orgId, role, permission }: { orgId: string; role: string; permission: string }) => {
-      const response = await fetch("/api/v1/organization/create-role", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          organizationId: orgId,
-          role,
-          permission,
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: response.statusText }));
-        throw new Error(error.message || "Failed to create role");
+    mutationFn: async ({
+      orgId,
+      role,
+      permission,
+    }: {
+      orgId: string;
+      role: string;
+      permission: string | Record<string, string[]>;
+    }) => {
+      // Convert string permission to object format if needed
+      let permissionObj: Record<string, string[]>;
+      if (typeof permission === "string") {
+        const [resource, ...actions] = permission.split(":");
+        permissionObj = { [resource]: actions };
+      } else {
+        permissionObj = permission;
       }
 
-      return response.json();
+      const { data, error } = await authClient.organization.createRole({
+        organizationId: orgId,
+        role,
+        permission: permissionObj,
+      });
+      if (error) throw new Error(error.message || "Failed to create role");
+      return data;
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: organizationQueryKeys.roles(variables.orgId) });
@@ -413,35 +387,40 @@ export function useUpdateRolePermissions() {
   return useMutation({
     mutationFn: async ({
       orgId,
-      roleId,
+      roleName,
       permissions,
     }: {
       orgId: string;
-      roleId: string;
+      roleName: string;
       permissions: string[];
     }) => {
-      const response = await fetch("/api/v1/organization/update-role", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          organizationId: orgId,
-          roleId,
-          permissions,
-        }),
+      // Convert array of permissions to object format
+      const permissionObj: Record<string, string[]> = {};
+      permissions.forEach((perm) => {
+        const [resource, action] = perm.split(":");
+        if (!permissionObj[resource]) {
+          permissionObj[resource] = [];
+        }
+        if (action) {
+          permissionObj[resource].push(action);
+        }
       });
 
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: response.statusText }));
-        throw new Error(error.message || "Failed to update role");
-      }
+      const { data, error } = await authClient.organization.updateRole({
+        roleName,
+        organizationId: orgId,
+        data: {
+          permission: permissionObj,
+        },
+      } as Parameters<(typeof authClient.organization)["updateRole"]>[0]);
 
-      return response.json();
+      if (error) throw new Error(error.message || "Failed to update role");
+      return data;
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: organizationQueryKeys.roles(variables.orgId) });
       queryClient.invalidateQueries({
-        queryKey: organizationQueryKeys.role(variables.orgId, variables.roleId),
+        queryKey: organizationQueryKeys.role(variables.orgId, variables.roleName),
       });
     },
   });
@@ -451,23 +430,13 @@ export function useDeleteRole() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ orgId, roleId }: { orgId: string; roleId: string }) => {
-      const response = await fetch("/api/v1/organization/delete-role", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          organizationId: orgId,
-          roleId,
-        }),
-      });
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: response.statusText }));
-        throw new Error(error.message || "Failed to delete role");
-      }
-
-      return response.json();
+    mutationFn: async ({ orgId, roleName }: { orgId: string; roleName: string }) => {
+      const { data, error } = await authClient.organization.deleteRole({
+        roleName,
+        organizationId: orgId,
+      } as Parameters<(typeof authClient.organization)["deleteRole"]>[0]);
+      if (error) throw new Error(error.message || "Failed to delete role");
+      return data;
     },
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: organizationQueryKeys.roles(variables.orgId) });
@@ -475,53 +444,42 @@ export function useDeleteRole() {
   });
 }
 
-export function useHasPermission() {
+export function useCheckPermissionMutation() {
   return useMutation({
     mutationFn: async ({ orgId, permission }: { orgId: string; permission: string }) => {
-      const response = await fetch("/api/v1/organization/has-permission", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          organizationId: orgId,
-          permission,
-        }),
+      const [resource, action] = permission.split(":");
+      const permissionObj = { [resource]: [action] };
+
+      const { data, error } = await authClient.organization.hasPermission({
+        organizationId: orgId,
+        permission: permissionObj as Record<string, string[]>,
       });
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: response.statusText }));
-        throw new Error(error.message || "Failed to check permission");
-      }
-
-      return response.json();
+      if (error) throw new Error(error.message || "Failed to check permission");
+      return data;
     },
   });
 }
 
-// ============================================================================
-// Additional Organization Endpoints
-// ============================================================================
-
-/**
- * Get full organization details including all metadata
- */
 export function useFullOrganization(orgId: string) {
+  const { data: session } = authClient.useSession();
+  const activeOrgId = session?.session?.activeOrganizationId;
+
   return useQuery({
     queryKey: [...organizationQueryKeys.organization(orgId), "full"] as const,
     queryFn: async () => {
-      const { data, error } = await authClient.organization.getFullOrganization({
-        organizationId: orgId,
-      });
+      // Verify the requested org is the active one
+      if (orgId !== activeOrgId) {
+        throw new Error("Can only get full details for active organization. Set it as active first.");
+      }
+
+      const { data, error } = await authClient.organization.getFullOrganization();
       if (error) throw new Error(error.message);
       return data;
     },
-    enabled: !!orgId,
+    enabled: !!orgId && orgId === activeOrgId,
   });
 }
 
-/**
- * Check if organization slug is available
- */
 export function useCheckOrgSlug() {
   return useMutation({
     mutationFn: async (slug: string) => {
@@ -534,15 +492,14 @@ export function useCheckOrgSlug() {
   });
 }
 
-/**
- * Get active member details
- */
 export function useActiveOrgMember(orgId: string) {
   return useQuery({
     queryKey: [...organizationQueryKeys.organization(orgId), "active-member"] as const,
     queryFn: async () => {
       const { data, error } = await authClient.organization.getActiveMember({
-        organizationId: orgId,
+        query: {
+          organizationId: orgId,
+        },
       });
       if (error) throw new Error(error.message);
       return data;
@@ -551,15 +508,14 @@ export function useActiveOrgMember(orgId: string) {
   });
 }
 
-/**
- * Get active member's role
- */
 export function useActiveOrgMemberRole(orgId: string) {
   return useQuery({
     queryKey: [...organizationQueryKeys.organization(orgId), "active-member-role"] as const,
     queryFn: async () => {
       const { data, error } = await authClient.organization.getActiveMemberRole({
-        organizationId: orgId,
+        query: {
+          organizationId: orgId,
+        },
       });
       if (error) throw new Error(error.message);
       return data;
@@ -568,13 +524,6 @@ export function useActiveOrgMemberRole(orgId: string) {
   });
 }
 
-// ============================================================================
-// User-Specific Organization Queries
-// ============================================================================
-
-/**
- * List all invitations for current user across all organizations
- */
 export function useUserOrganizationInvitations() {
   return useQuery({
     queryKey: ["user", "organization-invitations"] as const,
@@ -586,15 +535,14 @@ export function useUserOrganizationInvitations() {
   });
 }
 
-/**
- * List all teams current user belongs to
- */
 export function useUserTeams(orgId: string) {
   return useQuery({
     queryKey: ["user", "teams", orgId] as const,
     queryFn: async () => {
       const { data, error } = await authClient.organization.listUserTeams({
-        organizationId: orgId,
+        query: {
+          organizationId: orgId,
+        },
       });
       if (error) throw new Error(error.message);
       return data;
@@ -611,7 +559,9 @@ export function useInvitation(invitationId: string) {
     queryKey: ["invitation", invitationId] as const,
     queryFn: async () => {
       const { data, error } = await authClient.organization.getInvitation({
-        invitationId,
+        query: {
+          id: invitationId,
+        },
       });
       if (error) throw new Error(error.message);
       return data;
@@ -622,14 +572,17 @@ export function useInvitation(invitationId: string) {
 
 /**
  * Get single role details
+ * Renamed to avoid conflict with useOrganizationRole from permissions.ts
  */
-export function useOrganizationRole(orgId: string, roleId: string) {
+export function useOrganizationRoleDetails(orgId: string, roleId: string) {
   return useQuery({
     queryKey: organizationQueryKeys.role(orgId, roleId),
     queryFn: async () => {
       const { data, error } = await authClient.organization.getRole({
-        organizationId: orgId,
-        roleId,
+        query: {
+          organizationId: orgId,
+          roleId,
+        },
       });
       if (error) throw new Error(error.message);
       return data;
@@ -643,27 +596,32 @@ export function useOrganizationRole(orgId: string, roleId: string) {
 // ============================================================================
 
 export interface AuditLogFilters {
-  startDate?: Date;
-  endDate?: Date;
+  entityType?: string;
+  entityId?: string;
+  action?: string;
   userId?: string;
-  actionType?: string;
-  resourceType?: string;
+  startDate?: string;
+  endDate?: string;
   limit?: number;
   offset?: number;
 }
 
 export interface AuditLog {
   id: string;
-  organizationId: string;
-  userId: string;
-  userName?: string;
+  entityType: string;
+  entityId: string;
   action: string;
-  resourceType: string;
-  resourceId?: string;
-  metadata?: Record<string, unknown>;
-  ipAddress?: string;
-  userAgent?: string;
-  createdAt: string;
+  organizationId: string | null;
+  userId: string | null;
+  metadata: Record<string, unknown> | null;
+  ipAddress: string | null;
+  userAgent: string | null;
+  createdAt: Date;
+  user?: {
+    id: string;
+    name: string | null;
+    email: string;
+  } | null;
 }
 
 /**
@@ -673,14 +631,11 @@ export function useOrganizationAuditLogs(orgId: string, filters?: AuditLogFilter
   return useQuery({
     queryKey: ["organization", orgId, "audit-logs", filters] as const,
     queryFn: async () => {
-      // Note: Better Auth might not have built-in audit logs
-      // This may need to be a custom endpoint
-      const { data, error } = await authClient.organization.getAuditLogs?.({
-        organizationId: orgId,
-        ...filters,
+      const { data, error } = await apiClient.GET("/organizations/{orgId}/audit-logs", {
+        params: { path: { orgId }, query: filters as Record<string, string | number | undefined> },
       });
-      if (error) throw new Error(error.message);
-      return data as AuditLog[];
+      if (error) throw new Error(handleApiError(error));
+      return (data?.logs ?? []) as unknown as AuditLog[];
     },
     enabled: !!orgId,
   });
@@ -693,12 +648,11 @@ export function useUserActivityLogs(userId: string, filters?: AuditLogFilters) {
   return useQuery({
     queryKey: ["user", userId, "activity-logs", filters] as const,
     queryFn: async () => {
-      const { data, error } = await authClient.getUserActivityLogs?.({
-        userId,
-        ...filters,
+      const { data, error } = await apiClient.GET("/users/{userId}/activity-logs", {
+        params: { path: { userId }, query: filters as Record<string, string | number | undefined> },
       });
-      if (error) throw new Error(error.message);
-      return data as AuditLog[];
+      if (error) throw new Error(handleApiError(error));
+      return (data?.logs ?? []) as unknown as AuditLog[];
     },
     enabled: !!userId,
   });
@@ -710,12 +664,14 @@ export function useUserActivityLogs(userId: string, filters?: AuditLogFilters) {
 export function useExportAuditLogs() {
   return useMutation({
     mutationFn: async (data: { orgId: string; format: "csv" | "json"; filters?: AuditLogFilters }) => {
-      const { data: result, error } = await authClient.organization.exportAuditLogs?.({
-        organizationId: data.orgId,
-        format: data.format,
-        ...data.filters,
+      const { data: result, error } = await apiClient.POST("/organizations/{orgId}/audit-logs/export", {
+        params: { path: { orgId: data.orgId } },
+        body: {
+          format: data.format,
+          filters: data.filters as Record<string, string | number | undefined> | undefined,
+        },
       });
-      if (error) throw new Error(error.message);
+      if (error) throw new Error(handleApiError(error));
       return result;
     },
   });

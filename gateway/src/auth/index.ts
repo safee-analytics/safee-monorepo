@@ -1,10 +1,23 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { organization, openAPI, admin, username, lastLoginMethod } from "better-auth/plugins";
+import {
+  organization,
+  openAPI,
+  admin,
+  username,
+  lastLoginMethod,
+  phoneNumber,
+  twoFactor,
+  magicLink,
+  emailOTP,
+  genericOAuth,
+  apiKey,
+} from "better-auth/plugins";
 import { connect, schema } from "@safee/database";
 import { randomUUID } from "crypto";
 import { organizationHooks } from "./organization.hooks.js";
 import { createSessionHooks } from "./session.hooks.js";
+import { ac } from "./accessControl.js";
 
 const { drizzle } = connect("better-auth");
 
@@ -22,6 +35,41 @@ export const auth = betterAuth({
     openAPI(),
     admin(),
     username(),
+    twoFactor(),
+    phoneNumber({
+      sendOTP: ({ phoneNumber, code }, request) => {
+        // Implement sending OTP code via SMS
+      },
+    }),
+    magicLink({
+      sendMagicLink: async ({ email, token, url }, request) => {
+        // send email to user
+      },
+    }),
+    emailOTP({
+      async sendVerificationOTP({ email, otp, type }) {
+        if (type === "sign-in") {
+          // Send the OTP for sign in
+        } else if (type === "email-verification") {
+          // Send the OTP for email verification
+        } else {
+          // Send the OTP for password reset
+        }
+      },
+    }),
+    apiKey(),
+    genericOAuth({
+      config: [
+        {
+          providerId: "provider-id",
+          clientId: "test-client-id",
+          clientSecret: "test-client-secret",
+          discoveryUrl: "https://auth.example.com/.well-known/openid-configuration",
+          // ... other config options
+        },
+        // Add more providers as needed
+      ],
+    }),
     lastLoginMethod({
       storeInDatabase: true,
     }),
@@ -34,19 +82,10 @@ export const auth = betterAuth({
       },
       dynamicAccessControl: {
         enabled: true,
+        ac,
         maximumRolesPerOrganization: async () => {
           // TODO: Make this plan-based in the future
-          return 50; // Default limit for all organizations
-        },
-      },
-      schema: {
-        organization: {
-          fields: {
-            name: "string",
-            slug: "string",
-            logo: "string",
-            metadata: "string",
-          },
+          return 50;
         },
       },
     }),

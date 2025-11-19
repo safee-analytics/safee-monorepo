@@ -23,6 +23,7 @@ import { useAuth } from "@/lib/auth/hooks";
 import { CommandPalette } from "@/components/search/CommandPalette";
 import { SearchBar } from "@/components/search/SearchBar";
 import { useActiveOrganization, useListOrganizations, useOrganizationMembers } from "@/lib/api/hooks";
+import { CompanyMenu } from "./CompanyMenu";
 
 export function Navigation() {
   const pathname = usePathname();
@@ -135,11 +136,6 @@ export function Navigation() {
 
             <LanguageSwitcher />
 
-            <button className="text-sm text-safee-600 hover:text-safee-700 font-medium hidden lg:flex items-center gap-2">
-              <FiUser className="w-4 h-4" />
-              {t.common.contactExperts}
-            </button>
-
             <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
               <FiCalendar className="w-5 h-5" />
             </button>
@@ -148,6 +144,8 @@ export function Navigation() {
               <FiBell className="w-5 h-5" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
+
+            <CompanyMenu />
 
             <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
               <FiHelpCircle className="w-5 h-5" />

@@ -3,17 +3,36 @@ import { apiClient, handleApiError } from "../client";
 import type { paths } from "../types";
 import { queryKeys } from "./queryKeys";
 
+export type CaseAssignment = {
+  role?: string;
+  userId?: string;
+  user?: {
+    name?: string;
+    email: string;
+  };
+};
+
+export type CaseData = {
+  id: string;
+  caseNumber: string;
+  auditType: string;
+  clientName: string;
+  status: string;
+  priority: string;
+  dueDate?: string;
+  createdBy: string;
+  assignments?: CaseAssignment[];
+};
+
 export function useCases(filters?: { status?: string; priority?: string; assignedTo?: string }) {
-  return useQuery({
+  return useQuery<CaseData[]>({
     queryKey: queryKeys.cases.list(filters),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/cases", {
-        params: {
-          query: filters,
-        },
-      });
-      if (error) throw new Error(handleApiError(error));
-      return data;
+      // Skip the apiClient if no /cases route exists in types, use fetch directly
+      const queryParams = filters ? new URLSearchParams(filters as Record<string, string>) : '';
+      const response = await fetch(`/api/v1/cases${queryParams ? `?${queryParams}` : ''}`);
+      if (!response.ok) throw new Error('Failed to fetch cases');
+      return response.json();
     },
   });
 }

@@ -24,9 +24,9 @@ export function useWorkflow(id: string) {
   return useQuery({
     queryKey: queryKeys.workflows.detail(id),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/workflows/{id}", {
+      const { data, error } = await apiClient.GET("/workflows/{workflowId}", {
         params: {
-          path: { id },
+          path: { workflowId: id },
         },
       });
       if (error) throw new Error(handleApiError(error));
@@ -64,11 +64,11 @@ export function useUpdateWorkflow() {
       updates,
     }: {
       id: string;
-      updates: paths["/workflows/{id}"]["patch"]["requestBody"]["content"]["application/json"];
+      updates: paths["/workflows/{workflowId}"]["put"]["requestBody"]["content"]["application/json"];
     }) => {
-      const { data, error } = await apiClient.PATCH("/workflows/{id}", {
+      const { data, error } = await apiClient.PUT("/workflows/{workflowId}", {
         params: {
-          path: { id },
+          path: { workflowId: id },
         },
         body: updates,
       });
@@ -87,9 +87,9 @@ export function useDeleteWorkflow() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data, error } = await apiClient.DELETE("/workflows/{id}", {
+      const { data, error } = await apiClient.DELETE("/workflows/{workflowId}", {
         params: {
-          path: { id },
+          path: { workflowId: id },
         },
       });
       if (error) throw new Error(handleApiError(error));
@@ -141,9 +141,9 @@ export function useDeleteApprovalRule() {
 
   return useMutation({
     mutationFn: async (id: string) => {
-      const { data, error } = await apiClient.DELETE("/workflows/rules/{id}", {
+      const { data, error } = await apiClient.DELETE("/workflows/rules/{ruleId}", {
         params: {
-          path: { id },
+          path: { ruleId: id },
         },
       });
       if (error) throw new Error(handleApiError(error));
@@ -156,11 +156,11 @@ export function useDeleteApprovalRule() {
 }
 
 // Approval Requests
-export function useApprovalRequests(status?: string) {
+export function useApprovalRequests(status?: "pending" | "approved" | "rejected" | "cancelled") {
   return useQuery({
     queryKey: queryKeys.approvals.requests(status),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/approvals/requests", {
+      const { data, error } = await apiClient.GET("/approvals", {
         params: {
           query: status ? { status } : undefined,
         },
@@ -175,9 +175,9 @@ export function useApprovalRequest(id: string) {
   return useQuery({
     queryKey: queryKeys.approvals.request(id),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/approvals/requests/{id}", {
+      const { data, error } = await apiClient.GET("/approvals/{requestId}", {
         params: {
-          path: { id },
+          path: { requestId: id },
         },
       });
       if (error) throw new Error(handleApiError(error));
@@ -211,7 +211,7 @@ export function useApproveRequest() {
 
   return useMutation({
     mutationFn: async ({ requestId, comments }: { requestId: string; comments?: string }) => {
-      const { data, error } = await apiClient.POST("/approvals/requests/{requestId}/approve", {
+      const { data, error } = await apiClient.POST("/approvals/{requestId}/approve", {
         params: {
           path: { requestId },
         },
@@ -232,7 +232,7 @@ export function useRejectRequest() {
 
   return useMutation({
     mutationFn: async ({ requestId, comments }: { requestId: string; comments?: string }) => {
-      const { data, error } = await apiClient.POST("/approvals/requests/{requestId}/reject", {
+      const { data, error } = await apiClient.POST("/approvals/{requestId}/reject", {
         params: {
           path: { requestId },
         },
@@ -261,7 +261,7 @@ export function useDelegateApproval() {
       delegateToUserId: string;
       comments?: string;
     }) => {
-      const { data, error } = await apiClient.POST("/approvals/requests/{requestId}/delegate", {
+      const { data, error } = await apiClient.POST("/approvals/{requestId}/delegate", {
         params: {
           path: { requestId },
         },

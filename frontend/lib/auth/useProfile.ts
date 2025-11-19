@@ -9,9 +9,6 @@ export function useProfile() {
   const [error, setError] = useState<string | null>(null);
   const { setLocale } = useOrgStore();
 
-  /**
-   * Fetch current user profile from API
-   */
   const fetchProfile = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -24,7 +21,6 @@ export function useProfile() {
         return null;
       }
 
-      // Update locale in store if it exists in profile
       if (data?.preferredLocale) {
         setLocale(data.preferredLocale);
       }
@@ -39,9 +35,6 @@ export function useProfile() {
     }
   }, [setLocale]);
 
-  /**
-   * Update user profile (name, locale)
-   */
   const updateProfile = useCallback(
     async (updates: { name?: string; preferredLocale?: "en" | "ar" }) => {
       try {
@@ -55,7 +48,6 @@ export function useProfile() {
           return { success: false, error: "Failed to update profile" };
         }
 
-        // Update locale in store if changed
         if (updates.preferredLocale) {
           setLocale(updates.preferredLocale);
         }
@@ -73,9 +65,6 @@ export function useProfile() {
     [setLocale],
   );
 
-  /**
-   * Update user locale preference
-   */
   const changeLocale = useCallback(
     async (locale: "en" | "ar") => {
       try {
@@ -89,7 +78,6 @@ export function useProfile() {
           return { success: false, error: "Failed to update locale" };
         }
 
-        // Update locale in store
         setLocale(locale);
 
         return { success: true, data };

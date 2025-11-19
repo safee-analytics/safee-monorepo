@@ -6,11 +6,12 @@ import { Filter, Download, RefreshCw, Search, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface AuditLogFilters {
-  startDate?: Date;
-  endDate?: Date;
+  entityType?: string;
+  entityId?: string;
+  action?: string;
   userId?: string;
-  actionType?: string;
-  resourceType?: string;
+  startDate?: string;
+  endDate?: string;
   limit?: number;
   offset?: number;
 }
@@ -32,20 +33,22 @@ export default function AuditLogsPage() {
     setFilters((prev) => ({ ...prev, [key]: value, offset: 0 }));
   };
 
-  const handleExport = async () => {
+  const handleExport = async (format: "csv" | "json" = "json") => {
     if (!activeOrg?.id) return;
     try {
       const result = await exportAuditLogsMutation.mutateAsync({
-        organizationId: activeOrg.id,
+        orgId: activeOrg.id,
+        format,
         filters,
       });
 
       // Create a blob and download
-      const blob = new Blob([JSON.stringify(result, null, 2)], { type: "application/json" });
+      const contentType = format === "csv" ? "text/csv" : "application/json";
+      const blob = new Blob([result.data], { type: contentType });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `audit-logs-${new Date().toISOString()}.json`;
+      a.download = result.filename;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -61,14 +64,14 @@ export default function AuditLogsPage() {
     const query = searchQuery.toLowerCase();
     return (
       log.action.toLowerCase().includes(query) ||
-      log.resourceType?.toLowerCase().includes(query) ||
-      log.userName?.toLowerCase().includes(query) ||
+      log.entityType?.toLowerCase().includes(query) ||
+      log.user?.name?.toLowerCase().includes(query) ||
       log.userAgent?.toLowerCase().includes(query)
     );
   });
 
-  const actionTypes = ["create", "update", "delete", "login", "logout", "invite", "remove"];
-  const resourceTypes = ["user", "organization", "member", "role", "session", "settings"];
+  const actionTypes = ["created", "updated", "deleted", "completed", "failed", "started", "cancelled", "retrying"];
+  const entityTypes = ["job", "invoice", "user", "organization", "employee", "contact", "deal"];
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -115,14 +118,23 @@ export default function AuditLogsPage() {
                 <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
                 Refresh
               </button>
-              <button
-                onClick={handleExport}
-                disabled={exportAuditLogsMutation.isPending}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 disabled:opacity-50"
-              >
-                <Download className="w-4 h-4" />
-                {exportAuditLogsMutation.isPending ? "Exporting..." : "Export"}
-              </button>
+              <div className="flex gap-1">
+                <button
+                  onClick={() => handleExport("json")}
+                  disabled={exportAuditLogsMutation.isPending}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-l-lg hover:bg-blue-700 flex items-center gap-2 disabled:opacity-50"
+                >
+                  <Download className="w-4 h-4" />
+                  {exportAuditLogsMutation.isPending ? "Exporting..." : "Export JSON"}
+                </button>
+                <button
+                  onClick={() => handleExport("csv")}
+                  disabled={exportAuditLogsMutation.isPending}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 border-l border-blue-500 disabled:opacity-50"
+                >
+                  CSV
+                </button>
+              </div>
             </div>
           </div>
 
@@ -136,8 +148,8 @@ export default function AuditLogsPage() {
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Action Type</label>
                 <select
-                  value={filters.actionType || ""}
-                  onChange={(e) => handleFilterChange("actionType", e.target.value || undefined)}
+                  value={filters.action || ""}
+                  onChange={(e) => handleFilterChange("action", e.target.value || undefined)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">All Actions</option>
@@ -150,14 +162,14 @@ export default function AuditLogsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Resource Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Entity Type</label>
                 <select
-                  value={filters.resourceType || ""}
-                  onChange={(e) => handleFilterChange("resourceType", e.target.value || undefined)}
+                  value={filters.entityType || ""}
+                  onChange={(e) => handleFilterChange("entityType", e.target.value || undefined)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">All Resources</option>
-                  {resourceTypes.map((type) => (
+                  <option value="">All Entities</option>
+                  {entityTypes.map((type) => (
                     <option key={type} value={type}>
                       {type.charAt(0).toUpperCase() + type.slice(1)}
                     </option>
@@ -171,9 +183,7 @@ export default function AuditLogsPage() {
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="date"
-                    onChange={(e) =>
-                      handleFilterChange("startDate", e.target.value ? new Date(e.target.value) : undefined)
-                    }
+                    onChange={(e) => handleFilterChange("startDate", e.target.value || undefined)}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -185,9 +195,7 @@ export default function AuditLogsPage() {
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="date"
-                    onChange={(e) =>
-                      handleFilterChange("endDate", e.target.value ? new Date(e.target.value) : undefined)
-                    }
+                    onChange={(e) => handleFilterChange("endDate", e.target.value || undefined)}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -211,7 +219,7 @@ export default function AuditLogsPage() {
                     Action
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Resource
+                    Entity
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     IP Address
@@ -235,15 +243,15 @@ export default function AuditLogsPage() {
                         {new Date(log.createdAt).toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{log.userName || "Unknown"}</div>
-                        <div className="text-xs text-gray-500">{log.userId}</div>
+                        <div className="text-sm font-medium text-gray-900">{log.user?.name || "Unknown"}</div>
+                        <div className="text-xs text-gray-500">{log.userId || "-"}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`px-2 py-1 text-xs font-medium rounded-full ${
-                            log.action.includes("delete") || log.action.includes("remove")
+                            log.action.includes("deleted") || log.action.includes("failed")
                               ? "bg-red-100 text-red-800"
-                              : log.action.includes("create") || log.action.includes("add")
+                              : log.action.includes("created") || log.action.includes("completed")
                                 ? "bg-green-100 text-green-800"
                                 : "bg-blue-100 text-blue-800"
                           }`}
@@ -252,8 +260,8 @@ export default function AuditLogsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{log.resourceType || "-"}</div>
-                        {log.resourceId && <div className="text-xs text-gray-500">{log.resourceId}</div>}
+                        <div className="text-sm text-gray-900">{log.entityType || "-"}</div>
+                        <div className="text-xs text-gray-500">{log.entityId}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         {log.ipAddress || "-"}

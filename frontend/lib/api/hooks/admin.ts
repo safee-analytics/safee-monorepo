@@ -105,7 +105,7 @@ export function useStopImpersonation() {
 
   return useMutation({
     mutationFn: async () => {
-      const { data, error } = await authClient.admin.stopImpersonation();
+      const { data, error } = await authClient.admin.stopImpersonating({});
       if (error) throw new Error(error.message);
       return data;
     },
@@ -133,10 +133,12 @@ export function useListAllUsers(options?: {
     queryKey: [...adminQueryKeys.users, options] as const,
     queryFn: async () => {
       const { data, error } = await authClient.admin.listUsers({
-        limit: options?.limit,
-        offset: options?.offset,
-        sortBy: options?.sortBy,
-        sortDirection: options?.sortDirection,
+        query: {
+          limit: options?.limit?.toString(),
+          offset: options?.offset?.toString(),
+          sortBy: options?.sortBy,
+          sortDirection: options?.sortDirection,
+        },
       });
       if (error) throw new Error(error.message);
       return data;
@@ -146,16 +148,22 @@ export function useListAllUsers(options?: {
 
 /**
  * Get user details (admin view with additional info)
+ * Note: better-auth doesn't have a getUser method, using listUsers with email filter
  */
 export function useAdminGetUser(userId: string) {
   return useQuery({
     queryKey: adminQueryKeys.user(userId),
     queryFn: async () => {
-      const { data, error } = await authClient.admin.getUser({
-        userId,
+      // Use listUsers to find the specific user
+      const { data, error } = await authClient.admin.listUsers({
+        query: {
+          filterField: "id",
+          filterValue: userId,
+          filterOperator: "eq",
+        },
       });
       if (error) throw new Error(error.message);
-      return data;
+      return data?.users?.[0] ?? null;
     },
     enabled: !!userId,
   });
@@ -163,13 +171,14 @@ export function useAdminGetUser(userId: string) {
 
 /**
  * Delete user account (admin only)
+ * Note: better-auth uses removeUser instead of deleteUser
  */
 export function useAdminDeleteUser() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (userId: string) => {
-      const { data, error } = await authClient.admin.deleteUser({
+      const { data, error } = await authClient.admin.removeUser({
         userId,
       });
       if (error) throw new Error(error.message);
@@ -198,7 +207,7 @@ export function useAdminUpdateUser() {
     }) => {
       const { data: result, error } = await authClient.admin.updateUser({
         userId: data.userId,
-        update: {
+        data: {
           email: data.email,
           name: data.name,
           emailVerified: data.emailVerified,
@@ -223,8 +232,10 @@ export function useListBannedUsers() {
     queryKey: adminQueryKeys.bannedUsers,
     queryFn: async () => {
       const { data, error } = await authClient.admin.listUsers({
-        where: {
-          banned: true,
+        query: {
+          filterField: "banned",
+          filterValue: true,
+          filterOperator: "eq",
         },
       });
       if (error) throw new Error(error.message);
@@ -250,10 +261,10 @@ export function useAdminCreateUser() {
       const { data: result, error } = await authClient.admin.createUser({
         email: data.email,
         password: data.password,
-        name: data.name,
-        emailVerified: data.emailVerified ?? true,
+        name: data.name || "",
+        role: (data.role || "user") as "user" | "admin",
         data: {
-          role: data.role || "user",
+          emailVerified: data.emailVerified ?? true,
         },
       });
       if (error) throw new Error(error.message);
@@ -267,15 +278,18 @@ export function useAdminCreateUser() {
 
 /**
  * Set user's email as verified (admin only)
+ * Note: better-auth doesn't have setEmailVerified, using updateUser instead
  */
 export function useAdminVerifyEmail() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (userId: string) => {
-      const { data, error } = await authClient.admin.setEmailVerified({
+      const { data, error } = await authClient.admin.updateUser({
         userId,
-        emailVerified: true,
+        data: {
+          emailVerified: true,
+        },
       });
       if (error) throw new Error(error.message);
       return data;
@@ -292,9 +306,9 @@ export function useAdminVerifyEmail() {
 export function useAdminResetPassword() {
   return useMutation({
     mutationFn: async (data: { userId: string; newPassword: string }) => {
-      const { data: result, error } = await authClient.admin.setPassword({
+      const { data: result, error } = await authClient.admin.setUserPassword({
         userId: data.userId,
-        password: data.newPassword,
+        newPassword: data.newPassword,
       });
       if (error) throw new Error(error.message);
       return result;
@@ -316,7 +330,7 @@ export function useAdminSetRole() {
     mutationFn: async (data: { userId: string; role: string }) => {
       const { data: result, error } = await authClient.admin.setRole({
         userId: data.userId,
-        role: data.role,
+        role: data.role as "admin" | "user",
       });
       if (error) throw new Error(error.message);
       return result;
@@ -329,13 +343,14 @@ export function useAdminSetRole() {
 
 /**
  * Check if user has specific permission (admin)
+ * Note: better-auth hasPermission may not accept arbitrary strings, using type assertion
  */
 export function useAdminHasPermission() {
   return useMutation({
     mutationFn: async (data: { userId: string; permission: string }) => {
       const { data: result, error } = await authClient.admin.hasPermission({
         userId: data.userId,
-        permission: data.permission,
+        permission: data.permission as any,
       });
       if (error) throw new Error(error.message);
       return result;
@@ -371,10 +386,9 @@ export function useAdminRevokeUserSession() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { userId: string; sessionId: string }) => {
+    mutationFn: async (data: { userId: string; sessionToken: string }) => {
       const { data: result, error } = await authClient.admin.revokeUserSession({
-        userId: data.userId,
-        sessionId: data.sessionId,
+        sessionToken: data.sessionToken,
       });
       if (error) throw new Error(error.message);
       return result;

@@ -23,11 +23,17 @@ export const users = identitySchema.table(
     username: varchar("username", { length: 255 }).unique(),
     displayUsername: varchar("display_username", { length: 255 }),
 
+    // Better-Auth two-factor plugin field
+    twoFactorEnabled: boolean("two_factor_enabled").default(false),
+
+    // Better-Auth phone number fields
+    phoneNumber: varchar("phone_number", { length: 50 }).unique(),
+    phoneNumberVerified: boolean("phone_number_verified"),
+
     // Better-Auth lastLoginMethod plugin field
     lastLoginMethod: text("last_login_method"),
 
     // Profile fields
-    phone: varchar("phone", { length: 50 }),
     jobTitle: varchar("job_title", { length: 255 }),
     department: varchar("department", { length: 255 }),
     company: varchar("company", { length: 255 }),

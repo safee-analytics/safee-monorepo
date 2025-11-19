@@ -77,7 +77,6 @@ const TableRows = ({ user, index, shift }: TableRowsProps) => {
       </td>
 
       <td className="p-4 flex items-center gap-3 overflow-hidden">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={user.photoURL}
           alt="Example user photo"

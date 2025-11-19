@@ -15,39 +15,65 @@ import {
   Lock,
   Users,
   FileText,
+  Building2,
 } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useCanAccessSettingsPage } from "@/lib/api/hooks/permissions";
+import { settingsPermissions } from "@/lib/permissions/accessControl";
 
 interface SettingLink {
   href: string;
   label: string;
   icon: React.ComponentType<{ className?: string }>;
-  restricted?: boolean;
+  pageKey: keyof typeof settingsPermissions;
 }
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { t } = useTranslation();
 
-  const settingsLinks: SettingLink[] = [
-    { href: "/settings/profile", label: "Profile", icon: User, restricted: false },
+  const allSettingsLinks: SettingLink[] = [
+    { href: "/settings/profile", label: "Profile", icon: User, pageKey: "profile" },
     {
       href: "/settings/notifications",
       label: t.common.notifications || "Notifications",
       icon: Bell,
-      restricted: false,
+      pageKey: "notifications",
     },
-    { href: "/settings/appearance", label: "Appearance", icon: Palette, restricted: false },
-    { href: "/settings/team", label: "Team", icon: Users, restricted: true },
-    { href: "/settings/audit-logs", label: "Audit Logs", icon: FileText, restricted: true },
-    { href: "/settings/security", label: "Security", icon: Shield, restricted: true },
-    { href: "/settings/storage", label: t.common.storage || "Storage", icon: HardDrive, restricted: true },
-    { href: "/settings/integrations", label: "Integrations", icon: Globe, restricted: true },
-    { href: "/settings/api", label: "API Keys", icon: Key, restricted: true },
-    { href: "/settings/database", label: "Database", icon: Database, restricted: true },
+    { href: "/settings/appearance", label: "Appearance", icon: Palette, pageKey: "appearance" },
+    { href: "/settings/organization", label: "Organization", icon: Building2, pageKey: "organization" },
+    { href: "/settings/team", label: "Team", icon: Users, pageKey: "team" },
+    { href: "/settings/audit-logs", label: "Audit Logs", icon: FileText, pageKey: "audit-logs" },
+    { href: "/settings/security", label: "Security", icon: Shield, pageKey: "security" },
+    {
+      href: "/settings/storage",
+      label: t.common.storage || "Storage",
+      icon: HardDrive,
+      pageKey: "storage",
+    },
+    { href: "/settings/integrations", label: "Integrations", icon: Globe, pageKey: "integrations" },
+    { href: "/settings/api", label: "API Keys", icon: Key, pageKey: "api" },
+    { href: "/settings/database", label: "Database", icon: Database, pageKey: "database" },
+    {
+      href: "/settings/invoice-styles",
+      label: "Invoice Styles",
+      icon: FileText,
+      pageKey: "invoice-styles",
+    },
   ];
 
+  // Filter links based on permissions
+  const settingsLinks = allSettingsLinks.filter((link) => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    return useCanAccessSettingsPage(link.pageKey);
+  });
+
   const isActive = (href: string) => pathname === href || pathname?.startsWith(href + "/");
+
+  // Check if page requires permission
+  const hasRestriction = (pageKey: keyof typeof settingsPermissions) => {
+    return settingsPermissions[pageKey].length > 0;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -59,6 +85,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
             <nav className="space-y-1">
               {settingsLinks.map((link) => {
                 const Icon = link.icon;
+                const restricted = hasRestriction(link.pageKey);
                 return (
                   <Link key={link.href} href={link.href}>
                     <motion.div
@@ -71,7 +98,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                     >
                       <Icon className="w-5 h-5" />
                       <span className="flex-1">{link.label}</span>
-                      {link.restricted && <Lock className="w-3 h-3 text-gray-400" title="Admin only" />}
+                      {restricted && <Lock className="w-3 h-3 text-gray-400" aria-label="Requires permission" />}
                     </motion.div>
                   </Link>
                 );

@@ -30,7 +30,7 @@ export default function AccountingPage() {
   // Fetch data
   const { data: invoices } = useInvoices({ limit: 5 });
   const { data: bills } = useBills({ limit: 5 });
-  const { data: payments } = usePayments({ limit: 5 });
+  const { data: payments } = usePayments();
   const { data: profitLoss } = useProfitLoss(dateRange.from, dateRange.to);
   const { data: agedReceivable } = useAgedReceivable();
   const { data: agedPayable } = useAgedPayable();
@@ -289,9 +289,9 @@ export default function AccountingPage() {
             </Link>
           </div>
           <div className="p-6">
-            {payments?.payments && payments.payments.length > 0 ? (
+            {payments && payments.length > 0 ? (
               <div className="space-y-3">
-                {payments.payments.map((payment) => (
+                {payments.map((payment) => (
                   <div
                     key={payment.id}
                     className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
@@ -302,7 +302,7 @@ export default function AccountingPage() {
                       </div>
                       <div>
                         <p className="font-medium text-gray-900">{payment.ref || `Payment #${payment.id}`}</p>
-                        <p className="text-sm text-gray-600">{payment.date}</p>
+                        <p className="text-sm text-gray-600">{payment.paymentDate}</p>
                       </div>
                     </div>
                     <div className="text-right">

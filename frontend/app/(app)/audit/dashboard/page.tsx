@@ -7,7 +7,7 @@ import { NotificationCard } from "@/components/audit/ui/NotificationCard";
 import { CaseCard } from "@/components/audit/ui/CaseCard";
 import { ActivityItem } from "@/components/audit/ui/ActivityItem";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
-import { useCases, useNotifications, useActivity } from "@/lib/api/hooks";
+import { useCases, useNotifications, useActivity, type CaseData, type CaseAssignment } from "@/lib/api/hooks";
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -56,16 +56,16 @@ export default function AuditDashboard() {
       };
     }
 
-    const activeCases = apiCases.filter((c) => c.status === "in-progress").length;
-    const completedAudits = apiCases.filter((c) => c.status === "completed").length;
-    const pendingReviews = apiCases.filter((c) => c.status === "under-review").length;
+    const activeCases = apiCases.filter((c: CaseData) => c.status === "in-progress").length;
+    const completedAudits = apiCases.filter((c: CaseData) => c.status === "completed").length;
+    const pendingReviews = apiCases.filter((c: CaseData) => c.status === "under-review").length;
     const totalCases = apiCases.length;
     const completionRate = totalCases > 0 ? Math.round((completedAudits / totalCases) * 100) : 0;
 
     // Get unique team members from assignments
     const uniqueMembers = new Set<string>();
-    apiCases.forEach((c) => {
-      c.assignments?.forEach((a) => {
+    apiCases.forEach((c: CaseData) => {
+      c.assignments?.forEach((a: CaseAssignment) => {
         if (a.userId) uniqueMembers.add(a.userId);
       });
     });
@@ -89,19 +89,24 @@ export default function AuditDashboard() {
       id: notification.id,
       type: notification.type as "deadline" | "review" | "completed" | "team",
       title: notification.title,
-      description: notification.message,
-      timestamp: new Date(notification.createdAt).toLocaleString("en-US", {
-        hour: "numeric",
-        minute: "numeric",
-        hour12: true,
-      }),
+      description: notification.description,
+      timestamp: notification.timestamp,
     }));
   }, [notifications]);
 
-  const recentCases = useMemo(() => {
+  const recentCases = useMemo<Array<{
+    id: string;
+    companyName: string;
+    auditType: string;
+    status: "in-progress" | "completed" | "overdue";
+    dueDate: string;
+    completedDate?: string;
+    icon: string;
+    iconBg: string;
+  }>>(() => {
     if (!apiCases) return [];
 
-    return apiCases.slice(0, 3).map((caseData) => ({
+    return apiCases.slice(0, 3).map((caseData: CaseData) => ({
       id: caseData.id,
       companyName: caseData.clientName,
       auditType: caseData.auditType,
@@ -128,17 +133,17 @@ export default function AuditDashboard() {
 
     return activity.slice(0, 4).map((item) => ({
       id: item.id,
-      userId: item.userId,
-      userName: item.userName,
-      userAvatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.userName}`,
-      action: item.action,
-      description: item.description,
-      timestamp: new Date(item.createdAt).toLocaleString("en-US", {
+      userId: item.updatedBy.id,
+      userName: item.updatedBy.name,
+      userAvatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.updatedBy.name}`,
+      action: `Updated case ${item.caseNumber}`,
+      description: `Changed status to ${item.status} for ${item.clientName}`,
+      timestamp: new Date(item.updatedAt).toLocaleString("en-US", {
         hour: "numeric",
         minute: "numeric",
         hour12: true,
       }),
-      icon: (item.actionType || "check") as "check" | "play" | "edit" | "upload",
+      icon: (item.type === "case_update" ? "edit" : "check") as "check" | "play" | "edit" | "upload",
     }));
   }, [activity]);
 
@@ -149,17 +154,17 @@ export default function AuditDashboard() {
     const currentYear = new Date().getFullYear();
 
     return months.map((month, index) => {
-      const casesInMonth = apiCases.filter((c) => {
-        if (!c.createdAt) return false;
-        const caseDate = new Date(c.createdAt);
+      const casesInMonth = apiCases.filter((c: CaseData) => {
+        if (!(c as CaseData & { createdAt?: string }).createdAt) return false;
+        const caseDate = new Date((c as CaseData & { createdAt?: string }).createdAt!);
         return caseDate.getMonth() === index && caseDate.getFullYear() === currentYear;
       });
 
       return {
         month,
-        completed: casesInMonth.filter((c) => c.status === "completed").length,
-        inProgress: casesInMonth.filter((c) => c.status === "in-progress").length,
-        pending: casesInMonth.filter((c) => c.status === "pending" || c.status === "under-review").length,
+        completed: casesInMonth.filter((c: CaseData) => c.status === "completed").length,
+        inProgress: casesInMonth.filter((c: CaseData) => c.status === "in-progress").length,
+        pending: casesInMonth.filter((c: CaseData) => c.status === "pending" || c.status === "under-review").length,
       };
     });
   }, [apiCases]);

@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Users, UserCheck, Clock, Shield, UserPlus } from "lucide-react";
+import { Search, Users, UserCheck, Clock, Shield, UserPlus, AlertCircle } from "lucide-react";
 import {
   useSession,
   useOrganizationMembers,
   useInviteMember,
   useRemoveMember,
   useUpdateMemberRole,
+  useAssignableRoles,
+  useManageableUsers,
 } from "@/lib/api/hooks";
 import Link from "next/link";
 
@@ -20,9 +22,16 @@ export default function TeamManagement() {
   const orgId = session?.session.activeOrganizationId;
 
   const { data: members, isLoading } = useOrganizationMembers(orgId || "");
+
+  // Infer member type from the hook's return data
+  type Member = NonNullable<typeof members>[number];
   const inviteMemberMutation = useInviteMember();
   const removeMemberMutation = useRemoveMember();
   const updateMemberRoleMutation = useUpdateMemberRole();
+
+  // Hierarchical permissions
+  const assignableRoles = useAssignableRoles();
+  const manageableUserIds = useManageableUsers();
 
   const stats = {
     totalUsers: members?.length || 0,
@@ -31,7 +40,7 @@ export default function TeamManagement() {
     activityRate: "87% activity rate", // TODO: Calculate from activity logs
     pendingInvites: 0, // TODO: Get from invitations API
     pendingNote: "Expire soon",
-    adminRoles: members?.filter((m) => m.role === "admin" || m.role === "owner").length || 0,
+    adminRoles: members?.filter((m: Member) => m.role === "admin" || m.role === "owner").length || 0,
     adminNote: "Admin & Owner",
   };
 
@@ -45,7 +54,7 @@ export default function TeamManagement() {
     return colors[role] || "bg-gray-100 text-gray-700";
   };
 
-  const filteredMembers = (members || []).filter((member) => {
+  const filteredMembers = (members || []).filter((member: Member) => {
     const matchesSearch =
       searchQuery === "" ||
       member.user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -55,6 +64,9 @@ export default function TeamManagement() {
 
     return matchesSearch && matchesRole;
   });
+
+  // Check if user can manage a specific member
+  const canManage = (userId: string) => manageableUserIds.includes(userId);
 
   const handleInviteMember = (email: string, role: string, name?: string) => {
     if (!orgId) return;
@@ -71,6 +83,10 @@ export default function TeamManagement() {
 
   const handleRemoveMember = (userId: string) => {
     if (!orgId) return;
+    if (!canManage(userId)) {
+      alert("You don't have permission to remove this user.");
+      return;
+    }
     if (confirm("Are you sure you want to remove this member?")) {
       removeMemberMutation.mutate({ orgId, userId });
     }
@@ -78,6 +94,14 @@ export default function TeamManagement() {
 
   const handleUpdateRole = (userId: string, newRole: string) => {
     if (!orgId) return;
+    if (!canManage(userId)) {
+      alert("You don't have permission to change this user's role.");
+      return;
+    }
+    if (!assignableRoles.includes(newRole)) {
+      alert("You don't have permission to assign this role.");
+      return;
+    }
     updateMemberRoleMutation.mutate({ orgId, userId, role: newRole });
   };
 
@@ -229,26 +253,37 @@ export default function TeamManagement() {
                       {new Date(member.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        <select
-                          value={member.role}
-                          onChange={(e) => handleUpdateRole(member.userId, e.target.value)}
-                          className="text-sm border border-gray-300 rounded px-2 py-1"
-                          disabled={member.role === "owner"}
-                        >
-                          <option value="owner">Owner</option>
-                          <option value="admin">Admin</option>
-                          <option value="manager">Manager</option>
-                          <option value="member">Member</option>
-                        </select>
-                        <button
-                          onClick={() => handleRemoveMember(member.userId)}
-                          className="text-red-600 hover:text-red-700 text-sm font-medium"
-                          disabled={member.role === "owner"}
-                        >
-                          Remove
-                        </button>
-                      </div>
+                      {canManage(member.userId) ? (
+                        <div className="flex items-center justify-end gap-2">
+                          <select
+                            value={member.role}
+                            onChange={(e) => handleUpdateRole(member.userId, e.target.value)}
+                            className="text-sm border border-gray-300 rounded px-2 py-1"
+                          >
+                            {/* Show current role even if not assignable */}
+                            <option value={member.role} disabled>
+                              {member.role}
+                            </option>
+                            {/* Show assignable roles */}
+                            {assignableRoles.map((role) => (
+                              <option key={role} value={role}>
+                                {role}
+                              </option>
+                            ))}
+                          </select>
+                          <button
+                            onClick={() => handleRemoveMember(member.userId)}
+                            className="text-red-600 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-end gap-2 text-gray-400">
+                          <AlertCircle className="w-4 h-4" />
+                          <span className="text-sm">No permission</span>
+                        </div>
+                      )}
                     </td>
                   </tr>
                 ))
@@ -300,10 +335,19 @@ export default function TeamManagement() {
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   >
-                    <option value="member">Member</option>
-                    <option value="manager">Manager</option>
-                    <option value="admin">Admin</option>
+                    {assignableRoles.length === 0 ? (
+                      <option value="">No roles available</option>
+                    ) : (
+                      assignableRoles.map((role) => (
+                        <option key={role} value={role}>
+                          {role}
+                        </option>
+                      ))
+                    )}
                   </select>
+                  <p className="text-xs text-gray-500 mt-1">
+                    You can only assign roles lower than your own in the hierarchy
+                  </p>
                 </div>
               </div>
               <div className="flex items-center gap-3 mt-6">

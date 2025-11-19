@@ -25,3 +25,9 @@ export * from "./workflows";
 
 // Re-export accounting hooks
 export * from "./accounting";
+
+// Re-export permission hooks
+export * from "./permissions";
+
+// Re-export invoice style hooks
+export * from "./invoiceStyles";

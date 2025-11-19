@@ -1,12 +1,11 @@
 "use client";
 
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { useState } from "react";
 import { IconType } from "react-icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   FiBarChart,
-  FiChevronDown,
   FiChevronsRight,
   FiDollarSign,
   FiHome,
@@ -30,7 +29,6 @@ import { motion, AnimatePresence, Reorder } from "framer-motion";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useOrgStore } from "@/stores/useOrgStore";
 import { getAllModules } from "@/lib/config/modules";
-import arMessages from "@/messages/ar";
 
 
 

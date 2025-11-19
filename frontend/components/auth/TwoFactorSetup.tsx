@@ -43,9 +43,15 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
       const result = await enable2FAMutation.mutateAsync(password);
 
       // Generate QR code from the OTP auth URL
-      const qrUrl = await QRCode.toDataURL(result.totpUri);
+      const qrUrl = await QRCode.toDataURL(result.totpURI);
       setQrCodeDataUrl(qrUrl);
-      setSecret(result.secret);
+
+      // Extract secret from the TOTP URI (format: otpauth://totp/...?secret=SECRET&...)
+      const secretMatch = result.totpURI.match(/secret=([^&]+)/);
+      if (secretMatch) {
+        setSecret(secretMatch[1]);
+      }
+
       setStep("qr");
     } catch (error) {
       console.error("Failed to enable 2FA:", error);

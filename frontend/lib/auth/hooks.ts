@@ -4,10 +4,6 @@ import { useEffect, useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useSession, useSignIn, useSignUp, useSignOut, useSignInWithGoogle } from "@/lib/api/hooks";
 
-/**
- * Main auth hook that provides authentication functionality
- * Now powered by React Query for better caching and state management
- */
 export function useAuth() {
   const router = useRouter();
   const { data: session, isPending: sessionLoading, error: sessionError } = useSession();
@@ -61,23 +57,21 @@ export function useAuth() {
     }
   }, [signOutMutation, router]);
 
-  const signInWithGoogle = useCallback(async () => {
-    try {
-      await googleSignInMutation.mutateAsync();
-    } catch (error) {
-      console.error("Google sign in error:", error);
-      throw error;
-    }
-  }, [googleSignInMutation]);
+  const signInWithGoogle = useCallback(
+    async (callbackURL?: string) => {
+      try {
+        await googleSignInMutation.mutateAsync({ callbackURL });
+      } catch (error) {
+        console.error("Google sign in error:", error);
+        throw error;
+      }
+    },
+    [googleSignInMutation],
+  );
 
   const signInWithGithub = useCallback(() => {
     // TODO: Add GitHub provider to Better Auth config
     console.warn("GitHub sign in not yet configured");
-  }, []);
-
-  const refreshSession = useCallback(async () => {
-    // React Query handles this automatically with refetch
-    // This is a no-op for backwards compatibility
   }, []);
 
   return {
@@ -90,14 +84,10 @@ export function useAuth() {
     signOut,
     signInWithGoogle,
     signInWithGithub,
-    refreshSession,
     sessionError,
   };
 }
 
-/**
- * Hook that requires authentication and redirects if not authenticated
- */
 export function useRequireAuth(redirectTo: string = "/login") {
   const router = useRouter();
   const pathname = usePathname();

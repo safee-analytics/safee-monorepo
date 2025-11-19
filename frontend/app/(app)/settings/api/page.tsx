@@ -270,9 +270,9 @@ export default function APIKeysSettings() {
             <p className="text-sm text-gray-600 mb-4">
               Learn how to use the Safee API to integrate with your applications.
             </p>
-            <a href="#" className="text-sm text-blue-600 hover:text-blue-700 font-medium">
+            <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
               View API Documentation →
-            </a>
+            </button>
           </div>
 
           {/* Create API Key Modal */}

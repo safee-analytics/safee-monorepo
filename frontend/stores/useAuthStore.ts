@@ -1,24 +1,13 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { Session } from "@/lib/auth/client";
+import type { Session, User } from "@/lib/auth/client";
 
-export type AuthUser = {
-  id: string;
-  email: string;
-  name: string;
-  emailVerified: boolean;
-  image?: string;
-  createdAt: Date;
-  updatedAt: Date;
-};
+// Use inferred User type from Better Auth instead of manual definition
+// This automatically includes all plugin fields (twoFactor, phoneNumber, apiKey, etc.)
+export type AuthUser = User;
 
-export type AuthSession = {
-  id: string;
-  userId: string;
-  expiresAt: Date;
-  ipAddress?: string;
-  userAgent?: string;
-};
+// Use inferred Session type from Better Auth (excluding the 'user' property since we store it separately)
+export type AuthSession = Omit<Session['session'], 'user'>;
 
 interface AuthState {
   user: AuthUser | null;

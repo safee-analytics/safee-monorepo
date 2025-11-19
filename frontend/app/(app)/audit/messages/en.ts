@@ -6,6 +6,9 @@ export const auditEn = {
       uploadDocument: "Upload document",
       createReport: "Create report",
     },
+    searchCases: "Search cases...",
+    searchReports: "Search reports...",
+    searchTeam: "Search team members...",
     // Dashboard
     dashboardTitle: "Dashboard Overview",
     dashboardSubtitle: "Welcome back, here's what's happening with your audits today.",
@@ -240,7 +243,6 @@ export const auditEn = {
     icvReport: "ICV Report",
     qualityApproved: "Quality Approved",
     overallProgress: "Overall Progress",
-    saveChanges: "Save Changes",
     saving: "Saving...",
     downloadPrint: "Download | Print",
     templateSettings: "Template Settings",

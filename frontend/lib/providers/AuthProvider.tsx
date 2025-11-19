@@ -15,12 +15,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         if (sessionData.data) {
           setSession(sessionData.data);
         }
-        // Always set loading to false regardless of result
         setLoading(false);
       } catch (error) {
         console.error("Failed to check session:", error);
-        // On error, don't clear auth - just stop loading
-        // This prevents clearing auth due to network errors
         setLoading(false);
       }
     };

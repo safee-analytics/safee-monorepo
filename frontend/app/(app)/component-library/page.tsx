@@ -37,7 +37,6 @@ import {
   HoverCardGrid,
   AnimatedList,
   SimpleListItem,
-  type DropdownItem,
 
   // Premium Components
   PremiumButton,
@@ -55,7 +54,13 @@ import {
   DragDropList,
   type DragDropItem,
 } from "@safee/ui";
-import { Settings, Users, FileText, LogOut, Edit, Trash2, Plus, ArrowRight, DollarSign, TrendingUp, Activity, Save, Download, Zap, Upload } from "lucide-react";
+import { Settings, Users, FileText, LogOut, Edit, Trash2, Plus, DollarSign, TrendingUp, Activity, Save, Download, Zap, Upload } from "lucide-react";
+
+// Extended DragDropItem with specific properties
+interface TaskDragItem extends DragDropItem {
+  title: string;
+  priority: number;
+}
 
 // Sample data
 const invoiceData = [
@@ -172,11 +177,11 @@ function ComponentLibraryContent() {
     return () => {
       if (pdfUrl) URL.revokeObjectURL(pdfUrl);
     };
-  }, []);
+  }, [pdfUrl]);
 
   const [fabExtended, setFabExtended] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
-  const [dragItems, setDragItems] = React.useState<DragDropItem[]>([
+  const [dragItems, setDragItems] = React.useState<TaskDragItem[]>([
     { id: "1", title: "High Priority Task", priority: 1 },
     { id: "2", title: "Medium Priority Task", priority: 2 },
     { id: "3", title: "Low Priority Task", priority: 3 },
@@ -459,7 +464,7 @@ function ComponentLibraryContent() {
                   items={dragItems}
                   onReorder={setDragItems}
                   showHandle
-                  renderItem={(item: DragDropItem, isDragging) => (
+                  renderItem={(item: TaskDragItem, isDragging) => (
                     <div className={`p-4 ${isDragging ? 'opacity-50' : ''}`}>
                       <div className="flex items-center justify-between">
                         <div>
@@ -889,6 +894,48 @@ function ComponentLibraryContent() {
                     <li>• Project timelines</li>
                     <li>• Resource booking</li>
                   </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Loading States Section */}
+        {activeSection === "loading" && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <h3 className="text-2xl font-bold mb-4">⏳ Skeleton Loaders</h3>
+              <p className="text-gray-600 mb-6">Show elegant loading states while data is fetching</p>
+
+              <div className="space-y-8">
+                {/* Basic Skeleton */}
+                <div>
+                  <h4 className="font-semibold mb-3">Basic Skeleton</h4>
+                  <Skeleton className="h-4 w-full mb-2" />
+                  <Skeleton className="h-4 w-3/4 mb-2" />
+                  <Skeleton className="h-4 w-1/2" />
+                </div>
+
+                {/* Skeleton Table */}
+                <div>
+                  <h4 className="font-semibold mb-3">Table Loading State</h4>
+                  <SkeletonTable rows={5} columns={4} />
+                </div>
+
+                {/* Skeleton Cards */}
+                <div>
+                  <h4 className="font-semibold mb-3">Card Loading States</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <SkeletonCard />
+                    <SkeletonCard />
+                    <SkeletonCard />
+                  </div>
+                </div>
+
+                {/* Skeleton List */}
+                <div>
+                  <h4 className="font-semibold mb-3">List Loading State</h4>
+                  <SkeletonList items={4} />
                 </div>
               </div>
             </div>

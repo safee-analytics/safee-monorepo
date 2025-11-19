@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, Calendar, Bell, Settings, HelpCircle, User } from "lucide-react";
+import { Search, Calendar, Bell, HelpCircle } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { useOrgStore } from "@/stores/useOrgStore";
+import { CompanyMenu } from "./CompanyMenu";
 
 export function SafeeNavigation() {
   const { t, locale } = useTranslation();
@@ -49,11 +50,6 @@ export function SafeeNavigation() {
           <div className="flex items-center gap-3">
             <LanguageSwitcher />
 
-            <button className="text-sm text-safee-600 hover:text-safee-700 font-medium hidden lg:flex items-center gap-2">
-              <User className="w-4 h-4" />
-              {t.common?.contactExperts || (locale === "ar" ? "اتصل بالخبراء" : "Contact experts")}
-            </button>
-
             <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
               <Calendar className="w-5 h-5" />
             </button>
@@ -63,9 +59,7 @@ export function SafeeNavigation() {
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
             </button>
 
-            <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-              <Settings className="w-5 h-5" />
-            </button>
+            <CompanyMenu />
 
             <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
               <HelpCircle className="w-5 h-5" />

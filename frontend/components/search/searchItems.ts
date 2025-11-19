@@ -14,8 +14,18 @@ import {
   FiMoon,
   FiDownload,
   FiLogOut,
-  type IconType,
 } from "react-icons/fi";
+import type { IconType } from "react-icons";
+import type messagesEn from "@/messages/en";
+
+// Create a more permissive Messages type that allows any string values
+type Messages = {
+  [K in keyof typeof messagesEn]: typeof messagesEn[K] extends string
+    ? string
+    : typeof messagesEn[K] extends object
+    ? any
+    : typeof messagesEn[K];
+};
 
 export interface SearchItem {
   id: string;
@@ -27,12 +37,7 @@ export interface SearchItem {
   keywords: string[];
 }
 
-interface TranslationFunction {
-  nav?: Record<string, string>;
-  [key: string]: Record<string, string> | undefined;
-}
-
-export const getNavigationItems = (t: TranslationFunction): SearchItem[] => [
+export const getNavigationItems = (t: Messages): SearchItem[] => [
   // Main Modules
   {
     id: "nav-home",
@@ -229,7 +234,7 @@ export const getNavigationItems = (t: TranslationFunction): SearchItem[] => [
 ];
 
 export const getQuickActions = (
-  t: TranslationFunction,
+  t: Messages,
   signOut: () => void,
   onExport?: () => void,
   onThemeToggle?: () => void,
@@ -316,7 +321,7 @@ export const getQuickActions = (
 };
 
 export const getSystemActions = (
-  t: TranslationFunction,
+  t: Messages,
   signOut: () => void,
   onExport?: () => void,
   onThemeToggle?: () => void,

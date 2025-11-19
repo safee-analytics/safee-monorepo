@@ -134,11 +134,12 @@ function ProfileTab() {
       await updateUserMutation.mutateAsync(betterAuthUpdates);
 
       // Update custom profile fields
-      await updateProfileMutation.mutateAsync({
-        phone,
-        jobTitle,
-        department,
-      });
+      // Note: phone, jobTitle, department are not currently supported by the API
+      // await updateProfileMutation.mutateAsync({
+      //   phone,
+      //   jobTitle,
+      //   department,
+      // });
 
       alert("Profile updated successfully!");
     } catch (_error) {
@@ -188,7 +189,7 @@ function ProfileTab() {
           <div className="relative">
             {imageUrl || user?.image ? (
               <img
-                src={imageUrl || user.image}
+                src={imageUrl || user?.image || undefined}
                 alt="Profile"
                 className="w-24 h-24 rounded-full object-cover"
               />
@@ -331,7 +332,7 @@ function SecurityTab() {
   const changePasswordMutation = useChangePassword();
   const changeEmailMutation = useChangeEmail();
   const disable2FAMutation = useDisable2FA();
-  const { data: twoFactorStatus, refetch: refetch2FAStatus } = useGet2FAStatus();
+  const twoFactorStatus = useGet2FAStatus();
   const { data: session } = useSession();
   const sendPhoneVerificationMutation = useSendPhoneVerification();
   const verifyPhoneNumberMutation = useVerifyPhoneNumber();
@@ -392,14 +393,14 @@ function SecurityTab() {
       await disable2FAMutation.mutateAsync(disable2FAPassword);
       alert("Two-factor authentication disabled successfully");
       setDisable2FAPassword("");
-      refetch2FAStatus();
+      twoFactorStatus.refetch();
     } catch (_error) {
       alert("Failed to disable 2FA. Please check your password.");
     }
   };
 
   const handle2FASetupSuccess = () => {
-    refetch2FAStatus();
+    twoFactorStatus.refetch();
     alert("Two-factor authentication enabled successfully!");
   };
 
@@ -533,7 +534,7 @@ function SecurityTab() {
           Two-Factor Authentication
         </h3>
 
-        {twoFactorStatus?.enabled ? (
+        {twoFactorStatus?.data ? (
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-green-600">
               <Check className="w-5 h-5" />
@@ -728,7 +729,7 @@ function SecurityTab() {
 
 interface LinkedAccount {
   id: string;
-  provider: string;
+  providerId: string;
   [key: string]: unknown;
 }
 
@@ -745,10 +746,10 @@ function LinkedAccountsTab() {
     }
   };
 
-  const handleUnlink = async (accountId: string) => {
+  const handleUnlink = async (accountId: string, providerId: string) => {
     if (!confirm("Are you sure you want to unlink this account?")) return;
     try {
-      await unlinkAccountMutation.mutateAsync(accountId);
+      await unlinkAccountMutation.mutateAsync({ accountId, providerId });
       alert("Account unlinked successfully!");
     } catch (_error) {
       alert("Failed to unlink account");
@@ -776,11 +777,12 @@ function LinkedAccountsTab() {
                   <div className="text-sm text-gray-500">Sign in with your Google account</div>
                 </div>
               </div>
-              {accounts?.find((acc: LinkedAccount) => acc.provider === "google") ? (
+              {accounts?.find((acc: LinkedAccount) => acc.providerId === "google") ? (
                 <button
-                  onClick={() =>
-                    handleUnlink(accounts.find((acc: LinkedAccount) => acc.provider === "google")?.id)
-                  }
+                  onClick={() => {
+                    const account = accounts.find((acc: LinkedAccount) => acc.providerId === "google");
+                    if (account) handleUnlink(account.id!, account.providerId);
+                  }}
                   className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 >
                   Unlink

@@ -171,7 +171,7 @@ export default function ExportsDemo() {
       if (invoicePdfUrl) URL.revokeObjectURL(invoicePdfUrl);
       if (reportPdfUrl) URL.revokeObjectURL(reportPdfUrl);
     };
-  }, []);
+  }, [invoicePdfUrl, reportPdfUrl]);
 
   // Excel Export Handlers
   const handleSimpleExcelExport = async () => {

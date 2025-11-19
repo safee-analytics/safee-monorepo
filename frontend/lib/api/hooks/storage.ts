@@ -7,7 +7,7 @@ export function useStorageFiles(folderId?: string) {
   return useQuery({
     queryKey: queryKeys.storage.files(folderId),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/api/v1/storage/files/search", {
+      const { data, error } = await apiClient.GET("/storage/files/search", {
         params: {
           query: {
             folderId,
@@ -24,7 +24,7 @@ export function useStorageFile(fileId: string) {
   return useQuery({
     queryKey: queryKeys.storage.file(fileId),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/api/v1/storage/files/{fileId}", {
+      const { data, error } = await apiClient.GET("/storage/files/{fileId}", {
         params: {
           path: { fileId },
         },
@@ -55,7 +55,7 @@ export function useUploadFile() {
       if (validated.tags) formData.append("tags", JSON.stringify(validated.tags));
       if (validated.metadata) formData.append("metadata", JSON.stringify(validated.metadata));
 
-      const { data, error } = await apiClient.POST("/api/v1/storage/upload", {
+      const { data, error } = await apiClient.POST("/storage/upload", {
         // @ts-expect-error FormData is compatible with multipart/form-data
         body: formData,
       });
@@ -75,7 +75,7 @@ export function useDeleteFile() {
 
   return useMutation({
     mutationFn: async (fileId: string) => {
-      const { data, error } = await apiClient.DELETE("/api/v1/storage/files/{fileId}", {
+      const { data, error } = await apiClient.DELETE("/storage/files/{fileId}", {
         params: {
           path: { fileId },
         },
@@ -93,7 +93,7 @@ export function useStorageQuota() {
   return useQuery({
     queryKey: queryKeys.storage.quota,
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/api/v1/storage/quota");
+      const { data, error } = await apiClient.GET("/storage/quota");
       if (error) throw new Error(handleApiError(error));
       return data;
     },

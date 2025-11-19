@@ -44,7 +44,7 @@ export function useSignUp() {
       const { data: result, error } = await authClient.signUp.email({
         email: data.email,
         password: data.password,
-        name: data.name,
+        name: data.name || "",
       });
       if (error) throw new Error(error.message);
       return result;
@@ -118,7 +118,7 @@ export function useSignInWithUsername() {
 
   return useMutation({
     mutationFn: async (data: { username: string; password: string }) => {
-      const { data: result, error } = await authClient.username.signIn({
+      const { data: result, error } = await authClient.signIn.username({
         username: data.username,
         password: data.password,
       });
@@ -137,7 +137,7 @@ export function useSignInWithUsername() {
 export function useCheckUsernameAvailability() {
   return useMutation({
     mutationFn: async (username: string) => {
-      const { data, error } = await authClient.username.isAvailable({
+      const { data, error } = await authClient.isUsernameAvailable({
         username,
       });
       if (error) throw new Error(error.message);
@@ -297,7 +297,7 @@ export function useUpdateUsername() {
 
   return useMutation({
     mutationFn: async (username: string) => {
-      const { data, error } = await authClient.username.update({
+      const { data, error } = await authClient.updateUser({
         username,
       });
       if (error) throw new Error(error.message);
@@ -354,9 +354,9 @@ export function useRevokeSession() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (sessionId: string) => {
+    mutationFn: async (sessionToken: string) => {
       const { data, error } = await authClient.revokeSession({
-        id: sessionId,
+        token: sessionToken,
       });
       if (error) throw new Error(error.message);
       return data;
@@ -449,12 +449,13 @@ export function useUnlinkSocialAccount() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (accountId: string) => {
-      const { data, error } = await authClient.unlinkAccount({
-        accountId,
+    mutationFn: async (data: { accountId: string; providerId?: string }) => {
+      const { data: result, error } = await authClient.unlinkAccount({
+        accountId: data.accountId,
+        providerId: data.providerId || "google", // default provider
       });
       if (error) throw new Error(error.message);
-      return data;
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [...authQueryKeys.user, "accounts"] });
@@ -468,11 +469,13 @@ export function useUnlinkSocialAccount() {
 
 /**
  * Refresh access token
+ * Note: better-auth refreshToken doesn't exist as a direct method, sessions are automatically refreshed
  */
 export function useRefreshToken() {
   return useMutation({
     mutationFn: async () => {
-      const { data, error } = await authClient.refreshToken();
+      // Get current session which will trigger a refresh if needed
+      const { data, error } = await authClient.getSession();
       if (error) throw new Error(error.message);
       return data;
     },
@@ -481,11 +484,12 @@ export function useRefreshToken() {
 
 /**
  * Get access token for API calls
+ * Note: better-auth doesn't have getAccessToken, use getSession to get token from session
  */
 export function useGetAccessToken() {
   return useMutation({
     mutationFn: async () => {
-      const { data, error } = await authClient.getAccessToken();
+      const { data, error } = await authClient.getSession();
       if (error) throw new Error(error.message);
       return data;
     },
@@ -539,7 +543,7 @@ export function useDisable2FA() {
 export function useVerify2FACode() {
   return useMutation({
     mutationFn: async (code: string) => {
-      const { data, error } = await authClient.twoFactor.verify({ code });
+      const { data, error } = await authClient.twoFactor.verifyTotp({ code });
       if (error) throw new Error(error.message);
       return data;
     },
@@ -561,15 +565,14 @@ export function useGenerate2FABackupCodes() {
 
 /**
  * Get 2FA status for current user
+ * Note: better-auth doesn't have a getStatus method, check session.user.twoFactorEnabled instead
  */
 export function useGet2FAStatus() {
+  const session = useSession();
   return useQuery({
     queryKey: [...authQueryKeys.user, "2fa-status"] as const,
-    queryFn: async () => {
-      const { data, error } = await authClient.twoFactor.getStatus();
-      if (error) throw new Error(error.message);
-      return data;
-    },
+    queryFn: () => Promise.resolve(session.data?.user.twoFactorEnabled ?? false),
+    enabled: !!session.data,
   });
 }
 
@@ -582,10 +585,10 @@ export function useGet2FAStatus() {
  */
 export function useSendMagicLink() {
   return useMutation({
-    mutationFn: async (email: string) => {
-      const { data, error } = await authClient.magicLink.sendMagicLink({
+    mutationFn: async ({ email, callbackURL }: { email: string; callbackURL?: string }) => {
+      const { data, error } = await authClient.signIn.magicLink({
         email,
-        callbackURL: "/magic-link",
+        callbackURL: callbackURL || "/magic-link",
       });
       if (error) throw new Error(error.message);
       return data;
@@ -601,7 +604,9 @@ export function useVerifyMagicLink() {
 
   return useMutation({
     mutationFn: async (token: string) => {
-      const { data, error } = await authClient.magicLink.verifyMagicLink({ token });
+      const { data, error } = await authClient.magicLink.verify({
+        query: { token },
+      });
       if (error) throw new Error(error.message);
       return data;
     },
@@ -622,7 +627,7 @@ export function useVerifyMagicLink() {
 export function useSendPhoneVerification() {
   return useMutation({
     mutationFn: async (phoneNumber: string) => {
-      const { data, error } = await authClient.phoneNumber.sendVerificationCode({
+      const { data, error } = await authClient.phoneNumber.sendOtp({
         phoneNumber,
       });
       if (error) throw new Error(error.message);
@@ -639,7 +644,7 @@ export function useVerifyPhoneNumber() {
 
   return useMutation({
     mutationFn: async (data: { phoneNumber: string; code: string }) => {
-      const { data: result, error } = await authClient.phoneNumber.verifyPhoneNumber({
+      const { data: result, error } = await authClient.phoneNumber.verify({
         phoneNumber: data.phoneNumber,
         code: data.code,
       });
@@ -653,16 +658,16 @@ export function useVerifyPhoneNumber() {
 }
 
 /**
- * Sign in with phone number
+ * Sign in with phone number and password
  */
 export function useSignInWithPhone() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (data: { phoneNumber: string; code: string }) => {
-      const { data: result, error } = await authClient.phoneNumber.signIn({
+    mutationFn: async (data: { phoneNumber: string; password: string }) => {
+      const { data: result, error } = await authClient.signIn.phoneNumber({
         phoneNumber: data.phoneNumber,
-        code: data.code,
+        password: data.password,
       });
       if (error) throw new Error(error.message);
       return result;
@@ -682,9 +687,10 @@ export function useUpdatePhoneNumber() {
 
   return useMutation({
     mutationFn: async (data: { phoneNumber: string; code: string }) => {
-      const { data: result, error } = await authClient.phoneNumber.updatePhoneNumber({
+      const { data: result, error } = await authClient.phoneNumber.verify({
         phoneNumber: data.phoneNumber,
         code: data.code,
+        updatePhoneNumber: true,
       });
       if (error) throw new Error(error.message);
       return result;

@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useCases, useCreateCase } from "@/lib/api/hooks";
+import { useCases, useCreateCase, type CaseData, type CaseAssignment } from "@/lib/api/hooks";
 import { CaseStats } from "@/components/audit/cases/CaseStats";
 import { CaseFilters, type FilterToken } from "@/components/audit/cases/CaseFilters";
 import { CaseTable, type CaseRow } from "@/components/audit/cases/CaseTable";
@@ -10,8 +10,9 @@ import { CaseGrid } from "@/components/audit/cases/CaseGrid";
 import { CaseKanban } from "@/components/audit/cases/CaseKanban";
 import { CreateCaseModal } from "@/components/audit/cases/CreateCaseModal";
 import { CasePreviewDrawer } from "@/components/audit/cases/CasePreviewDrawer";
-import { CaseStatusSchema, CasePrioritySchema } from "@/lib/api/schemas";
+import { isValidCaseStatus, isValidCasePriority } from "@/lib/api/schemas";
 import { useToast } from "@safee/ui";
+import type { CaseStatus, CasePriority } from "@/types/audit";
 
 export default function CaseManagement() {
   const searchParams = useSearchParams();
@@ -41,17 +42,17 @@ export default function CaseManagement() {
   const apiFilters = useMemo(() => {
     const result: { status?: string; priority?: string; assignedTo?: string } = {};
 
-    // Get status from URL
+    // Get status from URL with validation
     const statusParam = searchParams.get("status");
-    if (statusParam) {
+    if (statusParam && isValidCaseStatus(statusParam)) {
       result.status = statusParam;
     }
 
     // Add filters from filter tokens (can override URL params)
     filters.forEach((filter) => {
-      if (filter.type === "status") {
+      if (filter.type === "status" && isValidCaseStatus(filter.value)) {
         result.status = filter.value;
-      } else if (filter.type === "priority") {
+      } else if (filter.type === "priority" && isValidCasePriority(filter.value)) {
         result.priority = filter.value;
       } else if (filter.type === "assignee") {
         result.assignedTo = filter.value;
@@ -84,9 +85,9 @@ export default function CaseManagement() {
 
   const { cases, stats, availableAssignees } = useMemo(() => {
     // Map API cases to table rows
-    let mappedCases: CaseRow[] = (apiCases ?? []).map((caseData) => {
+    let mappedCases: CaseRow[] = (apiCases ?? []).map((caseData: CaseData) => {
       // Get the lead assignee from assignments (prefer lead role, fallback to any assignee)
-      const leadAssignment = caseData.assignments?.find((a) => a.role === "lead");
+      const leadAssignment = caseData.assignments?.find((a: CaseAssignment) => a.role === "lead");
       const anyAssignment = caseData.assignments?.[0];
       const assignment = leadAssignment || anyAssignment;
 
@@ -104,8 +105,8 @@ export default function CaseManagement() {
           avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${assigneeId}`,
           id: assigneeId,
         },
-        status: caseData.status,
-        priority: caseData.priority,
+        status: caseData.status as CaseStatus,
+        priority: caseData.priority as CasePriority,
         dueDate: caseData.dueDate ? new Date(caseData.dueDate).toLocaleDateString() : "N/A",
         progress:
           caseData.status === "completed"
@@ -122,8 +123,8 @@ export default function CaseManagement() {
 
     // Extract unique assignees for filter dropdown
     const assigneeMap = new Map<string, string>();
-    apiCases?.forEach((caseData) => {
-      caseData.assignments?.forEach((assignment) => {
+    apiCases?.forEach((caseData: CaseData) => {
+      caseData.assignments?.forEach((assignment: CaseAssignment) => {
         if (assignment.user && assignment.userId) {
           assigneeMap.set(assignment.userId, assignment.user.name || assignment.user.email);
         }
@@ -148,9 +149,9 @@ export default function CaseManagement() {
     // Calculate stats from all cases (not filtered)
     const calculatedStats = {
       totalCases: (apiCases ?? []).length,
-      activeCases: (apiCases ?? []).filter((c) => c.status === "in-progress").length,
-      completedCases: (apiCases ?? []).filter((c) => c.status === "completed").length,
-      overdueCases: (apiCases ?? []).filter((c) => c.status === "overdue").length,
+      activeCases: (apiCases ?? []).filter((c: CaseData) => c.status === "in-progress").length,
+      completedCases: (apiCases ?? []).filter((c: CaseData) => c.status === "completed").length,
+      overdueCases: (apiCases ?? []).filter((c: CaseData) => c.status === "overdue").length,
     };
 
     return { cases: mappedCases, stats: calculatedStats, availableAssignees: uniqueAssignees };

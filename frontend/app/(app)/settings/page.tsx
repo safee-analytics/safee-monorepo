@@ -7,7 +7,6 @@ export default function SettingsPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to profile settings by default
     router.push("/settings/profile");
   }, [router]);
 

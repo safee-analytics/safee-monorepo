@@ -13,34 +13,59 @@ import {
 } from "@/lib/api/hooks";
 
 const AVAILABLE_PERMISSIONS = [
+  // Settings & Administration
+  { id: "settings:view", label: "View Settings", module: "Settings" },
+  { id: "settings:manage", label: "Manage All Settings", module: "Settings" },
+  { id: "organization:view", label: "View Organization", module: "Organization" },
+  { id: "organization:update", label: "Update Organization", module: "Organization" },
+  { id: "organization:delete", label: "Delete Organization", module: "Organization" },
+  { id: "organization:transfer", label: "Transfer Ownership", module: "Organization" },
+  { id: "team:view", label: "View Team", module: "Team" },
+  { id: "team:invite", label: "Invite Members", module: "Team" },
+  { id: "team:remove", label: "Remove Members", module: "Team" },
+  { id: "team:update_roles", label: "Update Roles", module: "Team" },
+  { id: "auditLogs:view", label: "View Audit Logs", module: "Security" },
+  { id: "auditLogs:export", label: "Export Audit Logs", module: "Security" },
+  { id: "security:view", label: "View Security Settings", module: "Security" },
+  { id: "security:manage", label: "Manage Security", module: "Security" },
+  { id: "storage:view", label: "View Storage", module: "System" },
+  { id: "storage:manage", label: "Manage Storage", module: "System" },
+  { id: "integrations:view", label: "View Integrations", module: "System" },
+  { id: "integrations:manage", label: "Manage Integrations", module: "System" },
+  { id: "api:view", label: "View API Keys", module: "System" },
+  { id: "api:create", label: "Create API Keys", module: "System" },
+  { id: "api:revoke", label: "Revoke API Keys", module: "System" },
+  { id: "database:view", label: "View Database", module: "System" },
+  { id: "database:manage", label: "Manage Database", module: "System" },
+  { id: "invoiceStyles:view", label: "View Invoice Styles", module: "Settings" },
+  { id: "invoiceStyles:manage", label: "Manage Invoice Styles", module: "Settings" },
+
   // Audit Module
-  { id: "audit:cases:read", label: "View Cases", module: "Audit" },
-  { id: "audit:cases:write", label: "Create/Edit Cases", module: "Audit" },
-  { id: "audit:cases:delete", label: "Delete Cases", module: "Audit" },
-  { id: "audit:cases:assign", label: "Assign Cases", module: "Audit" },
+  { id: "audit:view", label: "View Audit Module", module: "Audit" },
+  { id: "audit:create", label: "Create Audit Cases", module: "Audit" },
+  { id: "audit:update", label: "Update Audit Cases", module: "Audit" },
+  { id: "audit:delete", label: "Delete Audit Cases", module: "Audit" },
+  { id: "audit:assign", label: "Assign Audit Cases", module: "Audit" },
 
-  // Hisabiq (Accounting) Module
-  { id: "hisabiq:invoices:read", label: "View Invoices", module: "Hisabiq" },
-  { id: "hisabiq:invoices:write", label: "Create/Edit Invoices", module: "Hisabiq" },
-  { id: "hisabiq:accounts:read", label: "View Accounts", module: "Hisabiq" },
-  { id: "hisabiq:accounts:write", label: "Manage Accounts", module: "Hisabiq" },
+  // Accounting Module (Hisabiq)
+  { id: "accounting:view", label: "View Accounting", module: "Accounting" },
+  { id: "accounting:create", label: "Create Transactions", module: "Accounting" },
+  { id: "accounting:update", label: "Update Transactions", module: "Accounting" },
+  { id: "accounting:delete", label: "Delete Transactions", module: "Accounting" },
+  { id: "accounting:export", label: "Export Accounting Data", module: "Accounting" },
 
-  // Kanz (HR) Module
-  { id: "kanz:employees:read", label: "View Employees", module: "Kanz" },
-  { id: "kanz:employees:write", label: "Manage Employees", module: "Kanz" },
-  { id: "kanz:payroll:read", label: "View Payroll", module: "Kanz" },
-  { id: "kanz:payroll:write", label: "Process Payroll", module: "Kanz" },
+  // HR Module (Kanz)
+  { id: "hr:view", label: "View HR Data", module: "HR" },
+  { id: "hr:create", label: "Create Employee Records", module: "HR" },
+  { id: "hr:update", label: "Update Employee Records", module: "HR" },
+  { id: "hr:delete", label: "Delete Employee Records", module: "HR" },
+  { id: "hr:manage_payroll", label: "Manage Payroll", module: "HR" },
 
-  // Nisbah (CRM) Module
-  { id: "nisbah:contacts:read", label: "View Contacts", module: "Nisbah" },
-  { id: "nisbah:contacts:write", label: "Manage Contacts", module: "Nisbah" },
-  { id: "nisbah:deals:read", label: "View Deals", module: "Nisbah" },
-  { id: "nisbah:deals:write", label: "Manage Deals", module: "Nisbah" },
-
-  // System
-  { id: "system:users:manage", label: "Manage Users", module: "System" },
-  { id: "system:roles:manage", label: "Manage Roles", module: "System" },
-  { id: "system:settings:write", label: "Change Settings", module: "System" },
+  // CRM Module (Nisbah)
+  { id: "crm:view", label: "View CRM Data", module: "CRM" },
+  { id: "crm:create", label: "Create Contacts/Deals", module: "CRM" },
+  { id: "crm:update", label: "Update Contacts/Deals", module: "CRM" },
+  { id: "crm:delete", label: "Delete Contacts/Deals", module: "CRM" },
 ];
 
 export default function RoleManagement() {
@@ -61,10 +86,10 @@ export default function RoleManagement() {
       if (!acc[role.role]) {
         acc[role.role] = [];
       }
-      acc[role.role].push(role);
+      acc[role.role]!.push(role);
       return acc;
     },
-    {} as Record<string, typeof roles>,
+    {} as Record<string, NonNullable<typeof roles>>,
   );
 
   const handleCreateRole = (roleName: string, permissions: string[]) => {
@@ -88,18 +113,20 @@ export default function RoleManagement() {
     if (!orgId) return;
 
     const existingRoles = groupedRoles[roleName] || [];
+    const roleId = existingRoles[0]?.id;
+    if (!roleId) return;
 
     updateRoleMutation
       .mutateAsync({
         orgId,
-        role: roleName,
+        roleName,
         permissions,
       })
       .then(() => {
         setEditingRole(null);
       })
       .catch(() => {
-        Promise.all(existingRoles.map((r) => deleteRoleMutation.mutateAsync({ orgId, roleId: r.id })))
+        Promise.all(existingRoles.map((r) => deleteRoleMutation.mutateAsync({ orgId, roleName: r.role })))
           .then(() =>
             Promise.all(
               permissions.map((permission) =>
@@ -122,11 +149,27 @@ export default function RoleManagement() {
     if (!confirm(`Are you sure you want to delete the "${roleName}" role?`)) return;
 
     const rolesToDelete = groupedRoles[roleName] || [];
-    Promise.all(rolesToDelete.map((r) => deleteRoleMutation.mutateAsync({ orgId, roleId: r.id })));
+    Promise.all(rolesToDelete.map((r) => deleteRoleMutation.mutateAsync({ orgId, roleName: r.role })));
   };
 
   const getRolePermissions = (roleName: string): string[] => {
-    return (groupedRoles[roleName] || []).map((r) => r.permission);
+    const roleGroup = groupedRoles[roleName];
+    if (!roleGroup) return [];
+    // Flatten permission objects to string arrays
+    const permissions: string[] = [];
+    roleGroup.forEach((r) => {
+      if (typeof r.permission === 'string') {
+        permissions.push(r.permission);
+      } else if (typeof r.permission === 'object' && r.permission !== null) {
+        // Permission is Record<string, string[]>, flatten to "resource:action" format
+        Object.entries(r.permission).forEach(([resource, actions]) => {
+          if (Array.isArray(actions)) {
+            actions.forEach(action => permissions.push(`${resource}:${action}`));
+          }
+        });
+      }
+    });
+    return permissions;
   };
 
   const getRoleUserCount = (roleName: string): number => {

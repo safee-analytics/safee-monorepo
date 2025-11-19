@@ -2,13 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient, handleApiError, getCurrentUser, updateUserProfile, updateUserLocale } from "../client";
 import type { paths } from "../types";
 import { queryKeys } from "./queryKeys";
-import { authClient } from "@/lib/auth/client";
 import { useOrgStore } from "@/stores/useOrgStore";
-
-// User Session (using Better Auth)
-export function useSession() {
-  return authClient.useSession();
-}
 
 /**
  * Fetch current user profile
@@ -37,7 +31,7 @@ export function useUpdateUserProfile() {
 
   return useMutation({
     mutationFn: async (
-      profile: paths["/users/me"]["patch"]["requestBody"]["content"]["application/json"],
+      profile: Parameters<typeof updateUserProfile>[0],
     ) => {
       const { data, error } = await updateUserProfile(profile);
       if (error) throw new Error(handleApiError(error));
@@ -78,7 +72,7 @@ export function useNotifications() {
   return useQuery({
     queryKey: queryKeys.notifications.all,
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/api/v1/dashboard/notifications");
+      const { data, error } = await apiClient.GET("/dashboard/notifications");
       if (error) throw new Error(handleApiError(error));
       return data || [];
     },
@@ -90,7 +84,7 @@ export function useUnreadNotificationsCount() {
   return useQuery({
     queryKey: queryKeys.notifications.unreadCount,
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/api/v1/dashboard/notifications/unread-count");
+      const { data, error } = await apiClient.GET("/dashboard/notifications/unread-count");
       if (error) throw new Error(handleApiError(error));
       return data;
     },
@@ -103,7 +97,7 @@ export function useMarkNotificationAsRead() {
 
   return useMutation({
     mutationFn: async (notificationId: string) => {
-      const { data, error } = await apiClient.POST("/api/v1/dashboard/notifications/{notificationId}/read", {
+      const { data, error } = await apiClient.POST("/dashboard/notifications/{notificationId}/read", {
         params: {
           path: { notificationId },
         },
@@ -123,7 +117,7 @@ export function useActivity() {
   return useQuery({
     queryKey: queryKeys.activity.all,
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/api/v1/dashboard/activity");
+      const { data, error } = await apiClient.GET("/dashboard/activity");
       if (error) throw new Error(handleApiError(error));
       return data || [];
     },

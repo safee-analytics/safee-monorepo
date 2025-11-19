@@ -6,6 +6,9 @@ export const auditAr = {
       uploadDocument: "تحميل مستند",
       createReport: "إنشاء تقرير",
     },
+    searchCases: "البحث في الحالات...",
+    searchReports: "البحث في التقارير...",
+    searchTeam: "البحث في أعضاء الفريق...",
     // Dashboard
     dashboardTitle: "نظرة عامة على لوحة التحكم",
     dashboardSubtitle: "مرحباً بعودتك، إليك ما يحدث مع عمليات التدقيق اليوم.",
@@ -240,7 +243,6 @@ export const auditAr = {
     icvReport: "تقرير القيمة المضافة المحلية",
     qualityApproved: "معتمد من الجودة",
     overallProgress: "التقدم الإجمالي",
-    saveChanges: "حفظ التغييرات",
     saving: "جاري الحفظ...",
     downloadPrint: "تحميل | طباعة",
     templateSettings: "إعدادات القالب",
