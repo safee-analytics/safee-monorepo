@@ -3,10 +3,6 @@ import { auditSchema, idpk, caseStatusEnum, casePriorityEnum } from "./_common.j
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
 
-/**
- * Audit cases table - Main table for audit case management
- * Supports any audit type (ICV, ISO, Financial, Compliance, etc.)
- */
 export const cases = auditSchema.table(
   "cases",
   {

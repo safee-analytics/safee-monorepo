@@ -9,7 +9,7 @@ export default defineConfig({
   strict: true,
   breakpoints: false,
   casing: "snake_case",
-  schemaFilter: ["identity", "finance", "hr", "sales", "system", "audit"],
+  schemaFilter: ["identity", "finance", "hr", "sales", "system", "jobs", "audit", "odoo"],
   migrations: {
     prefix: "index",
     table: "drizzle_migrations",

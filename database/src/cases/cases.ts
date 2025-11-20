@@ -54,18 +54,12 @@ export async function getCaseById(deps: DbDeps, caseId: string): Promise<Case | 
 
 export async function getCasesByOrganization(deps: DbDeps, organizationId: string) {
   return deps.drizzle.query.cases.findMany({
-    where: eq(cases.organizationId, organizationId),
-    orderBy: [desc(cases.createdAt)],
+    where: (t, { eq }) => eq(t.organizationId, organizationId),
+    orderBy: (t, { desc }) => [desc(t.createdAt)],
     with: {
       assignments: {
         with: {
-          user: {
-            columns: {
-              id: true,
-              name: true,
-              email: true,
-            },
-          },
+          user: true,
         },
       },
     },

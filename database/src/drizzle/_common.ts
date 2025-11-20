@@ -15,6 +15,7 @@ export const salesSchema = pgSchema("sales");
 export const systemSchema = pgSchema("system");
 export const jobsSchema = pgSchema("jobs");
 export const auditSchema = pgSchema("audit");
+export const odooSchema = pgSchema("odoo");
 
 export const userRoleEnum = identitySchema.enum("user_role", ["ADMIN", "MANAGER", "EMPLOYEE", "ACCOUNTANT"]);
 
@@ -167,6 +168,15 @@ export const approvalStatusEnum = systemSchema.enum("approval_status", [
   "cancelled",
 ]);
 
+export const odooOperationStatusEnum = odooSchema.enum("operation_status", [
+  "processing",
+  "success",
+  "failed",
+  "retrying",
+]);
+
+export const odooCircuitStateEnum = odooSchema.enum("circuit_state", ["CLOSED", "OPEN", "HALF_OPEN"]);
+
 export type ApprovalStatus = (typeof approvalStatusEnum.enumValues)[number];
 export type InvoiceType = (typeof invoiceTypeEnum.enumValues)[number];
 export type ContactType = (typeof contactTypeEnum.enumValues)[number];
@@ -192,6 +202,8 @@ export type CasePriority = (typeof casePriorityEnum.enumValues)[number];
 export type AuditStatus = (typeof auditStatusEnum.enumValues)[number];
 export type NoteType = (typeof noteTypeEnum.enumValues)[number];
 export type AssignmentRole = (typeof assignmentRoleEnum.enumValues)[number];
+export type OdooOperationStatus = (typeof odooOperationStatusEnum.enumValues)[number];
+export type OdooCircuitState = (typeof odooCircuitStateEnum.enumValues)[number];
 
 export const schemas = {
   identity: identitySchema,
@@ -201,4 +213,5 @@ export const schemas = {
   system: systemSchema,
   jobs: jobsSchema,
   audit: auditSchema,
+  odoo: odooSchema,
 } as const;

@@ -169,6 +169,20 @@
       "when": 1763514385678,
       "tag": "0023_omniscient_puck",
       "breakpoints": false
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1763600738934,
+      "tag": "0024_spicy_silver_sable",
+      "breakpoints": false
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1763601286888,
+      "tag": "0025_crazy_black_queen",
+      "breakpoints": false
     }
   ]
 }

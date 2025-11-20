@@ -1,7 +1,6 @@
 import { text, timestamp, varchar } from "drizzle-orm/pg-core";
 import { identitySchema, idpk } from "./_common.js";
 
-// Better Auth verifications table (for email verification, password reset, etc.)
 export const verifications = identitySchema.table("verifications", {
   id: idpk("id"),
   identifier: varchar("identifier", { length: 255 }).notNull(), // email or phone

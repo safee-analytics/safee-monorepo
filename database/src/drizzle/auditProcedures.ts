@@ -3,10 +3,6 @@ import { auditSchema, idpk } from "./_common.js";
 import { auditSections } from "./auditSections.js";
 import { users } from "./users.js";
 
-/**
- * Audit procedures table - Individual procedures within sections
- * Flexible structure supports any audit type via requirements and fieldData
- */
 export const auditProcedures = auditSchema.table(
   "audit_procedures",
   {
