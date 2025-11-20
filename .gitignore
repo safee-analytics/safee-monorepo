@@ -45,9 +45,6 @@ dist/
 .coverage
 credentials/
 
-# Turborepo
-.turbo/
-
 # Caddy
 caddy-data/
 caddy-config/
