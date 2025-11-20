@@ -31,7 +31,6 @@ describe("JobSchedules Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    // Clean table
     await nukeDatabase(db);
   });
 

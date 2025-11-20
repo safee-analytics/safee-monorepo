@@ -16,7 +16,6 @@ describe("Redis Rate Limit Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    // Clean Redis data
     await redis.flushDb();
   });
 
@@ -53,7 +52,6 @@ describe("Redis Rate Limit Integration Tests", () => {
     });
 
     it("should detect when rate limit is exceeded", async () => {
-      // Make 11 requests (limit is 10)
       for (let i = 0; i < 11; i++) {
         await redisFixedWindowRateLimit({
           redis,
@@ -75,7 +73,6 @@ describe("Redis Rate Limit Integration Tests", () => {
     });
 
     it("should allow exactly at the limit", async () => {
-      // Make 10 requests (exactly at limit)
       for (let i = 0; i < 9; i++) {
         await redisFixedWindowRateLimit({
           redis,
@@ -97,7 +94,6 @@ describe("Redis Rate Limit Integration Tests", () => {
     });
 
     it("should reset after window expires", async () => {
-      // Make requests with 1 second window
       await redisFixedWindowRateLimit({
         redis,
         keyName: "rate:test:reset",

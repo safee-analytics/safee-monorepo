@@ -24,17 +24,14 @@ export default [
       safee,
     },
     rules: {
-      // TypeScript ESLint recommended rules
       ...tseslint.configs.recommended.rules,
 
-      // Safee plugin rules
       ...safee.configs.recommended.rules,
 
-      // Test-specific overrides
       "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
       "@typescript-eslint/explicit-function-return-type": "off",
       "@typescript-eslint/no-explicit-any": "warn",
-      "no-console": "off", // Allow console in tests
+      "no-console": "off",
     },
   },
   {

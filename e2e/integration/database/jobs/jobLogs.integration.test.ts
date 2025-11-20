@@ -37,17 +37,14 @@ describe("JobLogs Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    // With CASCADE, we only need to delete organizations
     await nukeDatabase(db);
 
-    // Create test organization
     const [org] = await db
       .insert(organizations)
       .values({ name: "Test Org", slug: "test-org-logs" })
       .returning();
     testOrgId = org.id;
 
-    // Create test job
     const deps = createTestDeps(db);
     const job = await createJob(deps, {
       jobName: "send_email",
@@ -132,7 +129,6 @@ describe("JobLogs Integration Tests", () => {
     it("should respect limit and offset", async () => {
       const deps = createTestDeps(db);
 
-      // Create 5 logs
       for (let i = 1; i <= 5; i++) {
         await createJobLog(deps, testJobId, "info", `Message ${i}`);
       }
@@ -220,18 +216,15 @@ describe("JobLogs Integration Tests", () => {
     it("should delete logs older than specified date", async () => {
       const deps = createTestDeps(db);
 
-      // Create old logs
       const oldLog1 = await createJobLog(deps, testJobId, "info", "Old message 1");
       const oldLog2 = await createJobLog(deps, testJobId, "info", "Old message 2");
 
-      // Manually update createdAt to be old
       const oldDate = new Date(Date.now() - 1000 * 60 * 60 * 24 * 10); // 10 days ago
       await db
         .update(jobLogs)
         .set({ createdAt: oldDate })
         .where(inArray(jobLogs.id, [oldLog1.id, oldLog2.id]));
 
-      // Create recent log
       await createJobLog(deps, testJobId, "info", "Recent message");
 
       const cutoffDate = new Date(Date.now() - 1000 * 60 * 60 * 24 * 7); // 7 days ago
@@ -260,7 +253,6 @@ describe("JobLogs Integration Tests", () => {
     it("should get summary for multiple jobs", async () => {
       const deps = createTestDeps(db);
 
-      // Create second job
       const job2 = await createJob(deps, {
         jobName: "send_email",
         type: "immediate" as const,
@@ -271,12 +263,10 @@ describe("JobLogs Integration Tests", () => {
         maxRetries: 3,
       });
 
-      // Create logs for first job
       await createJobLog(deps, testJobId, "info", "Info 1");
       await createJobLog(deps, testJobId, "error", "Error 1");
       await createJobLog(deps, testJobId, "warn", "Warning 1");
 
-      // Create logs for second job
       await createJobLog(deps, job2.id, "info", "Info 2");
       await createJobLog(deps, job2.id, "error", "Error 2");
 

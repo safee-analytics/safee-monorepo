@@ -37,7 +37,6 @@ describe("Jobs Integration Tests", () => {
 
   beforeEach(async () => {
     await nukeDatabase(db);
-    // Create test organization
     const [org] = await db
       .insert(organizations)
       .values({ name: "Test Org", slug: "test-org-jobs" })

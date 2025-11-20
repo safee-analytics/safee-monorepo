@@ -18,7 +18,6 @@ describe("Redis Lock Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    // Clean Redis data
     await redis.flushDb();
   });
 
@@ -28,7 +27,6 @@ describe("Redis Lock Integration Tests", () => {
 
       expect(acquired).toBe(true);
 
-      // Verify lock exists in Redis
       const value = await redis.get("test-lock");
       expect(value).toBe("In use");
     });
@@ -44,7 +42,6 @@ describe("Redis Lock Integration Tests", () => {
     it("should allow acquiring lock after expiration", async () => {
       await acquireRedisLock(redis, "test-lock", 1); // 1 second expiry
 
-      // Wait for expiration
       await new Promise((resolve) => setTimeout(resolve, 1100));
 
       const acquired = await acquireRedisLock(redis, "test-lock", 30);
@@ -85,10 +82,8 @@ describe("Redis Lock Integration Tests", () => {
     });
 
     it("should retry and eventually acquire lock", async () => {
-      // Acquire lock with short expiry
       await acquireRedisLock(redis, "test-lock", 1);
 
-      // Try to acquire with retry - should succeed after lock expires
       const acquired = await acquireRedisLockWithRetry({
         redis,
         lockName: "test-lock",
@@ -102,7 +97,6 @@ describe("Redis Lock Integration Tests", () => {
     });
 
     it("should fail after all retries exhausted", async () => {
-      // Hold the lock for longer than retry period
       await acquireRedisLock(redis, "test-lock", 10);
 
       const acquired = await acquireRedisLockWithRetry({
@@ -153,7 +147,6 @@ describe("Redis Lock Integration Tests", () => {
       let exists = await redis.exists("temp-lock");
       expect(exists).toBe(1);
 
-      // Wait for expiration
       await new Promise((resolve) => setTimeout(resolve, 1100));
 
       exists = await redis.exists("temp-lock");

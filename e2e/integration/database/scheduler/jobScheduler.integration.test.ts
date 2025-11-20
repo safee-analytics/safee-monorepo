@@ -10,6 +10,7 @@ import {
   schema,
   type DrizzleClient,
 } from "@safee/database";
+import { nukeDatabase } from "@safee/database/test-helpers";
 
 const { organizations, jobSchedules } = schema;
 
@@ -31,19 +32,13 @@ describe("JobScheduler Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    // Delete job_schedules first (not tied to organizations)
-    await db.delete(jobSchedules);
-    // With CASCADE, deleting organizations will delete all related data
-    await db.delete(organizations);
-
-    // Create test organization
+    await nukeDatabase(db);
     const [org] = await db
       .insert(organizations)
       .values({ name: "Test Org", slug: "test-org-scheduler" })
       .returning();
     testOrgId = org.id;
 
-    // Create new PubSub and scheduler for each test
     pubsub = new InMemoryPubSub({});
     scheduler = new JobScheduler({
       pubsub,
@@ -55,7 +50,6 @@ describe("JobScheduler Integration Tests", () => {
   });
 
   afterEach(async () => {
-    // Clean up scheduler and pubsub
     await scheduler.stop();
     await pubsub.close();
   });
@@ -65,9 +59,6 @@ describe("JobScheduler Integration Tests", () => {
       const deps = createTestDeps(db);
 
       await scheduler.start(deps);
-
-      // Verify topics were created (indirectly by not throwing)
-      expect(true).toBe(true);
     });
 
     it("should stop scheduler successfully", async () => {
@@ -75,8 +66,6 @@ describe("JobScheduler Integration Tests", () => {
 
       await scheduler.start(deps);
       await scheduler.stop();
-
-      expect(true).toBe(true);
     });
 
     it("should not start if already running", async () => {
@@ -84,8 +73,6 @@ describe("JobScheduler Integration Tests", () => {
 
       await scheduler.start(deps);
       await scheduler.start(deps); // Should not throw, just log warning
-
-      expect(true).toBe(true);
     });
   });
 
@@ -103,9 +90,6 @@ describe("JobScheduler Integration Tests", () => {
       });
 
       await scheduler.scheduleJob(deps, schedule.id);
-
-      // If no error is thrown, the job was scheduled successfully
-      expect(true).toBe(true);
     });
 
     it("should not schedule inactive job", async () => {
@@ -122,7 +106,6 @@ describe("JobScheduler Integration Tests", () => {
       await scheduler.scheduleJob(deps, schedule.id);
 
       // Should complete without error but not actually schedule
-      expect(true).toBe(true);
     });
 
     it("should not schedule job without cron expression", async () => {
@@ -138,7 +121,6 @@ describe("JobScheduler Integration Tests", () => {
       await scheduler.scheduleJob(deps, schedule.id);
 
       // Should complete without error but not actually schedule
-      expect(true).toBe(true);
     });
 
     it("should handle non-existent schedule gracefully", async () => {
@@ -148,7 +130,6 @@ describe("JobScheduler Integration Tests", () => {
       await scheduler.scheduleJob(deps, "00000000-0000-0000-0000-000000000000");
 
       // Should not throw error
-      expect(true).toBe(true);
     });
 
     it("should replace existing scheduled job", async () => {
@@ -164,9 +145,6 @@ describe("JobScheduler Integration Tests", () => {
 
       await scheduler.scheduleJob(deps, schedule.id);
       await scheduler.scheduleJob(deps, schedule.id); // Schedule again
-
-      // Should not throw error
-      expect(true).toBe(true);
     });
   });
 
@@ -186,7 +164,6 @@ describe("JobScheduler Integration Tests", () => {
       await scheduler.unscheduleJob(schedule.id);
 
       // Should complete without error
-      expect(true).toBe(true);
     });
 
     it("should handle unscheduling non-existent job gracefully", async () => {
@@ -196,7 +173,6 @@ describe("JobScheduler Integration Tests", () => {
       await scheduler.unscheduleJob("00000000-0000-0000-0000-000000000000");
 
       // Should not throw error
-      expect(true).toBe(true);
     });
   });
 
@@ -218,7 +194,6 @@ describe("JobScheduler Integration Tests", () => {
       await scheduler.queueJob(job.id);
 
       // If no error is thrown, the job was queued successfully
-      expect(true).toBe(true);
     });
   });
 
@@ -292,7 +267,6 @@ describe("JobScheduler Integration Tests", () => {
       await scheduler.start(deps);
 
       // If no error is thrown, schedules were loaded successfully
-      expect(true).toBe(true);
     });
 
     it("should not load inactive schedules", async () => {
@@ -307,8 +281,6 @@ describe("JobScheduler Integration Tests", () => {
 
       // Start scheduler - should skip inactive schedule
       await scheduler.start(deps);
-
-      expect(true).toBe(true);
     });
 
     it("should not load schedules without cron expression", async () => {
@@ -322,8 +294,6 @@ describe("JobScheduler Integration Tests", () => {
 
       // Start scheduler - should skip schedule without cron
       await scheduler.start(deps);
-
-      expect(true).toBe(true);
     });
   });
 
@@ -363,8 +333,6 @@ describe("JobScheduler Integration Tests", () => {
       // Verify we can publish to topics (if topics weren't created, this would fail)
       await pubsub.publish("test-job-queue", "test message");
       await pubsub.publish("test-job-events", "test message");
-
-      expect(true).toBe(true);
     });
 
     it("should publish job events", async () => {
@@ -416,7 +384,6 @@ describe("JobScheduler Integration Tests", () => {
       await scheduler.scheduleJob(deps, schedule.id);
 
       // If no error is thrown, timezone was handled correctly
-      expect(true).toBe(true);
     });
   });
 });

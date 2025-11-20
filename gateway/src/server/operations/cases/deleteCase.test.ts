@@ -60,7 +60,6 @@ void describe("deleteCase operation", async () => {
     await deleteCase(drizzle, testOrg.id, testUser.id, created.id);
 
     // History should be deleted with case (cascade)
-    expect(true).toBe(true);
   });
 
   void it("should throw NotFound for non-existent case", async () => {
