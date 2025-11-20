@@ -70,7 +70,16 @@ export default function AuditLogsPage() {
     );
   });
 
-  const actionTypes = ["created", "updated", "deleted", "completed", "failed", "started", "cancelled", "retrying"];
+  const actionTypes = [
+    "created",
+    "updated",
+    "deleted",
+    "completed",
+    "failed",
+    "started",
+    "cancelled",
+    "retrying",
+  ];
   const entityTypes = ["job", "invoice", "user", "organization", "employee", "contact", "deal"];
 
   return (

@@ -10,7 +10,6 @@ export { CASE_STATUSES, CASE_PRIORITIES } from "./drizzle/_common.js";
 export type RedisClient = Awaited<ReturnType<typeof redisConnect>>;
 
 export function conditionalCount(column: Column, value: unknown) {
-  // PostgreSQL count() returns string type, not number
   return sql<string>`count(case when ${column} = ${value} then 1 end)`;
 }
 

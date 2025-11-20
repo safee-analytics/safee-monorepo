@@ -576,13 +576,16 @@ export class ResilientOdooClient implements OdooClient {
     options = {},
     context?: Record<string, unknown>,
   ) {
-    return this.executeWithResilience(() => this.client.searchRead<T>(model, domain, fields, options, context), {
-      operation: "searchRead",
-      model,
-      domain,
-      startTime: Date.now(),
-      attemptNumber: 1,
-    });
+    return this.executeWithResilience(
+      () => this.client.searchRead<T>(model, domain, fields, options, context),
+      {
+        operation: "searchRead",
+        model,
+        domain,
+        startTime: Date.now(),
+        attemptNumber: 1,
+      },
+    );
   }
 
   async read<T = Record<string, unknown>>(

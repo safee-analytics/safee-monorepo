@@ -1,6 +1,6 @@
 {
-  "id": "1084c5c2-3213-404b-bb22-c3ab4481be3a",
-  "prevId": "8ef14598-e88d-4567-bc7c-20cb76b5530e",
+  "id": "5d7b30a8-4c0e-47d4-94b7-9a64a065422c",
+  "prevId": "1084c5c2-3213-404b-bb22-c3ab4481be3a",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -339,8 +339,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "odoo.users": {
-      "name": "users",
+    "odoo.odoo_users": {
+      "name": "odoo_users",
       "schema": "odoo",
       "columns": {
         "id": {
@@ -416,9 +416,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "users_user_id_users_id_fk": {
-          "name": "users_user_id_users_id_fk",
-          "tableFrom": "users",
+        "odoo_users_user_id_users_id_fk": {
+          "name": "odoo_users_user_id_users_id_fk",
+          "tableFrom": "odoo_users",
           "tableTo": "users",
           "schemaTo": "identity",
           "columnsFrom": ["user_id"],
@@ -426,9 +426,9 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "users_odoo_database_id_databases_id_fk": {
-          "name": "users_odoo_database_id_databases_id_fk",
-          "tableFrom": "users",
+        "odoo_users_odoo_database_id_databases_id_fk": {
+          "name": "odoo_users_odoo_database_id_databases_id_fk",
+          "tableFrom": "odoo_users",
           "tableTo": "databases",
           "schemaTo": "odoo",
           "columnsFrom": ["odoo_database_id"],

@@ -158,13 +158,13 @@ export default function RoleManagement() {
     // Flatten permission objects to string arrays
     const permissions: string[] = [];
     roleGroup.forEach((r) => {
-      if (typeof r.permission === 'string') {
+      if (typeof r.permission === "string") {
         permissions.push(r.permission);
-      } else if (typeof r.permission === 'object' && r.permission !== null) {
+      } else if (typeof r.permission === "object" && r.permission !== null) {
         // Permission is Record<string, string[]>, flatten to "resource:action" format
         Object.entries(r.permission).forEach(([resource, actions]) => {
           if (Array.isArray(actions)) {
-            actions.forEach(action => permissions.push(`${resource}:${action}`));
+            actions.forEach((action) => permissions.push(`${resource}:${action}`));
           }
         });
       }

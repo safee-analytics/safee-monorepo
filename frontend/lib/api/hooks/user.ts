@@ -30,9 +30,7 @@ export function useUpdateUserProfile() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (
-      profile: Parameters<typeof updateUserProfile>[0],
-    ) => {
+    mutationFn: async (profile: Parameters<typeof updateUserProfile>[0]) => {
       const { data, error } = await updateUserProfile(profile);
       if (error) throw new Error(handleApiError(error));
       return data;

@@ -30,8 +30,6 @@ import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useOrgStore } from "@/stores/useOrgStore";
 import { getAllModules } from "@/lib/config/modules";
 
-
-
 export const SidebarLayout = () => {
   return (
     <div className="flex bg-indigo-50">
@@ -169,10 +167,10 @@ export const Sidebar = () => {
     currentModule && moduleNavItems[currentModule]
       ? moduleNavItems[currentModule]
       : [
-        { icon: FiHome, title: t.nav.dashboard, href: "/" },
-        { icon: FiBookmark, title: t.common.bookmarks, href: "/bookmarks" },
-        { icon: FiBarChart, title: t.common.reports, href: "/reports" },
-      ];
+          { icon: FiHome, title: t.nav.dashboard, href: "/" },
+          { icon: FiBookmark, title: t.common.bookmarks, href: "/bookmarks" },
+          { icon: FiBarChart, title: t.common.reports, href: "/reports" },
+        ];
 
   const createMenuItems = {
     hisabiq: [
@@ -311,8 +309,9 @@ export const Sidebar = () => {
                   onClick={() => setModule(app.id as "hisabiq" | "kanz" | "nisbah" | "audit")}
                 >
                   <div
-                    className={`relative flex h-10 w-full items-center rounded-lg transition-all ${isSelected ? "bg-safee-50" : "hover:bg-gray-50"
-                      }`}
+                    className={`relative flex h-10 w-full items-center rounded-lg transition-all ${
+                      isSelected ? "bg-safee-50" : "hover:bg-gray-50"
+                    }`}
                   >
                     {/* Logo Circle - fixed position */}
                     <div className="w-10 flex items-center justify-center shrink-0">
@@ -325,8 +324,9 @@ export const Sidebar = () => {
 
                     {/* Module Name */}
                     <span
-                      className={`text-xs font-medium transition-opacity overflow-hidden whitespace-nowrap ${isExpanded ? "opacity-100" : "opacity-0 w-0"
-                        } ${isSelected ? "text-safee-700" : "text-gray-700"}`}
+                      className={`text-xs font-medium transition-opacity overflow-hidden whitespace-nowrap ${
+                        isExpanded ? "opacity-100" : "opacity-0 w-0"
+                      } ${isSelected ? "text-safee-700" : "text-gray-700"}`}
                     >
                       {app.name}
                     </span>
@@ -652,10 +652,11 @@ export const Sidebar = () => {
                         {/* Pin Button */}
                         <button
                           onClick={() => handleTogglePin(app.id)}
-                          className={`p-2 rounded-lg transition-colors ${app.pinned
-                            ? "text-yellow-500 hover:bg-yellow-50"
-                            : "text-gray-300 hover:bg-gray-50"
-                            }`}
+                          className={`p-2 rounded-lg transition-colors ${
+                            app.pinned
+                              ? "text-yellow-500 hover:bg-yellow-50"
+                              : "text-gray-300 hover:bg-gray-50"
+                          }`}
                         >
                           <FiStar className={`w-5 h-5 ${app.pinned ? "fill-current" : ""}`} />
                         </button>
@@ -683,12 +684,14 @@ export const Sidebar = () => {
                   </div>
                   <button
                     onClick={() => setSidebarAutoClose(!sidebarAutoClose)}
-                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${sidebarAutoClose ? "bg-safee-600" : "bg-gray-300"
-                      }`}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      sidebarAutoClose ? "bg-safee-600" : "bg-gray-300"
+                    }`}
                   >
                     <span
-                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${sidebarAutoClose ? "translate-x-6" : "translate-x-1"
-                        }`}
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        sidebarAutoClose ? "translate-x-6" : "translate-x-1"
+                      }`}
                     />
                   </button>
                 </div>
@@ -786,14 +789,10 @@ const TitleSection = () => {
   return (
     <div className="mb-3 border-b border-slate-300 pb-3">
       <div className="flex cursor-pointer items-center justify-between rounded-md transition-colors hover:bg-slate-100">
-        <div className="flex items-center gap-2">
-
-        </div>
+        <div className="flex items-center gap-2"></div>
       </div>
     </div>
   );
 };
-
-
 
 const ExampleContent = () => <div className="h-[200vh] w-full"></div>;

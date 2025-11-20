@@ -144,7 +144,16 @@ export default function InvoiceStylesPage() {
     setLogoFile(null);
   };
 
-  const fontOptions = ["Inter", "Roboto", "Open Sans", "Lato", "Montserrat", "Poppins", "Arial", "Times New Roman"];
+  const fontOptions = [
+    "Inter",
+    "Roboto",
+    "Open Sans",
+    "Lato",
+    "Montserrat",
+    "Poppins",
+    "Arial",
+    "Times New Roman",
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -175,7 +184,9 @@ export default function InvoiceStylesPage() {
             <button
               onClick={() => setActiveTab("content")}
               className={`px-6 py-3 font-medium rounded-t-lg transition-colors ${
-                activeTab === "content" ? "bg-gray-700 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
+                activeTab === "content"
+                  ? "bg-gray-700 text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
               }`}
             >
               Content
@@ -213,7 +224,11 @@ export default function InvoiceStylesPage() {
               <div className="bg-white rounded-lg p-6 border border-gray-200">
                 <div className="flex items-center gap-3 mb-4">
                   <div className="w-10 h-10 rounded-lg border-2 border-dashed border-green-500 flex items-center justify-center">
-                    {logoFile ? <ImageIcon className="w-5 h-5 text-green-600" /> : <Upload className="w-5 h-5 text-green-600" />}
+                    {logoFile ? (
+                      <ImageIcon className="w-5 h-5 text-green-600" />
+                    ) : (
+                      <Upload className="w-5 h-5 text-green-600" />
+                    )}
                   </div>
                   <h3 className="font-semibold text-gray-900">Add your unique logo</h3>
                 </div>
@@ -474,7 +489,10 @@ export default function InvoiceStylesPage() {
         </div>
 
         {/* Right Panel - Preview */}
-        <div className="w-1/2 bg-white p-8 overflow-y-auto border-l border-gray-200" style={{ maxHeight: "calc(100vh - 80px)" }}>
+        <div
+          className="w-1/2 bg-white p-8 overflow-y-auto border-l border-gray-200"
+          style={{ maxHeight: "calc(100vh - 80px)" }}
+        >
           <div
             className="mx-auto shadow-lg"
             style={{
@@ -487,7 +505,9 @@ export default function InvoiceStylesPage() {
             {/* Invoice Preview */}
             <div className="p-8">
               {/* Header */}
-              <div className={`flex ${style.logoPosition === "center" ? "justify-center" : style.logoPosition === "right" ? "justify-end" : "justify-start"} mb-6`}>
+              <div
+                className={`flex ${style.logoPosition === "center" ? "justify-center" : style.logoPosition === "right" ? "justify-end" : "justify-start"} mb-6`}
+              >
                 {style.showLogo && style.logoUrl ? (
                   <img src={style.logoUrl} alt="Logo" className="h-16 object-contain" />
                 ) : style.showLogo ? (

@@ -148,15 +148,11 @@ export default function ExportsDemo() {
   React.useEffect(() => {
     const generatePreviews = async () => {
       try {
-        const invoiceBlob = await generatePDFBlob(
-          <InvoicePDF invoice={sampleInvoiceData} />
-        );
+        const invoiceBlob = await generatePDFBlob(<InvoicePDF invoice={sampleInvoiceData} />);
         const invoiceUrl = URL.createObjectURL(invoiceBlob);
         setInvoicePdfUrl(invoiceUrl);
 
-        const reportBlob = await generatePDFBlob(
-          <TablePDF data={salesReportData} />
-        );
+        const reportBlob = await generatePDFBlob(<TablePDF data={salesReportData} />);
         const reportUrl = URL.createObjectURL(reportBlob);
         setReportPdfUrl(reportUrl);
       } catch (error) {
@@ -264,9 +260,7 @@ export default function ExportsDemo() {
                 <span className="text-3xl">📊</span>
                 Excel Exports
               </h2>
-              <p className="mt-2 text-green-50">
-                Advanced spreadsheet generation with formatting
-              </p>
+              <p className="mt-2 text-green-50">Advanced spreadsheet generation with formatting</p>
             </div>
 
             <div className="p-6">
@@ -276,11 +270,7 @@ export default function ExportsDemo() {
                   Live Preview
                 </h3>
                 <div className="rounded-lg overflow-hidden border-2 border-gray-200">
-                  <ExcelPreview
-                    columns={excelColumns}
-                    data={sampleInvoices}
-                    maxRows={5}
-                  />
+                  <ExcelPreview columns={excelColumns} data={sampleInvoices} maxRows={5} />
                 </div>
               </div>
 
@@ -304,8 +294,18 @@ export default function ExportsDemo() {
                       <div className="text-xs text-gray-600">Auto-generated columns</div>
                     </div>
                   </div>
-                  <svg className="w-5 h-5 text-green-600 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  <svg
+                    className="w-5 h-5 text-green-600 group-hover:translate-x-1 transition"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
                   </svg>
                 </button>
 
@@ -323,8 +323,18 @@ export default function ExportsDemo() {
                       <div className="text-xs text-gray-600">Filters & formatting</div>
                     </div>
                   </div>
-                  <svg className="w-5 h-5 text-blue-600 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  <svg
+                    className="w-5 h-5 text-blue-600 group-hover:translate-x-1 transition"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
                   </svg>
                 </button>
 
@@ -342,8 +352,18 @@ export default function ExportsDemo() {
                       <div className="text-xs text-gray-600">Status-based colors</div>
                     </div>
                   </div>
-                  <svg className="w-5 h-5 text-purple-600 group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  <svg
+                    className="w-5 h-5 text-purple-600 group-hover:translate-x-1 transition"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
                   </svg>
                 </button>
               </div>
@@ -380,9 +400,7 @@ export default function ExportsDemo() {
                 <span className="text-3xl">📄</span>
                 PDF Documents
               </h2>
-              <p className="mt-2 text-blue-50">
-                Professional invoices and reports
-              </p>
+              <p className="mt-2 text-blue-50">Professional invoices and reports</p>
             </div>
 
             <div className="p-6 space-y-6">
@@ -427,7 +445,9 @@ export default function ExportsDemo() {
                     </div>
                     <div>
                       <span className="text-gray-500">Total:</span>
-                      <span className="font-medium ml-1">{sampleInvoiceData.currency} {sampleInvoiceData.total.toLocaleString()}</span>
+                      <span className="font-medium ml-1">
+                        {sampleInvoiceData.currency} {sampleInvoiceData.total.toLocaleString()}
+                      </span>
                     </div>
                   </div>
 

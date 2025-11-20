@@ -26,7 +26,11 @@ interface CaseFiltersProps {
   availableAssignees?: Array<{ id: string; name: string }>;
 }
 
-export function CaseFilters({ filters: externalFilters = [], onFiltersChange, availableAssignees = [] }: CaseFiltersProps) {
+export function CaseFilters({
+  filters: externalFilters = [],
+  onFiltersChange,
+  availableAssignees = [],
+}: CaseFiltersProps) {
   const [searchText, setSearchText] = useState("");
   const [filters, setFilters] = useState<FilterToken[]>(externalFilters);
   const [showStatusMenu, setShowStatusMenu] = useState(false);

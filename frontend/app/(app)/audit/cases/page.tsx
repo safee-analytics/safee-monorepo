@@ -252,7 +252,11 @@ export default function CaseManagement() {
               overdueCases={stats.overdueCases}
             />
 
-            <CaseFilters filters={filters} onFiltersChange={setFilters} availableAssignees={availableAssignees} />
+            <CaseFilters
+              filters={filters}
+              onFiltersChange={setFilters}
+              availableAssignees={availableAssignees}
+            />
 
             <div className="mb-4 flex items-center justify-end">
               <div className="flex items-center bg-white rounded-lg border border-gray-300 p-1 gap-1">

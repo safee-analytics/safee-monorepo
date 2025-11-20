@@ -1,7 +1,6 @@
 # Generated files by TSOA
-src/server/routes.ts
-src/server/swagger.json
-
+**/src/server/routes.ts
+**/src/server/swagger.json
 # Build outputs
 dist/
 build/

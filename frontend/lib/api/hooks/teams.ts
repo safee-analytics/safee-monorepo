@@ -61,7 +61,7 @@ export function useTeam(orgId: string, teamId: string) {
       });
       if (error) throw new Error(error.message);
       // data is array of teams, not object with teams property
-      return Array.isArray(data) ? data.find((t: { id: string }) => t.id === teamId) ?? null : null;
+      return Array.isArray(data) ? (data.find((t: { id: string }) => t.id === teamId) ?? null) : null;
     },
     enabled: !!orgId && !!teamId,
   });

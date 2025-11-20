@@ -61,7 +61,7 @@ export function useHasPermission(permission: string): boolean {
 
       try {
         // Convert string permission to object format (resource:action -> {resource: [action]})
-        const [resource, action] = permission.split(':');
+        const [resource, action] = permission.split(":");
         const permissionObj = { [resource]: [action] };
 
         const response = await authClient.organization.hasPermission({
@@ -105,7 +105,7 @@ export function useHasAnyPermission(permissions: string[]): boolean {
           permissions.map(async (permission) => {
             try {
               // Convert string permission to object format
-              const [resource, action] = permission.split(':');
+              const [resource, action] = permission.split(":");
               const permissionObj = { [resource]: [action] };
 
               const response = await authClient.organization.hasPermission({
@@ -166,7 +166,7 @@ export function useHasAllPermissions(permissions: string[]): boolean {
           permissions.map(async (permission) => {
             try {
               // Convert string permission to object format
-              const [resource, action] = permission.split(':');
+              const [resource, action] = permission.split(":");
               const permissionObj = { [resource]: [action] };
 
               const response = await authClient.organization.hasPermission({
@@ -241,7 +241,7 @@ export function useCurrentUserRole(): string | null {
         // Get current member's role
         const membersResponse = await authClient.organization.listMembers();
         const currentMember = membersResponse.data?.members?.find(
-          (m) => m.userId === session?.user?.id && m.organizationId === organization.id
+          (m) => m.userId === session?.user?.id && m.organizationId === organization.id,
         );
         return currentMember?.role || null;
       } catch (error) {

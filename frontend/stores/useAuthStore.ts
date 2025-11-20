@@ -7,7 +7,7 @@ import type { Session, User } from "@/lib/auth/client";
 export type AuthUser = User;
 
 // Use inferred Session type from Better Auth (excluding the 'user' property since we store it separately)
-export type AuthSession = Omit<Session['session'], 'user'>;
+export type AuthSession = Omit<Session["session"], "user">;
 
 interface AuthState {
   user: AuthUser | null;

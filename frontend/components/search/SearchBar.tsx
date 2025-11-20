@@ -67,21 +67,24 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   }, []);
 
   // Save recent search
-  const saveRecentSearch = useCallback((label: string) => {
-    const newSearch: RecentSearch = {
-      id: Date.now().toString(),
-      label,
-      timestamp: Date.now(),
-    };
+  const saveRecentSearch = useCallback(
+    (label: string) => {
+      const newSearch: RecentSearch = {
+        id: Date.now().toString(),
+        label,
+        timestamp: Date.now(),
+      };
 
-    const updated = [newSearch, ...recentSearches.filter((s) => s.label !== label)].slice(
-      0,
-      MAX_RECENT_SEARCHES,
-    );
+      const updated = [newSearch, ...recentSearches.filter((s) => s.label !== label)].slice(
+        0,
+        MAX_RECENT_SEARCHES,
+      );
 
-    setRecentSearches(updated);
-    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
-  }, [recentSearches]);
+      setRecentSearches(updated);
+      localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+    },
+    [recentSearches],
+  );
 
   // Clear recent searches
   const clearRecentSearches = () => {
@@ -90,31 +93,34 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   };
 
   // Detect entity IDs (INV-1234, EMP-5678, etc.)
-  const detectEntityId = useCallback((query: string): SearchResult | null => {
-    const patterns = [
-      { regex: /^INV-\d+$/i, type: "Invoice", icon: FiFileText, path: "/accounting/invoices/" },
-      { regex: /^EMP-\d+$/i, type: "Employee", icon: FiUsers, path: "/hr/employees/" },
-      { regex: /^CONT-\d+$/i, type: "Contact", icon: FiUserPlus, path: "/crm/contacts/" },
-      { regex: /^EXP-\d+$/i, type: "Expense", icon: FiShoppingCart, path: "/accounting/expenses/" },
-      { regex: /^CASE-\d+$/i, type: "Audit Case", icon: FiClipboard, path: "/audit/cases/" },
-    ];
+  const detectEntityId = useCallback(
+    (query: string): SearchResult | null => {
+      const patterns = [
+        { regex: /^INV-\d+$/i, type: "Invoice", icon: FiFileText, path: "/accounting/invoices/" },
+        { regex: /^EMP-\d+$/i, type: "Employee", icon: FiUsers, path: "/hr/employees/" },
+        { regex: /^CONT-\d+$/i, type: "Contact", icon: FiUserPlus, path: "/crm/contacts/" },
+        { regex: /^EXP-\d+$/i, type: "Expense", icon: FiShoppingCart, path: "/accounting/expenses/" },
+        { regex: /^CASE-\d+$/i, type: "Audit Case", icon: FiClipboard, path: "/audit/cases/" },
+      ];
 
-    for (const pattern of patterns) {
-      if (pattern.regex.test(query.trim())) {
-        const id = query.trim().split("-")[1];
-        return {
-          id: `entity-${query}`,
-          type: "entity",
-          icon: pattern.icon,
-          label: `${pattern.type} ${query.toUpperCase()}`,
-          description: `Open ${pattern.type.toLowerCase()} details`,
-          action: () => router.push(`${pattern.path}${id}`),
-          keywords: [query],
-        };
+      for (const pattern of patterns) {
+        if (pattern.regex.test(query.trim())) {
+          const id = query.trim().split("-")[1];
+          return {
+            id: `entity-${query}`,
+            type: "entity",
+            icon: pattern.icon,
+            label: `${pattern.type} ${query.toUpperCase()}`,
+            description: `Open ${pattern.type.toLowerCase()} details`,
+            action: () => router.push(`${pattern.path}${id}`),
+            keywords: [query],
+          };
+        }
       }
-    }
-    return null;
-  }, [router]);
+      return null;
+    },
+    [router],
+  );
 
   // Get search items from shared configuration
   const handleExport = useCallback(() => {
@@ -134,30 +140,33 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   const systemActions = getSystemActions(t, signOut, handleExport, handleThemeToggle, theme);
 
   // Combine all items for search
-  const allItems: SearchResult[] = useMemo(() => [
-    ...navigationItems.map((item) => ({
-      ...item,
-      action: () => router.push(item.path),
-    })),
-    ...quickActions.map((item) => ({
-      ...item,
-      action: () => router.push(item.path),
-    })),
-    ...systemActions.map((item) => ({
-      ...item,
-      action: () => {
-        if (item.path === "#logout") {
-          signOut();
-        } else if (item.path === "#export") {
-          handleExport();
-        } else if (item.path === "#theme") {
-          handleThemeToggle();
-        } else {
-          router.push(item.path);
-        }
-      },
-    })),
-  ], [navigationItems, quickActions, systemActions, router, signOut, handleExport, handleThemeToggle]);
+  const allItems: SearchResult[] = useMemo(
+    () => [
+      ...navigationItems.map((item) => ({
+        ...item,
+        action: () => router.push(item.path),
+      })),
+      ...quickActions.map((item) => ({
+        ...item,
+        action: () => router.push(item.path),
+      })),
+      ...systemActions.map((item) => ({
+        ...item,
+        action: () => {
+          if (item.path === "#logout") {
+            signOut();
+          } else if (item.path === "#export") {
+            handleExport();
+          } else if (item.path === "#theme") {
+            handleThemeToggle();
+          } else {
+            router.push(item.path);
+          }
+        },
+      })),
+    ],
+    [navigationItems, quickActions, systemActions, router, signOut, handleExport, handleThemeToggle],
+  );
 
   // Filter results based on query
   const filteredResults = useMemo(() => {
@@ -184,17 +193,20 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   const showRecent = !query.trim() && recentSearches.length > 0;
 
   // Handle selection
-  const handleSelect = useCallback((result: SearchResult) => {
-    // Save to recent searches
-    if (result.type !== "recent") {
-      saveRecentSearch(result.label);
-    }
+  const handleSelect = useCallback(
+    (result: SearchResult) => {
+      // Save to recent searches
+      if (result.type !== "recent") {
+        saveRecentSearch(result.label);
+      }
 
-    result.action();
-    setIsOpen(false);
-    setQuery("");
-    inputRef.current?.blur();
-  }, [saveRecentSearch]);
+      result.action();
+      setIsOpen(false);
+      setQuery("");
+      inputRef.current?.blur();
+    },
+    [saveRecentSearch],
+  );
 
   // Handle keyboard navigation
   useEffect(() => {

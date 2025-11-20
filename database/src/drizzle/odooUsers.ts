@@ -3,7 +3,7 @@ import { idpk, odooSchema } from "./_common.js";
 import { users } from "./users.js";
 import { odooDatabases } from "./odooDatabases.js";
 
-export const odooUsers = odooSchema.table("users", {
+export const odooUsers = odooSchema.table("odoo_users", {
   id: idpk("id"),
 
   // Link to Safee user

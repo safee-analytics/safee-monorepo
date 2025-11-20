@@ -94,16 +94,18 @@ export default function AuditDashboard() {
     }));
   }, [notifications]);
 
-  const recentCases = useMemo<Array<{
-    id: string;
-    companyName: string;
-    auditType: string;
-    status: "in-progress" | "completed" | "overdue";
-    dueDate: string;
-    completedDate?: string;
-    icon: string;
-    iconBg: string;
-  }>>(() => {
+  const recentCases = useMemo<
+    Array<{
+      id: string;
+      companyName: string;
+      auditType: string;
+      status: "in-progress" | "completed" | "overdue";
+      dueDate: string;
+      completedDate?: string;
+      icon: string;
+      iconBg: string;
+    }>
+  >(() => {
     if (!apiCases) return [];
 
     return apiCases.slice(0, 3).map((caseData: CaseData) => ({
@@ -164,7 +166,8 @@ export default function AuditDashboard() {
         month,
         completed: casesInMonth.filter((c: CaseData) => c.status === "completed").length,
         inProgress: casesInMonth.filter((c: CaseData) => c.status === "in-progress").length,
-        pending: casesInMonth.filter((c: CaseData) => c.status === "pending" || c.status === "under-review").length,
+        pending: casesInMonth.filter((c: CaseData) => c.status === "pending" || c.status === "under-review")
+          .length,
       };
     });
   }, [apiCases]);

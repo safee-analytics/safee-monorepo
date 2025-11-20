@@ -20,11 +20,11 @@ import type messagesEn from "@/messages/en";
 
 // Create a more permissive Messages type that allows any string values
 type Messages = {
-  [K in keyof typeof messagesEn]: typeof messagesEn[K] extends string
+  [K in keyof typeof messagesEn]: (typeof messagesEn)[K] extends string
     ? string
-    : typeof messagesEn[K] extends object
-    ? any
-    : typeof messagesEn[K];
+    : (typeof messagesEn)[K] extends object
+      ? any
+      : (typeof messagesEn)[K];
 };
 
 export interface SearchItem {

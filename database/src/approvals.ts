@@ -53,13 +53,37 @@ export type RuleCondition = z.infer<typeof ruleConditionSchema>;
 export type Rule = z.infer<typeof ruleSchema>;
 export type WorkflowRules = z.infer<typeof workflowRulesSchema>;
 
+type WorkflowFields = Pick<typeof schema.approvalWorkflows.$inferSelect, "id" | "name">;
+
+type ApprovalRequestsByApproverResult = (typeof schema.approvalSteps.$inferSelect & {
+  request: typeof schema.approvalRequests.$inferSelect & {
+    workflow: WorkflowFields;
+    requestedByUser: UserFields;
+    steps: (typeof schema.approvalSteps.$inferSelect & {
+      approver: UserFields;
+      delegatedToUser: UserFields | null;
+    })[];
+  };
+})[];
+
 export async function getApprovalRequestsByApprover(
   deps: DbDeps,
   approverId: string,
   status?: ApprovalStatus,
-) {
+): Promise<ApprovalRequestsByApproverResult> {
   const { drizzle } = deps;
   const { approvalSteps } = schema;
+
+  const userColumns = {
+    id: true,
+    name: true,
+    email: true,
+  } as const;
+
+  const workflowColumns = {
+    id: true,
+    name: true,
+  } as const;
 
   const approvalStepsRecords = await drizzle.query.approvalSteps.findMany({
     where: and(
@@ -69,12 +93,20 @@ export async function getApprovalRequestsByApprover(
     with: {
       request: {
         with: {
-          workflow: true,
-          requestedByUser: true,
+          workflow: {
+            columns: workflowColumns,
+          },
+          requestedByUser: {
+            columns: userColumns,
+          },
           steps: {
             with: {
-              approver: true,
-              delegatedToUser: true,
+              approver: {
+                columns: userColumns,
+              },
+              delegatedToUser: {
+                columns: userColumns,
+              },
             },
           },
         },
@@ -86,19 +118,39 @@ export async function getApprovalRequestsByApprover(
   return approvalStepsRecords;
 }
 
-export async function getApprovalRequestById(deps: DbDeps, requestId: string) {
+type ApprovalRequestByIdResult =
+  | (typeof schema.approvalRequests.$inferSelect & {
+      workflow: typeof schema.approvalWorkflows.$inferSelect;
+      requestedByUser: UserFields;
+      steps: (typeof schema.approvalSteps.$inferSelect & {
+        approver: UserFields;
+        delegatedToUser: UserFields | null;
+      })[];
+    })
+  | undefined;
+
+export async function getApprovalRequestById(
+  deps: DbDeps,
+  requestId: string,
+): Promise<ApprovalRequestByIdResult> {
   const { drizzle } = deps;
   const { approvalSteps } = schema;
+
+  const userColumns = {
+    id: true,
+    name: true,
+    email: true,
+  } as const;
 
   const request = await drizzle.query.approvalRequests.findFirst({
     where: eq(approvalRequests.id, requestId),
     with: {
       workflow: true,
-      requestedByUser: true,
+      requestedByUser: { columns: userColumns },
       steps: {
         with: {
-          approver: true,
-          delegatedToUser: true,
+          approver: { columns: userColumns },
+          delegatedToUser: { columns: userColumns },
         },
         orderBy: [approvalSteps.stepOrder],
       },
@@ -108,19 +160,40 @@ export async function getApprovalRequestById(deps: DbDeps, requestId: string) {
   return request;
 }
 
-export async function getApprovalHistoryByEntity(deps: DbDeps, entityType: string, entityId: string) {
+type UserFields = Pick<typeof schema.users.$inferSelect, "id" | "name" | "email">;
+
+type ApprovalHistoryResult = (typeof schema.approvalRequests.$inferSelect & {
+  workflow: typeof schema.approvalWorkflows.$inferSelect;
+  requestedByUser: UserFields;
+  steps: (typeof schema.approvalSteps.$inferSelect & {
+    approver: UserFields;
+    delegatedToUser: UserFields | null;
+  })[];
+})[];
+
+export async function getApprovalHistoryByEntity(
+  deps: DbDeps,
+  entityType: string,
+  entityId: string,
+): Promise<ApprovalHistoryResult> {
   const { drizzle } = deps;
   const { approvalSteps } = schema;
+
+  const userColumns = {
+    id: true,
+    name: true,
+    email: true,
+  } as const;
 
   const requests = await drizzle.query.approvalRequests.findMany({
     where: and(eq(approvalRequests.entityType, entityType as never), eq(approvalRequests.entityId, entityId)),
     with: {
       workflow: true,
-      requestedByUser: true,
+      requestedByUser: { columns: userColumns },
       steps: {
         with: {
-          approver: true,
-          delegatedToUser: true,
+          approver: { columns: userColumns },
+          delegatedToUser: { columns: userColumns },
         },
         orderBy: [approvalSteps.stepOrder],
       },

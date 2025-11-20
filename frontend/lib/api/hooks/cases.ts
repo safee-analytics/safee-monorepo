@@ -29,9 +29,9 @@ export function useCases(filters?: { status?: string; priority?: string; assigne
     queryKey: queryKeys.cases.list(filters),
     queryFn: async () => {
       // Skip the apiClient if no /cases route exists in types, use fetch directly
-      const queryParams = filters ? new URLSearchParams(filters as Record<string, string>) : '';
-      const response = await fetch(`/api/v1/cases${queryParams ? `?${queryParams}` : ''}`);
-      if (!response.ok) throw new Error('Failed to fetch cases');
+      const queryParams = filters ? new URLSearchParams(filters as Record<string, string>) : "";
+      const response = await fetch(`/api/v1/cases${queryParams ? `?${queryParams}` : ""}`);
+      if (!response.ok) throw new Error("Failed to fetch cases");
       return response.json();
     },
   });

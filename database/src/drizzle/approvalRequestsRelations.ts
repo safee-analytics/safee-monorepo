@@ -12,6 +12,7 @@ export const approvalRequestsRelations = relations(approvalRequests, ({ one, man
   requestedByUser: one(users, {
     fields: [approvalRequests.requestedBy],
     references: [users.id],
+    relationName: "approvalRequestUser",
   }),
   steps: many(approvalSteps),
 }));

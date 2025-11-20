@@ -116,8 +116,7 @@ export default function DocumentRepository() {
   };
 
   const renderFolderTree = (nodes: FolderNode[], level = 0): React.ReactElement[] => {
-    const { nodes: filteredNodes } =
-      level === 0 ? filterFolders(nodes, folderSearchQuery) : { nodes };
+    const { nodes: filteredNodes } = level === 0 ? filterFolders(nodes, folderSearchQuery) : { nodes };
 
     return filteredNodes.flatMap((folder) => {
       const isExpanded = expandedFolders.has(folder.id);

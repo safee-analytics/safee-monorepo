@@ -52,7 +52,9 @@ export class OdooAuditLogService {
       const [result] = await this.drizzle
         .select()
         .from(odooIdempotencyKeys)
-        .where(and(eq(odooIdempotencyKeys.idempotencyKey, idempotencyKey), gt(odooIdempotencyKeys.expiresAt, now)))
+        .where(
+          and(eq(odooIdempotencyKeys.idempotencyKey, idempotencyKey), gt(odooIdempotencyKeys.expiresAt, now)),
+        )
         .limit(1);
 
       if (result) {

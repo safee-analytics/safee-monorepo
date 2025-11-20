@@ -30,7 +30,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   sessions: many(sessions),
   oauthAccounts: many(oauthAccounts),
   // Audit/Cases relations
-  createdCases: many(cases),
+  createdCases: many(cases, { relationName: "caseCreator" }),
   createdTemplates: many(auditTemplates),
   createdScopes: many(auditScopes, { relationName: "auditScopeCreator" }),
   completedScopes: many(auditScopes, { relationName: "auditScopeCompletor" }),
@@ -43,7 +43,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   madeAssignments: many(caseAssignments, { relationName: "caseAssignmentAssigner" }),
   historyChanges: many(caseHistory),
   // Approval relations
-  requestedApprovals: many(approvalRequests),
+  requestedApprovals: many(approvalRequests, { relationName: "approvalRequestUser" }),
   approvalSteps: many(approvalSteps, { relationName: "approvalStepApprover" }),
   delegatedApprovalSteps: many(approvalSteps, { relationName: "approvalStepDelegatedTo" }),
   // Settings relations

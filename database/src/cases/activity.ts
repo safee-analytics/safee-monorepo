@@ -28,13 +28,7 @@ export async function getRecentCaseActivity(
     orderBy: [desc(cases.updatedAt)],
     limit,
     with: {
-      creator: {
-        columns: {
-          id: true,
-          name: true,
-          email: true,
-        },
-      },
+      creator: true,
     },
   });
 

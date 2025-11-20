@@ -4,7184 +4,7206 @@
  */
 
 export interface paths {
-    "/workflows": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description List all workflows */
-        get: operations["ListWorkflows"];
-        put?: never;
-        /** @description Create a new workflow */
-        post: operations["CreateWorkflow"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workflows/{workflowId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get workflow details */
-        get: operations["GetWorkflow"];
-        /** @description Update workflow */
-        put: operations["UpdateWorkflow"];
-        post?: never;
-        /** @description Delete workflow */
-        delete: operations["DeleteWorkflow"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workflows/{workflowId}/activate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Activate workflow */
-        post: operations["ActivateWorkflow"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workflows/{workflowId}/deactivate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Deactivate workflow */
-        post: operations["DeactivateWorkflow"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workflows/rules": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description List approval rules */
-        get: operations["ListRules"];
-        put?: never;
-        /** @description Create approval rule */
-        post: operations["CreateRule"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/workflows/rules/{ruleId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** @description Delete approval rule */
-        delete: operations["DeleteRule"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/users/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetCurrentUser"];
-        put: operations["UpdateCurrentUser"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/users/me/locale": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["UpdateCurrentUserLocale"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/storage/upload": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Upload a file to storage */
-        post: operations["UploadFile"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/storage/upload/batch": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Upload multiple files */
-        post: operations["UploadFiles"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/storage/files/{fileId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get file metadata */
-        get: operations["GetFile"];
-        put?: never;
-        post?: never;
-        /** @description Delete file */
-        delete: operations["DeleteFile"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/storage/files/{fileId}/download": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Download file */
-        get: operations["DownloadFile"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/storage/files/search": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Search files */
-        get: operations["SearchFiles"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/storage/folders": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Create folder */
-        post: operations["CreateFolder"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/storage/folders/{folderId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get folder contents */
-        get: operations["GetFolderContents"];
-        put?: never;
-        post?: never;
-        /** @description Delete folder */
-        delete: operations["DeleteFolder"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/storage/quota": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get storage quota information */
-        get: operations["GetQuota"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/payroll": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetPayrollRecords"];
-        put?: never;
-        post: operations["CreatePayrollRecord"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/payroll/process": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ProcessPayroll"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/provision": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ProvisionDatabase"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/info": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetDatabaseInfo"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete: operations["DeleteDatabase"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/duplicate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["DuplicateDatabase"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/backup": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["BackupDatabase"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/databases": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ListAllDatabases"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/organizations/{organizationId}/info": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetDatabaseInfoByOrganization"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/rpc/search": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["Search"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/rpc/search_read": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["SearchRead"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/rpc/read": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["Read"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/rpc/create": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["Create"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/rpc/write": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["Write"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/rpc/unlink": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["Unlink"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/odoo/rpc/execute": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["Execute"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/nas/connect": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description Connect to a NAS drive
-         *     Supports SMB/CIFS, NFS, and WebDAV protocols
-         */
-        post: operations["ConnectNAS"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/nas/{name}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** @description Disconnect from a NAS drive */
-        delete: operations["DisconnectNAS"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/nas/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get status of all connected NAS drives */
-        get: operations["GetAllNASStatus"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/nas/all": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** @description Disconnect from all NAS drives */
-        delete: operations["DisconnectAll"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/invoices": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetInvoices"];
-        put?: never;
-        post: operations["CreateInvoice"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/invoices": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqInvoices"];
-        put?: never;
-        post: operations["CreateHisabiqInvoice"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/invoices/{invoiceId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqInvoice"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/invoices/{invoiceId}/validate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ValidateHisabiqInvoice"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/invoices/{invoiceId}/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CancelHisabiqInvoice"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/invoices/{invoiceId}/refund": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["RefundHisabiqInvoice"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/invoices/{invoiceId}/pdf": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqInvoicePDF"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/bills": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqBills"];
-        put?: never;
-        post: operations["CreateHisabiqBill"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/bills/{billId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqBill"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/bills/{billId}/validate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ValidateHisabiqBill"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/bills/{billId}/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CancelHisabiqBill"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/bills/{billId}/refund": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["RefundHisabiqBill"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/bills/{billId}/pdf": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqBillPDF"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/accounts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqAccounts"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/accounts/search": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["SearchHisabiqAccounts"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/payments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqPayments"];
-        put?: never;
-        post: operations["CreateHisabiqPayment"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/payments/{paymentId}/confirm": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ConfirmHisabiqPayment"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/partners": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqPartners"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/journals": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqJournals"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/taxes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqTaxes"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/reports/trial-balance": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetHisabiqTrialBalance"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/reports/partner-ledger": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetHisabiqPartnerLedger"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/reports/profit-loss": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqProfitLoss"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/general-ledger": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqGeneralLedger"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/payment-terms": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqPaymentTerms"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/reports/aged-receivable": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqAgedReceivable"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/reports/aged-payable": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqAgedPayable"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/bank-statements": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqBankStatements"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/bank-statements/{statementId}/lines": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqBankStatementLines"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/bank-statements/lines/{lineId}/suggestions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqReconciliationSuggestions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/bank-statements/lines/{lineId}/reconcile": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ReconcileBankStatementLine"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/currencies": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqCurrencies"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/currency-rates": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHisabiqCurrencyRates"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/currency-convert": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ConvertCurrency"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/invoices/batch-validate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["BatchValidateInvoices"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/invoices/batch-cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["BatchCancelInvoices"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/invoices/batch-create": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["BatchCreateInvoices"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/payments/batch-create": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["BatchCreatePayments"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/hisabiq/payments/batch-confirm": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["BatchConfirmPayments"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHealth"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/employees": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetEmployees"];
-        put?: never;
-        post: operations["CreateEmployee"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/deals": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetDeals"];
-        put?: never;
-        post: operations["CreateDeal"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/dashboard/stats": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description Get dashboard statistics
-         *     Returns aggregate statistics for the organization's cases
-         */
-        get: operations["GetStats"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/dashboard/activity": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description Get recent case activity
-         *     Returns the most recent case updates for the organization
-         */
-        get: operations["GetActivity"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/dashboard/notifications": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description Get recent notifications for the current user
-         *     Returns the most recent notifications for the authenticated user
-         */
-        get: operations["GetNotifications"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/dashboard/notifications/unread-count": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description Get unread notifications count
-         *     Returns the count of unread notifications for the authenticated user
-         */
-        get: operations["GetUnreadNotificationsCount"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/dashboard/notifications/{notificationId}/read": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description Mark a notification as read
-         *     Marks a specific notification as read for the authenticated user
-         */
-        post: operations["MarkNotificationAsRead"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/contacts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetContacts"];
-        put?: never;
-        post: operations["CreateContact"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/types": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetConnectorTypes"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/types/{type}/fields": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetFieldDefinitions"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ListConnectors"];
-        put?: never;
-        post: operations["CreateConnector"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/{connectorId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetConnector"];
-        put: operations["UpdateConnector"];
-        post?: never;
-        delete: operations["DeleteConnector"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/{connectorId}/test": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["TestConnection"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/{connectorId}/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetConnectorHealth"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/{connectorId}/query": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ExecuteQuery"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/{connectorId}/schema": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetSchema"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/{connectorId}/schema/{schemaName}/tables/{tableName}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetTablePreview"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/{connectorId}/schema/{schemaName}/tables/{tableName}/search": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["SearchTable"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/mappings/suggest": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["SuggestMappings"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/odoo/dev-credentials": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description Get Odoo web credentials for dev access
-         *     Returns login, password, and web URL for accessing Odoo UI directly
-         */
-        get: operations["GetOdooDevCredentials"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/odoo/user-credentials": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description Get Odoo user web credentials
-         *     Returns the current user's login, password, and web URL for accessing Odoo UI
-         */
-        get: operations["GetOdooUserCredentials"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/odoo/admin-credentials": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description Get Odoo admin credentials
-         *     Returns admin login, password, database name, and web URL for accessing Odoo database as admin
-         */
-        get: operations["GetOdooAdminCredentialsEndpoint"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/odoo/install-modules": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description Install required Odoo modules for the organization
-         *     Installs: Accounting (Hisabiq), CRM (Nisbah), HR & Payroll (Kanz)
-         */
-        post: operations["InstallOdooModules"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/connectors/odoo/models/{modelName}/fields": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * @description Get available fields for an Odoo model (dev tool)
-         *     Useful for discovering what fields exist on a model
-         */
-        get: operations["GetOdooModelFields"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ListCases"];
-        put?: never;
-        post: operations["CreateCase"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/templates": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ListPublicTemplates"];
-        put?: never;
-        post: operations["CreateTemplate"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/templates/{templateId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetTemplate"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetCase"];
-        put: operations["UpdateCase"];
-        post?: never;
-        delete: operations["DeleteCase"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/scopes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ListScopes"];
-        put?: never;
-        post: operations["CreateScope"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/scopes/from-template": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CreateScopeFromTemplate"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/scopes/{scopeId}/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["UpdateScopeStatus"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/scopes/{scopeId}/sections": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ListSections"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/scopes/{scopeId}/sections/{sectionId}/procedures": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ListProcedures"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/scopes/{scopeId}/sections/{sectionId}/procedures/{procedureId}/complete": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CompleteProcedure"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/documents": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ListDocuments"];
-        put?: never;
-        post: operations["CreateDocument"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/documents/{documentId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete: operations["DeleteDocument"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/notes": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ListNotes"];
-        put?: never;
-        post: operations["CreateNote"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/notes/{noteId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["UpdateNote"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/assignments": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["ListAssignments"];
-        put?: never;
-        post: operations["CreateAssignment"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/assignments/{userId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete: operations["DeleteAssignment"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/cases/{caseId}/history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetHistory"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/{orgId}/audit-logs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get audit logs for an organization with optional filtering */
-        get: operations["GetOrganizationAuditLogs"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/{orgId}/audit-logs/export": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Export audit logs to CSV or JSON */
-        post: operations["ExportAuditLogs"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/users/{userId}/activity-logs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get activity logs for a specific user */
-        get: operations["GetUserActivityLogs"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/approvals/submit": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Submit an entity for approval */
-        post: operations["SubmitForApproval"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/approvals": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get pending approvals for current user */
-        get: operations["GetPendingApprovals"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/approvals/{requestId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get approval request details */
-        get: operations["GetApprovalRequest"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/approvals/{requestId}/approve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Approve an approval request */
-        post: operations["Approve"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/approvals/{requestId}/reject": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Reject an approval request */
-        post: operations["Reject"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/approvals/{requestId}/delegate": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Delegate an approval to another user */
-        post: operations["Delegate"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/approvals/history/{entityType}/{entityId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get approval history for an entity */
-        get: operations["GetApprovalHistory"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/accounts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetAccounts"];
-        put?: never;
-        post: operations["CreateAccount"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+  "/workflows": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description List all workflows */
+    get: operations["ListWorkflows"];
+    put?: never;
+    /** @description Create a new workflow */
+    post: operations["CreateWorkflow"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/workflows/{workflowId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get workflow details */
+    get: operations["GetWorkflow"];
+    /** @description Update workflow */
+    put: operations["UpdateWorkflow"];
+    post?: never;
+    /** @description Delete workflow */
+    delete: operations["DeleteWorkflow"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/workflows/{workflowId}/activate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Activate workflow */
+    post: operations["ActivateWorkflow"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/workflows/{workflowId}/deactivate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Deactivate workflow */
+    post: operations["DeactivateWorkflow"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/workflows/rules": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description List approval rules */
+    get: operations["ListRules"];
+    put?: never;
+    /** @description Create approval rule */
+    post: operations["CreateRule"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/workflows/rules/{ruleId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** @description Delete approval rule */
+    delete: operations["DeleteRule"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/users/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetCurrentUser"];
+    put: operations["UpdateCurrentUser"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/users/me/locale": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["UpdateCurrentUserLocale"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/upload": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Upload a file to storage */
+    post: operations["UploadFile"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/upload/batch": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Upload multiple files */
+    post: operations["UploadFiles"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/files/{fileId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get file metadata */
+    get: operations["GetFile"];
+    put?: never;
+    post?: never;
+    /** @description Delete file */
+    delete: operations["DeleteFile"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/files/{fileId}/download": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Download file */
+    get: operations["DownloadFile"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/files/search": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Search files */
+    get: operations["SearchFiles"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/folders": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Create folder */
+    post: operations["CreateFolder"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/folders/{folderId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get folder contents */
+    get: operations["GetFolderContents"];
+    put?: never;
+    post?: never;
+    /** @description Delete folder */
+    delete: operations["DeleteFolder"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/quota": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get storage quota information */
+    get: operations["GetQuota"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/payroll": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetPayrollRecords"];
+    put?: never;
+    post: operations["CreatePayrollRecord"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/payroll/process": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ProcessPayroll"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/provision": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ProvisionDatabase"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/info": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetDatabaseInfo"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations["DeleteDatabase"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/duplicate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["DuplicateDatabase"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/backup": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BackupDatabase"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/databases": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ListAllDatabases"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/organizations/{organizationId}/info": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetDatabaseInfoByOrganization"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/rpc/search": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["Search"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/rpc/search_read": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["SearchRead"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/rpc/read": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["Read"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/rpc/create": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["Create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/rpc/write": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["Write"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/rpc/unlink": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["Unlink"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/rpc/execute": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["Execute"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/nas/connect": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * @description Connect to a NAS drive
+     *     Supports SMB/CIFS, NFS, and WebDAV protocols
+     */
+    post: operations["ConnectNAS"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/nas/{name}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** @description Disconnect from a NAS drive */
+    delete: operations["DisconnectNAS"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/nas/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get status of all connected NAS drives */
+    get: operations["GetAllNASStatus"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/nas/all": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** @description Disconnect from all NAS drives */
+    delete: operations["DisconnectAll"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/invoices": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetInvoices"];
+    put?: never;
+    post: operations["CreateInvoice"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqInvoices"];
+    put?: never;
+    post: operations["CreateHisabiqInvoice"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices/{invoiceId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqInvoice"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices/{invoiceId}/validate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ValidateHisabiqInvoice"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices/{invoiceId}/cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["CancelHisabiqInvoice"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices/{invoiceId}/refund": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["RefundHisabiqInvoice"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices/{invoiceId}/pdf": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqInvoicePDF"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bills": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqBills"];
+    put?: never;
+    post: operations["CreateHisabiqBill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bills/{billId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqBill"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bills/{billId}/validate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ValidateHisabiqBill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bills/{billId}/cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["CancelHisabiqBill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bills/{billId}/refund": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["RefundHisabiqBill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bills/{billId}/pdf": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqBillPDF"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/accounts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqAccounts"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/accounts/search": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["SearchHisabiqAccounts"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/payments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqPayments"];
+    put?: never;
+    post: operations["CreateHisabiqPayment"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/payments/{paymentId}/confirm": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ConfirmHisabiqPayment"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/partners": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqPartners"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/journals": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqJournals"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/taxes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqTaxes"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/reports/trial-balance": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["GetHisabiqTrialBalance"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/reports/partner-ledger": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["GetHisabiqPartnerLedger"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/reports/profit-loss": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqProfitLoss"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/general-ledger": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqGeneralLedger"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/payment-terms": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqPaymentTerms"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/reports/aged-receivable": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqAgedReceivable"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/reports/aged-payable": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqAgedPayable"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bank-statements": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqBankStatements"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bank-statements/{statementId}/lines": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqBankStatementLines"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bank-statements/lines/{lineId}/suggestions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqReconciliationSuggestions"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/bank-statements/lines/{lineId}/reconcile": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ReconcileBankStatementLine"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/currencies": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqCurrencies"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/currency-rates": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHisabiqCurrencyRates"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/currency-convert": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ConvertCurrency"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices/batch-validate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchValidateInvoices"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices/batch-cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchCancelInvoices"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/invoices/batch-create": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchCreateInvoices"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/payments/batch-create": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchCreatePayments"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hisabiq/payments/batch-confirm": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchConfirmPayments"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/health": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHealth"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/employees": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetEmployees"];
+    put?: never;
+    post: operations["CreateEmployee"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/deals": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetDeals"];
+    put?: never;
+    post: operations["CreateDeal"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/dashboard/stats": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * @description Get dashboard statistics
+     *     Returns aggregate statistics for the organization's cases
+     */
+    get: operations["GetStats"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/dashboard/activity": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * @description Get recent case activity
+     *     Returns the most recent case updates for the organization
+     */
+    get: operations["GetActivity"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/dashboard/notifications": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * @description Get recent notifications for the current user
+     *     Returns the most recent notifications for the authenticated user
+     */
+    get: operations["GetNotifications"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/dashboard/notifications/unread-count": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * @description Get unread notifications count
+     *     Returns the count of unread notifications for the authenticated user
+     */
+    get: operations["GetUnreadNotificationsCount"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/dashboard/notifications/{notificationId}/read": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * @description Mark a notification as read
+     *     Marks a specific notification as read for the authenticated user
+     */
+    post: operations["MarkNotificationAsRead"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/contacts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetContacts"];
+    put?: never;
+    post: operations["CreateContact"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/types": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetConnectorTypes"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/types/{type}/fields": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetFieldDefinitions"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ListConnectors"];
+    put?: never;
+    post: operations["CreateConnector"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/{connectorId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetConnector"];
+    put: operations["UpdateConnector"];
+    post?: never;
+    delete: operations["DeleteConnector"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/{connectorId}/test": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["TestConnection"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/{connectorId}/health": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetConnectorHealth"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/{connectorId}/query": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ExecuteQuery"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/{connectorId}/schema": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetSchema"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/{connectorId}/schema/{schemaName}/tables/{tableName}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetTablePreview"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/{connectorId}/schema/{schemaName}/tables/{tableName}/search": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["SearchTable"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/mappings/suggest": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["SuggestMappings"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/odoo/dev-credentials": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * @description Get Odoo web credentials for dev access
+     *     Returns login, password, and web URL for accessing Odoo UI directly
+     */
+    get: operations["GetOdooDevCredentials"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/odoo/user-credentials": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * @description Get Odoo user web credentials
+     *     Returns the current user's login, password, and web URL for accessing Odoo UI
+     */
+    get: operations["GetOdooUserCredentials"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/odoo/admin-credentials": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * @description Get Odoo admin credentials
+     *     Returns admin login, password, database name, and web URL for accessing Odoo database as admin
+     */
+    get: operations["GetOdooAdminCredentialsEndpoint"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/odoo/install-modules": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /**
+     * @description Install required Odoo modules for the organization
+     *     Installs: Accounting (Hisabiq), CRM (Nisbah), HR & Payroll (Kanz)
+     */
+    post: operations["InstallOdooModules"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/connectors/odoo/models/{modelName}/fields": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /**
+     * @description Get available fields for an Odoo model (dev tool)
+     *     Useful for discovering what fields exist on a model
+     */
+    get: operations["GetOdooModelFields"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ListCases"];
+    put?: never;
+    post: operations["CreateCase"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/templates": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ListPublicTemplates"];
+    put?: never;
+    post: operations["CreateTemplate"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/templates/{templateId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetTemplate"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetCase"];
+    put: operations["UpdateCase"];
+    post?: never;
+    delete: operations["DeleteCase"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/scopes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ListScopes"];
+    put?: never;
+    post: operations["CreateScope"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/scopes/from-template": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["CreateScopeFromTemplate"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/scopes/{scopeId}/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["UpdateScopeStatus"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/scopes/{scopeId}/sections": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ListSections"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/scopes/{scopeId}/sections/{sectionId}/procedures": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ListProcedures"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/scopes/{scopeId}/sections/{sectionId}/procedures/{procedureId}/complete": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["CompleteProcedure"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/documents": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ListDocuments"];
+    put?: never;
+    post: operations["CreateDocument"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/documents/{documentId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations["DeleteDocument"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/notes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ListNotes"];
+    put?: never;
+    post: operations["CreateNote"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/notes/{noteId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["UpdateNote"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/assignments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["ListAssignments"];
+    put?: never;
+    post: operations["CreateAssignment"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/assignments/{userId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations["DeleteAssignment"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/cases/{caseId}/history": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetHistory"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/organizations/{orgId}/audit-logs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get audit logs for an organization with optional filtering */
+    get: operations["GetOrganizationAuditLogs"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/organizations/{orgId}/audit-logs/export": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Export audit logs to CSV or JSON */
+    post: operations["ExportAuditLogs"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/users/{userId}/activity-logs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get activity logs for a specific user */
+    get: operations["GetUserActivityLogs"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/approvals/submit": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Submit an entity for approval */
+    post: operations["SubmitForApproval"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/approvals": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get pending approvals for current user */
+    get: operations["GetPendingApprovals"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/approvals/{requestId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get approval request details */
+    get: operations["GetApprovalRequest"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/approvals/{requestId}/approve": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Approve an approval request */
+    post: operations["Approve"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/approvals/{requestId}/reject": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Reject an approval request */
+    post: operations["Reject"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/approvals/{requestId}/delegate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Delegate an approval to another user */
+    post: operations["Delegate"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/approvals/history/{entityType}/{entityId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get approval history for an entity */
+    get: operations["GetApprovalHistory"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccounts"];
+    put?: never;
+    post: operations["CreateAccount"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        WorkflowRules: {
-            autoApprove?: boolean;
-            requireComments?: boolean;
-            allowReassignment?: boolean;
-            /** Format: double */
-            timeoutHours?: number;
-            escalationUserIds?: string[];
-            notifyOnSubmit?: boolean;
-            notifyOnComplete?: boolean;
-        };
-        /** @enum {string} */
-        StepType: "single" | "parallel" | "any";
-        /** @enum {string} */
-        ApproverType: "role" | "team" | "user";
-        WorkflowStepResponse: {
-            id: string;
-            /** Format: double */
-            stepOrder: number;
-            stepType: components["schemas"]["StepType"];
-            approverType: components["schemas"]["ApproverType"];
-            approverId?: string;
-            /** Format: double */
-            minApprovals: number;
-            /** Format: double */
-            requiredApprovers: number;
-        };
-        WorkflowResponse: {
-            id: string;
-            name: string;
-            organizationId: string;
-            entityType: string;
-            isActive: boolean;
-            rules?: components["schemas"]["WorkflowRules"];
-            createdAt: string;
-            updatedAt: string;
-            steps: components["schemas"]["WorkflowStepResponse"][];
-        };
-        WorkflowStepInput: {
-            /** Format: double */
-            stepOrder: number;
-            stepType: components["schemas"]["StepType"];
-            approverType: components["schemas"]["ApproverType"];
-            approverId?: string;
-            /** Format: double */
-            minApprovals?: number;
-            /** Format: double */
-            requiredApprovers?: number;
-        };
-        CreateWorkflowRequest: {
-            name: string;
-            entityType: string;
-            rules?: components["schemas"]["WorkflowRules"];
-            steps: components["schemas"]["WorkflowStepInput"][];
-        };
-        UpdateWorkflowRequest: {
-            name?: string;
-            isActive?: boolean;
-            rules?: components["schemas"]["WorkflowRules"];
-            steps?: components["schemas"]["WorkflowStepInput"][];
-        };
-        RuleCondition: {
-            /** Format: double */
-            value: number;
-            /** @enum {string} */
-            operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq";
-            /** @enum {string} */
-            type: "amount";
-        } | {
-            value: string;
-            /** @enum {string} */
-            operator?: "eq";
-            /** @enum {string} */
-            type: "entityType";
-        } | {
-            value: string;
-            /** @enum {string} */
-            operator?: "eq";
-            /** @enum {string} */
-            type: "userRole";
-        } | {
-            /** @enum {string} */
-            type: "manual";
-        } | {
-            value: string | number | boolean;
-            /** @enum {string} */
-            operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq" | "contains";
-            field: string;
-            /** @enum {string} */
-            type: "field";
-        };
-        Rule: {
-            conditions: components["schemas"]["RuleCondition"][];
-            /** @enum {string} */
-            logic?: "AND" | "OR";
-        };
-        RuleResponse: {
-            id: string;
-            organizationId: string;
-            entityType: string;
-            ruleName: string;
-            conditions: components["schemas"]["Rule"];
-            workflowId: string;
-            /** Format: double */
-            priority: number;
-        };
-        CreateRuleRequest: {
-            entityType: string;
-            ruleName: string;
-            conditions: string;
-            workflowId: string;
-            /** Format: double */
-            priority?: number;
-        };
-        /** @enum {string} */
-        Locale: "en" | "ar";
-        UserProfileResponse: {
-            id: string;
-            email: string;
-            name?: string | null;
-            preferredLocale: components["schemas"]["Locale"];
-            activeOrganizationId?: string | null;
-        };
-        UpdateProfileRequest: {
-            name?: string;
-            preferredLocale?: components["schemas"]["Locale"];
-        };
-        UpdateLocaleRequest: {
-            locale: components["schemas"]["Locale"];
-        };
-        /** @description Construct a type with a set of properties K of type T */
-        "Record_string.unknown_": {
-            [key: string]: unknown;
-        };
-        FileMetadata: {
-            id: string;
-            name: string;
-            path: string;
-            /** Format: double */
-            size: number;
-            mimeType: string;
-            createdAt: string;
-            modifiedAt: string;
-            createdBy: string;
-            modifiedBy?: string;
-            folderId?: string;
-            tags?: string[];
-            metadata?: components["schemas"]["Record_string.unknown_"];
-        };
-        FolderMetadata: {
-            id: string;
-            name: string;
-            path: string;
-            parentId?: string;
-            createdAt: string;
-            modifiedAt: string;
-            createdBy: string;
-            modifiedBy?: string;
-            /** Format: double */
-            fileCount: number;
-            /** Format: double */
-            subFolderCount: number;
-        };
-        CreateFolderRequest: {
-            name: string;
-            parentId?: string;
-        };
-        PayrollRecord: {
-            id: string;
-            employeeId: string;
-            period: string;
-            /** Format: double */
-            basicSalary: number;
-            /** Format: double */
-            allowances: number;
-            /** Format: double */
-            deductions: number;
-            /** Format: double */
-            netPay: number;
-            /** @enum {string} */
-            status: "DRAFT" | "PROCESSED" | "PAID";
-        };
-        PayrollCreateRequest: {
-            employeeId: string;
-            period: string;
-            /** Format: double */
-            basicSalary: number;
-            /** Format: double */
-            allowances: number;
-            /** Format: double */
-            deductions: number;
-        };
-        OdooProvisionResponse: {
-            success: boolean;
-            databaseName: string;
-            adminLogin: string;
-            adminPassword: string;
-            odooUrl: string;
-            loginUrl: string;
-        };
-        OdooInfoResponse: {
-            databaseName: string;
-            exists: boolean;
-            loginUrl: string | null;
-        };
-        OdooDeleteResponse: {
-            success: boolean;
-            message: string;
-        };
-        OdooDuplicateResponse: {
-            success: boolean;
-            originalName: string;
-            newName: string;
-        };
-        OdooDuplicateRequest: {
-            newName: string;
-            neutralize?: boolean;
-        };
-        OdooListResponse: {
-            databases: string[];
-        };
-        OdooSearchRequest: {
-            model: string;
-            domain?: unknown[];
-            /** Format: double */
-            limit?: number;
-            /** Format: double */
-            offset?: number;
-            order?: string;
-        };
-        OdooSearchReadRequest: {
-            model: string;
-            domain?: unknown[];
-            fields?: string[];
-            /** Format: double */
-            limit?: number;
-            /** Format: double */
-            offset?: number;
-            order?: string;
-            context?: components["schemas"]["Record_string.unknown_"];
-        };
-        OdooReadRequest: {
-            model: string;
-            ids: number[];
-            fields?: string[];
-            context?: components["schemas"]["Record_string.unknown_"];
-        };
-        OdooCreateRequest: {
-            model: string;
-            values: components["schemas"]["Record_string.unknown_"];
-            context?: components["schemas"]["Record_string.unknown_"];
-        };
-        OdooWriteRequest: {
-            model: string;
-            ids: number[];
-            values: components["schemas"]["Record_string.unknown_"];
-            context?: components["schemas"]["Record_string.unknown_"];
-        };
-        OdooUnlinkRequest: {
-            model: string;
-            ids: number[];
-            context?: components["schemas"]["Record_string.unknown_"];
-        };
-        OdooExecuteRequest: {
-            model: string;
-            method: string;
-            args?: unknown[];
-            kwargs?: components["schemas"]["Record_string.unknown_"];
-        };
-        NASConnectionStatus: {
-            connected: boolean;
-            mountPoint?: string;
-            error?: string;
-            /** Format: double */
-            freeSpace?: number;
-            /** Format: double */
-            totalSpace?: number;
-            /** Format: double */
-            usedSpace?: number;
-        };
-        ConnectNASRequest: {
-            name: string;
-            /** @enum {string} */
-            type: "smb" | "nfs" | "webdav";
-            host: string;
-            shareName: string;
-            username?: string;
-            password?: string;
-            domain?: string;
-            mountPoint?: string;
-            /** Format: double */
-            port?: number;
-        };
-        NASStatusResponse: {
-            [key: string]: components["schemas"]["NASConnectionStatus"];
-        };
-        Invoice: {
-            id: string;
-            number: string;
-            /** @enum {string} */
-            type: "SALES" | "PURCHASE";
-            date: string;
-            /** Format: double */
-            total: number;
-            status: string;
-        };
-        InvoiceCreateRequest: {
-            /** @enum {string} */
-            type: "SALES" | "PURCHASE";
-            customerId?: string;
-            supplierId?: string;
-            date: string;
-            dueDate?: string;
-            items: {
-                /** Format: double */
-                unitPrice: number;
-                /** Format: double */
-                quantity: number;
-                description: string;
-            }[];
-        };
-        /**
-         * @description Hisabiq (Accounting) API Response Types
-         *
-         *     These are simplified types for API responses that TSOA can handle.
-         *     Internal Odoo types use tuples [number, string] which TSOA doesn't support.
-         *     All fields use camelCase naming convention for JavaScript/TypeScript APIs.
-         */
-        PaymentResponse: {
-            /** Format: double */
-            id?: number;
-            /** @enum {string} */
-            paymentType: "inbound" | "outbound" | "transfer";
-            /** @enum {string} */
-            partnerType: "customer" | "supplier";
-            /** Format: double */
-            partnerId: number;
-            partnerName?: string;
-            /** Format: double */
-            amount: number;
-            /** Format: double */
-            currencyId?: number;
-            paymentDate: string;
-            /** Format: double */
-            journalId: number;
-            journalName?: string;
-            /** Format: double */
-            paymentMethodId?: number;
-            ref?: string;
-            /** @enum {string} */
-            state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
-        };
-        CreatePaymentDTO: {
-            /** @enum {string} */
-            type: "inbound" | "outbound";
-            /** Format: double */
-            partnerId: number;
-            /** @enum {string} */
-            partnerType: "customer" | "supplier";
-            /** Format: double */
-            amount: number;
-            date: string;
-            /** Format: double */
-            journalId: number;
-            reference?: string;
-            invoiceIds?: number[];
-        };
-        PartnerResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            email?: string;
-            phone?: string;
-            vat?: string;
-            /** Format: double */
-            accountReceivableId?: number;
-            /** Format: double */
-            accountPayableId?: number;
-            /** Format: double */
-            paymentTermId?: number;
-            /** Format: double */
-            customerRank?: number;
-            /** Format: double */
-            supplierRank?: number;
-        };
-        JournalResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            code: string;
-            /** @enum {string} */
-            type: "sale" | "purchase" | "cash" | "bank" | "general";
-            /** Format: double */
-            currencyId?: number;
-            currencyName?: string;
-            /** Format: double */
-            companyId: number;
-            companyName?: string;
-            /** Format: double */
-            defaultAccountId: number;
-            defaultAccountName?: string;
-        };
-        TaxResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            /** Format: double */
-            amount: number;
-            /** @enum {string} */
-            amountType: "percent" | "division" | "fixed" | "group";
-            /** @enum {string} */
-            typeTaxUse: "sale" | "purchase" | "none";
-            active: boolean;
-        };
-        AccountBalanceReportResponse: {
-            /** Format: double */
-            accountId: number;
-            accountCode: string;
-            accountName: string;
-            /** Format: double */
-            debit: number;
-            /** Format: double */
-            credit: number;
-            /** Format: double */
-            balance: number;
-        };
-        AccountBalanceQuery: {
-            accountIds?: number[];
-            dateFrom?: string;
-            dateTo?: string;
-        };
-        PartnerLedgerEntryResponse: {
-            date: string;
-            moveName: string;
-            label: string;
-            /** Format: double */
-            debit: number;
-            /** Format: double */
-            credit: number;
-            /** Format: double */
-            balance: number;
-        };
-        PartnerLedgerReportResponse: {
-            /** Format: double */
-            partnerId: number;
-            partnerName: string;
-            /** Format: double */
-            debit: number;
-            /** Format: double */
-            credit: number;
-            /** Format: double */
-            balance: number;
-            entries: components["schemas"]["PartnerLedgerEntryResponse"][];
-        };
-        PartnerLedgerQuery: {
-            /** Format: double */
-            partnerId: number;
-            dateFrom?: string;
-            dateTo?: string;
-        };
-        ProfitLossResponse: {
-            /** Format: double */
-            income: number;
-            /** Format: double */
-            expenses: number;
-            /** Format: double */
-            netProfit: number;
-        };
-        GLEntryResponse: {
-            /** Format: double */
-            id: number;
-            /** Format: double */
-            moveId: number;
-            moveName?: string;
-            date: string;
-            /** Format: double */
-            accountId: number;
-            accountName?: string;
-            /** Format: double */
-            partnerId?: number;
-            partnerName?: string;
-            name: string;
-            /** Format: double */
-            debit: number;
-            /** Format: double */
-            credit: number;
-            /** Format: double */
-            balance: number;
-            /** Format: double */
-            amountCurrency?: number;
-            /** Format: double */
-            currencyId?: number;
-            currencyName?: string;
-            /** Format: double */
-            companyId: number;
-            companyName?: string;
-        };
-        HealthCheck: {
-            /** @enum {string} */
-            status: "ok" | "error";
-            timestamp: string;
-            /** Format: double */
-            uptime: number;
-            version: string;
-        };
-        Employee: {
-            id: string;
-            firstName: string;
-            lastName: string;
-            email: string;
-            position: string;
-            /** Format: double */
-            salary: number;
-            startDate: string;
-        };
-        EmployeeCreateRequest: {
-            firstName: string;
-            lastName: string;
-            email: string;
-            position: string;
-            /** Format: double */
-            salary: number;
-            startDate: string;
-        };
-        Deal: {
-            id: string;
-            title: string;
-            /** Format: double */
-            value: number;
-            /** @enum {string} */
-            stage: "PROSPECT" | "QUALIFIED" | "PROPOSAL" | "NEGOTIATION" | "CLOSED_WON" | "CLOSED_LOST";
-            contactId: string;
-            expectedCloseDate: string;
-            /** Format: double */
-            probability: number;
-        };
-        DealCreateRequest: {
-            title: string;
-            /** Format: double */
-            value: number;
-            contactId: string;
-            expectedCloseDate: string;
-            /** Format: double */
-            probability: number;
-        };
-        /** @description Dashboard statistics response */
-        DashboardStatsResponse: {
-            /** Format: double */
-            activeCases: number;
-            /** Format: double */
-            pendingReviews: number;
-            /** Format: double */
-            completedAudits: number;
-            /** Format: double */
-            totalCases: number;
-            /** Format: double */
-            completionRate: number;
-        };
-        /** @description Case activity item */
-        CaseActivityResponse: {
-            id: string;
-            /** @enum {string} */
-            type: "case_update";
-            caseId: string;
-            caseNumber: string;
-            clientName: string;
-            status: string;
-            updatedAt: string;
-            updatedBy: {
-                name: string;
-                id: string;
-            };
-        };
-        /** @description Notification response */
-        NotificationResponse: {
-            id: string;
-            type: string;
-            title: string;
-            description: string;
-            timestamp: string;
-            isRead: boolean;
-            relatedEntityType: string | null;
-            relatedEntityId: string | null;
-            actionLabel: string | null;
-            actionUrl: string | null;
-        };
-        /** @description Unread notifications count response */
-        UnreadNotificationsCountResponse: {
-            /** Format: double */
-            count: number;
-        };
-        Contact: {
-            id: string;
-            name: string;
-            email: string;
-            phone: string;
-            company?: string;
-            /** @enum {string} */
-            type: "LEAD" | "CUSTOMER" | "VENDOR";
-            /** @enum {string} */
-            status: "ACTIVE" | "INACTIVE";
-        };
-        ContactCreateRequest: {
-            name: string;
-            email: string;
-            phone: string;
-            company?: string;
-            /** @enum {string} */
-            type: "LEAD" | "CUSTOMER" | "VENDOR";
-        };
-        /** @enum {string} */
-        ConnectorType: "postgresql" | "mysql" | "mssql" | "storage_local" | "storage_webdav" | "storage_smb" | "storage_cloud";
-        ConnectorResponse: {
-            id: string;
-            organizationId: string;
-            name: string;
-            description?: string;
-            type: components["schemas"]["ConnectorType"];
-            isActive: boolean;
-            tags: string[];
-            metadata: components["schemas"]["Record_string.unknown_"];
-            lastConnectionTest?: string;
-            lastConnectionStatus?: string;
-            lastConnectionError?: string;
-            createdAt: string;
-            updatedAt: string;
-        };
-        ConnectorConfig: {
-            host?: string;
-            /** Format: double */
-            port?: number;
-            database?: string;
-            username?: string;
-            password?: string;
-            ssl?: boolean;
-            url?: string;
-            apiKey?: string;
-            authToken?: string;
-        } & {
-            [key: string]: unknown;
-        };
-        CreateConnectorRequest: {
-            name: string;
-            description?: string;
-            type: components["schemas"]["ConnectorType"];
-            config: components["schemas"]["ConnectorConfig"];
-            tags?: string[];
-            metadata?: components["schemas"]["Record_string.unknown_"];
-        };
-        UpdateConnectorRequest: {
-            name?: string;
-            description?: string;
-            config?: components["schemas"]["ConnectorConfig"];
-            tags?: string[];
-            metadata?: components["schemas"]["Record_string.unknown_"];
-            isActive?: boolean;
-        };
-        QueryResponse: {
-            rows: unknown[];
-            /** Format: double */
-            rowCount: number;
-            /** Format: double */
-            executionTime: number;
-        };
-        QueryRequest: {
-            sql: string;
-            params?: unknown[];
-        };
-        SchemaResponse: {
-            tables: {
-                /** @enum {string} */
-                type: "table" | "view";
-                name: string;
-                schema: string;
-            }[];
-        };
-        TablePreviewResponse: {
-            schema: string;
-            table: string;
-            columns: {
-                nullable: boolean;
-                type: string;
-                name: string;
-            }[];
-            sampleData: unknown[];
-            /** Format: double */
-            totalRows: number;
-        };
-        FieldMapping: {
-            sourceColumn: string;
-            targetField: string;
-            /** @enum {string} */
-            transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean";
-            defaultValue?: unknown;
-        };
-        SuggestMappingsRequest: {
-            sourceColumns: string[];
-            /** @enum {string} */
-            targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
-        };
-        CaseResponse: {
-            id: string;
-            organizationId: string;
-            caseNumber: string;
-            clientName: string;
-            auditType: string;
-            /** @enum {string} */
-            status: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
-            /** @enum {string} */
-            priority: "low" | "medium" | "high" | "critical";
-            dueDate?: string;
-            completedDate?: string;
-            createdBy: string;
-            createdAt: string;
-            updatedAt: string;
-            assignments?: {
-                user?: {
-                    email: string;
-                    name: string | null;
-                    id: string;
-                };
-                /** @enum {string} */
-                role: "lead" | "reviewer" | "team_member";
-                userId: string;
-            }[];
-        };
-        CreateCaseRequest: {
-            caseNumber?: string;
-            clientName: string;
-            auditType: string;
-            /** @enum {string} */
-            status?: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
-            /** @enum {string} */
-            priority?: "low" | "medium" | "high" | "critical";
-            dueDate?: string;
-        };
-        TemplateStructure: {
-            settings?: components["schemas"]["Record_string.unknown_"];
-            sections: {
-                procedures: {
-                    /** Format: double */
-                    sortOrder: number;
-                    requirements?: components["schemas"]["Record_string.unknown_"];
-                    description?: string;
-                    title: string;
-                    referenceNumber: string;
-                }[];
-                settings?: components["schemas"]["Record_string.unknown_"];
-                /** Format: double */
-                sortOrder: number;
-                description?: string;
-                name: string;
-            }[];
-        };
-        TemplateResponse: {
-            id: string;
-            organizationId?: string;
-            name: string;
-            description?: string;
-            auditType: string;
-            category?: string;
-            version: string;
-            isActive: boolean;
-            isPublic: boolean;
-            structure: components["schemas"]["TemplateStructure"];
-            createdBy: string;
-            createdAt: string;
-            updatedAt: string;
-        };
-        CreateTemplateRequest: {
-            organizationId?: string;
-            name: string;
-            description?: string;
-            auditType: string;
-            category?: string;
-            version?: string;
-            isActive?: boolean;
-            isPublic?: boolean;
-            structure: components["schemas"]["TemplateStructure"];
-        };
-        UpdateCaseRequest: {
-            caseNumber?: string;
-            clientName?: string;
-            auditType?: string;
-            /** @enum {string} */
-            status?: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
-            /** @enum {string} */
-            priority?: "low" | "medium" | "high" | "critical";
-            dueDate?: string;
-            completedDate?: string;
-        };
-        ScopeResponse: {
-            id: string;
-            caseId: string;
-            templateId?: string;
-            name: string;
-            description?: string;
-            /** @enum {string} */
-            status: "draft" | "in-progress" | "under-review" | "completed" | "archived";
-            metadata: components["schemas"]["Record_string.unknown_"];
-            createdBy: string;
-            completedBy?: string;
-            archivedBy?: string;
-            createdAt: string;
-            updatedAt: string;
-            completedAt?: string;
-            archivedAt?: string;
-        };
-        CreateScopeRequest: {
-            name: string;
-            description?: string;
-            /** @enum {string} */
-            status?: "draft" | "in-progress" | "under-review" | "completed" | "archived";
-            metadata?: components["schemas"]["Record_string.unknown_"];
-        };
-        CreateScopeFromTemplateRequest: {
-            templateId: string;
-        };
-        UpdateScopeStatusRequest: {
-            /** @enum {string} */
-            status: "draft" | "in-progress" | "under-review" | "completed" | "archived";
-        };
-        SectionResponse: {
-            id: string;
-            scopeId: string;
-            name: string;
-            description?: string;
-            /** Format: double */
-            sortOrder: number;
-            isCompleted: boolean;
-            settings: components["schemas"]["Record_string.unknown_"];
-            createdAt: string;
-            updatedAt: string;
-        };
-        ProcedureResponse: {
-            id: string;
-            sectionId: string;
-            referenceNumber: string;
-            title: string;
-            description?: string;
-            requirements: components["schemas"]["Record_string.unknown_"];
-            /** Format: double */
-            sortOrder: number;
-            isCompleted: boolean;
-            completedBy?: string;
-            completedAt?: string;
-            memo?: string;
-            fieldData: components["schemas"]["Record_string.unknown_"];
-            canEdit: boolean;
-            createdAt: string;
-            updatedAt: string;
-        };
-        CompleteProcedureRequest: {
-            fieldData?: components["schemas"]["Record_string.unknown_"];
-            memo?: string;
-        };
-        DocumentResponse: {
-            id: string;
-            caseId: string;
-            procedureId?: string;
-            fileName: string;
-            /** Format: double */
-            fileSize: number;
-            fileType: string;
-            storagePath: string;
-            /** Format: double */
-            version: number;
-            parentDocumentId?: string;
-            uploadedBy: string;
-            uploadedAt: string;
-            isDeleted: boolean;
-        };
-        CreateDocumentRequest: {
-            procedureId?: string;
-            fileName: string;
-            /** Format: double */
-            fileSize: number;
-            fileType: string;
-            storagePath: string;
-            /** Format: double */
-            version?: number;
-            parentDocumentId?: string;
-        };
-        NoteResponse: {
-            id: string;
-            caseId: string;
-            procedureId?: string;
-            /** @enum {string} */
-            noteType: "observation" | "review_comment" | "general" | "memo";
-            content: string;
-            createdBy: string;
-            createdAt: string;
-            updatedAt: string;
-            isEdited: boolean;
-        };
-        CreateNoteRequest: {
-            procedureId?: string;
-            /** @enum {string} */
-            noteType: "observation" | "review_comment" | "general" | "memo";
-            content: string;
-        };
-        UpdateNoteRequest: {
-            content: string;
-        };
-        AssignmentResponse: {
-            caseId: string;
-            userId: string;
-            /** @enum {string} */
-            role: "lead" | "reviewer" | "team_member";
-            assignedBy: string;
-            assignedAt: string;
-        };
-        CreateAssignmentRequest: {
-            userId: string;
-            /** @enum {string} */
-            role: "lead" | "reviewer" | "team_member";
-        };
-        HistoryResponse: {
-            id: string;
-            caseId: string;
-            entityType: string;
-            entityId: string;
-            action: string;
-            changesBefore?: components["schemas"]["Record_string.unknown_"];
-            changesAfter?: components["schemas"]["Record_string.unknown_"];
-            changedBy: string;
-            changedAt: string;
-        };
-        /** @enum {string} */
-        EntityType: "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
-        /** @enum {string} */
-        AuditAction: "created" | "updated" | "deleted" | "completed" | "failed" | "started" | "cancelled" | "retrying";
-        AuditLogUser: {
-            id: string;
-            name: string | null;
-            email: string;
-        };
-        AuditLogResponse: {
-            id: string;
-            entityType: components["schemas"]["EntityType"];
-            entityId: string;
-            action: components["schemas"]["AuditAction"];
-            organizationId: string | null;
-            userId: string | null;
-            metadata: components["schemas"]["Record_string.unknown_"] | null;
-            ipAddress: string | null;
-            userAgent: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            user?: components["schemas"]["AuditLogUser"] | null;
-        };
-        AuditLogFilters: {
-            entityType?: components["schemas"]["EntityType"];
-            entityId?: string;
-            action?: components["schemas"]["AuditAction"];
-            userId?: string;
-            startDate?: string;
-            endDate?: string;
-            /** Format: double */
-            limit?: number;
-            /** Format: double */
-            offset?: number;
-        };
-        ExportAuditLogsRequest: {
-            /** @enum {string} */
-            format: "csv" | "json";
-            filters?: components["schemas"]["AuditLogFilters"];
-        };
-        SubmitForApprovalResponse: {
-            requestId: string;
-            workflowId: string;
-            status: string;
-            message: string;
-        };
-        EntityData: {
-            entityType: components["schemas"]["EntityType"];
-            entityId: string;
-            /** Format: double */
-            amount?: number;
-            status?: string;
-            createdBy?: string;
-        } & {
-            [key: string]: unknown;
-        };
-        SubmitForApprovalRequest: {
-            entityType: string;
-            entityId: string;
-            entityData: components["schemas"]["EntityData"];
-        };
-        ApprovalStepResponse: {
-            id: string;
-            /** Format: double */
-            stepOrder: number;
-            approverId: string;
-            approverName?: string;
-            status: string;
-            comments?: string;
-            actionAt?: string;
-            delegatedTo?: string;
-            delegatedToName?: string;
-        };
-        ApprovalRequestResponse: {
-            id: string;
-            workflowId: string;
-            workflowName: string;
-            entityType: string;
-            entityId: string;
-            status: string;
-            requestedBy: string;
-            requestedByName?: string;
-            submittedAt: string;
-            completedAt?: string;
-            /** Format: double */
-            currentStep?: number;
-            /** Format: double */
-            totalSteps?: number;
-            steps: components["schemas"]["ApprovalStepResponse"][];
-        };
-        ApprovalActionResponse: {
-            success: boolean;
-            message: string;
-            requestStatus?: string;
-        };
-        ApprovalActionRequest: {
-            comments?: string;
-        };
-        DelegateApprovalRequest: {
-            delegateToUserId: string;
-            comments?: string;
-        };
-        Account: {
-            id: string;
-            code: string;
-            name: string;
-            /** @enum {string} */
-            type: "ASSET" | "LIABILITY" | "EQUITY" | "REVENUE" | "EXPENSE";
-            /** Format: double */
-            balance: number;
-            parentId?: string;
-        };
-        AccountCreateRequest: {
-            code: string;
-            name: string;
-            /** @enum {string} */
-            type: "ASSET" | "LIABILITY" | "EQUITY" | "REVENUE" | "EXPENSE";
-            parentId?: string;
-        };
+  schemas: {
+    WorkflowRules: {
+      autoApprove?: boolean;
+      requireComments?: boolean;
+      allowReassignment?: boolean;
+      /** Format: double */
+      timeoutHours?: number;
+      escalationUserIds?: string[];
+      notifyOnSubmit?: boolean;
+      notifyOnComplete?: boolean;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    /** @enum {string} */
+    StepType: "single" | "parallel" | "any";
+    /** @enum {string} */
+    ApproverType: "role" | "team" | "user";
+    WorkflowStepResponse: {
+      id: string;
+      /** Format: double */
+      stepOrder: number;
+      stepType: components["schemas"]["StepType"];
+      approverType: components["schemas"]["ApproverType"];
+      approverId?: string;
+      /** Format: double */
+      minApprovals: number;
+      /** Format: double */
+      requiredApprovers: number;
+    };
+    WorkflowResponse: {
+      id: string;
+      name: string;
+      organizationId: string;
+      entityType: string;
+      isActive: boolean;
+      rules?: components["schemas"]["WorkflowRules"];
+      createdAt: string;
+      updatedAt: string;
+      steps: components["schemas"]["WorkflowStepResponse"][];
+    };
+    WorkflowStepInput: {
+      /** Format: double */
+      stepOrder: number;
+      stepType: components["schemas"]["StepType"];
+      approverType: components["schemas"]["ApproverType"];
+      approverId?: string;
+      /** Format: double */
+      minApprovals?: number;
+      /** Format: double */
+      requiredApprovers?: number;
+    };
+    CreateWorkflowRequest: {
+      name: string;
+      entityType: string;
+      rules?: components["schemas"]["WorkflowRules"];
+      steps: components["schemas"]["WorkflowStepInput"][];
+    };
+    UpdateWorkflowRequest: {
+      name?: string;
+      isActive?: boolean;
+      rules?: components["schemas"]["WorkflowRules"];
+      steps?: components["schemas"]["WorkflowStepInput"][];
+    };
+    RuleCondition:
+      | {
+          /** Format: double */
+          value: number;
+          /** @enum {string} */
+          operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq";
+          /** @enum {string} */
+          type: "amount";
+        }
+      | {
+          value: string;
+          /** @enum {string} */
+          operator?: "eq";
+          /** @enum {string} */
+          type: "entityType";
+        }
+      | {
+          value: string;
+          /** @enum {string} */
+          operator?: "eq";
+          /** @enum {string} */
+          type: "userRole";
+        }
+      | {
+          /** @enum {string} */
+          type: "manual";
+        }
+      | {
+          value: string | number | boolean;
+          /** @enum {string} */
+          operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq" | "contains";
+          field: string;
+          /** @enum {string} */
+          type: "field";
+        };
+    Rule: {
+      conditions: components["schemas"]["RuleCondition"][];
+      /** @enum {string} */
+      logic?: "AND" | "OR";
+    };
+    RuleResponse: {
+      id: string;
+      organizationId: string;
+      entityType: string;
+      ruleName: string;
+      conditions: components["schemas"]["Rule"];
+      workflowId: string;
+      /** Format: double */
+      priority: number;
+    };
+    CreateRuleRequest: {
+      entityType: string;
+      ruleName: string;
+      conditions: string;
+      workflowId: string;
+      /** Format: double */
+      priority?: number;
+    };
+    /** @enum {string} */
+    Locale: "en" | "ar";
+    UserProfileResponse: {
+      id: string;
+      email: string;
+      name?: string | null;
+      preferredLocale: components["schemas"]["Locale"];
+      activeOrganizationId?: string | null;
+    };
+    UpdateProfileRequest: {
+      name?: string;
+      preferredLocale?: components["schemas"]["Locale"];
+    };
+    UpdateLocaleRequest: {
+      locale: components["schemas"]["Locale"];
+    };
+    /** @description Construct a type with a set of properties K of type T */
+    "Record_string.unknown_": {
+      [key: string]: unknown;
+    };
+    FileMetadata: {
+      id: string;
+      name: string;
+      path: string;
+      /** Format: double */
+      size: number;
+      mimeType: string;
+      createdAt: string;
+      modifiedAt: string;
+      createdBy: string;
+      modifiedBy?: string;
+      folderId?: string;
+      tags?: string[];
+      metadata?: components["schemas"]["Record_string.unknown_"];
+    };
+    FolderMetadata: {
+      id: string;
+      name: string;
+      path: string;
+      parentId?: string;
+      createdAt: string;
+      modifiedAt: string;
+      createdBy: string;
+      modifiedBy?: string;
+      /** Format: double */
+      fileCount: number;
+      /** Format: double */
+      subFolderCount: number;
+    };
+    CreateFolderRequest: {
+      name: string;
+      parentId?: string;
+    };
+    PayrollRecord: {
+      id: string;
+      employeeId: string;
+      period: string;
+      /** Format: double */
+      basicSalary: number;
+      /** Format: double */
+      allowances: number;
+      /** Format: double */
+      deductions: number;
+      /** Format: double */
+      netPay: number;
+      /** @enum {string} */
+      status: "DRAFT" | "PROCESSED" | "PAID";
+    };
+    PayrollCreateRequest: {
+      employeeId: string;
+      period: string;
+      /** Format: double */
+      basicSalary: number;
+      /** Format: double */
+      allowances: number;
+      /** Format: double */
+      deductions: number;
+    };
+    OdooProvisionResponse: {
+      success: boolean;
+      databaseName: string;
+      adminLogin: string;
+      adminPassword: string;
+      odooUrl: string;
+      loginUrl: string;
+    };
+    OdooInfoResponse: {
+      databaseName: string;
+      exists: boolean;
+      loginUrl: string | null;
+    };
+    OdooDeleteResponse: {
+      success: boolean;
+      message: string;
+    };
+    OdooDuplicateResponse: {
+      success: boolean;
+      originalName: string;
+      newName: string;
+    };
+    OdooDuplicateRequest: {
+      newName: string;
+      neutralize?: boolean;
+    };
+    OdooListResponse: {
+      databases: string[];
+    };
+    OdooSearchRequest: {
+      model: string;
+      domain?: unknown[];
+      /** Format: double */
+      limit?: number;
+      /** Format: double */
+      offset?: number;
+      order?: string;
+    };
+    OdooSearchReadRequest: {
+      model: string;
+      domain?: unknown[];
+      fields?: string[];
+      /** Format: double */
+      limit?: number;
+      /** Format: double */
+      offset?: number;
+      order?: string;
+      context?: components["schemas"]["Record_string.unknown_"];
+    };
+    OdooReadRequest: {
+      model: string;
+      ids: number[];
+      fields?: string[];
+      context?: components["schemas"]["Record_string.unknown_"];
+    };
+    OdooCreateRequest: {
+      model: string;
+      values: components["schemas"]["Record_string.unknown_"];
+      context?: components["schemas"]["Record_string.unknown_"];
+    };
+    OdooWriteRequest: {
+      model: string;
+      ids: number[];
+      values: components["schemas"]["Record_string.unknown_"];
+      context?: components["schemas"]["Record_string.unknown_"];
+    };
+    OdooUnlinkRequest: {
+      model: string;
+      ids: number[];
+      context?: components["schemas"]["Record_string.unknown_"];
+    };
+    OdooExecuteRequest: {
+      model: string;
+      method: string;
+      args?: unknown[];
+      kwargs?: components["schemas"]["Record_string.unknown_"];
+    };
+    NASConnectionStatus: {
+      connected: boolean;
+      mountPoint?: string;
+      error?: string;
+      /** Format: double */
+      freeSpace?: number;
+      /** Format: double */
+      totalSpace?: number;
+      /** Format: double */
+      usedSpace?: number;
+    };
+    ConnectNASRequest: {
+      name: string;
+      /** @enum {string} */
+      type: "smb" | "nfs" | "webdav";
+      host: string;
+      shareName: string;
+      username?: string;
+      password?: string;
+      domain?: string;
+      mountPoint?: string;
+      /** Format: double */
+      port?: number;
+    };
+    NASStatusResponse: {
+      [key: string]: components["schemas"]["NASConnectionStatus"];
+    };
+    Invoice: {
+      id: string;
+      number: string;
+      /** @enum {string} */
+      type: "SALES" | "PURCHASE";
+      date: string;
+      /** Format: double */
+      total: number;
+      status: string;
+    };
+    InvoiceCreateRequest: {
+      /** @enum {string} */
+      type: "SALES" | "PURCHASE";
+      customerId?: string;
+      supplierId?: string;
+      date: string;
+      dueDate?: string;
+      items: {
+        /** Format: double */
+        unitPrice: number;
+        /** Format: double */
+        quantity: number;
+        description: string;
+      }[];
+    };
+    /**
+     * @description Hisabiq (Accounting) API Response Types
+     *
+     *     These are simplified types for API responses that TSOA can handle.
+     *     Internal Odoo types use tuples [number, string] which TSOA doesn't support.
+     *     All fields use camelCase naming convention for JavaScript/TypeScript APIs.
+     */
+    PaymentResponse: {
+      /** Format: double */
+      id?: number;
+      /** @enum {string} */
+      paymentType: "inbound" | "outbound" | "transfer";
+      /** @enum {string} */
+      partnerType: "customer" | "supplier";
+      /** Format: double */
+      partnerId: number;
+      partnerName?: string;
+      /** Format: double */
+      amount: number;
+      /** Format: double */
+      currencyId?: number;
+      paymentDate: string;
+      /** Format: double */
+      journalId: number;
+      journalName?: string;
+      /** Format: double */
+      paymentMethodId?: number;
+      ref?: string;
+      /** @enum {string} */
+      state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
+    };
+    CreatePaymentDTO: {
+      /** @enum {string} */
+      type: "inbound" | "outbound";
+      /** Format: double */
+      partnerId: number;
+      /** @enum {string} */
+      partnerType: "customer" | "supplier";
+      /** Format: double */
+      amount: number;
+      date: string;
+      /** Format: double */
+      journalId: number;
+      reference?: string;
+      invoiceIds?: number[];
+    };
+    PartnerResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      email?: string;
+      phone?: string;
+      vat?: string;
+      /** Format: double */
+      accountReceivableId?: number;
+      /** Format: double */
+      accountPayableId?: number;
+      /** Format: double */
+      paymentTermId?: number;
+      /** Format: double */
+      customerRank?: number;
+      /** Format: double */
+      supplierRank?: number;
+    };
+    JournalResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      code: string;
+      /** @enum {string} */
+      type: "sale" | "purchase" | "cash" | "bank" | "general";
+      /** Format: double */
+      currencyId?: number;
+      currencyName?: string;
+      /** Format: double */
+      companyId: number;
+      companyName?: string;
+      /** Format: double */
+      defaultAccountId: number;
+      defaultAccountName?: string;
+    };
+    TaxResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      /** Format: double */
+      amount: number;
+      /** @enum {string} */
+      amountType: "percent" | "division" | "fixed" | "group";
+      /** @enum {string} */
+      typeTaxUse: "sale" | "purchase" | "none";
+      active: boolean;
+    };
+    AccountBalanceReportResponse: {
+      /** Format: double */
+      accountId: number;
+      accountCode: string;
+      accountName: string;
+      /** Format: double */
+      debit: number;
+      /** Format: double */
+      credit: number;
+      /** Format: double */
+      balance: number;
+    };
+    AccountBalanceQuery: {
+      accountIds?: number[];
+      dateFrom?: string;
+      dateTo?: string;
+    };
+    PartnerLedgerEntryResponse: {
+      date: string;
+      moveName: string;
+      label: string;
+      /** Format: double */
+      debit: number;
+      /** Format: double */
+      credit: number;
+      /** Format: double */
+      balance: number;
+    };
+    PartnerLedgerReportResponse: {
+      /** Format: double */
+      partnerId: number;
+      partnerName: string;
+      /** Format: double */
+      debit: number;
+      /** Format: double */
+      credit: number;
+      /** Format: double */
+      balance: number;
+      entries: components["schemas"]["PartnerLedgerEntryResponse"][];
+    };
+    PartnerLedgerQuery: {
+      /** Format: double */
+      partnerId: number;
+      dateFrom?: string;
+      dateTo?: string;
+    };
+    ProfitLossResponse: {
+      /** Format: double */
+      income: number;
+      /** Format: double */
+      expenses: number;
+      /** Format: double */
+      netProfit: number;
+    };
+    GLEntryResponse: {
+      /** Format: double */
+      id: number;
+      /** Format: double */
+      moveId: number;
+      moveName?: string;
+      date: string;
+      /** Format: double */
+      accountId: number;
+      accountName?: string;
+      /** Format: double */
+      partnerId?: number;
+      partnerName?: string;
+      name: string;
+      /** Format: double */
+      debit: number;
+      /** Format: double */
+      credit: number;
+      /** Format: double */
+      balance: number;
+      /** Format: double */
+      amountCurrency?: number;
+      /** Format: double */
+      currencyId?: number;
+      currencyName?: string;
+      /** Format: double */
+      companyId: number;
+      companyName?: string;
+    };
+    HealthCheck: {
+      /** @enum {string} */
+      status: "ok" | "error";
+      timestamp: string;
+      /** Format: double */
+      uptime: number;
+      version: string;
+    };
+    Employee: {
+      id: string;
+      firstName: string;
+      lastName: string;
+      email: string;
+      position: string;
+      /** Format: double */
+      salary: number;
+      startDate: string;
+    };
+    EmployeeCreateRequest: {
+      firstName: string;
+      lastName: string;
+      email: string;
+      position: string;
+      /** Format: double */
+      salary: number;
+      startDate: string;
+    };
+    Deal: {
+      id: string;
+      title: string;
+      /** Format: double */
+      value: number;
+      /** @enum {string} */
+      stage: "PROSPECT" | "QUALIFIED" | "PROPOSAL" | "NEGOTIATION" | "CLOSED_WON" | "CLOSED_LOST";
+      contactId: string;
+      expectedCloseDate: string;
+      /** Format: double */
+      probability: number;
+    };
+    DealCreateRequest: {
+      title: string;
+      /** Format: double */
+      value: number;
+      contactId: string;
+      expectedCloseDate: string;
+      /** Format: double */
+      probability: number;
+    };
+    /** @description Dashboard statistics response */
+    DashboardStatsResponse: {
+      /** Format: double */
+      activeCases: number;
+      /** Format: double */
+      pendingReviews: number;
+      /** Format: double */
+      completedAudits: number;
+      /** Format: double */
+      totalCases: number;
+      /** Format: double */
+      completionRate: number;
+    };
+    /** @description Case activity item */
+    CaseActivityResponse: {
+      id: string;
+      /** @enum {string} */
+      type: "case_update";
+      caseId: string;
+      caseNumber: string;
+      clientName: string;
+      status: string;
+      updatedAt: string;
+      updatedBy: {
+        name: string;
+        id: string;
+      };
+    };
+    /** @description Notification response */
+    NotificationResponse: {
+      id: string;
+      type: string;
+      title: string;
+      description: string;
+      timestamp: string;
+      isRead: boolean;
+      relatedEntityType: string | null;
+      relatedEntityId: string | null;
+      actionLabel: string | null;
+      actionUrl: string | null;
+    };
+    /** @description Unread notifications count response */
+    UnreadNotificationsCountResponse: {
+      /** Format: double */
+      count: number;
+    };
+    Contact: {
+      id: string;
+      name: string;
+      email: string;
+      phone: string;
+      company?: string;
+      /** @enum {string} */
+      type: "LEAD" | "CUSTOMER" | "VENDOR";
+      /** @enum {string} */
+      status: "ACTIVE" | "INACTIVE";
+    };
+    ContactCreateRequest: {
+      name: string;
+      email: string;
+      phone: string;
+      company?: string;
+      /** @enum {string} */
+      type: "LEAD" | "CUSTOMER" | "VENDOR";
+    };
+    /** @enum {string} */
+    ConnectorType:
+      | "postgresql"
+      | "mysql"
+      | "mssql"
+      | "storage_local"
+      | "storage_webdav"
+      | "storage_smb"
+      | "storage_cloud";
+    ConnectorResponse: {
+      id: string;
+      organizationId: string;
+      name: string;
+      description?: string;
+      type: components["schemas"]["ConnectorType"];
+      isActive: boolean;
+      tags: string[];
+      metadata: components["schemas"]["Record_string.unknown_"];
+      lastConnectionTest?: string;
+      lastConnectionStatus?: string;
+      lastConnectionError?: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+    ConnectorConfig: {
+      host?: string;
+      /** Format: double */
+      port?: number;
+      database?: string;
+      username?: string;
+      password?: string;
+      ssl?: boolean;
+      url?: string;
+      apiKey?: string;
+      authToken?: string;
+    } & {
+      [key: string]: unknown;
+    };
+    CreateConnectorRequest: {
+      name: string;
+      description?: string;
+      type: components["schemas"]["ConnectorType"];
+      config: components["schemas"]["ConnectorConfig"];
+      tags?: string[];
+      metadata?: components["schemas"]["Record_string.unknown_"];
+    };
+    UpdateConnectorRequest: {
+      name?: string;
+      description?: string;
+      config?: components["schemas"]["ConnectorConfig"];
+      tags?: string[];
+      metadata?: components["schemas"]["Record_string.unknown_"];
+      isActive?: boolean;
+    };
+    QueryResponse: {
+      rows: unknown[];
+      /** Format: double */
+      rowCount: number;
+      /** Format: double */
+      executionTime: number;
+    };
+    QueryRequest: {
+      sql: string;
+      params?: unknown[];
+    };
+    SchemaResponse: {
+      tables: {
+        /** @enum {string} */
+        type: "table" | "view";
+        name: string;
+        schema: string;
+      }[];
+    };
+    TablePreviewResponse: {
+      schema: string;
+      table: string;
+      columns: {
+        nullable: boolean;
+        type: string;
+        name: string;
+      }[];
+      sampleData: unknown[];
+      /** Format: double */
+      totalRows: number;
+    };
+    FieldMapping: {
+      sourceColumn: string;
+      targetField: string;
+      /** @enum {string} */
+      transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean";
+      defaultValue?: unknown;
+    };
+    SuggestMappingsRequest: {
+      sourceColumns: string[];
+      /** @enum {string} */
+      targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
+    };
+    CaseResponse: {
+      id: string;
+      organizationId: string;
+      caseNumber: string;
+      clientName: string;
+      auditType: string;
+      /** @enum {string} */
+      status: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
+      /** @enum {string} */
+      priority: "low" | "medium" | "high" | "critical";
+      dueDate?: string;
+      completedDate?: string;
+      createdBy: string;
+      createdAt: string;
+      updatedAt: string;
+      assignments?: {
+        user?: {
+          email: string;
+          name: string | null;
+          id: string;
+        };
+        /** @enum {string} */
+        role: "lead" | "reviewer" | "team_member";
+        userId: string;
+      }[];
+    };
+    CreateCaseRequest: {
+      caseNumber?: string;
+      clientName: string;
+      auditType: string;
+      /** @enum {string} */
+      status?: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
+      /** @enum {string} */
+      priority?: "low" | "medium" | "high" | "critical";
+      dueDate?: string;
+    };
+    TemplateStructure: {
+      settings?: components["schemas"]["Record_string.unknown_"];
+      sections: {
+        procedures: {
+          /** Format: double */
+          sortOrder: number;
+          requirements?: components["schemas"]["Record_string.unknown_"];
+          description?: string;
+          title: string;
+          referenceNumber: string;
+        }[];
+        settings?: components["schemas"]["Record_string.unknown_"];
+        /** Format: double */
+        sortOrder: number;
+        description?: string;
+        name: string;
+      }[];
+    };
+    TemplateResponse: {
+      id: string;
+      organizationId?: string;
+      name: string;
+      description?: string;
+      auditType: string;
+      category?: string;
+      version: string;
+      isActive: boolean;
+      isPublic: boolean;
+      structure: components["schemas"]["TemplateStructure"];
+      createdBy: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+    CreateTemplateRequest: {
+      organizationId?: string;
+      name: string;
+      description?: string;
+      auditType: string;
+      category?: string;
+      version?: string;
+      isActive?: boolean;
+      isPublic?: boolean;
+      structure: components["schemas"]["TemplateStructure"];
+    };
+    UpdateCaseRequest: {
+      caseNumber?: string;
+      clientName?: string;
+      auditType?: string;
+      /** @enum {string} */
+      status?: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
+      /** @enum {string} */
+      priority?: "low" | "medium" | "high" | "critical";
+      dueDate?: string;
+      completedDate?: string;
+    };
+    ScopeResponse: {
+      id: string;
+      caseId: string;
+      templateId?: string;
+      name: string;
+      description?: string;
+      /** @enum {string} */
+      status: "draft" | "in-progress" | "under-review" | "completed" | "archived";
+      metadata: components["schemas"]["Record_string.unknown_"];
+      createdBy: string;
+      completedBy?: string;
+      archivedBy?: string;
+      createdAt: string;
+      updatedAt: string;
+      completedAt?: string;
+      archivedAt?: string;
+    };
+    CreateScopeRequest: {
+      name: string;
+      description?: string;
+      /** @enum {string} */
+      status?: "draft" | "in-progress" | "under-review" | "completed" | "archived";
+      metadata?: components["schemas"]["Record_string.unknown_"];
+    };
+    CreateScopeFromTemplateRequest: {
+      templateId: string;
+    };
+    UpdateScopeStatusRequest: {
+      /** @enum {string} */
+      status: "draft" | "in-progress" | "under-review" | "completed" | "archived";
+    };
+    SectionResponse: {
+      id: string;
+      scopeId: string;
+      name: string;
+      description?: string;
+      /** Format: double */
+      sortOrder: number;
+      isCompleted: boolean;
+      settings: components["schemas"]["Record_string.unknown_"];
+      createdAt: string;
+      updatedAt: string;
+    };
+    ProcedureResponse: {
+      id: string;
+      sectionId: string;
+      referenceNumber: string;
+      title: string;
+      description?: string;
+      requirements: components["schemas"]["Record_string.unknown_"];
+      /** Format: double */
+      sortOrder: number;
+      isCompleted: boolean;
+      completedBy?: string;
+      completedAt?: string;
+      memo?: string;
+      fieldData: components["schemas"]["Record_string.unknown_"];
+      canEdit: boolean;
+      createdAt: string;
+      updatedAt: string;
+    };
+    CompleteProcedureRequest: {
+      fieldData?: components["schemas"]["Record_string.unknown_"];
+      memo?: string;
+    };
+    DocumentResponse: {
+      id: string;
+      caseId: string;
+      procedureId?: string;
+      fileName: string;
+      /** Format: double */
+      fileSize: number;
+      fileType: string;
+      storagePath: string;
+      /** Format: double */
+      version: number;
+      parentDocumentId?: string;
+      uploadedBy: string;
+      uploadedAt: string;
+      isDeleted: boolean;
+    };
+    CreateDocumentRequest: {
+      procedureId?: string;
+      fileName: string;
+      /** Format: double */
+      fileSize: number;
+      fileType: string;
+      storagePath: string;
+      /** Format: double */
+      version?: number;
+      parentDocumentId?: string;
+    };
+    NoteResponse: {
+      id: string;
+      caseId: string;
+      procedureId?: string;
+      /** @enum {string} */
+      noteType: "observation" | "review_comment" | "general" | "memo";
+      content: string;
+      createdBy: string;
+      createdAt: string;
+      updatedAt: string;
+      isEdited: boolean;
+    };
+    CreateNoteRequest: {
+      procedureId?: string;
+      /** @enum {string} */
+      noteType: "observation" | "review_comment" | "general" | "memo";
+      content: string;
+    };
+    UpdateNoteRequest: {
+      content: string;
+    };
+    AssignmentResponse: {
+      caseId: string;
+      userId: string;
+      /** @enum {string} */
+      role: "lead" | "reviewer" | "team_member";
+      assignedBy: string;
+      assignedAt: string;
+    };
+    CreateAssignmentRequest: {
+      userId: string;
+      /** @enum {string} */
+      role: "lead" | "reviewer" | "team_member";
+    };
+    HistoryResponse: {
+      id: string;
+      caseId: string;
+      entityType: string;
+      entityId: string;
+      action: string;
+      changesBefore?: components["schemas"]["Record_string.unknown_"];
+      changesAfter?: components["schemas"]["Record_string.unknown_"];
+      changedBy: string;
+      changedAt: string;
+    };
+    /** @enum {string} */
+    EntityType: "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
+    /** @enum {string} */
+    AuditAction:
+      | "created"
+      | "updated"
+      | "deleted"
+      | "completed"
+      | "failed"
+      | "started"
+      | "cancelled"
+      | "retrying";
+    AuditLogUser: {
+      id: string;
+      name: string | null;
+      email: string;
+    };
+    AuditLogResponse: {
+      id: string;
+      entityType: components["schemas"]["EntityType"];
+      entityId: string;
+      action: components["schemas"]["AuditAction"];
+      organizationId: string | null;
+      userId: string | null;
+      metadata: components["schemas"]["Record_string.unknown_"] | null;
+      ipAddress: string | null;
+      userAgent: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      user?: components["schemas"]["AuditLogUser"] | null;
+    };
+    AuditLogFilters: {
+      entityType?: components["schemas"]["EntityType"];
+      entityId?: string;
+      action?: components["schemas"]["AuditAction"];
+      userId?: string;
+      startDate?: string;
+      endDate?: string;
+      /** Format: double */
+      limit?: number;
+      /** Format: double */
+      offset?: number;
+    };
+    ExportAuditLogsRequest: {
+      /** @enum {string} */
+      format: "csv" | "json";
+      filters?: components["schemas"]["AuditLogFilters"];
+    };
+    SubmitForApprovalResponse: {
+      requestId: string;
+      workflowId: string;
+      status: string;
+      message: string;
+    };
+    EntityData: {
+      entityType: components["schemas"]["EntityType"];
+      entityId: string;
+      /** Format: double */
+      amount?: number;
+      status?: string;
+      createdBy?: string;
+    } & {
+      [key: string]: unknown;
+    };
+    SubmitForApprovalRequest: {
+      entityType: string;
+      entityId: string;
+      entityData: components["schemas"]["EntityData"];
+    };
+    ApprovalStepResponse: {
+      id: string;
+      /** Format: double */
+      stepOrder: number;
+      approverId: string;
+      approverName?: string;
+      status: string;
+      comments?: string;
+      actionAt?: string;
+      delegatedTo?: string;
+      delegatedToName?: string;
+    };
+    ApprovalRequestResponse: {
+      id: string;
+      workflowId: string;
+      workflowName: string;
+      entityType: string;
+      entityId: string;
+      status: string;
+      requestedBy: string;
+      requestedByName?: string;
+      submittedAt: string;
+      completedAt?: string;
+      /** Format: double */
+      currentStep?: number;
+      /** Format: double */
+      totalSteps?: number;
+      steps: components["schemas"]["ApprovalStepResponse"][];
+    };
+    ApprovalActionResponse: {
+      success: boolean;
+      message: string;
+      requestStatus?: string;
+    };
+    ApprovalActionRequest: {
+      comments?: string;
+    };
+    DelegateApprovalRequest: {
+      delegateToUserId: string;
+      comments?: string;
+    };
+    Account: {
+      id: string;
+      code: string;
+      name: string;
+      /** @enum {string} */
+      type: "ASSET" | "LIABILITY" | "EQUITY" | "REVENUE" | "EXPENSE";
+      /** Format: double */
+      balance: number;
+      parentId?: string;
+    };
+    AccountCreateRequest: {
+      code: string;
+      name: string;
+      /** @enum {string} */
+      type: "ASSET" | "LIABILITY" | "EQUITY" | "REVENUE" | "EXPENSE";
+      parentId?: string;
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    ListWorkflows: {
-        parameters: {
-            query?: {
-                entityType?: string;
-                isActive?: boolean;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WorkflowResponse"][];
-                };
-            };
-        };
+  ListWorkflows: {
+    parameters: {
+      query?: {
+        entityType?: string;
+        isActive?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    CreateWorkflow: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateWorkflowRequest"];
-            };
+        content: {
+          "application/json": components["schemas"]["WorkflowResponse"][];
         };
-        responses: {
-            /** @description Workflow created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WorkflowResponse"];
-                };
-            };
-        };
+      };
     };
-    GetWorkflow: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                workflowId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WorkflowResponse"];
-                };
-            };
-        };
+  };
+  CreateWorkflow: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    UpdateWorkflow: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                workflowId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateWorkflowRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["WorkflowResponse"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateWorkflowRequest"];
+      };
     };
-    DeleteWorkflow: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                workflowId: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description Workflow created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["WorkflowResponse"];
         };
+      };
     };
-    ActivateWorkflow: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                workflowId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
+  };
+  GetWorkflow: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        workflowId: string;
+      };
+      cookie?: never;
     };
-    DeactivateWorkflow: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                workflowId: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["WorkflowResponse"];
         };
+      };
     };
-    ListRules: {
-        parameters: {
-            query?: {
-                entityType?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RuleResponse"][];
-                };
-            };
-        };
+  };
+  UpdateWorkflow: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        workflowId: string;
+      };
+      cookie?: never;
     };
-    CreateRule: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateRuleRequest"];
-            };
-        };
-        responses: {
-            /** @description Rule created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RuleResponse"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateWorkflowRequest"];
+      };
     };
-    DeleteRule: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                ruleId: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["WorkflowResponse"];
         };
+      };
     };
-    GetCurrentUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description User profile retrieved */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserProfileResponse"];
-                };
-            };
-        };
+  };
+  DeleteWorkflow: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        workflowId: string;
+      };
+      cookie?: never;
     };
-    UpdateCurrentUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateProfileRequest"];
-            };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
         };
-        responses: {
-            /** @description User profile updated */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UserProfileResponse"];
-                };
-            };
-        };
+      };
     };
-    UpdateCurrentUserLocale: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateLocaleRequest"];
-            };
-        };
-        responses: {
-            /** @description User locale updated */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        locale: components["schemas"]["Locale"];
-                        message: string;
-                    };
-                };
-            };
-        };
+  };
+  ActivateWorkflow: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        workflowId: string;
+      };
+      cookie?: never;
     };
-    UploadFile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    /** Format: binary */
-                    file: string;
-                    folderId?: string;
-                    tags?: string;
-                    metadata?: string;
-                };
-            };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
         };
-        responses: {
-            /** @description File uploaded successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FileMetadata"];
-                };
-            };
-        };
+      };
     };
-    UploadFiles: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    /** Format: binary */
-                    files: string;
-                    folderId?: string;
-                    tags?: string;
-                    metadata?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Files uploaded successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FileMetadata"][];
-                };
-            };
-        };
+  };
+  DeactivateWorkflow: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        workflowId: string;
+      };
+      cookie?: never;
     };
-    GetFile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                fileId: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FileMetadata"];
-                };
-            };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
         };
+      };
     };
-    DeleteFile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                fileId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description File deleted successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  ListRules: {
+    parameters: {
+      query?: {
+        entityType?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    DownloadFile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                fileId: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description No content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
+        content: {
+          "application/json": components["schemas"]["RuleResponse"][];
         };
+      };
     };
-    SearchFiles: {
-        parameters: {
-            query?: {
-                query?: string;
-                folderId?: string;
-                mimeTypes?: string[];
-                tags?: string[];
-                dateFrom?: string;
-                dateTo?: string;
-                createdBy?: string;
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        hasMore: boolean;
-                        /** Format: double */
-                        total: number;
-                        files: components["schemas"]["FileMetadata"][];
-                    };
-                };
-            };
-        };
+  };
+  CreateRule: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    CreateFolder: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateFolderRequest"];
-            };
-        };
-        responses: {
-            /** @description Folder created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FolderMetadata"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateRuleRequest"];
+      };
     };
-    GetFolderContents: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                folderId: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description Rule created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        subFolders: components["schemas"]["FolderMetadata"][];
-                        files: components["schemas"]["FileMetadata"][];
-                        folder: components["schemas"]["FolderMetadata"];
-                    };
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["RuleResponse"];
         };
+      };
     };
-    DeleteFolder: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                folderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Folder deleted successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  DeleteRule: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        ruleId: string;
+      };
+      cookie?: never;
     };
-    GetQuota: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        unit: string;
-                        /** Format: double */
-                        remaining: number;
-                        /** Format: double */
-                        total: number;
-                        /** Format: double */
-                        used: number;
-                    };
-                };
-            };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
         };
+      };
     };
-    GetPayrollRecords: {
-        parameters: {
-            query?: {
-                _page?: number;
-                _limit?: number;
-                _period?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        limit: number;
-                        /** Format: double */
-                        page: number;
-                        /** Format: double */
-                        total: number;
-                        records: components["schemas"]["PayrollRecord"][];
-                    };
-                };
-            };
-        };
+  };
+  GetCurrentUser: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    CreatePayrollRecord: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description User profile retrieved */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PayrollCreateRequest"];
-            };
+        content: {
+          "application/json": components["schemas"]["UserProfileResponse"];
         };
-        responses: {
-            /** @description Payroll record created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PayrollRecord"];
-                };
-            };
-        };
+      };
     };
-    ProcessPayroll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    period: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Payroll processed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
+  };
+  UpdateCurrentUser: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    ProvisionDatabase: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OdooProvisionResponse"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateProfileRequest"];
+      };
     };
-    GetDatabaseInfo: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description User profile updated */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OdooInfoResponse"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["UserProfileResponse"];
         };
+      };
     };
-    DeleteDatabase: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OdooDeleteResponse"];
-                };
-            };
-        };
+  };
+  UpdateCurrentUserLocale: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    DuplicateDatabase: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["OdooDuplicateRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OdooDuplicateResponse"];
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateLocaleRequest"];
+      };
     };
-    BackupDatabase: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description User locale updated */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        data: string;
-                        success: boolean;
-                    };
-                };
-            };
+        content: {
+          "application/json": {
+            locale: components["schemas"]["Locale"];
+            message: string;
+          };
         };
+      };
     };
-    ListAllDatabases: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OdooListResponse"];
-                };
-            };
-        };
+  };
+  UploadFile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    GetDatabaseInfoByOrganization: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                organizationId: string;
-            };
-            cookie?: never;
+    requestBody: {
+      content: {
+        "multipart/form-data": {
+          /** Format: binary */
+          file: string;
+          folderId?: string;
+          tags?: string;
+          metadata?: string;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["OdooInfoResponse"];
-                };
-            };
-        };
+      };
     };
-    Search: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description File uploaded successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["OdooSearchRequest"];
-            };
+        content: {
+          "application/json": components["schemas"]["FileMetadata"];
         };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": number[];
-                };
-            };
-        };
+      };
     };
-    SearchRead: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["OdooSearchReadRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Record_string.unknown_"][];
-                };
-            };
-        };
+  };
+  UploadFiles: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    Read: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody: {
+      content: {
+        "multipart/form-data": {
+          /** Format: binary */
+          files: string;
+          folderId?: string;
+          tags?: string;
+          metadata?: string;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["OdooReadRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Record_string.unknown_"][];
-                };
-            };
-        };
+      };
     };
-    Create: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description Files uploaded successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["OdooCreateRequest"];
-            };
+        content: {
+          "application/json": components["schemas"]["FileMetadata"][];
         };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        id: number;
-                    };
-                };
-            };
-        };
+      };
     };
-    Write: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["OdooWriteRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
+  };
+  GetFile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        fileId: string;
+      };
+      cookie?: never;
     };
-    Unlink: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["OdooUnlinkRequest"];
-            };
+        content: {
+          "application/json": components["schemas"]["FileMetadata"];
         };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
+      };
     };
-    Execute: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["OdooExecuteRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown;
-                };
-            };
-        };
+  };
+  DeleteFile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        fileId: string;
+      };
+      cookie?: never;
     };
-    ConnectNAS: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description File deleted successfully */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ConnectNASRequest"];
-            };
-        };
-        responses: {
-            /** @description NAS connected successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NASConnectionStatus"];
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    DisconnectNAS: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
+  };
+  DownloadFile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        fileId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No content */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  SearchFiles: {
+    parameters: {
+      query?: {
+        query?: string;
+        folderId?: string;
+        mimeTypes?: string[];
+        tags?: string[];
+        dateFrom?: string;
+        dateTo?: string;
+        createdBy?: string;
+        limit?: number;
+        offset?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            hasMore: boolean;
+            /** Format: double */
+            total: number;
+            files: components["schemas"]["FileMetadata"][];
+          };
+        };
+      };
+    };
+  };
+  CreateFolder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateFolderRequest"];
+      };
+    };
+    responses: {
+      /** @description Folder created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FolderMetadata"];
+        };
+      };
+    };
+  };
+  GetFolderContents: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        folderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            subFolders: components["schemas"]["FolderMetadata"][];
+            files: components["schemas"]["FileMetadata"][];
+            folder: components["schemas"]["FolderMetadata"];
+          };
+        };
+      };
+    };
+  };
+  DeleteFolder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        folderId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Folder deleted successfully */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  GetQuota: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            unit: string;
+            /** Format: double */
+            remaining: number;
+            /** Format: double */
+            total: number;
+            /** Format: double */
+            used: number;
+          };
+        };
+      };
+    };
+  };
+  GetPayrollRecords: {
+    parameters: {
+      query?: {
+        _page?: number;
+        _limit?: number;
+        _period?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            limit: number;
+            /** Format: double */
+            page: number;
+            /** Format: double */
+            total: number;
+            records: components["schemas"]["PayrollRecord"][];
+          };
+        };
+      };
+    };
+  };
+  CreatePayrollRecord: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PayrollCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Payroll record created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PayrollRecord"];
+        };
+      };
+    };
+  };
+  ProcessPayroll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          period: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Payroll processed successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+    };
+  };
+  ProvisionDatabase: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OdooProvisionResponse"];
+        };
+      };
+    };
+  };
+  GetDatabaseInfo: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OdooInfoResponse"];
+        };
+      };
+    };
+  };
+  DeleteDatabase: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OdooDeleteResponse"];
+        };
+      };
+    };
+  };
+  DuplicateDatabase: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["OdooDuplicateRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OdooDuplicateResponse"];
+        };
+      };
+    };
+  };
+  BackupDatabase: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            data: string;
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  ListAllDatabases: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OdooListResponse"];
+        };
+      };
+    };
+  };
+  GetDatabaseInfoByOrganization: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        organizationId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OdooInfoResponse"];
+        };
+      };
+    };
+  };
+  Search: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["OdooSearchRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": number[];
+        };
+      };
+    };
+  };
+  SearchRead: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["OdooSearchReadRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Record_string.unknown_"][];
+        };
+      };
+    };
+  };
+  Read: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["OdooReadRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Record_string.unknown_"][];
+        };
+      };
+    };
+  };
+  Create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["OdooCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            id: number;
+          };
+        };
+      };
+    };
+  };
+  Write: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["OdooWriteRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  Unlink: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["OdooUnlinkRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  Execute: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["OdooExecuteRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown;
+        };
+      };
+    };
+  };
+  ConnectNAS: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ConnectNASRequest"];
+      };
+    };
+    responses: {
+      /** @description NAS connected successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NASConnectionStatus"];
+        };
+      };
+    };
+  };
+  DisconnectNAS: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        name: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description NAS disconnected successfully */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  GetAllNASStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NASStatusResponse"];
+        };
+      };
+    };
+  };
+  DisconnectAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description All NAS drives disconnected */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+    };
+  };
+  GetInvoices: {
+    parameters: {
+      query?: {
+        _page?: number;
+        _limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            limit: number;
+            /** Format: double */
+            page: number;
+            /** Format: double */
+            total: number;
+            invoices: components["schemas"]["Invoice"][];
+          };
+        };
+      };
+    };
+  };
+  CreateInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["InvoiceCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Invoice created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Invoice"];
+        };
+      };
+    };
+  };
+  GetHisabiqInvoices: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        type?: "SALES" | "PURCHASE";
+        state?: "draft" | "posted" | "cancel";
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            limit: number;
+            /** Format: double */
+            page: number;
+            /** Format: double */
+            total: number;
+            invoices: components["schemas"]["Invoice"][];
+          };
+        };
+      };
+    };
+  };
+  CreateHisabiqInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["InvoiceCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Invoice created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Invoice"];
+        };
+      };
+    };
+  };
+  GetHisabiqInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Invoice"];
+        };
+      };
+    };
+  };
+  ValidateHisabiqInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  CancelHisabiqInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  RefundHisabiqInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** Format: double */
+          journalId?: number;
+          date?: string;
+          reason?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            refundId: number;
+          };
+        };
+      };
+    };
+  };
+  GetHisabiqInvoicePDF: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": string;
+        };
+      };
+    };
+  };
+  GetHisabiqBills: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        state?: "draft" | "posted" | "cancel";
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            limit: number;
+            /** Format: double */
+            page: number;
+            /** Format: double */
+            total: number;
+            bills: components["schemas"]["Invoice"][];
+          };
+        };
+      };
+    };
+  };
+  CreateHisabiqBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["InvoiceCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Bill created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Invoice"];
+        };
+      };
+    };
+  };
+  GetHisabiqBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Invoice"];
+        };
+      };
+    };
+  };
+  ValidateHisabiqBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  CancelHisabiqBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  RefundHisabiqBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** Format: double */
+          journalId?: number;
+          date?: string;
+          reason?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            refundId: number;
+          };
+        };
+      };
+    };
+  };
+  GetHisabiqBillPDF: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": string;
+        };
+      };
+    };
+  };
+  GetHisabiqAccounts: {
+    parameters: {
+      query?: {
+        accountType?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            parentId?: string;
+            type: string;
+            name: string;
+            code: string;
+            id: string;
+          }[];
+        };
+      };
+    };
+  };
+  SearchHisabiqAccounts: {
+    parameters: {
+      query: {
+        q: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            type: string;
+            name: string;
+            code: string;
+            id: string;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqPayments: {
+    parameters: {
+      query?: {
+        type?: "inbound" | "outbound" | "transfer";
+        state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaymentResponse"][];
+        };
+      };
+    };
+  };
+  CreateHisabiqPayment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreatePaymentDTO"];
+      };
+    };
+    responses: {
+      /** @description Payment created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            id: number;
+          };
+        };
+      };
+    };
+  };
+  ConfirmHisabiqPayment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        paymentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  GetHisabiqPartners: {
+    parameters: {
+      query?: {
+        isCustomer?: boolean;
+        isSupplier?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PartnerResponse"][];
+        };
+      };
+    };
+  };
+  GetHisabiqJournals: {
+    parameters: {
+      query?: {
+        type?: "sale" | "purchase" | "cash" | "bank" | "general";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["JournalResponse"][];
+        };
+      };
+    };
+  };
+  GetHisabiqTaxes: {
+    parameters: {
+      query?: {
+        typeTaxUse?: "sale" | "purchase" | "none";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TaxResponse"][];
+        };
+      };
+    };
+  };
+  GetHisabiqTrialBalance: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AccountBalanceQuery"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AccountBalanceReportResponse"][];
+        };
+      };
+    };
+  };
+  GetHisabiqPartnerLedger: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PartnerLedgerQuery"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PartnerLedgerReportResponse"] | null;
+        };
+      };
+    };
+  };
+  GetHisabiqProfitLoss: {
+    parameters: {
+      query?: {
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProfitLossResponse"];
+        };
+      };
+    };
+  };
+  GetHisabiqGeneralLedger: {
+    parameters: {
+      query?: {
+        accountId?: number;
+        partnerId?: number;
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GLEntryResponse"][];
+        };
+      };
+    };
+  };
+  GetHisabiqPaymentTerms: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            note?: string;
+            name: string;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqAgedReceivable: {
+    parameters: {
+      query?: {
+        asOfDate?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            total: number;
+            /** Format: double */
+            days_over_90: number;
+            /** Format: double */
+            days_61_90: number;
+            /** Format: double */
+            days_31_60: number;
+            /** Format: double */
+            days_1_30: number;
+            /** Format: double */
+            current: number;
+            partnerName: string;
+            /** Format: double */
+            partnerId: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqAgedPayable: {
+    parameters: {
+      query?: {
+        asOfDate?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            total: number;
+            /** Format: double */
+            days_over_90: number;
+            /** Format: double */
+            days_61_90: number;
+            /** Format: double */
+            days_31_60: number;
+            /** Format: double */
+            days_1_30: number;
+            /** Format: double */
+            current: number;
+            partnerName: string;
+            /** Format: double */
+            partnerId: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqBankStatements: {
+    parameters: {
+      query?: {
+        journalId?: number;
+        dateFrom?: string;
+        dateTo?: string;
+        state?: "open" | "confirm";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            state: string;
+            /** Format: double */
+            balanceEnd: number;
+            /** Format: double */
+            balanceEndReal: number;
+            /** Format: double */
+            balanceStart: number;
+            date: string;
+            journalName: string;
+            /** Format: double */
+            journalId: number;
+            name: string;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqBankStatementLines: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        statementId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            isReconciled: boolean;
+            /** Format: double */
+            amount: number;
+            partnerName?: string;
+            paymentRef: string;
+            date: string;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqReconciliationSuggestions: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        lineId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            amount: number;
+            date: string;
+            partnerName: string;
+            moveName: string;
+            /** Format: double */
+            moveId: number;
+          }[];
+        };
+      };
+    };
+  };
+  ReconcileBankStatementLine: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        lineId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          moveIds: number[];
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message?: string;
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  GetHisabiqCurrencies: {
+    parameters: {
+      query?: {
+        onlyActive?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            active: boolean;
+            /** Format: double */
+            rounding: number;
+            /** @enum {string} */
+            position: "after" | "before";
+            symbol: string;
+            name: string;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetHisabiqCurrencyRates: {
+    parameters: {
+      query?: {
+        currencyId?: number;
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            companyId: number;
+            /** Format: double */
+            rate: number;
+            name: string;
+            currencyName: string;
+            /** Format: double */
+            currencyId: number;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  ConvertCurrency: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          date?: string;
+          /** Format: double */
+          toCurrencyId: number;
+          /** Format: double */
+          fromCurrencyId: number;
+          /** Format: double */
+          amount: number;
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            rate: number;
+            /** Format: double */
+            convertedAmount: number;
+          };
+        };
+      };
+    };
+  };
+  BatchValidateInvoices: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          invoiceIds: number[];
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              id: number;
+            }[];
+            success: number[];
+          };
+        };
+      };
+    };
+  };
+  BatchCancelInvoices: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          invoiceIds: number[];
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              id: number;
+            }[];
+            success: number[];
+          };
+        };
+      };
+    };
+  };
+  BatchCreateInvoices: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          invoices: components["schemas"]["InvoiceCreateRequest"][];
+        };
+      };
+    };
+    responses: {
+      /** @description Invoices created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              index: number;
+            }[];
+            success: {
+              /** Format: double */
+              id: number;
+              /** Format: double */
+              index: number;
+            }[];
+          };
+        };
+      };
+    };
+  };
+  BatchCreatePayments: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          payments: {
+            reference?: string;
+            /** Format: double */
+            journalId: number;
+            date: string;
+            /** Format: double */
+            amount: number;
+            /** @enum {string} */
+            partnerType: "customer" | "supplier";
+            /** Format: double */
+            partnerId: number;
+            /** @enum {string} */
+            type: "inbound" | "outbound";
+          }[];
+        };
+      };
+    };
+    responses: {
+      /** @description Payments created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              index: number;
+            }[];
+            success: {
+              /** Format: double */
+              id: number;
+              /** Format: double */
+              index: number;
+            }[];
+          };
+        };
+      };
+    };
+  };
+  BatchConfirmPayments: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          paymentIds: number[];
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              id: number;
+            }[];
+            success: number[];
+          };
+        };
+      };
+    };
+  };
+  GetHealth: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HealthCheck"];
+        };
+      };
+    };
+  };
+  GetEmployees: {
+    parameters: {
+      query?: {
+        _page?: number;
+        _limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            limit: number;
+            /** Format: double */
+            page: number;
+            /** Format: double */
+            total: number;
+            employees: components["schemas"]["Employee"][];
+          };
+        };
+      };
+    };
+  };
+  CreateEmployee: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["EmployeeCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Employee created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Employee"];
+        };
+      };
+    };
+  };
+  GetDeals: {
+    parameters: {
+      query?: {
+        _page?: number;
+        _limit?: number;
+        _stage?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            limit: number;
+            /** Format: double */
+            page: number;
+            /** Format: double */
+            total: number;
+            deals: components["schemas"]["Deal"][];
+          };
+        };
+      };
+    };
+  };
+  CreateDeal: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DealCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Deal created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Deal"];
+        };
+      };
+    };
+  };
+  GetStats: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DashboardStatsResponse"];
+        };
+      };
+    };
+  };
+  GetActivity: {
+    parameters: {
+      query?: {
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CaseActivityResponse"][];
+        };
+      };
+    };
+  };
+  GetNotifications: {
+    parameters: {
+      query?: {
+        limit?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NotificationResponse"][];
+        };
+      };
+    };
+  };
+  GetUnreadNotificationsCount: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UnreadNotificationsCountResponse"];
+        };
+      };
+    };
+  };
+  MarkNotificationAsRead: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        notificationId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  GetContacts: {
+    parameters: {
+      query?: {
+        _page?: number;
+        _limit?: number;
+        _type?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            limit: number;
+            /** Format: double */
+            page: number;
+            /** Format: double */
+            total: number;
+            contacts: components["schemas"]["Contact"][];
+          };
+        };
+      };
+    };
+  };
+  CreateContact: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ContactCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Contact created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Contact"];
+        };
+      };
+    };
+  };
+  GetConnectorTypes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            optionalFields: string[];
+            requiredFields: string[];
+            description: string;
+            name: string;
+            type: components["schemas"]["ConnectorType"];
+          }[];
+        };
+      };
+    };
+  };
+  GetFieldDefinitions: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        type: components["schemas"]["ConnectorType"];
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            helpText?: string;
+            defaultValue?: unknown;
+            required: boolean;
+            placeholder?: string;
+            label: string;
+            /** @enum {string} */
+            type: "text" | "number" | "password" | "boolean";
+            name: string;
+          }[];
+        };
+      };
+    };
+  };
+  ListConnectors: {
+    parameters: {
+      query?: {
+        type?: components["schemas"]["ConnectorType"];
+        isActive?: boolean;
+        tags?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ConnectorResponse"][];
+        };
+      };
+    };
+  };
+  CreateConnector: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateConnectorRequest"];
+      };
+    };
+    responses: {
+      /** @description Connector created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ConnectorResponse"];
+        };
+      };
+    };
+  };
+  GetConnector: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        connectorId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ConnectorResponse"];
+        };
+      };
+    };
+  };
+  UpdateConnector: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        connectorId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateConnectorRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  DeleteConnector: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        connectorId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  TestConnection: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        connectorId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            error?: string;
+            metadata?: components["schemas"]["Record_string.unknown_"];
+            /** Format: double */
+            latency?: number;
+            message: string;
+            status: string;
+          };
+        };
+      };
+    };
+  };
+  GetConnectorHealth: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        connectorId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            details?: components["schemas"]["Record_string.unknown_"];
+            message?: string;
+            healthy: boolean;
+          };
+        };
+      };
+    };
+  };
+  ExecuteQuery: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        connectorId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["QueryRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["QueryResponse"];
+        };
+      };
+    };
+  };
+  GetSchema: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        connectorId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SchemaResponse"];
+        };
+      };
+    };
+  };
+  GetTablePreview: {
+    parameters: {
+      query?: {
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        connectorId: string;
+        schemaName: string;
+        tableName: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TablePreviewResponse"];
+        };
+      };
+    };
+  };
+  SearchTable: {
+    parameters: {
+      query: {
+        searchTerm: string;
+        searchColumns: string;
+        limit?: number;
+      };
+      header?: never;
+      path: {
+        connectorId: string;
+        schemaName: string;
+        tableName: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": unknown[];
+        };
+      };
+    };
+  };
+  SuggestMappings: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SuggestMappingsRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FieldMapping"][];
+        };
+      };
+    };
+  };
+  GetOdooDevCredentials: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            webUrl: string;
+            password: string;
+            login: string;
+          } | null;
+        };
+      };
+    };
+  };
+  GetOdooUserCredentials: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            webUrl: string;
+            password: string;
+            login: string;
+          } | null;
+        };
+      };
+    };
+  };
+  GetOdooAdminCredentialsEndpoint: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            webUrl: string;
+            adminPassword: string;
+            adminLogin: string;
+            databaseName: string;
+          } | null;
+        };
+      };
+    };
+  };
+  InstallOdooModules: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Modules installed successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  GetOdooModelFields: {
+    parameters: {
+      query?: {
+        simple?: boolean;
+      };
+      header?: never;
+      path: {
+        modelName: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json":
+            | components["schemas"]["Record_string.unknown_"]
+            | {
+                readonly?: boolean;
+                required?: boolean;
+                label: string;
+                type: string;
                 name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description NAS disconnected successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
-    GetAllNASStatus: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NASStatusResponse"];
-                };
-            };
-        };
-    };
-    DisconnectAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description All NAS drives disconnected */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    GetInvoices: {
-        parameters: {
-            query?: {
-                _page?: number;
-                _limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        limit: number;
-                        /** Format: double */
-                        page: number;
-                        /** Format: double */
-                        total: number;
-                        invoices: components["schemas"]["Invoice"][];
-                    };
-                };
-            };
-        };
-    };
-    CreateInvoice: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InvoiceCreateRequest"];
-            };
-        };
-        responses: {
-            /** @description Invoice created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Invoice"];
-                };
-            };
-        };
-    };
-    GetHisabiqInvoices: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                type?: "SALES" | "PURCHASE";
-                state?: "draft" | "posted" | "cancel";
-                dateFrom?: string;
-                dateTo?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        limit: number;
-                        /** Format: double */
-                        page: number;
-                        /** Format: double */
-                        total: number;
-                        invoices: components["schemas"]["Invoice"][];
-                    };
-                };
-            };
-        };
-    };
-    CreateHisabiqInvoice: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InvoiceCreateRequest"];
-            };
-        };
-        responses: {
-            /** @description Invoice created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Invoice"];
-                };
-            };
-        };
-    };
-    GetHisabiqInvoice: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                invoiceId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Invoice"];
-                };
-            };
-        };
-    };
-    ValidateHisabiqInvoice: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                invoiceId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    CancelHisabiqInvoice: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                invoiceId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    RefundHisabiqInvoice: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                invoiceId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** Format: double */
-                    journalId?: number;
-                    date?: string;
-                    reason?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        refundId: number;
-                    };
-                };
-            };
-        };
-    };
-    GetHisabiqInvoicePDF: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                invoiceId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": string;
-                };
-            };
-        };
-    };
-    GetHisabiqBills: {
-        parameters: {
-            query?: {
-                page?: number;
-                limit?: number;
-                state?: "draft" | "posted" | "cancel";
-                dateFrom?: string;
-                dateTo?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        limit: number;
-                        /** Format: double */
-                        page: number;
-                        /** Format: double */
-                        total: number;
-                        bills: components["schemas"]["Invoice"][];
-                    };
-                };
-            };
-        };
-    };
-    CreateHisabiqBill: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InvoiceCreateRequest"];
-            };
-        };
-        responses: {
-            /** @description Bill created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Invoice"];
-                };
-            };
-        };
-    };
-    GetHisabiqBill: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                billId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Invoice"];
-                };
-            };
-        };
-    };
-    ValidateHisabiqBill: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                billId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    CancelHisabiqBill: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                billId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    RefundHisabiqBill: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                billId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** Format: double */
-                    journalId?: number;
-                    date?: string;
-                    reason?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        refundId: number;
-                    };
-                };
-            };
-        };
-    };
-    GetHisabiqBillPDF: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                billId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": string;
-                };
-            };
-        };
-    };
-    GetHisabiqAccounts: {
-        parameters: {
-            query?: {
-                accountType?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        parentId?: string;
-                        type: string;
-                        name: string;
-                        code: string;
-                        id: string;
-                    }[];
-                };
-            };
-        };
-    };
-    SearchHisabiqAccounts: {
-        parameters: {
-            query: {
-                q: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        type: string;
-                        name: string;
-                        code: string;
-                        id: string;
-                    }[];
-                };
-            };
-        };
-    };
-    GetHisabiqPayments: {
-        parameters: {
-            query?: {
-                type?: "inbound" | "outbound" | "transfer";
-                state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
-                dateFrom?: string;
-                dateTo?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PaymentResponse"][];
-                };
-            };
-        };
-    };
-    CreateHisabiqPayment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreatePaymentDTO"];
-            };
-        };
-        responses: {
-            /** @description Payment created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        id: number;
-                    };
-                };
-            };
-        };
-    };
-    ConfirmHisabiqPayment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                paymentId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    GetHisabiqPartners: {
-        parameters: {
-            query?: {
-                isCustomer?: boolean;
-                isSupplier?: boolean;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PartnerResponse"][];
-                };
-            };
-        };
-    };
-    GetHisabiqJournals: {
-        parameters: {
-            query?: {
-                type?: "sale" | "purchase" | "cash" | "bank" | "general";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["JournalResponse"][];
-                };
-            };
-        };
-    };
-    GetHisabiqTaxes: {
-        parameters: {
-            query?: {
-                typeTaxUse?: "sale" | "purchase" | "none";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TaxResponse"][];
-                };
-            };
-        };
-    };
-    GetHisabiqTrialBalance: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AccountBalanceQuery"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AccountBalanceReportResponse"][];
-                };
-            };
-        };
-    };
-    GetHisabiqPartnerLedger: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["PartnerLedgerQuery"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PartnerLedgerReportResponse"] | null;
-                };
-            };
-        };
-    };
-    GetHisabiqProfitLoss: {
-        parameters: {
-            query?: {
-                dateFrom?: string;
-                dateTo?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProfitLossResponse"];
-                };
-            };
-        };
-    };
-    GetHisabiqGeneralLedger: {
-        parameters: {
-            query?: {
-                accountId?: number;
-                partnerId?: number;
-                dateFrom?: string;
-                dateTo?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GLEntryResponse"][];
-                };
-            };
-        };
-    };
-    GetHisabiqPaymentTerms: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        note?: string;
-                        name: string;
-                        /** Format: double */
-                        id: number;
-                    }[];
-                };
-            };
-        };
-    };
-    GetHisabiqAgedReceivable: {
-        parameters: {
-            query?: {
-                asOfDate?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        total: number;
-                        /** Format: double */
-                        days_over_90: number;
-                        /** Format: double */
-                        days_61_90: number;
-                        /** Format: double */
-                        days_31_60: number;
-                        /** Format: double */
-                        days_1_30: number;
-                        /** Format: double */
-                        current: number;
-                        partnerName: string;
-                        /** Format: double */
-                        partnerId: number;
-                    }[];
-                };
-            };
-        };
-    };
-    GetHisabiqAgedPayable: {
-        parameters: {
-            query?: {
-                asOfDate?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        total: number;
-                        /** Format: double */
-                        days_over_90: number;
-                        /** Format: double */
-                        days_61_90: number;
-                        /** Format: double */
-                        days_31_60: number;
-                        /** Format: double */
-                        days_1_30: number;
-                        /** Format: double */
-                        current: number;
-                        partnerName: string;
-                        /** Format: double */
-                        partnerId: number;
-                    }[];
-                };
-            };
-        };
-    };
-    GetHisabiqBankStatements: {
-        parameters: {
-            query?: {
-                journalId?: number;
-                dateFrom?: string;
-                dateTo?: string;
-                state?: "open" | "confirm";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        state: string;
-                        /** Format: double */
-                        balanceEnd: number;
-                        /** Format: double */
-                        balanceEndReal: number;
-                        /** Format: double */
-                        balanceStart: number;
-                        date: string;
-                        journalName: string;
-                        /** Format: double */
-                        journalId: number;
-                        name: string;
-                        /** Format: double */
-                        id: number;
-                    }[];
-                };
-            };
-        };
-    };
-    GetHisabiqBankStatementLines: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                statementId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        isReconciled: boolean;
-                        /** Format: double */
-                        amount: number;
-                        partnerName?: string;
-                        paymentRef: string;
-                        date: string;
-                        /** Format: double */
-                        id: number;
-                    }[];
-                };
-            };
-        };
-    };
-    GetHisabiqReconciliationSuggestions: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                lineId: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        amount: number;
-                        date: string;
-                        partnerName: string;
-                        moveName: string;
-                        /** Format: double */
-                        moveId: number;
-                    }[];
-                };
-            };
-        };
-    };
-    ReconcileBankStatementLine: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                lineId: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    moveIds: number[];
-                };
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message?: string;
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    GetHisabiqCurrencies: {
-        parameters: {
-            query?: {
-                onlyActive?: boolean;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        active: boolean;
-                        /** Format: double */
-                        rounding: number;
-                        /** @enum {string} */
-                        position: "after" | "before";
-                        symbol: string;
-                        name: string;
-                        /** Format: double */
-                        id: number;
-                    }[];
-                };
-            };
-        };
-    };
-    GetHisabiqCurrencyRates: {
-        parameters: {
-            query?: {
-                currencyId?: number;
-                dateFrom?: string;
-                dateTo?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        companyId: number;
-                        /** Format: double */
-                        rate: number;
-                        name: string;
-                        currencyName: string;
-                        /** Format: double */
-                        currencyId: number;
-                        /** Format: double */
-                        id: number;
-                    }[];
-                };
-            };
-        };
-    };
-    ConvertCurrency: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    date?: string;
-                    /** Format: double */
-                    toCurrencyId: number;
-                    /** Format: double */
-                    fromCurrencyId: number;
-                    /** Format: double */
-                    amount: number;
-                };
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        rate: number;
-                        /** Format: double */
-                        convertedAmount: number;
-                    };
-                };
-            };
-        };
-    };
-    BatchValidateInvoices: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    invoiceIds: number[];
-                };
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        failed: {
-                            error: string;
-                            /** Format: double */
-                            id: number;
-                        }[];
-                        success: number[];
-                    };
-                };
-            };
-        };
-    };
-    BatchCancelInvoices: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    invoiceIds: number[];
-                };
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        failed: {
-                            error: string;
-                            /** Format: double */
-                            id: number;
-                        }[];
-                        success: number[];
-                    };
-                };
-            };
-        };
-    };
-    BatchCreateInvoices: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    invoices: components["schemas"]["InvoiceCreateRequest"][];
-                };
-            };
-        };
-        responses: {
-            /** @description Invoices created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        failed: {
-                            error: string;
-                            /** Format: double */
-                            index: number;
-                        }[];
-                        success: {
-                            /** Format: double */
-                            id: number;
-                            /** Format: double */
-                            index: number;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    BatchCreatePayments: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    payments: {
-                        reference?: string;
-                        /** Format: double */
-                        journalId: number;
-                        date: string;
-                        /** Format: double */
-                        amount: number;
-                        /** @enum {string} */
-                        partnerType: "customer" | "supplier";
-                        /** Format: double */
-                        partnerId: number;
-                        /** @enum {string} */
-                        type: "inbound" | "outbound";
-                    }[];
-                };
-            };
-        };
-        responses: {
-            /** @description Payments created */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        failed: {
-                            error: string;
-                            /** Format: double */
-                            index: number;
-                        }[];
-                        success: {
-                            /** Format: double */
-                            id: number;
-                            /** Format: double */
-                            index: number;
-                        }[];
-                    };
-                };
-            };
-        };
-    };
-    BatchConfirmPayments: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    paymentIds: number[];
-                };
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        failed: {
-                            error: string;
-                            /** Format: double */
-                            id: number;
-                        }[];
-                        success: number[];
-                    };
-                };
-            };
-        };
-    };
-    GetHealth: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HealthCheck"];
-                };
-            };
-        };
-    };
-    GetEmployees: {
-        parameters: {
-            query?: {
-                _page?: number;
-                _limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        limit: number;
-                        /** Format: double */
-                        page: number;
-                        /** Format: double */
-                        total: number;
-                        employees: components["schemas"]["Employee"][];
-                    };
-                };
-            };
-        };
-    };
-    CreateEmployee: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["EmployeeCreateRequest"];
-            };
-        };
-        responses: {
-            /** @description Employee created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Employee"];
-                };
-            };
-        };
-    };
-    GetDeals: {
-        parameters: {
-            query?: {
-                _page?: number;
-                _limit?: number;
-                _stage?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        limit: number;
-                        /** Format: double */
-                        page: number;
-                        /** Format: double */
-                        total: number;
-                        deals: components["schemas"]["Deal"][];
-                    };
-                };
-            };
-        };
-    };
-    CreateDeal: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DealCreateRequest"];
-            };
-        };
-        responses: {
-            /** @description Deal created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Deal"];
-                };
-            };
-        };
-    };
-    GetStats: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DashboardStatsResponse"];
-                };
-            };
-        };
-    };
-    GetActivity: {
-        parameters: {
-            query?: {
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CaseActivityResponse"][];
-                };
-            };
-        };
-    };
-    GetNotifications: {
-        parameters: {
-            query?: {
-                limit?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NotificationResponse"][];
-                };
-            };
-        };
-    };
-    GetUnreadNotificationsCount: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UnreadNotificationsCountResponse"];
-                };
-            };
-        };
-    };
-    MarkNotificationAsRead: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                notificationId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    GetContacts: {
-        parameters: {
-            query?: {
-                _page?: number;
-                _limit?: number;
-                _type?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        limit: number;
-                        /** Format: double */
-                        page: number;
-                        /** Format: double */
-                        total: number;
-                        contacts: components["schemas"]["Contact"][];
-                    };
-                };
-            };
-        };
-    };
-    CreateContact: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ContactCreateRequest"];
-            };
-        };
-        responses: {
-            /** @description Contact created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Contact"];
-                };
-            };
-        };
-    };
-    GetConnectorTypes: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        optionalFields: string[];
-                        requiredFields: string[];
-                        description: string;
-                        name: string;
-                        type: components["schemas"]["ConnectorType"];
-                    }[];
-                };
-            };
-        };
-    };
-    GetFieldDefinitions: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                type: components["schemas"]["ConnectorType"];
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        helpText?: string;
-                        defaultValue?: unknown;
-                        required: boolean;
-                        placeholder?: string;
-                        label: string;
-                        /** @enum {string} */
-                        type: "text" | "number" | "password" | "boolean";
-                        name: string;
-                    }[];
-                };
-            };
-        };
-    };
-    ListConnectors: {
-        parameters: {
-            query?: {
-                type?: components["schemas"]["ConnectorType"];
-                isActive?: boolean;
-                tags?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ConnectorResponse"][];
-                };
-            };
-        };
-    };
-    CreateConnector: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateConnectorRequest"];
-            };
-        };
-        responses: {
-            /** @description Connector created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ConnectorResponse"];
-                };
-            };
-        };
-    };
-    GetConnector: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                connectorId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ConnectorResponse"];
-                };
-            };
-        };
-    };
-    UpdateConnector: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                connectorId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateConnectorRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    DeleteConnector: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                connectorId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    TestConnection: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                connectorId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        error?: string;
-                        metadata?: components["schemas"]["Record_string.unknown_"];
-                        /** Format: double */
-                        latency?: number;
-                        message: string;
-                        status: string;
-                    };
-                };
-            };
-        };
-    };
-    GetConnectorHealth: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                connectorId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        details?: components["schemas"]["Record_string.unknown_"];
-                        message?: string;
-                        healthy: boolean;
-                    };
-                };
-            };
-        };
-    };
-    ExecuteQuery: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                connectorId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["QueryRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["QueryResponse"];
-                };
-            };
-        };
-    };
-    GetSchema: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                connectorId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SchemaResponse"];
-                };
-            };
-        };
-    };
-    GetTablePreview: {
-        parameters: {
-            query?: {
-                limit?: number;
-            };
-            header?: never;
-            path: {
-                connectorId: string;
-                schemaName: string;
-                tableName: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TablePreviewResponse"];
-                };
-            };
-        };
-    };
-    SearchTable: {
-        parameters: {
-            query: {
-                searchTerm: string;
-                searchColumns: string;
-                limit?: number;
-            };
-            header?: never;
-            path: {
-                connectorId: string;
-                schemaName: string;
-                tableName: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": unknown[];
-                };
-            };
-        };
-    };
-    SuggestMappings: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SuggestMappingsRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FieldMapping"][];
-                };
-            };
-        };
-    };
-    GetOdooDevCredentials: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        webUrl: string;
-                        password: string;
-                        login: string;
-                    } | null;
-                };
-            };
-        };
-    };
-    GetOdooUserCredentials: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        webUrl: string;
-                        password: string;
-                        login: string;
-                    } | null;
-                };
-            };
-        };
-    };
-    GetOdooAdminCredentialsEndpoint: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        webUrl: string;
-                        adminPassword: string;
-                        adminLogin: string;
-                        databaseName: string;
-                    } | null;
-                };
-            };
-        };
-    };
-    InstallOdooModules: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Modules installed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    GetOdooModelFields: {
-        parameters: {
-            query?: {
-                simple?: boolean;
-            };
-            header?: never;
-            path: {
-                modelName: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Record_string.unknown_"] | {
-                        readonly?: boolean;
-                        required?: boolean;
-                        label: string;
-                        type: string;
-                        name: string;
-                    }[];
-                };
-            };
-        };
-    };
-    ListCases: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CaseResponse"][];
-                };
-            };
-        };
-    };
-    CreateCase: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCaseRequest"];
-            };
-        };
-        responses: {
-            /** @description Case created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CaseResponse"];
-                };
-            };
-        };
-    };
-    ListPublicTemplates: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TemplateResponse"][];
-                };
-            };
-        };
-    };
-    CreateTemplate: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateTemplateRequest"];
-            };
-        };
-        responses: {
-            /** @description Template created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TemplateResponse"];
-                };
-            };
-        };
-    };
-    GetTemplate: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                templateId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TemplateResponse"];
-                };
-            };
-        };
-    };
-    GetCase: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CaseResponse"];
-                };
-            };
-        };
-    };
-    UpdateCase: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateCaseRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CaseResponse"];
-                };
-            };
-        };
-    };
-    DeleteCase: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    ListScopes: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ScopeResponse"][];
-                };
-            };
-        };
-    };
-    CreateScope: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateScopeRequest"];
-            };
-        };
-        responses: {
-            /** @description Scope created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ScopeResponse"];
-                };
-            };
-        };
-    };
-    CreateScopeFromTemplate: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateScopeFromTemplateRequest"];
-            };
-        };
-        responses: {
-            /** @description Scope created from template successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ScopeResponse"];
-                };
-            };
-        };
-    };
-    UpdateScopeStatus: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-                scopeId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateScopeStatusRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ScopeResponse"];
-                };
-            };
-        };
-    };
-    ListSections: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-                scopeId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SectionResponse"][];
-                };
-            };
-        };
-    };
-    ListProcedures: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-                scopeId: string;
-                sectionId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProcedureResponse"][];
-                };
-            };
-        };
-    };
-    CompleteProcedure: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-                scopeId: string;
-                sectionId: string;
-                procedureId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CompleteProcedureRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProcedureResponse"];
-                };
-            };
-        };
-    };
-    ListDocuments: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DocumentResponse"][];
-                };
-            };
-        };
-    };
-    CreateDocument: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateDocumentRequest"];
-            };
-        };
-        responses: {
-            /** @description Document created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DocumentResponse"];
-                };
-            };
-        };
-    };
-    DeleteDocument: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-                documentId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    ListNotes: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NoteResponse"][];
-                };
-            };
-        };
-    };
-    CreateNote: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateNoteRequest"];
-            };
-        };
-        responses: {
-            /** @description Note created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NoteResponse"];
-                };
-            };
-        };
-    };
-    UpdateNote: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-                noteId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateNoteRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NoteResponse"];
-                };
-            };
-        };
-    };
-    ListAssignments: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AssignmentResponse"][];
-                };
-            };
-        };
-    };
-    CreateAssignment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateAssignmentRequest"];
-            };
-        };
-        responses: {
-            /** @description Assignment created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AssignmentResponse"];
-                };
-            };
-        };
-    };
-    DeleteAssignment: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-                userId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        success: boolean;
-                    };
-                };
-            };
-        };
-    };
-    GetHistory: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                caseId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HistoryResponse"][];
-                };
-            };
-        };
-    };
-    GetOrganizationAuditLogs: {
-        parameters: {
-            query?: {
-                entityType?: components["schemas"]["EntityType"];
-                entityId?: string;
-                action?: components["schemas"]["AuditAction"];
-                userId?: string;
-                startDate?: string;
-                endDate?: string;
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path: {
-                orgId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        total: number;
-                        logs: components["schemas"]["AuditLogResponse"][];
-                    };
-                };
-            };
-        };
-    };
-    ExportAuditLogs: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                orgId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ExportAuditLogsRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        contentType: string;
-                        filename: string;
-                        data: string;
-                    };
-                };
-            };
-        };
-    };
-    GetUserActivityLogs: {
-        parameters: {
-            query?: {
-                entityType?: components["schemas"]["EntityType"];
-                action?: components["schemas"]["AuditAction"];
-                startDate?: string;
-                endDate?: string;
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path: {
-                userId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        total: number;
-                        logs: components["schemas"]["AuditLogResponse"][];
-                    };
-                };
-            };
-        };
-    };
-    SubmitForApproval: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SubmitForApprovalRequest"];
-            };
-        };
-        responses: {
-            /** @description Entity submitted for approval */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SubmitForApprovalResponse"];
-                };
-            };
-        };
-    };
-    GetPendingApprovals: {
-        parameters: {
-            query?: {
-                status?: "pending" | "approved" | "rejected" | "cancelled";
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApprovalRequestResponse"][];
-                };
-            };
-        };
-    };
-    GetApprovalRequest: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                requestId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApprovalRequestResponse"];
-                };
-            };
-        };
-    };
-    Approve: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                requestId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ApprovalActionRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApprovalActionResponse"];
-                };
-            };
-        };
-    };
-    Reject: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                requestId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ApprovalActionRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApprovalActionResponse"];
-                };
-            };
-        };
-    };
-    Delegate: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                requestId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DelegateApprovalRequest"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApprovalActionResponse"];
-                };
-            };
-        };
-    };
-    GetApprovalHistory: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                entityType: string;
-                entityId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ApprovalRequestResponse"][];
-                };
-            };
-        };
-    };
-    GetAccounts: {
-        parameters: {
-            query?: {
-                _type?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Account"][];
-                };
-            };
-        };
-    };
-    CreateAccount: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["AccountCreateRequest"];
-            };
-        };
-        responses: {
-            /** @description Account created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Account"];
-                };
-            };
-        };
-    };
+              }[];
+        };
+      };
+    };
+  };
+  ListCases: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CaseResponse"][];
+        };
+      };
+    };
+  };
+  CreateCase: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateCaseRequest"];
+      };
+    };
+    responses: {
+      /** @description Case created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CaseResponse"];
+        };
+      };
+    };
+  };
+  ListPublicTemplates: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TemplateResponse"][];
+        };
+      };
+    };
+  };
+  CreateTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateTemplateRequest"];
+      };
+    };
+    responses: {
+      /** @description Template created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TemplateResponse"];
+        };
+      };
+    };
+  };
+  GetTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        templateId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TemplateResponse"];
+        };
+      };
+    };
+  };
+  GetCase: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CaseResponse"];
+        };
+      };
+    };
+  };
+  UpdateCase: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateCaseRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CaseResponse"];
+        };
+      };
+    };
+  };
+  DeleteCase: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  ListScopes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ScopeResponse"][];
+        };
+      };
+    };
+  };
+  CreateScope: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateScopeRequest"];
+      };
+    };
+    responses: {
+      /** @description Scope created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ScopeResponse"];
+        };
+      };
+    };
+  };
+  CreateScopeFromTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateScopeFromTemplateRequest"];
+      };
+    };
+    responses: {
+      /** @description Scope created from template successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ScopeResponse"];
+        };
+      };
+    };
+  };
+  UpdateScopeStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+        scopeId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateScopeStatusRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ScopeResponse"];
+        };
+      };
+    };
+  };
+  ListSections: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+        scopeId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SectionResponse"][];
+        };
+      };
+    };
+  };
+  ListProcedures: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+        scopeId: string;
+        sectionId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProcedureResponse"][];
+        };
+      };
+    };
+  };
+  CompleteProcedure: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+        scopeId: string;
+        sectionId: string;
+        procedureId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CompleteProcedureRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProcedureResponse"];
+        };
+      };
+    };
+  };
+  ListDocuments: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DocumentResponse"][];
+        };
+      };
+    };
+  };
+  CreateDocument: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateDocumentRequest"];
+      };
+    };
+    responses: {
+      /** @description Document created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DocumentResponse"];
+        };
+      };
+    };
+  };
+  DeleteDocument: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+        documentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  ListNotes: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NoteResponse"][];
+        };
+      };
+    };
+  };
+  CreateNote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateNoteRequest"];
+      };
+    };
+    responses: {
+      /** @description Note created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NoteResponse"];
+        };
+      };
+    };
+  };
+  UpdateNote: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+        noteId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateNoteRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NoteResponse"];
+        };
+      };
+    };
+  };
+  ListAssignments: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AssignmentResponse"][];
+        };
+      };
+    };
+  };
+  CreateAssignment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateAssignmentRequest"];
+      };
+    };
+    responses: {
+      /** @description Assignment created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AssignmentResponse"];
+        };
+      };
+    };
+  };
+  DeleteAssignment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+        userId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  GetHistory: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        caseId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HistoryResponse"][];
+        };
+      };
+    };
+  };
+  GetOrganizationAuditLogs: {
+    parameters: {
+      query?: {
+        entityType?: components["schemas"]["EntityType"];
+        entityId?: string;
+        action?: components["schemas"]["AuditAction"];
+        userId?: string;
+        startDate?: string;
+        endDate?: string;
+        limit?: number;
+        offset?: number;
+      };
+      header?: never;
+      path: {
+        orgId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            total: number;
+            logs: components["schemas"]["AuditLogResponse"][];
+          };
+        };
+      };
+    };
+  };
+  ExportAuditLogs: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        orgId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ExportAuditLogsRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            contentType: string;
+            filename: string;
+            data: string;
+          };
+        };
+      };
+    };
+  };
+  GetUserActivityLogs: {
+    parameters: {
+      query?: {
+        entityType?: components["schemas"]["EntityType"];
+        action?: components["schemas"]["AuditAction"];
+        startDate?: string;
+        endDate?: string;
+        limit?: number;
+        offset?: number;
+      };
+      header?: never;
+      path: {
+        userId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            total: number;
+            logs: components["schemas"]["AuditLogResponse"][];
+          };
+        };
+      };
+    };
+  };
+  SubmitForApproval: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SubmitForApprovalRequest"];
+      };
+    };
+    responses: {
+      /** @description Entity submitted for approval */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SubmitForApprovalResponse"];
+        };
+      };
+    };
+  };
+  GetPendingApprovals: {
+    parameters: {
+      query?: {
+        status?: "pending" | "approved" | "rejected" | "cancelled";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApprovalRequestResponse"][];
+        };
+      };
+    };
+  };
+  GetApprovalRequest: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        requestId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApprovalRequestResponse"];
+        };
+      };
+    };
+  };
+  Approve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        requestId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ApprovalActionRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApprovalActionResponse"];
+        };
+      };
+    };
+  };
+  Reject: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        requestId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ApprovalActionRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApprovalActionResponse"];
+        };
+      };
+    };
+  };
+  Delegate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        requestId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["DelegateApprovalRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApprovalActionResponse"];
+        };
+      };
+    };
+  };
+  GetApprovalHistory: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        entityType: string;
+        entityId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ApprovalRequestResponse"][];
+        };
+      };
+    };
+  };
+  GetAccounts: {
+    parameters: {
+      query?: {
+        _type?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Account"][];
+        };
+      };
+    };
+  };
+  CreateAccount: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AccountCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Account created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Account"];
+        };
+      };
+    };
+  };
 }

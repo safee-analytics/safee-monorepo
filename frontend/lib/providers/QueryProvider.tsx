@@ -1,6 +1,6 @@
 "use client";
 
-import { QueryClient, QueryClientProvider, } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
 
 function hasStatus(error: unknown): error is { status: number } {
@@ -16,13 +16,11 @@ function isNetworkError(error: unknown): boolean {
   return error instanceof TypeError && error.message.includes("fetch");
 }
 
-
 function isRetryableError(error: unknown, retryableStatuses: Set<number>): boolean {
   if (isNetworkError(error)) return true;
   if (hasStatus(error)) return retryableStatuses.has(error.status);
   return false;
 }
-
 
 function getRetryDelay(attemptIndex: number): number {
   const baseDelay = 1000; // 1 second
@@ -34,11 +32,7 @@ function getRetryDelay(attemptIndex: number): number {
   return exponentialDelay + jitter;
 }
 
-
-function createRetryFn(options: {
-  maxAttempts: number;
-  retryableStatuses: number[];
-}) {
+function createRetryFn(options: { maxAttempts: number; retryableStatuses: number[] }) {
   const statusSet = new Set(options.retryableStatuses);
 
   return (failureCount: number, error: unknown) => {

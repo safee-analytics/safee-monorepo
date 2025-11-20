@@ -92,8 +92,8 @@ export default function OrganizationSettingsPage() {
           <Shield className="w-16 h-16 text-red-600 mx-auto mb-4" />
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Owner Access Only</h2>
           <p className="text-gray-600">
-            Only the organization owner can access and modify these settings. Contact your organization owner for
-            changes.
+            Only the organization owner can access and modify these settings. Contact your organization owner
+            for changes.
           </p>
         </div>
       </div>
@@ -211,11 +211,41 @@ export default function OrganizationSettingsPage() {
             </div>
           </div>
           <div className="space-y-0">
-            <EditableField label="Name" value={settings.name} field="name" icon={Building2} section="company" />
-            <EditableField label="Address" value={settings.address || ""} field="address" icon={MapPin} section="company" />
-            <EditableField label="Email" value={settings.email || ""} field="email" icon={Mail} section="company" />
-            <EditableField label="Phone" value={settings.phone || ""} field="phone" icon={Phone} section="company" />
-            <EditableField label="Website" value={settings.website || ""} field="website" icon={Globe} section="company" />
+            <EditableField
+              label="Name"
+              value={settings.name}
+              field="name"
+              icon={Building2}
+              section="company"
+            />
+            <EditableField
+              label="Address"
+              value={settings.address || ""}
+              field="address"
+              icon={MapPin}
+              section="company"
+            />
+            <EditableField
+              label="Email"
+              value={settings.email || ""}
+              field="email"
+              icon={Mail}
+              section="company"
+            />
+            <EditableField
+              label="Phone"
+              value={settings.phone || ""}
+              field="phone"
+              icon={Phone}
+              section="company"
+            />
+            <EditableField
+              label="Website"
+              value={settings.website || ""}
+              field="website"
+              icon={Globe}
+              section="company"
+            />
             <EditableField
               label="Industry"
               value={settings.industry || ""}
@@ -409,7 +439,9 @@ export default function OrganizationSettingsPage() {
                 <Trash2 className="w-5 h-5 text-red-600" />
                 <div className="text-left">
                   <p className="font-medium text-red-900">Delete Organization</p>
-                  <p className="text-sm text-red-600">Permanently delete this organization and all its data</p>
+                  <p className="text-sm text-red-600">
+                    Permanently delete this organization and all its data
+                  </p>
                 </div>
               </div>
             </button>
@@ -431,8 +463,8 @@ export default function OrganizationSettingsPage() {
                   <h3 className="text-xl font-semibold text-gray-900">Transfer Ownership</h3>
                 </div>
                 <p className="text-gray-600 mb-6">
-                  Transfer ownership of <span className="font-semibold">{organization?.name}</span> to another member.
-                  You will lose all administrative privileges.
+                  Transfer ownership of <span className="font-semibold">{organization?.name}</span> to another
+                  member. You will lose all administrative privileges.
                 </p>
                 <div className="mb-6">
                   <label className="block text-sm font-medium text-gray-700 mb-2">Select New Owner</label>
@@ -473,8 +505,8 @@ export default function OrganizationSettingsPage() {
                 </div>
                 <div className="mb-6">
                   <p className="text-gray-600 mb-4">
-                    This action <span className="font-bold text-red-600">cannot be undone</span>. This will permanently
-                    delete:
+                    This action <span className="font-bold text-red-600">cannot be undone</span>. This will
+                    permanently delete:
                   </p>
                   <ul className="list-disc list-inside space-y-2 text-sm text-gray-700 mb-4">
                     <li>All organization data and settings</li>
@@ -483,7 +515,8 @@ export default function OrganizationSettingsPage() {
                     <li>All billing information and history</li>
                   </ul>
                   <p className="text-sm text-gray-600 mb-4">
-                    Please type <span className="font-mono font-semibold">{organization?.name}</span> to confirm:
+                    Please type <span className="font-mono font-semibold">{organization?.name}</span> to
+                    confirm:
                   </p>
                   <input
                     type="text"
@@ -505,7 +538,9 @@ export default function OrganizationSettingsPage() {
                   </button>
                   <button
                     onClick={handleDelete}
-                    disabled={deleteConfirmation !== organization?.name || deleteOrganizationMutation.isPending}
+                    disabled={
+                      deleteConfirmation !== organization?.name || deleteOrganizationMutation.isPending
+                    }
                     className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {deleteOrganizationMutation.isPending ? "Deleting..." : "Delete Organization"}

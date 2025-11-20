@@ -54,7 +54,10 @@ export class OdooDatabaseService {
     adminPassword: string,
     organizationId?: string,
   ): Promise<void> {
-    this.logger.info({ databaseName, organizationId }, "Installing required Odoo modules with resilient client");
+    this.logger.info(
+      { databaseName, organizationId },
+      "Installing required Odoo modules with resilient client",
+    );
 
     const odooUrl = env.ODOO_URL;
     const odooPort = env.ODOO_PORT;

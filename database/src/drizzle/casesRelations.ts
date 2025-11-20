@@ -8,9 +8,6 @@ import { caseHistory } from "./caseHistory.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
 
-/**
- * Relations for cases table
- */
 export const casesRelations = relations(cases, ({ one, many }) => ({
   organization: one(organizations, {
     fields: [cases.organizationId],
@@ -19,6 +16,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   creator: one(users, {
     fields: [cases.createdBy],
     references: [users.id],
+    relationName: "caseCreator",
   }),
   auditScopes: many(auditScopes),
   documents: many(caseDocuments),

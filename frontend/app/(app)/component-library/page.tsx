@@ -54,7 +54,22 @@ import {
   DragDropList,
   type DragDropItem,
 } from "@safee/ui";
-import { Settings, Users, FileText, LogOut, Edit, Trash2, Plus, DollarSign, TrendingUp, Activity, Save, Download, Zap, Upload } from "lucide-react";
+import {
+  Settings,
+  Users,
+  FileText,
+  LogOut,
+  Edit,
+  Trash2,
+  Plus,
+  DollarSign,
+  TrendingUp,
+  Activity,
+  Save,
+  Download,
+  Zap,
+  Upload,
+} from "lucide-react";
 
 // Extended DragDropItem with specific properties
 interface TaskDragItem extends DragDropItem {
@@ -253,12 +268,11 @@ function ComponentLibraryContent() {
                   onClick={() => setActiveSection(section.id)}
                   className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition text-left group"
                 >
-                  <div className={`text-5xl mb-4 group-hover:scale-110 transition`}>
-                    {section.icon}
-                  </div>
+                  <div className={`text-5xl mb-4 group-hover:scale-110 transition`}>{section.icon}</div>
                   <h3 className="text-2xl font-bold mb-3">{section.name}</h3>
                   <p className="text-gray-600 text-sm">
-                    {section.id === "premium" && "Ultra-smooth components better than Monday.com & QuickBooks"}
+                    {section.id === "premium" &&
+                      "Ultra-smooth components better than Monday.com & QuickBooks"}
                     {section.id === "ui" && "Modern UI components with animations and interactions"}
                     {section.id === "datagrid" && "Advanced tables with sorting, filtering, pagination"}
                     {section.id === "charts" && "Beautiful visualizations with Recharts"}
@@ -328,7 +342,8 @@ function ComponentLibraryContent() {
 
                 <div className="p-4 bg-blue-50 rounded-lg">
                   <p className="text-sm text-gray-700">
-                    <strong>Pro Tip:</strong> Click any button to see the ripple effect and toast notification! The ripple creates satisfying tactile feedback like Monday.com.
+                    <strong>Pro Tip:</strong> Click any button to see the ripple effect and toast
+                    notification! The ripple creates satisfying tactile feedback like Monday.com.
                   </p>
                 </div>
               </div>
@@ -389,7 +404,8 @@ function ComponentLibraryContent() {
                       <div>
                         <h4 className="text-xl font-bold mb-2">Premium Feature</h4>
                         <p className="text-gray-600">
-                          This card tilts in 3D based on your mouse position and shows a shine effect. Hover to feel the magic!
+                          This card tilts in 3D based on your mouse position and shows a shine effect. Hover
+                          to feel the magic!
                         </p>
                       </div>
                     </div>
@@ -465,17 +481,21 @@ function ComponentLibraryContent() {
                   onReorder={setDragItems}
                   showHandle
                   renderItem={(item: TaskDragItem, isDragging) => (
-                    <div className={`p-4 ${isDragging ? 'opacity-50' : ''}`}>
+                    <div className={`p-4 ${isDragging ? "opacity-50" : ""}`}>
                       <div className="flex items-center justify-between">
                         <div>
                           <h4 className="font-medium">{item.title}</h4>
                           <p className="text-sm text-gray-500">Priority: {item.priority}</p>
                         </div>
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          item.priority === 1 ? 'bg-red-100 text-red-700' :
-                          item.priority === 2 ? 'bg-yellow-100 text-yellow-700' :
-                          'bg-gray-100 text-gray-700'
-                        }`}>
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            item.priority === 1
+                              ? "bg-red-100 text-red-700"
+                              : item.priority === 2
+                                ? "bg-yellow-100 text-yellow-700"
+                                : "bg-gray-100 text-gray-700"
+                          }`}
+                        >
                           P{item.priority}
                         </span>
                       </div>
@@ -484,7 +504,8 @@ function ComponentLibraryContent() {
                 />
                 <div className="mt-4 p-4 bg-orange-50 rounded-lg">
                   <p className="text-sm text-gray-700">
-                    <strong>Try it:</strong> Drag the handle to reorder items. Notice the smooth spring animations and visual feedback!
+                    <strong>Try it:</strong> Drag the handle to reorder items. Notice the smooth spring
+                    animations and visual feedback!
                   </p>
                 </div>
               </div>
@@ -525,7 +546,12 @@ function ComponentLibraryContent() {
                   </AnimatedButton>
                 </div>
 
-                <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Example Modal" size="md">
+                <Modal
+                  isOpen={isModalOpen}
+                  onClose={() => setIsModalOpen(false)}
+                  title="Example Modal"
+                  size="md"
+                >
                   <p className="text-gray-700 mb-4">
                     This is a production-ready modal component with full customization options.
                   </p>
@@ -680,9 +706,7 @@ function ComponentLibraryContent() {
                               <p className="font-medium">{item.name}</p>
                               <p className="text-sm text-gray-500">{item.role}</p>
                             </div>
-                            <button className="text-blue-600 hover:text-blue-700 text-sm">
-                              View
-                            </button>
+                            <button className="text-blue-600 hover:text-blue-700 text-sm">View</button>
                           </div>
                         </SimpleListItem>
                       )}
@@ -728,12 +752,7 @@ function ComponentLibraryContent() {
                 <p className="text-purple-100">Enterprise-grade data tables with advanced features</p>
               </div>
               <div className="p-6">
-                <DataGrid
-                  data={invoiceData}
-                  columns={gridColumns}
-                  height={400}
-                  className="ag-theme-quartz"
-                />
+                <DataGrid data={invoiceData} columns={gridColumns} height={400} className="ag-theme-quartz" />
                 <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
                   {[
                     { icon: "🔍", label: "Sorting & Filtering" },
@@ -784,11 +803,7 @@ function ComponentLibraryContent() {
 
               <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
                 <h3 className="text-xl font-bold mb-4">🥧 Pie Chart</h3>
-                <PieChart
-                  data={pieData}
-                  colors={["#3b82f6", "#10b981", "#f59e0b"]}
-                  height={300}
-                />
+                <PieChart data={pieData} colors={["#3b82f6", "#10b981", "#f59e0b"]} height={300} />
               </div>
 
               <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
@@ -837,7 +852,10 @@ function ComponentLibraryContent() {
                 <p className="mt-2 text-blue-50">React-PDF - Professional documents</p>
               </div>
               <div className="p-6">
-                <div className="border-2 border-gray-200 rounded-lg overflow-hidden" style={{ height: "300px" }}>
+                <div
+                  className="border-2 border-gray-200 rounded-lg overflow-hidden"
+                  style={{ height: "300px" }}
+                >
                   {pdfUrl ? (
                     <iframe
                       src={`${pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`}
