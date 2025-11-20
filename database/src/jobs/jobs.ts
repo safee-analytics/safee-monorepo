@@ -1,10 +1,19 @@
-import { eq, and, desc, asc, inArray, lte, or, isNull, lt, count, gte } from "drizzle-orm";
+import { eq, and, desc, asc, inArray, lte, or, isNull, lt, count, gte, sql } from "drizzle-orm";
 import { DbDeps } from "../deps.js";
 import { conditionalCount } from "../index.js";
 import { jobs } from "../drizzle/jobs.js";
 import { jobLogs } from "../drizzle/jobLogs.js";
 import type { Job, NewJob } from "../drizzle/jobs.js";
 import type { JobStatus, JobType, Priority } from "../drizzle/_common.js";
+
+// Priority order: critical=1, high=2, normal=3, low=4
+const priorityOrder = sql`CASE ${jobs.priority}
+  WHEN 'critical' THEN 1
+  WHEN 'high' THEN 2
+  WHEN 'normal' THEN 3
+  WHEN 'low' THEN 4
+  ELSE 5
+END`;
 
 export async function createJob({ drizzle, logger }: DbDeps, data: NewJob): Promise<Job> {
   logger.info(
@@ -59,10 +68,11 @@ export async function getJobsByStatus(
   const statuses = Array.isArray(status) ? status : [status];
   logger.debug({ statuses }, "Getting jobs by status");
 
-  return await drizzle.query.jobs.findMany({
-    where: inArray(jobs.status, statuses),
-    orderBy: [asc(jobs.priority), asc(jobs.scheduledFor), asc(jobs.createdAt)],
-  });
+  return await drizzle
+    .select()
+    .from(jobs)
+    .where(inArray(jobs.status, statuses))
+    .orderBy(asc(priorityOrder), asc(jobs.scheduledFor), asc(jobs.createdAt));
 }
 
 export async function getPendingJobs(
@@ -82,11 +92,12 @@ export async function getPendingJobs(
     whereCondition = and(whereCondition, eq(jobs.organizationId, organizationId));
   }
 
-  const results = await drizzle.query.jobs.findMany({
-    where: whereCondition,
-    orderBy: [asc(jobs.priority), asc(jobs.scheduledFor), asc(jobs.createdAt)],
-    limit,
-  });
+  const results = await drizzle
+    .select()
+    .from(jobs)
+    .where(whereCondition)
+    .orderBy(asc(priorityOrder), asc(jobs.scheduledFor), asc(jobs.createdAt))
+    .limit(limit);
 
   logger.info({ count: results.length, limit }, "Retrieved pending jobs");
   return results;
@@ -95,11 +106,12 @@ export async function getPendingJobs(
 export async function getRetryableJobs({ drizzle, logger }: DbDeps, limit = 10): Promise<Job[]> {
   logger.debug({ limit }, "Getting retryable jobs");
 
-  const results = await drizzle.query.jobs.findMany({
-    where: and(eq(jobs.status, "failed"), lt(jobs.attempts, jobs.maxRetries)),
-    orderBy: [asc(jobs.priority), asc(jobs.updatedAt)],
-    limit,
-  });
+  const results = await drizzle
+    .select()
+    .from(jobs)
+    .where(and(eq(jobs.status, "failed"), lt(jobs.attempts, jobs.maxRetries)))
+    .orderBy(asc(priorityOrder), asc(jobs.updatedAt))
+    .limit(limit);
 
   logger.info({ count: results.length }, "Retrieved retryable jobs");
   return results;

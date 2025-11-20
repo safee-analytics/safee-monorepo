@@ -11,12 +11,7 @@ interface UserProfileResponse {
   email: string;
   name?: string | null;
   preferredLocale: Locale;
-  organizationId: string | null;
-  organization?: {
-    id: string;
-    name: string;
-    slug: string;
-  };
+  activeOrganizationId?: string | null;
 }
 
 interface UpdateProfileRequest {
@@ -61,8 +56,7 @@ export class UserController extends Controller {
         email: user.email,
         name: user.name,
         preferredLocale: user.preferredLocale,
-        organizationId: user.organizationId,
-        organization: user.organization,
+        activeOrganizationId: req.betterAuthSession?.session.activeOrganizationId,
       };
     } catch (error) {
       if (error instanceof UserNotFoundError) {
@@ -101,8 +95,7 @@ export class UserController extends Controller {
         email: updatedUser.email,
         name: updatedUser.name,
         preferredLocale: updatedUser.preferredLocale,
-        organizationId: updatedUser.organizationId,
-        organization: user.organization,
+        activeOrganizationId: req.betterAuthSession?.session.activeOrganizationId,
       };
     } catch (error) {
       if (error instanceof UserNotFoundError) {

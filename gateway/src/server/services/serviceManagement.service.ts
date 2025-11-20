@@ -86,6 +86,7 @@ export class ServiceManagementService {
             },
             modules: [service.name],
             logger: this.logger,
+            drizzle: this.drizzle,
           });
         }
       }

@@ -44,21 +44,24 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
   const handleSelect = (path: string, isAction?: boolean) => {
     onOpenChange(false);
 
-    // Handle special action paths
-    if (path === "#logout") {
-      signOut();
-      return;
-    }
-    if (path === "#export") {
-      console.log("Export data triggered");
-      return;
-    }
-    if (path === "#theme") {
-      console.log("Theme toggle triggered");
-      return;
+    // Handle action-type items differently
+    if (isAction) {
+      // Handle special action paths
+      if (path === "#logout") {
+        signOut();
+        return;
+      }
+      if (path === "#export") {
+        console.warn("Export data triggered - implementation pending");
+        return;
+      }
+      if (path === "#theme") {
+        console.warn("Theme toggle triggered - implementation pending");
+        return;
+      }
     }
 
-    // Navigate to path
+    // Navigate to path for navigation items
     router.push(path);
   };
 

@@ -4,9 +4,13 @@ import { auth, type Session } from "../../auth/index.js";
 import { getServerContext } from "../serverContext.js";
 import { NoTokenProvided, InvalidToken, InsufficientPermissions, UnknownSecurityScheme } from "../errors.js";
 import { addAuthContextToLogger } from "./logging.js";
+import type { DrizzleClient } from "@safee/database";
+import type { Logger } from "pino";
 
 export interface AuthenticatedRequest extends ExRequest {
   betterAuthSession?: Session;
+  drizzle: DrizzleClient;
+  logger: Logger;
 }
 
 export async function expressAuthentication(
@@ -18,7 +22,6 @@ export async function expressAuthentication(
     const context = getServerContext();
 
     try {
-      // Get session from Better Auth using request headers
       const headers = fromNodeHeaders(request.headers);
       context.logger.info(
         {
@@ -64,7 +67,6 @@ export async function expressAuthentication(
 
       const user = session.user;
 
-      // Check roles if scopes are provided (scopes map to roles in Better Auth)
       if (scopes && scopes.length > 0) {
         const userRole = user.role || "user";
         const hasRole = scopes.includes(userRole) || userRole === "admin"; // admin can access all

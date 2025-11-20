@@ -21,6 +21,9 @@ interface LoginFormProps {
     signIn: string;
     signInWithGoogle: string;
     signInWithSSO: string;
+    signInWithMagicLink?: string;
+    useMagicLink?: string;
+    usePassword?: string;
     or: string;
     termsPrefix: string;
     termsLink: string;
@@ -31,9 +34,21 @@ interface LoginFormProps {
   onGoogleLogin?: () => void;
   onSSOLogin?: () => void;
   onGoBack?: () => void;
+  onSendMagicLink?: (email: string) => void;
+  useMagicLinkMode?: boolean;
+  onToggleMagicLink?: () => void;
 }
 
-export const SafeeLoginForm = ({ t, onSubmit, onGoogleLogin, onSSOLogin, onGoBack }: LoginFormProps) => {
+export const SafeeLoginForm = ({
+  t,
+  onSubmit,
+  onGoogleLogin,
+  onSSOLogin,
+  onGoBack,
+  onSendMagicLink,
+  useMagicLinkMode,
+  onToggleMagicLink,
+}: LoginFormProps) => {
   const dir = useDirection();
   const isRTL = dir === "rtl";
 
@@ -56,7 +71,13 @@ export const SafeeLoginForm = ({ t, onSubmit, onGoogleLogin, onSSOLogin, onGoBac
         <Heading t={t} />
         <SocialOptions t={t} onGoogleLogin={onGoogleLogin} onSSOLogin={onSSOLogin} />
         <Or t={t} />
-        <EmailForm t={t} onSubmit={onSubmit} />
+        <EmailForm
+          t={t}
+          onSubmit={onSubmit}
+          onSendMagicLink={onSendMagicLink}
+          useMagicLinkMode={useMagicLinkMode}
+          onToggleMagicLink={onToggleMagicLink}
+        />
         <Terms t={t} />
       </motion.div>
 
@@ -113,16 +134,26 @@ const Or = ({ t }: { t: LoginFormProps["t"] }) => {
 const EmailForm = ({
   t,
   onSubmit,
+  onSendMagicLink,
+  useMagicLinkMode,
+  onToggleMagicLink,
 }: {
   t: LoginFormProps["t"];
   onSubmit?: (email: string, password: string) => void;
+  onSendMagicLink?: (email: string) => void;
+  useMagicLinkMode?: boolean;
+  onToggleMagicLink?: () => void;
 }) => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit?.(email, password);
+    if (useMagicLinkMode) {
+      onSendMagicLink?.(email);
+    } else {
+      onSubmit?.(email, password);
+    }
   };
 
   return (
@@ -141,31 +172,45 @@ const EmailForm = ({
           required
         />
       </div>
-      <div className="mb-6">
-        <div className="mb-1.5 flex items-end justify-between">
-          <label htmlFor="password-input" className="block text-gray-700">
-            {t.password}
-          </label>
-          <a
-            href="/forgot-password"
-            className="text-sm text-safee-600 hover:text-safee-700 transition-colors"
-          >
-            {t.forgotPassword}
-          </a>
+
+      {!useMagicLinkMode && (
+        <div className="mb-6">
+          <div className="mb-1.5 flex items-end justify-between">
+            <label htmlFor="password-input" className="block text-gray-700">
+              {t.password}
+            </label>
+            <a
+              href="/forgot-password"
+              className="text-sm text-safee-600 hover:text-safee-700 transition-colors"
+            >
+              {t.forgotPassword}
+            </a>
+          </div>
+          <input
+            id="password-input"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder={t.passwordPlaceholder}
+            className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 placeholder-gray-400 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
+            required
+          />
         </div>
-        <input
-          id="password-input"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder={t.passwordPlaceholder}
-          className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 placeholder-gray-400 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
-          required
-        />
-      </div>
-      <SplashButton type="submit" className="w-full">
-        {t.signIn}
+      )}
+
+      <SplashButton type="submit" className="w-full mb-3">
+        {useMagicLinkMode ? t.signInWithMagicLink : t.signIn}
       </SplashButton>
+
+      {onToggleMagicLink && (
+        <button
+          type="button"
+          onClick={onToggleMagicLink}
+          className="w-full text-sm text-safee-600 hover:text-safee-700 transition-colors"
+        >
+          {useMagicLinkMode ? t.usePassword : t.useMagicLink}
+        </button>
+      )}
     </form>
   );
 };

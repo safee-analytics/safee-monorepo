@@ -4,7 +4,6 @@ import { expressAuthentication, requireRole, requireAdmin, type AuthenticatedReq
 import { NoTokenProvided, InvalidToken, InsufficientPermissions, UnknownSecurityScheme } from "../errors.js";
 import { auth } from "../../auth/index.js";
 
-// Mock the auth module
 vi.mock("../../auth/index.js", () => ({
   auth: {
     api: {
@@ -13,7 +12,6 @@ vi.mock("../../auth/index.js", () => ({
   },
 }));
 
-// Mock serverContext
 vi.mock("../serverContext.js", () => ({
   getServerContext: vi.fn(() => ({
     logger: {
@@ -26,7 +24,6 @@ vi.mock("../serverContext.js", () => ({
   })),
 }));
 
-// Mock logging
 vi.mock("./logging.js", () => ({
   addAuthContextToLogger: vi.fn(),
 }));
@@ -128,7 +125,6 @@ void describe("auth middleware", () => {
         path: "/api/test",
       } as unknown as ExRequest;
 
-      // Admin should have access even when scopes require "manager"
       const result = await expressAuthentication(mockRequest, "jwt", ["manager"]);
 
       expect(result).toEqual(mockSession.user);

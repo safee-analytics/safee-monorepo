@@ -13,6 +13,10 @@ import { members } from "./members.js";
 import { invitations } from "./invitations.js";
 import { teams } from "./teams.js";
 import { organizationRoles } from "./organizationRoles.js";
+import { cases } from "./cases.js";
+import { auditTemplates } from "./auditTemplates.js";
+import { approvalWorkflows } from "./approvalWorkflows.js";
+import { approvalRules } from "./approvalRules.js";
 
 export const organizationsRelations = relations(organizations, ({ many, one }) => ({
   users: many(users),
@@ -28,4 +32,10 @@ export const organizationsRelations = relations(organizations, ({ many, one }) =
   organizationServices: many(organizationServices),
   teams: many(teams),
   organizationRoles: many(organizationRoles),
+  // Audit/Cases relations
+  cases: many(cases),
+  auditTemplates: many(auditTemplates),
+  // Approval relations
+  approvalWorkflows: many(approvalWorkflows),
+  approvalRules: many(approvalRules),
 }));

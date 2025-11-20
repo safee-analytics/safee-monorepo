@@ -15,18 +15,29 @@ import {
   FiDownload,
   FiLogOut,
 } from "react-icons/fi";
+import type { IconType } from "react-icons";
+import type messagesEn from "@/messages/en";
+
+// Create a more permissive Messages type that allows any string values
+type Messages = {
+  [K in keyof typeof messagesEn]: (typeof messagesEn)[K] extends string
+    ? string
+    : (typeof messagesEn)[K] extends object
+      ? Record<string, string>
+      : (typeof messagesEn)[K];
+};
 
 export interface SearchItem {
   id: string;
   type: "navigation" | "action";
-  icon: any;
+  icon: IconType;
   label: string;
   description: string;
   path: string;
   keywords: string[];
 }
 
-export const getNavigationItems = (t: any): SearchItem[] => [
+export const getNavigationItems = (t: Messages): SearchItem[] => [
   // Main Modules
   {
     id: "nav-home",
@@ -223,53 +234,94 @@ export const getNavigationItems = (t: any): SearchItem[] => [
 ];
 
 export const getQuickActions = (
-  t: any,
+  t: Messages,
   signOut: () => void,
   onExport?: () => void,
   onThemeToggle?: () => void,
   theme?: "light" | "dark",
-): SearchItem[] => [
-  // Create Actions (future functionality - currently lead to module homes)
-  {
-    id: "action-invoice",
+): SearchItem[] => {
+  const actions: SearchItem[] = [
+    // Create Actions (future functionality - currently lead to module homes)
+    {
+      id: "action-invoice",
+      type: "action",
+      icon: FiFileText,
+      label: t.hisabiq?.createMenu?.invoice || "Create Invoice",
+      description: "Create a new invoice",
+      path: "/accounting",
+      keywords: ["create", "new", "invoice", "bill"],
+    },
+    {
+      id: "action-employee",
+      type: "action",
+      icon: FiUsers,
+      label: t.kanz?.createMenu?.addEmployee || "Add Employee",
+      description: "Add a new employee",
+      path: "/hr",
+      keywords: ["add", "new", "employee", "staff", "hire"],
+    },
+    {
+      id: "action-contact",
+      type: "action",
+      icon: FiUserPlus,
+      label: t.nisbah?.createMenu?.contact || "Add Contact",
+      description: "Add a new contact",
+      path: "/crm",
+      keywords: ["add", "new", "contact", "customer", "client"],
+    },
+    {
+      id: "action-expense",
+      type: "action",
+      icon: FiShoppingCart,
+      label: t.hisabiq?.createMenu?.expense || "Record Expense",
+      description: "Record a new expense",
+      path: "/accounting",
+      keywords: ["expense", "spending", "cost", "purchase"],
+    },
+  ];
+
+  // Add theme toggle action if provided
+  if (onThemeToggle) {
+    actions.push({
+      id: "action-theme-toggle",
+      type: "action",
+      icon: theme === "dark" ? FiMoon : FiMoon,
+      label: theme === "dark" ? "Switch to Light Mode" : "Switch to Dark Mode",
+      description: "Toggle theme appearance",
+      path: "#theme-toggle",
+      keywords: ["theme", "dark", "light", "mode"],
+    });
+  }
+
+  // Add export action if provided
+  if (onExport) {
+    actions.push({
+      id: "action-export-data",
+      type: "action",
+      icon: FiDownload,
+      label: "Export Data",
+      description: "Export current data to file",
+      path: "#export",
+      keywords: ["export", "download", "save", "data"],
+    });
+  }
+
+  // Add logout action
+  actions.push({
+    id: "action-signout",
     type: "action",
-    icon: FiFileText,
-    label: t.hisabiq?.createMenu?.invoice || "Create Invoice",
-    description: "Create a new invoice",
-    path: "/accounting",
-    keywords: ["create", "new", "invoice", "bill"],
-  },
-  {
-    id: "action-employee",
-    type: "action",
-    icon: FiUsers,
-    label: t.kanz?.createMenu?.addEmployee || "Add Employee",
-    description: "Add a new employee",
-    path: "/hr",
-    keywords: ["add", "new", "employee", "staff", "hire"],
-  },
-  {
-    id: "action-contact",
-    type: "action",
-    icon: FiUserPlus,
-    label: t.nisbah?.createMenu?.contact || "Add Contact",
-    description: "Add a new contact",
-    path: "/crm",
-    keywords: ["add", "new", "contact", "customer", "client"],
-  },
-  {
-    id: "action-expense",
-    type: "action",
-    icon: FiShoppingCart,
-    label: t.hisabiq?.createMenu?.expense || "Record Expense",
-    description: "Record a new expense",
-    path: "/accounting",
-    keywords: ["expense", "spending", "cost", "purchase"],
-  },
-];
+    icon: FiLogOut,
+    label: "Sign Out",
+    description: "Log out of your account",
+    path: "#signout",
+    keywords: ["logout", "signout", "exit", "leave"],
+  });
+
+  return actions;
+};
 
 export const getSystemActions = (
-  t: any,
+  t: Messages,
   signOut: () => void,
   onExport?: () => void,
   onThemeToggle?: () => void,

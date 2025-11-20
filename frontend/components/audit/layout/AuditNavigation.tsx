@@ -9,9 +9,29 @@ import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
 import { useOrgStore } from "@/stores/useOrgStore";
 
 export function AuditNavigation() {
+  const pathname = usePathname();
   const { t, locale } = useTranslation();
   const { currentUser } = useOrgStore();
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Determine current section based on pathname for contextual search placeholder
+  const getSearchPlaceholder = () => {
+    if (pathname.startsWith("/audit/cases")) {
+      return t.audit?.searchCases || (locale === "ar" ? "البحث في الحالات..." : "Search cases...");
+    }
+    if (pathname.startsWith("/audit/reports")) {
+      return t.audit?.searchReports || (locale === "ar" ? "البحث في التقارير..." : "Search reports...");
+    }
+    if (pathname.startsWith("/audit/team")) {
+      return t.audit?.searchTeam || (locale === "ar" ? "البحث في الفريق..." : "Search team...");
+    }
+    return (
+      t.common?.searchPlaceholder ||
+      (locale === "ar"
+        ? "ابحث عن المعاملات وجهات الاتصال والتقارير والمزيد"
+        : "Navigate or search for transactions, contacts, reports, and more")
+    );
+  };
 
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -33,11 +53,7 @@ export function AuditNavigation() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={
-                  locale === "ar"
-                    ? "ابحث عن المعاملات وجهات الاتصال والتقارير والمزيد"
-                    : "Navigate or search for transactions, contacts, reports, and more"
-                }
+                placeholder={getSearchPlaceholder()}
                 className={`w-full ${locale === "ar" ? "pr-12 pl-4" : "pl-12 pr-4"} py-2.5 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all`}
               />
             </div>

@@ -52,7 +52,6 @@ void describe("HealthController", () => {
     void it("should return fresh timestamp on each call", async () => {
       const result1 = await controller.getHealth();
 
-      // Wait a tiny bit
       await new Promise((resolve) => setTimeout(resolve, 10));
 
       const result2 = await controller.getHealth();
@@ -66,7 +65,6 @@ void describe("HealthController", () => {
     void it("should return increasing uptime on subsequent calls", async () => {
       const result1 = await controller.getHealth();
 
-      // Wait a bit
       await new Promise((resolve) => setTimeout(resolve, 100));
 
       const result2 = await controller.getHealth();

@@ -1,7 +1,6 @@
 import { RedisClient } from "../index.js";
 import { z } from "zod";
 
-// ex use: cacheFunctionCall(redis, ID, {name: "bob"}, z.int(), async () => redis.incr(INCR_KEY));
 export async function cacheFunctionCall<T>(
   redis: RedisClient,
   id: string,
@@ -14,11 +13,16 @@ export async function cacheFunctionCall<T>(
 
   const res = await redis.get(key);
   if (res) {
+    let parsedJson: unknown;
     try {
-      const parsedRes = schema.safeParse(JSON.parse(res));
-      if (parsedRes.success) return parsedRes.data;
+      parsedJson = JSON.parse(res);
     } catch {
-      // mostly catching if json parse fails for some reason
+      parsedJson = null;
+    }
+
+    if (parsedJson !== null) {
+      const parsedRes = schema.safeParse(parsedJson);
+      if (parsedRes.success) return parsedRes.data;
     }
   }
 

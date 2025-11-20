@@ -145,14 +145,13 @@ export class FileSystemStorage implements Storage {
 
   async listFiles(prefix?: string, limit = 1000): Promise<StorageResult[]> {
     const basePath = join(this.rootPath, this.folderName);
-    const searchPath = prefix ? join(basePath, prefix) : basePath;
 
-    logger.debug({ prefix, limit, basePath, searchPath }, "Listing files from file system");
+    logger.debug({ prefix, limit, basePath }, "Listing files from file system");
 
     try {
       const results: StorageResult[] = [];
 
-      await this.walkDirectory(basePath, searchPath, prefix ?? "", results, limit);
+      await this.walkDirectory(basePath, basePath, prefix ?? "", results, limit);
 
       logger.debug({ prefix, count: results.length }, "Files listed from file system");
       return results.slice(0, limit);

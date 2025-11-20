@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect, ReactNode } from "react";
+import { ReactNode } from "react";
 import { motion } from "framer-motion";
-import { Lock, ShieldAlert } from "lucide-react";
+import { ShieldAlert } from "lucide-react";
+import { useSession, useOrganizationMembers } from "@/lib/api/hooks";
 
 interface SettingsPermissionGateProps {
   children: ReactNode;
@@ -13,25 +14,43 @@ export function SettingsPermissionGate({
   children,
   allowedRoles = ["owner", "admin"],
 }: SettingsPermissionGateProps) {
-  const [hasPermission, setHasPermission] = useState(false);
-  const [userRole, setUserRole] = useState<string>("");
-  const [isLoading, setIsLoading] = useState(true);
+  // Get current session from Better Auth
+  const { data: session, isPending: sessionLoading, error: sessionError } = useSession();
+  const user = session?.user;
+  const activeOrgId = session?.session.activeOrganizationId;
 
-  useEffect(() => {
-    const checkPermissions = async () => {
-      // TODO: Replace with actual API call to get user role from backend
-      // For now, simulating with localStorage
-      await new Promise((resolve) => setTimeout(resolve, 300));
+  // Get organization members to find user's role
+  const { data: members, isLoading: membersLoading } = useOrganizationMembers(activeOrgId || "");
 
-      // In production, this would come from your auth system/JWT token
-      const role = localStorage.getItem("userRole") || "user"; // Default to 'user' for testing
-      setUserRole(role);
-      setHasPermission(allowedRoles.includes(role));
-      setIsLoading(false);
-    };
+  const isLoading = sessionLoading || membersLoading;
 
-    checkPermissions();
-  }, [allowedRoles]);
+  // Handle session errors
+  if (sessionError) {
+    return (
+      <div className="p-6">
+        <div className="max-w-4xl">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-8">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                <ShieldAlert className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-red-900 mb-2">Session Error</h2>
+                <p className="text-red-700 mb-4">
+                  Unable to verify your session. Please try logging out and logging back in.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Find current user's role in the organization
+  const currentMember = members?.find((m) => m.userId === user?.id);
+  const userRole = currentMember?.role || "user";
+  const hasPermission = allowedRoles.includes(userRole);
 
   // Loading state
   if (isLoading) {
@@ -60,7 +79,7 @@ export function SettingsPermissionGate({
               <div>
                 <h2 className="text-xl font-bold text-red-900 mb-2">Access Restricted</h2>
                 <p className="text-red-700 mb-4">
-                  You don't have permission to access this settings page. Only organization owners and
+                  You don&apos;t have permission to access this settings page. Only organization owners and
                   administrators can view and modify these settings.
                 </p>
                 <div className="bg-red-100 rounded-lg p-3 mb-4">

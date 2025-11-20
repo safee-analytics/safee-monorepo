@@ -1,6 +1,5 @@
-import { uuid, varchar, timestamp, boolean, index, text } from "drizzle-orm/pg-core";
+import { varchar, timestamp, boolean, index, text } from "drizzle-orm/pg-core";
 import { identitySchema, idpk, localeEnum } from "./_common.js";
-import { organizations } from "./organizations.js";
 
 export const users = identitySchema.table(
   "users",
@@ -9,30 +8,19 @@ export const users = identitySchema.table(
     email: varchar("email", { length: 255 }).notNull().unique(),
     name: varchar("name", { length: 255 }),
     role: varchar("role", { length: 50 }).default("user"),
-    organizationId: uuid("organization_id").references(() => organizations.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
     preferredLocale: localeEnum("preferred_locale").default("en").notNull(),
     isActive: boolean("is_active").default(true).notNull(),
-
     emailVerified: boolean("email_verified").default(false).notNull(),
     image: text("image"),
-
-    // Better-Auth admin plugin fields
     banned: boolean("banned").default(false),
     banReason: text("ban_reason"),
     banExpires: timestamp("ban_expires", { withTimezone: true }),
-
-    // Better-Auth username plugin fields
     username: varchar("username", { length: 255 }).unique(),
     displayUsername: varchar("display_username", { length: 255 }),
-
-    // Better-Auth lastLoginMethod plugin field
+    twoFactorEnabled: boolean("two_factor_enabled").default(false),
+    phoneNumber: varchar("phone_number", { length: 50 }).unique(),
+    phoneNumberVerified: boolean("phone_number_verified"),
     lastLoginMethod: text("last_login_method"),
-
-    // Profile fields
-    phone: varchar("phone", { length: 50 }),
     jobTitle: varchar("job_title", { length: 255 }),
     department: varchar("department", { length: 255 }),
     company: varchar("company", { length: 255 }),
@@ -40,14 +28,14 @@ export const users = identitySchema.table(
     bio: text("bio"),
     timezone: varchar("timezone", { length: 100 }).default("UTC"),
     dateFormat: varchar("date_format", { length: 50 }).default("DD/MM/YYYY"),
-
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => [
-    index("users_organization_id_idx").on(table.organizationId),
     index("users_is_active_idx").on(table.isActive),
     index("users_email_verified_idx").on(table.emailVerified),
     index("users_username_idx").on(table.username),
+    index("users_deleted_at_idx").on(table.deletedAt),
   ],
 );

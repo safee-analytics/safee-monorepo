@@ -1,12 +1,24 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { organization, openAPI, admin, username, lastLoginMethod } from "better-auth/plugins";
+import {
+  organization,
+  openAPI,
+  admin,
+  username,
+  lastLoginMethod,
+  phoneNumber,
+  twoFactor,
+  magicLink,
+  emailOTP,
+  genericOAuth,
+  apiKey,
+} from "better-auth/plugins";
 import { connect, schema } from "@safee/database";
 import { randomUUID } from "crypto";
 import { organizationHooks } from "./organization.hooks.js";
 import { createSessionHooks } from "./session.hooks.js";
+import { ac } from "./accessControl.js";
 
-// Connect to database
 const { drizzle } = connect("better-auth");
 
 export const auth = betterAuth({
@@ -23,6 +35,41 @@ export const auth = betterAuth({
     openAPI(),
     admin(),
     username(),
+    twoFactor(),
+    phoneNumber({
+      sendOTP: ({ phoneNumber: _phoneNumber, code: _code }, _request) => {
+        // Implement sending OTP code via SMS
+      },
+    }),
+    magicLink({
+      sendMagicLink: async ({ email: _email, token: _token, url: _url }, _request) => {
+        // send email to user
+      },
+    }),
+    emailOTP({
+      async sendVerificationOTP({ email: _email, otp: _otp, type }) {
+        if (type === "sign-in") {
+          // Send the OTP for sign in
+        } else if (type === "email-verification") {
+          // Send the OTP for email verification
+        } else {
+          // Send the OTP for password reset
+        }
+      },
+    }),
+    apiKey(),
+    genericOAuth({
+      config: [
+        {
+          providerId: "provider-id",
+          clientId: "test-client-id",
+          clientSecret: "test-client-secret",
+          discoveryUrl: "https://auth.example.com/.well-known/openid-configuration",
+          // ... other config options
+        },
+        // Add more providers as needed
+      ],
+    }),
     lastLoginMethod({
       storeInDatabase: true,
     }),
@@ -30,14 +77,15 @@ export const auth = betterAuth({
       organizationHooks,
       teams: {
         enabled: true,
-        maximumTeams: 100, // Limit teams per organization
-        allowRemovingAllTeams: false, // Prevent removing the last team
+        maximumTeams: 100,
+        allowRemovingAllTeams: false,
       },
       dynamicAccessControl: {
         enabled: true,
+        ac,
         maximumRolesPerOrganization: async () => {
           // TODO: Make this plan-based in the future
-          return 50; // Default limit for all organizations
+          return 50;
         },
       },
     }),
@@ -48,10 +96,10 @@ export const auth = betterAuth({
     updateAge: 60 * 60 * 24,
     cookieCache: {
       enabled: true,
-      maxAge: 5 * 60, // 5 minutes
+      maxAge: 5 * 60,
     },
     cookieOptions: {
-      sameSite: "lax", // Same domain now, so lax is fine
+      sameSite: "lax",
       domain: process.env.COOKIE_DOMAIN || "app.localhost",
       path: "/",
       httpOnly: true,
@@ -70,34 +118,30 @@ export const auth = betterAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       enabled: !!process.env.GOOGLE_CLIENT_ID,
     },
-    // Add more OAuth providers as needed:
-    // github: {
-    //   clientId: process.env.GITHUB_CLIENT_ID || "",
-    //   clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
-    //   enabled: !!process.env.GITHUB_CLIENT_ID,
-    // },
   },
   advanced: {
     useSecureCookies: process.env.NODE_ENV === "production",
     cookiePrefix: "safee-auth",
     crossSubDomainCookies: {
-      enabled: false, // Not needed - same domain now
+      enabled: false,
     },
     database: {
-      generateId: () => randomUUID(), // Generate proper UUIDs for PostgreSQL
+      generateId: () => randomUUID(),
     },
   },
   trustedOrigins: [
     process.env.CORS_ORIGIN || "http://app.localhost:8080",
     process.env.FRONTEND_URL || "http://app.localhost:8080",
     process.env.LANDING_URL || "http://localhost:8080",
-    "http://localhost:3000", // Gateway API server (for Swagger UI)
-    "http://localhost:8080", // Caddy proxy URL - Landing
-    "http://app.localhost:8080", // Caddy proxy URL - App (includes API)
-    "https://safee.dev", // Production landing
-    "https://app.safee.dev", // Production app (includes API)
+    "http://localhost:3000",
+    "http://localhost:8080",
+    "http://app.localhost:8080",
+    "https://safee.dev",
+    "https://app.safee.dev",
   ],
 });
+
+export type Auth = typeof auth;
 
 export type Session = typeof auth extends { $Infer: { Session: infer S } } ? S : never;
 export type AuthUser = Session extends { user: infer U } ? U : never;

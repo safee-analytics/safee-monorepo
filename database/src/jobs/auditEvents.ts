@@ -37,9 +37,7 @@ export async function getAuditEventsForEntity(
     orderBy: desc(auditEvents.createdAt),
     limit,
     with: {
-      user: {
-        columns: { id: true, name: true, email: true },
-      },
+      user: true,
     },
   });
 }
@@ -101,9 +99,7 @@ export async function getAuditEventsForOrganization(
     limit,
     offset,
     with: {
-      user: {
-        columns: { id: true, name: true, email: true },
-      },
+      user: true,
     },
   });
 
@@ -125,12 +121,8 @@ export async function getRecentAuditEvents(
     orderBy: desc(auditEvents.createdAt),
     limit,
     with: {
-      user: {
-        columns: { id: true, name: true, email: true },
-      },
-      organization: {
-        columns: { id: true, name: true },
-      },
+      user: true,
+      organization: true,
     },
   });
 }

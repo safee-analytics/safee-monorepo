@@ -24,13 +24,13 @@ export async function getOdooDevCredentials(
     where: and(eq(schema.odooUsers.userId, userId), eq(schema.odooUsers.odooDatabaseId, odooDb.id)),
   });
 
-  if (!odooUser || !odooUser.odooWebPassword) {
+  if (!odooUser || !odooUser.password) {
     return null;
   }
 
   return {
     login: odooUser.odooLogin,
-    password: encryptionService.decrypt(odooUser.odooWebPassword),
+    password: encryptionService.decrypt(odooUser.password),
     webUrl: `${odooDb.odooUrl}/web/login?db=${odooDb.databaseName}`,
   };
 }

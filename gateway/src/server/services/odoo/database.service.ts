@@ -3,17 +3,13 @@ import { schema, connect } from "@safee/database";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
 import { odooClient } from "./client.js";
-import { createOdooClient, type OdooConnectionConfig } from "./client.service.js";
+import { type OdooConnectionConfig } from "./client.service.js";
 import { encryptionService } from "../encryption.js";
 import { env } from "../../../env.js";
-import {
-  OrganizationNotFound,
-  OdooDatabaseAlreadyExists,
-  OdooDatabaseNotFound,
-  OperationFailed,
-} from "../../errors.js";
+import { OrganizationNotFound, OdooDatabaseAlreadyExists, OdooDatabaseNotFound } from "../../errors.js";
 import { Logger } from "pino";
 import { getServerContext } from "../../serverContext.js";
+import { odooModuleService } from "./module.service.js";
 
 export interface OdooProvisionResult {
   databaseName: string;
@@ -45,13 +41,18 @@ export class OdooDatabaseService {
    * - crm: Customer Relationship Management (Nisbah)
    * - hr: Human Resources (Kanz)
    * - hr_payroll: Payroll (Kanz)
+   * - api_key_service: Custom API key generator (Safee)
    */
   async installRequiredModules(
     databaseName: string,
     adminLogin: string,
     adminPassword: string,
+    organizationId?: string,
   ): Promise<void> {
-    this.logger.info({ databaseName }, "Installing required Odoo modules");
+    this.logger.info(
+      { databaseName, organizationId },
+      "Installing required Odoo modules with resilient client",
+    );
 
     const odooUrl = env.ODOO_URL;
     const odooPort = env.ODOO_PORT;
@@ -64,63 +65,30 @@ export class OdooDatabaseService {
       password: adminPassword,
     };
 
-    const client = createOdooClient(config, this.logger);
-    await client.authenticate();
-
     // Modules to install for Safee platform
     const modulesToInstall = [
-      { name: "account", description: "Accounting (Hisabiq)" },
-      { name: "sale", description: "Sales (Nisbah)" },
-      { name: "crm", description: "CRM (Nisbah)" },
-      { name: "hr", description: "Human Resources (Kanz)" },
-      { name: "hr_payroll", description: "Payroll (Kanz)" },
-      { name: "sign", description: "Electronic Signatures" },
-      { name: "website", description: "Website Builder" },
-      { name: "portal", description: "Customer Portal" },
-      { name: "api_key_service", description: "API Key Service (Safee Custom)" },
+      "account", // Accounting (Hisabiq)
+      "sale", // Sales (Nisbah)
+      "crm", // CRM (Nisbah)
+      "hr", // Human Resources (Kanz)
+      "hr_payroll", // Payroll (Kanz)
+      "website", // Website Builder
+      "portal", // Customer Portal
+      "api_key_service", // API Key Service (Safee Custom) - CRITICAL for API key generation
     ];
 
-    for (const module of modulesToInstall) {
-      try {
-        this.logger.info({ module: module.name, description: module.description }, "Installing Odoo module");
-
-        // Search for the module by technical name
-        const moduleRecords = await client.execute<Array<{ id: number; state: string }>>(
-          "ir.module.module",
-          "search_read",
-          [[["name", "=", module.name]]],
-          { fields: ["id", "state"], limit: 1 },
-        );
-
-        if (moduleRecords.length === 0) {
-          this.logger.warn({ module: module.name }, "Module not found in Odoo, skipping");
-          continue;
-        }
-
-        const moduleRecord = moduleRecords[0];
-        const moduleId = moduleRecord.id;
-        const currentState = moduleRecord.state;
-
-        // Skip if already installed
-        if (currentState === "installed") {
-          this.logger.info({ module: module.name }, "Module already installed, skipping");
-          continue;
-        }
-
-        // Install the module using button_immediate_install
-        this.logger.info({ module: module.name, moduleId }, "Triggering module installation");
-        await client.execute<boolean>("ir.module.module", "button_immediate_install", [[moduleId]], {});
-
-        this.logger.info({ module: module.name }, "Module installed successfully");
-      } catch (error) {
-        this.logger.error({ module: module.name, error }, "Failed to install module");
-        throw new OperationFailed(`Failed to install Odoo module: ${module.name}`);
-      }
-    }
+    // Use hardened module service with retry, circuit breaker, and audit logging
+    await odooModuleService.installModules({
+      config,
+      modules: modulesToInstall,
+      logger: this.logger,
+      drizzle: this.drizzle,
+      organizationId,
+    });
 
     this.logger.info(
-      { databaseName, moduleCount: modulesToInstall.length },
-      "All required modules installed",
+      { databaseName, moduleCount: modulesToInstall.length, organizationId },
+      "✅ All required modules installed with resilient client",
     );
   }
 
@@ -204,9 +172,9 @@ export class OdooDatabaseService {
       odooUrl: env.ODOO_URL,
     });
 
-    // Install required modules for Safee platform
+    // Install required modules for Safee platform (including api_key_service)
     try {
-      await this.installRequiredModules(databaseName, adminLogin, adminPassword);
+      await this.installRequiredModules(databaseName, adminLogin, adminPassword, organizationId);
     } catch (error) {
       this.logger.error({ organizationId, databaseName, error }, "Failed to install required modules");
       // Don't throw - database is provisioned, modules can be installed manually if needed
@@ -308,6 +276,7 @@ export class OdooDatabaseService {
 
   /**
    * Install modules for an organization's Odoo database
+   * Includes api_key_service module for API key generation
    */
   async installModulesForOrganization(organizationId: string): Promise<void> {
     const credentials = await this.getCredentials(organizationId);
@@ -320,6 +289,7 @@ export class OdooDatabaseService {
       credentials.databaseName,
       credentials.adminLogin,
       credentials.adminPassword,
+      organizationId,
     );
   }
 }

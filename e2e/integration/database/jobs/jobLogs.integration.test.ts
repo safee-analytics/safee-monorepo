@@ -16,6 +16,7 @@ import {
   schema,
   type DrizzleClient,
 } from "@safee/database";
+import { nukeDatabase } from "@safee/database/test-helpers";
 
 const { organizations, jobLogs } = schema;
 
@@ -37,7 +38,7 @@ describe("JobLogs Integration Tests", () => {
 
   beforeEach(async () => {
     // With CASCADE, we only need to delete organizations
-    await db.delete(organizations);
+    await nukeDatabase(db);
 
     // Create test organization
     const [org] = await db

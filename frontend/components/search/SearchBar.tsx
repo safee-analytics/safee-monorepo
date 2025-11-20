@@ -1,8 +1,20 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { FiSearch, FiClock, FiCommand, FiHash, FiX, FiSun, FiMoon } from "react-icons/fi";
+import {
+  FiSearch,
+  FiClock,
+  FiCommand,
+  FiHash,
+  FiX,
+  FiFileText,
+  FiUsers,
+  FiUserPlus,
+  FiShoppingCart,
+  FiClipboard,
+} from "react-icons/fi";
+import type { IconType } from "react-icons";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useAuth } from "@/lib/auth/hooks";
 import { getNavigationItems, getQuickActions, getSystemActions } from "./searchItems";
@@ -20,7 +32,7 @@ interface RecentSearch {
 interface SearchResult {
   id: string;
   type: "navigation" | "action" | "recent" | "entity";
-  icon: any;
+  icon: IconType;
   label: string;
   description?: string;
   action: () => void;
@@ -55,21 +67,24 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   }, []);
 
   // Save recent search
-  const saveRecentSearch = (label: string) => {
-    const newSearch: RecentSearch = {
-      id: Date.now().toString(),
-      label,
-      timestamp: Date.now(),
-    };
+  const saveRecentSearch = useCallback(
+    (label: string) => {
+      const newSearch: RecentSearch = {
+        id: Date.now().toString(),
+        label,
+        timestamp: Date.now(),
+      };
 
-    const updated = [newSearch, ...recentSearches.filter((s) => s.label !== label)].slice(
-      0,
-      MAX_RECENT_SEARCHES,
-    );
+      const updated = [newSearch, ...recentSearches.filter((s) => s.label !== label)].slice(
+        0,
+        MAX_RECENT_SEARCHES,
+      );
 
-    setRecentSearches(updated);
-    localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
-  };
+      setRecentSearches(updated);
+      localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(updated));
+    },
+    [recentSearches],
+  );
 
   // Clear recent searches
   const clearRecentSearches = () => {
@@ -78,98 +93,120 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   };
 
   // Detect entity IDs (INV-1234, EMP-5678, etc.)
-  const detectEntityId = (query: string): SearchResult | null => {
-    const patterns = [
-      { regex: /^INV-\d+$/i, type: "Invoice", icon: FiFileText, path: "/accounting/invoices/" },
-      { regex: /^EMP-\d+$/i, type: "Employee", icon: FiUsers, path: "/hr/employees/" },
-      { regex: /^CONT-\d+$/i, type: "Contact", icon: FiUserPlus, path: "/crm/contacts/" },
-      { regex: /^EXP-\d+$/i, type: "Expense", icon: FiShoppingCart, path: "/accounting/expenses/" },
-      { regex: /^CASE-\d+$/i, type: "Audit Case", icon: FiClipboard, path: "/audit/cases/" },
-    ];
+  const detectEntityId = useCallback(
+    (query: string): SearchResult | null => {
+      const patterns = [
+        { regex: /^INV-\d+$/i, type: "Invoice", icon: FiFileText, path: "/accounting/invoices/" },
+        { regex: /^EMP-\d+$/i, type: "Employee", icon: FiUsers, path: "/hr/employees/" },
+        { regex: /^CONT-\d+$/i, type: "Contact", icon: FiUserPlus, path: "/crm/contacts/" },
+        { regex: /^EXP-\d+$/i, type: "Expense", icon: FiShoppingCart, path: "/accounting/expenses/" },
+        { regex: /^CASE-\d+$/i, type: "Audit Case", icon: FiClipboard, path: "/audit/cases/" },
+      ];
 
-    for (const pattern of patterns) {
-      if (pattern.regex.test(query.trim())) {
-        const id = query.trim().split("-")[1];
-        return {
-          id: `entity-${query}`,
-          type: "entity",
-          icon: pattern.icon,
-          label: `${pattern.type} ${query.toUpperCase()}`,
-          description: `Open ${pattern.type.toLowerCase()} details`,
-          action: () => router.push(`${pattern.path}${id}`),
-          keywords: [query],
-        };
+      for (const pattern of patterns) {
+        if (pattern.regex.test(query.trim())) {
+          const id = query.trim().split("-")[1];
+          return {
+            id: `entity-${query}`,
+            type: "entity",
+            icon: pattern.icon,
+            label: `${pattern.type} ${query.toUpperCase()}`,
+            description: `Open ${pattern.type.toLowerCase()} details`,
+            action: () => router.push(`${pattern.path}${id}`),
+            keywords: [query],
+          };
+        }
       }
-    }
-    return null;
-  };
+      return null;
+    },
+    [router],
+  );
 
   // Get search items from shared configuration
-  const handleExport = () => {
-    console.log("Export data triggered");
+  const handleExport = useCallback(() => {
+    console.warn("Export data triggered - implementation pending");
     // TODO: Implement actual export logic
-  };
+  }, []);
 
-  const handleThemeToggle = () => {
+  const handleThemeToggle = useCallback(() => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
-    console.log("Theme changed to:", newTheme);
+    console.warn("Theme changed to:", newTheme, "- implementation pending");
     // TODO: Implement actual theme switching
-  };
+  }, [theme]);
 
   const navigationItems = getNavigationItems(t);
   const quickActions = getQuickActions(t, signOut);
   const systemActions = getSystemActions(t, signOut, handleExport, handleThemeToggle, theme);
 
   // Combine all items for search
-  const allItems: SearchResult[] = [
-    ...navigationItems.map((item) => ({
-      ...item,
-      action: () => router.push(item.path),
-    })),
-    ...quickActions.map((item) => ({
-      ...item,
-      action: () => router.push(item.path),
-    })),
-    ...systemActions.map((item) => ({
-      ...item,
-      action: () => {
-        if (item.path === "#logout") {
-          signOut();
-        } else if (item.path === "#export") {
-          handleExport();
-        } else if (item.path === "#theme") {
-          handleThemeToggle();
-        } else {
-          router.push(item.path);
-        }
-      },
-    })),
-  ];
+  const allItems: SearchResult[] = useMemo(
+    () => [
+      ...navigationItems.map((item) => ({
+        ...item,
+        action: () => router.push(item.path),
+      })),
+      ...quickActions.map((item) => ({
+        ...item,
+        action: () => router.push(item.path),
+      })),
+      ...systemActions.map((item) => ({
+        ...item,
+        action: () => {
+          if (item.path === "#logout") {
+            signOut();
+          } else if (item.path === "#export") {
+            handleExport();
+          } else if (item.path === "#theme") {
+            handleThemeToggle();
+          } else {
+            router.push(item.path);
+          }
+        },
+      })),
+    ],
+    [navigationItems, quickActions, systemActions, router, signOut, handleExport, handleThemeToggle],
+  );
 
   // Filter results based on query
-  const filteredResults = query.trim()
-    ? (() => {
-        // First check for entity ID
-        const entityResult = detectEntityId(query);
-        if (entityResult) {
-          return [entityResult];
-        }
+  const filteredResults = useMemo(() => {
+    if (!query.trim()) return [];
 
-        // Otherwise, filter normal items
-        const searchText = query.toLowerCase();
-        return allItems.filter((item) => {
-          return (
-            item.label.toLowerCase().includes(searchText) ||
-            item.description?.toLowerCase().includes(searchText) ||
-            item.keywords.some((keyword) => keyword.includes(searchText))
-          );
-        });
-      })()
-    : [];
+    // First check for entity ID
+    const entityResult = detectEntityId(query);
+    if (entityResult) {
+      return [entityResult];
+    }
+
+    // Otherwise, filter normal items
+    const searchText = query.toLowerCase();
+    return allItems.filter((item) => {
+      return (
+        item.label.toLowerCase().includes(searchText) ||
+        item.description?.toLowerCase().includes(searchText) ||
+        item.keywords.some((keyword) => keyword.includes(searchText))
+      );
+    });
+  }, [query, allItems, detectEntityId]);
 
   // Show recent searches when no query
   const showRecent = !query.trim() && recentSearches.length > 0;
+
+  // Handle selection
+  const handleSelect = useCallback(
+    (result: SearchResult) => {
+      // Save to recent searches
+      if (result.type !== "recent") {
+        saveRecentSearch(result.label);
+      }
+
+      result.action();
+      setIsOpen(false);
+      setQuery("");
+      inputRef.current?.blur();
+    },
+    [saveRecentSearch],
+  );
 
   // Handle keyboard navigation
   useEffect(() => {
@@ -201,7 +238,7 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, filteredResults, selectedIndex]);
+  }, [isOpen, filteredResults, selectedIndex, handleSelect]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -223,18 +260,6 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   useEffect(() => {
     setSelectedIndex(0);
   }, [query]);
-
-  const handleSelect = (result: SearchResult) => {
-    // Save to recent searches
-    if (result.type !== "recent") {
-      saveRecentSearch(result.label);
-    }
-
-    result.action();
-    setIsOpen(false);
-    setQuery("");
-    inputRef.current?.blur();
-  };
 
   const handleRecentSearch = (recent: RecentSearch) => {
     setQuery(recent.label);

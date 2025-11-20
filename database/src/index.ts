@@ -6,10 +6,10 @@ export * from "./errors.js";
 export * from "./drizzle.js";
 export * from "./deps.js";
 export type { Locale } from "./drizzle/_common.js";
+export { CASE_STATUSES, CASE_PRIORITIES } from "./drizzle/_common.js";
 export type RedisClient = Awaited<ReturnType<typeof redisConnect>>;
 
 export function conditionalCount(column: Column, value: unknown) {
-  // PostgreSQL count() returns string type, not number
   return sql<string>`count(case when ${column} = ${value} then 1 end)`;
 }
 
@@ -29,6 +29,12 @@ export * from "./scheduler/jobScheduler.js";
 export * from "./users/index.js";
 
 export * from "./sessions/index.js";
+
+export * from "./cases/index.js";
+
+export * from "./approvals.js";
+
+export * from "./auditLogs/auditLogs.js";
 
 export * from "./general-utils/i18n.js";
 

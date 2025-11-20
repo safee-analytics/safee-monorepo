@@ -140,8 +140,16 @@ export class InvalidCredentials extends Unauthorized {
 export class InsufficientPermissions extends Forbidden {
   override code = "InsufficientPermissions";
 
-  constructor(opts?: ErrorOptions) {
-    super("Insufficient permissions", {}, opts);
+  constructor(message: string = "Insufficient permissions", opts?: ErrorOptions) {
+    super(message, {}, opts);
+  }
+}
+
+export class InvalidInput extends BadRequest {
+  override code = "InvalidInput";
+
+  constructor(message: string, opts?: ErrorOptions) {
+    super(message, {}, opts);
   }
 }
 

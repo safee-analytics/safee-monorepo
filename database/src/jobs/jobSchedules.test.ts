@@ -1,5 +1,4 @@
-import { describe, it, before, after, beforeEach } from "node:test";
-import assert from "node:assert";
+import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { pino } from "pino";
 import { testConnect } from "../drizzle/testConnect.js";
 import type { DrizzleClient } from "../drizzle.js";
@@ -16,52 +15,47 @@ import {
 } from "./jobSchedules.js";
 import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
+import { nukeDatabase } from "../test-helpers/index.js";
 
-async function wipeJobSchedulesDb(drizzle: DrizzleClient) {
-  // Delete jobs (cascade deletes jobLogs), then jobSchedules
-  await drizzle.delete(schema.jobs);
-  await drizzle.delete(schema.jobSchedules);
-}
-
-void describe("Job Schedules", async () => {
+describe("Job Schedules", async () => {
   let drizzle: DrizzleClient;
   let close: () => Promise<void>;
   const logger = pino({ level: "silent" });
   let deps: DbDeps;
 
-  before(async () => {
+  beforeAll(async () => {
     ({ drizzle, close } = testConnect("job-schedules-test"));
     deps = { drizzle, logger };
   });
 
-  after(async () => {
+  afterAll(async () => {
     await close();
   });
 
-  void describe("createJobSchedule", async () => {
+  describe("createJobSchedule", async () => {
     beforeEach(async () => {
-      await wipeJobSchedulesDb(drizzle);
+      await nukeDatabase(drizzle);
     });
 
-    void it("creates job schedule successfully", async () => {
+    it("creates job schedule successfully", async () => {
       const scheduleData = {
         name: "DailySchedule",
         jobName: "send_email" as const,
-        cronExpression: "0 9 * * *", // 9 AM daily
+        cronExpression: "0 9 * * *",
         timezone: "UTC",
       };
 
       const schedule = await createJobSchedule(deps, scheduleData);
 
-      assert.ok(schedule.id);
-      assert.strictEqual(schedule.name, "DailySchedule");
-      assert.strictEqual(schedule.jobName, "send_email");
-      assert.strictEqual(schedule.cronExpression, "0 9 * * *");
-      assert.strictEqual(schedule.timezone, "UTC");
-      assert.strictEqual(schedule.isActive, true);
+      expect(schedule.id).toBeTruthy();
+      expect(schedule.name).toBe("DailySchedule");
+      expect(schedule.jobName).toBe("send_email");
+      expect(schedule.cronExpression).toBe("0 9 * * *");
+      expect(schedule.timezone).toBe("UTC");
+      expect(schedule.isActive).toBe(true);
     });
 
-    void it("throws error when schedule with same name exists for same job", async () => {
+    it("throws error when schedule with same name exists for same job", async () => {
       const scheduleData = {
         name: "DuplicateSchedule",
         jobName: "send_email" as const,
@@ -70,21 +64,20 @@ void describe("Job Schedules", async () => {
 
       await createJobSchedule(deps, scheduleData);
 
-      await assert.rejects(
-        async () => await createJobSchedule(deps, scheduleData),
+      await expect(createJobSchedule(deps, scheduleData)).rejects.toThrow(
         /Job schedule with name 'DuplicateSchedule' already exists for this job/,
       );
     });
 
-    void it("allows same schedule name for different jobs", async () => {
+    it("allows different schedule names for same job", async () => {
       const scheduleData1 = {
-        name: "SameName",
+        name: "Schedule1",
         jobName: "send_email" as const,
         cronExpression: "0 9 * * *",
       };
 
       const scheduleData2 = {
-        name: "SameName",
+        name: "Schedule2",
         jobName: "send_email" as const,
         cronExpression: "0 10 * * *",
       };
@@ -92,17 +85,17 @@ void describe("Job Schedules", async () => {
       const schedule1 = await createJobSchedule(deps, scheduleData1);
       const schedule2 = await createJobSchedule(deps, scheduleData2);
 
-      assert.ok(schedule1.id);
-      assert.ok(schedule2.id);
-      assert.notStrictEqual(schedule1.id, schedule2.id);
+      expect(schedule1.id).toBeTruthy();
+      expect(schedule2.id).toBeTruthy();
+      expect(schedule1.id).not.toBe(schedule2.id);
     });
   });
 
-  void describe("getJobScheduleById", async () => {
+  describe("getJobScheduleById", async () => {
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      await wipeJobSchedulesDb(drizzle);
+      await nukeDatabase(drizzle);
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
@@ -111,24 +104,24 @@ void describe("Job Schedules", async () => {
       });
     });
 
-    void it("retrieves job schedule by ID", async () => {
+    it("retrieves job schedule by ID", async () => {
       const schedule = await getJobScheduleById(deps, testSchedule.id);
 
-      assert.ok(schedule);
-      assert.strictEqual(schedule.id, testSchedule.id);
-      assert.strictEqual(schedule.name, "TestSchedule");
-      assert.strictEqual(schedule.jobName, "send_email");
+      expect(schedule).toBeTruthy();
+      expect(schedule!.id).toBe(testSchedule.id);
+      expect(schedule!.name).toBe("TestSchedule");
+      expect(schedule!.jobName).toBe("send_email");
     });
 
-    void it("returns undefined for non-existent schedule", async () => {
-      const schedule = await getJobScheduleById(deps, "nonexistent-id");
-      assert.strictEqual(schedule, undefined);
+    it("returns undefined for non-existent schedule", async () => {
+      const schedule = await getJobScheduleById(deps, "00000000-0000-0000-0000-000000000000");
+      expect(schedule).toBe(undefined);
     });
   });
 
-  void describe("listActiveJobSchedules", async () => {
+  describe("listActiveJobSchedules", async () => {
     beforeEach(async () => {
-      await wipeJobSchedulesDb(drizzle);
+      await nukeDatabase(drizzle);
 
       await createJobSchedule(deps, {
         name: "ActiveSchedule1",
@@ -154,20 +147,20 @@ void describe("Job Schedules", async () => {
       await deactivateJobSchedule(deps, inactiveSchedule.id);
     });
 
-    void it("returns only active job schedules", async () => {
+    it("returns only active job schedules", async () => {
       const activeSchedules = await listActiveJobSchedules(deps);
 
-      assert.strictEqual(activeSchedules.length, 2);
-      assert.ok(activeSchedules.every((s) => s.isActive));
+      expect(activeSchedules.length).toBe(2);
+      expect(activeSchedules.every((s) => s.isActive));
 
       const names = activeSchedules.map((s) => s.name).sort();
-      assert.deepStrictEqual(names, ["ActiveSchedule1", "ActiveSchedule2"]);
+      expect(names).toEqual(["ActiveSchedule1", "ActiveSchedule2"]);
     });
   });
 
-  void describe("getSchedulesReadyToRun", async () => {
+  describe("getSchedulesReadyToRun", async () => {
     beforeEach(async () => {
-      await wipeJobSchedulesDb(drizzle);
+      await nukeDatabase(drizzle);
 
       const now = new Date();
       const pastTime = new Date(now.getTime() - 60000); // 1 minute ago
@@ -211,31 +204,31 @@ void describe("Job Schedules", async () => {
       await deactivateJobSchedule(deps, inactiveSchedule.id);
     });
 
-    void it("returns schedules ready to run", async () => {
+    it("returns schedules ready to run", async () => {
       const readySchedules = await getSchedulesReadyToRun(deps);
 
-      assert.strictEqual(readySchedules.length, 2);
-      assert.ok(readySchedules.every((s) => s.isActive));
+      expect(readySchedules.length).toBe(2);
+      expect(readySchedules.every((s) => s.isActive));
 
       const names = readySchedules.map((s) => s.name).sort();
-      assert.deepStrictEqual(names, ["NullNextRunSchedule", "ReadySchedule"]);
+      expect(names).toEqual(["NullNextRunSchedule", "ReadySchedule"]);
     });
 
-    void it("filters by check time", async () => {
+    it("filters by check time", async () => {
       const futureCheckTime = new Date(Date.now() + 120000); // 2 minutes from now
 
       const readySchedules = await getSchedulesReadyToRun(deps, futureCheckTime);
 
       // Should include all schedules now since check time is in future
-      assert.ok(readySchedules.length >= 2);
+      expect(readySchedules.length >= 2).toBeTruthy();
     });
   });
 
-  void describe("updateJobSchedule", async () => {
+  describe("updateJobSchedule", async () => {
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      await wipeJobSchedulesDb(drizzle);
+      await nukeDatabase(drizzle);
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
@@ -244,7 +237,7 @@ void describe("Job Schedules", async () => {
       });
     });
 
-    void it("updates job schedule successfully", async () => {
+    it("updates job schedule successfully", async () => {
       const updates = {
         cronExpression: "0 17 * * *",
         timezone: "America/New_York",
@@ -252,20 +245,19 @@ void describe("Job Schedules", async () => {
 
       const updatedSchedule = await updateJobSchedule(deps, testSchedule.id, updates);
 
-      assert.strictEqual(updatedSchedule.id, testSchedule.id);
-      assert.strictEqual(updatedSchedule.cronExpression, "0 17 * * *");
-      assert.strictEqual(updatedSchedule.timezone, "America/New_York");
-      assert.strictEqual(updatedSchedule.name, "TestSchedule"); // Should remain unchanged
+      expect(updatedSchedule.id).toBe(testSchedule.id);
+      expect(updatedSchedule.cronExpression).toBe("0 17 * * *");
+      expect(updatedSchedule.timezone).toBe("America/New_York");
+      expect(updatedSchedule.name).toBe("TestSchedule"); // Should remain unchanged
     });
 
-    void it("throws error when schedule not found", async () => {
-      await assert.rejects(
-        async () => await updateJobSchedule(deps, "nonexistent-id", { cronExpression: "0 10 * * *" }),
-        /Job schedule with ID 'nonexistent-id' not found/,
-      );
+    it("throws error when schedule not found", async () => {
+      await expect(
+        updateJobSchedule(deps, "00000000-0000-0000-0000-000000000000", { cronExpression: "0 10 * * *" }),
+      ).rejects.toThrow(/Job schedule with ID '00000000-0000-0000-0000-000000000000' not found/);
     });
 
-    void it("updates updatedAt timestamp", async () => {
+    it("updates updatedAt timestamp", async () => {
       const originalUpdatedAt = testSchedule.updatedAt;
 
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -274,15 +266,15 @@ void describe("Job Schedules", async () => {
         cronExpression: "0 10 * * *",
       });
 
-      assert.ok(updatedSchedule.updatedAt > originalUpdatedAt);
+      expect(updatedSchedule.updatedAt > originalUpdatedAt).toBeTruthy();
     });
   });
 
-  void describe("updateScheduleRunTime", async () => {
+  describe("updateScheduleRunTime", async () => {
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      await wipeJobSchedulesDb(drizzle);
+      await nukeDatabase(drizzle);
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
@@ -291,31 +283,31 @@ void describe("Job Schedules", async () => {
       });
     });
 
-    void it("updates last run and next run times", async () => {
+    it("updates last run and next run times", async () => {
       const lastRunAt = new Date();
       const nextRunAt = new Date(lastRunAt.getTime() + 24 * 60 * 60 * 1000); // 24 hours later
 
       const updatedSchedule = await updateScheduleRunTime(deps, testSchedule.id, lastRunAt, nextRunAt);
 
-      assert.strictEqual(updatedSchedule.lastRunAt?.getTime(), lastRunAt.getTime());
-      assert.strictEqual(updatedSchedule.nextRunAt?.getTime(), nextRunAt.getTime());
+      expect(updatedSchedule.lastRunAt?.getTime()).toBe(lastRunAt.getTime());
+      expect(updatedSchedule.nextRunAt?.getTime()).toBe(nextRunAt.getTime());
     });
 
-    void it("updates only last run time when next run not provided", async () => {
+    it("updates only last run time when next run not provided", async () => {
       const lastRunAt = new Date();
 
       const updatedSchedule = await updateScheduleRunTime(deps, testSchedule.id, lastRunAt);
 
-      assert.strictEqual(updatedSchedule.lastRunAt?.getTime(), lastRunAt.getTime());
+      expect(updatedSchedule.lastRunAt?.getTime()).toBe(lastRunAt.getTime());
       // nextRunAt should remain unchanged (null or previous value)
     });
   });
 
-  void describe("activateJobSchedule", async () => {
+  describe("activateJobSchedule", async () => {
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      await wipeJobSchedulesDb(drizzle);
+      await nukeDatabase(drizzle);
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
@@ -325,18 +317,18 @@ void describe("Job Schedules", async () => {
       });
     });
 
-    void it("activates job schedule", async () => {
+    it("activates job schedule", async () => {
       const activatedSchedule = await activateJobSchedule(deps, testSchedule.id);
 
-      assert.strictEqual(activatedSchedule.isActive, true);
+      expect(activatedSchedule.isActive).toBe(true);
     });
   });
 
-  void describe("deactivateJobSchedule", async () => {
+  describe("deactivateJobSchedule", async () => {
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      await wipeJobSchedulesDb(drizzle);
+      await nukeDatabase(drizzle);
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
@@ -346,18 +338,18 @@ void describe("Job Schedules", async () => {
       });
     });
 
-    void it("deactivates job schedule", async () => {
+    it("deactivates job schedule", async () => {
       const deactivatedSchedule = await deactivateJobSchedule(deps, testSchedule.id);
 
-      assert.strictEqual(deactivatedSchedule.isActive, false);
+      expect(deactivatedSchedule.isActive).toBe(false);
     });
   });
 
-  void describe("deleteJobSchedule", async () => {
+  describe("deleteJobSchedule", async () => {
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      await wipeJobSchedulesDb(drizzle);
+      await nukeDatabase(drizzle);
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
@@ -366,20 +358,20 @@ void describe("Job Schedules", async () => {
       });
     });
 
-    void it("deletes job schedule successfully", async () => {
+    it("deletes job schedule successfully", async () => {
       const deleted = await deleteJobSchedule(deps, testSchedule.id);
 
-      assert.strictEqual(deleted, true);
+      expect(deleted).toBe(true);
 
       // Verify schedule is deleted
       const schedule = await getJobScheduleById(deps, testSchedule.id);
-      assert.strictEqual(schedule, undefined);
+      expect(schedule).toBe(undefined);
     });
 
-    void it("returns false when schedule not found", async () => {
-      const deleted = await deleteJobSchedule(deps, "nonexistent-id");
+    it("returns false when schedule not found", async () => {
+      const deleted = await deleteJobSchedule(deps, "00000000-0000-0000-0000-000000000000");
 
-      assert.strictEqual(deleted, false);
+      expect(deleted).toBe(false);
     });
   });
 });

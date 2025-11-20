@@ -1,0 +1,2 @@
+ALTER TABLE "system"."approval_workflows" ALTER COLUMN "rules" SET DATA TYPE jsonb USING rules::jsonb;
+ALTER TABLE "system"."approval_rules" ALTER COLUMN "conditions" SET DATA TYPE jsonb USING conditions::jsonb;

@@ -4,35 +4,20 @@ import { eq, and } from "drizzle-orm";
 import { StorageFactory, type StorageConfig } from "./storage-factory.js";
 import type { StorageAdapter } from "./storage-adapter.interface.js";
 
-/**
- * Storage Connector Service
- * Manages organization-specific storage configurations
- */
 export class StorageConnectorService {
   private adapters: Map<string, StorageAdapter> = new Map();
 
   constructor(private drizzle: DrizzleClient) {}
 
-  /**
-   * Get storage adapter for an organization
-   */
   async getAdapter(organizationId: string): Promise<StorageAdapter> {
-    // Check cache
     const cached = this.adapters.get(organizationId);
     if (cached) return cached;
 
-    // Get active storage connector from database
     const connector = await this.drizzle.query.connectors.findFirst({
-      where: and(
-        eq(schema.connectors.organizationId, organizationId),
-        eq(schema.connectors.isActive, true),
-        // Storage connectors start with "storage_"
-        // We'll use a simple check on type
-      ),
+      where: and(eq(schema.connectors.organizationId, organizationId), eq(schema.connectors.isActive, true)),
     });
 
     if (!connector) {
-      // Fallback to default local storage
       const adapter = StorageFactory.createAdapter({
         type: "local",
         basePath: `./storage/${organizationId}`,
@@ -41,19 +26,14 @@ export class StorageConnectorService {
       return adapter;
     }
 
-    // Create adapter from connector config
     const config = this.connectorToStorageConfig(connector);
     const adapter = StorageFactory.createAdapter(config);
 
-    // Cache it
     this.adapters.set(organizationId, adapter);
 
     return adapter;
   }
 
-  /**
-   * Convert connector record to storage config
-   */
   private connectorToStorageConfig(connector: {
     type: string;
     config: {

@@ -47,6 +47,28 @@ export const commonEn = {
     nisbah: "Nisbah",
     audit: "Audit",
   },
+  settings: {
+    api: {
+      title: "API Keys",
+      subtitle: "Manage API keys for integrating with external services",
+    },
+    database: {
+      title: "Database & Backups",
+      subtitle: "Manage database backups and restore points",
+    },
+    integrations: {
+      title: "Integrations",
+      subtitle: "Connect Safee with your favorite tools and services",
+    },
+    notifications: {
+      title: "Notifications",
+      subtitle: "Manage how you receive notifications and alerts",
+    },
+    security: {
+      title: "Security Settings",
+      subtitle: "Manage your account security and privacy",
+    },
+  },
   dashboard: {
     goodMorning: "Good morning",
     goodAfternoon: "Good afternoon",

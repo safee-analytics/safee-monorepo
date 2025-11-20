@@ -56,9 +56,6 @@ export const ODOO_URL = process.env.ODOO_URL ?? "http://localhost:8069";
 export const ODOO_PORT = number("ODOO_PORT", 8069);
 export const ODOO_ADMIN_PASSWORD = process.env.ODOO_ADMIN_PASSWORD ?? "admin";
 
-// export const PUBSUB_TOPIC_PREFIX = process.env.PUBSUB_TOPIC_PREFIX ?? "colony";
-// export const PROJECT_ID = process.env.PROJECT_ID ?? process.env.PUBSUB_PROJECT_ID ?? "parallel-dev-332718";
-
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 export const USE_CLOUD_STORAGE = boolean("USE_CLOUD_STORAGE", false);

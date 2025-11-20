@@ -1,5 +1,16 @@
 import { createAuthClient } from "better-auth/react";
-import { organizationClient } from "better-auth/client/plugins";
+import {
+  organizationClient,
+  adminClient,
+  twoFactorClient,
+  phoneNumberClient,
+  usernameClient,
+  magicLinkClient,
+  emailOTPClient,
+  genericOAuthClient,
+  apiKeyClient,
+  lastLoginMethodClient,
+} from "better-auth/client/plugins";
 
 const getBaseURL = () => {
   if (process.env.NEXT_PUBLIC_API_URL) {
@@ -17,30 +28,32 @@ const baseURL = getBaseURL();
 
 export const authClient = createAuthClient({
   baseURL: `${baseURL}/api/v1`,
-  plugins: [organizationClient()],
   fetchOptions: {
-    credentials: "include", // Always include cookies in cross-origin requests
+    credentials: "include",
   },
+  plugins: [
+    organizationClient({
+      dynamicAccessControl: {
+        enabled: true,
+      },
+      teams: {
+        enabled: true,
+      },
+    }),
+    adminClient(),
+    usernameClient(),
+    twoFactorClient(),
+    phoneNumberClient(),
+    magicLinkClient(),
+    emailOTPClient(),
+    genericOAuthClient(),
+    apiKeyClient(),
+    lastLoginMethodClient(),
+  ],
 });
 
-export type Session = {
-  user: {
-    id: string;
-    email: string;
-    name: string;
-    emailVerified: boolean;
-    image?: string;
-    createdAt: Date;
-    updatedAt: Date;
-  };
-  session: {
-    id: string;
-    userId: string;
-    expiresAt: Date;
-    ipAddress?: string;
-    userAgent?: string;
-  };
-};
+export type Session = typeof authClient.$Infer.Session;
+export type User = typeof authClient.$Infer.Session.user;
 
 export type AuthError = {
   message: string;

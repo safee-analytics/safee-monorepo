@@ -115,7 +115,6 @@ void describe("getConnector", async () => {
       })
       .returning();
 
-    // Try to access org1's connector from org2
     await expect(getConnector(drizzle, connector.id, org2.id)).rejects.toThrow();
   });
 });

@@ -45,7 +45,7 @@ const eslintConfig = [
       "react/prop-types": "off",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
-      "@next/next/no-img-element": "warn", // Use next/image
+      "@next/next/no-img-element": "off", // Use next/image
 
       "no-console": ["warn", { allow: ["warn", "error"] }],
       "prefer-const": "error",

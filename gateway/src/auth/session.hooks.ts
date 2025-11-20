@@ -1,16 +1,11 @@
 import type { DrizzleClient } from "@safee/database";
 import { logger } from "../server/utils/logger.js";
 
-/**
- * Session hooks for Better Auth
- * Sets active organization on session creation
- */
 export function createSessionHooks(drizzle: DrizzleClient) {
   return {
     session: {
       create: {
         before: async (session: { userId: string; [key: string]: unknown }) => {
-          // Set active organization on session creation
           try {
             const member = await drizzle.query.members.findFirst({
               where: (members, { eq }) => eq(members.userId, session.userId),

@@ -1,4 +1,4 @@
-import { uuid, varchar, text, integer, index } from "drizzle-orm/pg-core";
+import { uuid, varchar, jsonb, integer, index } from "drizzle-orm/pg-core";
 import { systemSchema, idpk, entityTypeEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { approvalWorkflows } from "./approvalWorkflows.js";
@@ -15,7 +15,7 @@ export const approvalRules = systemSchema.table(
       }),
     entityType: entityTypeEnum("entity_type").notNull(),
     ruleName: varchar("rule_name", { length: 255 }).notNull(),
-    conditions: text("conditions").notNull(), // JSON string for flexible conditions (amount/type/role)
+    conditions: jsonb("conditions").notNull(), // JSONB for flexible conditions (amount/type/role)
     workflowId: uuid("workflow_id")
       .notNull()
       .references(() => approvalWorkflows.id, {

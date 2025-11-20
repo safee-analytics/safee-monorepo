@@ -56,7 +56,7 @@ void describe("UserController", () => {
   void describe("getCurrentUser", () => {
     void it("should return current user profile", async () => {
       const timestamp = Date.now();
-      const [org] = await drizzle
+      await drizzle
         .insert(schema.organizations)
         .values({
           name: `Test Org ${timestamp}`,
@@ -70,7 +70,6 @@ void describe("UserController", () => {
           email: `user-${timestamp}@example.com`,
           name: "Test User",
           preferredLocale: "en",
-          organizationId: org.id,
         })
         .returning();
 
@@ -87,9 +86,6 @@ void describe("UserController", () => {
       expect(result.email).toBe(user.email);
       expect(result.name).toBe("Test User");
       expect(result.preferredLocale).toBe("en");
-      expect(result.organizationId).toBe(org.id);
-      expect(result.organization).toBeDefined();
-      expect(result.organization?.id).toBe(org.id);
     });
 
     void it("should throw Unauthorized when no session", async () => {
@@ -130,8 +126,6 @@ void describe("UserController", () => {
       const result = await controller.getCurrentUser(mockRequest);
 
       expect(result.id).toBe(user.id);
-      expect(result.organizationId).toBeNull();
-      expect(result.organization).toBeUndefined();
     });
 
     void it("should handle Arabic locale", async () => {
@@ -305,7 +299,6 @@ void describe("UserController", () => {
       expect(result.message).toBe("Locale updated successfully");
       expect(result.locale).toBe("ar");
 
-      // Verify database was updated
       const updatedUser = await drizzle.query.users.findFirst({
         where: (users, { eq }) => eq(users.id, user.id),
       });
@@ -374,15 +367,12 @@ void describe("UserController", () => {
         },
       } as AuthenticatedRequest;
 
-      // Switch to Arabic
       const result1 = await controller.updateCurrentUserLocale({ locale: "ar" }, mockRequest);
       expect(result1.locale).toBe("ar");
 
-      // Switch back to English
       const result2 = await controller.updateCurrentUserLocale({ locale: "en" }, mockRequest);
       expect(result2.locale).toBe("en");
 
-      // Verify final state
       const finalUser = await drizzle.query.users.findFirst({
         where: (users, { eq }) => eq(users.id, user.id),
       });

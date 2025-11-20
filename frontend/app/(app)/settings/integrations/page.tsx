@@ -113,8 +113,8 @@ export default function IntegrationsSettings() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-5xl">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Integrations</h1>
-            <p className="text-gray-600">Connect Safee with your favorite tools and services</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">{t.settings.integrations.title}</h1>
+            <p className="text-gray-600">{t.settings.integrations.subtitle}</p>
           </div>
 
           {/* Category Filter */}
@@ -154,7 +154,7 @@ export default function IntegrationsSettings() {
                           <div>
                             <h3 className="font-semibold text-gray-900">{integration.name}</h3>
                             <div className="flex items-center gap-1 mt-1">
-                              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                              <Check className="w-3 h-3 text-green-600" />
                               <span className="text-xs text-green-600">Connected</span>
                             </div>
                           </div>

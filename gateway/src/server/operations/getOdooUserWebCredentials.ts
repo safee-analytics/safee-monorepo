@@ -32,12 +32,12 @@ export async function getOdooUserWebCredentials(
     where: and(eq(schema.odooUsers.userId, userId), eq(schema.odooUsers.odooDatabaseId, odooDb.id)),
   });
 
-  if (!odooUser || !odooUser.odooWebPassword) {
+  if (!odooUser || !odooUser.password) {
     return null;
   }
 
   // Decrypt the web password
-  const password = encryptionService.decrypt(odooUser.odooWebPassword);
+  const password = encryptionService.decrypt(odooUser.password);
 
   return {
     login: odooUser.odooLogin,

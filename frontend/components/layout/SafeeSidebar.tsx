@@ -102,6 +102,24 @@ export function SafeeSidebar() {
 
         <div className="w-10 h-px bg-gray-200 my-2" />
 
+        {/* Quick Search Button */}
+        <button
+          className="w-12 h-12 rounded-lg flex items-center justify-center text-gray-600 hover:bg-gray-100 transition-all group relative"
+          title={t.common?.search || (locale === "ar" ? "بحث" : "Search")}
+        >
+          <SearchIcon className="w-5 h-5" />
+
+          {/* Tooltip */}
+          <div
+            className={`absolute ${locale === "ar" ? "right-full mr-2" : "left-full ml-2"} top-1/2 -translate-y-1/2 px-3 py-1.5 bg-gray-900 text-white text-xs rounded-lg whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50`}
+          >
+            {t.common?.search || (locale === "ar" ? "بحث" : "Search")}
+            <span className="ml-2 text-gray-400">⌘K</span>
+          </div>
+        </button>
+
+        <div className="w-10 h-px bg-gray-200 my-2" />
+
         {/* Main Nav Items */}
         {sidebarItems.map((item) => {
           const Icon = item.icon;

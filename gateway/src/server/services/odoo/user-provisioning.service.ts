@@ -17,22 +17,9 @@ export interface OdooUserProvisionResult {
 export interface OdooUserCredentials {
   databaseName: string;
   odooUid: number;
-  odooPassword: string; // API key for authentication
+  odooPassword: string;
 }
 
-/**
- * Service to provision and manage Odoo users for Safee users
- * Creates individual Odoo users for each Safee user to enable:
- * - User-level audit trails in Odoo
- * - Per-user permissions and access control
- * - Accurate sales attribution and performance tracking
- *
- * Authentication Strategy:
- * - Password: Set in Odoo for web UI access (users click "View in Odoo")
- * - API Key: Generated and stored for RPC operations (no session expiry)
- * - API keys are stored encrypted in odooPassword field
- * - Passwords are set in Odoo but not stored in Safee DB (user resets via Odoo if needed)
- */
 export class OdooUserProvisioningService {
   constructor(private readonly drizzle: DrizzleClient) {}
 
@@ -40,10 +27,6 @@ export class OdooUserProvisioningService {
     return getServerContext().logger;
   }
 
-  /**
-   * Authenticate with Odoo and get session + UID
-   * Returns uid, sessionId, and cookies from Set-Cookie headers
-   */
   private async authenticate(
     databaseName: string,
     login: string,
@@ -82,7 +65,6 @@ export class OdooUserProvisioningService {
       throw new BadGateway("Failed to authenticate with Odoo");
     }
 
-    // Capture all cookies from the authentication response
     const setCookieHeaders = response.headers.getSetCookie?.() || [];
     const cookies = setCookieHeaders.length > 0 ? setCookieHeaders.map((cookie) => cookie.split(";")[0]) : [];
 
@@ -273,7 +255,6 @@ export class OdooUserProvisioningService {
         "account.group_account_manager", // Full accounting admin
         "sales_team.group_sale_manager", // CRM manager
         "hr.group_hr_manager", // HR manager
-        "sign.group_sign_manager", // Signing manager
       ],
       accountant: [
         "account.group_account_manager", // Full accounting access
@@ -518,10 +499,15 @@ export class OdooUserProvisioningService {
 
     if (existingOdooUser) {
       this.logger.info({ userId }, "Odoo user already exists");
+      // Prefer API key if available, fallback to password
+      const authCredential = existingOdooUser.apiKey
+        ? encryptionService.decrypt(existingOdooUser.apiKey)
+        : encryptionService.decrypt(existingOdooUser.password);
+
       return {
         odooUid: existingOdooUser.odooUid,
         odooLogin: existingOdooUser.odooLogin,
-        odooPassword: encryptionService.decrypt(existingOdooUser.odooPassword),
+        odooPassword: authCredential,
       };
     }
 
@@ -546,16 +532,37 @@ export class OdooUserProvisioningService {
       role,
     );
 
-    // Set password for web UI login
-    const odooWebPassword = this.generateSecurePassword();
-    await this.setOdooUserPassword(databaseName, adminLogin, adminPassword, odooUid, odooWebPassword);
+    // Set password (always required as fallback)
+    const password = this.generateSecurePassword();
 
-    this.logger.info({ userId, odooUid }, "Password set for web UI access");
+    try {
+      await this.setOdooUserPassword(databaseName, adminLogin, adminPassword, odooUid, password);
+      this.logger.info({ userId, odooUid }, "Password set successfully");
+    } catch (error) {
+      this.logger.error(
+        { userId, odooUid, error: error instanceof Error ? error.message : "Unknown error" },
+        "Failed to set Odoo password",
+      );
+      throw error; // Password is required, cannot continue
+    }
 
-    // Generate API key for RPC operations (no session expiry)
-    // Uses custom HTTP endpoint with admin credentials
-    const keyName = `safee-${userName}-${Date.now()}`;
-    const apiKey = await this.generateApiKey(databaseName, adminLogin, adminPassword, user.email, keyName);
+    // Try to generate API key for RPC operations (preferred, no session expiry)
+    // Falls back to password authentication if custom addon is not installed
+    let apiKey: string | null = null;
+    let authCredential = password; // Default to password
+
+    try {
+      const keyName = `safee-${userName}-${Date.now()}`;
+      apiKey = await this.generateApiKey(databaseName, adminLogin, adminPassword, user.email, keyName);
+      authCredential = apiKey; // Prefer API key
+      this.logger.info({ userId, odooUid, keyName }, "✅ API key generated successfully (preferred)");
+    } catch (error) {
+      this.logger.warn(
+        { userId, odooUid, error: error instanceof Error ? error.message : "Unknown error" },
+        "⚠️  Failed to generate API key, will use password authentication",
+      );
+      // Continue with password authentication
+    }
 
     // Get database ID
     const odooDb = await this.drizzle.query.odooDatabases.findFirst({
@@ -566,32 +573,37 @@ export class OdooUserProvisioningService {
       throw new NotFound("Odoo database not found");
     }
 
-    // Store mapping with both API key and web password
+    // Store mapping with both API key (if available) and password
     await this.drizzle.insert(schema.odooUsers).values({
       userId,
       odooDatabaseId: odooDb.id,
       odooUid,
       odooLogin: user.email,
-      odooPassword: encryptionService.encrypt(apiKey), // Encrypted API key for RPC
-      odooWebPassword: encryptionService.encrypt(odooWebPassword), // Encrypted password for web UI
+      apiKey: apiKey ? encryptionService.encrypt(apiKey) : null, // Encrypted API key (preferred)
+      password: encryptionService.encrypt(password), // Encrypted password (fallback)
       lastSyncedAt: new Date(),
     });
 
     this.logger.info(
-      { userId, odooUid, databaseName, keyName },
-      "Odoo user provisioned successfully with API key and web password",
+      {
+        userId,
+        odooUid,
+        databaseName,
+        hasApiKey: !!apiKey,
+      },
+      "✅ Odoo user provisioned successfully",
     );
 
     return {
       odooUid,
       odooLogin: user.email,
-      odooPassword: apiKey, // Return API key for immediate use
+      odooPassword: authCredential, // Return API key if available, otherwise password
     };
   }
 
   /**
    * Get Odoo credentials for a Safee user
-   * Returns API key for authentication (stored in odooPassword field)
+   * Prefers API key if available, falls back to password
    */
   async getUserCredentials(userId: string, organizationId: string): Promise<OdooUserCredentials | null> {
     // Get Odoo database
@@ -612,15 +624,20 @@ export class OdooUserProvisioningService {
       return null;
     }
 
+    // Prefer API key if available, fallback to password
+    const authCredential = odooUser.apiKey
+      ? encryptionService.decrypt(odooUser.apiKey)
+      : encryptionService.decrypt(odooUser.password);
+
     return {
       databaseName: odooDb.databaseName,
       odooUid: odooUser.odooUid,
-      odooPassword: encryptionService.decrypt(odooUser.odooPassword),
+      odooPassword: authCredential,
     };
   }
 
   /**
-   * Get Odoo web password for a user (for dev access)
+   * Get Odoo web password for a user (for web UI access)
    */
   async getOdooWebPassword(
     userId: string,
@@ -644,13 +661,13 @@ export class OdooUserProvisioningService {
       where: and(eq(schema.odooUsers.userId, userId), eq(schema.odooUsers.odooDatabaseId, odooDb.id)),
     });
 
-    if (!odooUser || !odooUser.odooWebPassword) {
+    if (!odooUser) {
       return null;
     }
 
     return {
       login: odooUser.odooLogin,
-      password: encryptionService.decrypt(odooUser.odooWebPassword),
+      password: encryptionService.decrypt(odooUser.password),
       webUrl: `${env.ODOO_URL}/web/login?db=${odooDb.databaseName}`,
     };
   }

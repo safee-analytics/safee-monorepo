@@ -1,7 +1,7 @@
 {
   "watch": ["src"],
   "ext": ".ts,.tsx",
-  "ignore": [],
+  "ignore": ["src/server/routes.ts", "src/server/swagger.json"],
   "exec": "npx tsx -r dotenv/config ./src/index.ts",
   "signal": "SIGKILL",
   "delay": 1000,

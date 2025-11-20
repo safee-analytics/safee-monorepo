@@ -1,9 +1,9 @@
 import { varchar, timestamp, uuid } from "drizzle-orm/pg-core";
-import { identitySchema } from "./_common.js";
+import { idpk, odooSchema } from "./_common.js";
 import { organizations } from "./organizations.js";
 
-export const odooDatabases = identitySchema.table("odoo_databases", {
-  id: uuid("id").primaryKey().defaultRandom(),
+export const odooDatabases = odooSchema.table("databases", {
+  id: idpk("id"),
   organizationId: uuid("organization_id")
     .notNull()
     .references(() => organizations.id, { onDelete: "cascade", onUpdate: "cascade" })

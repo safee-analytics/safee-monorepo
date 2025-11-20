@@ -4,7 +4,7 @@ import { pino } from "pino";
 import type { DbDeps } from "../deps.js";
 import type { DrizzleClient, RedisClient } from "../index.js";
 
-const TEST_DATABASE_URL = process.env.DATABASE_URL ?? "postgresql://safee:safee@localhost:45432/safee";
+const TEST_DATABASE_URL = process.env.DATABASE_URL ?? "postgresql://safee:safee@localhost:25432/safee";
 const TEST_REDIS_URL = process.env.REDIS_URL ?? "redis://localhost:26379";
 
 export function createTestLogger() {

@@ -57,8 +57,8 @@ void describe("getOdooDevCredentials", async () => {
       odooDatabaseId: odooDb.id,
       odooUid: 1,
       odooLogin: "test@example.com",
-      odooPassword: encryptedPassword,
-      odooWebPassword: encryptedPassword,
+      password: encryptedPassword,
+      apiKey: null, // No API key in this test
     });
 
     const credentials = await getOdooDevCredentials(drizzle, user.id, org.id);

@@ -31,9 +31,10 @@ export function Table<T>({
   striped = false,
 }: TableProps<T>) {
   const RowComponent = animated ? motion.tr : "tr";
-  const rowProps = animated
-    ? { layout: true, layoutId: (row: T, idx: number) => `row-${keyExtractor(row, idx)}` }
-    : {};
+  const getRowProps = (row: T, index: number) => {
+    const key = keyExtractor(row, index);
+    return animated ? { layout: true, layoutId: `row-${key}` } : {};
+  };
 
   return (
     <div className={`w-full bg-white shadow-lg rounded-lg overflow-x-auto ${className}`}>
@@ -60,31 +61,16 @@ export function Table<T>({
               ${striped && index % 2 === 1 ? "bg-gray-50" : "bg-white"}
             `.trim();
 
-            if (animated) {
-              return (
-                <motion.tr key={key} layout layoutId={`row-${key}`} className={rowClasses}>
-                  {columns.map((column, colIdx) => (
-                    <td
-                      key={`cell-${key}-${column.key}-${colIdx}`}
-                      className={`p-4 ${column.className || ""}`}
-                    >
-                      {column.render
-                        ? column.render(row, index)
-                        : (row as Record<string, unknown>)[column.key]}
-                    </td>
-                  ))}
-                </motion.tr>
-              );
-            }
-
             return (
-              <tr key={key} className={rowClasses}>
+              <RowComponent key={key} {...getRowProps(row, index)} className={rowClasses}>
                 {columns.map((column, colIdx) => (
                   <td key={`cell-${key}-${column.key}-${colIdx}`} className={`p-4 ${column.className || ""}`}>
-                    {column.render ? column.render(row, index) : (row as Record<string, unknown>)[column.key]}
+                    {column.render
+                      ? column.render(row, index)
+                      : ((row as Record<string, unknown>)[column.key] as React.ReactNode)}
                   </td>
                 ))}
-              </tr>
+              </RowComponent>
             );
           })}
         </tbody>

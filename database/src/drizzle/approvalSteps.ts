@@ -1,6 +1,6 @@
 import { uuid, integer, text, timestamp, index } from "drizzle-orm/pg-core";
-import { systemSchema, idpk } from "./_common.js";
-import { approvalRequests, approvalStatusEnum } from "./approvalRequests.js";
+import { systemSchema, idpk, approvalStatusEnum } from "./_common.js";
+import { approvalRequests } from "./approvalRequests.js";
 import { users } from "./users.js";
 
 export const approvalSteps = systemSchema.table(

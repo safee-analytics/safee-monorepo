@@ -1,18 +1,17 @@
-import { describe, it } from "node:test";
-import assert from "node:assert";
+import { describe, it, expect } from "vitest";
 import { findDuplicates } from "./duplicate-check.js";
 
-await describe("findDuplicatesWithCounts", async () => {
-  await it("should return undefined when no duplicates ", () => {
-    assert.equal(findDuplicates(["test", "test2"]), undefined);
+describe("findDuplicatesWithCounts", () => {
+  it("should return undefined when no duplicates ", () => {
+    expect(findDuplicates(["test", "test2"])).toBe(undefined);
   });
-  await it("should return undefined when empty", () => {
-    assert.equal(findDuplicates([]), undefined);
+  it("should return undefined when empty", () => {
+    expect(findDuplicates([])).toBe(undefined);
   });
-  await it("should return duplicates", () => {
-    assert.deepEqual(findDuplicates(["test", "test", "unique"]), ["test"]);
+  it("should return duplicates", () => {
+    expect(findDuplicates(["test", "test", "unique"])).toEqual(["test"]);
   });
-  await it("should return duplicates 2", () => {
-    assert.deepEqual(findDuplicates([1, 1, 0, 2, 5, 2]), [1, 2]);
+  it("should return duplicates 2", () => {
+    expect(findDuplicates([1, 1, 0, 2, 5, 2])).toEqual([1, 2]);
   });
 });

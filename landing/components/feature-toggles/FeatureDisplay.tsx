@@ -1,7 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import React from "react";
+import React, { ReactElement } from "react";
 import { Button } from "../shared/Button";
 
 export const FeatureDisplay = ({
@@ -13,7 +13,7 @@ export const FeatureDisplay = ({
   selected: number;
   cardTitle: string;
   cardSubtitle: string;
-  Component: () => JSX.Element;
+  Component: () => ReactElement;
 }) => {
   return (
     <div className="grid h-fit w-full grid-cols-1 overflow-hidden rounded-xl border-2 border-zinc-900 bg-white md:h-96 md:grid-cols-12">

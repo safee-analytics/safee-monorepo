@@ -2,45 +2,149 @@ import type { OrganizationOptions } from "better-auth/plugins/organization";
 import { logger } from "../server/utils/logger.js";
 import { odooDatabaseService } from "../server/services/odoo/database.service.js";
 import { odooUserProvisioningService } from "../server/services/odoo/user-provisioning.service.js";
-import { connect, schema } from "@safee/database";
-import { eq } from "drizzle-orm";
+import { canManageRole } from "./accessControl.js";
+import { connect } from "@safee/database";
 
-const { drizzle } = connect("organization-hooks");
+const { drizzle } = connect("better-auth");
 
-/**
- * Organization lifecycle hooks for Better Auth
- * Handles Odoo provisioning and cleanup
- */
 export const organizationHooks: OrganizationOptions["organizationHooks"] = {
-  // Provision Odoo database and admin user when organization is created
+  beforeUpdateMemberRole: async ({ member: targetMember, newRole, user, organization }) => {
+    logger.info(
+      {
+        currentUserId: user.id,
+        targetUserId: targetMember.userId,
+        targetCurrentRole: targetMember.role,
+        newRole,
+        organizationId: organization.id,
+      },
+      "Validating role update",
+    );
+
+    const currentMember = await drizzle.query.members.findFirst({
+      where: (members, { and, eq }) =>
+        and(eq(members.organizationId, organization.id), eq(members.userId, user.id)),
+    });
+
+    if (!currentMember) {
+      logger.warn({ currentUserId: user.id }, "User attempting role update is not a member");
+      throw new Error("You are not a member of this organization");
+    }
+
+    if (user.id === targetMember.userId) {
+      logger.warn({ userId: user.id }, "User attempting to change own role");
+      throw new Error("Cannot change your own role");
+    }
+
+    if (!canManageRole(currentMember.role, targetMember.role)) {
+      logger.warn(
+        {
+          currentUserRole: currentMember.role,
+          targetUserRole: targetMember.role,
+        },
+        "Insufficient permissions to manage target user",
+      );
+      throw new Error("You do not have permission to manage this user");
+    }
+
+    if (!canManageRole(currentMember.role, newRole)) {
+      logger.warn(
+        {
+          currentUserRole: currentMember.role,
+          attemptedNewRole: newRole,
+        },
+        "Insufficient permissions to assign this role",
+      );
+      throw new Error("You do not have permission to assign this role");
+    }
+
+    logger.info({ targetUserId: targetMember.userId, newRole }, "Role update validation passed");
+  },
+
+  beforeRemoveMember: async ({ member: targetMember, user, organization }) => {
+    logger.info(
+      {
+        currentUserId: user.id,
+        targetUserId: targetMember.userId,
+        targetUserRole: targetMember.role,
+        organizationId: organization.id,
+      },
+      "Validating member removal",
+    );
+
+    const currentMember = await drizzle.query.members.findFirst({
+      where: (members, { and, eq }) =>
+        and(eq(members.organizationId, organization.id), eq(members.userId, user.id)),
+    });
+
+    if (!currentMember) {
+      logger.warn({ currentUserId: user.id }, "User attempting removal is not a member");
+      throw new Error("You are not a member of this organization");
+    }
+
+    if (user.id === targetMember.userId) {
+      logger.warn({ userId: user.id }, "User attempting to remove themselves");
+      throw new Error("Cannot remove yourself. Use leave organization instead");
+    }
+
+    if (!canManageRole(currentMember.role, targetMember.role)) {
+      logger.warn(
+        {
+          currentUserRole: currentMember.role,
+          targetUserRole: targetMember.role,
+        },
+        "Insufficient permissions to remove target user",
+      );
+      throw new Error("You do not have permission to remove this user");
+    }
+
+    logger.info({ targetUserId: targetMember.userId }, "Member removal validation passed");
+  },
+
+  beforeCreateInvitation: async ({ invitation, inviter, organization }) => {
+    const invitedRole = invitation.role;
+
+    logger.info(
+      {
+        inviterId: inviter.id,
+        invitedRole,
+        organizationId: organization.id,
+      },
+      "Validating invitation creation",
+    );
+
+    const inviterMember = await drizzle.query.members.findFirst({
+      where: (members, { and, eq }) =>
+        and(eq(members.organizationId, organization.id), eq(members.userId, inviter.id)),
+    });
+
+    if (!inviterMember) {
+      logger.warn({ inviterId: inviter.id }, "Inviter is not a member of organization");
+      throw new Error("You are not a member of this organization");
+    }
+
+    if (!canManageRole(inviterMember.role, invitedRole)) {
+      logger.warn(
+        {
+          inviterRole: inviterMember.role,
+          attemptedInviteRole: invitedRole,
+        },
+        "Insufficient permissions to invite with this role",
+      );
+      throw new Error("You do not have permission to invite members with this role");
+    }
+
+    logger.info({ invitedRole }, "Invitation validation passed");
+
+    return { data: invitation };
+  },
   afterCreateOrganization: async ({ organization, member, user }) => {
     logger.info(
       { organizationId: organization.id, userId: user.id },
       "Organization created, provisioning Odoo",
     );
 
-    // Update user's organization_id to the newly created organization
-    // This sets the default organization for the user who created it
-    try {
-      await drizzle
-        .update(schema.users)
-        .set({ organizationId: organization.id })
-        .where(eq(schema.users.id, user.id));
-
-      logger.info(
-        { userId: user.id, organizationId: organization.id },
-        "User's default organization set to newly created organization",
-      );
-    } catch (error) {
-      logger.error(
-        { error, userId: user.id, organizationId: organization.id },
-        "Failed to update user's default organization",
-      );
-    }
-
     setImmediate(async () => {
       try {
-        // Check if Odoo database already exists (idempotent provisioning)
         const existingCreds = await odooDatabaseService.getCredentials(organization.id);
 
         if (existingCreds) {
@@ -54,7 +158,6 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
           logger.info({ organizationId: organization.id }, "Odoo database provisioned");
         }
 
-        // Provision Odoo user for organization creator
         const userExists = await odooUserProvisioningService.userExists(user.id, organization.id);
 
         if (userExists) {
@@ -76,7 +179,6 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
     });
   },
 
-  // Provision Odoo user when member is added (via invitation)
   afterAddMember: async ({ member, user, organization }) => {
     logger.info(
       { userId: user.id, organizationId: organization.id, role: member.role },
@@ -99,7 +201,6 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
     });
   },
 
-  // Deactivate Odoo user when member is removed from organization
   afterRemoveMember: async ({ member: _member, user, organization }) => {
     logger.info(
       { userId: user.id, organizationId: organization.id },
@@ -116,7 +217,6 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
     });
   },
 
-  // Delete Odoo database when organization is deleted
   afterDeleteOrganization: async ({ organization }) => {
     logger.info({ organizationId: organization.id }, "Organization deleted, cleaning up Odoo database");
 

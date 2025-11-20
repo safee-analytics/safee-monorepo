@@ -6,7 +6,6 @@ import {
   FileCheck,
   Calculator,
   Users,
-  TrendingUp,
   DollarSign,
   ShoppingCart,
   Receipt,
@@ -27,14 +26,13 @@ import { useState } from "react";
 export default function HomePage() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { currentOrg, currentUser } = useOrgStore();
+  const { currentUser } = useOrgStore();
   const { user } = useAuth();
   const [hoveredModule, setHoveredModule] = useState<string | null>(null);
 
   const displayUser = user || currentUser;
   const displayName = displayUser?.name?.split(" ")[0] || "User";
 
-  // Get current time for greeting
   const currentHour = new Date().getHours();
   const getGreeting = () => {
     if (currentHour < 12) {
@@ -46,7 +44,6 @@ export default function HomePage() {
     }
   };
 
-  // Module shortcuts for top bar
   const modules = [
     {
       id: "hisabiq",
@@ -106,7 +103,6 @@ export default function HomePage() {
     },
   ];
 
-  // Quick actions
   const quickActions = [
     {
       id: "payroll",
@@ -143,14 +139,12 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-[1600px] mx-auto p-6">
-        {/* Greeting */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             {getGreeting()} {displayName}!
           </h1>
         </motion.div>
 
-        {/* Module Shortcuts - Scrollable horizontal bar */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -190,7 +184,6 @@ export default function HomePage() {
           </div>
         </motion.div>
 
-        {/* Create actions - Rounded pill buttons */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -211,9 +204,7 @@ export default function HomePage() {
           </div>
         </motion.div>
 
-        {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Profit & Loss Widget */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -256,7 +247,6 @@ export default function HomePage() {
             </button>
           </motion.div>
 
-          {/* Expenses Widget */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -281,7 +271,6 @@ export default function HomePage() {
             </button>
           </motion.div>
 
-          {/* Bank Accounts Widget */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -296,7 +285,6 @@ export default function HomePage() {
             </div>
 
             <div className="space-y-3 mb-6">
-              {/* Sample bank accounts */}
               <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
                 <div className="w-10 h-10 rounded bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center flex-shrink-0">
                   <Building2 className="w-5 h-5 text-white" />
@@ -342,7 +330,6 @@ export default function HomePage() {
           </motion.div>
         </div>
 
-        {/* Add widgets placeholder */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -357,7 +344,6 @@ export default function HomePage() {
           </button>
         </motion.div>
 
-        {/* Smart suggestions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -378,7 +364,6 @@ export default function HomePage() {
           </div>
         </motion.div>
 
-        {/* Why am I seeing these suggestions? */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}

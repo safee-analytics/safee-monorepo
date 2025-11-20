@@ -1,14 +1,10 @@
 import { varchar, timestamp, uuid, integer, boolean } from "drizzle-orm/pg-core";
-import { identitySchema } from "./_common.js";
+import { idpk, odooSchema } from "./_common.js";
 import { users } from "./users.js";
 import { odooDatabases } from "./odooDatabases.js";
 
-/**
- * Maps Safee users to their corresponding Odoo user accounts
- * Each Safee user gets their own Odoo user in their organization's database
- */
-export const odooUsers = identitySchema.table("odoo_users", {
-  id: uuid("id").primaryKey().defaultRandom(),
+export const odooUsers = odooSchema.table("odoo_users", {
+  id: idpk("id"),
 
   // Link to Safee user
   userId: uuid("user_id")
@@ -23,8 +19,8 @@ export const odooUsers = identitySchema.table("odoo_users", {
   // Odoo user details
   odooUid: integer("odoo_uid").notNull(), // Odoo's internal user ID
   odooLogin: varchar("odoo_login", { length: 255 }).notNull(), // Usually email
-  odooPassword: varchar("odoo_password", { length: 512 }).notNull(), // Encrypted API key for RPC operations
-  odooWebPassword: varchar("odoo_web_password", { length: 512 }), // Encrypted password for web UI login
+  apiKey: varchar("api_key", { length: 512 }), // Encrypted API key for RPC operations (preferred, try first)
+  password: varchar("password", { length: 512 }).notNull(), // Encrypted password (fallback if API key unavailable)
 
   // Status
   isActive: boolean("is_active").default(true).notNull(),
@@ -33,18 +29,3 @@ export const odooUsers = identitySchema.table("odoo_users", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
 });
-
-/**
- * Usage Example:
- *
- * When user john@acme.com is added to organization "acme-corp":
- * 1. Create Odoo user in database "odoo_acme_corp"
- * 2. Store mapping in odoo_users table
- * 3. Use john's specific Odoo UID for all API calls
- *
- * Benefits:
- * - Odoo audit logs show real user (john@acme.com, not admin)
- * - Can use Odoo permissions (john sees only his CRM opportunities)
- * - Sales attribution works (john's invoices tracked separately)
- * - Compliance requirements met (user-level audit trail)
- */

@@ -274,13 +274,21 @@ export class OdooAccountingService {
    * Create a new invoice (sales or purchase)
    */
   async createInvoice(dto: CreateInvoiceDTO): Promise<number> {
+    const moveType = dto.moveType || "out_invoice";
+    const partnerId = dto.customerId || dto.supplierId;
+
+    if (!partnerId) {
+      throw new Error("Either customerId or supplierId is required");
+    }
+
     const invoiceData: Partial<OdooInvoice> = {
-      move_type: "out_invoice", // Default to sales invoice
-      partner_id: dto.customerId,
+      move_type: moveType,
+      partner_id: partnerId,
       invoice_date: dto.invoiceDate,
       invoice_date_due: dto.dueDate,
       payment_reference: dto.reference,
       narration: dto.notes,
+      invoice_payment_term_id: dto.paymentTermId,
       invoice_line_ids: dto.lines.map((line) => [
         0,
         0,
@@ -297,6 +305,44 @@ export class OdooAccountingService {
     };
 
     return this.client.create("account.move", invoiceData);
+  }
+
+  /**
+   * Create a credit note (refund) for an invoice
+   */
+  async createRefund(
+    invoiceId: number,
+    dto: { reason?: string; date?: string; journalId?: number },
+  ): Promise<number> {
+    const result = await this.client.executeKw<{ res_id: number }>(
+      "account.move",
+      "action_reverse",
+      [[invoiceId]],
+      {
+        date: dto.date,
+        reason: dto.reason,
+        journal_id: dto.journalId,
+      },
+    );
+    return result.res_id;
+  }
+
+  /**
+   * Get invoice/bill as PDF
+   */
+  async getInvoicePDF(invoiceId: number): Promise<Buffer> {
+    const _result = await this.client.executeKw<string>("account.move", "action_invoice_print", [
+      [invoiceId],
+    ]);
+
+    // The result is typically a report action, we need to get the PDF content
+    // This uses Odoo's report system
+    const pdfBase64 = await this.client.executeKw<string>("ir.actions.report", "_render_qweb_pdf", [
+      "account.report_invoice",
+      [invoiceId],
+    ]);
+
+    return Buffer.from(pdfBase64, "base64");
   }
 
   /**
@@ -762,5 +808,595 @@ export class OdooAccountingService {
       expenses: totalExpenses,
       netProfit: totalIncome - totalExpenses,
     };
+  }
+
+  // ==================== Payment Terms ====================
+
+  /**
+   * Get payment terms
+   */
+  async getPaymentTerms(): Promise<
+    Array<{
+      id: number;
+      name: string;
+      note?: string;
+    }>
+  > {
+    const results = await this.client.searchRead<{ id: number; name: string; note?: string }>(
+      "account.payment.term",
+      [["active", "=", true]],
+      ["name", "note"],
+      { order: "name" },
+    );
+    return results;
+  }
+
+  /**
+   * Get a single payment term by ID
+   */
+  async getPaymentTerm(paymentTermId: number): Promise<{
+    id: number;
+    name: string;
+    note?: string;
+  } | null> {
+    const results = await this.client.read<{ id: number; name: string; note?: string }>(
+      "account.payment.term",
+      [paymentTermId],
+      ["name", "note"],
+    );
+    return results[0] || null;
+  }
+
+  // ==================== Aged Reports ====================
+
+  /**
+   * Get aged receivables report (customer invoices aging)
+   */
+  async getAgedReceivables(asOfDate?: string): Promise<
+    Array<{
+      partnerId: number;
+      partnerName: string;
+      current: number; // Not yet due
+      days_1_30: number;
+      days_31_60: number;
+      days_61_90: number;
+      days_over_90: number;
+      total: number;
+    }>
+  > {
+    const today = asOfDate || new Date().toISOString().split("T")[0];
+
+    // Get all unpaid customer invoices
+    const invoices = await this.getInvoices({
+      moveType: "out_invoice",
+      state: "posted",
+      paymentState: "not_paid",
+    });
+
+    // Group by partner and calculate aging
+    const partnerMap = new Map<
+      number,
+      {
+        partnerId: number;
+        partnerName: string;
+        current: number;
+        days_1_30: number;
+        days_31_60: number;
+        days_61_90: number;
+        days_over_90: number;
+        total: number;
+      }
+    >();
+
+    for (const invoice of invoices) {
+      const partnerId = Array.isArray(invoice.partner_id) ? invoice.partner_id[0] : invoice.partner_id;
+      const partnerName = Array.isArray(invoice.partner_id) ? invoice.partner_id[1] : "";
+      const dueDate = invoice.invoice_date_due || invoice.invoice_date || today;
+      const amount = invoice.amount_residual || 0;
+
+      if (!partnerMap.has(partnerId)) {
+        partnerMap.set(partnerId, {
+          partnerId,
+          partnerName,
+          current: 0,
+          days_1_30: 0,
+          days_31_60: 0,
+          days_61_90: 0,
+          days_over_90: 0,
+          total: 0,
+        });
+      }
+
+      const partner = partnerMap.get(partnerId)!;
+      const daysPastDue = Math.floor(
+        (new Date(today).getTime() - new Date(dueDate).getTime()) / (1000 * 60 * 60 * 24),
+      );
+
+      if (daysPastDue <= 0) {
+        partner.current += amount;
+      } else if (daysPastDue <= 30) {
+        partner.days_1_30 += amount;
+      } else if (daysPastDue <= 60) {
+        partner.days_31_60 += amount;
+      } else if (daysPastDue <= 90) {
+        partner.days_61_90 += amount;
+      } else {
+        partner.days_over_90 += amount;
+      }
+
+      partner.total += amount;
+    }
+
+    return Array.from(partnerMap.values()).sort((a, b) => b.total - a.total);
+  }
+
+  /**
+   * Get aged payables report (vendor bills aging)
+   */
+  async getAgedPayables(asOfDate?: string): Promise<
+    Array<{
+      partnerId: number;
+      partnerName: string;
+      current: number; // Not yet due
+      days_1_30: number;
+      days_31_60: number;
+      days_61_90: number;
+      days_over_90: number;
+      total: number;
+    }>
+  > {
+    const today = asOfDate || new Date().toISOString().split("T")[0];
+
+    // Get all unpaid vendor bills
+    const bills = await this.getInvoices({
+      moveType: "in_invoice",
+      state: "posted",
+      paymentState: "not_paid",
+    });
+
+    // Group by partner and calculate aging
+    const partnerMap = new Map<
+      number,
+      {
+        partnerId: number;
+        partnerName: string;
+        current: number;
+        days_1_30: number;
+        days_31_60: number;
+        days_61_90: number;
+        days_over_90: number;
+        total: number;
+      }
+    >();
+
+    for (const bill of bills) {
+      const partnerId = Array.isArray(bill.partner_id) ? bill.partner_id[0] : bill.partner_id;
+      const partnerName = Array.isArray(bill.partner_id) ? bill.partner_id[1] : "";
+      const dueDate = bill.invoice_date_due || bill.invoice_date || today;
+      const amount = bill.amount_residual || 0;
+
+      if (!partnerMap.has(partnerId)) {
+        partnerMap.set(partnerId, {
+          partnerId,
+          partnerName,
+          current: 0,
+          days_1_30: 0,
+          days_31_60: 0,
+          days_61_90: 0,
+          days_over_90: 0,
+          total: 0,
+        });
+      }
+
+      const partner = partnerMap.get(partnerId)!;
+      const daysPastDue = Math.floor(
+        (new Date(today).getTime() - new Date(dueDate).getTime()) / (1000 * 60 * 60 * 24),
+      );
+
+      if (daysPastDue <= 0) {
+        partner.current += amount;
+      } else if (daysPastDue <= 30) {
+        partner.days_1_30 += amount;
+      } else if (daysPastDue <= 60) {
+        partner.days_31_60 += amount;
+      } else if (daysPastDue <= 90) {
+        partner.days_61_90 += amount;
+      } else {
+        partner.days_over_90 += amount;
+      }
+
+      partner.total += amount;
+    }
+
+    return Array.from(partnerMap.values()).sort((a, b) => b.total - a.total);
+  }
+
+  // ==================== Bank Reconciliation ====================
+
+  /**
+   * Get bank statements
+   */
+  async getBankStatements(filters?: {
+    journalId?: number;
+    dateFrom?: string;
+    dateTo?: string;
+    state?: "open" | "confirm";
+  }): Promise<
+    Array<{
+      id: number;
+      name: string;
+      journalId: number;
+      journalName: string;
+      date: string;
+      balanceStart: number;
+      balanceEndReal: number;
+      balanceEnd: number;
+      state: string;
+    }>
+  > {
+    const domain: Array<[string, string, unknown]> = [];
+
+    if (filters?.journalId) {
+      domain.push(["journal_id", "=", filters.journalId]);
+    }
+    if (filters?.dateFrom) {
+      domain.push(["date", ">=", filters.dateFrom]);
+    }
+    if (filters?.dateTo) {
+      domain.push(["date", "<=", filters.dateTo]);
+    }
+    if (filters?.state) {
+      domain.push(["state", "=", filters.state]);
+    }
+
+    const results = await this.client.searchRead<{
+      id: number;
+      name: string;
+      journal_id: [number, string];
+      date: string;
+      balance_start: number;
+      balance_end_real: number;
+      balance_end: number;
+      state: string;
+    }>("account.bank.statement", domain, [
+      "name",
+      "journal_id",
+      "date",
+      "balance_start",
+      "balance_end_real",
+      "balance_end",
+      "state",
+    ]);
+
+    return results.map((stmt) => ({
+      id: stmt.id,
+      name: stmt.name,
+      journalId: stmt.journal_id[0],
+      journalName: stmt.journal_id[1],
+      date: stmt.date,
+      balanceStart: stmt.balance_start,
+      balanceEndReal: stmt.balance_end_real,
+      balanceEnd: stmt.balance_end,
+      state: stmt.state,
+    }));
+  }
+
+  /**
+   * Get bank statement lines (transactions)
+   */
+  async getBankStatementLines(statementId: number): Promise<
+    Array<{
+      id: number;
+      date: string;
+      paymentRef: string;
+      partnerName?: string;
+      amount: number;
+      isReconciled: boolean;
+    }>
+  > {
+    const results = await this.client.searchRead<{
+      id: number;
+      date: string;
+      payment_ref: string;
+      partner_name?: string;
+      amount: number;
+      is_reconciled: boolean;
+    }>(
+      "account.bank.statement.line",
+      [["statement_id", "=", statementId]],
+      ["date", "payment_ref", "partner_name", "amount", "is_reconciled"],
+    );
+
+    return results.map((line) => ({
+      id: line.id,
+      date: line.date,
+      paymentRef: line.payment_ref,
+      partnerName: line.partner_name,
+      amount: line.amount,
+      isReconciled: line.is_reconciled,
+    }));
+  }
+
+  /**
+   * Get reconciliation suggestions for a bank statement line
+   */
+  async getReconciliationSuggestions(lineId: number): Promise<
+    Array<{
+      moveId: number;
+      moveName: string;
+      partnerName: string;
+      date: string;
+      amount: number;
+    }>
+  > {
+    // Call Odoo's reconciliation widget data method
+    const suggestions = await this.client.executeKw<
+      Array<{
+        id: number;
+        name: string;
+        partner_name: string;
+        date: string;
+        amount_residual: number;
+      }>
+    >("account.bank.statement.line", "get_reconciliation_proposition", [[lineId]]);
+
+    return suggestions.map((sugg) => ({
+      moveId: sugg.id,
+      moveName: sugg.name,
+      partnerName: sugg.partner_name,
+      date: sugg.date,
+      amount: sugg.amount_residual,
+    }));
+  }
+
+  /**
+   * Reconcile bank statement line with invoices/moves
+   */
+  async reconcileBankStatementLine(
+    lineId: number,
+    moveIds: number[],
+  ): Promise<{ success: boolean; message?: string }> {
+    try {
+      // Odoo's reconciliation process for bank statement lines
+      await this.client.executeKw("account.bank.statement.line", "reconcile", [
+        [lineId],
+        {
+          counterpart_aml_dicts: moveIds.map((moveId) => ({ counterpart_aml_id: moveId })),
+        },
+      ]);
+
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        message: error instanceof Error ? error.message : "Reconciliation failed",
+      };
+    }
+  }
+
+  // ==================== Multi-Currency ====================
+
+  /**
+   * Get currencies
+   */
+  async getCurrencies(onlyActive: boolean = true): Promise<
+    Array<{
+      id: number;
+      name: string;
+      symbol: string;
+      position: "after" | "before";
+      rounding: number;
+      active: boolean;
+    }>
+  > {
+    const domain: Array<[string, string, unknown]> = [];
+    if (onlyActive) {
+      domain.push(["active", "=", true]);
+    }
+
+    return this.client.searchRead<{
+      id: number;
+      name: string;
+      symbol: string;
+      position: "after" | "before";
+      rounding: number;
+      active: boolean;
+    }>("res.currency", domain, ["name", "symbol", "position", "rounding", "active"]);
+  }
+
+  /**
+   * Get currency rates
+   */
+  async getCurrencyRates(
+    currencyId?: number,
+    dateFrom?: string,
+    dateTo?: string,
+  ): Promise<
+    Array<{
+      id: number;
+      currencyId: number;
+      currencyName: string;
+      name: string; // Date
+      rate: number;
+      companyId: number;
+    }>
+  > {
+    const domain: Array<[string, string, unknown]> = [];
+
+    if (currencyId) {
+      domain.push(["currency_id", "=", currencyId]);
+    }
+    if (dateFrom) {
+      domain.push(["name", ">=", dateFrom]);
+    }
+    if (dateTo) {
+      domain.push(["name", "<=", dateTo]);
+    }
+
+    const results = await this.client.searchRead<{
+      id: number;
+      currency_id: [number, string];
+      name: string;
+      rate: number;
+      company_id: [number, string];
+    }>("res.currency.rate", domain, ["currency_id", "name", "rate", "company_id"], { order: "name desc" });
+
+    return results.map((rate) => ({
+      id: rate.id,
+      currencyId: rate.currency_id[0],
+      currencyName: rate.currency_id[1],
+      name: rate.name,
+      rate: rate.rate,
+      companyId: rate.company_id[0],
+    }));
+  }
+
+  /**
+   * Convert amount between currencies
+   */
+  async convertCurrency(
+    amount: number,
+    fromCurrencyId: number,
+    toCurrencyId: number,
+    date?: string,
+  ): Promise<{ convertedAmount: number; rate: number }> {
+    const result = await this.client.executeKw<{ amount: number; rate: number }>("res.currency", "_convert", [
+      amount,
+      fromCurrencyId,
+      toCurrencyId,
+      date || new Date().toISOString().split("T")[0],
+    ]);
+
+    return {
+      convertedAmount: result.amount,
+      rate: result.rate,
+    };
+  }
+
+  // ==================== Batch Operations ====================
+
+  /**
+   * Batch validate invoices
+   */
+  async batchValidateInvoices(invoiceIds: number[]): Promise<{
+    success: number[];
+    failed: Array<{ id: number; error: string }>;
+  }> {
+    const success: number[] = [];
+    const failed: Array<{ id: number; error: string }> = [];
+
+    for (const invoiceId of invoiceIds) {
+      try {
+        await this.postInvoice(invoiceId);
+        success.push(invoiceId);
+      } catch (error) {
+        failed.push({
+          id: invoiceId,
+          error: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+    }
+
+    return { success, failed };
+  }
+
+  /**
+   * Batch cancel invoices
+   */
+  async batchCancelInvoices(invoiceIds: number[]): Promise<{
+    success: number[];
+    failed: Array<{ id: number; error: string }>;
+  }> {
+    const success: number[] = [];
+    const failed: Array<{ id: number; error: string }> = [];
+
+    for (const invoiceId of invoiceIds) {
+      try {
+        await this.cancelInvoice(invoiceId);
+        success.push(invoiceId);
+      } catch (error) {
+        failed.push({
+          id: invoiceId,
+          error: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+    }
+
+    return { success, failed };
+  }
+
+  /**
+   * Batch create invoices
+   */
+  async batchCreateInvoices(invoices: CreateInvoiceDTO[]): Promise<{
+    success: Array<{ index: number; id: number }>;
+    failed: Array<{ index: number; error: string }>;
+  }> {
+    const success: Array<{ index: number; id: number }> = [];
+    const failed: Array<{ index: number; error: string }> = [];
+
+    for (let i = 0; i < invoices.length; i++) {
+      try {
+        const invoiceId = await this.createInvoice(invoices[i]);
+        success.push({ index: i, id: invoiceId });
+      } catch (error) {
+        failed.push({
+          index: i,
+          error: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+    }
+
+    return { success, failed };
+  }
+
+  /**
+   * Batch create payments
+   */
+  async batchCreatePayments(payments: CreatePaymentDTO[]): Promise<{
+    success: Array<{ index: number; id: number }>;
+    failed: Array<{ index: number; error: string }>;
+  }> {
+    const success: Array<{ index: number; id: number }> = [];
+    const failed: Array<{ index: number; error: string }> = [];
+
+    for (let i = 0; i < payments.length; i++) {
+      try {
+        const paymentId = await this.createPayment(payments[i]);
+        success.push({ index: i, id: paymentId });
+      } catch (error) {
+        failed.push({
+          index: i,
+          error: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+    }
+
+    return { success, failed };
+  }
+
+  /**
+   * Batch confirm payments
+   */
+  async batchConfirmPayments(paymentIds: number[]): Promise<{
+    success: number[];
+    failed: Array<{ id: number; error: string }>;
+  }> {
+    const success: number[] = [];
+    const failed: Array<{ id: number; error: string }> = [];
+
+    for (const paymentId of paymentIds) {
+      try {
+        await this.postPayment(paymentId);
+        success.push(paymentId);
+      } catch (error) {
+        failed.push({
+          id: paymentId,
+          error: error instanceof Error ? error.message : "Unknown error",
+        });
+      }
+    }
+
+    return { success, failed };
   }
 }

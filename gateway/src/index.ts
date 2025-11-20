@@ -3,7 +3,6 @@ import { connect, redisConnect, getStorage, getDefaultPubSub, JobScheduler } fro
 import { LOG_LEVEL, ENV } from "./env.js";
 import { startServer } from "./server/index.js";
 
-// Export for testing
 export * from "./server/services/password.js";
 export * from "./server/errors.js";
 export * from "./test-helpers/test-app.js";
@@ -28,40 +27,80 @@ const logger = pino({
 });
 
 async function main() {
-  try {
-    const { drizzle, pool } = connect("gateway");
-    const redis = await redisConnect();
+  const { drizzle, pool } = connect("gateway");
+  const redis = await redisConnect();
 
-    const storage = getStorage("safee-storage");
-    const pubsub = getDefaultPubSub();
+  const storage = getStorage("safee-storage");
+  const pubsub = getDefaultPubSub();
 
-    const scheduler = new JobScheduler({
-      pubsub,
-      topics: {
-        jobQueue: "safee-job-queue",
-        jobEvents: "safee-job-events",
-      },
-    });
+  const scheduler = new JobScheduler({
+    pubsub,
+    topics: {
+      jobQueue: "safee-job-queue",
+      jobEvents: "safee-job-events",
+    },
+  });
 
-    const apps = [];
+  const httpServer = await startServer({ logger, drizzle, redis, pool, storage, pubsub, scheduler });
 
-    apps.push(
-      startServer({ logger, drizzle, redis, pool, storage, pubsub, scheduler }).catch((err: unknown) => {
-        logger.error(err);
-      }),
-    );
+  return async () => {
+    logger.info("Cleaning up resources");
 
-    await Promise.all(apps);
-  } catch (err) {
-    logger.error(err, "Error reached top level");
-  }
+    if (httpServer) {
+      await new Promise<void>((resolve) => {
+        httpServer.close(() => resolve());
+      });
+      logger.info("HTTP server closed");
+    }
+
+    if (scheduler) {
+      await scheduler.stop();
+      logger.info("Job scheduler stopped");
+    }
+
+    if (redis) {
+      await redis.quit();
+      logger.info("Redis connection closed");
+    }
+
+    if (pool) {
+      await pool.end();
+      logger.info("Database pool closed");
+    }
+  };
 }
 
-// Only run main() if this file is being executed directly, not imported
 if (import.meta.url === `file://${process.argv[1]}`) {
-  void main();
+  let cleanup: (() => Promise<void>) | null = null;
+
+  void main()
+    .then((cleanupFn) => {
+      cleanup = cleanupFn;
+    })
+    .catch((err) => {
+      logger.error(err, "Error starting server");
+      process.exit(1);
+    });
 
   process.on("unhandledRejection", (err) => {
     logger.debug(err, "Unhandled promise rejection");
+  });
+
+  process.on("SIGINT", async () => {
+    logger.info("Received SIGINT, shutting down gracefully");
+    if (cleanup) {
+      await cleanup();
+    }
+    logger.info("Exiting");
+    process.exit(0);
+  });
+
+  process.on("SIGTERM", async () => {
+    logger.info("Received SIGTERM, shutting down gracefully");
+    if (cleanup) {
+      await cleanup();
+    }
+    logger.info("Exiting");
+    process.exit(0);
   });
 }

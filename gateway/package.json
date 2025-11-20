@@ -8,6 +8,10 @@
     ".": {
       "import": "./build/src/index.js",
       "types": "./build/src/index.d.ts"
+    },
+    "./auth": {
+      "import": "./build/src/auth/index.js",
+      "types": "./build/src/auth/index.d.ts"
     }
   },
   "scripts": {

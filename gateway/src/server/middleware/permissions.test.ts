@@ -10,8 +10,6 @@ import {
 } from "./permissions.js";
 import type { AuthenticatedRequest } from "./auth.js";
 import { InsufficientPermissions } from "../errors.js";
-
-// Mock serverContext with test database
 import { vi } from "vitest";
 
 let testDrizzle: DrizzleClient;

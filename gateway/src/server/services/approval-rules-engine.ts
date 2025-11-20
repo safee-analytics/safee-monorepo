@@ -1,31 +1,20 @@
 import type { DrizzleClient } from "@safee/database";
-import { schema } from "@safee/database";
+import { schema, ruleSchema, type Rule, type RuleCondition } from "@safee/database";
 import { eq, and, desc } from "drizzle-orm";
 import { logger } from "../utils/logger.js";
 
-/**
- * Rule condition types
- */
-export interface RuleCondition {
-  type: "amount" | "entityType" | "userRole" | "manual" | "field";
-  operator?: "gt" | "gte" | "lt" | "lte" | "eq" | "neq" | "contains";
-  field?: string;
-  value?: unknown;
-}
+// Explicit type for TSOA compatibility
+export type EntityType = "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
 
-/**
- * Rule configuration
- */
-export interface Rule {
-  conditions: RuleCondition[];
-  logic?: "AND" | "OR"; // How to combine conditions
-}
+export type RuleConditionOperator = "gt" | "gte" | "lt" | "lte" | "eq" | "neq" | "contains";
 
-/**
- * Entity data for rule evaluation
- */
+export type RuleConditionType = "amount" | "entityType" | "userRole" | "manual" | "field";
+
+// Re-export from database for convenience
+export type { Rule, RuleCondition };
+
 export interface EntityData {
-  entityType: string;
+  entityType: EntityType;
   entityId: string;
   amount?: number;
   status?: string;
@@ -33,26 +22,18 @@ export interface EntityData {
   [key: string]: unknown;
 }
 
-/**
- * Approval Rules Engine
- * Evaluates rules to determine which workflow applies to an entity
- */
 export class ApprovalRulesEngine {
   constructor(private drizzle: DrizzleClient) {}
 
-  /**
-   * Find matching workflow for an entity
-   */
   async findMatchingWorkflow(
     organizationId: string,
     entityData: EntityData,
   ): Promise<{ workflowId: string; workflow: unknown } | null> {
     try {
-      // Get all active rules for this entity type, ordered by priority (highest first)
       const rules = await this.drizzle.query.approvalRules.findMany({
         where: and(
           eq(schema.approvalRules.organizationId, organizationId),
-          eq(schema.approvalRules.entityType, entityData.entityType as never),
+          eq(schema.approvalRules.entityType, entityData.entityType),
         ),
         orderBy: [desc(schema.approvalRules.priority)],
         with: {
@@ -65,7 +46,6 @@ export class ApprovalRulesEngine {
         return null;
       }
 
-      // Evaluate rules in priority order
       for (const rule of rules) {
         if (!rule.workflow.isActive) {
           continue;
@@ -100,21 +80,16 @@ export class ApprovalRulesEngine {
     }
   }
 
-  /**
-   * Parse rule conditions from JSON string
-   */
-  private parseRuleConditions(conditionsJson: string): Rule {
+  private parseRuleConditions(conditions: unknown): Rule {
     try {
-      return JSON.parse(conditionsJson) as Rule;
+      const parsed = ruleSchema.parse(conditions);
+      return parsed;
     } catch (error) {
-      logger.error({ error, conditionsJson }, "Error parsing rule conditions");
+      logger.error({ error, conditions, conditionsType: typeof conditions }, "Error parsing rule conditions");
       return { conditions: [], logic: "AND" };
     }
   }
 
-  /**
-   * Evaluate a rule against entity data
-   */
   private evaluateRule(rule: Rule, entityData: EntityData): boolean {
     const { conditions, logic = "AND" } = rule;
 
@@ -124,27 +99,20 @@ export class ApprovalRulesEngine {
 
     const results = conditions.map((condition) => this.evaluateCondition(condition, entityData));
 
-    // Apply logic operator
     if (logic === "OR") {
       return results.some((result) => result);
     } else {
-      // AND
       return results.every((result) => result);
     }
   }
 
-  /**
-   * Evaluate a single condition
-   */
   private evaluateCondition(condition: RuleCondition, entityData: EntityData): boolean {
-    const { type, operator = "eq", field, value } = condition;
-
-    switch (type) {
+    switch (condition.type) {
       case "amount":
-        return this.evaluateAmountCondition(entityData.amount, operator, value as number);
+        return this.evaluateAmountCondition(entityData.amount, condition.operator, condition.value);
 
       case "entityType":
-        return entityData.entityType === value;
+        return entityData.entityType === condition.value;
 
       case "userRole":
         // This would need user role from context
@@ -155,17 +123,13 @@ export class ApprovalRulesEngine {
         return true;
 
       case "field":
-        if (!field) return false;
-        return this.evaluateFieldCondition(entityData[field], operator, value);
+        return this.evaluateFieldCondition(entityData[condition.field], condition.operator, condition.value);
 
       default:
         return false;
     }
   }
 
-  /**
-   * Evaluate amount-based conditions
-   */
   private evaluateAmountCondition(amount: number | undefined, operator: string, threshold: number): boolean {
     if (amount === undefined) return false;
 
@@ -187,9 +151,6 @@ export class ApprovalRulesEngine {
     }
   }
 
-  /**
-   * Evaluate field-based conditions
-   */
   private evaluateFieldCondition(fieldValue: unknown, operator: string, expectedValue: unknown): boolean {
     switch (operator) {
       case "eq":
@@ -214,9 +175,6 @@ export class ApprovalRulesEngine {
     }
   }
 
-  /**
-   * Get workflow steps in order
-   */
   async getWorkflowSteps(workflowId: string) {
     return this.drizzle.query.approvalWorkflowSteps.findMany({
       where: eq(schema.approvalWorkflowSteps.workflowId, workflowId),
@@ -224,9 +182,6 @@ export class ApprovalRulesEngine {
     });
   }
 
-  /**
-   * Determine required approvers for a workflow step
-   */
   async getRequiredApprovers(
     workflowStepId: string,
     organizationId: string,

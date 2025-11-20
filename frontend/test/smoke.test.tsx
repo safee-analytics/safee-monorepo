@@ -17,6 +17,7 @@ describe("Test Infrastructure Smoke Test", () => {
   it("should have React Testing Library matchers", () => {
     const div = document.createElement("div");
     div.textContent = "test";
-    expect(div).toBeInTheDocument;
+    document.body.appendChild(div);
+    expect(div).toBeInTheDocument();
   });
 });

@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle2,
   Circle,
-  ChevronDown,
   Plus,
   Trash2,
   Edit2,
@@ -30,6 +29,7 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
   const { t, locale } = useTranslation();
   const [editingProcedure, setEditingProcedure] = useState<string | null>(null);
   const [editText, setEditText] = useState("");
+  const isRTL = locale === "ar";
 
   const toggleSection = (sectionId: string) => {
     onSectionsChange(
@@ -232,21 +232,27 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
                               </span>
                             </td>
                             <td className="px-4 py-3">
-                              <div className="flex items-center justify-center gap-2">
+                              <div
+                                className={`flex items-center justify-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}
+                              >
                                 <button
                                   onClick={() => toggleProcedureComplete(section.id, procedure.id)}
                                   disabled={readOnly}
-                                  className="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors disabled:opacity-50"
+                                  className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors disabled:opacity-50"
                                 >
+                                  <FileText className="w-3 h-3" />
                                   {t.audit.memo}
                                 </button>
-                                <button className="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors">
+                                <button className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors">
+                                  <Paperclip className="w-3 h-3" />
                                   {t.audit.attachments} ({procedure.attachments.length})
                                 </button>
-                                <button className="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors">
+                                <button className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors">
+                                  <MessageSquare className="w-3 h-3" />
                                   {t.audit.observations} ({procedure.observations.length})
                                 </button>
-                                <button className="px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors">
+                                <button className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors">
+                                  <Eye className="w-3 h-3" />
                                   {t.audit.reviewComments} ({procedure.reviewComments.length})
                                 </button>
                                 {!readOnly && (

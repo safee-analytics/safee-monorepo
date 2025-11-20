@@ -49,12 +49,8 @@ const apps = [
   },
 ];
 
-// @ts-expect-error -- types are wrong or something idk
 concurrently(apps, { prefixColors: "auto" });
 
-// Dockerfile is used as the build-ignore file for now because Docker builds should
-// theoretically be already optimized to not rebuild when not necessary.
-// @ts-expect-error -- types are wrong or something idk
 const filter = ignore().add(readFileSync("./.dockerignore", "utf-8"));
 const LIBS = {
   database: "build-database",
@@ -73,8 +69,6 @@ async function rebuild(lib: keyof typeof LIBS) {
   isRebuilding.add(toRebuild);
   rebuildAgain.delete(toRebuild);
   logger.info("Change detected in %s. Running %s.", lib, toRebuild);
-  // NOTE: when any of the libs change, we rebuild `llm` because `llm` depends on all of them,
-  // so this will transitively rebuild all libs.
   const cp = spawn("just", [toRebuild], {
     cwd: process.cwd(),
     env: process.env,

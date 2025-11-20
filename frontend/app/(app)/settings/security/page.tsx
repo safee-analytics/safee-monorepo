@@ -71,13 +71,16 @@ export default function SecuritySettings() {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl">
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">Security Settings</h1>
-            <p className="text-gray-600">Manage your account security and privacy</p>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">{t.settings.security.title}</h1>
+            <p className="text-gray-600">{t.settings.security.subtitle}</p>
           </div>
 
           {/* Change Password */}
           <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Change Password</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Key className="w-5 h-5" />
+              Change Password
+            </h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
@@ -168,8 +171,8 @@ export default function SecuritySettings() {
             {security.twoFactorEnabled && (
               <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
                 <p className="text-sm text-blue-800">
-                  Two-factor authentication is enabled. You'll need to enter a code from your authenticator
-                  app when signing in.
+                  Two-factor authentication is enabled. You&apos;ll need to enter a code from your
+                  authenticator app when signing in.
                 </p>
                 <button className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium">
                   View Recovery Codes
@@ -180,7 +183,10 @@ export default function SecuritySettings() {
 
           {/* Security Preferences */}
           <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Security Preferences</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Lock className="w-5 h-5" />
+              Security Preferences
+            </h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">

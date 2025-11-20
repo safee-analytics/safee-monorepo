@@ -1,5 +1,4 @@
-import { describe, it, before, after, beforeEach } from "node:test";
-import assert from "node:assert";
+import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { pino } from "pino";
 import { testConnect } from "../drizzle/testConnect.js";
 import type { DrizzleClient } from "../drizzle.js";
@@ -19,27 +18,26 @@ import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
 
 async function wipeJobLogsDb(drizzle: DrizzleClient) {
-  // Delete jobs (cascade deletes jobLogs), then jobSchedules
   await drizzle.delete(schema.jobs);
   await drizzle.delete(schema.jobSchedules);
 }
 
-void describe("Job Logs", async () => {
+describe("Job Logs", async () => {
   let drizzle: DrizzleClient;
   let close: () => Promise<void>;
   const logger = pino({ level: "silent" });
   let deps: DbDeps;
 
-  before(async () => {
+  beforeAll(async () => {
     ({ drizzle, close } = testConnect("job-logs-test"));
     deps = { drizzle, logger };
   });
 
-  after(async () => {
+  afterAll(async () => {
     await close();
   });
 
-  void describe("createJobLog", async () => {
+  describe("createJobLog", async () => {
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
@@ -53,42 +51,42 @@ void describe("Job Logs", async () => {
       });
     });
 
-    void it("creates job log successfully", async () => {
+    it("creates job log successfully", async () => {
       const logEntry = await createJobLog(deps, testJob.id, "info", "Job started", {
         step: "initialization",
       });
 
-      assert.ok(logEntry.id);
-      assert.strictEqual(logEntry.jobId, testJob.id);
-      assert.strictEqual(logEntry.level, "info");
-      assert.strictEqual(logEntry.message, "Job started");
-      assert.deepStrictEqual(logEntry.metadata, { step: "initialization" });
-      assert.ok(logEntry.createdAt);
+      expect(logEntry.id).toBeTruthy();
+      expect(logEntry.jobId).toBe(testJob.id);
+      expect(logEntry.level).toBe("info");
+      expect(logEntry.message).toBe("Job started");
+      expect(logEntry.metadata).toEqual({ step: "initialization" });
+      expect(logEntry.createdAt).toBeTruthy();
     });
 
-    void it("creates log with empty metadata when not provided", async () => {
+    it("creates log with empty metadata when not provided", async () => {
       const logEntry = await createJobLog(deps, testJob.id, "error", "Job failed");
 
-      assert.strictEqual(logEntry.jobId, testJob.id);
-      assert.strictEqual(logEntry.level, "error");
-      assert.strictEqual(logEntry.message, "Job failed");
-      assert.deepStrictEqual(logEntry.metadata, {});
+      expect(logEntry.jobId).toBe(testJob.id);
+      expect(logEntry.level).toBe("error");
+      expect(logEntry.message).toBe("Job failed");
+      expect(logEntry.metadata).toEqual({});
     });
 
-    void it("creates logs with different levels", async () => {
+    it("creates logs with different levels", async () => {
       const debugLog = await createJobLog(deps, testJob.id, "debug", "Debug message");
       const infoLog = await createJobLog(deps, testJob.id, "info", "Info message");
       const warnLog = await createJobLog(deps, testJob.id, "warn", "Warning message");
       const errorLog = await createJobLog(deps, testJob.id, "error", "Error message");
 
-      assert.strictEqual(debugLog.level, "debug");
-      assert.strictEqual(infoLog.level, "info");
-      assert.strictEqual(warnLog.level, "warn");
-      assert.strictEqual(errorLog.level, "error");
+      expect(debugLog.level).toBe("debug");
+      expect(infoLog.level).toBe("info");
+      expect(warnLog.level).toBe("warn");
+      expect(errorLog.level).toBe("error");
     });
   });
 
-  void describe("getJobLogs", async () => {
+  describe("getJobLogs", async () => {
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
@@ -108,59 +106,58 @@ void describe("Job Logs", async () => {
       await createJobLog(deps, testJob.id, "error", "Error message");
     });
 
-    void it("returns all logs for job", async () => {
+    it("returns all logs for job", async () => {
       const logs = await getJobLogs(deps, testJob.id);
 
-      assert.strictEqual(logs.length, 5);
-      assert.ok(logs.every((log) => log.jobId === testJob.id));
+      expect(logs.length).toBe(5);
+      expect(logs.every((log) => log.jobId === testJob.id));
     });
 
-    void it("filters logs by level", async () => {
+    it("filters logs by level", async () => {
       const errorLogs = await getJobLogs(deps, testJob.id, { level: "error" });
-      assert.strictEqual(errorLogs.length, 1);
-      assert.strictEqual(errorLogs[0]?.level, "error");
+      expect(errorLogs.length).toBe(1);
+      expect(errorLogs[0]?.level).toBe("error");
 
       const infoLogs = await getJobLogs(deps, testJob.id, { level: "info" });
-      assert.strictEqual(infoLogs.length, 2);
-      assert.ok(infoLogs.every((log) => log.level === "info"));
+      expect(infoLogs.length).toBe(2);
+      expect(infoLogs.every((log) => log.level === "info"));
     });
 
-    void it("filters logs by multiple levels", async () => {
+    it("filters logs by multiple levels", async () => {
       const errorAndWarnLogs = await getJobLogs(deps, testJob.id, { level: ["error", "warn"] });
 
-      assert.strictEqual(errorAndWarnLogs.length, 2);
-      assert.ok(errorAndWarnLogs.every((log) => log.level === "error" || log.level === "warn"));
+      expect(errorAndWarnLogs.length).toBe(2);
+      expect(errorAndWarnLogs.every((log) => log.level === "error" || log.level === "warn"));
     });
 
-    void it("respects limit parameter", async () => {
+    it("respects limit parameter", async () => {
       const limitedLogs = await getJobLogs(deps, testJob.id, { limit: 2 });
 
-      assert.strictEqual(limitedLogs.length, 2);
+      expect(limitedLogs.length).toBe(2);
     });
 
-    void it("respects offset parameter", async () => {
+    it("respects offset parameter", async () => {
       const firstBatch = await getJobLogs(deps, testJob.id, { limit: 2, offset: 0 });
       const secondBatch = await getJobLogs(deps, testJob.id, { limit: 2, offset: 2 });
 
-      assert.strictEqual(firstBatch.length, 2);
-      assert.strictEqual(secondBatch.length, 2);
+      expect(firstBatch.length).toBe(2);
+      expect(secondBatch.length).toBe(2);
 
       const firstIds = firstBatch.map((log) => log.id);
       const secondIds = secondBatch.map((log) => log.id);
-      assert.ok(!firstIds.some((id) => secondIds.includes(id)));
+      expect(!firstIds.some((id) => secondIds.includes(id)));
     });
 
-    void it("returns logs ordered by creation time descending", async () => {
+    it("returns logs ordered by creation time descending", async () => {
       const logs = await getJobLogs(deps, testJob.id);
 
-      // Should be ordered by creation time (newest first)
       for (let i = 1; i < logs.length; i++) {
-        assert.ok(logs[i - 1].createdAt >= logs[i].createdAt);
+        expect(logs[i - 1].createdAt >= logs[i].createdAt).toBeTruthy();
       }
     });
   });
 
-  void describe("getJobErrorLogs", async () => {
+  describe("getJobErrorLogs", async () => {
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
@@ -179,15 +176,15 @@ void describe("Job Logs", async () => {
       await createJobLog(deps, testJob.id, "error", "Error message");
     });
 
-    void it("returns only error and warning logs", async () => {
+    it("returns only error and warning logs", async () => {
       const errorLogs = await getJobErrorLogs(deps, testJob.id);
 
-      assert.strictEqual(errorLogs.length, 2);
-      assert.ok(errorLogs.every((log) => log.level === "error" || log.level === "warn"));
+      expect(errorLogs.length).toBe(2);
+      expect(errorLogs.every((log) => log.level === "error" || log.level === "warn"));
     });
   });
 
-  void describe("convenience logging functions", async () => {
+  describe("convenience logging functions", async () => {
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
@@ -201,37 +198,37 @@ void describe("Job Logs", async () => {
       });
     });
 
-    void it("logJobInfo creates info level log", async () => {
+    it("logJobInfo creates info level log", async () => {
       const logEntry = await logJobInfo(deps, testJob.id, "Info message", { data: "test" });
 
-      assert.strictEqual(logEntry.level, "info");
-      assert.strictEqual(logEntry.message, "Info message");
-      assert.deepStrictEqual(logEntry.metadata, { data: "test" });
+      expect(logEntry.level).toBe("info");
+      expect(logEntry.message).toBe("Info message");
+      expect(logEntry.metadata).toEqual({ data: "test" });
     });
 
-    void it("logJobWarning creates warn level log", async () => {
+    it("logJobWarning creates warn level log", async () => {
       const logEntry = await logJobWarning(deps, testJob.id, "Warning message");
 
-      assert.strictEqual(logEntry.level, "warn");
-      assert.strictEqual(logEntry.message, "Warning message");
+      expect(logEntry.level).toBe("warn");
+      expect(logEntry.message).toBe("Warning message");
     });
 
-    void it("logJobError creates error level log", async () => {
+    it("logJobError creates error level log", async () => {
       const logEntry = await logJobError(deps, testJob.id, "Error message");
 
-      assert.strictEqual(logEntry.level, "error");
-      assert.strictEqual(logEntry.message, "Error message");
+      expect(logEntry.level).toBe("error");
+      expect(logEntry.message).toBe("Error message");
     });
 
-    void it("logJobDebug creates debug level log", async () => {
+    it("logJobDebug creates debug level log", async () => {
       const logEntry = await logJobDebug(deps, testJob.id, "Debug message");
 
-      assert.strictEqual(logEntry.level, "debug");
-      assert.strictEqual(logEntry.message, "Debug message");
+      expect(logEntry.level).toBe("debug");
+      expect(logEntry.message).toBe("Debug message");
     });
   });
 
-  void describe("cleanupOldJobLogs", async () => {
+  describe("cleanupOldJobLogs", async () => {
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
@@ -245,32 +242,35 @@ void describe("Job Logs", async () => {
       });
     });
 
-    void it("deletes old logs based on cutoff date", async () => {
+    it("deletes old logs based on cutoff date", async () => {
       await createJobLog(deps, testJob.id, "info", "Old log 1");
       await createJobLog(deps, testJob.id, "info", "Old log 2");
       await createJobLog(deps, testJob.id, "info", "Recent log");
+
+      // Wait a bit to ensure logs have timestamps before cutoff
+      await new Promise((resolve) => setTimeout(resolve, 10));
 
       // Set cutoff to current time (should delete all existing logs)
       const cutoffDate = new Date();
 
       const deletedCount = await cleanupOldJobLogs(deps, cutoffDate);
 
-      assert.ok(deletedCount >= 3);
+      expect(deletedCount >= 3).toBeTruthy();
 
       const remainingLogs = await getJobLogs(deps, testJob.id);
-      assert.strictEqual(remainingLogs.length, 0);
+      expect(remainingLogs.length).toBe(0);
     });
 
-    void it("returns zero when no logs to delete", async () => {
+    it("returns zero when no logs to delete", async () => {
       const futureDate = new Date(Date.now() + 60000);
 
       const deletedCount = await cleanupOldJobLogs(deps, futureDate);
 
-      assert.strictEqual(deletedCount, 0);
+      expect(deletedCount).toBe(0);
     });
   });
 
-  void describe("getJobLogsSummary", async () => {
+  describe("getJobLogsSummary", async () => {
     let testJob1: typeof schema.jobs.$inferSelect;
     let testJob2: typeof schema.jobs.$inferSelect;
 
@@ -305,31 +305,31 @@ void describe("Job Logs", async () => {
       await createJobLog(deps, testJob2.id, "info", "Latest message");
     });
 
-    void it("returns correct summary statistics", async () => {
+    it("returns correct summary statistics", async () => {
       const summaries = await getJobLogsSummary(deps, [testJob1.id, testJob2.id]);
 
-      assert.strictEqual(summaries.length, 2);
+      expect(summaries.length).toBe(2);
 
       const job1Summary = summaries.find((s) => s.jobId === testJob1.id);
       const job2Summary = summaries.find((s) => s.jobId === testJob2.id);
 
-      assert.ok(job1Summary);
-      assert.strictEqual(job1Summary.totalLogs, 4);
-      assert.strictEqual(job1Summary.errorCount, 1);
-      assert.strictEqual(job1Summary.warningCount, 1);
-      assert.ok(job1Summary.lastLogTime);
+      expect(job1Summary).toBeTruthy();
+      expect(job1Summary!.totalLogs).toBe(4);
+      expect(job1Summary!.errorCount).toBe(1);
+      expect(job1Summary!.warningCount).toBe(1);
+      expect(job1Summary!.lastLogTime).toBeTruthy();
 
-      assert.ok(job2Summary);
-      assert.strictEqual(job2Summary.totalLogs, 4);
-      assert.strictEqual(job2Summary.errorCount, 2);
-      assert.strictEqual(job2Summary.warningCount, 0);
-      assert.ok(job2Summary.lastLogTime);
+      expect(job2Summary).toBeTruthy();
+      expect(job2Summary!.totalLogs).toBe(4);
+      expect(job2Summary!.errorCount).toBe(2);
+      expect(job2Summary!.warningCount).toBe(0);
+      expect(job2Summary!.lastLogTime).toBeTruthy();
 
       // job2 should have later lastLogTime since we created its last log later
-      assert.ok(job2Summary.lastLogTime > job1Summary.lastLogTime);
+      expect(job2Summary!.lastLogTime! > job1Summary!.lastLogTime!).toBeTruthy();
     });
 
-    void it("handles jobs with no logs", async () => {
+    it("handles jobs with no logs", async () => {
       const emptyJob = await createJob(deps, {
         jobName: "send_email" as const,
         maxRetries: 3,
@@ -339,17 +339,17 @@ void describe("Job Logs", async () => {
 
       const summaries = await getJobLogsSummary(deps, [emptyJob.id]);
 
-      assert.strictEqual(summaries.length, 1);
-      assert.strictEqual(summaries[0]?.totalLogs, 0);
-      assert.strictEqual(summaries[0]?.errorCount, 0);
-      assert.strictEqual(summaries[0]?.warningCount, 0);
-      assert.strictEqual(summaries[0]?.lastLogTime, null);
+      expect(summaries.length).toBe(1);
+      expect(summaries[0]?.totalLogs).toBe(0);
+      expect(summaries[0]?.errorCount).toBe(0);
+      expect(summaries[0]?.warningCount).toBe(0);
+      expect(summaries[0]?.lastLogTime).toBe(null);
     });
 
-    void it("returns empty array for empty job list", async () => {
+    it("returns empty array for empty job list", async () => {
       const summaries = await getJobLogsSummary(deps, []);
 
-      assert.strictEqual(summaries.length, 0);
+      expect(summaries.length).toBe(0);
     });
   });
 });

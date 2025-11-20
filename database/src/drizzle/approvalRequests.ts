@@ -1,16 +1,7 @@
 import { uuid, timestamp, index } from "drizzle-orm/pg-core";
-import { systemSchema, idpk, entityTypeEnum } from "./_common.js";
+import { systemSchema, idpk, entityTypeEnum, approvalStatusEnum } from "./_common.js";
 import { approvalWorkflows } from "./approvalWorkflows.js";
 import { users } from "./users.js";
-
-export const approvalStatusEnum = systemSchema.enum("approval_status", [
-  "pending",
-  "approved",
-  "rejected",
-  "cancelled",
-]);
-
-export type ApprovalStatus = (typeof approvalStatusEnum.enumValues)[number];
 
 export const approvalRequests = systemSchema.table(
   "approval_requests",

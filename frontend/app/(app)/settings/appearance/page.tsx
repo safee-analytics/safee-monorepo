@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Palette, Sun, Moon, Monitor, Type, Layout, Eye, Save } from "lucide-react";
+import { Sun, Moon, Monitor, Type, Layout, Eye, Save } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
-import { useProfile } from "@/lib/auth/useProfile";
+import { useUpdateUserLocale } from "@/lib/api/hooks/user";
 
 export default function AppearanceSettings() {
-  const { t, locale } = useTranslation();
-  const { changeLocale } = useProfile();
+  const { t: _t, locale } = useTranslation();
+  const updateLocaleMutation = useUpdateUserLocale();
   const [isSaving, setIsSaving] = useState(false);
   const [appearance, setAppearance] = useState({
     theme: "light",
@@ -126,8 +126,9 @@ export default function AppearanceSettings() {
           <h2 className="text-lg font-semibold text-gray-900 mb-4">Language</h2>
           <div className="grid grid-cols-2 gap-4">
             <button
-              onClick={() => changeLocale("en")}
-              className={`p-4 border-2 rounded-lg transition-all ${
+              onClick={() => updateLocaleMutation.mutate("en")}
+              disabled={updateLocaleMutation.isPending}
+              className={`p-4 border-2 rounded-lg transition-all disabled:opacity-50 ${
                 locale === "en" ? "border-blue-600 bg-blue-50" : "border-gray-200 hover:border-gray-300"
               }`}
             >
@@ -141,8 +142,9 @@ export default function AppearanceSettings() {
             </button>
 
             <button
-              onClick={() => changeLocale("ar")}
-              className={`p-4 border-2 rounded-lg transition-all ${
+              onClick={() => updateLocaleMutation.mutate("ar")}
+              disabled={updateLocaleMutation.isPending}
+              className={`p-4 border-2 rounded-lg transition-all disabled:opacity-50 ${
                 locale === "ar" ? "border-blue-600 bg-blue-50" : "border-gray-200 hover:border-gray-300"
               }`}
             >

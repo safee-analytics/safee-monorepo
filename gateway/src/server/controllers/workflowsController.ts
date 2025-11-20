@@ -15,15 +15,54 @@ import {
 } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext } from "../serverContext.js";
-import { schema } from "@safee/database";
+import { schema, workflowRulesSchema, ruleSchema } from "@safee/database";
 import { eq, and } from "drizzle-orm";
 import { z } from "zod";
 
-// Define types directly for TSOA
 type StepType = "single" | "parallel" | "any";
 type ApproverType = "role" | "team" | "user";
 
-// Zod schemas for validation
+interface WorkflowRules {
+  autoApprove?: boolean;
+  requireComments?: boolean;
+  allowReassignment?: boolean;
+  timeoutHours?: number;
+  escalationUserIds?: string[];
+  notifyOnSubmit?: boolean;
+  notifyOnComplete?: boolean;
+}
+
+type RuleCondition =
+  | {
+      type: "amount";
+      operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq";
+      value: number;
+    }
+  | {
+      type: "entityType";
+      operator?: "eq";
+      value: string;
+    }
+  | {
+      type: "userRole";
+      operator?: "eq";
+      value: string;
+    }
+  | {
+      type: "manual";
+    }
+  | {
+      type: "field";
+      field: string;
+      operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq" | "contains";
+      value: string | number | boolean;
+    };
+
+interface Rule {
+  conditions: RuleCondition[];
+  logic?: "AND" | "OR";
+}
+
 const stepTypeSchema = z.enum(["single", "parallel", "any"]);
 const approverTypeSchema = z.enum(["role", "team", "user"]);
 
@@ -41,14 +80,14 @@ const entityTypeSchema = z.enum(["job", "invoice", "user", "organization", "empl
 const createWorkflowSchema = z.object({
   name: z.string(),
   entityType: entityTypeSchema,
-  rules: z.string().optional(),
+  rules: workflowRulesSchema,
   steps: z.array(workflowStepInputSchema),
 });
 
 interface CreateWorkflowRequest {
   name: string;
   entityType: string;
-  rules?: string; // JSON string
+  rules?: WorkflowRules;
   steps: WorkflowStepInput[];
 }
 
@@ -64,7 +103,7 @@ interface WorkflowStepInput {
 interface UpdateWorkflowRequest {
   name?: string;
   isActive?: boolean;
-  rules?: string;
+  rules?: WorkflowRules;
   steps?: WorkflowStepInput[];
 }
 
@@ -74,7 +113,7 @@ interface WorkflowResponse {
   organizationId: string;
   entityType: string;
   isActive: boolean;
-  rules?: string;
+  rules?: WorkflowRules;
   createdAt: string;
   updatedAt: string;
   steps: WorkflowStepResponse[];
@@ -103,7 +142,7 @@ interface RuleResponse {
   organizationId: string;
   entityType: string;
   ruleName: string;
-  conditions: string;
+  conditions: Rule;
   workflowId: string;
   priority: number;
 }
@@ -439,7 +478,7 @@ export class WorkflowsController extends Controller {
       organizationId: rule.organizationId,
       entityType: rule.entityType,
       ruleName: rule.ruleName,
-      conditions: rule.conditions,
+      conditions: ruleSchema.parse(rule.conditions),
       workflowId: rule.workflowId,
       priority: rule.priority,
     };
@@ -470,7 +509,7 @@ export class WorkflowsController extends Controller {
       organizationId: r.organizationId,
       entityType: r.entityType,
       ruleName: r.ruleName,
-      conditions: r.conditions,
+      conditions: ruleSchema.parse(r.conditions),
       workflowId: r.workflowId,
       priority: r.priority,
     }));

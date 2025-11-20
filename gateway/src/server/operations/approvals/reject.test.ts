@@ -1,0 +1,183 @@
+import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
+import { type DrizzleClient, schema, eq } from "@safee/database";
+import { connectTest } from "@safee/database/test-helpers";
+import {
+  createTestOrganization,
+  createTestUser,
+  createTestApprovalWorkflow,
+  addMemberToOrganization,
+  nukeDatabase,
+  type TestOrganization,
+  type TestUser,
+} from "@safee/database/test-helpers";
+import { submitForApproval } from "./submitForApproval.js";
+import { reject } from "./reject.js";
+import { InvalidInput, NotFound } from "../../errors.js";
+
+void describe("reject operation", async () => {
+  let drizzle: DrizzleClient;
+  let close: () => Promise<void>;
+  let testOrg: TestOrganization;
+  let testUser: TestUser;
+  let approverUser: TestUser;
+
+  beforeAll(async () => {
+    ({ drizzle, close } = await connectTest({ appName: "reject-test" }));
+  });
+
+  beforeEach(async () => {
+    await nukeDatabase(drizzle);
+
+    testOrg = await createTestOrganization(drizzle);
+    testUser = await createTestUser(drizzle, { email: "requester@test.com", name: "Requester" });
+    approverUser = await createTestUser(drizzle, {
+      email: "approver@test.com",
+      name: "Approver",
+    });
+
+    await addMemberToOrganization(drizzle, testUser.id, testOrg.id, "member");
+    await addMemberToOrganization(drizzle, approverUser.id, testOrg.id, "member");
+  });
+
+  afterAll(async () => {
+    await close();
+  });
+
+  void it("should reject a pending approval request successfully", async () => {
+    await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
+    const entityId = crypto.randomUUID();
+
+    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+      entityType: "invoice",
+      entityId: entityId,
+      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+    });
+
+    const result = await reject(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {
+      comments: "Not approved - missing documentation",
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.message).toContain("rejected");
+    expect(result.requestStatus).toBe("rejected");
+
+    const approvalStep = await drizzle.query.approvalSteps.findFirst({
+      where: (steps, { eq, and }) =>
+        and(eq(steps.requestId, submitResult.requestId), eq(steps.approverId, approverUser.id)),
+    });
+
+    expect(approvalStep?.status).toBe("rejected");
+    expect(approvalStep?.comments).toBe("Not approved - missing documentation");
+    expect(approvalStep?.actionAt).toBeDefined();
+
+    const approvalRequest = await drizzle.query.approvalRequests.findFirst({
+      where: (requests, { eq }) => eq(requests.id, submitResult.requestId),
+    });
+
+    expect(approvalRequest?.status).toBe("rejected");
+    expect(approvalRequest?.completedAt).toBeDefined();
+  });
+
+  void it("should throw NotFound when approval request does not exist", async () => {
+    const nonExistentRequestId = crypto.randomUUID();
+
+    await expect(
+      reject(drizzle, testOrg.id, approverUser.id, nonExistentRequestId, {
+        comments: "Test",
+      }),
+    ).rejects.toThrow(NotFound);
+  });
+
+  void it("should throw InvalidInput when trying to reject non-pending request", async () => {
+    await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
+    const entityId = crypto.randomUUID();
+
+    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+      entityType: "invoice",
+      entityId: entityId,
+      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+    });
+
+    await reject(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {
+      comments: "First rejection",
+    });
+
+    await expect(
+      reject(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {
+        comments: "Second rejection",
+      }),
+    ).rejects.toThrow(InvalidInput);
+  });
+
+  void it("should throw NotFound when user has no pending approval step", async () => {
+    await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
+    const entityId = crypto.randomUUID();
+
+    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+      entityType: "invoice",
+      entityId: entityId,
+      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+    });
+
+    const otherUser = await createTestUser(drizzle, { email: "other@test.com", name: "Other" });
+    await addMemberToOrganization(drizzle, otherUser.id, testOrg.id, "member");
+
+    await expect(
+      reject(drizzle, testOrg.id, otherUser.id, submitResult.requestId, {
+        comments: "Trying to reject",
+      }),
+    ).rejects.toThrow(NotFound);
+  });
+
+  void it("should handle rejection with no comments", async () => {
+    await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
+    const entityId = crypto.randomUUID();
+
+    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+      entityType: "invoice",
+      entityId: entityId,
+      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+    });
+
+    const result = await reject(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {});
+
+    expect(result.success).toBe(true);
+    expect(result.requestStatus).toBe("rejected");
+
+    const approvalStep = await drizzle.query.approvalSteps.findFirst({
+      where: (steps, { eq, and }) =>
+        and(eq(steps.requestId, submitResult.requestId), eq(steps.approverId, approverUser.id)),
+    });
+
+    expect(approvalStep?.comments).toBeNull();
+  });
+
+  void it("should allow delegated user to reject", async () => {
+    await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
+    const entityId = crypto.randomUUID();
+
+    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+      entityType: "invoice",
+      entityId: entityId,
+      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+    });
+
+    const delegateUser = await createTestUser(drizzle, {
+      email: "delegate@test.com",
+      name: "Delegate",
+    });
+    await addMemberToOrganization(drizzle, delegateUser.id, testOrg.id, "member");
+
+    await drizzle
+      .update(schema.approvalSteps)
+      .set({ delegatedTo: delegateUser.id })
+      .where(eq(schema.approvalSteps.requestId, submitResult.requestId));
+
+    const result = await reject(drizzle, testOrg.id, delegateUser.id, submitResult.requestId, {
+      comments: "Rejected by delegate",
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.requestStatus).toBe("rejected");
+  });
+});

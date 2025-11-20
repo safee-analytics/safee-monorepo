@@ -1,6 +1,14 @@
 import { cn } from "@/lib/utils";
 
-type StatusType = "completed" | "in-progress" | "pending" | "overdue" | "in-review" | "active" | "away";
+type StatusType =
+  | "completed"
+  | "in-progress"
+  | "pending"
+  | "overdue"
+  | "under-review"
+  | "archived"
+  | "active"
+  | "away";
 
 interface StatusBadgeProps {
   status: StatusType;
@@ -32,11 +40,17 @@ const statusConfig = {
     dot: "bg-red-600",
     label: "Overdue",
   },
-  "in-review": {
+  "under-review": {
     bg: "bg-blue-100",
     text: "text-blue-700",
     dot: "bg-blue-600",
-    label: "In Review",
+    label: "Under Review",
+  },
+  archived: {
+    bg: "bg-gray-100",
+    text: "text-gray-500",
+    dot: "bg-gray-400",
+    label: "Archived",
   },
   active: {
     bg: "bg-green-100",

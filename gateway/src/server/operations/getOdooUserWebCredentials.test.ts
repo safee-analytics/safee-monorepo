@@ -57,8 +57,8 @@ void describe("getOdooUserWebCredentials", async () => {
       odooDatabaseId: odooDb.id,
       odooUid: 123,
       odooLogin: "user@example.com",
-      odooPassword: encryptedPassword,
-      odooWebPassword: encryptedPassword,
+      password: encryptedPassword,
+      apiKey: null, // No API key in this test
     });
 
     const credentials = await getOdooUserWebCredentials(drizzle, user.id, org.id);

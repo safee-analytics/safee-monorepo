@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { type DrizzleClient, schema } from "@safee/database";
-import { connectTest } from "@safee/database/test-helpers";
+import { connectTest, nukeDatabase } from "@safee/database/test-helpers";
 import { eq } from "drizzle-orm";
 import { updateConnector } from "./updateConnector.js";
 import { encryptionService } from "../services/encryption.js";
@@ -14,9 +14,7 @@ void describe("updateConnector", async () => {
   });
 
   beforeEach(async () => {
-    await drizzle.delete(schema.connectors);
-    await drizzle.delete(schema.users);
-    await drizzle.delete(schema.organizations);
+    await nukeDatabase(drizzle);
   });
 
   afterAll(async () => {
@@ -116,7 +114,6 @@ void describe("updateConnector", async () => {
 
     expect(result.success).toBe(true);
 
-    // Config is stored encrypted, so we can't directly compare
     const updated = await drizzle.query.connectors.findFirst({
       where: eq(schema.connectors.id, connector.id),
     });
