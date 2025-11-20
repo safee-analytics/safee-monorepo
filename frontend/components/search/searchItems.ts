@@ -18,14 +18,14 @@ import {
 import type { IconType } from "react-icons";
 import type messagesEn from "@/messages/en";
 
-// Create a more permissive Messages type that allows any string values
-type Messages = {
-  [K in keyof typeof messagesEn]: (typeof messagesEn)[K] extends string
-    ? string
-    : (typeof messagesEn)[K] extends object
-      ? Record<string, string>
-      : (typeof messagesEn)[K];
-};
+// Create a recursive type that preserves nested message structures
+type DeepPartialMessages<T> = T extends string
+  ? string
+  : T extends object
+    ? { [K in keyof T]?: DeepPartialMessages<T[K]> }
+    : T;
+
+type Messages = DeepPartialMessages<typeof messagesEn>;
 
 export interface SearchItem {
   id: string;

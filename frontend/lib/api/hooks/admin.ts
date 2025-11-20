@@ -343,14 +343,29 @@ export function useAdminSetRole() {
 
 /**
  * Check if user has specific permission (admin)
- * Note: better-auth hasPermission may not accept arbitrary strings, using type assertion
  */
 export function useAdminHasPermission() {
   return useMutation({
-    mutationFn: async (data: { userId: string; permission: string }) => {
+    mutationFn: async (data: {
+      userId: string;
+      permission: {
+        user?: Array<
+          | "list"
+          | "update"
+          | "delete"
+          | "create"
+          | "set-role"
+          | "ban"
+          | "impersonate"
+          | "set-password"
+          | "get"
+        >;
+        session?: Array<"list" | "delete" | "revoke">;
+      };
+    }) => {
       const { data: result, error } = await authClient.admin.hasPermission({
         userId: data.userId,
-        permission: data.permission as string & {},
+        permission: data.permission,
       });
       if (error) throw new Error(error.message);
       return result;
