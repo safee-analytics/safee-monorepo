@@ -303,11 +303,11 @@ ui: build-database build-gateway (start-e2e "")
     REDIS_URL=redis://localhost:26379 cd e2e && npm run test:ui
 
 [group('frontend')]
-build-frontend: build-ui
+build-frontend: build-eslint-plugin-safee build-ui
     npm -w frontend run build
 
 [group('frontend')]
-check-frontend:
+check-frontend: build-eslint-plugin-safee
     npx -w frontend tsc --build --emitDeclarationOnly
 
 [group('frontend')]
@@ -333,11 +333,11 @@ dev-frontend:
     npm -w frontend run dev
 
 [group('landing')]
-build-landing:
+build-landing: build-eslint-plugin-safee
     npm -w landing run build
 
 [group('landing')]
-check-landing:
+check-landing: build-eslint-plugin-safee
     npx -w landing tsc --build --emitDeclarationOnly
 
 [group('landing')]
