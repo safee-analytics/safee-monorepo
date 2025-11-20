@@ -64,7 +64,10 @@ export function Table<T>({
             return (
               <RowComponent key={key} {...getRowProps(row, index)} className={rowClasses}>
                 {columns.map((column, colIdx) => (
-                  <td key={`cell-${key}-${String(column.key)}-${colIdx}`} className={`p-4 ${column.className || ""}`}>
+                  <td
+                    key={`cell-${key}-${String(column.key)}-${colIdx}`}
+                    className={`p-4 ${column.className || ""}`}
+                  >
                     {column.render ? column.render(row, index) : (row[column.key] as ReactNode)}
                   </td>
                 ))}

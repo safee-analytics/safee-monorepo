@@ -13,7 +13,6 @@ export { schema };
 export const DatabaseError = pg.DatabaseError;
 
 export function connect(appName: string, database_url?: string) {
-  // eslint-disable-next-line import-x/no-named-as-default-member -- it's wrong!
   const pool = new pg.Pool({
     connectionString: database_url ?? DATABASE_URL,
     max: DATABASE_CONNECTION_LIMIT ?? undefined,

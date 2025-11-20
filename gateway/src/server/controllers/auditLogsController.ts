@@ -62,6 +62,7 @@ export class OrganizationAuditLogsController extends Controller {
    * Get audit logs for an organization with optional filtering
    */
   @Get()
+  @Security("jwt")
   public async getOrganizationAuditLogs(
     @Path() orgId: string,
     @Query() entityType?: EntityType,
@@ -92,6 +93,7 @@ export class OrganizationAuditLogsController extends Controller {
    * Export audit logs to CSV or JSON
    */
   @Post("export")
+  @Security("jwt")
   public async exportAuditLogs(
     @Path() orgId: string,
     @Body() body: ExportAuditLogsRequest,
@@ -126,6 +128,7 @@ export class UserActivityLogsController extends Controller {
    * Get activity logs for a specific user
    */
   @Get()
+  @Security("jwt")
   public async getUserActivityLogs(
     @Path() userId: string,
     @Query() entityType?: EntityType,

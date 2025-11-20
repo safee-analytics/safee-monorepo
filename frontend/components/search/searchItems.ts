@@ -23,7 +23,7 @@ type Messages = {
   [K in keyof typeof messagesEn]: (typeof messagesEn)[K] extends string
     ? string
     : (typeof messagesEn)[K] extends object
-      ? any
+      ? Record<string, string>
       : (typeof messagesEn)[K];
 };
 

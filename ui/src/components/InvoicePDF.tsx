@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
 export interface InvoiceItem {
   description: string;
@@ -191,13 +185,9 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
         <View style={styles.header}>
           <View>
             <Text style={styles.title}>INVOICE</Text>
-            <Text style={{ fontSize: 12, marginTop: 5 }}>
-              {invoice.companyName}
-            </Text>
+            <Text style={{ fontSize: 12, marginTop: 5 }}>{invoice.companyName}</Text>
             {invoice.companyAddress && (
-              <Text style={{ fontSize: 9, color: "#666", marginTop: 3 }}>
-                {invoice.companyAddress}
-              </Text>
+              <Text style={{ fontSize: 9, color: "#666", marginTop: 3 }}>{invoice.companyAddress}</Text>
             )}
           </View>
           <View style={styles.invoiceInfo}>

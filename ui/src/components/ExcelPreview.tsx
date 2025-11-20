@@ -44,15 +44,9 @@ export const ExcelPreview: React.FC<ExcelPreviewProps> = ({
           </thead>
           <tbody>
             {displayData.map((row, rowIdx) => (
-              <tr
-                key={rowIdx}
-                className={rowIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-              >
+              <tr key={rowIdx} className={rowIdx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                 {columns.map((column, colIdx) => (
-                  <td
-                    key={colIdx}
-                    className="px-4 py-2 border-r border-gray-200 last:border-r-0"
-                  >
+                  <td key={colIdx} className="px-4 py-2 border-r border-gray-200 last:border-r-0">
                     {formatCellValue(row[column.key])}
                   </td>
                 ))}

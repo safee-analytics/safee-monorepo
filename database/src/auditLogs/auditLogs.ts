@@ -90,7 +90,7 @@ export async function getOrganizationAuditLogs(
 
   return {
     logs: logs as AuditLogWithUser[],
-    total: Number(total),
+    total,
   };
 }
 
@@ -145,7 +145,7 @@ export async function getUserActivityLogs(
 
   return {
     logs: logs as AuditLogWithUser[],
-    total: Number(total),
+    total,
   };
 }
 
@@ -205,7 +205,7 @@ export function exportAuditLogsToCSV(logs: AuditLogWithUser[]): string {
 
   const csvContent = [
     headers.join(","),
-    ...rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(",")),
+    ...rows.map((row) => row.map((cell) => `"${cell.replace(/"/g, '""')}"`).join(",")),
   ].join("\n");
 
   return csvContent;

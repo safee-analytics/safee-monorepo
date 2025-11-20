@@ -1,11 +1,5 @@
 import React from "react";
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
 export interface TableColumn {
   header: string;
@@ -121,18 +115,12 @@ export const TablePDF: React.FC<TablePDFProps> = ({ data }) => {
 
   return (
     <Document>
-      <Page
-        size="A4"
-        orientation={data.orientation || "portrait"}
-        style={styles.page}
-      >
+      <Page size="A4" orientation={data.orientation || "portrait"} style={styles.page}>
         {/* Header */}
         {(data.title || data.subtitle) && (
           <View style={styles.header}>
             {data.title && <Text style={styles.title}>{data.title}</Text>}
-            {data.subtitle && (
-              <Text style={styles.subtitle}>{data.subtitle}</Text>
-            )}
+            {data.subtitle && <Text style={styles.subtitle}>{data.subtitle}</Text>}
           </View>
         )}
 
@@ -149,10 +137,7 @@ export const TablePDF: React.FC<TablePDFProps> = ({ data }) => {
 
           {/* Table Rows */}
           {data.data.map((row, rowIndex) => (
-            <View
-              key={rowIndex}
-              style={rowIndex % 2 === 0 ? styles.tableRow : styles.tableRowAlt}
-            >
+            <View key={rowIndex} style={rowIndex % 2 === 0 ? styles.tableRow : styles.tableRowAlt}>
               {data.columns.map((column, colIndex) => (
                 <Text key={colIndex} style={getColumnStyle(column)}>
                   {formatValue(row[column.key], column)}
@@ -172,9 +157,7 @@ export const TablePDF: React.FC<TablePDFProps> = ({ data }) => {
         {/* Page Number */}
         <Text
           style={styles.pageNumber}
-          render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages}`
-          }
+          render={({ pageNumber, totalPages }) => `Page ${pageNumber} of ${totalPages}`}
           fixed
         />
       </Page>

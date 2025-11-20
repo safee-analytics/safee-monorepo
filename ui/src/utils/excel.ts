@@ -81,10 +81,7 @@ export async function exportToExcel(options: ExcelExportOptions): Promise<void> 
  * @param data - Array of objects to export
  * @param filename - Name of the file (without extension)
  */
-export async function simpleExportToExcel(
-  data: Record<string, any>[],
-  filename: string
-): Promise<void> {
+export async function simpleExportToExcel(data: Record<string, any>[], filename: string): Promise<void> {
   if (!data || data.length === 0) {
     throw new Error("No data to export");
   }
@@ -113,7 +110,7 @@ export async function exportWithConditionalFormatting(
       condition: (value: any) => boolean;
       style: Partial<ExcelJS.Style>;
     }>;
-  }
+  },
 ): Promise<void> {
   const { conditionalRules, ...exportOptions } = options;
 
@@ -143,9 +140,7 @@ export async function exportWithConditionalFormatting(
 
     // Apply conditional rules
     conditionalRules?.forEach((rule) => {
-      const columnIndex = exportOptions.columns.findIndex(
-        (col) => col.key === rule.column
-      );
+      const columnIndex = exportOptions.columns.findIndex((col) => col.key === rule.column);
       if (columnIndex !== -1 && rule.condition(item[rule.column])) {
         const cell = row.getCell(columnIndex + 1);
         if (rule.style.fill) cell.fill = rule.style.fill as ExcelJS.Fill;
@@ -165,9 +160,7 @@ export async function exportWithConditionalFormatting(
  * @param file - File object from input element
  * @returns Parsed data as array of objects
  */
-export async function importFromExcel(
-  file: File
-): Promise<Record<string, any>[]> {
+export async function importFromExcel(file: File): Promise<Record<string, any>[]> {
   const buffer = await file.arrayBuffer();
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(buffer);

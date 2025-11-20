@@ -103,20 +103,12 @@ export interface HoverCardGridProps {
   className?: string;
 }
 
-export function HoverCardGrid({
-  children,
-  columns = 4,
-  className = "",
-}: HoverCardGridProps) {
+export function HoverCardGrid({ children, columns = 4, className = "" }: HoverCardGridProps) {
   const columnClasses = {
     2: "grid-cols-1 md:grid-cols-2",
     3: "grid-cols-1 md:grid-cols-2 lg:grid-cols-3",
     4: "grid-cols-1 md:grid-cols-2 lg:grid-cols-4",
   };
 
-  return (
-    <div className={`grid gap-4 ${columnClasses[columns]} ${className}`}>
-      {children}
-    </div>
-  );
+  return <div className={`grid gap-4 ${columnClasses[columns]} ${className}`}>{children}</div>;
 }

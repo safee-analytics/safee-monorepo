@@ -59,11 +59,7 @@ export function SkeletonText({ lines = 3, lastLineWidth = "70%", className = "" 
   return (
     <div className={`space-y-3 ${className}`}>
       {Array.from({ length: lines }).map((_, i) => (
-        <Skeleton
-          key={i}
-          height="16px"
-          width={i === lines - 1 ? lastLineWidth : "100%"}
-        />
+        <Skeleton key={i} height="16px" width={i === lines - 1 ? lastLineWidth : "100%"} />
       ))}
     </div>
   );
@@ -125,11 +121,7 @@ export function SkeletonTable({ rows = 5, columns = 4, className = "" }: Skeleto
       {Array.from({ length: rows }).map((_, rowIndex) => (
         <div key={`row-${rowIndex}`} className="flex items-center gap-4 p-4 border-b border-gray-100">
           {Array.from({ length: columns }).map((_, colIndex) => (
-            <Skeleton
-              key={`cell-${rowIndex}-${colIndex}`}
-              height="16px"
-              width={`${100 / columns}%`}
-            />
+            <Skeleton key={`cell-${rowIndex}-${colIndex}`} height="16px" width={`${100 / columns}%`} />
           ))}
         </div>
       ))}

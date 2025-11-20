@@ -6,12 +6,7 @@ import { odooClient } from "./client.js";
 import { type OdooConnectionConfig } from "./client.service.js";
 import { encryptionService } from "../encryption.js";
 import { env } from "../../../env.js";
-import {
-  OrganizationNotFound,
-  OdooDatabaseAlreadyExists,
-  OdooDatabaseNotFound,
-  OperationFailed,
-} from "../../errors.js";
+import { OrganizationNotFound, OdooDatabaseAlreadyExists, OdooDatabaseNotFound } from "../../errors.js";
 import { Logger } from "pino";
 import { getServerContext } from "../../serverContext.js";
 import { odooModuleService } from "./module.service.js";

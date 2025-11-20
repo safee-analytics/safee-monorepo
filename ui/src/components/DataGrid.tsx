@@ -8,7 +8,8 @@ import type { ColDef } from "ag-grid-community";
 // Register AG Grid modules
 ModuleRegistry.registerModules([AllCommunityModule]);
 
-export interface DataGridProps<TData = Record<string, unknown>> extends Omit<AgGridReactProps<TData>, 'columnDefs'> {
+export interface DataGridProps<TData = Record<string, unknown>>
+  extends Omit<AgGridReactProps<TData>, "columnDefs"> {
   data: TData[];
   columns: ColDef<TData>[];
   height?: number | string;

@@ -49,12 +49,7 @@ export function DragDropList<T extends DragDropItem>({
   axis = "y",
 }: DragDropListProps<T>) {
   return (
-    <Reorder.Group
-      axis={axis}
-      values={items}
-      onReorder={onReorder}
-      className={`space-y-2 ${className}`}
-    >
+    <Reorder.Group axis={axis} values={items} onReorder={onReorder} className={`space-y-2 ${className}`}>
       {items.map((item) => (
         <DragDropItem
           key={item.id}
@@ -148,12 +143,7 @@ export interface KanbanBoardProps {
   className?: string;
 }
 
-export function KanbanBoard({
-  columns,
-  onColumnUpdate,
-  renderCard,
-  className = "",
-}: KanbanBoardProps) {
+export function KanbanBoard({ columns, onColumnUpdate, renderCard, className = "" }: KanbanBoardProps) {
   const [draggedItem, setDraggedItem] = useState<DragDropItem | null>(null);
 
   return (
@@ -170,10 +160,7 @@ export function KanbanBoard({
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               {column.color && (
-                <div
-                  className="w-3 h-3 rounded-full"
-                  style={{ backgroundColor: column.color }}
-                />
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: column.color }} />
               )}
               <h3 className="font-semibold text-gray-900">{column.title}</h3>
               <span className="px-2 py-0.5 bg-gray-200 text-gray-600 text-xs rounded-full">

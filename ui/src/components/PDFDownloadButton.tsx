@@ -31,18 +31,11 @@ export const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
   );
 
   return (
-    <PDFDownloadLink
-      document={document}
-      fileName={fileName.endsWith(".pdf") ? fileName : `${fileName}.pdf`}
-    >
+    <PDFDownloadLink document={document} fileName={fileName.endsWith(".pdf") ? fileName : `${fileName}.pdf`}>
       {({ loading, error }) => {
         if (error) {
           onError?.(error);
-          return (
-            <div className="text-red-600 text-sm">
-              Error generating PDF: {error.message}
-            </div>
-          );
+          return <div className="text-red-600 text-sm">Error generating PDF: {error.message}</div>;
         }
 
         if (loading) {
@@ -54,14 +47,7 @@ export const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
                 fill="none"
                 viewBox="0 0 24 24"
               >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path
                   className="opacity-75"
                   fill="currentColor"

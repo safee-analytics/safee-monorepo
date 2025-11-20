@@ -22,10 +22,7 @@ export const PDFViewer: React.FC<PDFViewerProps> = ({
 }) => {
   return (
     <div className={className} style={{ width, height }}>
-      <ReactPDFViewer
-        style={{ width: "100%", height: "100%" }}
-        showToolbar={showToolbar}
-      >
+      <ReactPDFViewer style={{ width: "100%", height: "100%" }} showToolbar={showToolbar}>
         {document}
       </ReactPDFViewer>
     </div>

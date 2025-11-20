@@ -350,7 +350,7 @@ export function useAdminHasPermission() {
     mutationFn: async (data: { userId: string; permission: string }) => {
       const { data: result, error } = await authClient.admin.hasPermission({
         userId: data.userId,
-        permission: data.permission as any,
+        permission: data.permission as string & {},
       });
       if (error) throw new Error(error.message);
       return result;

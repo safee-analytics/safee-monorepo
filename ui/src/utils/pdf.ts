@@ -6,9 +6,7 @@ import React from "react";
  * @param document - React-PDF Document component
  * @returns Blob containing the PDF
  */
-export async function generatePDFBlob(
-  document: React.ReactElement<DocumentProps>
-): Promise<Blob> {
+export async function generatePDFBlob(document: React.ReactElement<DocumentProps>): Promise<Blob> {
   const blob = await pdf(document).toBlob();
   return blob;
 }
@@ -20,7 +18,7 @@ export async function generatePDFBlob(
  */
 export async function downloadPDF(
   document: React.ReactElement<DocumentProps>,
-  filename: string
+  filename: string,
 ): Promise<void> {
   const blob = await generatePDFBlob(document);
   const url = URL.createObjectURL(blob);
@@ -37,9 +35,7 @@ export async function downloadPDF(
  * Open PDF in new tab
  * @param document - React-PDF Document component
  */
-export async function openPDFInNewTab(
-  document: React.ReactElement<DocumentProps>
-): Promise<void> {
+export async function openPDFInNewTab(document: React.ReactElement<DocumentProps>): Promise<void> {
   const blob = await generatePDFBlob(document);
   const url = URL.createObjectURL(blob);
   window.open(url, "_blank");
@@ -127,10 +123,7 @@ export const commonPDFStyles = {
 /**
  * Format currency for PDF display
  */
-export function formatCurrencyForPDF(
-  value: number,
-  currency: string = "USD"
-): string {
+export function formatCurrencyForPDF(value: number, currency: string = "USD"): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,

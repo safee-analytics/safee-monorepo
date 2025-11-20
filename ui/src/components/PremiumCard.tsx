@@ -113,8 +113,7 @@ export function PremiumCard({
         <motion.div
           className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity"
           style={{
-            background:
-              "linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent)",
+            background: "linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.3), transparent)",
           }}
           initial={false}
           animate={{

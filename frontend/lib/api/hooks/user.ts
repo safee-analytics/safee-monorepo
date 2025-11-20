@@ -1,6 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient, handleApiError, getCurrentUser, updateUserProfile, updateUserLocale } from "../client";
-import type { paths } from "../types";
 import { queryKeys } from "./queryKeys";
 import { useOrgStore } from "@/stores/useOrgStore";
 

@@ -22,7 +22,6 @@ import type {
   OdooAccountBalanceReport,
   OdooPartnerLedgerReport,
   CreateInvoiceDTO,
-  CreateRefundDTO,
   CreatePaymentDTO,
   AccountBalanceQuery,
   PartnerLedgerQuery,
@@ -332,7 +331,9 @@ export class OdooAccountingService {
    * Get invoice/bill as PDF
    */
   async getInvoicePDF(invoiceId: number): Promise<Buffer> {
-    const result = await this.client.executeKw<string>("account.move", "action_invoice_print", [[invoiceId]]);
+    const _result = await this.client.executeKw<string>("account.move", "action_invoice_print", [
+      [invoiceId],
+    ]);
 
     // The result is typically a report action, we need to get the PDF content
     // This uses Odoo's report system

@@ -4,7 +4,6 @@ import {
   adminClient,
   twoFactorClient,
   phoneNumberClient,
-  inferAdditionalFields,
   usernameClient,
   magicLinkClient,
   emailOTPClient,

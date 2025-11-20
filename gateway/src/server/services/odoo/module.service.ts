@@ -55,7 +55,7 @@ export class OdooModuleService {
   }
 
   async installModules(params: OdooModuleInstallParams): Promise<void> {
-    const { config, modules, logger, drizzle, organizationId, userId } = params;
+    const { config, modules, logger, drizzle, organizationId, userId: _userId } = params;
 
     // Use resilient client with retry, circuit breaker, and audit logging
     const client = createResilientOdooClient(config, logger, drizzle);
@@ -116,7 +116,7 @@ export class OdooModuleService {
   }
 
   async uninstallModules(params: OdooModuleUninstallParams): Promise<void> {
-    const { config, modules, logger, drizzle, organizationId, userId } = params;
+    const { config, modules, logger, drizzle, organizationId, userId: _userId } = params;
 
     // Use resilient client with retry, circuit breaker, and audit logging
     const client = createResilientOdooClient(config, logger, drizzle);

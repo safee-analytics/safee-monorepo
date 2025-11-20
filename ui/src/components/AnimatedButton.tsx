@@ -70,24 +70,18 @@ export function AnimatedButton({
     >
       {/* Left Icon */}
       {!loading && icon && iconPosition === "left" && (
-        <span className="transition-transform duration-300 group-hover:translate-x-0.5">
-          {icon}
-        </span>
+        <span className="transition-transform duration-300 group-hover:translate-x-0.5">{icon}</span>
       )}
 
       {/* Loading Spinner */}
-      {loading && (
-        <Loader2 className="animate-spin" size={size === "sm" ? 14 : size === "lg" ? 18 : 16} />
-      )}
+      {loading && <Loader2 className="animate-spin" size={size === "sm" ? 14 : size === "lg" ? 18 : 16} />}
 
       {/* Text */}
       <span>{children}</span>
 
       {/* Right Icon */}
       {!loading && icon && iconPosition === "right" && (
-        <span className="transition-transform duration-300 group-hover:translate-x-0.5">
-          {icon}
-        </span>
+        <span className="transition-transform duration-300 group-hover:translate-x-0.5">{icon}</span>
       )}
     </button>
   );
@@ -101,12 +95,7 @@ export interface ExpandButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonE
   size?: "sm" | "md" | "lg";
 }
 
-export function ExpandButton({
-  label,
-  size = "md",
-  className = "",
-  ...props
-}: ExpandButtonProps) {
+export function ExpandButton({ label, size = "md", className = "", ...props }: ExpandButtonProps) {
   const sizeClasses = {
     sm: "h-8 pl-2 pr-3 text-sm",
     md: "h-10 pl-3 pr-4 text-sm",

@@ -37,17 +37,17 @@ export const auth = betterAuth({
     username(),
     twoFactor(),
     phoneNumber({
-      sendOTP: ({ phoneNumber, code }, request) => {
+      sendOTP: ({ phoneNumber: _phoneNumber, code: _code }, _request) => {
         // Implement sending OTP code via SMS
       },
     }),
     magicLink({
-      sendMagicLink: async ({ email, token, url }, request) => {
+      sendMagicLink: async ({ email: _email, token: _token, url: _url }, _request) => {
         // send email to user
       },
     }),
     emailOTP({
-      async sendVerificationOTP({ email, otp, type }) {
+      async sendVerificationOTP({ email: _email, otp: _otp, type }) {
         if (type === "sign-in") {
           // Send the OTP for sign in
         } else if (type === "email-verification") {

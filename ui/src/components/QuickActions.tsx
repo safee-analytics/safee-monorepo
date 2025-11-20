@@ -49,9 +49,7 @@ export function QuickActions({ actions, isOpen, onClose }: QuickActionsProps) {
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const filtered = actions.filter((a) =>
-    a.label.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = actions.filter((a) => a.label.toLowerCase().includes(search.toLowerCase()));
 
   useEffect(() => {
     if (isOpen) {
@@ -128,9 +126,7 @@ export function QuickActions({ actions, isOpen, onClose }: QuickActionsProps) {
               {/* Actions */}
               <div className="max-h-[400px] overflow-y-auto py-2">
                 {filtered.length === 0 ? (
-                  <div className="py-8 text-center text-sm text-gray-500">
-                    No actions found
-                  </div>
+                  <div className="py-8 text-center text-sm text-gray-500">No actions found</div>
                 ) : (
                   filtered.map((action, i) => (
                     <motion.button
