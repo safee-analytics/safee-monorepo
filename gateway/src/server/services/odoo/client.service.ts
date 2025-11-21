@@ -114,79 +114,15 @@ export class OdooClientService implements OdooClient {
   /**
    * Authenticate with Odoo
    * Supports both password and API key authentication
-   * API keys (format: index_token) use JSON-RPC endpoint
+   * In Odoo 17+, API keys work through the same web session endpoint as passwords
    */
   async authenticate(): Promise<OdooAuthResult> {
     try {
       // Detect if this is an API key (contains underscore and is ~29 chars)
       const isApiKey = this.config.password.includes("_") && this.config.password.length >= 25;
 
-      if (isApiKey) {
-        // For API keys, we don't need to authenticate first - just verify by making a simple call
-        // We'll use JSON-RPC with the API key directly
-        const response = await fetch(`${this.baseUrl}/jsonrpc`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            jsonrpc: "2.0",
-            method: "call",
-            params: {
-              service: "common",
-              method: "authenticate",
-              args: [this.config.database, this.config.username, this.config.password, {}],
-            },
-            id: null,
-          }),
-        });
-
-        if (!response.ok) {
-          throw new Error(`Odoo JSON-RPC authentication failed: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        if (data.error) {
-          const errorMessage =
-            typeof data.error === "object"
-              ? data.error.data?.message || data.error.message || JSON.stringify(data.error)
-              : String(data.error);
-          throw new Error(`Odoo API key authentication error: ${errorMessage}`);
-        }
-
-        const uid = data.result;
-
-        if (!uid || typeof uid !== "number") {
-          this.logger.warn(
-            {
-              database: this.config.database,
-              username: this.config.username,
-              result: data.result,
-            },
-            "API key authentication failed - invalid UID",
-          );
-          throw new Error("Invalid Odoo API key");
-        }
-
-        this.logger.info(
-          { userId: uid, database: this.config.database },
-          "Authenticated with Odoo via JSON-RPC (API key)",
-        );
-        this.uid = uid;
-        this.sessionId = null; // API keys don't use session IDs
-        this.cookies = [];
-        this.useXmlRpc = true; // Use JSON-RPC endpoint (flag name is misleading but tracks API key mode)
-
-        return {
-          uid,
-          database: this.config.database,
-          username: this.config.username,
-          sessionId: null,
-        };
-      }
-
-      // Use web session authenticate for password authentication
+      // Use web session authenticate for both password and API key authentication
+      // In Odoo 17+, API keys work as passwords in the web session endpoint
       const response = await fetch(`${this.baseUrl}/web/session/authenticate`, {
         method: "POST",
         headers: {
@@ -259,6 +195,8 @@ export class OdooClientService implements OdooClient {
 
       this.uid = result.uid;
       this.sessionId = result.session_id;
+      this.useXmlRpc = isApiKey; // Track if using API key for future requests
+
       this.logger.info(
         {
           uid: result.uid,
@@ -267,8 +205,9 @@ export class OdooClientService implements OdooClient {
           sessionIdFromResult: result.session_id,
           sessionIdStored: this.sessionId,
           sessionIdType: typeof result.session_id,
+          authMethod: isApiKey ? "API key" : "password",
         },
-        "Authenticated with Odoo",
+        `Authenticated with Odoo via ${isApiKey ? "API key" : "password"}`,
       );
 
       return {
@@ -533,12 +472,7 @@ export class OdooClientService implements OdooClient {
     await this.ensureAuthenticated();
 
     try {
-      // Use JSON-RPC for API key authentication
-      if (this.useXmlRpc) {
-        return await this.executeJsonRpc<T>(model, method, args, kwargs);
-      }
-
-      // Use web endpoint for password authentication
+      // In Odoo 17+, both password and API key authentication use web session endpoints
       // Build cookie header from all stored cookies
       const cookieHeader = this.cookies.length > 0 ? this.cookies.join("; ") : `session_id=${this.sessionId}`;
 
@@ -550,6 +484,7 @@ export class OdooClientService implements OdooClient {
           hasCookies: this.cookies.length > 0,
           cookieCount: this.cookies.length,
           hasSessionId: !!this.sessionId,
+          authMethod: this.useXmlRpc ? "API key" : "password",
         },
         "Executing Odoo RPC call",
       );

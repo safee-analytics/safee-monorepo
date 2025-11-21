@@ -12,7 +12,7 @@ import {
 } from "@safee/database";
 import { nukeDatabase } from "@safee/database/test-helpers";
 
-const { organizations, jobSchedules } = schema;
+const { organizations } = schema;
 
 describe("JobScheduler Integration Tests", () => {
   let db: DrizzleClient;
@@ -212,16 +212,12 @@ describe("JobScheduler Integration Tests", () => {
         maxRetries: 3,
       });
 
-      // Queue the job
       await scheduler.queueJob(job.id);
 
-      // Wait for processing
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // Check job status was updated to running, then completed
       const updatedJob = await getJobById(deps, job.id);
       expect(updatedJob).toBeDefined();
-      // Job should be completed after processing
       expect(["running", "completed"]).toContain(updatedJob?.status);
     });
 
@@ -229,7 +225,6 @@ describe("JobScheduler Integration Tests", () => {
       const deps = createTestDeps(db);
       await scheduler.start(deps);
 
-      // Create job with invalid organization ID to cause error
       const job = await createJob(deps, {
         jobName: "send_email",
         type: "immediate" as const,
@@ -242,10 +237,8 @@ describe("JobScheduler Integration Tests", () => {
 
       await scheduler.queueJob(job.id);
 
-      // Wait for processing
       await new Promise((resolve) => setTimeout(resolve, 100));
 
-      // The scheduler should handle the error gracefully
       const updatedJob = await getJobById(deps, job.id);
       expect(updatedJob).toBeDefined();
     });
@@ -255,7 +248,6 @@ describe("JobScheduler Integration Tests", () => {
     it("should load and schedule active jobs on start", async () => {
       const deps = createTestDeps(db);
 
-      // Create active schedule before starting scheduler
       await createJobSchedule(deps, {
         name: "Pre-existing Schedule",
         jobName: "send_email",
@@ -263,7 +255,6 @@ describe("JobScheduler Integration Tests", () => {
         isActive: true,
       });
 
-      // Start scheduler - should load the schedule
       await scheduler.start(deps);
 
       // If no error is thrown, schedules were loaded successfully
@@ -279,7 +270,6 @@ describe("JobScheduler Integration Tests", () => {
         isActive: false,
       });
 
-      // Start scheduler - should skip inactive schedule
       await scheduler.start(deps);
     });
 
@@ -292,7 +282,6 @@ describe("JobScheduler Integration Tests", () => {
         isActive: true,
       });
 
-      // Start scheduler - should skip schedule without cron
       await scheduler.start(deps);
     });
   });
@@ -302,8 +291,6 @@ describe("JobScheduler Integration Tests", () => {
       const deps = createTestDeps(db);
       await scheduler.start(deps);
 
-      // Create schedule that would trigger every second (for testing)
-      // Note: This won't actually trigger in the test, we're just verifying setup
       const schedule = await createJobSchedule(deps, {
         name: "Frequent Schedule",
         jobName: "send_email",
@@ -313,13 +300,10 @@ describe("JobScheduler Integration Tests", () => {
 
       await scheduler.scheduleJob(deps, schedule.id);
 
-      // Wait a bit to see if cron triggers
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // Check if any jobs were created
       const allJobs = await db.query.jobs.findMany();
 
-      // The cron should have triggered and created at least one job
       expect(allJobs.length).toBeGreaterThanOrEqual(0);
     });
   });
@@ -330,7 +314,6 @@ describe("JobScheduler Integration Tests", () => {
 
       await scheduler.start(deps);
 
-      // Verify we can publish to topics (if topics weren't created, this would fail)
       await pubsub.publish("test-job-queue", "test message");
       await pubsub.publish("test-job-events", "test message");
     });
@@ -340,7 +323,6 @@ describe("JobScheduler Integration Tests", () => {
 
       const eventMessages: string[] = [];
 
-      // Subscribe to job events BEFORE starting scheduler
       await pubsub.createSubscription("test-job-events", "test-events-sub");
       await pubsub.subscribe("test-events-sub", async (message) => {
         eventMessages.push(message.data.toString());
@@ -360,10 +342,8 @@ describe("JobScheduler Integration Tests", () => {
 
       await scheduler.queueJob(job.id);
 
-      // Wait for processing and events
       await new Promise((resolve) => setTimeout(resolve, 300));
 
-      // Should have received job.started and job.completed events
       expect(eventMessages.length).toBeGreaterThan(0);
     });
   });

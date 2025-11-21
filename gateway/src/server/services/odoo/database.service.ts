@@ -65,19 +65,18 @@ export class OdooDatabaseService {
       password: adminPassword,
     };
 
-    // Modules to install for Safee platform
     const modulesToInstall = [
-      "account", // Accounting (Hisabiq)
-      "sale", // Sales (Nisbah)
-      "crm", // CRM (Nisbah)
-      "hr", // Human Resources (Kanz)
-      "hr_payroll", // Payroll (Kanz)
-      "website", // Website Builder
-      "portal", // Customer Portal
-      "api_key_service", // API Key Service (Safee Custom) - CRITICAL for API key generation
+      "base",
+      "account",
+      "sale",
+      "crm",
+      "hr",
+      "hr_payroll",
+      "website",
+      "portal",
+      "api_key_service",
     ];
 
-    // Use hardened module service with retry, circuit breaker, and audit logging
     await odooModuleService.installModules({
       config,
       modules: modulesToInstall,
@@ -172,13 +171,10 @@ export class OdooDatabaseService {
       odooUrl: env.ODOO_URL,
     });
 
-    // Install required modules for Safee platform (including api_key_service)
     try {
       await this.installRequiredModules(databaseName, adminLogin, adminPassword, organizationId);
     } catch (error) {
       this.logger.error({ organizationId, databaseName, error }, "Failed to install required modules");
-      // Don't throw - database is provisioned, modules can be installed manually if needed
-      // But log the error for visibility
     }
 
     this.logger.info({ organizationId, databaseName }, "Odoo database provisioned successfully");
@@ -274,10 +270,6 @@ export class OdooDatabaseService {
     };
   }
 
-  /**
-   * Install modules for an organization's Odoo database
-   * Includes api_key_service module for API key generation
-   */
   async installModulesForOrganization(organizationId: string): Promise<void> {
     const credentials = await this.getCredentials(organizationId);
 

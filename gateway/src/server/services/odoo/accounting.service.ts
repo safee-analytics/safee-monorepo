@@ -1,14 +1,3 @@
-/**
- * Odoo Accounting Service
- *
- * High-level wrapper for Odoo accounting operations.
- * Provides type-safe methods for managing:
- * - Chart of Accounts
- * - Invoices (Sales & Purchase)
- * - Payments
- * - Financial Reports
- */
-
 import type { OdooClient } from "./client.service.js";
 import type {
   OdooAccount,
@@ -38,7 +27,6 @@ import {
   type OdooInvoiceLineRead,
 } from "./accounting.validation.js";
 
-// Export schemas for external use
 export {
   odooInvoiceReadSchema,
   odooInvoiceLineReadSchema,
@@ -54,11 +42,6 @@ export {
 export class OdooAccountingService {
   constructor(private readonly client: OdooClient) {}
 
-  // ==================== Chart of Accounts ====================
-
-  /**
-   * Get all accounts or filter by criteria
-   */
   async getAccounts(filters?: { accountType?: string; onlyActive?: boolean }): Promise<OdooAccount[]> {
     const domain: Array<[string, string, unknown]> = [];
 
@@ -66,7 +49,6 @@ export class OdooAccountingService {
       domain.push(["account_type", "=", filters.accountType]);
     }
     if (filters?.onlyActive !== false) {
-      // By default, only show active accounts (active=true means not deprecated)
       domain.push(["active", "=", true]);
     }
 
@@ -95,9 +77,6 @@ export class OdooAccountingService {
     ]);
   }
 
-  /**
-   * Get a single account by ID
-   */
   async getAccount(accountId: number): Promise<OdooAccount | null> {
     const accounts = await this.client.read<OdooAccount>(
       "account.account",
@@ -129,19 +108,10 @@ export class OdooAccountingService {
     return accounts[0] || null;
   }
 
-  /**
-   * Search for accounts by code or name
-   */
   async searchAccounts(query: string): Promise<OdooAccount[]> {
     return this.client.searchRead<OdooAccount>(
       "account.account",
-      [
-        "&",
-        ["active", "=", true], // Only active accounts
-        "|",
-        ["code", "ilike", query],
-        ["name", "ilike", query],
-      ],
+      ["&", ["active", "=", true], "|", ["code", "ilike", query], ["name", "ilike", query]],
       [
         "code",
         "name",
@@ -158,11 +128,6 @@ export class OdooAccountingService {
     );
   }
 
-  // ==================== Invoices ====================
-
-  /**
-   * Get invoices with filters
-   */
   async getInvoices(filters?: {
     moveType?: "out_invoice" | "out_refund" | "in_invoice" | "in_refund";
     partnerId?: number;
@@ -233,9 +198,6 @@ export class OdooAccountingService {
     );
   }
 
-  /**
-   * Get a single invoice by ID with line items
-   */
   async getInvoice(invoiceId: number): Promise<OdooInvoiceRead | null> {
     const rawInvoices = await this.client.read(
       "account.move",
@@ -264,15 +226,11 @@ export class OdooAccountingService {
 
     if (!rawInvoices[0]) return null;
 
-    // Validate with Zod - no casting
     const invoice = odooInvoiceReadSchema.parse(rawInvoices[0]);
 
     return invoice;
   }
 
-  /**
-   * Create a new invoice (sales or purchase)
-   */
   async createInvoice(dto: CreateInvoiceDTO): Promise<number> {
     const moveType = dto.moveType || "out_invoice";
     const partnerId = dto.customerId || dto.supplierId;
@@ -307,9 +265,6 @@ export class OdooAccountingService {
     return this.client.create("account.move", invoiceData);
   }
 
-  /**
-   * Create a credit note (refund) for an invoice
-   */
   async createRefund(
     invoiceId: number,
     dto: { reason?: string; date?: string; journalId?: number },
@@ -327,9 +282,6 @@ export class OdooAccountingService {
     return result.res_id;
   }
 
-  /**
-   * Get invoice/bill as PDF
-   */
   async getInvoicePDF(invoiceId: number): Promise<Buffer> {
     const _result = await this.client.executeKw<string>("account.move", "action_invoice_print", [
       [invoiceId],
@@ -345,32 +297,18 @@ export class OdooAccountingService {
     return Buffer.from(pdfBase64, "base64");
   }
 
-  /**
-   * Post (validate) an invoice
-   */
   async postInvoice(invoiceId: number): Promise<void> {
     await this.client.executeKw("account.move", "action_post", [[invoiceId]]);
   }
 
-  /**
-   * Cancel an invoice
-   */
   async cancelInvoice(invoiceId: number): Promise<void> {
     await this.client.executeKw("account.move", "button_cancel", [[invoiceId]]);
   }
 
-  /**
-   * Draft an invoice (unpost)
-   */
   async draftInvoice(invoiceId: number): Promise<void> {
     await this.client.executeKw("account.move", "button_draft", [[invoiceId]]);
   }
 
-  // ==================== Payments ====================
-
-  /**
-   * Get payments with filters
-   */
   async getPayments(filters?: {
     paymentType?: "inbound" | "outbound" | "transfer";
     partnerId?: number;
@@ -431,9 +369,6 @@ export class OdooAccountingService {
     );
   }
 
-  /**
-   * Create a payment
-   */
   async createPayment(dto: CreatePaymentDTO): Promise<number> {
     const paymentData: Partial<OdooPayment> = {
       payment_type: dto.type,
@@ -447,7 +382,6 @@ export class OdooAccountingService {
 
     const paymentId = await this.client.create("account.payment", paymentData);
 
-    // If invoice IDs provided, reconcile payment with invoices
     if (dto.invoiceIds && dto.invoiceIds.length > 0) {
       await this.reconcilePaymentWithInvoices(paymentId, dto.invoiceIds);
     }
@@ -455,22 +389,13 @@ export class OdooAccountingService {
     return paymentId;
   }
 
-  /**
-   * Post (confirm) a payment
-   */
   async postPayment(paymentId: number): Promise<void> {
     await this.client.executeKw("account.payment", "action_post", [[paymentId]]);
   }
 
-  /**
-   * Reconcile payment with invoices
-   * Links payment move lines with invoice move lines for proper reconciliation
-   */
   private async reconcilePaymentWithInvoices(paymentId: number, invoiceIds: number[]): Promise<void> {
-    // Post the payment first to create the accounting entry
     await this.client.executeKw("account.payment", "action_post", [[paymentId]]);
 
-    // Get the payment move (journal entry)
     const payment = await this.client.read<OdooPayment>(
       "account.payment",
       [paymentId],
@@ -486,7 +411,6 @@ export class OdooAccountingService {
       ? payment[0].destination_account_id[0]
       : payment[0].destination_account_id;
 
-    // Get payment move lines (account.move.line) for the receivable/payable account
     const paymentLines = await this.client.searchRead<{ id: number; account_id: [number, string] }>(
       "account.move.line",
       [
@@ -500,7 +424,6 @@ export class OdooAccountingService {
       throw new Error("No payment lines found for reconciliation");
     }
 
-    // Get invoice move lines for the same account
     const invoiceLines = await this.client.searchRead<{ id: number; move_id: [number, string] }>(
       "account.move.line",
       [
@@ -515,21 +438,14 @@ export class OdooAccountingService {
       throw new Error("No unreconciled invoice lines found for reconciliation");
     }
 
-    // Collect all line IDs to reconcile
     const lineIdsToReconcile = [
       ...paymentLines.map((line) => line.id),
       ...invoiceLines.map((line) => line.id),
     ];
 
-    // Perform reconciliation using account.move.line reconcile method
     await this.client.executeKw("account.move.line", "reconcile", [lineIdsToReconcile]);
   }
 
-  // ==================== Partners (Customers/Suppliers) ====================
-
-  /**
-   * Get partners with accounting info
-   */
   async getPartners(filters?: { isCustomer?: boolean; isSupplier?: boolean }): Promise<OdooPartner[]> {
     const domain: Array<[string, string, unknown]> = [];
 
@@ -586,11 +502,6 @@ export class OdooAccountingService {
     );
   }
 
-  // ==================== Journals ====================
-
-  /**
-   * Get all journals
-   */
   async getJournals(type?: "sale" | "purchase" | "cash" | "bank" | "general"): Promise<OdooJournal[]> {
     const domain: Array<[string, string, unknown]> = [];
 
@@ -606,11 +517,6 @@ export class OdooAccountingService {
     );
   }
 
-  // ==================== Taxes ====================
-
-  /**
-   * Get all active taxes
-   */
   async getTaxes(typeTaxUse?: "sale" | "purchase" | "none"): Promise<OdooTax[]> {
     const domain: Array<[string, string, unknown]> = [["active", "=", true]];
 
@@ -626,11 +532,6 @@ export class OdooAccountingService {
     );
   }
 
-  // ==================== General Ledger ====================
-
-  /**
-   * Get general ledger entries
-   */
   async getGLEntries(filters?: {
     accountId?: number;
     partnerId?: number;
@@ -672,18 +573,12 @@ export class OdooAccountingService {
     );
   }
 
-  // ==================== Financial Reports ====================
-
-  /**
-   * Get trial balance (account balances)
-   */
   async getTrialBalance(query: AccountBalanceQuery): Promise<OdooAccountBalanceReport[]> {
     const glEntries = await this.getGLEntries({
       dateFrom: query.dateFrom,
       dateTo: query.dateTo,
     });
 
-    // Group by account and sum debits/credits
     const accountMap = new Map<number, OdooAccountBalanceReport>();
 
     for (const entry of glEntries) {
@@ -691,7 +586,6 @@ export class OdooAccountingService {
       const accountName = Array.isArray(entry.account_id) ? entry.account_id[1] : "";
 
       if (!accountMap.has(accountId)) {
-        // Fetch account details
         const account = await this.getAccount(accountId);
         accountMap.set(accountId, {
           account_id: accountId,
@@ -724,7 +618,6 @@ export class OdooAccountingService {
 
     if (entries.length === 0) return null;
 
-    // Get partner details
     const partners = await this.client.read<OdooPartner>("res.partner", [query.partnerId], ["name"]);
     const partnerName = partners[0]?.name || "Unknown";
 

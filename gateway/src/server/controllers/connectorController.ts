@@ -16,11 +16,9 @@ import {
   OperationId,
 } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
-import { getServerContext } from "../serverContext.js";
 import { ConnectorFactory } from "../services/connectors/connector.factory.js";
 import type { ConnectorType } from "../services/connectors/base.connector.js";
-import { getOdooAdminCredentials } from "../operations/getOdooAdminCredentials.js";
-import { getOdooUserWebCredentials } from "../operations/getOdooUserWebCredentials.js";
+import { getServerContext } from "../serverContext.js";
 import { listConnectors as listConnectorsOp } from "../operations/listConnectors.js";
 import { createConnector as createConnectorOp } from "../operations/createConnector.js";
 import { getConnector as getConnectorOp } from "../operations/getConnector.js";
@@ -33,9 +31,6 @@ import { getSchema as getSchemaOp } from "../operations/getSchema.js";
 import { getTablePreview as getTablePreviewOp } from "../operations/getTablePreview.js";
 import { searchTable as searchTableOp } from "../operations/searchTable.js";
 import { suggestMappings as suggestMappingsOp } from "../operations/suggestMappings.js";
-import { getOdooDevCredentials as getOdooDevCredentialsOp } from "../operations/getOdooDevCredentials.js";
-import { installOdooModules as installOdooModulesOp } from "../operations/installOdooModules.js";
-import { getOdooModelFields as getOdooModelFieldsOp } from "../operations/getOdooModelFields.js";
 import type {
   CreateConnectorRequest,
   UpdateConnectorRequest,
@@ -260,111 +255,5 @@ export class ConnectorController extends Controller {
     @Body() request: SuggestMappingsRequest,
   ): Promise<FieldMapping[]> {
     return await suggestMappingsOp(req.drizzle, request);
-  }
-
-  /**
-   * Get Odoo web credentials for dev access
-   * Returns login, password, and web URL for accessing Odoo UI directly
-   */
-  @Get("/odoo/dev-credentials")
-  @Security("jwt")
-  public async getOdooDevCredentials(@Request() req: AuthenticatedRequest): Promise<{
-    login: string;
-    password: string;
-    webUrl: string;
-  } | null> {
-    const { userId, organizationId } = this.getServices(req);
-
-    return await getOdooDevCredentialsOp(req.drizzle, userId, organizationId);
-  }
-
-  /**
-   * Get Odoo user web credentials
-   * Returns the current user's login, password, and web URL for accessing Odoo UI
-   */
-  @Get("/odoo/user-credentials")
-  @Security("jwt")
-  public async getOdooUserCredentials(@Request() req: AuthenticatedRequest): Promise<{
-    login: string;
-    password: string;
-    webUrl: string;
-  } | null> {
-    const { userId, organizationId } = this.getServices(req);
-
-    return await getOdooUserWebCredentials(req.drizzle, userId, organizationId);
-  }
-
-  /**
-   * Get Odoo admin credentials
-   * Returns admin login, password, database name, and web URL for accessing Odoo database as admin
-   */
-  @Get("/odoo/admin-credentials")
-  @Security("jwt")
-  public async getOdooAdminCredentialsEndpoint(@Request() req: AuthenticatedRequest): Promise<{
-    databaseName: string;
-    adminLogin: string;
-    adminPassword: string;
-    webUrl: string;
-  } | null> {
-    const { organizationId } = this.getServices(req);
-
-    const credentials = await getOdooAdminCredentials(req.drizzle, organizationId);
-
-    if (!credentials) {
-      return null;
-    }
-
-    return {
-      databaseName: credentials.databaseName,
-      adminLogin: credentials.adminLogin,
-      adminPassword: credentials.adminPassword,
-      webUrl: `${credentials.odooUrl}/web/login?db=${credentials.databaseName}`,
-    };
-  }
-
-  /**
-   * Install required Odoo modules for the organization
-   * Installs: Accounting (Hisabiq), CRM (Nisbah), HR & Payroll (Kanz)
-   */
-  @Post("/odoo/install-modules")
-  @Security("jwt")
-  @SuccessResponse("200", "Modules installed successfully")
-  public async installOdooModules(
-    @Request() req: AuthenticatedRequest,
-  ): Promise<{ success: boolean; message: string }> {
-    const { organizationId, ctx } = this.getServices(req);
-
-    const result = await installOdooModulesOp(organizationId, ctx.logger);
-
-    if (!result.success) {
-      this.setStatus(500);
-    }
-
-    return result;
-  }
-
-  /**
-   * Get available fields for an Odoo model (dev tool)
-   * Useful for discovering what fields exist on a model
-   */
-  @Get("/odoo/models/{modelName}/fields")
-  @Security("jwt")
-  public async getOdooModelFields(
-    @Request() req: AuthenticatedRequest,
-    @Path() modelName: string,
-    @Query() simple?: boolean,
-  ): Promise<
-    | Record<string, unknown>
-    | Array<{
-        name: string;
-        type: string;
-        label: string;
-        required?: boolean;
-        readonly?: boolean;
-      }>
-  > {
-    const { userId, organizationId } = this.getServices(req);
-
-    return await getOdooModelFieldsOp(userId, organizationId, modelName, simple);
   }
 }

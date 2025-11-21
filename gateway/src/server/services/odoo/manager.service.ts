@@ -10,6 +10,7 @@ export class OdooClientManager {
   private readonly cacheTTL: number = 60 * 60 * 1000; // 60 minutes
   private logger: Logger;
   private drizzle: DrizzleClient;
+  private creationPromises: Map<string, Promise<OdooClient>> = new Map();
 
   constructor(drizzle: DrizzleClient, logger: Logger) {
     this.drizzle = drizzle;
@@ -18,41 +19,43 @@ export class OdooClientManager {
     setInterval(() => this.cleanupExpiredClients(), 5 * 60 * 1000);
   }
 
-  /**
-   * Get Odoo client for a specific user
-   * @param userId - Safee user ID
-   * @param organizationId - Organization ID
-   * @returns Authenticated Odoo client with user's credentials
-   */
   async getClient(userId: string, organizationId: string): Promise<OdooClient> {
     const cacheKey = `${userId}:${organizationId}`;
+
     const cached = this.clients.get(cacheKey);
     if (cached && cached.expiresAt > new Date()) {
       this.logger.debug({ userId, organizationId }, "Using cached Odoo client");
       return cached.client;
     }
 
+    const existingCreation = this.creationPromises.get(cacheKey);
+    if (existingCreation) {
+      this.logger.debug({ userId, organizationId }, "Waiting for in-flight client creation");
+      return existingCreation;
+    }
+
     this.logger.info({ userId, organizationId }, "Creating new Odoo client for user");
-    const client = await this.createClient(userId, organizationId);
+    const creationPromise = this.createClient(userId, organizationId)
+      .then((client) => {
+        this.clients.set(cacheKey, {
+          client,
+          expiresAt: new Date(Date.now() + this.cacheTTL),
+        });
+        return client;
+      })
+      .finally(() => {
+        this.creationPromises.delete(cacheKey);
+      });
 
-    this.clients.set(cacheKey, {
-      client,
-      expiresAt: new Date(Date.now() + this.cacheTTL),
-    });
+    this.creationPromises.set(cacheKey, creationPromise);
 
-    return client;
+    return creationPromise;
   }
 
-  /**
-   * Create Odoo client with user-specific credentials
-   * Auto-provisions user in Odoo if they don't exist yet
-   */
   private async createClient(userId: string, organizationId: string): Promise<OdooClient> {
-    // Get or create Odoo user
     let userCredentials = await odooUserProvisioningService.getUserCredentials(userId, organizationId);
 
     if (!userCredentials) {
-      // User doesn't have Odoo account yet - provision it
       this.logger.info({ userId, organizationId }, "Auto-provisioning Odoo user");
       await odooUserProvisioningService.provisionUser(userId, organizationId);
       userCredentials = await odooUserProvisioningService.getUserCredentials(userId, organizationId);
@@ -65,7 +68,6 @@ export class OdooClientManager {
     const odooUrl = process.env.ODOO_URL || "http://localhost:8069";
     const odooPort = parseInt(process.env.ODOO_PORT || "8069", 10);
 
-    // Get user's email for login (stored as odooLogin)
     const user = await this.drizzle.query.odooUsers.findFirst({
       where: and(
         eq(schema.odooUsers.userId, userId),
@@ -106,18 +108,12 @@ export class OdooClientManager {
     return client;
   }
 
-  /**
-   * Invalidate client cache for a specific user
-   */
   invalidateClient(userId: string, organizationId: string): void {
     const cacheKey = `${userId}:${organizationId}`;
     this.clients.delete(cacheKey);
     this.logger.info({ userId, organizationId }, "Invalidated Odoo client cache");
   }
 
-  /**
-   * Invalidate all clients for an organization (e.g., when org is deleted)
-   */
   invalidateOrganization(organizationId: string): void {
     let count = 0;
     for (const [key] of this.clients.entries()) {

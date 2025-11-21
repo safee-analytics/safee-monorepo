@@ -54,23 +54,67 @@ export class OdooModuleService {
     );
   }
 
+  private async clearStuckModuleOperations(client: OdooClient, logger: Logger): Promise<void> {
+    try {
+      const stuckModules = await client.searchRead<OdooModule>(
+        "ir.module.module",
+        ["|", "|", ["state", "=", "to install"], ["state", "=", "to upgrade"], ["state", "=", "to remove"]],
+        ["id", "name", "state"],
+        {},
+        { lang: "en_US" },
+      );
+
+      if (stuckModules.length > 0) {
+        logger.warn(
+          { stuckModules: stuckModules.map((m) => ({ name: m.name, state: m.state })) },
+          "Found stuck module operations, clearing them",
+        );
+
+        for (const module of stuckModules) {
+          try {
+            const newState =
+              module.state === "to install" || module.state === "to remove" ? "uninstalled" : "installed";
+
+            await client.write("ir.module.module", [module.id], { state: newState }, { lang: "en_US" });
+
+            logger.info(
+              { moduleName: module.name, oldState: module.state, newState },
+              "Cleared stuck module state",
+            );
+          } catch (error) {
+            logger.warn(
+              { moduleName: module.name, error: error instanceof Error ? error.message : "Unknown" },
+              "Failed to clear stuck module, continuing anyway",
+            );
+          }
+        }
+
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+      }
+    } catch (error) {
+      logger.warn(
+        { error: error instanceof Error ? error.message : "Unknown" },
+        "Failed to check for stuck modules, continuing anyway",
+      );
+    }
+  }
+
   async installModules(params: OdooModuleInstallParams): Promise<void> {
     const { config, modules, logger, drizzle, organizationId, userId: _userId } = params;
 
-    // Use resilient client with retry, circuit breaker, and audit logging
     const client = createResilientOdooClient(config, logger, drizzle);
     await client.authenticate();
 
     logger.info({ modules, database: config.database, organizationId }, "Starting module installation");
 
-    // First check which modules are already installed
+    await this.clearStuckModuleOperations(client, logger);
+
     const moduleRecords = await this.getModulesByName(client, modules);
 
     if (moduleRecords.length === 0) {
       throw new NotFound(`No modules found with names: ${modules.join(", ")}`);
     }
 
-    // Filter out already installed modules
     const modulesToInstall = moduleRecords.filter((m) => m.state !== "installed");
     const alreadyInstalled = moduleRecords.filter((m) => m.state === "installed");
 
@@ -100,25 +144,62 @@ export class OdooModuleService {
       "Installing modules",
     );
 
-    // Use execute from resilient client which has retry + circuit breaker
-    await client.execute<void>("ir.module.module", "button_immediate_install", [moduleIds], {
-      context: { lang: "en_US" },
-    });
+    let retries = 0;
+    const maxRetries = 3;
+    const baseDelay = 2000; // 2 seconds
 
-    logger.info(
-      {
-        installed: modulesToInstall.map((m) => m.name),
-        database: config.database,
-        organizationId,
-      },
-      "✅ Odoo modules installed successfully",
-    );
+    while (retries <= maxRetries) {
+      try {
+        await client.execute<void>("ir.module.module", "button_immediate_install", [moduleIds], {
+          context: { lang: "en_US" },
+        });
+
+        logger.info(
+          {
+            installed: modulesToInstall.map((m) => m.name),
+            database: config.database,
+            organizationId,
+          },
+          "✅ Odoo modules installed successfully",
+        );
+
+        return;
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+
+        if (
+          errorMessage.includes("another module operation") ||
+          errorMessage.includes("processing another")
+        ) {
+          retries++;
+
+          if (retries <= maxRetries) {
+            const delay = baseDelay * Math.pow(2, retries - 1); // Exponential backoff
+            logger.warn(
+              { retries, maxRetries, delay, error: errorMessage },
+              "Another module operation in progress, retrying after delay",
+            );
+
+            await new Promise((resolve) => setTimeout(resolve, delay));
+
+            await this.clearStuckModuleOperations(client, logger);
+          } else {
+            logger.error(
+              { retries, error: errorMessage },
+              "Max retries reached, module operation still in progress",
+            );
+            throw new Error("Odoo is busy with another module operation. Please try again in a few moments.");
+          }
+        } else {
+          throw error;
+        }
+      }
+    }
   }
 
   async uninstallModules(params: OdooModuleUninstallParams): Promise<void> {
     const { config, modules, logger, drizzle, organizationId, userId: _userId } = params;
 
-    // Use resilient client with retry, circuit breaker, and audit logging
     const client = createResilientOdooClient(config, logger, drizzle);
     await client.authenticate();
 
@@ -130,7 +211,6 @@ export class OdooModuleService {
       throw new NotFound(`No modules found with names: ${modules.join(", ")}`);
     }
 
-    // Filter only installed modules
     const modulesToUninstall = moduleRecords.filter((m) => m.state === "installed");
     const notInstalled = moduleRecords.filter((m) => m.state !== "installed");
 
