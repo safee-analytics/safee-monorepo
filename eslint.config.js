@@ -13,7 +13,6 @@ function config(...configs) {
     eslintPluginImport.flatConfigs.typescript,
     ...tsEslint.configs.strictTypeChecked,
     ...tsEslint.configs.stylisticTypeChecked,
-    eslintConfigPrettier,
     eslintPluginSafee.configs.recommended,
     {
       languageOptions: {
@@ -118,6 +117,7 @@ function config(...configs) {
       ],
     },
     ...configs,
+    eslintConfigPrettier,
   );
 }
 

@@ -1,10 +1,30 @@
-import { Controller, Get, Post, Delete, Route, Tags, Security, Request, Path, Body } from "tsoa";
+import {
+  Controller,
+  Get,
+  Post,
+  Delete,
+  Route,
+  Tags,
+  Security,
+  Request,
+  Path,
+  Body,
+  Query,
+  SuccessResponse,
+} from "tsoa";
 import { odooDatabaseService } from "../services/odoo/database.service.js";
 import { getOdooClientManager } from "../services/odoo/manager.service.js";
 import { OdooClient } from "../services/odoo/client.js";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { BadRequest } from "../errors.js";
-
+import { getOdooAdminCredentials } from "../operations/getOdooAdminCredentials.js";
+import { getOdooUserWebCredentials } from "../operations/getOdooUserWebCredentials.js";
+import { getOdooDevCredentials as getOdooDevCredentialsOp } from "../operations/getOdooDevCredentials.js";
+import { installOdooModules as installOdooModulesOp } from "../operations/installOdooModules.js";
+import { getOdooModelFields as getOdooModelFieldsOp } from "../operations/getOdooModelFields.js";
+import { getOdooDatabaseInfo as getOdooDatabaseInfoOp } from "../operations/getOdooDatabaseInfo.js";
+import { getServerContext } from "../serverContext.js";
+import { odooUserProvisioningService } from "../services/odoo/user-provisioning.service.js";
 interface OdooProvisionResponse {
   success: boolean;
   databaseName: string;
@@ -113,6 +133,27 @@ export class OdooController extends Controller {
       success: true,
       ...result,
       loginUrl,
+    };
+  }
+
+  @Post("/provision-user")
+  @Security("jwt")
+  public async provisionUser(@Request() request: AuthenticatedRequest): Promise<{
+    success: boolean;
+    odooUid: number;
+    odooLogin: string;
+    hasApiKey: boolean;
+  }> {
+    const userId = request.betterAuthSession!.user.id;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
+
+    const result = await odooUserProvisioningService.provisionUser(userId, organizationId);
+
+    return {
+      success: true,
+      odooUid: result.odooUid,
+      odooLogin: result.odooLogin,
+      hasApiKey: result.odooPassword.includes("_"), // API keys have underscore
     };
   }
 
@@ -341,5 +382,143 @@ export class OdooController extends Controller {
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
     return client.execute(body.model, body.method, body.args || [], body.kwargs || {});
+  }
+
+  @Get("/dev-credentials")
+  @Security("jwt")
+  public async getOdooDevCredentials(@Request() req: AuthenticatedRequest): Promise<{
+    login: string;
+    password: string;
+    webUrl: string;
+  } | null> {
+    const userId = req.betterAuthSession!.user.id;
+    const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
+
+    return await getOdooDevCredentialsOp(req.drizzle, userId, organizationId);
+  }
+
+  @Get("/user-credentials")
+  @Security("jwt")
+  public async getOdooUserCredentials(@Request() req: AuthenticatedRequest): Promise<{
+    login: string;
+    password: string;
+    webUrl: string;
+  } | null> {
+    const userId = req.betterAuthSession!.user.id;
+    const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
+
+    let credentials = await getOdooUserWebCredentials(req.drizzle, userId, organizationId);
+
+    if (!credentials) {
+      await odooUserProvisioningService.provisionUser(userId, organizationId);
+
+      credentials = await getOdooUserWebCredentials(req.drizzle, userId, organizationId);
+    }
+
+    return credentials;
+  }
+
+  @Get("/admin-credentials")
+  @Security("jwt")
+  public async getOdooAdminCredentialsEndpoint(@Request() req: AuthenticatedRequest): Promise<{
+    databaseName: string;
+    adminLogin: string;
+    adminPassword: string;
+    webUrl: string;
+  } | null> {
+    const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
+
+    const credentials = await getOdooAdminCredentials(req.drizzle, organizationId);
+
+    if (!credentials) {
+      return null;
+    }
+
+    return {
+      databaseName: credentials.databaseName,
+      adminLogin: credentials.adminLogin,
+      adminPassword: credentials.adminPassword,
+      webUrl: `${credentials.odooUrl}/web/login?db=${credentials.databaseName}`,
+    };
+  }
+
+  @Post("/install-modules")
+  @Security("jwt")
+  @SuccessResponse("200", "Modules installed successfully")
+  public async installOdooModules(
+    @Request() req: AuthenticatedRequest,
+  ): Promise<{ success: boolean; message: string }> {
+    const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
+    const ctx = getServerContext();
+
+    const result = await installOdooModulesOp(organizationId, ctx.logger);
+
+    if (!result.success) {
+      this.setStatus(500);
+    }
+
+    return result;
+  }
+
+  @Get("/models/{modelName}/fields")
+  @Security("jwt")
+  public async getOdooModelFields(
+    @Request() req: AuthenticatedRequest,
+    @Path() modelName: string,
+    @Query() simple?: boolean,
+  ): Promise<
+    | Record<string, unknown>
+    | Array<{
+        name: string;
+        type: string;
+        label: string;
+        required?: boolean;
+        readonly?: boolean;
+      }>
+  > {
+    const userId = req.betterAuthSession!.user.id;
+    const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
+
+    return await getOdooModelFieldsOp(userId, organizationId, modelName, simple);
+  }
+
+  @Get("/database-info")
+  @Security("jwt")
+  public async getOdooDatabaseInfo(@Request() req: AuthenticatedRequest): Promise<{
+    database: {
+      name: string;
+      exists: boolean;
+      loginUrl: string;
+    };
+    users: Array<{
+      id: number;
+      name: string;
+      login: string;
+      email: string;
+      active: boolean;
+      groups: Array<{
+        id: number;
+        name: string;
+        fullName: string;
+      }>;
+    }>;
+    modules: Array<{
+      id: number;
+      name: string;
+      displayName: string;
+      state: string;
+      summary: string;
+    }>;
+    accessGroups: Array<{
+      id: number;
+      name: string;
+      fullName: string;
+      category: string;
+      users: number[];
+    }>;
+  }> {
+    const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
+
+    return await getOdooDatabaseInfoOp(req.drizzle, organizationId);
   }
 }
