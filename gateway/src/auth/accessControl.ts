@@ -114,6 +114,75 @@ export function canManageRole(roleA: string, roleB: string): boolean {
   return levelA < levelB;
 }
 
+// Data scope types (must match database enum)
+export const dataScopes = {
+  global: "global",      // See all organization data
+  department: "department", // See only department data
+  team: "team",          // See only team data
+  assigned: "assigned",  // See only data assigned to them
+  own: "own",            // See only data they created
+} as const;
+
+export type DataScope = typeof dataScopes[keyof typeof dataScopes];
+
+// Map roles to default data scopes per service type
+export const roleDefaultScopes: Record<string, Partial<Record<string, DataScope>>> = {
+  owner: {
+    accounting: "global",
+    hr: "global",
+    crm: "global",
+    sales: "global",
+    purchase: "global",
+  },
+  admin: {
+    accounting: "global",
+    hr: "global",
+    crm: "global",
+    sales: "global",
+    purchase: "global",
+  },
+  accounting_manager: {
+    accounting: "global",
+    hr: "own",
+    crm: "department",
+    sales: "department",
+  },
+  accountant: {
+    accounting: "assigned",
+    hr: "own",
+    crm: "own",
+  },
+  sales_manager: {
+    accounting: "team",
+    hr: "team",
+    crm: "team",
+    sales: "team",
+  },
+  sales_rep: {
+    accounting: "assigned",
+    hr: "own",
+    crm: "assigned",
+    sales: "assigned",
+  },
+  hr_manager: {
+    accounting: "department",
+    hr: "global",
+    crm: "own",
+  },
+  member: {
+    accounting: "own",
+    hr: "own",
+    crm: "own",
+    sales: "own",
+  },
+  viewer: {
+    accounting: "own",
+    hr: "own",
+    crm: "own",
+    sales: "own",
+  },
+};
+
 export const defaultRoles = {
   owner: {
     name: "Owner",

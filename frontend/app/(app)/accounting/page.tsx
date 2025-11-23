@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   FileText,
@@ -22,10 +22,28 @@ import {
 } from "@/lib/api/hooks";
 
 export default function AccountingPage() {
-  const [dateRange, setDateRange] = useState({
-    from: new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString().split("T")[0],
-    to: new Date().toISOString().split("T")[0],
-  });
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Get date range from URL or use defaults
+  const defaultFrom = new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+    .toISOString()
+    .split("T")[0];
+  const defaultTo = new Date().toISOString().split("T")[0];
+
+  const dateRange = {
+    from: searchParams.get("from") || defaultFrom,
+    to: searchParams.get("to") || defaultTo,
+  };
+
+  // Update URL when date range changes
+  const setDateRange = (newRange: { from?: string; to?: string }) => {
+    const params = new URLSearchParams(searchParams);
+    if (newRange.from) params.set("from", newRange.from);
+    if (newRange.to) params.set("to", newRange.to);
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   // Fetch data
   const { data: invoices } = useInvoices({ limit: 5 });
@@ -125,14 +143,14 @@ export default function AccountingPage() {
             <input
               type="date"
               value={dateRange.from}
-              onChange={(e) => setDateRange((prev) => ({ ...prev, from: e.target.value }))}
+              onChange={(e) => setDateRange({ from: e.target.value, to: dateRange.to })}
               className="text-sm border-0 focus:ring-0 p-0"
             />
             <span className="text-gray-400">→</span>
             <input
               type="date"
               value={dateRange.to}
-              onChange={(e) => setDateRange((prev) => ({ ...prev, to: e.target.value }))}
+              onChange={(e) => setDateRange({ from: dateRange.from, to: e.target.value })}
               className="text-sm border-0 focus:ring-0 p-0"
             />
           </div>
@@ -192,35 +210,35 @@ export default function AccountingPage() {
           </div>
           <div className="p-6">
             {invoices?.invoices && invoices.invoices.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {invoices.invoices.map((invoice) => (
                   <Link
                     key={invoice.id}
                     href={`/accounting/invoices/${invoice.id}`}
-                    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="block p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-                        <FileText className="w-5 h-5 text-blue-600" />
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <FileText className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                        <span className="font-mono text-sm font-medium text-gray-900 truncate" title={invoice.number}>
+                          {invoice.number}
+                        </span>
                       </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{invoice.number}</p>
-                        <p className="text-sm text-gray-600">{invoice.date}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-gray-900">${invoice.total.toLocaleString()}</p>
                       <span
-                        className={`text-xs px-2 py-1 rounded ${
+                        className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ml-2 ${
                           invoice.status === "posted"
-                            ? "bg-green-100 text-green-800"
+                            ? "bg-green-100 text-green-700"
                             : invoice.status === "draft"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-gray-100 text-gray-800"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-gray-100 text-gray-700"
                         }`}
                       >
                         {invoice.status}
                       </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-500">{new Date(invoice.date).toLocaleDateString()}</span>
+                      <span className="font-semibold text-gray-900">${invoice.total.toLocaleString()}</span>
                     </div>
                   </Link>
                 ))}
@@ -241,35 +259,35 @@ export default function AccountingPage() {
           </div>
           <div className="p-6">
             {bills?.bills && bills.bills.length > 0 ? (
-              <div className="space-y-3">
+              <div className="space-y-2">
                 {bills.bills.map((bill) => (
                   <Link
                     key={bill.id}
                     href={`/accounting/bills/${bill.id}`}
-                    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="block p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-orange-50 flex items-center justify-center">
-                        <Receipt className="w-5 h-5 text-orange-600" />
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <Receipt className="w-4 h-4 text-orange-600 flex-shrink-0" />
+                        <span className="font-mono text-sm font-medium text-gray-900 truncate" title={bill.number}>
+                          {bill.number}
+                        </span>
                       </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{bill.number}</p>
-                        <p className="text-sm text-gray-600">{bill.date}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-gray-900">${bill.total.toLocaleString()}</p>
                       <span
-                        className={`text-xs px-2 py-1 rounded ${
+                        className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ml-2 ${
                           bill.status === "posted"
-                            ? "bg-green-100 text-green-800"
+                            ? "bg-green-100 text-green-700"
                             : bill.status === "draft"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-gray-100 text-gray-800"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-gray-100 text-gray-700"
                         }`}
                       >
                         {bill.status}
                       </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-500">{new Date(bill.date).toLocaleDateString()}</span>
+                      <span className="font-semibold text-gray-900">${bill.total.toLocaleString()}</span>
                     </div>
                   </Link>
                 ))}
@@ -290,34 +308,34 @@ export default function AccountingPage() {
           </div>
           <div className="p-6">
             {payments && payments.length > 0 ? (
-              <div className="space-y-3">
-                {payments.map((payment) => (
+              <div className="space-y-2">
+                {payments.slice(0, 5).map((payment) => (
                   <div
                     key={payment.id}
-                    className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="block p-3 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
-                        <CreditCard className="w-5 h-5 text-green-600" />
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-2 flex-1 min-w-0">
+                        <CreditCard className="w-4 h-4 text-green-600 flex-shrink-0" />
+                        <span className="font-mono text-sm font-medium text-gray-900 truncate" title={payment.ref || `#${payment.id}`}>
+                          {payment.ref || `#${payment.id}`}
+                        </span>
                       </div>
-                      <div>
-                        <p className="font-medium text-gray-900">{payment.ref || `Payment #${payment.id}`}</p>
-                        <p className="text-sm text-gray-600">{payment.paymentDate}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold text-gray-900">${payment.amount.toLocaleString()}</p>
                       <span
-                        className={`text-xs px-2 py-1 rounded ${
+                        className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ml-2 ${
                           payment.state === "posted"
-                            ? "bg-green-100 text-green-800"
+                            ? "bg-green-100 text-green-700"
                             : payment.state === "draft"
-                              ? "bg-yellow-100 text-yellow-800"
-                              : "bg-gray-100 text-gray-800"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-gray-100 text-gray-700"
                         }`}
                       >
                         {payment.state}
                       </span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-500">{new Date(payment.paymentDate).toLocaleDateString()}</span>
+                      <span className="font-semibold text-gray-900">${payment.amount.toLocaleString()}</span>
                     </div>
                   </div>
                 ))}

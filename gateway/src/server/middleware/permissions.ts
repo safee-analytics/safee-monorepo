@@ -208,3 +208,70 @@ export async function isInApprovalWorkflow(
     return false;
   }
 }
+
+/**
+ * Get user's data scope for a specific service
+ * Returns the scope from userServices table, or falls back to role-based default
+ */
+export async function getUserDataScope(
+  userId: string,
+  organizationId: string,
+  serviceName: string,
+): Promise<{
+  scope: "global" | "department" | "team" | "assigned" | "own";
+  departmentId?: string;
+  teamId?: string;
+  userId: string;
+}> {
+  const ctx = getServerContext();
+
+  try {
+    // Get the service ID
+    const service = await ctx.drizzle.query.services.findFirst({
+      where: eq(schema.services.name, serviceName),
+    });
+
+    if (!service) {
+      ctx.logger.warn({ serviceName }, "Service not found, defaulting to 'own' scope");
+      return { scope: "own", userId };
+    }
+
+    // Get user's service configuration
+    const userService = await ctx.drizzle.query.userServices.findFirst({
+      where: and(eq(schema.userServices.userId, userId), eq(schema.userServices.serviceId, service.id)),
+    });
+
+    if (userService && userService.isEnabled) {
+      return {
+        scope: userService.dataScope as "global" | "department" | "team" | "assigned" | "own",
+        departmentId: userService.departmentId ?? undefined,
+        teamId: userService.teamId ?? undefined,
+        userId,
+      };
+    }
+
+    // Fallback: Get user's role and use default scope
+    const member = await ctx.drizzle.query.members.findFirst({
+      where: and(eq(schema.members.userId, userId), eq(schema.members.organizationId, organizationId)),
+    });
+
+    if (!member) {
+      return { scope: "own", userId };
+    }
+
+    // Import roleDefaultScopes from accessControl
+    const { roleDefaultScopes } = await import("../../auth/accessControl.js");
+    const defaultScope =
+      roleDefaultScopes[member.role]?.[service.serviceType] ||
+      roleDefaultScopes[member.role]?.[serviceName] ||
+      "own";
+
+    return {
+      scope: defaultScope as "global" | "department" | "team" | "assigned" | "own",
+      userId,
+    };
+  } catch (error) {
+    ctx.logger.error({ error, userId, serviceName }, "Error getting user data scope");
+    return { scope: "own", userId };
+  }
+}

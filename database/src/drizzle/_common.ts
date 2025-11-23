@@ -177,6 +177,37 @@ export const odooOperationStatusEnum = odooSchema.enum("operation_status", [
 
 export const odooCircuitStateEnum = odooSchema.enum("circuit_state", ["CLOSED", "OPEN", "HALF_OPEN"]);
 
+export const serviceTypeEnum = systemSchema.enum("service_type", [
+  "accounting",
+  "sales",
+  "crm",
+  "purchase",
+  "inventory",
+  "mrp",
+  "hr",
+  "payroll",
+  "recruitment",
+  "expenses",
+  "project",
+  "timesheet",
+  "website",
+  "ecommerce",
+  "point_of_sale",
+  "marketing",
+  "email_marketing",
+  "helpdesk",
+  "planning",
+  "field_service",
+]);
+
+export const dataScopeEnum = identitySchema.enum("data_scope", [
+  "global",
+  "department",
+  "team",
+  "assigned",
+  "own",
+]);
+
 export type ApprovalStatus = (typeof approvalStatusEnum.enumValues)[number];
 export type InvoiceType = (typeof invoiceTypeEnum.enumValues)[number];
 export type ContactType = (typeof contactTypeEnum.enumValues)[number];
@@ -204,6 +235,8 @@ export type NoteType = (typeof noteTypeEnum.enumValues)[number];
 export type AssignmentRole = (typeof assignmentRoleEnum.enumValues)[number];
 export type OdooOperationStatus = (typeof odooOperationStatusEnum.enumValues)[number];
 export type OdooCircuitState = (typeof odooCircuitStateEnum.enumValues)[number];
+export type ServiceType = (typeof serviceTypeEnum.enumValues)[number];
+export type DataScope = (typeof dataScopeEnum.enumValues)[number];
 
 export const schemas = {
   identity: identitySchema,

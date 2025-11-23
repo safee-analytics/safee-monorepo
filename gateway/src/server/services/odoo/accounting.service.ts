@@ -128,14 +128,22 @@ export class OdooAccountingService {
     );
   }
 
-  async getInvoices(filters?: {
-    moveType?: "out_invoice" | "out_refund" | "in_invoice" | "in_refund";
-    partnerId?: number;
-    state?: "draft" | "posted" | "cancel";
-    paymentState?: "not_paid" | "in_payment" | "paid" | "partial" | "reversed";
-    dateFrom?: string;
-    dateTo?: string;
-  }): Promise<OdooInvoice[]> {
+  async getInvoices(
+    filters?: {
+      moveType?: "out_invoice" | "out_refund" | "in_invoice" | "in_refund";
+      partnerId?: number;
+      state?: "draft" | "posted" | "cancel";
+      paymentState?: "not_paid" | "in_payment" | "paid" | "partial" | "reversed";
+      dateFrom?: string;
+      dateTo?: string;
+    },
+    dataScope?: {
+      scope: "global" | "department" | "team" | "assigned" | "own";
+      userId: string;
+      departmentId?: string;
+      teamId?: string;
+    },
+  ): Promise<OdooInvoice[]> {
     const domain: Array<string | [string, string, unknown]> = [];
 
     if (filters?.moveType) {
@@ -155,6 +163,12 @@ export class OdooAccountingService {
     }
     if (filters?.dateTo) {
       domain.push(["invoice_date", "<=", filters.dateTo]);
+    }
+
+    // Apply data scope filtering if provided
+    if (dataScope) {
+      const { applyAccountingDataScope } = await import("./dataScopeFilters.js");
+      await applyAccountingDataScope(this.client, domain, dataScope);
     }
 
     return this.client.searchRead<OdooInvoice>(

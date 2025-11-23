@@ -1,28 +1,5 @@
-import { varchar, timestamp, boolean, text, pgEnum } from "drizzle-orm/pg-core";
-import { systemSchema, idpk } from "./_common.js";
-
-export const serviceTypeEnum = pgEnum("service_type", [
-  "accounting",
-  "sales",
-  "crm",
-  "purchase",
-  "inventory",
-  "mrp",
-  "hr",
-  "payroll",
-  "recruitment",
-  "expenses",
-  "project",
-  "timesheet",
-  "website",
-  "ecommerce",
-  "point_of_sale",
-  "marketing",
-  "email_marketing",
-  "helpdesk",
-  "planning",
-  "field_service",
-]);
+import { varchar, timestamp, boolean, text } from "drizzle-orm/pg-core";
+import { systemSchema, idpk, serviceTypeEnum } from "./_common.js";
 
 export const services = systemSchema.table("services", {
   id: idpk("id"),

@@ -62,17 +62,30 @@ export class HisabiqController extends Controller {
     limit: number;
   }> {
     const service = await this.getAccountingService(request);
+    const userId = request.betterAuthSession!.user.id;
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
+
+    // Import data scope utilities
+    const { getUserDataScope } = await import("../middleware/permissions.js");
+    const { applyAccountingDataScope } = await import("../services/odoo/dataScopeFilters.js");
+
+    // Get user's data scope for accounting module
+    const dataScope = await getUserDataScope(userId, organizationId, "accounting");
 
     let moveType: "out_invoice" | "in_invoice" | undefined;
     if (type === "SALES") moveType = "out_invoice";
     if (type === "PURCHASE") moveType = "in_invoice";
 
-    const odooInvoices = await service.getInvoices({
-      moveType,
-      state,
-      dateFrom,
-      dateTo,
-    });
+    // Get invoices with data scope filtering
+    const odooInvoices = await service.getInvoices(
+      {
+        moveType,
+        state,
+        dateFrom,
+        dateTo,
+      },
+      dataScope, // Pass data scope to service
+    );
 
     const invoices: Invoice[] = odooInvoices.map((inv) => ({
       id: inv.id ? inv.id.toString() : "",
