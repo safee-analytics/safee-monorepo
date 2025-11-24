@@ -11,8 +11,10 @@ import {
   Body,
   Query,
   SuccessResponse,
+  NoSecurity,
 } from "tsoa";
-import { odooDatabaseService } from "../services/odoo/database.service.js";
+import { OdooDatabaseService } from "../services/odoo/database.service.js";
+import { OdooUserProvisioningService } from "../services/odoo/user-provisioning.service.js";
 import { getOdooClientManager } from "../services/odoo/manager.service.js";
 import { OdooClient } from "../services/odoo/client.js";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
@@ -24,7 +26,6 @@ import { installOdooModules as installOdooModulesOp } from "../operations/instal
 import { getOdooModelFields as getOdooModelFieldsOp } from "../operations/getOdooModelFields.js";
 import { getOdooDatabaseInfo as getOdooDatabaseInfoOp } from "../operations/getOdooDatabaseInfo.js";
 import { getServerContext } from "../serverContext.js";
-import { odooUserProvisioningService } from "../services/odoo/user-provisioning.service.js";
 interface OdooProvisionResponse {
   success: boolean;
   databaseName: string;
@@ -114,6 +115,18 @@ interface OdooExecuteRequest {
 @Route("odoo")
 @Tags("Odoo")
 export class OdooController extends Controller {
+  @NoSecurity()
+  private getDatabaseService(): OdooDatabaseService {
+    const { drizzle } = getServerContext();
+    return new OdooDatabaseService(drizzle);
+  }
+
+  @NoSecurity()
+  private getUserProvisioningService(): OdooUserProvisioningService {
+    const { drizzle } = getServerContext();
+    return new OdooUserProvisioningService(drizzle);
+  }
+
   @Post("/provision")
   @Security("jwt")
   public async provisionDatabase(@Request() request: AuthenticatedRequest): Promise<OdooProvisionResponse> {
@@ -125,9 +138,10 @@ export class OdooController extends Controller {
       });
     }
 
-    const result = await odooDatabaseService.provisionDatabase(organizationId);
+    const databaseService = this.getDatabaseService();
+    const result = await databaseService.provisionDatabase(organizationId);
 
-    const loginUrl = await odooDatabaseService.getAuthUrl(organizationId);
+    const loginUrl = await databaseService.getAuthUrl(organizationId);
 
     return {
       success: true,
@@ -147,7 +161,8 @@ export class OdooController extends Controller {
     const userId = request.betterAuthSession!.user.id;
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
 
-    const result = await odooUserProvisioningService.provisionUser(userId, organizationId);
+    const userProvisioningService = this.getUserProvisioningService();
+    const result = await userProvisioningService.provisionUser(userId, organizationId);
 
     return {
       success: true,
@@ -162,11 +177,11 @@ export class OdooController extends Controller {
   public async getDatabaseInfo(@Request() request: AuthenticatedRequest): Promise<OdooInfoResponse> {
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
 
-    const info = await odooDatabaseService.getDatabaseInfo(organizationId);
+    const info = await this.getDatabaseService().getDatabaseInfo(organizationId);
 
     let loginUrl: string | null = null;
     if (info.exists) {
-      loginUrl = await odooDatabaseService.getAuthUrl(organizationId);
+      loginUrl = await this.getDatabaseService().getAuthUrl(organizationId);
     }
 
     return {
@@ -180,7 +195,7 @@ export class OdooController extends Controller {
   public async deleteDatabase(@Request() request: AuthenticatedRequest): Promise<OdooDeleteResponse> {
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
 
-    await odooDatabaseService.deleteDatabase(organizationId);
+    await this.getDatabaseService().deleteDatabase(organizationId);
 
     return {
       success: true,
@@ -196,7 +211,7 @@ export class OdooController extends Controller {
   ): Promise<OdooDuplicateResponse> {
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
 
-    const info = await odooDatabaseService.getDatabaseInfo(organizationId);
+    const info = await this.getDatabaseService().getDatabaseInfo(organizationId);
     if (!info.exists) {
       throw new Error("Cannot duplicate: Database does not exist");
     }
@@ -225,7 +240,7 @@ export class OdooController extends Controller {
   ): Promise<{ success: boolean; data: string }> {
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
 
-    const info = await odooDatabaseService.getDatabaseInfo(organizationId);
+    const info = await this.getDatabaseService().getDatabaseInfo(organizationId);
     if (!info.exists) {
       throw new Error("Cannot backup: Database does not exist");
     }
@@ -249,7 +264,7 @@ export class OdooController extends Controller {
   @Security("jwt")
   public async listAllDatabases(): Promise<OdooListResponse> {
     // TODO: Add role-based authorization to restrict this to admins only
-    const databases = await odooDatabaseService.listAllDatabases();
+    const databases = await this.getDatabaseService().listAllDatabases();
 
     return {
       databases,
@@ -260,11 +275,11 @@ export class OdooController extends Controller {
   @Security("jwt")
   public async getDatabaseInfoByOrganization(@Path() organizationId: string): Promise<OdooInfoResponse> {
     // TODO: Add role-based authorization to restrict this to admins only
-    const info = await odooDatabaseService.getDatabaseInfo(organizationId);
+    const info = await this.getDatabaseService().getDatabaseInfo(organizationId);
 
     let loginUrl: string | null = null;
     if (info.exists) {
-      loginUrl = await odooDatabaseService.getAuthUrl(organizationId);
+      loginUrl = await this.getDatabaseService().getAuthUrl(organizationId);
     }
 
     return {
@@ -410,7 +425,7 @@ export class OdooController extends Controller {
     let credentials = await getOdooUserWebCredentials(req.drizzle, userId, organizationId);
 
     if (!credentials) {
-      await odooUserProvisioningService.provisionUser(userId, organizationId);
+      await this.getUserProvisioningService().provisionUser(userId, organizationId);
 
       credentials = await getOdooUserWebCredentials(req.drizzle, userId, organizationId);
     }
@@ -451,7 +466,7 @@ export class OdooController extends Controller {
     const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
     const ctx = getServerContext();
 
-    const result = await installOdooModulesOp(organizationId, ctx.logger);
+    const result = await installOdooModulesOp(organizationId, ctx.logger, ctx.drizzle);
 
     if (!result.success) {
       this.setStatus(500);

@@ -264,5 +264,3 @@ export class OdooModuleService {
     );
   }
 }
-
-export const odooModuleService = new OdooModuleService();

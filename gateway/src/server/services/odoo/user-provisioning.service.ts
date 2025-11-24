@@ -1,5 +1,5 @@
 import type { DrizzleClient } from "@safee/database";
-import { schema, connect } from "@safee/database";
+import { schema } from "@safee/database";
 import { eq, and } from "drizzle-orm";
 import crypto from "crypto";
 import { encryptionService } from "../encryption.js";
@@ -779,6 +779,3 @@ export class OdooUserProvisioningService {
     this.logger.info({ userId, odooUid: odooUser.odooUid }, "Odoo user deactivated");
   }
 }
-
-const { drizzle } = connect("odoo-user-provisioning");
-export const odooUserProvisioningService = new OdooUserProvisioningService(drizzle);

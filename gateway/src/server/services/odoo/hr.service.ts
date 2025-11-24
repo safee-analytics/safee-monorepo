@@ -1,0 +1,527 @@
+import type { OdooClient } from "./client.service.js";
+
+export interface OdooEmployee {
+  id: number;
+  name: string;
+  work_email?: string;
+  work_phone?: string;
+  mobile_phone?: string;
+  job_title?: string;
+  department_id?: [number, string];
+  parent_id?: [number, string];
+  address_id?: [number, string];
+  work_location_id?: [number, string];
+  user_id?: [number, string];
+  employee_type?: string;
+  gender?: string;
+  marital?: string;
+  birthday?: string;
+  identification_id?: string;
+  passport_id?: string;
+  bank_account_id?: [number, string];
+  emergency_contact?: string;
+  emergency_phone?: string;
+  visa_no?: string;
+  visa_expire?: string;
+  work_permit_no?: string;
+  work_permit_expiration_date?: string;
+  certificate?: string;
+  study_field?: string;
+  study_school?: string;
+  place_of_birth?: string;
+  country_of_birth?: [number, string];
+  active?: boolean;
+}
+
+export interface OdooDepartment {
+  id: number;
+  name: string;
+  code?: string;
+  manager_id?: [number, string];
+  parent_id?: [number, string];
+  company_id?: [number, string];
+  active?: boolean;
+}
+
+export interface OdooContract {
+  id: number;
+  name: string;
+  employee_id: [number, string];
+  date_start: string;
+  date_end?: string;
+  state: string;
+  job_id?: [number, string];
+  department_id?: [number, string];
+  wage: number;
+  wage_type: string;
+  struct_id?: [number, string];
+  resource_calendar_id?: [number, string];
+  notes?: string;
+}
+
+export interface OdooLeaveType {
+  id: number;
+  name: string;
+  code?: string;
+  allocation_unit: string;
+  request_unit: string;
+  time_type: string;
+  color?: number;
+  validation_type: string;
+  max_leaves?: number;
+  leaves_per_year?: number;
+  unpaid?: boolean;
+}
+
+export interface OdooLeaveRequest {
+  id: number;
+  employee_id: [number, string];
+  holiday_status_id: [number, string];
+  date_from: string;
+  date_to: string;
+  number_of_days: number;
+  state: string;
+  request_date_from?: string;
+  request_unit_half?: boolean;
+  request_unit_hours?: boolean;
+  request_hour_from?: string;
+  request_hour_to?: string;
+  notes?: string;
+  manager_id?: [number, string];
+  department_id?: [number, string];
+}
+
+export interface OdooLeaveAllocation {
+  id: number;
+  employee_id: [number, string];
+  holiday_status_id: [number, string];
+  number_of_days: number;
+  number_of_days_display?: number;
+  date_from?: string;
+  date_to?: string;
+  state: string;
+  name?: string;
+  notes?: string;
+}
+
+export interface OdooPayslip {
+  id: number;
+  number: string;
+  employee_id: [number, string];
+  date_from: string;
+  date_to: string;
+  state: string;
+  basic_wage?: number;
+  net_wage?: number;
+  gross_wage?: number;
+  contract_id?: [number, string];
+  struct_id?: [number, string];
+  credit_note?: boolean;
+  paid_date?: string;
+}
+
+export interface OdooPayslipLine {
+  id: number;
+  slip_id: [number, string];
+  name: string;
+  code: string;
+  category_id?: [number, string];
+  sequence?: number;
+  quantity?: number;
+  rate?: number;
+  amount: number;
+}
+
+export class OdooHRService {
+  constructor(private readonly client: OdooClient) {}
+
+  async getEmployees(filters?: { departmentId?: number; active?: boolean }): Promise<OdooEmployee[]> {
+    const domain: Array<[string, string, unknown]> = [];
+
+    if (filters?.departmentId) {
+      domain.push(["department_id", "=", filters.departmentId]);
+    }
+    if (filters?.active !== false) {
+      domain.push(["active", "=", true]);
+    }
+
+    return this.client.searchRead<OdooEmployee>("hr.employee", domain, [
+      "name",
+      "work_email",
+      "work_phone",
+      "mobile_phone",
+      "job_title",
+      "department_id",
+      "parent_id",
+      "address_id",
+      "work_location_id",
+      "user_id",
+      "employee_type",
+      "gender",
+      "marital",
+      "birthday",
+      "identification_id",
+      "passport_id",
+      "bank_account_id",
+      "emergency_contact",
+      "emergency_phone",
+      "visa_no",
+      "visa_expire",
+      "work_permit_no",
+      "work_permit_expiration_date",
+      "certificate",
+      "study_field",
+      "study_school",
+      "place_of_birth",
+      "country_of_birth",
+      "active",
+    ]);
+  }
+
+  async getEmployee(employeeId: number): Promise<OdooEmployee | null> {
+    const employees = await this.client.read<OdooEmployee>(
+      "hr.employee",
+      [employeeId],
+      [
+        "name",
+        "work_email",
+        "work_phone",
+        "mobile_phone",
+        "job_title",
+        "department_id",
+        "parent_id",
+        "address_id",
+        "work_location_id",
+        "user_id",
+        "employee_type",
+        "gender",
+        "marital",
+        "birthday",
+        "identification_id",
+        "passport_id",
+        "bank_account_id",
+        "emergency_contact",
+        "emergency_phone",
+        "visa_no",
+        "visa_expire",
+        "work_permit_no",
+        "work_permit_expiration_date",
+        "certificate",
+        "study_field",
+        "study_school",
+        "place_of_birth",
+        "country_of_birth",
+        "active",
+      ],
+    );
+
+    return employees.length > 0 ? employees[0] : null;
+  }
+
+  async getDepartments(filters?: { parentId?: number; active?: boolean }): Promise<OdooDepartment[]> {
+    const domain: Array<[string, string, unknown]> = [];
+
+    if (filters?.parentId !== undefined) {
+      domain.push(["parent_id", "=", filters.parentId]);
+    }
+    if (filters?.active !== false) {
+      domain.push(["active", "=", true]);
+    }
+
+    return this.client.searchRead<OdooDepartment>("hr.department", domain, [
+      "name",
+      "code",
+      "manager_id",
+      "parent_id",
+      "company_id",
+      "active",
+    ]);
+  }
+
+  async getDepartment(departmentId: number): Promise<OdooDepartment | null> {
+    const departments = await this.client.read<OdooDepartment>(
+      "hr.department",
+      [departmentId],
+      ["name", "code", "manager_id", "parent_id", "company_id", "active"],
+    );
+
+    return departments.length > 0 ? departments[0] : null;
+  }
+
+  async getContracts(filters?: { employeeId?: number; state?: string }): Promise<OdooContract[]> {
+    const domain: Array<[string, string, unknown]> = [];
+
+    if (filters?.employeeId) {
+      domain.push(["employee_id", "=", filters.employeeId]);
+    }
+    if (filters?.state) {
+      domain.push(["state", "=", filters.state]);
+    }
+
+    return this.client.searchRead<OdooContract>("hr.contract", domain, [
+      "name",
+      "employee_id",
+      "date_start",
+      "date_end",
+      "state",
+      "job_id",
+      "department_id",
+      "wage",
+      "wage_type",
+      "struct_id",
+      "resource_calendar_id",
+      "notes",
+    ]);
+  }
+
+  async getContract(contractId: number): Promise<OdooContract | null> {
+    const contracts = await this.client.read<OdooContract>(
+      "hr.contract",
+      [contractId],
+      [
+        "name",
+        "employee_id",
+        "date_start",
+        "date_end",
+        "state",
+        "job_id",
+        "department_id",
+        "wage",
+        "wage_type",
+        "struct_id",
+        "resource_calendar_id",
+        "notes",
+      ],
+    );
+
+    return contracts.length > 0 ? contracts[0] : null;
+  }
+
+  async getLeaveTypes(filters?: { active?: boolean }): Promise<OdooLeaveType[]> {
+    const domain: Array<[string, string, unknown]> = [];
+
+    if (filters?.active !== false) {
+      domain.push(["active", "=", true]);
+    }
+
+    return this.client.searchRead<OdooLeaveType>("hr.leave.type", domain, [
+      "name",
+      "code",
+      "allocation_unit",
+      "request_unit",
+      "time_type",
+      "color",
+      "validation_type",
+      "max_leaves",
+      "leaves_per_year",
+      "unpaid",
+    ]);
+  }
+
+  async getLeaveType(leaveTypeId: number): Promise<OdooLeaveType | null> {
+    const leaveTypes = await this.client.read<OdooLeaveType>(
+      "hr.leave.type",
+      [leaveTypeId],
+      [
+        "name",
+        "code",
+        "allocation_unit",
+        "request_unit",
+        "time_type",
+        "color",
+        "validation_type",
+        "max_leaves",
+        "leaves_per_year",
+        "unpaid",
+      ],
+    );
+
+    return leaveTypes.length > 0 ? leaveTypes[0] : null;
+  }
+
+  async getLeaveRequests(filters?: {
+    employeeId?: number;
+    leaveTypeId?: number;
+    state?: string;
+    dateFrom?: string;
+    dateTo?: string;
+  }): Promise<OdooLeaveRequest[]> {
+    const domain: Array<[string, string, unknown]> = [];
+
+    if (filters?.employeeId) {
+      domain.push(["employee_id", "=", filters.employeeId]);
+    }
+    if (filters?.leaveTypeId) {
+      domain.push(["holiday_status_id", "=", filters.leaveTypeId]);
+    }
+    if (filters?.state) {
+      domain.push(["state", "=", filters.state]);
+    }
+    if (filters?.dateFrom) {
+      domain.push(["date_from", ">=", filters.dateFrom]);
+    }
+    if (filters?.dateTo) {
+      domain.push(["date_to", "<=", filters.dateTo]);
+    }
+
+    return this.client.searchRead<OdooLeaveRequest>("hr.leave", domain, [
+      "employee_id",
+      "holiday_status_id",
+      "date_from",
+      "date_to",
+      "number_of_days",
+      "state",
+      "request_date_from",
+      "request_unit_half",
+      "request_unit_hours",
+      "request_hour_from",
+      "request_hour_to",
+      "notes",
+      "manager_id",
+      "department_id",
+    ]);
+  }
+
+  async getLeaveRequest(leaveId: number): Promise<OdooLeaveRequest | null> {
+    const leaves = await this.client.read<OdooLeaveRequest>(
+      "hr.leave",
+      [leaveId],
+      [
+        "employee_id",
+        "holiday_status_id",
+        "date_from",
+        "date_to",
+        "number_of_days",
+        "state",
+        "request_date_from",
+        "request_unit_half",
+        "request_unit_hours",
+        "request_hour_from",
+        "request_hour_to",
+        "notes",
+        "manager_id",
+        "department_id",
+      ],
+    );
+
+    return leaves.length > 0 ? leaves[0] : null;
+  }
+
+  async getLeaveAllocations(filters?: {
+    employeeId?: number;
+    leaveTypeId?: number;
+    state?: string;
+  }): Promise<OdooLeaveAllocation[]> {
+    const domain: Array<[string, string, unknown]> = [];
+
+    if (filters?.employeeId) {
+      domain.push(["employee_id", "=", filters.employeeId]);
+    }
+    if (filters?.leaveTypeId) {
+      domain.push(["holiday_status_id", "=", filters.leaveTypeId]);
+    }
+    if (filters?.state) {
+      domain.push(["state", "=", filters.state]);
+    }
+
+    return this.client.searchRead<OdooLeaveAllocation>("hr.leave.allocation", domain, [
+      "employee_id",
+      "holiday_status_id",
+      "number_of_days",
+      "number_of_days_display",
+      "date_from",
+      "date_to",
+      "state",
+      "name",
+      "notes",
+    ]);
+  }
+
+  async getLeaveAllocation(allocationId: number): Promise<OdooLeaveAllocation | null> {
+    const allocations = await this.client.read<OdooLeaveAllocation>(
+      "hr.leave.allocation",
+      [allocationId],
+      [
+        "employee_id",
+        "holiday_status_id",
+        "number_of_days",
+        "number_of_days_display",
+        "date_from",
+        "date_to",
+        "state",
+        "name",
+        "notes",
+      ],
+    );
+
+    return allocations.length > 0 ? allocations[0] : null;
+  }
+
+  async getPayslips(filters?: {
+    employeeId?: number;
+    state?: string;
+    dateFrom?: string;
+    dateTo?: string;
+  }): Promise<OdooPayslip[]> {
+    const domain: Array<[string, string, unknown]> = [];
+
+    if (filters?.employeeId) {
+      domain.push(["employee_id", "=", filters.employeeId]);
+    }
+    if (filters?.state) {
+      domain.push(["state", "=", filters.state]);
+    }
+    if (filters?.dateFrom) {
+      domain.push(["date_from", ">=", filters.dateFrom]);
+    }
+    if (filters?.dateTo) {
+      domain.push(["date_to", "<=", filters.dateTo]);
+    }
+
+    return this.client.searchRead<OdooPayslip>("hr.payslip", domain, [
+      "number",
+      "employee_id",
+      "date_from",
+      "date_to",
+      "state",
+      "basic_wage",
+      "net_wage",
+      "gross_wage",
+      "contract_id",
+      "struct_id",
+      "credit_note",
+      "paid_date",
+    ]);
+  }
+
+  async getPayslip(payslipId: number): Promise<OdooPayslip | null> {
+    const payslips = await this.client.read<OdooPayslip>(
+      "hr.payslip",
+      [payslipId],
+      [
+        "number",
+        "employee_id",
+        "date_from",
+        "date_to",
+        "state",
+        "basic_wage",
+        "net_wage",
+        "gross_wage",
+        "contract_id",
+        "struct_id",
+        "credit_note",
+        "paid_date",
+      ],
+    );
+
+    return payslips.length > 0 ? payslips[0] : null;
+  }
+
+  async getPayslipLines(payslipId: number): Promise<OdooPayslipLine[]> {
+    return this.client.searchRead<OdooPayslipLine>(
+      "hr.payslip.line",
+      [["slip_id", "=", payslipId]],
+      ["slip_id", "name", "code", "category_id", "sequence", "quantity", "rate", "amount"],
+    );
+  }
+}

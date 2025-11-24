@@ -1,8 +1,8 @@
 import type { DrizzleClient } from "@safee/database";
 import { schema, connect } from "@safee/database";
 import { eq, and } from "drizzle-orm";
-import { odooModuleService } from "./odoo/module.service.js";
-import { odooDatabaseService } from "./odoo/database.service.js";
+import { OdooModuleService } from "./odoo/module.service.js";
+import { OdooDatabaseService } from "./odoo/database.service.js";
 import { ServiceNotFound, ServiceAlreadyEnabled } from "../errors.js";
 import { env } from "../../env.js";
 import pino from "pino";
@@ -19,8 +19,13 @@ export interface EnableServiceForUserParams {
 
 export class ServiceManagementService {
   private logger = pino({ name: "service-management" });
+  private odooDatabaseService: OdooDatabaseService;
+  private odooModuleService: OdooModuleService;
 
-  constructor(private readonly drizzle: DrizzleClient) {}
+  constructor(private readonly drizzle: DrizzleClient) {
+    this.odooDatabaseService = new OdooDatabaseService(drizzle);
+    this.odooModuleService = new OdooModuleService();
+  }
 
   async enableServiceForOrganization(params: EnableServiceForOrganizationParams): Promise<void> {
     const { organizationId, serviceId } = params;
@@ -69,14 +74,14 @@ export class ServiceManagementService {
     }
 
     try {
-      const dbInfo = await odooDatabaseService.getDatabaseInfo(organizationId);
+      const dbInfo = await this.odooDatabaseService.getDatabaseInfo(organizationId);
       if (dbInfo.exists) {
-        const credentials = await odooDatabaseService.getCredentials(organizationId);
+        const credentials = await this.odooDatabaseService.getCredentials(organizationId);
         if (credentials) {
           const odooUrl = new URL(env.ODOO_URL);
           const odooPort = odooUrl.port ? parseInt(odooUrl.port) : odooUrl.protocol === "https:" ? 443 : 80;
 
-          await odooModuleService.installModules({
+          await this.odooModuleService.installModules({
             config: {
               url: credentials.odooUrl,
               port: odooPort,
