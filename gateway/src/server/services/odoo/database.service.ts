@@ -1,5 +1,5 @@
 import type { DrizzleClient } from "@safee/database";
-import { schema, connect } from "@safee/database";
+import { schema } from "@safee/database";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
 import { odooClient } from "./client.js";
@@ -9,7 +9,7 @@ import { env } from "../../../env.js";
 import { OrganizationNotFound, OdooDatabaseAlreadyExists, OdooDatabaseNotFound } from "../../errors.js";
 import { Logger } from "pino";
 import { getServerContext } from "../../serverContext.js";
-import { odooModuleService } from "./module.service.js";
+import { OdooModuleService } from "./module.service.js";
 
 export interface OdooProvisionResult {
   databaseName: string;
@@ -19,7 +19,11 @@ export interface OdooProvisionResult {
 }
 
 export class OdooDatabaseService {
-  constructor(private readonly drizzle: DrizzleClient) {}
+  private odooModuleService: OdooModuleService;
+
+  constructor(private readonly drizzle: DrizzleClient) {
+    this.odooModuleService = new OdooModuleService();
+  }
 
   private get logger(): Logger {
     return getServerContext().logger;
@@ -77,7 +81,7 @@ export class OdooDatabaseService {
       "api_key_service",
     ];
 
-    await odooModuleService.installModules({
+    await this.odooModuleService.installModules({
       config,
       modules: modulesToInstall,
       logger: this.logger,
@@ -285,6 +289,3 @@ export class OdooDatabaseService {
     );
   }
 }
-
-const { drizzle } = connect("odoo-service");
-export const odooDatabaseService = new OdooDatabaseService(drizzle);

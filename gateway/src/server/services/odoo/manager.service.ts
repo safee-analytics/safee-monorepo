@@ -3,7 +3,7 @@ import type { DrizzleClient } from "@safee/database";
 import { schema, eq, and } from "@safee/database";
 import { createOdooClient, type OdooClient, type OdooConnectionConfig } from "./client.service.js";
 import { OperationFailed } from "../../errors.js";
-import { odooUserProvisioningService } from "./user-provisioning.service.js";
+import { OdooUserProvisioningService } from "./user-provisioning.service.js";
 
 export class OdooClientManager {
   private clients: Map<string, { client: OdooClient; expiresAt: Date }> = new Map();
@@ -11,10 +11,12 @@ export class OdooClientManager {
   private logger: Logger;
   private drizzle: DrizzleClient;
   private creationPromises: Map<string, Promise<OdooClient>> = new Map();
+  private userProvisioningService: OdooUserProvisioningService;
 
   constructor(drizzle: DrizzleClient, logger: Logger) {
     this.drizzle = drizzle;
     this.logger = logger;
+    this.userProvisioningService = new OdooUserProvisioningService(drizzle);
 
     setInterval(() => this.cleanupExpiredClients(), 5 * 60 * 1000);
   }
@@ -53,12 +55,12 @@ export class OdooClientManager {
   }
 
   private async createClient(userId: string, organizationId: string): Promise<OdooClient> {
-    let userCredentials = await odooUserProvisioningService.getUserCredentials(userId, organizationId);
+    let userCredentials = await this.userProvisioningService.getUserCredentials(userId, organizationId);
 
     if (!userCredentials) {
       this.logger.info({ userId, organizationId }, "Auto-provisioning Odoo user");
-      await odooUserProvisioningService.provisionUser(userId, organizationId);
-      userCredentials = await odooUserProvisioningService.getUserCredentials(userId, organizationId);
+      await this.userProvisioningService.provisionUser(userId, organizationId);
+      userCredentials = await this.userProvisioningService.getUserCredentials(userId, organizationId);
 
       if (!userCredentials) {
         throw new OperationFailed("Failed to provision Odoo user");

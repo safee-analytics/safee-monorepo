@@ -1,11 +1,13 @@
 import type { OrganizationOptions } from "better-auth/plugins/organization";
 import { logger } from "../server/utils/logger.js";
-import { odooDatabaseService } from "../server/services/odoo/database.service.js";
-import { odooUserProvisioningService } from "../server/services/odoo/user-provisioning.service.js";
+import { OdooDatabaseService } from "../server/services/odoo/database.service.js";
+import { OdooUserProvisioningService } from "../server/services/odoo/user-provisioning.service.js";
 import { canManageRole } from "./accessControl.js";
 import { connect } from "@safee/database";
 
 const { drizzle } = connect("better-auth");
+const odooDatabaseService = new OdooDatabaseService(drizzle);
+const odooUserProvisioningService = new OdooUserProvisioningService(drizzle);
 
 export const organizationHooks: OrganizationOptions["organizationHooks"] = {
   beforeUpdateMemberRole: async ({ member: targetMember, newRole, user, organization }) => {
