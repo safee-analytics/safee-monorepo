@@ -5,9 +5,6 @@ import { auditTemplates } from "./auditTemplates.js";
 import { cases } from "./cases.js";
 import { users } from "./users.js";
 
-/**
- * Relations for auditScopes table
- */
 export const auditScopesRelations = relations(auditScopes, ({ one, many }) => ({
   case: one(cases, {
     fields: [auditScopes.caseId],

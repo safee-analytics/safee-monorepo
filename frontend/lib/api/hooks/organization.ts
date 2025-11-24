@@ -226,11 +226,9 @@ export function useOrganization(orgId: string) {
   return useQuery({
     queryKey: organizationQueryKeys.organization(orgId),
     queryFn: async () => {
-      // List all organizations user belongs to
       const { data: orgs, error } = await authClient.organization.list();
       if (error) throw new Error(error.message);
 
-      // Find the specific organization by ID
       const org = orgs?.find((o) => o.id === orgId);
       return org ?? null;
     },

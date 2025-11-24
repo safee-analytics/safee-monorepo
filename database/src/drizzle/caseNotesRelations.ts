@@ -4,9 +4,6 @@ import { cases } from "./cases.js";
 import { auditProcedures } from "./auditProcedures.js";
 import { users } from "./users.js";
 
-/**
- * Relations for caseNotes table
- */
 export const caseNotesRelations = relations(caseNotes, ({ one }) => ({
   case: one(cases, {
     fields: [caseNotes.caseId],

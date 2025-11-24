@@ -140,7 +140,6 @@ export const caseStatusEnum = auditSchema.enum("case_status", [
 
 export const casePriorityEnum = auditSchema.enum("case_priority", ["low", "medium", "high", "critical"]);
 
-// Export enum values for frontend validation
 export const CASE_STATUSES = caseStatusEnum.enumValues;
 export const CASE_PRIORITIES = casePriorityEnum.enumValues;
 
@@ -204,6 +203,82 @@ export type NoteType = (typeof noteTypeEnum.enumValues)[number];
 export type AssignmentRole = (typeof assignmentRoleEnum.enumValues)[number];
 export type OdooOperationStatus = (typeof odooOperationStatusEnum.enumValues)[number];
 export type OdooCircuitState = (typeof odooCircuitStateEnum.enumValues)[number];
+
+export const employeeTypeEnum = hrSchema.enum("employee_type", [
+  "employee",
+  "student",
+  "trainee",
+  "contractor",
+  "freelance",
+]);
+
+export const genderEnum = hrSchema.enum("gender", ["male", "female", "other"]);
+
+export const maritalStatusEnum = hrSchema.enum("marital_status", [
+  "single",
+  "married",
+  "cohabitant",
+  "widower",
+  "divorced",
+]);
+
+export const payslipStateEnum = hrSchema.enum("payslip_state", ["draft", "verify", "done", "cancel"]);
+
+export const leaveStateEnum = hrSchema.enum("leave_state", [
+  "draft",
+  "confirm",
+  "refuse",
+  "validate1",
+  "validate",
+  "cancel",
+]);
+
+export const contractStateEnum = hrSchema.enum("contract_state", ["draft", "open", "close", "cancel"]);
+
+export const wageTypeEnum = hrSchema.enum("wage_type", ["monthly", "hourly"]);
+
+export const allocationUnitEnum = hrSchema.enum("allocation_unit", ["day", "hour"]);
+
+export const requestUnitEnum = hrSchema.enum("request_unit", ["day", "hour"]);
+
+export const timeTypeEnum = hrSchema.enum("time_type", ["leave", "other"]);
+
+export const validationTypeEnum = hrSchema.enum("validation_type", [
+  "no_validation",
+  "hr",
+  "manager",
+  "both",
+]);
+
+export const payslipLineCategoryEnum = hrSchema.enum("payslip_line_category", [
+  "ALW",
+  "DED",
+  "BASIC",
+  "GROSS",
+  "NET",
+]);
+
+export const taxAmountTypeEnum = financeSchema.enum("tax_amount_type", ["percent", "division", "fixed"]);
+
+export const taxScopeEnum = financeSchema.enum("tax_scope", ["sale", "purchase", "none"]);
+
+export const taxTypeEnum = financeSchema.enum("tax_type", ["sale", "purchase", "none"]);
+
+export type EmployeeType = (typeof employeeTypeEnum.enumValues)[number];
+export type Gender = (typeof genderEnum.enumValues)[number];
+export type MaritalStatus = (typeof maritalStatusEnum.enumValues)[number];
+export type PayslipState = (typeof payslipStateEnum.enumValues)[number];
+export type LeaveState = (typeof leaveStateEnum.enumValues)[number];
+export type ContractState = (typeof contractStateEnum.enumValues)[number];
+export type WageType = (typeof wageTypeEnum.enumValues)[number];
+export type AllocationUnit = (typeof allocationUnitEnum.enumValues)[number];
+export type RequestUnit = (typeof requestUnitEnum.enumValues)[number];
+export type TimeType = (typeof timeTypeEnum.enumValues)[number];
+export type ValidationType = (typeof validationTypeEnum.enumValues)[number];
+export type PayslipLineCategory = (typeof payslipLineCategoryEnum.enumValues)[number];
+export type TaxAmountType = (typeof taxAmountTypeEnum.enumValues)[number];
+export type TaxScope = (typeof taxScopeEnum.enumValues)[number];
+export type TaxType = (typeof taxTypeEnum.enumValues)[number];
 
 export const schemas = {
   identity: identitySchema,

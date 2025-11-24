@@ -3,10 +3,6 @@ import { auditSchema, idpk } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
 
-/**
- * Audit templates table - Reusable audit structures
- * Used to define standard audit procedures (ICV, ISO, Financial, etc.)
- */
 export const auditTemplates = auditSchema.table(
   "audit_templates",
   {

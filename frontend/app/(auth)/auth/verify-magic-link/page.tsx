@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useVerifyMagicLink } from "@/lib/api/hooks";
 import { motion } from "framer-motion";
 
-export default function VerifyMagicLinkPage() {
+function VerifyMagicLinkContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const verifyMagicLinkMutation = useVerifyMagicLink();
@@ -93,5 +93,23 @@ export default function VerifyMagicLinkPage() {
         )}
       </motion.div>
     </div>
+  );
+}
+
+export default function VerifyMagicLinkPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+          <div className="bg-white rounded-xl shadow-lg p-8 max-w-md w-full text-center">
+            <div className="w-16 h-16 border-4 border-safee-200 border-t-safee-600 rounded-full animate-spin mx-auto mb-4"></div>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Loading...</h1>
+            <p className="text-gray-600">Please wait...</p>
+          </div>
+        </div>
+      }
+    >
+      <VerifyMagicLinkContent />
+    </Suspense>
   );
 }

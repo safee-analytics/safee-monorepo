@@ -31,16 +31,13 @@ export function Navigation() {
   const { t } = useTranslation();
   const { signOut, user } = useAuth();
 
-  // Fetch active organization from Better Auth
   const { data: activeOrg } = useActiveOrganization();
   const { data: allOrgs } = useListOrganizations();
 
-  // If no active org, use the first organization the user belongs to
   const displayOrg = activeOrg || allOrgs?.[0] || currentOrg;
 
   const { data: members } = useOrganizationMembers(displayOrg?.id || "");
 
-  // Get current user's role in the organization
   const currentMember = members?.find((m) => m.userId === user?.id);
   const userRole = currentMember?.role;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -49,7 +46,6 @@ export function Navigation() {
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Close user menu when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {

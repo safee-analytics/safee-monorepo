@@ -3,10 +3,6 @@ import { auditSchema, assignmentRoleEnum } from "./_common.js";
 import { cases } from "./cases.js";
 import { users } from "./users.js";
 
-/**
- * Case assignments table - User assignments to cases with roles
- * Junction table with composite primary key
- */
 export const caseAssignments = auditSchema.table(
   "case_assignments",
   {

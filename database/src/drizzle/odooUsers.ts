@@ -6,21 +6,18 @@ import { odooDatabases } from "./odooDatabases.js";
 export const odooUsers = odooSchema.table("odoo_users", {
   id: idpk("id"),
 
-  // Link to Safee user
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
 
-  // Link to Odoo database
   odooDatabaseId: uuid("odoo_database_id")
     .notNull()
     .references(() => odooDatabases.id, { onDelete: "cascade", onUpdate: "cascade" }),
 
-  // Odoo user details
-  odooUid: integer("odoo_uid").notNull(), // Odoo's internal user ID
-  odooLogin: varchar("odoo_login", { length: 255 }).notNull(), // Usually email
-  apiKey: varchar("api_key", { length: 512 }), // Encrypted API key for RPC operations (preferred, try first)
-  password: varchar("password", { length: 512 }).notNull(), // Encrypted password (fallback if API key unavailable)
+  odooUid: integer("odoo_uid").notNull(),
+  odooLogin: varchar("odoo_login", { length: 255 }).notNull(),
+  apiKey: varchar("api_key", { length: 512 }),
+  password: varchar("password", { length: 512 }).notNull(),
 
   // Status
   isActive: boolean("is_active").default(true).notNull(),
