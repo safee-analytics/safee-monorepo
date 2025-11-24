@@ -3,10 +3,6 @@ import { auditSchema, idpk } from "./_common.js";
 import { cases } from "./cases.js";
 import { users } from "./users.js";
 
-/**
- * Case history table - Audit trail for all changes
- * Stores before/after snapshots for diff generation
- */
 export const caseHistory = auditSchema.table(
   "case_history",
   {

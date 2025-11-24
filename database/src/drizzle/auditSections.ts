@@ -2,10 +2,6 @@ import { uuid, varchar, timestamp, text, boolean, integer, jsonb, index } from "
 import { auditSchema, idpk } from "./_common.js";
 import { auditScopes } from "./auditScopes.js";
 
-/**
- * Audit sections table - Sections within an audit scope
- * Groups related procedures together
- */
 export const auditSections = auditSchema.table(
   "audit_sections",
   {

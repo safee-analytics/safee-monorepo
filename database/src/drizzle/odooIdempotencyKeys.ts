@@ -3,36 +3,26 @@ import { idpk, odooSchema, odooOperationStatusEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
 
-/**
- * Idempotency tracking for Odoo operations
- * Prevents duplicate execution of operations when retrying
- */
 export const odooIdempotencyKeys = odooSchema.table(
   "idempotency_keys",
   {
     id: idpk("id"),
 
-    // Idempotency key (combination of operation + params hash)
     idempotencyKey: text("idempotency_key").notNull().unique(),
 
-    // Operation details
     operationType: text("operation_type").notNull(),
     odooModel: text("odoo_model"),
 
-    // Result caching
     status: odooOperationStatusEnum("status").notNull(),
     resultData: jsonb("result_data").$type<unknown>(),
     errorMessage: text("error_message"),
 
-    // Tracking
     firstAttemptAt: timestamp("first_attempt_at", { withTimezone: true }).defaultNow().notNull(),
     completedAt: timestamp("completed_at", { withTimezone: true }),
     expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
 
-    // Link to audit log
     operationId: text("operation_id").notNull(),
 
-    // User context
     userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
     organizationId: uuid("organization_id")
       .references(() => organizations.id, { onDelete: "cascade" })

@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { PDFDownloadLink, type DocumentProps } from "@react-pdf/renderer";
 

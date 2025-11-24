@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { PDFViewer as ReactPDFViewer, type DocumentProps } from "@react-pdf/renderer";
 

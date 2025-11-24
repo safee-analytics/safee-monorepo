@@ -13,10 +13,6 @@ import { cases } from "./cases.js";
 import { auditProcedures } from "./auditProcedures.js";
 import { users } from "./users.js";
 
-/**
- * Case documents table - File attachments for cases and procedures
- * Supports versioning via parentDocumentId
- */
 export const caseDocuments = auditSchema.table(
   "case_documents",
   {

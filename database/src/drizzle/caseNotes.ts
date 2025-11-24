@@ -4,10 +4,6 @@ import { cases } from "./cases.js";
 import { auditProcedures } from "./auditProcedures.js";
 import { users } from "./users.js";
 
-/**
- * Case notes table - Notes, observations, review comments, and memos
- * Can be attached to cases or specific procedures
- */
 export const caseNotes = auditSchema.table(
   "case_notes",
   {

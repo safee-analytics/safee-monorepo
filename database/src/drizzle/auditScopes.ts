@@ -4,10 +4,6 @@ import { cases } from "./cases.js";
 import { auditTemplates } from "./auditTemplates.js";
 import { users } from "./users.js";
 
-/**
- * Audit scopes table - Contains the actual audit scope for a case
- * Applied from templates or created custom
- */
 export const auditScopes = auditSchema.table(
   "audit_scopes",
   {

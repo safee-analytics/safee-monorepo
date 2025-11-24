@@ -3,6 +3,7 @@
 import { ReactNode } from "react";
 import { ToastProvider } from "@safee/ui";
 import { DirectionWrapper } from "@/components/layout/DirectionWrapper";
+import { TranslationProvider } from "./TranslationProvider";
 
 interface ClientProvidersProps {
   children: ReactNode;
@@ -11,7 +12,9 @@ interface ClientProvidersProps {
 export function ClientProviders({ children }: ClientProvidersProps) {
   return (
     <ToastProvider>
-      <DirectionWrapper>{children}</DirectionWrapper>
+      <TranslationProvider>
+        <DirectionWrapper>{children}</DirectionWrapper>
+      </TranslationProvider>
     </ToastProvider>
   );
 }

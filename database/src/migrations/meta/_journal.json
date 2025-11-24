@@ -197,6 +197,20 @@
       "when": 1763611000000,
       "tag": "0027_fix_odoo_users_constraints",
       "breakpoints": false
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1763952599304,
+      "tag": "0028_same_anita_blake",
+      "breakpoints": false
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1763954333791,
+      "tag": "0029_small_speed_demon",
+      "breakpoints": false
     }
   ]
 }
