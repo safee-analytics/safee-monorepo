@@ -51,7 +51,9 @@ export function parseGender(value: string | undefined): z.infer<typeof genderSch
   return result.success ? result.data : undefined;
 }
 
-export function parseMaritalStatus(value: string | undefined): z.infer<typeof maritalStatusSchema> | undefined {
+export function parseMaritalStatus(
+  value: string | undefined,
+): z.infer<typeof maritalStatusSchema> | undefined {
   if (!value) return undefined;
   const result = maritalStatusSchema.safeParse(value);
   return result.success ? result.data : undefined;
@@ -567,5 +569,138 @@ export class OdooHRService {
       [["slip_id", "=", payslipId]],
       ["slip_id", "name", "code", "category_id", "sequence", "quantity", "rate", "amount"],
     );
+  }
+
+  // ==================== Write Operations ====================
+
+  /**
+   * Create or update an employee in Odoo
+   * Returns the Odoo employee ID
+   */
+  async upsertEmployee(data: {
+    odooEmployeeId?: number;
+    odooUserId?: number;
+    name: string;
+    workEmail?: string;
+    workPhone?: string;
+    mobilePhone?: string;
+    jobTitle?: string;
+    departmentId?: number;
+    managerId?: number;
+    employeeType?: string;
+    gender?: string;
+    maritalStatus?: string;
+    birthday?: string;
+    identificationId?: string;
+    passportId?: string;
+    emergencyContact?: string;
+    emergencyPhone?: string;
+    placeOfBirth?: string;
+    active?: boolean;
+  }): Promise<number> {
+    const odooData: Record<string, unknown> = {
+      name: data.name,
+      work_email: data.workEmail,
+      work_phone: data.workPhone,
+      mobile_phone: data.mobilePhone,
+      job_title: data.jobTitle,
+      employee_type: data.employeeType,
+      sex: data.gender,
+      marital: data.maritalStatus,
+      birthday: data.birthday,
+      identification_id: data.identificationId,
+      passport_id: data.passportId,
+      emergency_contact: data.emergencyContact,
+      emergency_phone: data.emergencyPhone,
+      place_of_birth: data.placeOfBirth,
+      active: data.active ?? true,
+    };
+
+    // Add relational fields if provided
+    if (data.departmentId) {
+      odooData.department_id = data.departmentId;
+    }
+    if (data.managerId) {
+      odooData.parent_id = data.managerId;
+    }
+    if (data.odooUserId) {
+      odooData.user_id = data.odooUserId;
+    }
+
+    // Remove undefined values
+    Object.keys(odooData).forEach((key) => {
+      if (odooData[key] === undefined) {
+        delete odooData[key];
+      }
+    });
+
+    if (data.odooEmployeeId) {
+      // Update existing employee
+      await this.client.write("hr.employee", [data.odooEmployeeId], odooData);
+      return data.odooEmployeeId;
+    } else {
+      // Create new employee
+      const newId = await this.client.create("hr.employee", odooData);
+      return newId;
+    }
+  }
+
+  /**
+   * Deactivate an employee in Odoo
+   */
+  async deactivateEmployee(odooEmployeeId: number): Promise<void> {
+    await this.client.write("hr.employee", [odooEmployeeId], { active: false });
+  }
+
+  /**
+   * Create or update a department in Odoo
+   * Returns the Odoo department ID
+   */
+  async upsertDepartment(data: {
+    odooDepartmentId?: number;
+    name: string;
+    parentId?: number;
+    managerId?: number;
+    color?: number;
+    note?: string;
+    active?: boolean;
+  }): Promise<number> {
+    const odooData: Record<string, unknown> = {
+      name: data.name,
+      color: data.color,
+      note: data.note,
+      active: data.active ?? true,
+    };
+
+    if (data.parentId) {
+      odooData.parent_id = data.parentId;
+    }
+    if (data.managerId) {
+      odooData.manager_id = data.managerId;
+    }
+
+    // Remove undefined values
+    Object.keys(odooData).forEach((key) => {
+      if (odooData[key] === undefined) {
+        delete odooData[key];
+      }
+    });
+
+    if (data.odooDepartmentId) {
+      // Update existing department
+      await this.client.write("hr.department", [data.odooDepartmentId], odooData);
+      return data.odooDepartmentId;
+    } else {
+      // Create new department
+      const newId = await this.client.create("hr.department", odooData);
+      return newId;
+    }
+  }
+
+  /**
+   * Delete a department in Odoo
+   */
+  async deleteDepartment(odooDepartmentId: number): Promise<void> {
+    await this.client.unlink("hr.department", [odooDepartmentId]);
   }
 }

@@ -107,4 +107,36 @@ export const queryKeys = {
       agedPayable: (asOfDate?: string) => ["accounting", "reports", "aged-payable", asOfDate] as const,
     },
   },
+  hr: {
+    // Employee and department management (CRUD)
+    employees: (filters?: { departmentId?: string; managerId?: string }) =>
+      ["hr", "management", "employees", filters] as const,
+    employee: (id: string) => ["hr", "management", "employees", id] as const,
+    departments: (filters?: { parentId?: string }) => ["hr", "management", "departments", filters] as const,
+    department: (id: string) => ["hr", "management", "departments", id] as const,
+    leaveBalances: (employeeId: string) =>
+      ["hr", "management", "employees", employeeId, "leave-balances"] as const,
+    leaveBalance: (employeeId: string, leaveTypeId: string) =>
+      ["hr", "management", "employees", employeeId, "leave-balances", leaveTypeId] as const,
+
+    // Contracts, leaves, and payroll data
+    contracts: (filters?: { employeeId?: number; state?: string }) => ["hr", "contracts", filters] as const,
+    contract: (id: number) => ["hr", "contracts", id] as const,
+    leaveRequests: (filters?: { employeeId?: number; state?: string }) =>
+      ["hr", "leave-requests", filters] as const,
+    leaveTypes: () => ["hr", "leave-types"] as const,
+    leaveAllocations: (filters?: { employeeId?: number }) => ["hr", "leave-allocations", filters] as const,
+    payslips: (filters?: { employeeId?: number; dateFrom?: string; dateTo?: string }) =>
+      ["hr", "payslips", filters] as const,
+    payslip: (id: number) => ["hr", "payslips", id] as const,
+    payslipLines: (payslipId: number) => ["hr", "payslips", payslipId, "lines"] as const,
+  },
+  settings: {
+    documentTemplates: () => ["settings", "document-templates"] as const,
+    documentTemplatesByType: (documentType: string) =>
+      ["settings", "document-templates", "by-type", documentType] as const,
+    activeTemplate: (documentType?: string) =>
+      ["settings", "document-templates", "active", documentType] as const,
+    odooTemplates: (model?: string) => ["settings", "odoo-templates", model] as const,
+  },
 } as const;

@@ -70,7 +70,7 @@ export default function CaseManagement() {
     try {
       await createCaseMutation.mutateAsync({
         clientName: title,
-        auditType: "Financial Audit",
+        auditType: "financial_audit",
         status: "pending",
         priority: "medium",
         dueDate: undefined,

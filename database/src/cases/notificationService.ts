@@ -75,7 +75,7 @@ export async function createNotification(
       actionLabel: notificationData.actionLabel,
       actionUrl: notificationData.actionUrl,
       relatedEntityType: notificationData.relatedEntityType,
-      relatedEntityId: relatedEntityId,
+      relatedEntityId,
       isRead: false,
     })
     .returning({ id: notifications.id });

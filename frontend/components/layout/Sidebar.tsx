@@ -126,8 +126,9 @@ export const Sidebar = () => {
 
   const getCurrentModule = () => {
     if (pathname?.startsWith("/audit")) return "audit";
-    if (pathname?.startsWith("/hisabiq")) return "hisabiq";
+    if (pathname?.startsWith("/accounting")) return "hisabiq";
     if (pathname?.startsWith("/kanz")) return "kanz";
+    if (pathname?.startsWith("/hr")) return "hr";
     if (pathname?.startsWith("/nisbah")) return "nisbah";
     return null;
   };
@@ -144,16 +145,21 @@ export const Sidebar = () => {
       { icon: FiClipboard, title: t.audit.auditPlanning, href: "/audit/planning" },
     ],
     hisabiq: [
-      { icon: FiHome, title: t.nav.dashboard, href: "/hisabiq/dashboard" },
-      { icon: FiFileText, title: "Invoices", href: "/hisabiq/invoices" },
-      { icon: FiDollarSign, title: "Expenses", href: "/hisabiq/expenses" },
-      { icon: FiBarChart, title: t.common.reports, href: "/hisabiq/reports" },
+      { icon: FiHome, title: t.nav.dashboard, href: "/accounting" },
+      { icon: FiFileText, title: "Invoices", href: "/accounting/invoices" },
+      { icon: FiDollarSign, title: "Expenses", href: "/accounting/expenses" },
+      { icon: FiBarChart, title: t.common.reports, href: "/accounting/reports" },
     ],
     kanz: [
       { icon: FiHome, title: t.nav.dashboard, href: "/kanz/dashboard" },
       { icon: FiUsers, title: "Employees", href: "/kanz/employees" },
       { icon: FiClipboard, title: "Attendance", href: "/kanz/attendance" },
       { icon: FiDollarSign, title: "Payroll", href: "/kanz/payroll" },
+    ],
+    hr: [
+      { icon: FiHome, title: t.nav.dashboard, href: "/hr" },
+      { icon: FiUsers, title: "Employees", href: "/hr/employees" },
+      { icon: FiGrid, title: "Departments", href: "/hr/departments" },
     ],
     nisbah: [
       { icon: FiHome, title: t.nav.dashboard, href: "/nisbah/dashboard" },

@@ -15,7 +15,7 @@ export function useInvoices(params?: {
   return useQuery({
     queryKey: queryKeys.accounting.invoices(params),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/invoices", {
+      const { data, error } = await apiClient.GET("/accounting/invoices", {
         params: { query: params },
       });
       if (error) throw new Error(handleApiError(error));
@@ -28,7 +28,7 @@ export function useInvoice(invoiceId: string) {
   return useQuery({
     queryKey: queryKeys.accounting.invoice(invoiceId),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/invoices/{invoiceId}", {
+      const { data, error } = await apiClient.GET("/accounting/invoices/{invoiceId}", {
         params: { path: { invoiceId } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -54,7 +54,7 @@ export function useCreateInvoice() {
         unitPrice: number;
       }>;
     }) => {
-      const { data, error } = await apiClient.POST("/hisabiq/invoices", {
+      const { data, error } = await apiClient.POST("/accounting/invoices", {
         body: invoice,
       });
       if (error) throw new Error(handleApiError(error));
@@ -71,7 +71,7 @@ export function useValidateInvoice() {
 
   return useMutation({
     mutationFn: async (invoiceId: string) => {
-      const { data, error } = await apiClient.POST("/hisabiq/invoices/{invoiceId}/validate", {
+      const { data, error } = await apiClient.POST("/accounting/invoices/{invoiceId}/validate", {
         params: { path: { invoiceId } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -89,7 +89,7 @@ export function useCancelInvoice() {
 
   return useMutation({
     mutationFn: async (invoiceId: string) => {
-      const { data, error } = await apiClient.POST("/hisabiq/invoices/{invoiceId}/cancel", {
+      const { data, error } = await apiClient.POST("/accounting/invoices/{invoiceId}/cancel", {
         params: { path: { invoiceId } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -115,7 +115,7 @@ export function useRefundInvoice() {
       date?: string;
       journalId?: number;
     }) => {
-      const { data, error } = await apiClient.POST("/hisabiq/invoices/{invoiceId}/refund", {
+      const { data, error } = await apiClient.POST("/accounting/invoices/{invoiceId}/refund", {
         params: { path: { invoiceId } },
         body,
       });
@@ -131,7 +131,7 @@ export function useRefundInvoice() {
 export function useInvoicePDF(invoiceId: string) {
   return useMutation({
     mutationFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/invoices/{invoiceId}/pdf", {
+      const { data, error } = await apiClient.GET("/accounting/invoices/{invoiceId}/pdf", {
         params: { path: { invoiceId } },
         parseAs: "blob",
       });
@@ -163,7 +163,7 @@ export function useBills(params?: {
   return useQuery({
     queryKey: queryKeys.accounting.bills(params),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/bills", {
+      const { data, error } = await apiClient.GET("/accounting/bills", {
         params: { query: params },
       });
       if (error) throw new Error(handleApiError(error));
@@ -176,7 +176,7 @@ export function useBill(billId: string) {
   return useQuery({
     queryKey: queryKeys.accounting.bill(billId),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/bills/{billId}", {
+      const { data, error } = await apiClient.GET("/accounting/bills/{billId}", {
         params: { path: { billId } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -201,7 +201,7 @@ export function useCreateBill() {
         unitPrice: number;
       }>;
     }) => {
-      const { data, error } = await apiClient.POST("/hisabiq/bills", {
+      const { data, error } = await apiClient.POST("/accounting/bills", {
         body: bill,
       });
       if (error) throw new Error(handleApiError(error));
@@ -218,7 +218,7 @@ export function useValidateBill() {
 
   return useMutation({
     mutationFn: async (billId: string) => {
-      const { data, error } = await apiClient.POST("/hisabiq/bills/{billId}/validate", {
+      const { data, error } = await apiClient.POST("/accounting/bills/{billId}/validate", {
         params: { path: { billId } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -236,7 +236,7 @@ export function useCancelBill() {
 
   return useMutation({
     mutationFn: async (billId: string) => {
-      const { data, error } = await apiClient.POST("/hisabiq/bills/{billId}/cancel", {
+      const { data, error } = await apiClient.POST("/accounting/bills/{billId}/cancel", {
         params: { path: { billId } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -260,7 +260,7 @@ export function usePayments(params?: {
   return useQuery({
     queryKey: queryKeys.accounting.payments(params),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/payments", {
+      const { data, error } = await apiClient.GET("/accounting/payments", {
         params: { query: params },
       });
       if (error) throw new Error(handleApiError(error));
@@ -283,7 +283,7 @@ export function useCreatePayment() {
       reference?: string;
       invoiceIds?: number[];
     }) => {
-      const { data, error } = await apiClient.POST("/hisabiq/payments", {
+      const { data, error } = await apiClient.POST("/accounting/payments", {
         body: payment,
       });
       if (error) throw new Error(handleApiError(error));
@@ -300,7 +300,7 @@ export function useConfirmPayment() {
 
   return useMutation({
     mutationFn: async (paymentId: string) => {
-      const { data, error } = await apiClient.POST("/hisabiq/payments/{paymentId}/confirm", {
+      const { data, error } = await apiClient.POST("/accounting/payments/{paymentId}/confirm", {
         params: { path: { paymentId } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -318,7 +318,7 @@ export function useAccounts(accountType?: string) {
   return useQuery({
     queryKey: queryKeys.accounting.accounts(accountType),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/accounts", {
+      const { data, error } = await apiClient.GET("/accounting/accounts", {
         params: { query: { accountType } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -331,7 +331,7 @@ export function usePartners(filters?: { isCustomer?: boolean; isSupplier?: boole
   return useQuery({
     queryKey: queryKeys.accounting.partners(filters),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/partners", {
+      const { data, error } = await apiClient.GET("/accounting/partners", {
         params: { query: filters },
       });
       if (error) throw new Error(handleApiError(error));
@@ -344,7 +344,7 @@ export function useJournals(type?: "sale" | "purchase" | "cash" | "bank" | "gene
   return useQuery({
     queryKey: queryKeys.accounting.journals(type),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/journals", {
+      const { data, error } = await apiClient.GET("/accounting/journals", {
         params: { query: { type } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -357,7 +357,7 @@ export function useTaxes(typeTaxUse?: "sale" | "purchase" | "none") {
   return useQuery({
     queryKey: queryKeys.accounting.taxes(typeTaxUse),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/taxes", {
+      const { data, error } = await apiClient.GET("/accounting/taxes", {
         params: { query: { typeTaxUse } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -370,7 +370,7 @@ export function usePaymentTerms() {
   return useQuery({
     queryKey: queryKeys.accounting.paymentTerms,
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/payment-terms");
+      const { data, error } = await apiClient.GET("/accounting/payment-terms");
       if (error) throw new Error(handleApiError(error));
       return data;
     },
@@ -383,7 +383,7 @@ export function useTrialBalance(params: { accountIds?: number[]; dateFrom?: stri
   return useQuery({
     queryKey: queryKeys.accounting.reports.trialBalance(params),
     queryFn: async () => {
-      const { data, error } = await apiClient.POST("/hisabiq/reports/trial-balance", {
+      const { data, error } = await apiClient.POST("/accounting/reports/trial-balance", {
         body: params,
       });
       if (error) throw new Error(handleApiError(error));
@@ -396,7 +396,7 @@ export function usePartnerLedger(params: { partnerId: number; dateFrom?: string;
   return useQuery({
     queryKey: queryKeys.accounting.reports.partnerLedger(params),
     queryFn: async () => {
-      const { data, error } = await apiClient.POST("/hisabiq/reports/partner-ledger", {
+      const { data, error } = await apiClient.POST("/accounting/reports/partner-ledger", {
         body: params,
       });
       if (error) throw new Error(handleApiError(error));
@@ -410,7 +410,7 @@ export function useProfitLoss(dateFrom?: string, dateTo?: string) {
   return useQuery({
     queryKey: queryKeys.accounting.reports.profitLoss(dateFrom, dateTo),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/reports/profit-loss", {
+      const { data, error } = await apiClient.GET("/accounting/reports/profit-loss", {
         params: { query: { dateFrom, dateTo } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -428,7 +428,7 @@ export function useGeneralLedger(params?: {
   return useQuery({
     queryKey: queryKeys.accounting.reports.generalLedger(params),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/general-ledger", {
+      const { data, error } = await apiClient.GET("/accounting/general-ledger", {
         params: { query: params },
       });
       if (error) throw new Error(handleApiError(error));
@@ -441,7 +441,7 @@ export function useAgedReceivable(asOfDate?: string) {
   return useQuery({
     queryKey: queryKeys.accounting.reports.agedReceivable(asOfDate),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/reports/aged-receivable", {
+      const { data, error } = await apiClient.GET("/accounting/reports/aged-receivable", {
         params: { query: { asOfDate } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -454,7 +454,7 @@ export function useAgedPayable(asOfDate?: string) {
   return useQuery({
     queryKey: queryKeys.accounting.reports.agedPayable(asOfDate),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/reports/aged-payable", {
+      const { data, error } = await apiClient.GET("/accounting/reports/aged-payable", {
         params: { query: { asOfDate } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -474,7 +474,7 @@ export function useBankStatements(params?: {
   return useQuery({
     queryKey: queryKeys.accounting.bankStatements(params),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/bank-statements", {
+      const { data, error } = await apiClient.GET("/accounting/bank-statements", {
         params: { query: params },
       });
       if (error) throw new Error(handleApiError(error));
@@ -487,7 +487,7 @@ export function useBankStatementLines(statementId: number) {
   return useQuery({
     queryKey: queryKeys.accounting.bankStatementLines(statementId),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/bank-statements/{statementId}/lines", {
+      const { data, error } = await apiClient.GET("/accounting/bank-statements/{statementId}/lines", {
         params: { path: { statementId } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -501,7 +501,7 @@ export function useReconciliationSuggestions(lineId: number) {
   return useQuery({
     queryKey: queryKeys.accounting.reconciliationSuggestions(lineId),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/bank-statements/lines/{lineId}/suggestions", {
+      const { data, error } = await apiClient.GET("/accounting/bank-statements/lines/{lineId}/suggestions", {
         params: { path: { lineId } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -516,7 +516,7 @@ export function useReconcileBankLine() {
 
   return useMutation({
     mutationFn: async ({ lineId, moveIds }: { lineId: number; moveIds: number[] }) => {
-      const { data, error } = await apiClient.POST("/hisabiq/bank-statements/lines/{lineId}/reconcile", {
+      const { data, error } = await apiClient.POST("/accounting/bank-statements/lines/{lineId}/reconcile", {
         params: { path: { lineId } },
         body: { moveIds },
       });
@@ -535,7 +535,7 @@ export function useCurrencies(onlyActive: boolean = true) {
   return useQuery({
     queryKey: queryKeys.accounting.currencies(onlyActive),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/currencies", {
+      const { data, error } = await apiClient.GET("/accounting/currencies", {
         params: { query: { onlyActive } },
       });
       if (error) throw new Error(handleApiError(error));
@@ -548,7 +548,7 @@ export function useCurrencyRates(params?: { currencyId?: number; dateFrom?: stri
   return useQuery({
     queryKey: queryKeys.accounting.currencyRates(params),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/hisabiq/currency-rates", {
+      const { data, error } = await apiClient.GET("/accounting/currency-rates", {
         params: { query: params },
       });
       if (error) throw new Error(handleApiError(error));
@@ -565,7 +565,7 @@ export function useConvertCurrency() {
       toCurrencyId: number;
       date?: string;
     }) => {
-      const { data, error } = await apiClient.POST("/hisabiq/currency-convert", {
+      const { data, error } = await apiClient.POST("/accounting/currency-convert", {
         body: params,
       });
       if (error) throw new Error(handleApiError(error));
@@ -581,7 +581,7 @@ export function useBatchValidateInvoices() {
 
   return useMutation({
     mutationFn: async (invoiceIds: number[]) => {
-      const { data, error } = await apiClient.POST("/hisabiq/invoices/batch-validate", {
+      const { data, error } = await apiClient.POST("/accounting/invoices/batch-validate", {
         body: { invoiceIds },
       });
       if (error) throw new Error(handleApiError(error));
@@ -598,7 +598,7 @@ export function useBatchCancelInvoices() {
 
   return useMutation({
     mutationFn: async (invoiceIds: number[]) => {
-      const { data, error } = await apiClient.POST("/hisabiq/invoices/batch-cancel", {
+      const { data, error } = await apiClient.POST("/accounting/invoices/batch-cancel", {
         body: { invoiceIds },
       });
       if (error) throw new Error(handleApiError(error));
@@ -628,7 +628,7 @@ export function useBatchCreateInvoices() {
         }>;
       }>,
     ) => {
-      const { data, error } = await apiClient.POST("/hisabiq/invoices/batch-create", {
+      const { data, error } = await apiClient.POST("/accounting/invoices/batch-create", {
         body: { invoices },
       });
       if (error) throw new Error(handleApiError(error));
@@ -645,7 +645,7 @@ export function useBatchConfirmPayments() {
 
   return useMutation({
     mutationFn: async (paymentIds: number[]) => {
-      const { data, error } = await apiClient.POST("/hisabiq/payments/batch-confirm", {
+      const { data, error } = await apiClient.POST("/accounting/payments/batch-confirm", {
         body: { paymentIds },
       });
       if (error) throw new Error(handleApiError(error));

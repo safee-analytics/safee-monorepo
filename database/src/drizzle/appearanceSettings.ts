@@ -1,4 +1,4 @@
-import { uuid, boolean, varchar, index } from "drizzle-orm/pg-core";
+import { uuid, boolean, index } from "drizzle-orm/pg-core";
 import { identitySchema, idpk, themeEnum, colorSchemeEnum, fontSizeEnum, densityEnum } from "./_common.js";
 import { users } from "./users.js";
 

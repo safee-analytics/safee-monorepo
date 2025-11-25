@@ -1,4 +1,19 @@
-import { Controller, Get, Post, Put, Delete, Route, Tags, Security, Request, Path, Body, Query } from "tsoa";
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Route,
+  Tags,
+  Security,
+  NoSecurity,
+  Request,
+  Path,
+  Body,
+  Query,
+  OperationId,
+} from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext } from "../serverContext.js";
 import { DocumentTemplateService } from "../services/documentTemplate.service.js";
@@ -69,11 +84,13 @@ interface CreateCustomTemplateRequest {
 @Route("settings/document-templates")
 @Tags("Settings")
 export class DocumentTemplateController extends Controller {
-  private getService(request: AuthenticatedRequest): DocumentTemplateService {
+  @NoSecurity()
+  private getService(_request: AuthenticatedRequest): DocumentTemplateService {
     const ctx = getServerContext();
     return new DocumentTemplateService(ctx);
   }
 
+  @NoSecurity()
   private getOrganizationId(request: AuthenticatedRequest): string {
     const organizationId = request.betterAuthSession?.session.activeOrganizationId;
     if (!organizationId) {
@@ -82,6 +99,7 @@ export class DocumentTemplateController extends Controller {
     return organizationId;
   }
 
+  @NoSecurity()
   private async getAccountingService(request: AuthenticatedRequest): Promise<OdooAccountingService> {
     const userId = request.betterAuthSession?.user.id;
     const organizationId = this.getOrganizationId(request);
@@ -155,6 +173,7 @@ export class DocumentTemplateController extends Controller {
    */
   @Post("/")
   @Security("jwt")
+  @OperationId("CreateDocumentTemplate")
   public async createTemplate(
     @Request() request: AuthenticatedRequest,
     @Body() body: CreateDocumentTemplateRequest,
@@ -238,7 +257,7 @@ export class DocumentTemplateController extends Controller {
     const organizationId = this.getOrganizationId(request);
 
     // Create the custom template in Odoo
-    const odooClient = (accountingService as any).client;
+    const odooClient = accountingService.getClient();
 
     // Step 1: Create the QWeb view (ir.ui.view)
     const viewXmlId = `custom_template_${organizationId}_${Date.now()}`;

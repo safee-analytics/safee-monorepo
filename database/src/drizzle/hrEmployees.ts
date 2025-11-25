@@ -22,7 +22,10 @@ export const hrEmployees = hrSchema.table("employees", {
   odooEmployeeId: integer("odoo_employee_id"), // Maps to Odoo hr.employee ID
   odooUserId: integer("odoo_user_id"), // Maps to Odoo res.users ID
 
-  userId: uuid("user_id").references(() => users.id, { onDelete: "set null", onUpdate: "cascade" }),
+  // Every employee MUST be linked to a Better Auth user
+  userId: uuid("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" }),
 
   employeeNumber: varchar("employee_number", { length: 50 }).unique(),
   name: varchar("name", { length: 255 }).notNull(),
