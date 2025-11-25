@@ -28,11 +28,13 @@ export default defineConfig({
       NODE_ENV: "test",
       DATABASE_URL: "postgresql://safee:safee@localhost:25432/safee",
       REDIS_URL: "redis://localhost:26379",
+      ODOO_URL: "http://localhost:18069",
+      ODOO_ADMIN_PASSWORD: "admin",
       JWT_SECRET: "test-jwt-secret",
-      LOG_LEVEL: "silent",
+      LOG_LEVEL: "info",
     },
     testTimeout: 15000,
-    // Exclude integration tests that require full server setup
-    exclude: ["**/integration/**", "**/e2e/**", "node_modules/**", "build/**"],
+    // Exclude e2e tests that require full server setup
+    exclude: ["**/e2e/**", "node_modules/**", "build/**"],
   },
 });

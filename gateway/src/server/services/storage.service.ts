@@ -3,7 +3,7 @@ import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import type { Response } from "express";
 import type { FileMetadata, FolderMetadata, FileSearchParams } from "../controllers/storageController.js";
-import { logger } from "../utils/logger.js";
+import type { ServerContext } from "../serverContext.js";
 
 export interface UploadOptions {
   folderId?: string;
@@ -16,11 +16,15 @@ export class StorageService {
   private basePath: string;
   private metadataPath: string;
 
-  constructor() {
+  constructor(private readonly ctx: ServerContext) {
     // Get storage path from environment or use default
     this.basePath = process.env.NAS_STORAGE_PATH || path.join(process.cwd(), "storage");
     this.metadataPath = path.join(this.basePath, ".metadata");
     this.initializeStorage();
+  }
+
+  private get logger() {
+    return this.ctx.logger;
   }
 
   private async initializeStorage(): Promise<void> {
@@ -28,7 +32,7 @@ export class StorageService {
       await fs.mkdir(this.basePath, { recursive: true });
       await fs.mkdir(this.metadataPath, { recursive: true });
     } catch (error) {
-      logger.error({ error }, "Failed to initialize storage");
+      this.logger.error({ error }, "Failed to initialize storage");
     }
   }
 
@@ -91,7 +95,7 @@ export class StorageService {
       const data = await fs.readFile(metadataFile, "utf-8");
       return JSON.parse(data);
     } catch (error) {
-      logger.debug({ error, fileId }, "File not found");
+      this.logger.debug({ error, fileId }, "File not found");
       throw new Error(`File not found: ${fileId}`);
     }
   }
@@ -171,7 +175,7 @@ export class StorageService {
 
         filesMetadata.push(metadata);
       } catch (error) {
-        logger.error({ error, metaFile }, "Error reading metadata file");
+        this.logger.error({ error, metaFile }, "Error reading metadata file");
       }
     }
 
@@ -253,7 +257,7 @@ export class StorageService {
           subFolders.push(folderMetadata);
         }
       } catch (error) {
-        logger.error({ error, metaFile }, "Error reading folder metadata");
+        this.logger.error({ error, metaFile }, "Error reading folder metadata");
       }
     }
 

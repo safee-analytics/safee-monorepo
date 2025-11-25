@@ -1,13 +1,13 @@
-import type { DrizzleClient } from "@safee/database";
 import { ConnectorManager } from "../services/connectors/connector.manager.js";
 import type { ConnectorResponse } from "../dtos/connector.js";
+import type { ServerContext } from "../serverContext.js";
 
 export async function getConnector(
-  drizzle: DrizzleClient,
+  ctx: ServerContext,
   connectorId: string,
   organizationId: string,
 ): Promise<ConnectorResponse> {
-  const connectorManager = new ConnectorManager(drizzle);
+  const connectorManager = new ConnectorManager(ctx);
 
   const connector = await connectorManager.getConnector(connectorId, organizationId);
   const metadata = connector.getMetadata();

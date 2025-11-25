@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, schema, eq } from "@safee/database";
+import { type DrizzleClient, type RedisClient, schema, eq } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import {
   createTestOrganization,
@@ -13,16 +13,21 @@ import {
 import { submitForApproval } from "./submitForApproval.js";
 import { approve } from "./approve.js";
 import { InvalidInput, NotFound } from "../../errors.js";
+import { initTestServerContext } from "../../test-helpers/testServerContext.js";
+import { getServerContext, type ServerContext } from "../../serverContext.js";
 
 void describe("approve operation", async () => {
   let drizzle: DrizzleClient;
+  let redis: RedisClient;
   let close: () => Promise<void>;
   let testOrg: TestOrganization;
   let testUser: TestUser;
   let approverUser: TestUser;
+  let ctx: ServerContext;
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "approve-test" }));
+    redis = await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
@@ -37,9 +42,12 @@ void describe("approve operation", async () => {
 
     await addMemberToOrganization(drizzle, testUser.id, testOrg.id, "member");
     await addMemberToOrganization(drizzle, approverUser.id, testOrg.id, "member");
+
+    ctx = getServerContext();
   });
 
   afterAll(async () => {
+    await redis.quit();
     await close();
   });
 
@@ -47,13 +55,13 @@ void describe("approve operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    const result = await approve(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {
+    const result = await approve(ctx, testOrg.id, approverUser.id, submitResult.requestId, {
       comments: "Looks good!",
     });
 
@@ -82,7 +90,7 @@ void describe("approve operation", async () => {
     const nonExistentRequestId = crypto.randomUUID();
 
     await expect(
-      approve(drizzle, testOrg.id, approverUser.id, nonExistentRequestId, {
+      approve(ctx, testOrg.id, approverUser.id, nonExistentRequestId, {
         comments: "Test",
       }),
     ).rejects.toThrow(NotFound);
@@ -92,18 +100,18 @@ void describe("approve operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    await approve(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {
+    await approve(ctx, testOrg.id, approverUser.id, submitResult.requestId, {
       comments: "First approval",
     });
 
     await expect(
-      approve(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {
+      approve(ctx, testOrg.id, approverUser.id, submitResult.requestId, {
         comments: "Second approval",
       }),
     ).rejects.toThrow(InvalidInput);
@@ -113,7 +121,7 @@ void describe("approve operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
@@ -123,7 +131,7 @@ void describe("approve operation", async () => {
     await addMemberToOrganization(drizzle, otherUser.id, testOrg.id, "member");
 
     await expect(
-      approve(drizzle, testOrg.id, otherUser.id, submitResult.requestId, {
+      approve(ctx, testOrg.id, otherUser.id, submitResult.requestId, {
         comments: "Trying to approve",
       }),
     ).rejects.toThrow(NotFound);
@@ -133,13 +141,13 @@ void describe("approve operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    const result = await approve(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {});
+    const result = await approve(ctx, testOrg.id, approverUser.id, submitResult.requestId, {});
 
     expect(result.success).toBe(true);
     expect(result.requestStatus).toBe("approved");
@@ -156,7 +164,7 @@ void describe("approve operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
@@ -173,7 +181,7 @@ void describe("approve operation", async () => {
       .set({ delegatedTo: delegateUser.id })
       .where(eq(schema.approvalSteps.requestId, submitResult.requestId));
 
-    const result = await approve(drizzle, testOrg.id, delegateUser.id, submitResult.requestId, {
+    const result = await approve(ctx, testOrg.id, delegateUser.id, submitResult.requestId, {
       comments: "Approved by delegate",
     });
 

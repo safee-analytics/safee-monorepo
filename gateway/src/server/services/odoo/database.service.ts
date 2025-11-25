@@ -1,4 +1,3 @@
-import type { DrizzleClient } from "@safee/database";
 import { schema } from "@safee/database";
 import { eq } from "drizzle-orm";
 import crypto from "crypto";
@@ -7,8 +6,7 @@ import { type OdooConnectionConfig } from "./client.service.js";
 import { encryptionService } from "../encryption.js";
 import { env } from "../../../env.js";
 import { OrganizationNotFound, OdooDatabaseAlreadyExists, OdooDatabaseNotFound } from "../../errors.js";
-import { Logger } from "pino";
-import { getServerContext } from "../../serverContext.js";
+import type { ServerContext } from "../../serverContext.js";
 import { OdooModuleService } from "./module.service.js";
 
 export interface OdooProvisionResult {
@@ -21,12 +19,16 @@ export interface OdooProvisionResult {
 export class OdooDatabaseService {
   private odooModuleService: OdooModuleService;
 
-  constructor(private readonly drizzle: DrizzleClient) {
-    this.odooModuleService = new OdooModuleService();
+  constructor(private readonly ctx: ServerContext) {
+    this.odooModuleService = new OdooModuleService(ctx);
   }
 
-  private get logger(): Logger {
-    return getServerContext().logger;
+  private get logger() {
+    return this.ctx.logger;
+  }
+
+  private get drizzle() {
+    return this.ctx.drizzle;
   }
 
   private generateSecurePassword(): string {
@@ -75,6 +77,8 @@ export class OdooDatabaseService {
       "sale",
       "crm",
       "hr",
+      "hr_holidays",
+      "hr_contract",
       "hr_payroll",
       "website",
       "portal",
@@ -84,8 +88,6 @@ export class OdooDatabaseService {
     await this.odooModuleService.installModules({
       config,
       modules: modulesToInstall,
-      logger: this.logger,
-      drizzle: this.drizzle,
       organizationId,
     });
 

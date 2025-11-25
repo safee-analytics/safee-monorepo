@@ -1,16 +1,20 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, schema } from "@safee/database";
+import { type DrizzleClient, type RedisClient, schema } from "@safee/database";
 import { connectTest, nukeDatabase } from "@safee/database/test-helpers";
 import { eq } from "drizzle-orm";
 import { updateConnector } from "./updateConnector.js";
 import { encryptionService } from "../services/encryption.js";
+import { initTestServerContext } from "../test-helpers/testServerContext.js";
+import { getServerContext } from "../serverContext.js";
 
 void describe("updateConnector", async () => {
   let drizzle: DrizzleClient;
+  let redis: RedisClient;
   let close: () => Promise<void>;
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "update-connector-test" }));
+    redis = await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
@@ -18,6 +22,7 @@ void describe("updateConnector", async () => {
   });
 
   afterAll(async () => {
+    await redis.quit();
     await close();
   });
 
@@ -58,7 +63,8 @@ void describe("updateConnector", async () => {
       })
       .returning();
 
-    const result = await updateConnector(drizzle, connector.id, org.id, user.id, {
+    const ctx = getServerContext();
+    const result = await updateConnector(ctx, connector.id, org.id, user.id, {
       name: "Updated Name",
     });
 
@@ -108,7 +114,8 @@ void describe("updateConnector", async () => {
       })
       .returning();
 
-    const result = await updateConnector(drizzle, connector.id, org.id, user.id, {
+    const ctx = getServerContext();
+    const result = await updateConnector(ctx, connector.id, org.id, user.id, {
       config: { host: "localhost", port: 25432, database: "safee", username: "safee", password: "safee" },
     });
 
@@ -160,7 +167,8 @@ void describe("updateConnector", async () => {
       })
       .returning();
 
-    const result = await updateConnector(drizzle, connector.id, org.id, user.id, {
+    const ctx = getServerContext();
+    const result = await updateConnector(ctx, connector.id, org.id, user.id, {
       isActive: false,
     });
 
@@ -193,8 +201,9 @@ void describe("updateConnector", async () => {
 
     const fakeConnectorId = "00000000-0000-0000-0000-000000000000";
 
+    const ctx = getServerContext();
     await expect(
-      updateConnector(drizzle, fakeConnectorId, org.id, user.id, { name: "New Name" }),
+      updateConnector(ctx, fakeConnectorId, org.id, user.id, { name: "New Name" }),
     ).rejects.toThrow();
   });
 });

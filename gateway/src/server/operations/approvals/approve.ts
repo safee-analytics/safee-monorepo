@@ -1,4 +1,4 @@
-import type { DrizzleClient } from "@safee/database";
+import type { ServerContext } from "../../serverContext.js";
 import { schema, eq, and } from "@safee/database";
 import { pino } from "pino";
 import { OperationFailed, InvalidInput, NotFound, InsufficientPermissions } from "../../errors.js";
@@ -15,7 +15,7 @@ export interface ApproveResponse {
 }
 
 export async function approve(
-  drizzle: DrizzleClient,
+  ctx: ServerContext,
   organizationId: string,
   userId: string,
   requestId: string,
@@ -24,7 +24,7 @@ export async function approve(
   const logger = pino();
 
   try {
-    const approvalRequest = await drizzle.query.approvalRequests.findFirst({
+    const approvalRequest = await ctx.drizzle.query.approvalRequests.findFirst({
       where: eq(schema.approvalRequests.id, requestId),
       with: {
         workflow: {
@@ -43,7 +43,7 @@ export async function approve(
       throw new InvalidInput(`Cannot approve request with status: ${approvalRequest.status}`);
     }
 
-    const approvalStep = await drizzle.query.approvalSteps.findFirst({
+    const approvalStep = await ctx.drizzle.query.approvalSteps.findFirst({
       where: and(eq(schema.approvalSteps.requestId, requestId), eq(schema.approvalSteps.status, "pending")),
     });
 
@@ -58,7 +58,7 @@ export async function approve(
       throw new NotFound("No pending approval step found for this user");
     }
 
-    const member = await drizzle.query.members.findFirst({
+    const member = await ctx.drizzle.query.members.findFirst({
       where: and(eq(schema.members.userId, userId), eq(schema.members.organizationId, organizationId)),
     });
 
@@ -66,7 +66,7 @@ export async function approve(
       throw new InsufficientPermissions("User is not a member of this organization");
     }
 
-    await drizzle
+    await ctx.drizzle
       .update(schema.approvalSteps)
       .set({
         status: "approved",
@@ -75,7 +75,7 @@ export async function approve(
       })
       .where(eq(schema.approvalSteps.id, approvalStep.id));
 
-    const rulesEngine = new ApprovalRulesEngine(drizzle);
+    const rulesEngine = new ApprovalRulesEngine(ctx);
     const stepComplete = await rulesEngine.isStepComplete(requestId, approvalStep.stepOrder);
 
     if (stepComplete) {
@@ -86,7 +86,7 @@ export async function approve(
 
         await Promise.all(
           approverIds.map((approverId) =>
-            drizzle.insert(schema.approvalSteps).values({
+            ctx.drizzle.insert(schema.approvalSteps).values({
               requestId: approvalRequest.id,
               stepOrder: nextStep.stepOrder,
               approverId,
@@ -111,7 +111,7 @@ export async function approve(
           requestStatus: "pending",
         };
       } else {
-        await drizzle
+        await ctx.drizzle
           .update(schema.approvalRequests)
           .set({
             status: "approved",

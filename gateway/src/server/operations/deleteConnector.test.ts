@@ -1,16 +1,20 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, schema } from "@safee/database";
+import { type DrizzleClient, type RedisClient, schema } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import { eq } from "drizzle-orm";
 import { deleteConnector } from "./deleteConnector.js";
 import { encryptionService } from "../services/encryption.js";
+import { initTestServerContext } from "../test-helpers/testServerContext.js";
+import { getServerContext } from "../serverContext.js";
 
 void describe("deleteConnector", async () => {
   let drizzle: DrizzleClient;
+  let redis: RedisClient;
   let close: () => Promise<void>;
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "delete-connector-test" }));
+    redis = await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
@@ -19,6 +23,7 @@ void describe("deleteConnector", async () => {
   });
 
   afterAll(async () => {
+    await redis.quit();
     await close();
   });
 
@@ -51,7 +56,8 @@ void describe("deleteConnector", async () => {
       })
       .returning();
 
-    const result = await deleteConnector(drizzle, connector.id, org.id);
+    const ctx = getServerContext();
+    const result = await deleteConnector(ctx, connector.id, org.id);
 
     expect(result.success).toBe(true);
 

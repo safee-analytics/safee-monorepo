@@ -165,7 +165,7 @@ fmt-gateway:
     npx -w gateway prettier . --write --cache
 
 [group('gateway')]
-test-gateway: prepare-gateway (start-e2e "")
+test-gateway: prepare-gateway (start-e2e "odoo")
     REDIS_URL=redis://localhost:26379 npm -w gateway test
 
 [group('gateway')]

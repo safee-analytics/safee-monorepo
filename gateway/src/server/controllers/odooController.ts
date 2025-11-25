@@ -117,8 +117,8 @@ interface OdooExecuteRequest {
 export class OdooController extends Controller {
   @NoSecurity()
   private getDatabaseService(): OdooDatabaseService {
-    const { drizzle } = getServerContext();
-    return new OdooDatabaseService(drizzle);
+    const ctx = getServerContext();
+    return new OdooDatabaseService(ctx);
   }
 
   @NoSecurity()
@@ -408,8 +408,9 @@ export class OdooController extends Controller {
   } | null> {
     const userId = req.betterAuthSession!.user.id;
     const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
+    const ctx = getServerContext();
 
-    return await getOdooDevCredentialsOp(req.drizzle, userId, organizationId);
+    return await getOdooDevCredentialsOp(ctx.drizzle, userId, organizationId);
   }
 
   @Get("/user-credentials")
@@ -421,13 +422,14 @@ export class OdooController extends Controller {
   } | null> {
     const userId = req.betterAuthSession!.user.id;
     const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
+    const ctx = getServerContext();
 
-    let credentials = await getOdooUserWebCredentials(req.drizzle, userId, organizationId);
+    let credentials = await getOdooUserWebCredentials(ctx.drizzle, userId, organizationId);
 
     if (!credentials) {
       await this.getUserProvisioningService().provisionUser(userId, organizationId);
 
-      credentials = await getOdooUserWebCredentials(req.drizzle, userId, organizationId);
+      credentials = await getOdooUserWebCredentials(ctx.drizzle, userId, organizationId);
     }
 
     return credentials;
@@ -442,8 +444,9 @@ export class OdooController extends Controller {
     webUrl: string;
   } | null> {
     const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
+    const ctx = getServerContext();
 
-    const credentials = await getOdooAdminCredentials(req.drizzle, organizationId);
+    const credentials = await getOdooAdminCredentials(ctx.drizzle, organizationId);
 
     if (!credentials) {
       return null;
@@ -466,7 +469,7 @@ export class OdooController extends Controller {
     const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
     const ctx = getServerContext();
 
-    const result = await installOdooModulesOp(organizationId, ctx.logger, ctx.drizzle);
+    const result = await installOdooModulesOp(organizationId, ctx);
 
     if (!result.success) {
       this.setStatus(500);
@@ -533,7 +536,8 @@ export class OdooController extends Controller {
     }>;
   }> {
     const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
+    const ctx = getServerContext();
 
-    return await getOdooDatabaseInfoOp(req.drizzle, organizationId);
+    return await getOdooDatabaseInfoOp(ctx.drizzle, organizationId);
   }
 }

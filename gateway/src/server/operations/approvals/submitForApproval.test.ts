@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, schema } from "@safee/database";
+import { type DrizzleClient, type RedisClient, schema } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import {
   createTestOrganization,
@@ -11,9 +11,12 @@ import {
 } from "@safee/database/test-helpers";
 import { submitForApproval } from "./submitForApproval.js";
 import { InvalidInput, NotFound } from "../../errors.js";
+import { initTestServerContext } from "../../test-helpers/testServerContext.js";
+import { getServerContext } from "../../serverContext.js";
 
 void describe("submitForApproval operation", async () => {
   let drizzle: DrizzleClient;
+  let redis: RedisClient;
   let close: () => Promise<void>;
   let testOrg: TestOrganization;
   let testUser: TestUser;
@@ -21,6 +24,7 @@ void describe("submitForApproval operation", async () => {
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "submit-approval-test" }));
+    redis = await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
@@ -35,6 +39,7 @@ void describe("submitForApproval operation", async () => {
   });
 
   afterAll(async () => {
+    await redis.quit();
     await close();
   });
 
@@ -43,7 +48,8 @@ void describe("submitForApproval operation", async () => {
 
     const entityId = crypto.randomUUID();
 
-    const result = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const ctx = getServerContext();
+    const result = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
@@ -76,9 +82,10 @@ void describe("submitForApproval operation", async () => {
   });
 
   void it("should throw InvalidInput when entity type is empty", async () => {
+    const ctx = getServerContext();
     const entityId = crypto.randomUUID();
     await expect(
-      submitForApproval(drizzle, testOrg.id, testUser.id, {
+      submitForApproval(ctx, testOrg.id, testUser.id, {
         entityType: "",
         entityId: entityId,
         // @ts-expect-error - Testing invalid empty entity type
@@ -88,8 +95,9 @@ void describe("submitForApproval operation", async () => {
   });
 
   void it("should throw InvalidInput when entity ID is empty", async () => {
+    const ctx = getServerContext();
     await expect(
-      submitForApproval(drizzle, testOrg.id, testUser.id, {
+      submitForApproval(ctx, testOrg.id, testUser.id, {
         entityType: "invoice",
         entityId: "",
         entityData: { entityType: "invoice", entityId: "", amount: 1000 },
@@ -98,9 +106,10 @@ void describe("submitForApproval operation", async () => {
   });
 
   void it("should throw NotFound when no workflow matches entity data", async () => {
+    const ctx = getServerContext();
     const entityId = crypto.randomUUID();
     await expect(
-      submitForApproval(drizzle, testOrg.id, testUser.id, {
+      submitForApproval(ctx, testOrg.id, testUser.id, {
         entityType: "invoice",
         entityId: entityId,
         entityData: { entityType: "invoice", entityId: entityId },
@@ -109,10 +118,11 @@ void describe("submitForApproval operation", async () => {
   });
 
   void it("should throw NotFound when no matching workflow exists", async () => {
+    const ctx = getServerContext();
     const entityId = crypto.randomUUID();
 
     await expect(
-      submitForApproval(drizzle, testOrg.id, testUser.id, {
+      submitForApproval(ctx, testOrg.id, testUser.id, {
         entityType: "invoice",
         entityId: entityId,
         entityData: { entityType: "invoice", entityId: entityId, amount: 1000 },
@@ -121,6 +131,7 @@ void describe("submitForApproval operation", async () => {
   });
 
   void it("should throw InvalidInput when workflow has no steps", async () => {
+    const ctx = getServerContext();
     const [workflow] = await drizzle
       .insert(schema.approvalWorkflows)
       .values({
@@ -146,7 +157,7 @@ void describe("submitForApproval operation", async () => {
 
     const entityId = crypto.randomUUID();
     await expect(
-      submitForApproval(drizzle, testOrg.id, testUser.id, {
+      submitForApproval(ctx, testOrg.id, testUser.id, {
         entityType: "invoice",
         entityId: entityId,
         entityData: { entityType: "invoice", entityId: entityId, amount: 1000 },
@@ -161,7 +172,8 @@ void describe("submitForApproval operation", async () => {
     });
 
     const entityId = crypto.randomUUID();
-    const result = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const ctx = getServerContext();
+    const result = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000 },
@@ -182,7 +194,8 @@ void describe("submitForApproval operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id, { entityType: "employee" });
 
     const entityId = crypto.randomUUID();
-    const result = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const ctx = getServerContext();
+    const result = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "employee",
       entityId: entityId,
       entityData: { entityType: "employee", entityId: entityId, salary: 5000 },

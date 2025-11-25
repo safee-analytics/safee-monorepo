@@ -1,14 +1,14 @@
-import type { DrizzleClient } from "@safee/database";
+import type { ServerContext } from "../serverContext.js";
 import { ConnectorManager } from "../services/connectors/connector.manager.js";
 import type { ConnectorType } from "../services/connectors/base.connector.js";
 import type { ConnectorResponse } from "../dtos/connector.js";
 
 export async function listConnectors(
-  drizzle: DrizzleClient,
+  ctx: ServerContext,
   organizationId: string,
   filters: { type?: ConnectorType; isActive?: boolean; tags?: string[] },
 ): Promise<ConnectorResponse[]> {
-  const connectorManager = new ConnectorManager(drizzle);
+  const connectorManager = new ConnectorManager(ctx);
 
   const connectors = await connectorManager.listConnectors(organizationId, filters);
 

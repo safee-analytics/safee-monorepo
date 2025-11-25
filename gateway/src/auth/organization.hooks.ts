@@ -4,10 +4,21 @@ import { OdooDatabaseService } from "../server/services/odoo/database.service.js
 import { OdooUserProvisioningService } from "../server/services/odoo/user-provisioning.service.js";
 import { canManageRole } from "./accessControl.js";
 import { connect } from "@safee/database";
+import { getServerContext } from "../server/serverContext.js";
 
 const { drizzle } = connect("better-auth");
-const odooDatabaseService = new OdooDatabaseService(drizzle);
-const odooUserProvisioningService = new OdooUserProvisioningService(drizzle);
+
+let odooDatabaseService: OdooDatabaseService;
+let odooUserProvisioningService: OdooUserProvisioningService;
+
+function getServices() {
+  if (!odooDatabaseService) {
+    const ctx = getServerContext();
+    odooDatabaseService = new OdooDatabaseService(ctx);
+    odooUserProvisioningService = new OdooUserProvisioningService(drizzle);
+  }
+  return { odooDatabaseService, odooUserProvisioningService };
+}
 
 export const organizationHooks: OrganizationOptions["organizationHooks"] = {
   beforeUpdateMemberRole: async ({ member: targetMember, newRole, user, organization }) => {
@@ -147,6 +158,7 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
 
     setImmediate(async () => {
       try {
+        const { odooDatabaseService, odooUserProvisioningService } = getServices();
         const existingCreds = await odooDatabaseService.getCredentials(organization.id);
 
         if (existingCreds) {
@@ -189,6 +201,7 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
 
     setImmediate(async () => {
       try {
+        const { odooUserProvisioningService } = getServices();
         const userExists = await odooUserProvisioningService.userExists(user.id, organization.id);
 
         if (userExists) {
@@ -211,6 +224,7 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
 
     setImmediate(async () => {
       try {
+        const { odooUserProvisioningService } = getServices();
         await odooUserProvisioningService.deactivateUser(user.id, organization.id);
         logger.info({ userId: user.id }, "Odoo user deactivated");
       } catch (error) {
@@ -224,6 +238,7 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
 
     setImmediate(async () => {
       try {
+        const { odooDatabaseService } = getServices();
         await odooDatabaseService.deleteDatabase(organization.id);
         logger.info({ organizationId: organization.id }, "Odoo database deleted successfully");
       } catch (error) {

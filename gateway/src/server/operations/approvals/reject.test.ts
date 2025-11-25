@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, schema, eq } from "@safee/database";
+import { type DrizzleClient, type RedisClient, schema, eq } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import {
   createTestOrganization,
@@ -13,16 +13,21 @@ import {
 import { submitForApproval } from "./submitForApproval.js";
 import { reject } from "./reject.js";
 import { InvalidInput, NotFound } from "../../errors.js";
+import { initTestServerContext } from "../../test-helpers/testServerContext.js";
+import { getServerContext, type ServerContext } from "../../serverContext.js";
 
 void describe("reject operation", async () => {
   let drizzle: DrizzleClient;
+  let redis: RedisClient;
   let close: () => Promise<void>;
   let testOrg: TestOrganization;
   let testUser: TestUser;
   let approverUser: TestUser;
+  let ctx: ServerContext;
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "reject-test" }));
+    redis = await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
@@ -37,9 +42,12 @@ void describe("reject operation", async () => {
 
     await addMemberToOrganization(drizzle, testUser.id, testOrg.id, "member");
     await addMemberToOrganization(drizzle, approverUser.id, testOrg.id, "member");
+
+    ctx = getServerContext();
   });
 
   afterAll(async () => {
+    await redis.quit();
     await close();
   });
 
@@ -47,13 +55,13 @@ void describe("reject operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    const result = await reject(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {
+    const result = await reject(ctx, testOrg.id, approverUser.id, submitResult.requestId, {
       comments: "Not approved - missing documentation",
     });
 
@@ -82,7 +90,7 @@ void describe("reject operation", async () => {
     const nonExistentRequestId = crypto.randomUUID();
 
     await expect(
-      reject(drizzle, testOrg.id, approverUser.id, nonExistentRequestId, {
+      reject(ctx, testOrg.id, approverUser.id, nonExistentRequestId, {
         comments: "Test",
       }),
     ).rejects.toThrow(NotFound);
@@ -92,18 +100,18 @@ void describe("reject operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    await reject(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {
+    await reject(ctx, testOrg.id, approverUser.id, submitResult.requestId, {
       comments: "First rejection",
     });
 
     await expect(
-      reject(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {
+      reject(ctx, testOrg.id, approverUser.id, submitResult.requestId, {
         comments: "Second rejection",
       }),
     ).rejects.toThrow(InvalidInput);
@@ -113,7 +121,7 @@ void describe("reject operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
@@ -123,7 +131,7 @@ void describe("reject operation", async () => {
     await addMemberToOrganization(drizzle, otherUser.id, testOrg.id, "member");
 
     await expect(
-      reject(drizzle, testOrg.id, otherUser.id, submitResult.requestId, {
+      reject(ctx, testOrg.id, otherUser.id, submitResult.requestId, {
         comments: "Trying to reject",
       }),
     ).rejects.toThrow(NotFound);
@@ -133,13 +141,13 @@ void describe("reject operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    const result = await reject(drizzle, testOrg.id, approverUser.id, submitResult.requestId, {});
+    const result = await reject(ctx, testOrg.id, approverUser.id, submitResult.requestId, {});
 
     expect(result.success).toBe(true);
     expect(result.requestStatus).toBe("rejected");
@@ -156,7 +164,7 @@ void describe("reject operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
@@ -173,7 +181,7 @@ void describe("reject operation", async () => {
       .set({ delegatedTo: delegateUser.id })
       .where(eq(schema.approvalSteps.requestId, submitResult.requestId));
 
-    const result = await reject(drizzle, testOrg.id, delegateUser.id, submitResult.requestId, {
+    const result = await reject(ctx, testOrg.id, delegateUser.id, submitResult.requestId, {
       comments: "Rejected by delegate",
     });
 

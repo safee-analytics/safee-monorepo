@@ -1,4 +1,4 @@
-import { schema, eq, and, type DrizzleClient } from "@safee/database";
+import { schema, eq, and } from "@safee/database";
 import {
   type ConnectorMetadata,
   type IConnector,
@@ -8,6 +8,7 @@ import {
 import { ConnectorFactory } from "./connector.factory.js";
 import { encryptionService } from "../encryption.js";
 import { z } from "zod";
+import type { ServerContext } from "../../serverContext.js";
 
 const { connectors } = schema;
 
@@ -62,7 +63,15 @@ export class ConnectorManager {
   // In-memory cache of active connector instances
   private activeConnectors = new Map<string, IConnector>();
 
-  constructor(private db: DrizzleClient) {}
+  constructor(private readonly ctx: ServerContext) {}
+
+  private get drizzle() {
+    return this.ctx.drizzle;
+  }
+
+  private get logger() {
+    return this.ctx.logger;
+  }
 
   /**
    * Create a new connector
@@ -88,7 +97,7 @@ export class ConnectorManager {
 
     // Create database record
     // Note: config is jsonb, so we store the encrypted string which Postgres will accept
-    const [record] = await this.db
+    const [record] = await this.drizzle
       .insert(connectors)
       .values({
         organizationId: params.organizationId,
@@ -123,7 +132,7 @@ export class ConnectorManager {
     const testResult = await connector.testConnection();
     if (testResult.status === "failed") {
       // Update database with failed status
-      await this.db
+      await this.drizzle
         .update(connectors)
         .set({
           lastConnectionTest: new Date(),
@@ -136,7 +145,7 @@ export class ConnectorManager {
     }
 
     // Update database with success status
-    await this.db
+    await this.drizzle
       .update(connectors)
       .set({
         lastConnectionTest: new Date(),
@@ -159,7 +168,7 @@ export class ConnectorManager {
     }
 
     // Load from database
-    const [record] = await this.db
+    const [record] = await this.drizzle
       .select()
       .from(connectors)
       .where(and(eq(connectors.id, connectorId), eq(connectors.organizationId, organizationId)));
@@ -228,7 +237,7 @@ export class ConnectorManager {
       conditions.push(eq(connectors.isActive, filters.isActive));
     }
 
-    const results = await this.db
+    const results = await this.drizzle
       .select()
       .from(connectors)
       .where(and(...conditions));
@@ -259,7 +268,7 @@ export class ConnectorManager {
       updatedBy?: string;
     },
   ) {
-    const [existing] = await this.db
+    const [existing] = await this.drizzle
       .select()
       .from(connectors)
       .where(and(eq(connectors.id, connectorId), eq(connectors.organizationId, organizationId)));
@@ -325,7 +334,7 @@ export class ConnectorManager {
       this.disconnectConnector(connectorId);
     }
 
-    await this.db.update(connectors).set(updateData).where(eq(connectors.id, connectorId));
+    await this.drizzle.update(connectors).set(updateData).where(eq(connectors.id, connectorId));
 
     return { success: true };
   }
@@ -338,7 +347,7 @@ export class ConnectorManager {
     const result = await connector.testConnection();
 
     // Update database with test results
-    await this.db
+    await this.drizzle
       .update(connectors)
       .set({
         lastConnectionTest: new Date(),
@@ -358,7 +367,7 @@ export class ConnectorManager {
     this.disconnectConnector(connectorId);
 
     // Delete from database
-    await this.db
+    await this.drizzle
       .delete(connectors)
       .where(and(eq(connectors.id, connectorId), eq(connectors.organizationId, organizationId)));
 

@@ -1,9 +1,9 @@
-import type { DrizzleClient } from "@safee/database";
+import type { ServerContext } from "../serverContext.js";
 import { ConnectorManager } from "../services/connectors/connector.manager.js";
 import { DataProxyService } from "../services/connectors/data-proxy.service.js";
 
 export async function searchTable(
-  drizzle: DrizzleClient,
+  ctx: ServerContext,
   organizationId: string,
   connectorId: string,
   schemaName: string,
@@ -12,7 +12,7 @@ export async function searchTable(
   searchColumns: string[],
   limit: number,
 ): Promise<unknown[]> {
-  const connectorManager = new ConnectorManager(drizzle);
+  const connectorManager = new ConnectorManager(ctx);
   const dataProxyService = new DataProxyService(connectorManager);
 
   return await dataProxyService.searchTable(organizationId, connectorId, {

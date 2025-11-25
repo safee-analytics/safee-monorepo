@@ -1,7 +1,6 @@
-import type { DrizzleClient } from "@safee/database";
 import { schema, ruleSchema, type Rule, type RuleCondition } from "@safee/database";
 import { eq, and, desc } from "drizzle-orm";
-import { logger } from "../utils/logger.js";
+import type { ServerContext } from "../serverContext.js";
 
 // Explicit type for TSOA compatibility
 export type EntityType = "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
@@ -23,7 +22,15 @@ export interface EntityData {
 }
 
 export class ApprovalRulesEngine {
-  constructor(private drizzle: DrizzleClient) {}
+  constructor(private readonly ctx: ServerContext) {}
+
+  private get drizzle() {
+    return this.ctx.drizzle;
+  }
+
+  private get logger() {
+    return this.ctx.logger;
+  }
 
   async findMatchingWorkflow(
     organizationId: string,
@@ -42,7 +49,7 @@ export class ApprovalRulesEngine {
       });
 
       if (!rules || rules.length === 0) {
-        logger.debug({ organizationId, entityType: entityData.entityType }, "No approval rules found");
+        this.logger.debug({ organizationId, entityType: entityData.entityType }, "No approval rules found");
         return null;
       }
 
@@ -55,7 +62,7 @@ export class ApprovalRulesEngine {
         const matches = this.evaluateRule(ruleConfig, entityData);
 
         if (matches) {
-          logger.info(
+          this.logger.info(
             {
               ruleId: rule.id,
               workflowId: rule.workflowId,
@@ -72,10 +79,10 @@ export class ApprovalRulesEngine {
         }
       }
 
-      logger.debug({ organizationId, entityData }, "No matching approval rule found");
+      this.logger.debug({ organizationId, entityData }, "No matching approval rule found");
       return null;
     } catch (error) {
-      logger.error({ error, organizationId, entityData }, "Error finding matching workflow");
+      this.logger.error({ error, organizationId, entityData }, "Error finding matching workflow");
       throw error;
     }
   }
@@ -85,7 +92,7 @@ export class ApprovalRulesEngine {
       const parsed = ruleSchema.parse(conditions);
       return parsed;
     } catch (error) {
-      logger.error({ error, conditions, conditionsType: typeof conditions }, "Error parsing rule conditions");
+      this.logger.error({ error, conditions, conditionsType: typeof conditions }, "Error parsing rule conditions");
       return { conditions: [], logic: "AND" };
     }
   }

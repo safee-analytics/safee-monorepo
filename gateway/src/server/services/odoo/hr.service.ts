@@ -36,11 +36,14 @@ export interface OdooEmployee {
 export interface OdooDepartment {
   id: number;
   name: string;
-  code?: string;
+  complete_name?: string;
   manager_id?: [number, string];
   parent_id?: [number, string];
   company_id?: [number, string];
   active?: boolean;
+  total_employee?: number;
+  color?: number;
+  note?: string;
 }
 
 export interface OdooContract {
@@ -62,15 +65,17 @@ export interface OdooContract {
 export interface OdooLeaveType {
   id: number;
   name: string;
-  code?: string;
-  allocation_unit: string;
   request_unit: string;
   time_type: string;
   color?: number;
-  validation_type: string;
+  leave_validation_type?: string;
+  requires_allocation?: boolean;
+  employee_requests?: boolean;
+  allocation_validation_type?: string;
   max_leaves?: number;
-  leaves_per_year?: number;
   unpaid?: boolean;
+  active?: boolean;
+  support_document?: boolean;
 }
 
 export interface OdooLeaveRequest {
@@ -230,11 +235,14 @@ export class OdooHRService {
 
     return this.client.searchRead<OdooDepartment>("hr.department", domain, [
       "name",
-      "code",
+      "complete_name",
       "manager_id",
       "parent_id",
       "company_id",
       "active",
+      "total_employee",
+      "color",
+      "note",
     ]);
   }
 
@@ -242,7 +250,17 @@ export class OdooHRService {
     const departments = await this.client.read<OdooDepartment>(
       "hr.department",
       [departmentId],
-      ["name", "code", "manager_id", "parent_id", "company_id", "active"],
+      [
+        "name",
+        "complete_name",
+        "manager_id",
+        "parent_id",
+        "company_id",
+        "active",
+        "total_employee",
+        "color",
+        "note",
+      ],
     );
 
     return departments.length > 0 ? departments[0] : null;
@@ -306,15 +324,17 @@ export class OdooHRService {
 
     return this.client.searchRead<OdooLeaveType>("hr.leave.type", domain, [
       "name",
-      "code",
-      "allocation_unit",
       "request_unit",
       "time_type",
       "color",
-      "validation_type",
+      "leave_validation_type",
+      "requires_allocation",
+      "employee_requests",
+      "allocation_validation_type",
       "max_leaves",
-      "leaves_per_year",
       "unpaid",
+      "active",
+      "support_document",
     ]);
   }
 
@@ -324,15 +344,17 @@ export class OdooHRService {
       [leaveTypeId],
       [
         "name",
-        "code",
-        "allocation_unit",
         "request_unit",
         "time_type",
         "color",
-        "validation_type",
+        "leave_validation_type",
+        "requires_allocation",
+        "employee_requests",
+        "allocation_validation_type",
         "max_leaves",
-        "leaves_per_year",
         "unpaid",
+        "active",
+        "support_document",
       ],
     );
 
