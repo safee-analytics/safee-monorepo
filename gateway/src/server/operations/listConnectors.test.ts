@@ -1,15 +1,19 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, schema } from "@safee/database";
+import { type DrizzleClient, type RedisClient, schema } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import { listConnectors } from "./listConnectors.js";
+import { initTestServerContext } from "../test-helpers/testServerContext.js";
+import { getServerContext } from "../serverContext.js";
 
 void describe("listConnectors", async () => {
   let drizzle: DrizzleClient;
+  let redis: RedisClient;
   let close: () => Promise<void>;
   let org: typeof schema.organizations.$inferSelect;
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "list-connectors-test" }));
+    redis = await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
@@ -24,6 +28,7 @@ void describe("listConnectors", async () => {
   });
 
   afterAll(async () => {
+    await redis.quit();
     await close();
   });
 
@@ -52,7 +57,8 @@ void describe("listConnectors", async () => {
       })
       .returning();
 
-    const connectors = await listConnectors(drizzle, org.id, {});
+    const ctx = getServerContext();
+    const connectors = await listConnectors(ctx, org.id, {});
 
     expect(connectors).toHaveLength(2);
     expect(connectors[0].name).toBe("PostgreSQL Connector");
@@ -77,7 +83,8 @@ void describe("listConnectors", async () => {
       },
     ]);
 
-    const connectors = await listConnectors(drizzle, org.id, { type: "postgresql" });
+    const ctx = getServerContext();
+    const connectors = await listConnectors(ctx, org.id, { type: "postgresql" });
 
     expect(connectors).toHaveLength(1);
     expect(connectors[0].type).toBe("postgresql");
@@ -101,14 +108,16 @@ void describe("listConnectors", async () => {
       },
     ]);
 
-    const connectors = await listConnectors(drizzle, org.id, { isActive: true });
+    const ctx = getServerContext();
+    const connectors = await listConnectors(ctx, org.id, { isActive: true });
 
     expect(connectors).toHaveLength(1);
     expect(connectors[0].isActive).toBe(true);
   });
 
   void it("should return empty array for organization with no connectors", async () => {
-    const connectors = await listConnectors(drizzle, org.id, {});
+    const ctx = getServerContext();
+    const connectors = await listConnectors(ctx, org.id, {});
 
     expect(connectors).toHaveLength(0);
   });

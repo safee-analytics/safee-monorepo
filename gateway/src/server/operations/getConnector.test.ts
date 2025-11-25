@@ -1,15 +1,19 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, schema } from "@safee/database";
+import { type DrizzleClient, type RedisClient, schema } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import { getConnector } from "./getConnector.js";
 import { encryptionService } from "../services/encryption.js";
+import { initTestServerContext } from "../test-helpers/testServerContext.js";
+import { getServerContext } from "../serverContext.js";
 
 void describe("getConnector", async () => {
   let drizzle: DrizzleClient;
+  let redis: RedisClient;
   let close: () => Promise<void>;
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "get-connector-test" }));
+    redis = await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
@@ -18,6 +22,7 @@ void describe("getConnector", async () => {
   });
 
   afterAll(async () => {
+    await redis.quit();
     await close();
   });
 
@@ -53,7 +58,8 @@ void describe("getConnector", async () => {
       })
       .returning();
 
-    const result = await getConnector(drizzle, connector.id, org.id);
+    const ctx = getServerContext();
+    const result = await getConnector(ctx, connector.id, org.id);
 
     expect(result.id).toBe(connector.id);
     expect(result.name).toBe("Test Connector");
@@ -75,7 +81,8 @@ void describe("getConnector", async () => {
 
     const fakeConnectorId = "00000000-0000-0000-0000-000000000000";
 
-    await expect(getConnector(drizzle, fakeConnectorId, org.id)).rejects.toThrow();
+    const ctx = getServerContext();
+    await expect(getConnector(ctx, fakeConnectorId, org.id)).rejects.toThrow();
   });
 
   void it("should throw error when accessing connector from different organization", async () => {
@@ -115,6 +122,7 @@ void describe("getConnector", async () => {
       })
       .returning();
 
-    await expect(getConnector(drizzle, connector.id, org2.id)).rejects.toThrow();
+    const ctx = getServerContext();
+    await expect(getConnector(ctx, connector.id, org2.id)).rejects.toThrow();
   });
 });

@@ -5,6 +5,7 @@ import {
   Route,
   Tags,
   Security,
+  NoSecurity,
   Query,
   Body,
   Path,
@@ -22,6 +23,7 @@ import { approve as approveOp } from "../operations/approvals/approve.js";
 import { reject as rejectOp } from "../operations/approvals/reject.js";
 import { delegate as delegateOp } from "../operations/approvals/delegate.js";
 import type { EntityData } from "../services/approval-rules-engine.js";
+import { getServerContext } from "../serverContext.js";
 
 interface SubmitForApprovalRequest {
   entityType: string;
@@ -82,6 +84,17 @@ interface ApprovalStepResponse {
 @Route("approvals")
 @Tags("Approvals")
 export class ApprovalsController extends Controller {
+  @NoSecurity()
+  private getServices(req: AuthenticatedRequest) {
+    const ctx = getServerContext();
+
+    return {
+      ctx,
+      organizationId: req.betterAuthSession?.session.activeOrganizationId || "",
+      userId: req.betterAuthSession?.user.id || "",
+    };
+  }
+
   /**
    * Submit an entity for approval
    */
@@ -92,10 +105,9 @@ export class ApprovalsController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: SubmitForApprovalRequest,
   ): Promise<SubmitForApprovalResponse> {
-    const userId = req.betterAuthSession?.user.id || "";
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const { ctx, organizationId, userId } = this.getServices(req);
 
-    const result = await submitForApprovalOp(req.drizzle, organizationId, userId, request);
+    const result = await submitForApprovalOp(ctx, organizationId, userId, request);
 
     this.setStatus(201);
     return result;
@@ -194,10 +206,9 @@ export class ApprovalsController extends Controller {
     @Path() requestId: string,
     @Body() body: ApprovalActionRequest,
   ): Promise<ApprovalActionResponse> {
-    const userId = req.betterAuthSession?.user.id || "";
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const { ctx, organizationId, userId } = this.getServices(req);
 
-    return await approveOp(req.drizzle, organizationId, userId, requestId, body);
+    return await approveOp(ctx, organizationId, userId, requestId, body);
   }
 
   /**
@@ -210,10 +221,9 @@ export class ApprovalsController extends Controller {
     @Path() requestId: string,
     @Body() body: ApprovalActionRequest,
   ): Promise<ApprovalActionResponse> {
-    const userId = req.betterAuthSession?.user.id || "";
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const { ctx, organizationId, userId } = this.getServices(req);
 
-    return await rejectOp(req.drizzle, organizationId, userId, requestId, body);
+    return await rejectOp(ctx, organizationId, userId, requestId, body);
   }
 
   /**
@@ -226,9 +236,9 @@ export class ApprovalsController extends Controller {
     @Path() requestId: string,
     @Body() body: DelegateApprovalRequest,
   ): Promise<ApprovalActionResponse> {
-    const userId = req.betterAuthSession?.user.id || "";
+    const { ctx, userId } = this.getServices(req);
 
-    return await delegateOp(req.drizzle, userId, requestId, body);
+    return await delegateOp(ctx, userId, requestId, body);
   }
 
   /**

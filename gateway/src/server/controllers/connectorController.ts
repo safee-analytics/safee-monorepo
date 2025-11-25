@@ -95,14 +95,14 @@ export class ConnectorController extends Controller {
     @Query() isActive?: boolean,
     @Query() tags?: string,
   ): Promise<ConnectorResponse[]> {
-    const { organizationId } = this.getServices(req);
+    const { ctx, organizationId } = this.getServices(req);
 
     const filters: { type?: ConnectorType; isActive?: boolean; tags?: string[] } = {};
     if (type) filters.type = type;
     if (isActive !== undefined) filters.isActive = isActive;
     if (tags) filters.tags = tags.split(",");
 
-    return await listConnectorsOp(req.drizzle, organizationId, filters);
+    return await listConnectorsOp(ctx, organizationId, filters);
   }
 
   @Post("/")
@@ -112,11 +112,11 @@ export class ConnectorController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: CreateConnectorRequest,
   ): Promise<ConnectorResponse> {
-    const { organizationId, userId } = this.getServices(req);
+    const { ctx, organizationId, userId } = this.getServices(req);
 
     this.setStatus(201);
 
-    return await createConnectorOp(req.drizzle, organizationId, userId, request);
+    return await createConnectorOp(ctx, organizationId, userId, request);
   }
 
   @Get("/{connectorId}")
@@ -125,9 +125,9 @@ export class ConnectorController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
   ): Promise<ConnectorResponse> {
-    const { organizationId } = this.getServices(req);
+    const { ctx, organizationId } = this.getServices(req);
 
-    return await getConnectorOp(req.drizzle, connectorId, organizationId);
+    return await getConnectorOp(ctx, connectorId, organizationId);
   }
 
   @Put("/{connectorId}")
@@ -137,9 +137,9 @@ export class ConnectorController extends Controller {
     @Path() connectorId: string,
     @Body() request: UpdateConnectorRequest,
   ): Promise<{ success: boolean }> {
-    const { organizationId, userId } = this.getServices(req);
+    const { ctx, organizationId, userId } = this.getServices(req);
 
-    return await updateConnectorOp(req.drizzle, connectorId, organizationId, userId, request);
+    return await updateConnectorOp(ctx, connectorId, organizationId, userId, request);
   }
 
   @Delete("/{connectorId}")
@@ -148,9 +148,9 @@ export class ConnectorController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
   ): Promise<{ success: boolean }> {
-    const { organizationId } = this.getServices(req);
+    const { ctx, organizationId } = this.getServices(req);
 
-    return await deleteConnectorOp(req.drizzle, connectorId, organizationId);
+    return await deleteConnectorOp(ctx, connectorId, organizationId);
   }
 
   @Post("/{connectorId}/test")
@@ -165,9 +165,9 @@ export class ConnectorController extends Controller {
     metadata?: Record<string, unknown>;
     error?: string;
   }> {
-    const { organizationId } = this.getServices(req);
+    const { ctx, organizationId } = this.getServices(req);
 
-    return await testConnectionOp(req.drizzle, connectorId, organizationId);
+    return await testConnectionOp(ctx, connectorId, organizationId);
   }
 
   @Get("/{connectorId}/health")
@@ -181,9 +181,9 @@ export class ConnectorController extends Controller {
     message?: string;
     details?: Record<string, unknown>;
   }> {
-    const { organizationId } = this.getServices(req);
+    const { ctx, organizationId } = this.getServices(req);
 
-    return await getConnectorHealthOp(req.drizzle, connectorId, organizationId);
+    return await getConnectorHealthOp(ctx, connectorId, organizationId);
   }
 
   @Post("/{connectorId}/query")
@@ -193,9 +193,9 @@ export class ConnectorController extends Controller {
     @Path() connectorId: string,
     @Body() request: QueryRequest,
   ): Promise<QueryResponse> {
-    const { organizationId } = this.getServices(req);
+    const { ctx, organizationId } = this.getServices(req);
 
-    return await executeQueryOp(req.drizzle, organizationId, connectorId, request);
+    return await executeQueryOp(ctx, organizationId, connectorId, request);
   }
 
   @Get("/{connectorId}/schema")
@@ -204,9 +204,9 @@ export class ConnectorController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Path() connectorId: string,
   ): Promise<SchemaResponse> {
-    const { organizationId } = this.getServices(req);
+    const { ctx, organizationId } = this.getServices(req);
 
-    return await getSchemaOp(req.drizzle, organizationId, connectorId);
+    return await getSchemaOp(ctx, organizationId, connectorId);
   }
 
   @Get("/{connectorId}/schema/{schemaName}/tables/{tableName}")
@@ -218,9 +218,9 @@ export class ConnectorController extends Controller {
     @Path() tableName: string,
     @Query() limit: number = 100,
   ): Promise<TablePreviewResponse> {
-    const { organizationId } = this.getServices(req);
+    const { ctx, organizationId } = this.getServices(req);
 
-    return await getTablePreviewOp(req.drizzle, organizationId, connectorId, schemaName, tableName, limit);
+    return await getTablePreviewOp(ctx, organizationId, connectorId, schemaName, tableName, limit);
   }
 
   @Get("/{connectorId}/schema/{schemaName}/tables/{tableName}/search")
@@ -234,10 +234,10 @@ export class ConnectorController extends Controller {
     @Query() searchColumns: string,
     @Query() limit: number = 50,
   ): Promise<unknown[]> {
-    const { organizationId } = this.getServices(req);
+    const { ctx, organizationId } = this.getServices(req);
 
     return await searchTableOp(
-      req.drizzle,
+      ctx,
       organizationId,
       connectorId,
       schemaName,
@@ -254,6 +254,8 @@ export class ConnectorController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: SuggestMappingsRequest,
   ): Promise<FieldMapping[]> {
-    return await suggestMappingsOp(req.drizzle, request);
+    const { ctx } = this.getServices(req);
+
+    return await suggestMappingsOp(ctx, request);
   }
 }

@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, schema, eq } from "@safee/database";
+import { type DrizzleClient, type RedisClient, schema, eq } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import {
   createTestOrganization,
@@ -12,17 +12,22 @@ import {
 import { submitForApproval } from "./submitForApproval.js";
 import { delegate } from "./delegate.js";
 import { NotFound } from "../../errors.js";
+import { initTestServerContext } from "../../test-helpers/testServerContext.js";
+import { getServerContext, type ServerContext } from "../../serverContext.js";
 
 void describe("delegate operation", async () => {
   let drizzle: DrizzleClient;
+  let redis: RedisClient;
   let close: () => Promise<void>;
   let testOrg: TestOrganization;
   let testUser: TestUser;
   let approverUser: TestUser;
   let delegateUser: TestUser;
+  let ctx: ServerContext;
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "delegate-test" }));
+    redis = await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
@@ -38,9 +43,12 @@ void describe("delegate operation", async () => {
       email: "delegate@test.com",
       name: "Delegate",
     });
+
+    ctx = getServerContext();
   });
 
   afterAll(async () => {
+    await redis.quit();
     await close();
   });
 
@@ -48,13 +56,13 @@ void describe("delegate operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    const result = await delegate(drizzle, approverUser.id, submitResult.requestId, {
+    const result = await delegate(ctx, approverUser.id, submitResult.requestId, {
       delegateToUserId: delegateUser.id,
       comments: "Please review this for me",
     });
@@ -76,13 +84,13 @@ void describe("delegate operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    const result = await delegate(drizzle, approverUser.id, submitResult.requestId, {
+    const result = await delegate(ctx, approverUser.id, submitResult.requestId, {
       delegateToUserId: delegateUser.id,
     });
 
@@ -101,7 +109,7 @@ void describe("delegate operation", async () => {
     const nonExistentRequestId = crypto.randomUUID();
 
     await expect(
-      delegate(drizzle, approverUser.id, nonExistentRequestId, {
+      delegate(ctx, approverUser.id, nonExistentRequestId, {
         delegateToUserId: delegateUser.id,
       }),
     ).rejects.toThrow(NotFound);
@@ -111,7 +119,7 @@ void describe("delegate operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
@@ -120,7 +128,7 @@ void describe("delegate operation", async () => {
     const otherUser = await createTestUser(drizzle, { email: "other@test.com", name: "Other" });
 
     await expect(
-      delegate(drizzle, otherUser.id, submitResult.requestId, {
+      delegate(ctx, otherUser.id, submitResult.requestId, {
         delegateToUserId: delegateUser.id,
       }),
     ).rejects.toThrow(NotFound);
@@ -130,7 +138,7 @@ void describe("delegate operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
@@ -145,7 +153,7 @@ void describe("delegate operation", async () => {
       .where(eq(schema.approvalSteps.requestId, submitResult.requestId));
 
     await expect(
-      delegate(drizzle, approverUser.id, submitResult.requestId, {
+      delegate(ctx, approverUser.id, submitResult.requestId, {
         delegateToUserId: delegateUser.id,
       }),
     ).rejects.toThrow(NotFound);
@@ -155,13 +163,13 @@ void describe("delegate operation", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
-    const submitResult = await submitForApproval(drizzle, testOrg.id, testUser.id, {
+    const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
       entityId: entityId,
       entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
     });
 
-    await delegate(drizzle, approverUser.id, submitResult.requestId, {
+    await delegate(ctx, approverUser.id, submitResult.requestId, {
       delegateToUserId: delegateUser.id,
       comments: "First delegation",
     });
@@ -171,7 +179,7 @@ void describe("delegate operation", async () => {
       name: "Delegate 2",
     });
 
-    const result = await delegate(drizzle, approverUser.id, submitResult.requestId, {
+    const result = await delegate(ctx, approverUser.id, submitResult.requestId, {
       delegateToUserId: secondDelegateUser.id,
       comments: "Re-delegating to someone else",
     });

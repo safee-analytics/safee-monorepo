@@ -1,8 +1,7 @@
 import { NotFound } from "../../errors.js";
 import { type OdooClient, type OdooConnectionConfig } from "./client.service.js";
 import { createResilientOdooClient } from "./resilient-client.js";
-import type { Logger } from "pino";
-import type { DrizzleClient } from "@safee/database";
+import type { ServerContext } from "../../serverContext.js";
 
 export interface OdooModule {
   id: number;
@@ -18,8 +17,6 @@ export interface OdooModule {
 export interface OdooModuleInstallParams {
   config: OdooConnectionConfig;
   modules: string[];
-  logger: Logger;
-  drizzle: DrizzleClient;
   organizationId?: string;
   userId?: string;
 }
@@ -27,13 +24,20 @@ export interface OdooModuleInstallParams {
 export interface OdooModuleUninstallParams {
   config: OdooConnectionConfig;
   modules: string[];
-  logger: Logger;
-  drizzle: DrizzleClient;
   organizationId?: string;
   userId?: string;
 }
 
 export class OdooModuleService {
+  constructor(private readonly ctx: ServerContext) {}
+
+  private get logger() {
+    return this.ctx.logger;
+  }
+
+  private get drizzle() {
+    return this.ctx.drizzle;
+  }
   async getAvailableModules(client: OdooClient): Promise<OdooModule[]> {
     return await client.searchRead<OdooModule>(
       "ir.module.module",
@@ -54,7 +58,7 @@ export class OdooModuleService {
     );
   }
 
-  private async clearStuckModuleOperations(client: OdooClient, logger: Logger): Promise<void> {
+  private async clearStuckModuleOperations(client: OdooClient): Promise<void> {
     try {
       const stuckModules = await client.searchRead<OdooModule>(
         "ir.module.module",
@@ -65,7 +69,7 @@ export class OdooModuleService {
       );
 
       if (stuckModules.length > 0) {
-        logger.warn(
+        this.logger.warn(
           { stuckModules: stuckModules.map((m) => ({ name: m.name, state: m.state })) },
           "Found stuck module operations, clearing them",
         );
@@ -77,12 +81,12 @@ export class OdooModuleService {
 
             await client.write("ir.module.module", [module.id], { state: newState }, { lang: "en_US" });
 
-            logger.info(
+            this.logger.info(
               { moduleName: module.name, oldState: module.state, newState },
               "Cleared stuck module state",
             );
           } catch (error) {
-            logger.warn(
+            this.logger.warn(
               { moduleName: module.name, error: error instanceof Error ? error.message : "Unknown" },
               "Failed to clear stuck module, continuing anyway",
             );
@@ -92,7 +96,7 @@ export class OdooModuleService {
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
     } catch (error) {
-      logger.warn(
+      this.logger.warn(
         { error: error instanceof Error ? error.message : "Unknown" },
         "Failed to check for stuck modules, continuing anyway",
       );
@@ -100,14 +104,14 @@ export class OdooModuleService {
   }
 
   async installModules(params: OdooModuleInstallParams): Promise<void> {
-    const { config, modules, logger, drizzle, organizationId, userId: _userId } = params;
+    const { config, modules, organizationId, userId: _userId } = params;
 
-    const client = createResilientOdooClient(config, logger, drizzle);
+    const client = createResilientOdooClient(config, this.logger, this.drizzle);
     await client.authenticate();
 
-    logger.info({ modules, database: config.database, organizationId }, "Starting module installation");
+    this.logger.info({ modules, database: config.database, organizationId }, "Starting module installation");
 
-    await this.clearStuckModuleOperations(client, logger);
+    await this.clearStuckModuleOperations(client);
 
     const moduleRecords = await this.getModulesByName(client, modules);
 
@@ -119,7 +123,7 @@ export class OdooModuleService {
     const alreadyInstalled = moduleRecords.filter((m) => m.state === "installed");
 
     if (alreadyInstalled.length > 0) {
-      logger.info(
+      this.logger.info(
         {
           modules: alreadyInstalled.map((m) => m.name),
           database: config.database,
@@ -129,13 +133,13 @@ export class OdooModuleService {
     }
 
     if (modulesToInstall.length === 0) {
-      logger.info({ modules, database: config.database }, "All modules already installed");
+      this.logger.info({ modules, database: config.database }, "All modules already installed");
       return;
     }
 
     const moduleIds = modulesToInstall.map((m) => m.id);
 
-    logger.info(
+    this.logger.info(
       {
         modulesToInstall: modulesToInstall.map((m) => m.name),
         moduleIds,
@@ -154,7 +158,7 @@ export class OdooModuleService {
           context: { lang: "en_US" },
         });
 
-        logger.info(
+        this.logger.info(
           {
             installed: modulesToInstall.map((m) => m.name),
             database: config.database,
@@ -175,16 +179,16 @@ export class OdooModuleService {
 
           if (retries <= maxRetries) {
             const delay = baseDelay * Math.pow(2, retries - 1); // Exponential backoff
-            logger.warn(
+            this.logger.warn(
               { retries, maxRetries, delay, error: errorMessage },
               "Another module operation in progress, retrying after delay",
             );
 
             await new Promise((resolve) => setTimeout(resolve, delay));
 
-            await this.clearStuckModuleOperations(client, logger);
+            await this.clearStuckModuleOperations(client);
           } else {
-            logger.error(
+            this.logger.error(
               { retries, error: errorMessage },
               "Max retries reached, module operation still in progress",
             );
@@ -198,12 +202,15 @@ export class OdooModuleService {
   }
 
   async uninstallModules(params: OdooModuleUninstallParams): Promise<void> {
-    const { config, modules, logger, drizzle, organizationId, userId: _userId } = params;
+    const { config, modules, organizationId, userId: _userId } = params;
 
-    const client = createResilientOdooClient(config, logger, drizzle);
+    const client = createResilientOdooClient(config, this.logger, this.drizzle);
     await client.authenticate();
 
-    logger.info({ modules, database: config.database, organizationId }, "Starting module uninstallation");
+    this.logger.info(
+      { modules, database: config.database, organizationId },
+      "Starting module uninstallation",
+    );
 
     const moduleRecords = await this.getModulesByName(client, modules);
 
@@ -215,7 +222,7 @@ export class OdooModuleService {
     const notInstalled = moduleRecords.filter((m) => m.state !== "installed");
 
     if (notInstalled.length > 0) {
-      logger.info(
+      this.logger.info(
         {
           modules: notInstalled.map((m) => m.name),
           database: config.database,
@@ -225,13 +232,13 @@ export class OdooModuleService {
     }
 
     if (modulesToUninstall.length === 0) {
-      logger.info({ modules, database: config.database }, "No modules to uninstall");
+      this.logger.info({ modules, database: config.database }, "No modules to uninstall");
       return;
     }
 
     const moduleIds = modulesToUninstall.map((m) => m.id);
 
-    logger.info(
+    this.logger.info(
       {
         modulesToUninstall: modulesToUninstall.map((m) => m.name),
         moduleIds,
@@ -244,7 +251,7 @@ export class OdooModuleService {
       context: { lang: "en_US" },
     });
 
-    logger.info(
+    this.logger.info(
       {
         uninstalled: modulesToUninstall.map((m) => m.name),
         database: config.database,

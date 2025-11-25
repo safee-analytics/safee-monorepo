@@ -1,6 +1,5 @@
-import type { DrizzleClient } from "@safee/database";
+import type { ServerContext } from "../../serverContext.js";
 import { schema, eq, and } from "@safee/database";
-import { pino } from "pino";
 import { OperationFailed, NotFound } from "../../errors.js";
 
 export interface DelegateRequest {
@@ -14,12 +13,12 @@ export interface DelegateResponse {
 }
 
 export async function delegate(
-  drizzle: DrizzleClient,
+  ctx: ServerContext,
   userId: string,
   requestId: string,
   request: DelegateRequest,
 ): Promise<DelegateResponse> {
-  const logger = pino();
+  const { drizzle, logger } = ctx;
 
   try {
     const approvalStep = await drizzle.query.approvalSteps.findFirst({

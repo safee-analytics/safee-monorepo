@@ -1,6 +1,5 @@
-import type { DrizzleClient } from "@safee/database";
+import type { ServerContext } from "../../serverContext.js";
 import { schema, eq, and } from "@safee/database";
-import { pino } from "pino";
 import { OperationFailed, InvalidInput, NotFound, InsufficientPermissions } from "../../errors.js";
 
 export interface RejectRequest {
@@ -14,13 +13,13 @@ export interface RejectResponse {
 }
 
 export async function reject(
-  drizzle: DrizzleClient,
+  ctx: ServerContext,
   organizationId: string,
   userId: string,
   requestId: string,
   request: RejectRequest,
 ): Promise<RejectResponse> {
-  const logger = pino();
+  const { drizzle, logger } = ctx;
 
   try {
     const approvalRequest = await drizzle.query.approvalRequests.findFirst({

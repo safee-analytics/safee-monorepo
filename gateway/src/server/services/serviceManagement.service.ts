@@ -1,11 +1,10 @@
-import type { DrizzleClient } from "@safee/database";
-import { schema, connect } from "@safee/database";
+import { schema } from "@safee/database";
 import { eq, and } from "drizzle-orm";
 import { OdooModuleService } from "./odoo/module.service.js";
 import { OdooDatabaseService } from "./odoo/database.service.js";
 import { ServiceNotFound, ServiceAlreadyEnabled } from "../errors.js";
 import { env } from "../../env.js";
-import pino from "pino";
+import type { ServerContext } from "../serverContext.js";
 
 export interface EnableServiceForOrganizationParams {
   organizationId: string;
@@ -18,13 +17,20 @@ export interface EnableServiceForUserParams {
 }
 
 export class ServiceManagementService {
-  private logger = pino({ name: "service-management" });
   private odooDatabaseService: OdooDatabaseService;
   private odooModuleService: OdooModuleService;
 
-  constructor(private readonly drizzle: DrizzleClient) {
-    this.odooDatabaseService = new OdooDatabaseService(drizzle);
-    this.odooModuleService = new OdooModuleService();
+  constructor(private readonly ctx: ServerContext) {
+    this.odooDatabaseService = new OdooDatabaseService(ctx);
+    this.odooModuleService = new OdooModuleService(ctx);
+  }
+
+  private get logger() {
+    return this.ctx.logger;
+  }
+
+  private get drizzle() {
+    return this.ctx.drizzle;
   }
 
   async enableServiceForOrganization(params: EnableServiceForOrganizationParams): Promise<void> {
@@ -90,8 +96,6 @@ export class ServiceManagementService {
               password: credentials.adminPassword,
             },
             modules: [service.name],
-            logger: this.logger,
-            drizzle: this.drizzle,
           });
         }
       }
@@ -185,6 +189,3 @@ export class ServiceManagementService {
     });
   }
 }
-
-const { drizzle } = connect("service-management");
-export const serviceManagementService = new ServiceManagementService(drizzle);

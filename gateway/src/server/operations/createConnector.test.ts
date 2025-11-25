@@ -1,14 +1,18 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, schema } from "@safee/database";
+import { type DrizzleClient, type RedisClient, schema } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import { createConnector } from "./createConnector.js";
+import { initTestServerContext } from "../test-helpers/testServerContext.js";
+import { getServerContext } from "../serverContext.js";
 
 void describe("createConnector", async () => {
   let drizzle: DrizzleClient;
+  let redis: RedisClient;
   let close: () => Promise<void>;
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "create-connector-test" }));
+    redis = await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
@@ -18,6 +22,7 @@ void describe("createConnector", async () => {
   });
 
   afterAll(async () => {
+    await redis.quit();
     await close();
   });
 
@@ -39,7 +44,8 @@ void describe("createConnector", async () => {
       })
       .returning();
 
-    const result = await createConnector(drizzle, org.id, user.id, {
+    const ctx = getServerContext();
+    const result = await createConnector(ctx, org.id, user.id, {
       name: "New PostgreSQL Connector",
       description: "A test connector",
       type: "postgresql",
@@ -82,7 +88,8 @@ void describe("createConnector", async () => {
       })
       .returning();
 
-    const result = await createConnector(drizzle, org.id, user.id, {
+    const ctx = getServerContext();
+    const result = await createConnector(ctx, org.id, user.id, {
       name: "Minimal Connector",
       type: "postgresql",
       config: {

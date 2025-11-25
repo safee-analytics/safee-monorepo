@@ -1,8 +1,8 @@
-import type { DrizzleClient } from "@safee/database";
+import type { ServerContext } from "../serverContext.js";
 import { ConnectorManager } from "../services/connectors/connector.manager.js";
 
 export async function getConnectorHealth(
-  drizzle: DrizzleClient,
+  ctx: ServerContext,
   connectorId: string,
   organizationId: string,
 ): Promise<{
@@ -10,7 +10,7 @@ export async function getConnectorHealth(
   message?: string;
   details?: Record<string, unknown>;
 }> {
-  const connectorManager = new ConnectorManager(drizzle);
+  const connectorManager = new ConnectorManager(ctx);
 
   return await connectorManager.getConnectorHealth(connectorId, organizationId);
 }

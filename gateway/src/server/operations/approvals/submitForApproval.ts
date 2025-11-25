@@ -1,4 +1,4 @@
-import type { DrizzleClient } from "@safee/database";
+import type { ServerContext } from "../../serverContext.js";
 import { schema } from "@safee/database";
 import { pino } from "pino";
 import { OperationFailed, InvalidInput, NotFound } from "../../errors.js";
@@ -18,7 +18,7 @@ export interface SubmitForApprovalResponse {
 }
 
 export async function submitForApproval(
-  drizzle: DrizzleClient,
+  ctx: ServerContext,
   organizationId: string,
   userId: string,
   request: SubmitForApprovalRequest,
@@ -41,7 +41,7 @@ export async function submitForApproval(
   }
 
   try {
-    const rulesEngine = new ApprovalRulesEngine(drizzle);
+    const rulesEngine = new ApprovalRulesEngine(ctx);
 
     const match = await rulesEngine.findMatchingWorkflow(organizationId, request.entityData);
 
@@ -49,7 +49,7 @@ export async function submitForApproval(
       throw new NotFound("No matching approval workflow found for this entity");
     }
 
-    const [approvalRequest] = await drizzle
+    const [approvalRequest] = await ctx.drizzle
       .insert(schema.approvalRequests)
       .values({
         workflowId: match.workflowId,
@@ -76,7 +76,7 @@ export async function submitForApproval(
 
     await Promise.all(
       approverIds.map((approverId) =>
-        drizzle.insert(schema.approvalSteps).values({
+        ctx.drizzle.insert(schema.approvalSteps).values({
           requestId: approvalRequest.id,
           stepOrder: firstStep.stepOrder,
           approverId,
