@@ -45,11 +45,6 @@ export async function updateCase(
     throw new InvalidInput("Client name cannot be empty");
   }
 
-  // Validation: Audit type
-  if (request.auditType !== undefined && request.auditType.trim().length === 0) {
-    throw new InvalidInput("Audit type cannot be empty");
-  }
-
   // Validation: Due date
   if (request.dueDate) {
     const dueDate = new Date(request.dueDate);
@@ -101,7 +96,6 @@ export async function updateCase(
       ...request,
       caseNumber: request.caseNumber?.trim(),
       clientName: request.clientName?.trim(),
-      auditType: request.auditType?.trim(),
       dueDate: request.dueDate ? new Date(request.dueDate) : undefined,
       completedDate: request.completedDate ? new Date(request.completedDate) : undefined,
     });

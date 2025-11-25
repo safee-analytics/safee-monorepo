@@ -11,6 +11,7 @@ import {
   caseHistory,
 } from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
+import type { CaseEntityType, CaseAction } from "../drizzle/index.js";
 import type {
   CreateCaseInput,
   UpdateCaseInput,
@@ -404,9 +405,9 @@ export async function createHistoryEntry(
   deps: DbDeps,
   input: {
     caseId: string;
-    entityType: string;
+    entityType: CaseEntityType;
     entityId: string;
-    action: string;
+    action: CaseAction;
     changesBefore?: Record<string, unknown>;
     changesAfter?: Record<string, unknown>;
     changedBy: string;
@@ -425,7 +426,7 @@ export async function getHistoryByCase(deps: DbDeps, caseId: string): Promise<Ca
 
 export async function getHistoryByEntity(
   deps: DbDeps,
-  entityType: string,
+  entityType: CaseEntityType,
   entityId: string,
 ): Promise<CaseHistory[]> {
   return deps.drizzle.query.caseHistory.findMany({

@@ -176,6 +176,223 @@ export const odooOperationStatusEnum = odooSchema.enum("operation_status", [
 
 export const odooCircuitStateEnum = odooSchema.enum("circuit_state", ["CLOSED", "OPEN", "HALF_OPEN"]);
 
+export const documentTypeEnum = systemSchema.enum("document_type", [
+  "invoice",
+  "bill",
+  "quote",
+  "purchase_order",
+  "delivery_note",
+  "receipt",
+  "credit_note",
+  "debit_note",
+  "payslip",
+  "contract",
+  "payment_receipt",
+  "refund",
+]);
+
+export const notificationTypeEnum = systemSchema.enum("notification_type", [
+  // General
+  "deadline",
+  "review",
+  "completed",
+  "team",
+  "assignment",
+  "comment",
+  "mention",
+  "reminder",
+  "alert",
+  "warning",
+  "error",
+  "info",
+  "success",
+  // Approvals & Requests (Generic workflow)
+  "approval_requested",
+  "approval_approved",
+  "approval_rejected",
+  "approval_cancelled",
+  "approval_reminder",
+  "request_submitted",
+  "request_updated",
+  "request_withdrawn",
+  "request_escalated",
+  // Cases/Audit
+  "case_update",
+  "case_created",
+  "case_assigned",
+  "case_completed",
+  "case_overdue",
+  "case_archived",
+  "document",
+  "document_uploaded",
+  "document_reviewed",
+  "document_approved",
+  "document_rejected",
+  // Accounting/Hisabiq
+  "invoice_created",
+  "invoice_submitted",
+  "invoice_approved",
+  "invoice_rejected",
+  "invoice_paid",
+  "invoice_overdue",
+  "invoice_cancelled",
+  "payment_received",
+  "payment_sent",
+  "payment_failed",
+  "payment_pending",
+  "bill_created",
+  "bill_submitted",
+  "bill_approved",
+  "bill_rejected",
+  "bill_paid",
+  "bill_overdue",
+  "expense_submitted",
+  "expense_approved",
+  "expense_rejected",
+  "expense_reimbursed",
+  // HR/Kanz
+  "leave_requested",
+  "leave_approved",
+  "leave_rejected",
+  "leave_cancelled",
+  "leave_reminder",
+  "payslip_generated",
+  "payslip_available",
+  "contract_created",
+  "contract_expiring",
+  "contract_expired",
+  "contract_renewed",
+  "employee_onboarded",
+  "employee_offboarded",
+  "timesheet_submitted",
+  "timesheet_approved",
+  "timesheet_rejected",
+  // CRM/Nisbah
+  "deal_created",
+  "deal_updated",
+  "deal_won",
+  "deal_lost",
+  "deal_assigned",
+  "contact_added",
+  "contact_updated",
+  "task_assigned",
+  "task_completed",
+  "task_overdue",
+  "task_reminder",
+  "meeting_scheduled",
+  "meeting_reminder",
+  "meeting_cancelled",
+  "follow_up_due",
+]);
+
+export const relatedEntityTypeEnum = systemSchema.enum("related_entity_type", [
+  // Audit
+  "case",
+  "document",
+  "audit_template",
+  "audit_scope",
+  "audit_section",
+  "audit_procedure",
+  // Approvals
+  "approval",
+  "approval_request",
+  // Accounting
+  "invoice",
+  "bill",
+  "payment",
+  "account",
+  "journal",
+  // HR
+  "employee",
+  "payslip",
+  "leave_request",
+  "leave_allocation",
+  "contract",
+  "department",
+  // CRM
+  "contact",
+  "deal",
+  "task",
+  // General
+  "organization",
+  "user",
+  "team",
+]);
+
+export const invitationStatusEnum = identitySchema.enum("invitation_status", [
+  "pending",
+  "accepted",
+  "rejected",
+  "expired",
+]);
+
+export const accountTypeEnum = financeSchema.enum("account_type", [
+  "asset",
+  "liability",
+  "equity",
+  "income",
+  "expense",
+]);
+
+export const accountInternalTypeEnum = financeSchema.enum("account_internal_type", [
+  "receivable",
+  "payable",
+  "liquidity",
+  "other",
+]);
+
+export const auditTypeEnum = auditSchema.enum("audit_type", [
+  "ICV",
+  "ISO_9001",
+  "ISO_14001",
+  "ISO_45001",
+  "financial_audit",
+  "internal_audit",
+  "compliance_audit",
+  "operational_audit",
+]);
+
+export const auditCategoryEnum = auditSchema.enum("audit_category", [
+  "certification",
+  "financial",
+  "operational",
+  "compliance",
+]);
+
+export const caseEntityTypeEnum = auditSchema.enum("case_entity_type", [
+  "case",
+  "scope",
+  "section",
+  "procedure",
+  "document",
+  "note",
+]);
+
+export const caseActionEnum = auditSchema.enum("case_action", [
+  "created",
+  "updated",
+  "deleted",
+  "completed",
+  "archived",
+  "assigned",
+  "unassigned",
+]);
+
+export const themeEnum = identitySchema.enum("theme", ["light", "dark", "auto"]);
+
+export const colorSchemeEnum = identitySchema.enum("color_scheme", [
+  "blue",
+  "purple",
+  "green",
+  "orange",
+  "red",
+  "teal",
+]);
+
+export const fontSizeEnum = identitySchema.enum("font_size", ["small", "medium", "large"]);
+
+export const densityEnum = identitySchema.enum("density", ["compact", "comfortable", "spacious"]);
+
 export type ApprovalStatus = (typeof approvalStatusEnum.enumValues)[number];
 export type InvoiceType = (typeof invoiceTypeEnum.enumValues)[number];
 export type ContactType = (typeof contactTypeEnum.enumValues)[number];
@@ -203,6 +420,20 @@ export type NoteType = (typeof noteTypeEnum.enumValues)[number];
 export type AssignmentRole = (typeof assignmentRoleEnum.enumValues)[number];
 export type OdooOperationStatus = (typeof odooOperationStatusEnum.enumValues)[number];
 export type OdooCircuitState = (typeof odooCircuitStateEnum.enumValues)[number];
+export type DocumentType = (typeof documentTypeEnum.enumValues)[number];
+export type NotificationType = (typeof notificationTypeEnum.enumValues)[number];
+export type RelatedEntityType = (typeof relatedEntityTypeEnum.enumValues)[number];
+export type InvitationStatus = (typeof invitationStatusEnum.enumValues)[number];
+export type AccountType = (typeof accountTypeEnum.enumValues)[number];
+export type AccountInternalType = (typeof accountInternalTypeEnum.enumValues)[number];
+export type AuditType = (typeof auditTypeEnum.enumValues)[number];
+export type AuditCategory = (typeof auditCategoryEnum.enumValues)[number];
+export type CaseEntityType = (typeof caseEntityTypeEnum.enumValues)[number];
+export type CaseAction = (typeof caseActionEnum.enumValues)[number];
+export type Theme = (typeof themeEnum.enumValues)[number];
+export type ColorScheme = (typeof colorSchemeEnum.enumValues)[number];
+export type FontSize = (typeof fontSizeEnum.enumValues)[number];
+export type Density = (typeof densityEnum.enumValues)[number];
 
 export const employeeTypeEnum = hrSchema.enum("employee_type", [
   "employee",

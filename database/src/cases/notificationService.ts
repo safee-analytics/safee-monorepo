@@ -65,17 +65,17 @@ export async function createNotification(
     return null;
   }
   const [notification] = await drizzle
-    .insert(notifications)
+    .insert(schema.notifications)
     .values({
       organizationId,
       userId,
       type: notificationData.type,
       title: notificationData.title,
       description: notificationData.description,
-      actionLabel: notificationData.actionLabel ?? null,
-      actionUrl: notificationData.actionUrl ?? null,
-      relatedEntityType: notificationData.relatedEntityType ?? null,
-      relatedEntityId: relatedEntityId ?? null,
+      actionLabel: notificationData.actionLabel,
+      actionUrl: notificationData.actionUrl,
+      relatedEntityType: notificationData.relatedEntityType,
+      relatedEntityId: relatedEntityId,
       isRead: false,
     })
     .returning({ id: notifications.id });

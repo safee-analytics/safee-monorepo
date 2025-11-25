@@ -32,10 +32,12 @@ import type {
   PartnerLedgerReportResponse,
   ProfitLossResponse,
 } from "../types/hisabiq.js";
+import { DocumentTemplateService } from "../services/documentTemplate.service.js";
+import { getServerContext } from "../serverContext.js";
 
-@Route("hisabiq")
-@Tags("Hisabiq (Accounting)")
-export class HisabiqController extends Controller {
+@Route("accounting")
+@Tags("Accounting")
+export class AccountingController extends Controller {
   @NoSecurity()
   private async getAccountingService(request: AuthenticatedRequest): Promise<OdooAccountingService> {
     const userId = request.betterAuthSession!.user.id;
@@ -46,7 +48,7 @@ export class HisabiqController extends Controller {
 
   @Get("invoices")
   @Security("jwt")
-  @OperationId("GetHisabiqInvoices")
+  @OperationId("GetAccountingInvoices")
   public async getInvoices(
     @Request() request: AuthenticatedRequest,
     @Query() page: number = 1,
@@ -93,7 +95,7 @@ export class HisabiqController extends Controller {
 
   @Get("invoices/{invoiceId}")
   @Security("jwt")
-  @OperationId("GetHisabiqInvoice")
+  @OperationId("GetAccountingInvoice")
   public async getInvoice(
     @Request() request: AuthenticatedRequest,
     @Path() invoiceId: string,
@@ -119,7 +121,7 @@ export class HisabiqController extends Controller {
   @Post("invoices")
   @Security("jwt")
   @SuccessResponse("201", "Invoice created successfully")
-  @OperationId("CreateHisabiqInvoice")
+  @OperationId("CreateAccountingInvoice")
   public async createInvoice(
     @Request() request: AuthenticatedRequest,
     @Body() invoiceRequest: InvoiceCreateRequest,
@@ -162,7 +164,7 @@ export class HisabiqController extends Controller {
 
   @Post("invoices/{invoiceId}/validate")
   @Security("jwt")
-  @OperationId("ValidateHisabiqInvoice")
+  @OperationId("ValidateAccountingInvoice")
   public async validateInvoice(
     @Request() request: AuthenticatedRequest,
     @Path() invoiceId: string,
@@ -174,7 +176,7 @@ export class HisabiqController extends Controller {
 
   @Post("invoices/{invoiceId}/cancel")
   @Security("jwt")
-  @OperationId("CancelHisabiqInvoice")
+  @OperationId("CancelAccountingInvoice")
   public async cancelInvoice(
     @Request() request: AuthenticatedRequest,
     @Path() invoiceId: string,
@@ -186,7 +188,7 @@ export class HisabiqController extends Controller {
 
   @Post("invoices/{invoiceId}/refund")
   @Security("jwt")
-  @OperationId("RefundHisabiqInvoice")
+  @OperationId("RefundAccountingInvoice")
   public async refundInvoice(
     @Request() request: AuthenticatedRequest,
     @Path() invoiceId: string,
@@ -199,22 +201,29 @@ export class HisabiqController extends Controller {
 
   @Get("invoices/{invoiceId}/pdf")
   @Security("jwt")
-  @OperationId("GetHisabiqInvoicePDF")
+  @OperationId("GetAccountingInvoicePDF")
   public async getInvoicePDF(
     @Request() request: AuthenticatedRequest,
     @Path() invoiceId: string,
   ): Promise<Buffer> {
     const service = await this.getAccountingService(request);
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
+
+    // Get the organization's template preference
+    const ctx = getServerContext();
+    const docTemplateService = new DocumentTemplateService(ctx);
+    const templateId = await docTemplateService.getActiveTemplate(organizationId, "invoice");
+
     this.setHeader("Content-Type", "application/pdf");
     this.setHeader("Content-Disposition", `attachment; filename="invoice-${invoiceId}.pdf"`);
-    return service.getInvoicePDF(Number.parseInt(invoiceId));
+    return service.getInvoicePDF(Number.parseInt(invoiceId), templateId);
   }
 
   // ==================== Vendor Bills ====================
 
   @Get("bills")
   @Security("jwt")
-  @OperationId("GetHisabiqBills")
+  @OperationId("GetAccountingBills")
   public async getBills(
     @Request() request: AuthenticatedRequest,
     @Query() page: number = 1,
@@ -256,7 +265,7 @@ export class HisabiqController extends Controller {
 
   @Get("bills/{billId}")
   @Security("jwt")
-  @OperationId("GetHisabiqBill")
+  @OperationId("GetAccountingBill")
   public async getBill(@Request() request: AuthenticatedRequest, @Path() billId: string): Promise<Invoice> {
     const service = await this.getAccountingService(request);
     const bill = await service.getInvoice(Number.parseInt(billId));
@@ -279,7 +288,7 @@ export class HisabiqController extends Controller {
   @Post("bills")
   @Security("jwt")
   @SuccessResponse("201", "Bill created successfully")
-  @OperationId("CreateHisabiqBill")
+  @OperationId("CreateAccountingBill")
   public async createBill(
     @Request() request: AuthenticatedRequest,
     @Body() billRequest: InvoiceCreateRequest,
@@ -320,7 +329,7 @@ export class HisabiqController extends Controller {
 
   @Post("bills/{billId}/validate")
   @Security("jwt")
-  @OperationId("ValidateHisabiqBill")
+  @OperationId("ValidateAccountingBill")
   public async validateBill(
     @Request() request: AuthenticatedRequest,
     @Path() billId: string,
@@ -332,7 +341,7 @@ export class HisabiqController extends Controller {
 
   @Post("bills/{billId}/cancel")
   @Security("jwt")
-  @OperationId("CancelHisabiqBill")
+  @OperationId("CancelAccountingBill")
   public async cancelBill(
     @Request() request: AuthenticatedRequest,
     @Path() billId: string,
@@ -344,7 +353,7 @@ export class HisabiqController extends Controller {
 
   @Post("bills/{billId}/refund")
   @Security("jwt")
-  @OperationId("RefundHisabiqBill")
+  @OperationId("RefundAccountingBill")
   public async refundBill(
     @Request() request: AuthenticatedRequest,
     @Path() billId: string,
@@ -357,17 +366,24 @@ export class HisabiqController extends Controller {
 
   @Get("bills/{billId}/pdf")
   @Security("jwt")
-  @OperationId("GetHisabiqBillPDF")
+  @OperationId("GetAccountingBillPDF")
   public async getBillPDF(@Request() request: AuthenticatedRequest, @Path() billId: string): Promise<Buffer> {
     const service = await this.getAccountingService(request);
+    const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
+
+    // Get the organization's template preference
+    const ctx = getServerContext();
+    const docTemplateService = new DocumentTemplateService(ctx);
+    const templateId = await docTemplateService.getActiveTemplate(organizationId, "bill");
+
     this.setHeader("Content-Type", "application/pdf");
     this.setHeader("Content-Disposition", `attachment; filename="bill-${billId}.pdf"`);
-    return service.getInvoicePDF(Number.parseInt(billId));
+    return service.getInvoicePDF(Number.parseInt(billId), templateId);
   }
 
   @Get("accounts")
   @Security("jwt")
-  @OperationId("GetHisabiqAccounts")
+  @OperationId("GetAccountingAccounts")
   public async getAccounts(
     @Request() request: AuthenticatedRequest,
     @Query() accountType?: string,
@@ -396,7 +412,7 @@ export class HisabiqController extends Controller {
 
   @Get("accounts/search")
   @Security("jwt")
-  @OperationId("SearchHisabiqAccounts")
+  @OperationId("SearchAccountingAccounts")
   public async searchAccounts(
     @Request() request: AuthenticatedRequest,
     @Query() q: string,
@@ -421,7 +437,7 @@ export class HisabiqController extends Controller {
 
   @Get("payments")
   @Security("jwt")
-  @OperationId("GetHisabiqPayments")
+  @OperationId("GetAccountingPayments")
   public async getPayments(
     @Request() request: AuthenticatedRequest,
     @Query() type?: "inbound" | "outbound" | "transfer",
@@ -456,7 +472,7 @@ export class HisabiqController extends Controller {
   @Post("payments")
   @Security("jwt")
   @SuccessResponse("201", "Payment created successfully")
-  @OperationId("CreateHisabiqPayment")
+  @OperationId("CreateAccountingPayment")
   public async createPayment(
     @Request() request: AuthenticatedRequest,
     @Body() paymentRequest: CreatePaymentDTO,
@@ -470,7 +486,7 @@ export class HisabiqController extends Controller {
 
   @Post("payments/{paymentId}/confirm")
   @Security("jwt")
-  @OperationId("ConfirmHisabiqPayment")
+  @OperationId("ConfirmAccountingPayment")
   public async confirmPayment(
     @Request() request: AuthenticatedRequest,
     @Path() paymentId: string,
@@ -482,7 +498,7 @@ export class HisabiqController extends Controller {
 
   @Get("partners")
   @Security("jwt")
-  @OperationId("GetHisabiqPartners")
+  @OperationId("GetAccountingPartners")
   public async getPartners(
     @Request() request: AuthenticatedRequest,
     @Query() isCustomer?: boolean,
@@ -517,7 +533,7 @@ export class HisabiqController extends Controller {
 
   @Get("journals")
   @Security("jwt")
-  @OperationId("GetHisabiqJournals")
+  @OperationId("GetAccountingJournals")
   public async getJournals(
     @Request() request: AuthenticatedRequest,
     @Query() type?: "sale" | "purchase" | "cash" | "bank" | "general",
@@ -542,7 +558,7 @@ export class HisabiqController extends Controller {
 
   @Get("taxes")
   @Security("jwt")
-  @OperationId("GetHisabiqTaxes")
+  @OperationId("GetAccountingTaxes")
   public async getTaxes(
     @Request() request: AuthenticatedRequest,
     @Query() typeTaxUse?: "sale" | "purchase" | "none",
@@ -563,7 +579,7 @@ export class HisabiqController extends Controller {
 
   @Post("reports/trial-balance")
   @Security("jwt")
-  @OperationId("GetHisabiqTrialBalance")
+  @OperationId("GetAccountingTrialBalance")
   public async getTrialBalance(
     @Request() request: AuthenticatedRequest,
     @Body() query: AccountBalanceQuery,
@@ -584,7 +600,7 @@ export class HisabiqController extends Controller {
 
   @Post("reports/partner-ledger")
   @Security("jwt")
-  @OperationId("GetHisabiqPartnerLedger")
+  @OperationId("GetAccountingPartnerLedger")
   public async getPartnerLedger(
     @Request() request: AuthenticatedRequest,
     @Body() query: PartnerLedgerQuery,
@@ -614,7 +630,7 @@ export class HisabiqController extends Controller {
 
   @Get("reports/profit-loss")
   @Security("jwt")
-  @OperationId("GetHisabiqProfitLoss")
+  @OperationId("GetAccountingProfitLoss")
   public async getProfitLoss(
     @Request() request: AuthenticatedRequest,
     @Query() dateFrom?: string,
@@ -626,7 +642,7 @@ export class HisabiqController extends Controller {
 
   @Get("general-ledger")
   @Security("jwt")
-  @OperationId("GetHisabiqGeneralLedger")
+  @OperationId("GetAccountingGeneralLedger")
   public async getGeneralLedger(
     @Request() request: AuthenticatedRequest,
     @Query() accountId?: number,
@@ -668,7 +684,7 @@ export class HisabiqController extends Controller {
 
   @Get("payment-terms")
   @Security("jwt")
-  @OperationId("GetHisabiqPaymentTerms")
+  @OperationId("GetAccountingPaymentTerms")
   public async getPaymentTerms(
     @Request() request: AuthenticatedRequest,
   ): Promise<Array<{ id: number; name: string; note?: string }>> {
@@ -680,7 +696,7 @@ export class HisabiqController extends Controller {
 
   @Get("reports/aged-receivable")
   @Security("jwt")
-  @OperationId("GetHisabiqAgedReceivable")
+  @OperationId("GetAccountingAgedReceivable")
   public async getAgedReceivable(
     @Request() request: AuthenticatedRequest,
     @Query() asOfDate?: string,
@@ -702,7 +718,7 @@ export class HisabiqController extends Controller {
 
   @Get("reports/aged-payable")
   @Security("jwt")
-  @OperationId("GetHisabiqAgedPayable")
+  @OperationId("GetAccountingAgedPayable")
   public async getAgedPayable(
     @Request() request: AuthenticatedRequest,
     @Query() asOfDate?: string,
@@ -726,7 +742,7 @@ export class HisabiqController extends Controller {
 
   @Get("bank-statements")
   @Security("jwt")
-  @OperationId("GetHisabiqBankStatements")
+  @OperationId("GetAccountingBankStatements")
   public async getBankStatements(
     @Request() request: AuthenticatedRequest,
     @Query() journalId?: number,
@@ -752,7 +768,7 @@ export class HisabiqController extends Controller {
 
   @Get("bank-statements/{statementId}/lines")
   @Security("jwt")
-  @OperationId("GetHisabiqBankStatementLines")
+  @OperationId("GetAccountingBankStatementLines")
   public async getBankStatementLines(
     @Request() request: AuthenticatedRequest,
     @Path() statementId: number,
@@ -772,7 +788,7 @@ export class HisabiqController extends Controller {
 
   @Get("bank-statements/lines/{lineId}/suggestions")
   @Security("jwt")
-  @OperationId("GetHisabiqReconciliationSuggestions")
+  @OperationId("GetAccountingReconciliationSuggestions")
   public async getReconciliationSuggestions(
     @Request() request: AuthenticatedRequest,
     @Path() lineId: number,
@@ -791,7 +807,7 @@ export class HisabiqController extends Controller {
 
   @Post("bank-statements/lines/{lineId}/reconcile")
   @Security("jwt")
-  @OperationId("ReconcileBankStatementLine")
+  @OperationId("ReconcileAccountingBankStatementLine")
   public async reconcileBankStatementLine(
     @Request() request: AuthenticatedRequest,
     @Path() lineId: number,
@@ -805,7 +821,7 @@ export class HisabiqController extends Controller {
 
   @Get("currencies")
   @Security("jwt")
-  @OperationId("GetHisabiqCurrencies")
+  @OperationId("GetAccountingCurrencies")
   public async getCurrencies(
     @Request() request: AuthenticatedRequest,
     @Query() onlyActive: boolean = true,
@@ -825,7 +841,7 @@ export class HisabiqController extends Controller {
 
   @Get("currency-rates")
   @Security("jwt")
-  @OperationId("GetHisabiqCurrencyRates")
+  @OperationId("GetAccountingCurrencyRates")
   public async getCurrencyRates(
     @Request() request: AuthenticatedRequest,
     @Query() currencyId?: number,
@@ -847,7 +863,7 @@ export class HisabiqController extends Controller {
 
   @Post("currency-convert")
   @Security("jwt")
-  @OperationId("ConvertCurrency")
+  @OperationId("ConvertAccountingCurrency")
   public async convertCurrency(
     @Request() request: AuthenticatedRequest,
     @Body() body: { amount: number; fromCurrencyId: number; toCurrencyId: number; date?: string },
@@ -860,7 +876,7 @@ export class HisabiqController extends Controller {
 
   @Post("invoices/batch-validate")
   @Security("jwt")
-  @OperationId("BatchValidateInvoices")
+  @OperationId("BatchValidateAccountingInvoices")
   public async batchValidateInvoices(
     @Request() request: AuthenticatedRequest,
     @Body() body: { invoiceIds: number[] },
@@ -874,7 +890,7 @@ export class HisabiqController extends Controller {
 
   @Post("invoices/batch-cancel")
   @Security("jwt")
-  @OperationId("BatchCancelInvoices")
+  @OperationId("BatchCancelAccountingInvoices")
   public async batchCancelInvoices(
     @Request() request: AuthenticatedRequest,
     @Body() body: { invoiceIds: number[] },
@@ -889,7 +905,7 @@ export class HisabiqController extends Controller {
   @Post("invoices/batch-create")
   @Security("jwt")
   @SuccessResponse("201", "Invoices created")
-  @OperationId("BatchCreateInvoices")
+  @OperationId("BatchCreateAccountingInvoices")
   public async batchCreateInvoices(
     @Request() request: AuthenticatedRequest,
     @Body() body: { invoices: InvoiceCreateRequest[] },
@@ -919,7 +935,7 @@ export class HisabiqController extends Controller {
   @Post("payments/batch-create")
   @Security("jwt")
   @SuccessResponse("201", "Payments created")
-  @OperationId("BatchCreatePayments")
+  @OperationId("BatchCreateAccountingPayments")
   public async batchCreatePayments(
     @Request() request: AuthenticatedRequest,
     @Body()
@@ -945,7 +961,7 @@ export class HisabiqController extends Controller {
 
   @Post("payments/batch-confirm")
   @Security("jwt")
-  @OperationId("BatchConfirmPayments")
+  @OperationId("BatchConfirmAccountingPayments")
   public async batchConfirmPayments(
     @Request() request: AuthenticatedRequest,
     @Body() body: { paymentIds: number[] },

@@ -210,10 +210,10 @@ void describe("updateCase operation", async () => {
 
     const result = await updateCase(drizzle, testOrg.id, testUser.id, created.id, {
       clientName: "  Updated Client  ",
-      auditType: "  ISO 9001  ",
+      auditType: "ISO_9001",
     });
 
     expect(result.clientName).toBe("Updated Client");
-    expect(result.auditType).toBe("ISO 9001");
+    expect(result.auditType).toBe("ISO_9001");
   });
 });

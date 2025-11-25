@@ -1,5 +1,5 @@
 import { uuid, varchar, timestamp, index, integer, boolean } from "drizzle-orm/pg-core";
-import { financeSchema, idpk } from "./_common.js";
+import { financeSchema, idpk, accountTypeEnum, accountInternalTypeEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 
 export const accounts = financeSchema.table(
@@ -17,9 +17,9 @@ export const accounts = financeSchema.table(
     nameEn: varchar("name_en", { length: 255 }).notNull(),
     nameAr: varchar("name_ar", { length: 255 }),
 
-    // Account Type (asset, liability, equity, income, expense, etc.)
-    accountType: varchar("account_type", { length: 100 }).notNull(),
-    internalType: varchar("internal_type", { length: 100 }), // receivable, payable, liquidity, other
+    // Account Type
+    accountType: accountTypeEnum("account_type").notNull(),
+    internalType: accountInternalTypeEnum("internal_type"),
 
     // Hierarchy
     parentId: uuid("parent_id"), // Self-reference for account hierarchy

@@ -45,11 +45,6 @@ export async function createCase(
     throw new InvalidInput("Client name cannot be empty");
   }
 
-  // Validation: Audit type
-  if (request.auditType.trim().length === 0) {
-    throw new InvalidInput("Audit type cannot be empty");
-  }
-
   // Validation: Due date must be in the future if provided
   if (request.dueDate) {
     const dueDate = new Date(request.dueDate);
@@ -77,7 +72,7 @@ export async function createCase(
       organizationId,
       caseNumber,
       clientName: request.clientName.trim(),
-      auditType: request.auditType.trim(),
+      auditType: request.auditType,
       status: request.status ?? "pending",
       priority: request.priority ?? "medium",
       dueDate: request.dueDate ? new Date(request.dueDate) : undefined,

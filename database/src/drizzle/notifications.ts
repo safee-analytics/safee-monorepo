@@ -1,5 +1,5 @@
 import { uuid, varchar, text, boolean, timestamp, index } from "drizzle-orm/pg-core";
-import { systemSchema, idpk } from "./_common.js";
+import { systemSchema, idpk, notificationTypeEnum, relatedEntityTypeEnum } from "./_common.js";
 import { users } from "./users.js";
 import { organizations } from "./organizations.js";
 
@@ -14,12 +14,12 @@ export const notifications = systemSchema.table(
       .references(() => users.id, { onDelete: "cascade", onUpdate: "cascade" })
       .notNull(),
 
-    type: varchar("type", { length: 50 }).notNull(), // deadline, review, completed, team, assignment, etc.
+    type: notificationTypeEnum("type").notNull(),
     title: varchar("title", { length: 255 }).notNull(),
     description: text("description").notNull(),
 
     // Optional related entity references
-    relatedEntityType: varchar("related_entity_type", { length: 50 }), // case, document, approval, etc.
+    relatedEntityType: relatedEntityTypeEnum("related_entity_type"),
     relatedEntityId: uuid("related_entity_id"),
 
     // Action button for notification

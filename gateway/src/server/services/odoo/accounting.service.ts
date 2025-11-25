@@ -282,19 +282,46 @@ export class OdooAccountingService {
     return result.res_id;
   }
 
-  async getInvoicePDF(invoiceId: number): Promise<Buffer> {
+  async getInvoicePDF(invoiceId: number, templateId: string = "account.report_invoice"): Promise<Buffer> {
     const _result = await this.client.executeKw<string>("account.move", "action_invoice_print", [
       [invoiceId],
     ]);
 
     // The result is typically a report action, we need to get the PDF content
-    // This uses Odoo's report system
+    // This uses Odoo's report system with the specified template
     const pdfBase64 = await this.client.executeKw<string>("ir.actions.report", "_render_qweb_pdf", [
-      "account.report_invoice",
+      templateId,
       [invoiceId],
     ]);
 
     return Buffer.from(pdfBase64, "base64");
+  }
+
+  /**
+   * Get available report templates from Odoo
+   * @param model - The model to get reports for (e.g., 'account.move', 'hr.payslip')
+   */
+  async getAvailableReportTemplates(model?: string): Promise<
+    Array<{
+      id: number;
+      name: string;
+      report_name: string;
+      model: string;
+      report_type: string;
+    }>
+  > {
+    const domain: Array<[string, string, unknown]> = [["report_type", "=", "qweb-pdf"]];
+
+    if (model) {
+      domain.push(["model", "=", model]);
+    }
+
+    return this.client.searchRead("ir.actions.report", domain, [
+      "name",
+      "report_name",
+      "model",
+      "report_type",
+    ]);
   }
 
   async postInvoice(invoiceId: number): Promise<void> {

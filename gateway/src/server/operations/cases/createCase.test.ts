@@ -56,7 +56,7 @@ void describe("createCase operation", async () => {
     const result = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-002",
       clientName: "Test Client 2",
-      auditType: "ISO 9001",
+      auditType: "ISO_9001",
       status: "in-progress",
       priority: "high",
       dueDate: tomorrow.toISOString(),
@@ -88,11 +88,11 @@ void describe("createCase operation", async () => {
     });
   });
 
-  void it("should trim whitespace from client name and audit type", async () => {
+  void it("should trim whitespace from client name", async () => {
     const result = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-004",
       clientName: "  Test Client  ",
-      auditType: "  ICV  ",
+      auditType: "ICV",
     });
 
     expect(result.clientName).toBe("Test Client");
@@ -147,14 +147,14 @@ void describe("createCase operation", async () => {
     ).rejects.toThrow("Client name cannot be empty");
   });
 
-  void it("should reject empty audit type", async () => {
+  void it("should reject empty client name with whitespace", async () => {
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "CASE-007",
-        clientName: "Test Client",
-        auditType: "",
+        clientName: "   ",
+        auditType: "ICV",
       }),
-    ).rejects.toThrow("Audit type cannot be empty");
+    ).rejects.toThrow("Client name cannot be empty");
   });
 
   void it("should reject due date in the past", async () => {
@@ -182,7 +182,7 @@ void describe("createCase operation", async () => {
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "CASE-009",
         clientName: "Another Client",
-        auditType: "ISO 9001",
+        auditType: "ISO_9001",
       }),
     ).rejects.toThrow("A case with this case number already exists");
   });
