@@ -1,4 +1,10 @@
 import type { OdooClient } from "./client.service.js";
+import { z } from "zod";
+
+// Zod schemas for validation
+const employeeTypeSchema = z.enum(["employee", "student", "trainee", "contractor", "freelance"]);
+const genderSchema = z.enum(["male", "female", "other"]);
+const maritalStatusSchema = z.enum(["single", "married", "cohabitant", "widower", "divorced"]);
 
 export interface OdooEmployee {
   id: number;
@@ -13,17 +19,16 @@ export interface OdooEmployee {
   work_location_id?: [number, string];
   user_id?: [number, string];
   employee_type?: string;
-  gender?: string;
+  sex?: string; // Odoo uses 'sex' not 'gender'
   marital?: string;
   birthday?: string;
   identification_id?: string;
   passport_id?: string;
-  bank_account_id?: [number, string];
   emergency_contact?: string;
   emergency_phone?: string;
   visa_no?: string;
   visa_expire?: string;
-  work_permit_no?: string;
+  permit_no?: string;
   work_permit_expiration_date?: string;
   certificate?: string;
   study_field?: string;
@@ -31,6 +36,25 @@ export interface OdooEmployee {
   place_of_birth?: string;
   country_of_birth?: [number, string];
   active?: boolean;
+}
+
+// Helper functions to safely parse enum values
+export function parseEmployeeType(value: string | undefined): z.infer<typeof employeeTypeSchema> | undefined {
+  if (!value) return undefined;
+  const result = employeeTypeSchema.safeParse(value);
+  return result.success ? result.data : undefined;
+}
+
+export function parseGender(value: string | undefined): z.infer<typeof genderSchema> | undefined {
+  if (!value) return undefined;
+  const result = genderSchema.safeParse(value);
+  return result.success ? result.data : undefined;
+}
+
+export function parseMaritalStatus(value: string | undefined): z.infer<typeof maritalStatusSchema> | undefined {
+  if (!value) return undefined;
+  const result = maritalStatusSchema.safeParse(value);
+  return result.success ? result.data : undefined;
 }
 
 export interface OdooDepartment {
@@ -162,17 +186,16 @@ export class OdooHRService {
       "work_location_id",
       "user_id",
       "employee_type",
-      "gender",
+      "sex",
       "marital",
       "birthday",
       "identification_id",
       "passport_id",
-      "bank_account_id",
       "emergency_contact",
       "emergency_phone",
       "visa_no",
       "visa_expire",
-      "work_permit_no",
+      "permit_no",
       "work_permit_expiration_date",
       "certificate",
       "study_field",
@@ -199,17 +222,16 @@ export class OdooHRService {
         "work_location_id",
         "user_id",
         "employee_type",
-        "gender",
+        "sex",
         "marital",
         "birthday",
         "identification_id",
         "passport_id",
-        "bank_account_id",
         "emergency_contact",
         "emergency_phone",
         "visa_no",
         "visa_expire",
-        "work_permit_no",
+        "permit_no",
         "work_permit_expiration_date",
         "certificate",
         "study_field",
