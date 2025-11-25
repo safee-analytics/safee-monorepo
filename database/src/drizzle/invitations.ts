@@ -1,5 +1,5 @@
 import { uuid, varchar, timestamp } from "drizzle-orm/pg-core";
-import { identitySchema, idpk } from "./_common.js";
+import { identitySchema, idpk, invitationStatusEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
 
@@ -11,7 +11,7 @@ export const invitations = identitySchema.table("invitations", {
   email: varchar("email", { length: 255 }).notNull(),
   role: varchar("role", { length: 50 }),
   teamId: uuid("team_id"), // Optional - invite to specific team
-  status: varchar("status", { length: 20 }).default("pending").notNull(),
+  status: invitationStatusEnum("status").default("pending").notNull(),
   expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
   inviterId: uuid("inviter_id")
     .notNull()

@@ -1,5 +1,5 @@
 import { uuid, boolean, varchar, index } from "drizzle-orm/pg-core";
-import { identitySchema, idpk } from "./_common.js";
+import { identitySchema, idpk, themeEnum, colorSchemeEnum, fontSizeEnum, densityEnum } from "./_common.js";
 import { users } from "./users.js";
 
 export const appearanceSettings = identitySchema.table(
@@ -12,16 +12,16 @@ export const appearanceSettings = identitySchema.table(
       .unique(),
 
     // Theme
-    theme: varchar("theme", { length: 20 }).default("light").notNull(), // light, dark, auto
+    theme: themeEnum("theme").default("light").notNull(),
 
     // Color Scheme
-    colorScheme: varchar("color_scheme", { length: 20 }).default("blue").notNull(), // blue, purple, green, orange, red, teal
+    colorScheme: colorSchemeEnum("color_scheme").default("blue").notNull(),
 
     // Font Size
-    fontSize: varchar("font_size", { length: 20 }).default("medium").notNull(), // small, medium, large
+    fontSize: fontSizeEnum("font_size").default("medium").notNull(),
 
     // Display Density
-    density: varchar("density", { length: 20 }).default("comfortable").notNull(), // compact, comfortable, spacious
+    density: densityEnum("density").default("comfortable").notNull(),
 
     // Accessibility
     animationsEnabled: boolean("animations_enabled").default(true).notNull(),

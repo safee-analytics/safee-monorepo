@@ -208,7 +208,13 @@ export class HRController extends Controller {
     @Query() dateTo?: string,
   ): Promise<LeaveRequestResponse[]> {
     const hrService = await this.getHRService(request);
-    const leaveRequests = await hrService.getLeaveRequests({ employeeId, leaveTypeId, state, dateFrom, dateTo });
+    const leaveRequests = await hrService.getLeaveRequests({
+      employeeId,
+      leaveTypeId,
+      state,
+      dateFrom,
+      dateTo,
+    });
     return leaveRequests.map(mapLeaveRequest);
   }
 

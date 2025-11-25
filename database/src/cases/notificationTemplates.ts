@@ -1,14 +1,12 @@
-/**
- * Notification template system with variable substitution
- */
+import type { NotificationType, RelatedEntityType } from "../drizzle/index.js";
 
 export interface NotificationTemplate {
-  type: string;
+  type: NotificationType;
   title: string;
   description: string;
   actionLabel?: string;
   actionUrlPattern?: string; // URL pattern with variables like /audit/cases/{{caseId}}
-  relatedEntityType?: string;
+  relatedEntityType?: RelatedEntityType;
 }
 
 export type TemplateVariables = Record<string, string | number | undefined>;
@@ -25,11 +23,7 @@ export function interpolateTemplate(template: string, variables: TemplateVariabl
   });
 }
 
-/**
- * Pre-defined notification templates for common events
- */
 export const NOTIFICATION_TEMPLATES: Record<string, NotificationTemplate> = {
-  // Case-related notifications
   CASE_CREATED: {
     type: "case_created",
     title: "New case created",
@@ -126,7 +120,7 @@ export const NOTIFICATION_TEMPLATES: Record<string, NotificationTemplate> = {
 
   // Approval notifications
   APPROVAL_PENDING: {
-    type: "approval",
+    type: "approval_requested",
     title: "Approval required",
     description: "{{itemDescription}} requires your approval",
     actionLabel: "Review",
@@ -135,7 +129,7 @@ export const NOTIFICATION_TEMPLATES: Record<string, NotificationTemplate> = {
   },
 
   APPROVAL_APPROVED: {
-    type: "approval",
+    type: "approval_approved",
     title: "Approval granted",
     description: "{{userName}} approved {{itemDescription}}",
     actionLabel: "View Details",
@@ -144,7 +138,7 @@ export const NOTIFICATION_TEMPLATES: Record<string, NotificationTemplate> = {
   },
 
   APPROVAL_REJECTED: {
-    type: "approval",
+    type: "approval_rejected",
     title: "Approval rejected",
     description: "{{userName}} rejected {{itemDescription}}",
     actionLabel: "View Details",
@@ -153,19 +147,16 @@ export const NOTIFICATION_TEMPLATES: Record<string, NotificationTemplate> = {
   },
 };
 
-/**
- * Build a notification object from a template
- */
 export function buildNotificationFromTemplate(
   templateKey: keyof typeof NOTIFICATION_TEMPLATES,
   variables: TemplateVariables,
 ): {
-  type: string;
+  type: NotificationType;
   title: string;
   description: string;
   actionLabel?: string;
   actionUrl?: string;
-  relatedEntityType?: string;
+  relatedEntityType?: RelatedEntityType;
 } {
   const template = NOTIFICATION_TEMPLATES[templateKey];
 

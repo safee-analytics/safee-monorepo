@@ -2,7 +2,6 @@ import { text, timestamp, varchar, uuid } from "drizzle-orm/pg-core";
 import { identitySchema, idpk } from "./_common.js";
 import { users } from "./users.js";
 
-// Better Auth OAuth accounts table (renamed from accounts to avoid conflict with finance.accounts)
 export const oauthAccounts = identitySchema.table("oauth_accounts", {
   id: idpk("id"),
   accountId: varchar("account_id", { length: 255 }).notNull(),

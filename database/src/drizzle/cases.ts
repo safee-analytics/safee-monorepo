@@ -1,5 +1,5 @@
 import { uuid, varchar, timestamp, date, index, unique } from "drizzle-orm/pg-core";
-import { auditSchema, idpk, caseStatusEnum, casePriorityEnum } from "./_common.js";
+import { auditSchema, idpk, caseStatusEnum, casePriorityEnum, auditTypeEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
 
@@ -12,7 +12,7 @@ export const cases = auditSchema.table(
       .notNull(),
     caseNumber: varchar("case_number", { length: 50 }).notNull(),
     clientName: varchar("client_name", { length: 255 }).notNull(),
-    auditType: varchar("audit_type", { length: 100 }).notNull(), // e.g., "ICV Certification", "ISO 9001", "Financial Audit"
+    auditType: auditTypeEnum("audit_type").notNull(),
     status: caseStatusEnum("status").notNull().default("pending"),
     priority: casePriorityEnum("priority").notNull().default("medium"),
     dueDate: date("due_date", { mode: "date" }),

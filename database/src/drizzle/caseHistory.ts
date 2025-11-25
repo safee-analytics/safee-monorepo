@@ -1,5 +1,5 @@
 import { uuid, varchar, timestamp, jsonb, index } from "drizzle-orm/pg-core";
-import { auditSchema, idpk } from "./_common.js";
+import { auditSchema, idpk, caseEntityTypeEnum, caseActionEnum } from "./_common.js";
 import { cases } from "./cases.js";
 import { users } from "./users.js";
 
@@ -10,9 +10,9 @@ export const caseHistory = auditSchema.table(
     caseId: uuid("case_id")
       .references(() => cases.id, { onDelete: "cascade" })
       .notNull(),
-    entityType: varchar("entity_type", { length: 50 }).notNull(), // 'case', 'scope', 'section', 'procedure', 'document', 'note'
+    entityType: caseEntityTypeEnum("entity_type").notNull(),
     entityId: uuid("entity_id").notNull(), // ID of the changed entity
-    action: varchar("action", { length: 50 }).notNull(), // 'created', 'updated', 'deleted', 'completed', 'archived'
+    action: caseActionEnum("action").notNull(),
     changesBefore: jsonb("changes_before").$type<Record<string, unknown>>(), // State before change
     changesAfter: jsonb("changes_after").$type<Record<string, unknown>>(), // State after change
     changedBy: uuid("changed_by")

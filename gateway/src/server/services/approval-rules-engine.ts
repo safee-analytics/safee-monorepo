@@ -92,7 +92,10 @@ export class ApprovalRulesEngine {
       const parsed = ruleSchema.parse(conditions);
       return parsed;
     } catch (error) {
-      this.logger.error({ error, conditions, conditionsType: typeof conditions }, "Error parsing rule conditions");
+      this.logger.error(
+        { error, conditions, conditionsType: typeof conditions },
+        "Error parsing rule conditions",
+      );
       return { conditions: [], logic: "AND" };
     }
   }

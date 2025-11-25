@@ -211,6 +211,20 @@
       "when": 1763954333791,
       "tag": "0029_small_speed_demon",
       "breakpoints": false
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1764037226225,
+      "tag": "0030_wild_maggott",
+      "breakpoints": false
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1764040505761,
+      "tag": "0031_hard_the_order",
+      "breakpoints": false
     }
   ]
 }

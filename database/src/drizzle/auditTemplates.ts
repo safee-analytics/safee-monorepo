@@ -1,5 +1,5 @@
 import { uuid, varchar, timestamp, boolean, text, jsonb, index } from "drizzle-orm/pg-core";
-import { auditSchema, idpk } from "./_common.js";
+import { auditSchema, idpk, auditTypeEnum, auditCategoryEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
 
@@ -10,8 +10,8 @@ export const auditTemplates = auditSchema.table(
     organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade" }), // null = global template
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description"),
-    auditType: varchar("audit_type", { length: 100 }).notNull(), // "ICV", "ISO 9001", "Financial Audit", etc.
-    category: varchar("category", { length: 100 }), // "Certification", "Financial", "Operational", "Compliance"
+    auditType: auditTypeEnum("audit_type").notNull(),
+    category: auditCategoryEnum("category"),
     version: varchar("version", { length: 50 }).notNull().default("1.0"),
     isActive: boolean("is_active").notNull().default(true),
     isPublic: boolean("is_public").notNull().default(false), // Available to all organizations

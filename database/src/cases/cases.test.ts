@@ -72,7 +72,7 @@ describe("Cases Module", async () => {
         organizationId: testOrg.id,
         caseNumber: "CASE-001",
         clientName: "Test Client",
-        auditType: "ICV",
+        auditType: "ICV" as const,
         status: "pending" as const,
         priority: "medium" as const,
         createdBy: testUser.id,
@@ -92,7 +92,7 @@ describe("Cases Module", async () => {
         organizationId: testOrg.id,
         caseNumber: "CASE-002",
         clientName: "Test Client 2",
-        auditType: "ISO 9001",
+        auditType: "ISO_9001" as const,
         createdBy: testUser.id,
       };
 
@@ -117,7 +117,7 @@ describe("Cases Module", async () => {
         organizationId: testOrg.id,
         caseNumber: "CASE-004",
         clientName: "Client B",
-        auditType: "ISO 9001",
+        auditType: "ISO_9001" as const,
         createdBy: testUser.id,
       });
 
@@ -183,7 +183,7 @@ describe("Cases Module", async () => {
       const templateData = {
         organizationId: testOrg.id,
         name: "Test Template",
-        auditType: "ICV",
+        auditType: "ICV" as const,
         structure,
         createdBy: testUser.id,
       };
@@ -216,7 +216,7 @@ describe("Cases Module", async () => {
       const created = await createTemplate(deps, {
         organizationId: testOrg.id,
         name: "Template 2",
-        auditType: "ISO 9001",
+        auditType: "ISO_9001" as const,
         structure,
         createdBy: testUser.id,
       });
