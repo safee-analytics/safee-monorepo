@@ -7,6 +7,7 @@ import type { components } from "@/lib/api/types";
 
 type CaseStatus = components["schemas"]["CreateCaseRequest"]["status"];
 type CasePriority = components["schemas"]["CreateCaseRequest"]["priority"];
+type AuditType = components["schemas"]["AuditType"];
 
 interface CreateCaseModalProps {
   isOpen: boolean;
@@ -19,7 +20,7 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
 
   const [formData, setFormData] = useState({
     clientName: "",
-    auditType: "",
+    auditType: "" as AuditType | "",
     status: "pending" as CaseStatus,
     priority: "medium" as CasePriority,
     dueDate: "",
@@ -52,7 +53,7 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
       // Backend will auto-generate the case number sequentially
       await createCase.mutateAsync({
         clientName: formData.clientName,
-        auditType: formData.auditType,
+        auditType: formData.auditType as AuditType,
         status: formData.status,
         priority: formData.priority,
         dueDate: formData.dueDate || undefined,
@@ -152,7 +153,7 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
               type="text"
               id="auditType"
               value={formData.auditType}
-              onChange={(e) => setFormData({ ...formData, auditType: e.target.value })}
+              onChange={(e) => setFormData({ ...formData, auditType: e.target.value as AuditType | "" })}
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 errors.auditType ? "border-red-500" : "border-gray-300"
               }`}

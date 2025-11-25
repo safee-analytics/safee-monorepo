@@ -280,38 +280,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/payroll": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetPayrollRecords"];
-    put?: never;
-    post: operations["CreatePayrollRecord"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/payroll/process": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["ProcessPayroll"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/odoo/provision": {
     parameters: {
       query?: never;
@@ -322,6 +290,22 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations["ProvisionDatabase"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/provision-user": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ProvisionUser"];
     delete?: never;
     options?: never;
     head?: never;
@@ -536,6 +520,102 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/odoo/dev-credentials": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetOdooDevCredentials"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/user-credentials": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetOdooUserCredentials"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/admin-credentials": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetOdooAdminCredentialsEndpoint"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/install-modules": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["InstallOdooModules"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/models/{modelName}/fields": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetOdooModelFields"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/odoo/database-info": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetOdooDatabaseInfo"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/nas/connect": {
     parameters: {
       query?: never;
@@ -607,55 +687,53 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/invoices": {
+  "/hr-management/employees": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetInvoices"];
+    /** @description Get all employees in the organization */
+    get: operations["GetHRManagementEmployees"];
     put?: never;
-    post: operations["CreateInvoice"];
+    /**
+     * @description Create a new employee
+     *     Automatically syncs to Odoo
+     */
+    post: operations["CreateEmployee"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/invoices": {
+  "/hr-management/employees/{employeeId}": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqInvoices"];
-    put?: never;
-    post: operations["CreateHisabiqInvoice"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/invoices/{invoiceId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetHisabiqInvoice"];
-    put?: never;
+    /** @description Get a single employee by ID */
+    get: operations["GetHRManagementEmployee"];
+    /**
+     * @description Update an employee
+     *     Automatically syncs changes to Odoo
+     */
+    put: operations["UpdateEmployee"];
     post?: never;
-    delete?: never;
+    /**
+     * @description Deactivate an employee
+     *     Automatically syncs deactivation to Odoo
+     */
+    delete: operations["DeactivateEmployee"];
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/invoices/{invoiceId}/validate": {
+  "/hr-management/employees/sync": {
     parameters: {
       query?: never;
       header?: never;
@@ -664,14 +742,15 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post: operations["ValidateHisabiqInvoice"];
+    /** @description Sync a single employee from Odoo */
+    post: operations["SyncEmployeeFromOdoo"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/invoices/{invoiceId}/cancel": {
+  "/hr-management/employees/sync-all": {
     parameters: {
       query?: never;
       header?: never;
@@ -680,14 +759,61 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post: operations["CancelHisabiqInvoice"];
+    /** @description Sync all employees from Odoo */
+    post: operations["SyncAllEmployees"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/invoices/{invoiceId}/refund": {
+  "/hr-management/departments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get all departments in the organization */
+    get: operations["GetHRManagementDepartments"];
+    put?: never;
+    /**
+     * @description Create a new department
+     *     Automatically syncs to Odoo
+     */
+    post: operations["CreateDepartment"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hr-management/departments/{departmentId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get a single department by ID */
+    get: operations["GetHRManagementDepartment"];
+    /**
+     * @description Update a department
+     *     Automatically syncs changes to Odoo
+     */
+    put: operations["UpdateDepartment"];
+    post?: never;
+    /**
+     * @description Delete a department
+     *     Automatically deletes from Odoo
+     */
+    delete: operations["DeleteDepartment"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/hr-management/departments/sync": {
     parameters: {
       query?: never;
       header?: never;
@@ -696,62 +822,15 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post: operations["RefundHisabiqInvoice"];
+    /** @description Sync a single department from Odoo */
+    post: operations["SyncDepartmentFromOdoo"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/invoices/{invoiceId}/pdf": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetHisabiqInvoicePDF"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/bills": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetHisabiqBills"];
-    put?: never;
-    post: operations["CreateHisabiqBill"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/bills/{billId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetHisabiqBill"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/bills/{billId}/validate": {
+  "/hr-management/departments/sync-all": {
     parameters: {
       query?: never;
       header?: never;
@@ -760,53 +839,23 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    post: operations["ValidateHisabiqBill"];
+    /** @description Sync all departments from Odoo */
+    post: operations["SyncAllDepartments"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/bills/{billId}/cancel": {
+  "/hr-management/employees/{employeeId}/leave-balances": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["CancelHisabiqBill"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/bills/{billId}/refund": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["RefundHisabiqBill"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/bills/{billId}/pdf": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetHisabiqBillPDF"];
+    /** @description Get leave balances for an employee */
+    get: operations["GetEmployeeLeaveBalances"];
     put?: never;
     post?: never;
     delete?: never;
@@ -815,14 +864,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/accounts": {
+  "/hr-management/employees/{employeeId}/leave-balances/{leaveTypeId}": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqAccounts"];
+    /** @description Get leave balance for a specific leave type */
+    get: operations["GetEmployeeLeaveBalanceByType"];
     put?: never;
     post?: never;
     delete?: never;
@@ -831,14 +881,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/accounts/search": {
+  "/hr/employees": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["SearchHisabiqAccounts"];
+    /** @description Get list of employees */
+    get: operations["GetHREmployees"];
     put?: never;
     post?: never;
     delete?: never;
@@ -847,46 +898,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/payments": {
+  "/hr/employees/{employeeId}": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqPayments"];
-    put?: never;
-    post: operations["CreateHisabiqPayment"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/payments/{paymentId}/confirm": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["ConfirmHisabiqPayment"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/partners": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetHisabiqPartners"];
+    /** @description Get a single employee by ID */
+    get: operations["GetHREmployee"];
     put?: never;
     post?: never;
     delete?: never;
@@ -895,14 +915,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/journals": {
+  "/hr/departments": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqJournals"];
+    /** @description Get list of departments */
+    get: operations["GetHRDepartments"];
     put?: never;
     post?: never;
     delete?: never;
@@ -911,14 +932,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/taxes": {
+  "/hr/departments/{departmentId}": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqTaxes"];
+    /** @description Get a single department by ID */
+    get: operations["GetHRDepartment"];
     put?: never;
     post?: never;
     delete?: never;
@@ -927,46 +949,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/reports/trial-balance": {
+  "/hr/contracts": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["GetHisabiqTrialBalance"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/reports/partner-ledger": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["GetHisabiqPartnerLedger"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/reports/profit-loss": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetHisabiqProfitLoss"];
+    /** @description Get list of contracts */
+    get: operations["GetContracts"];
     put?: never;
     post?: never;
     delete?: never;
@@ -975,14 +966,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/general-ledger": {
+  "/hr/contracts/{contractId}": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqGeneralLedger"];
+    /** @description Get a single contract by ID */
+    get: operations["GetContract"];
     put?: never;
     post?: never;
     delete?: never;
@@ -991,14 +983,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/payment-terms": {
+  "/hr/leave-types": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqPaymentTerms"];
+    /** @description Get list of leave types */
+    get: operations["GetLeaveTypes"];
     put?: never;
     post?: never;
     delete?: never;
@@ -1007,14 +1000,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/reports/aged-receivable": {
+  "/hr/leave-types/{leaveTypeId}": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqAgedReceivable"];
+    /** @description Get a single leave type by ID */
+    get: operations["GetLeaveType"];
     put?: never;
     post?: never;
     delete?: never;
@@ -1023,14 +1017,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/reports/aged-payable": {
+  "/hr/leave-requests": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqAgedPayable"];
+    /** @description Get list of leave requests */
+    get: operations["GetLeaveRequests"];
     put?: never;
     post?: never;
     delete?: never;
@@ -1039,14 +1034,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/bank-statements": {
+  "/hr/leave-requests/{leaveId}": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqBankStatements"];
+    /** @description Get a single leave request by ID */
+    get: operations["GetLeaveRequest"];
     put?: never;
     post?: never;
     delete?: never;
@@ -1055,14 +1051,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/bank-statements/{statementId}/lines": {
+  "/hr/leave-allocations": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqBankStatementLines"];
+    /** @description Get list of leave allocations */
+    get: operations["GetLeaveAllocations"];
     put?: never;
     post?: never;
     delete?: never;
@@ -1071,14 +1068,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/bank-statements/lines/{lineId}/suggestions": {
+  "/hr/leave-allocations/{allocationId}": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqReconciliationSuggestions"];
+    /** @description Get a single leave allocation by ID */
+    get: operations["GetLeaveAllocation"];
     put?: never;
     post?: never;
     delete?: never;
@@ -1087,30 +1085,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/bank-statements/lines/{lineId}/reconcile": {
+  "/hr/payslips": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["ReconcileBankStatementLine"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/currencies": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetHisabiqCurrencies"];
+    /** @description Get list of payslips */
+    get: operations["GetPayslips"];
     put?: never;
     post?: never;
     delete?: never;
@@ -1119,14 +1102,15 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/currency-rates": {
+  "/hr/payslips/{payslipId}": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetHisabiqCurrencyRates"];
+    /** @description Get a single payslip by ID */
+    get: operations["GetPayslip"];
     put?: never;
     post?: never;
     delete?: never;
@@ -1135,96 +1119,17 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/hisabiq/currency-convert": {
+  "/hr/payslips/{payslipId}/lines": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get?: never;
+    /** @description Get payslip lines for a specific payslip */
+    get: operations["GetPayslipLines"];
     put?: never;
-    post: operations["ConvertCurrency"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/invoices/batch-validate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["BatchValidateInvoices"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/invoices/batch-cancel": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["BatchCancelInvoices"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/invoices/batch-create": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["BatchCreateInvoices"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/payments/batch-create": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["BatchCreatePayments"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hisabiq/payments/batch-confirm": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["BatchConfirmPayments"];
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -1247,16 +1152,121 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/employees": {
+  "/settings/document-templates": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    get: operations["GetEmployees"];
+    /** @description Get all document templates for the organization */
+    get: operations["GetTemplates"];
     put?: never;
-    post: operations["CreateEmployee"];
+    /** @description Create a new document template */
+    post: operations["CreateDocumentTemplate"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/settings/document-templates/by-type": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get templates for a specific document type */
+    get: operations["GetTemplatesByType"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/settings/document-templates/active": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get the active template for a document type */
+    get: operations["GetActiveTemplate"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/settings/document-templates/odoo-templates": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description Get available report templates from Odoo */
+    get: operations["GetOdooTemplates"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/settings/document-templates/{templateId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    /** @description Update a document template */
+    put: operations["UpdateTemplate"];
+    post?: never;
+    /** @description Delete a document template */
+    delete: operations["DeleteTemplate"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/settings/document-templates/{templateId}/activate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Set a template as active for its document type */
+    post: operations["ActivateTemplate"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/settings/document-templates/custom": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    /** @description Create a custom QWeb template in Odoo and register it */
+    post: operations["CreateCustomTemplate"];
     delete?: never;
     options?: never;
     head?: never;
@@ -1373,22 +1383,6 @@ export interface paths {
      *     Marks a specific notification as read for the authenticated user
      */
     post: operations["MarkNotificationAsRead"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/contacts": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetContacts"];
-    put?: never;
-    post: operations["CreateContact"];
     delete?: never;
     options?: never;
     head?: never;
@@ -1571,106 +1565,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/connectors/odoo/dev-credentials": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * @description Get Odoo web credentials for dev access
-     *     Returns login, password, and web URL for accessing Odoo UI directly
-     */
-    get: operations["GetOdooDevCredentials"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/odoo/user-credentials": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * @description Get Odoo user web credentials
-     *     Returns the current user's login, password, and web URL for accessing Odoo UI
-     */
-    get: operations["GetOdooUserCredentials"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/odoo/admin-credentials": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * @description Get Odoo admin credentials
-     *     Returns admin login, password, database name, and web URL for accessing Odoo database as admin
-     */
-    get: operations["GetOdooAdminCredentialsEndpoint"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/odoo/install-modules": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * @description Install required Odoo modules for the organization
-     *     Installs: Accounting (Hisabiq), CRM (Nisbah), HR & Payroll (Kanz)
-     */
-    post: operations["InstallOdooModules"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/odoo/models/{modelName}/fields": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * @description Get available fields for an Odoo model (dev tool)
-     *     Useful for discovering what fields exist on a model
-     */
-    get: operations["GetOdooModelFields"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/cases": {
     parameters: {
       query?: never;
@@ -1696,7 +1590,7 @@ export interface paths {
     };
     get: operations["ListPublicTemplates"];
     put?: never;
-    post: operations["CreateTemplate"];
+    post: operations["CreateCaseTemplate"];
     delete?: never;
     options?: never;
     head?: never;
@@ -2113,6 +2007,614 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/accounting/invoices": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingInvoices"];
+    put?: never;
+    post: operations["CreateAccountingInvoice"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/invoices/{invoiceId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingInvoice"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/invoices/{invoiceId}/validate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ValidateAccountingInvoice"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/invoices/{invoiceId}/cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["CancelAccountingInvoice"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/invoices/{invoiceId}/refund": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["RefundAccountingInvoice"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/invoices/{invoiceId}/pdf": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingInvoicePDF"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/bills": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingBills"];
+    put?: never;
+    post: operations["CreateAccountingBill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/bills/{billId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingBill"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/bills/{billId}/validate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ValidateAccountingBill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/bills/{billId}/cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["CancelAccountingBill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/bills/{billId}/refund": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["RefundAccountingBill"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/bills/{billId}/pdf": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingBillPDF"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/accounts": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingAccounts"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/accounts/search": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["SearchAccountingAccounts"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/payments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingPayments"];
+    put?: never;
+    post: operations["CreateAccountingPayment"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/payments/{paymentId}/confirm": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ConfirmAccountingPayment"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/partners": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingPartners"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/journals": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingJournals"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/taxes": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingTaxes"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/reports/trial-balance": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["GetAccountingTrialBalance"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/reports/partner-ledger": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["GetAccountingPartnerLedger"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/reports/profit-loss": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingProfitLoss"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/general-ledger": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingGeneralLedger"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/payment-terms": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingPaymentTerms"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/reports/aged-receivable": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingAgedReceivable"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/reports/aged-payable": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingAgedPayable"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/bank-statements": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingBankStatements"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/bank-statements/{statementId}/lines": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingBankStatementLines"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/bank-statements/lines/{lineId}/suggestions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingReconciliationSuggestions"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/bank-statements/lines/{lineId}/reconcile": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ReconcileAccountingBankStatementLine"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/currencies": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingCurrencies"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/currency-rates": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccountingCurrencyRates"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/currency-convert": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["ConvertAccountingCurrency"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/invoices/batch-validate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchValidateAccountingInvoices"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/invoices/batch-cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchCancelAccountingInvoices"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/invoices/batch-create": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchCreateAccountingInvoices"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/payments/batch-create": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchCreateAccountingPayments"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/accounting/payments/batch-confirm": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["BatchConfirmAccountingPayments"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/accounts": {
     parameters: {
       query?: never;
@@ -2304,31 +2806,6 @@ export interface components {
       name: string;
       parentId?: string;
     };
-    PayrollRecord: {
-      id: string;
-      employeeId: string;
-      period: string;
-      /** Format: double */
-      basicSalary: number;
-      /** Format: double */
-      allowances: number;
-      /** Format: double */
-      deductions: number;
-      /** Format: double */
-      netPay: number;
-      /** @enum {string} */
-      status: "DRAFT" | "PROCESSED" | "PAID";
-    };
-    PayrollCreateRequest: {
-      employeeId: string;
-      period: string;
-      /** Format: double */
-      basicSalary: number;
-      /** Format: double */
-      allowances: number;
-      /** Format: double */
-      deductions: number;
-    };
     OdooProvisionResponse: {
       success: boolean;
       databaseName: string;
@@ -2432,6 +2909,933 @@ export interface components {
     };
     NASStatusResponse: {
       [key: string]: components["schemas"]["NASConnectionStatus"];
+    };
+    /** @enum {string} */
+    EmployeeType: "employee" | "student" | "trainee" | "contractor" | "freelance";
+    /** @enum {string} */
+    Gender: "male" | "female" | "other";
+    /** @enum {string} */
+    MaritalStatus: "single" | "married" | "cohabitant" | "widower" | "divorced";
+    EmployeeDbResponse: {
+      id: string;
+      organizationId: string;
+      userId?: string;
+      /** Format: double */
+      odooEmployeeId?: number;
+      name: string;
+      email?: string;
+      phone?: string;
+      mobile?: string;
+      workEmail?: string;
+      workPhone?: string;
+      workLocation?: string;
+      jobTitle?: string;
+      departmentId?: string;
+      managerId?: string;
+      employeeType?: components["schemas"]["EmployeeType"];
+      gender?: components["schemas"]["Gender"];
+      maritalStatus?: components["schemas"]["MaritalStatus"];
+      birthday?: string;
+      placeOfBirth?: string;
+      countryOfBirth?: string;
+      nationality?: string;
+      identificationId?: string;
+      passportId?: string;
+      bankAccountNumber?: string;
+      bankName?: string;
+      bankIban?: string;
+      emergencyContact?: string;
+      emergencyPhone?: string;
+      emergencyRelation?: string;
+      hireDate?: string;
+      terminationDate?: string;
+      photoUrl?: string;
+      notes?: string;
+      active: boolean;
+      lastSyncedAt?: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+    CreateEmployeeRequest: {
+      userId?: string;
+      /** Format: double */
+      odooEmployeeId?: number;
+      name: string;
+      email?: string;
+      phone?: string;
+      mobile?: string;
+      workEmail?: string;
+      workPhone?: string;
+      workLocation?: string;
+      jobTitle?: string;
+      departmentId?: string;
+      managerId?: string;
+      employeeType?: components["schemas"]["EmployeeType"];
+      gender?: components["schemas"]["Gender"];
+      maritalStatus?: components["schemas"]["MaritalStatus"];
+      birthday?: string;
+      placeOfBirth?: string;
+      countryOfBirth?: string;
+      nationality?: string;
+      identificationId?: string;
+      passportId?: string;
+      bankAccountNumber?: string;
+      bankName?: string;
+      bankIban?: string;
+      emergencyContact?: string;
+      emergencyPhone?: string;
+      emergencyRelation?: string;
+      hireDate?: string;
+      terminationDate?: string;
+      photoUrl?: string;
+      notes?: string;
+      active?: boolean;
+    };
+    UpdateEmployeeRequest: {
+      name?: string;
+      email?: string;
+      phone?: string;
+      mobile?: string;
+      workEmail?: string;
+      workPhone?: string;
+      workLocation?: string;
+      jobTitle?: string;
+      departmentId?: string;
+      managerId?: string;
+      employeeType?: components["schemas"]["EmployeeType"];
+      gender?: components["schemas"]["Gender"];
+      maritalStatus?: components["schemas"]["MaritalStatus"];
+      birthday?: string;
+      placeOfBirth?: string;
+      countryOfBirth?: string;
+      nationality?: string;
+      identificationId?: string;
+      passportId?: string;
+      bankAccountNumber?: string;
+      bankName?: string;
+      bankIban?: string;
+      emergencyContact?: string;
+      emergencyPhone?: string;
+      emergencyRelation?: string;
+      hireDate?: string;
+      terminationDate?: string;
+      photoUrl?: string;
+      notes?: string;
+      active?: boolean;
+    };
+    SyncEmployeeFromOdooRequest: {
+      /** Format: double */
+      odooEmployeeId: number;
+    };
+    SyncAllEmployeesResponse: {
+      /** Format: double */
+      synced: number;
+      /** Format: double */
+      created: number;
+      /** Format: double */
+      updated: number;
+      errors: string[];
+    };
+    DepartmentDbResponse: {
+      id: string;
+      organizationId: string;
+      /** Format: double */
+      odooDepartmentId?: number;
+      name: string;
+      code?: string;
+      parentId?: string;
+      managerId?: string;
+      /** Format: double */
+      color?: number;
+      note?: string;
+      lastSyncedAt?: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+    CreateDepartmentRequest: {
+      /** Format: double */
+      odooDepartmentId?: number;
+      name: string;
+      code?: string;
+      parentId?: string;
+      managerId?: string;
+      /** Format: double */
+      color?: number;
+      note?: string;
+    };
+    UpdateDepartmentRequest: {
+      name?: string;
+      code?: string;
+      parentId?: string;
+      managerId?: string;
+      /** Format: double */
+      color?: number;
+      note?: string;
+    };
+    SyncDepartmentFromOdooRequest: {
+      /** Format: double */
+      odooDepartmentId: number;
+    };
+    SyncAllDepartmentsResponse: {
+      /** Format: double */
+      synced: number;
+      /** Format: double */
+      created: number;
+      /** Format: double */
+      updated: number;
+      errors: string[];
+    };
+    LeaveBalanceResponse: {
+      employeeId: string;
+      leaveTypeId: string;
+      leaveTypeName: string;
+      /** Format: double */
+      totalAllocated: number;
+      /** Format: double */
+      totalUsed: number;
+      /** Format: double */
+      totalRemaining: number;
+    };
+    /**
+     * @description HR Controller DTOs - TSOA-compatible types
+     *     These types convert Odoo's tuple format [id, name] to proper objects
+     */
+    OdooRelation: {
+      /** Format: double */
+      id: number;
+      name: string;
+    };
+    EmployeeResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      work_email?: string;
+      work_phone?: string;
+      mobile_phone?: string;
+      job_title?: string;
+      department_id?: components["schemas"]["OdooRelation"];
+      parent_id?: components["schemas"]["OdooRelation"];
+      address_id?: components["schemas"]["OdooRelation"];
+      work_location_id?: components["schemas"]["OdooRelation"];
+      user_id?: components["schemas"]["OdooRelation"];
+      employee_type?: string;
+      gender?: string;
+      marital?: string;
+      birthday?: string;
+      identification_id?: string;
+      passport_id?: string;
+      bank_account_id?: components["schemas"]["OdooRelation"];
+      emergency_contact?: string;
+      emergency_phone?: string;
+      visa_no?: string;
+      visa_expire?: string;
+      work_permit_no?: string;
+      work_permit_expiration_date?: string;
+      certificate?: string;
+      study_field?: string;
+      study_school?: string;
+      place_of_birth?: string;
+      country_of_birth?: components["schemas"]["OdooRelation"];
+      active?: boolean;
+    };
+    DepartmentResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      complete_name?: string;
+      manager_id?: components["schemas"]["OdooRelation"];
+      parent_id?: components["schemas"]["OdooRelation"];
+      company_id?: components["schemas"]["OdooRelation"];
+      active?: boolean;
+      /** Format: double */
+      total_employee?: number;
+      /** Format: double */
+      color?: number;
+      note?: string;
+    };
+    ContractResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      employee_id: components["schemas"]["OdooRelation"];
+      date_start: string;
+      date_end?: string;
+      state: string;
+      job_id?: components["schemas"]["OdooRelation"];
+      department_id?: components["schemas"]["OdooRelation"];
+      /** Format: double */
+      wage: number;
+      wage_type: string;
+      struct_id?: components["schemas"]["OdooRelation"];
+      resource_calendar_id?: components["schemas"]["OdooRelation"];
+      notes?: string;
+    };
+    LeaveTypeResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      request_unit: string;
+      time_type: string;
+      /** Format: double */
+      color?: number;
+      leave_validation_type?: string;
+      requires_allocation?: boolean;
+      employee_requests?: boolean;
+      allocation_validation_type?: string;
+      /** Format: double */
+      max_leaves?: number;
+      unpaid?: boolean;
+      active?: boolean;
+      support_document?: boolean;
+    };
+    LeaveRequestResponse: {
+      /** Format: double */
+      id: number;
+      employee_id: components["schemas"]["OdooRelation"];
+      holiday_status_id: components["schemas"]["OdooRelation"];
+      date_from: string;
+      date_to: string;
+      /** Format: double */
+      number_of_days: number;
+      state: string;
+      request_date_from?: string;
+      request_unit_half?: boolean;
+      request_unit_hours?: boolean;
+      request_hour_from?: string;
+      request_hour_to?: string;
+      notes?: string;
+      manager_id?: components["schemas"]["OdooRelation"];
+      department_id?: components["schemas"]["OdooRelation"];
+    };
+    LeaveAllocationResponse: {
+      /** Format: double */
+      id: number;
+      employee_id: components["schemas"]["OdooRelation"];
+      holiday_status_id: components["schemas"]["OdooRelation"];
+      /** Format: double */
+      number_of_days: number;
+      /** Format: double */
+      number_of_days_display?: number;
+      date_from?: string;
+      date_to?: string;
+      state: string;
+      name?: string;
+      notes?: string;
+    };
+    PayslipResponse: {
+      /** Format: double */
+      id: number;
+      number: string;
+      employee_id: components["schemas"]["OdooRelation"];
+      date_from: string;
+      date_to: string;
+      state: string;
+      /** Format: double */
+      basic_wage?: number;
+      /** Format: double */
+      net_wage?: number;
+      /** Format: double */
+      gross_wage?: number;
+      contract_id?: components["schemas"]["OdooRelation"];
+      struct_id?: components["schemas"]["OdooRelation"];
+      credit_note?: boolean;
+      paid_date?: string;
+    };
+    PayslipLineResponse: {
+      /** Format: double */
+      id: number;
+      slip_id: components["schemas"]["OdooRelation"];
+      name: string;
+      code: string;
+      category_id?: components["schemas"]["OdooRelation"];
+      /** Format: double */
+      sequence?: number;
+      /** Format: double */
+      quantity?: number;
+      /** Format: double */
+      rate?: number;
+      /** Format: double */
+      amount: number;
+    };
+    HealthCheck: {
+      /** @enum {string} */
+      status: "ok" | "error";
+      timestamp: string;
+      /** Format: double */
+      uptime: number;
+      version: string;
+    };
+    /** @enum {string} */
+    DocumentType:
+      | "invoice"
+      | "bill"
+      | "quote"
+      | "purchase_order"
+      | "delivery_note"
+      | "receipt"
+      | "credit_note"
+      | "debit_note"
+      | "payslip"
+      | "contract"
+      | "payment_receipt"
+      | "refund";
+    DocumentTemplateResponse: {
+      id: string;
+      organizationId: string;
+      documentType: components["schemas"]["DocumentType"];
+      templateId: string;
+      templateName: string;
+      templateDescription: string | null;
+      isActive: boolean;
+      customizations: components["schemas"]["Record_string.unknown_"] | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    OdooReportTemplate: {
+      /** Format: double */
+      id: number;
+      name: string;
+      report_name: string;
+      model: string;
+      report_type: string;
+    };
+    CreateDocumentTemplateRequest: {
+      documentType: components["schemas"]["DocumentType"];
+      templateId: string;
+      templateName: string;
+      templateDescription?: string;
+      isActive?: boolean;
+      customizations?: components["schemas"]["Record_string.unknown_"];
+    };
+    UpdateTemplateRequest: {
+      templateName?: string;
+      templateDescription?: string;
+      customizations?: components["schemas"]["Record_string.unknown_"];
+    };
+    CreateCustomTemplateRequest: {
+      documentType: components["schemas"]["DocumentType"];
+      templateName: string;
+      templateDescription?: string;
+      qwebXml: string;
+      model: string;
+      isActive?: boolean;
+      customizations?: components["schemas"]["Record_string.unknown_"];
+    };
+    Deal: {
+      id: string;
+      title: string;
+      /** Format: double */
+      value: number;
+      /** @enum {string} */
+      stage: "PROSPECT" | "QUALIFIED" | "PROPOSAL" | "NEGOTIATION" | "CLOSED_WON" | "CLOSED_LOST";
+      contactId: string;
+      expectedCloseDate: string;
+      /** Format: double */
+      probability: number;
+    };
+    DealCreateRequest: {
+      title: string;
+      /** Format: double */
+      value: number;
+      contactId: string;
+      expectedCloseDate: string;
+      /** Format: double */
+      probability: number;
+    };
+    /** @description Dashboard statistics response */
+    DashboardStatsResponse: {
+      /** Format: double */
+      activeCases: number;
+      /** Format: double */
+      pendingReviews: number;
+      /** Format: double */
+      completedAudits: number;
+      /** Format: double */
+      totalCases: number;
+      /** Format: double */
+      completionRate: number;
+    };
+    /** @description Case activity item */
+    CaseActivityResponse: {
+      id: string;
+      /** @enum {string} */
+      type: "case_update";
+      caseId: string;
+      caseNumber: string;
+      clientName: string;
+      status: string;
+      updatedAt: string;
+      updatedBy: {
+        name: string;
+        id: string;
+      };
+    };
+    /** @description Notification response */
+    NotificationResponse: {
+      id: string;
+      type: string;
+      title: string;
+      description: string;
+      timestamp: string;
+      isRead: boolean;
+      relatedEntityType: string | null;
+      relatedEntityId: string | null;
+      actionLabel: string | null;
+      actionUrl: string | null;
+    };
+    /** @description Unread notifications count response */
+    UnreadNotificationsCountResponse: {
+      /** Format: double */
+      count: number;
+    };
+    /** @enum {string} */
+    ConnectorType:
+      | "postgresql"
+      | "mysql"
+      | "mssql"
+      | "storage_local"
+      | "storage_webdav"
+      | "storage_smb"
+      | "storage_cloud";
+    ConnectorResponse: {
+      id: string;
+      organizationId: string;
+      name: string;
+      description?: string;
+      type: components["schemas"]["ConnectorType"];
+      isActive: boolean;
+      tags: string[];
+      metadata: components["schemas"]["Record_string.unknown_"];
+      lastConnectionTest?: string;
+      lastConnectionStatus?: string;
+      lastConnectionError?: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+    ConnectorConfig: {
+      host?: string;
+      /** Format: double */
+      port?: number;
+      database?: string;
+      username?: string;
+      password?: string;
+      ssl?: boolean;
+      url?: string;
+      apiKey?: string;
+      authToken?: string;
+    } & {
+      [key: string]: unknown;
+    };
+    CreateConnectorRequest: {
+      name: string;
+      description?: string;
+      type: components["schemas"]["ConnectorType"];
+      config: components["schemas"]["ConnectorConfig"];
+      tags?: string[];
+      metadata?: components["schemas"]["Record_string.unknown_"];
+    };
+    UpdateConnectorRequest: {
+      name?: string;
+      description?: string;
+      config?: components["schemas"]["ConnectorConfig"];
+      tags?: string[];
+      metadata?: components["schemas"]["Record_string.unknown_"];
+      isActive?: boolean;
+    };
+    QueryResponse: {
+      rows: unknown[];
+      /** Format: double */
+      rowCount: number;
+      /** Format: double */
+      executionTime: number;
+    };
+    QueryRequest: {
+      sql: string;
+      params?: unknown[];
+    };
+    SchemaResponse: {
+      tables: {
+        /** @enum {string} */
+        type: "table" | "view";
+        name: string;
+        schema: string;
+      }[];
+    };
+    TablePreviewResponse: {
+      schema: string;
+      table: string;
+      columns: {
+        nullable: boolean;
+        type: string;
+        name: string;
+      }[];
+      sampleData: unknown[];
+      /** Format: double */
+      totalRows: number;
+    };
+    FieldMapping: {
+      sourceColumn: string;
+      targetField: string;
+      /** @enum {string} */
+      transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean";
+      defaultValue?: unknown;
+    };
+    SuggestMappingsRequest: {
+      sourceColumns: string[];
+      /** @enum {string} */
+      targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
+    };
+    /** @enum {string} */
+    AuditType:
+      | "ICV"
+      | "ISO_9001"
+      | "ISO_14001"
+      | "ISO_45001"
+      | "financial_audit"
+      | "internal_audit"
+      | "compliance_audit"
+      | "operational_audit";
+    /** @enum {string} */
+    CaseStatus: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
+    /** @enum {string} */
+    CasePriority: "low" | "medium" | "high" | "critical";
+    /** @enum {string} */
+    AssignmentRole: "lead" | "reviewer" | "team_member";
+    CaseResponse: {
+      id: string;
+      organizationId: string;
+      caseNumber: string;
+      clientName: string;
+      auditType: components["schemas"]["AuditType"];
+      status: components["schemas"]["CaseStatus"];
+      priority: components["schemas"]["CasePriority"];
+      dueDate?: string;
+      completedDate?: string;
+      createdBy: string;
+      createdAt: string;
+      updatedAt: string;
+      assignments?: {
+        user?: {
+          email: string;
+          name: string | null;
+          id: string;
+        };
+        role: components["schemas"]["AssignmentRole"];
+        userId: string;
+      }[];
+    };
+    CreateCaseRequest: {
+      caseNumber?: string;
+      clientName: string;
+      auditType: components["schemas"]["AuditType"];
+      status?: components["schemas"]["CaseStatus"];
+      priority?: components["schemas"]["CasePriority"];
+      dueDate?: string;
+    };
+    /** @enum {string} */
+    AuditCategory: "certification" | "financial" | "operational" | "compliance";
+    TemplateStructure: {
+      settings?: components["schemas"]["Record_string.unknown_"];
+      sections: {
+        procedures: {
+          /** Format: double */
+          sortOrder: number;
+          requirements?: components["schemas"]["Record_string.unknown_"];
+          description?: string;
+          title: string;
+          referenceNumber: string;
+        }[];
+        settings?: components["schemas"]["Record_string.unknown_"];
+        /** Format: double */
+        sortOrder: number;
+        description?: string;
+        name: string;
+      }[];
+    };
+    TemplateResponse: {
+      id: string;
+      organizationId?: string;
+      name: string;
+      description?: string;
+      auditType: components["schemas"]["AuditType"];
+      category?: components["schemas"]["AuditCategory"];
+      version: string;
+      isActive: boolean;
+      isPublic: boolean;
+      structure: components["schemas"]["TemplateStructure"];
+      createdBy: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+    CreateTemplateRequest: {
+      organizationId?: string;
+      name: string;
+      description?: string;
+      auditType: components["schemas"]["AuditType"];
+      category?: components["schemas"]["AuditCategory"];
+      version?: string;
+      isActive?: boolean;
+      isPublic?: boolean;
+      structure: components["schemas"]["TemplateStructure"];
+    };
+    UpdateCaseRequest: {
+      caseNumber?: string;
+      clientName?: string;
+      auditType?: components["schemas"]["AuditType"];
+      status?: components["schemas"]["CaseStatus"];
+      priority?: components["schemas"]["CasePriority"];
+      dueDate?: string;
+      completedDate?: string;
+    };
+    /** @enum {string} */
+    AuditStatus: "draft" | "in-progress" | "under-review" | "completed" | "archived";
+    ScopeResponse: {
+      id: string;
+      caseId: string;
+      templateId?: string;
+      name: string;
+      description?: string;
+      status: components["schemas"]["AuditStatus"];
+      metadata: components["schemas"]["Record_string.unknown_"];
+      createdBy: string;
+      completedBy?: string;
+      archivedBy?: string;
+      createdAt: string;
+      updatedAt: string;
+      completedAt?: string;
+      archivedAt?: string;
+    };
+    CreateScopeRequest: {
+      name: string;
+      description?: string;
+      status?: components["schemas"]["AuditStatus"];
+      metadata?: components["schemas"]["Record_string.unknown_"];
+    };
+    CreateScopeFromTemplateRequest: {
+      templateId: string;
+    };
+    UpdateScopeStatusRequest: {
+      status: components["schemas"]["AuditStatus"];
+    };
+    SectionResponse: {
+      id: string;
+      scopeId: string;
+      name: string;
+      description?: string;
+      /** Format: double */
+      sortOrder: number;
+      isCompleted: boolean;
+      settings: components["schemas"]["Record_string.unknown_"];
+      createdAt: string;
+      updatedAt: string;
+    };
+    ProcedureResponse: {
+      id: string;
+      sectionId: string;
+      referenceNumber: string;
+      title: string;
+      description?: string;
+      requirements: components["schemas"]["Record_string.unknown_"];
+      /** Format: double */
+      sortOrder: number;
+      isCompleted: boolean;
+      completedBy?: string;
+      completedAt?: string;
+      memo?: string;
+      fieldData: components["schemas"]["Record_string.unknown_"];
+      canEdit: boolean;
+      createdAt: string;
+      updatedAt: string;
+    };
+    CompleteProcedureRequest: {
+      fieldData?: components["schemas"]["Record_string.unknown_"];
+      memo?: string;
+    };
+    DocumentResponse: {
+      id: string;
+      caseId: string;
+      procedureId?: string;
+      fileName: string;
+      /** Format: double */
+      fileSize: number;
+      fileType: string;
+      storagePath: string;
+      /** Format: double */
+      version: number;
+      parentDocumentId?: string;
+      uploadedBy: string;
+      uploadedAt: string;
+      isDeleted: boolean;
+    };
+    CreateDocumentRequest: {
+      procedureId?: string;
+      fileName: string;
+      /** Format: double */
+      fileSize: number;
+      fileType: string;
+      storagePath: string;
+      /** Format: double */
+      version?: number;
+      parentDocumentId?: string;
+    };
+    /** @enum {string} */
+    NoteType: "observation" | "review_comment" | "general" | "memo";
+    NoteResponse: {
+      id: string;
+      caseId: string;
+      procedureId?: string;
+      noteType: components["schemas"]["NoteType"];
+      content: string;
+      createdBy: string;
+      createdAt: string;
+      updatedAt: string;
+      isEdited: boolean;
+    };
+    CreateNoteRequest: {
+      procedureId?: string;
+      noteType: components["schemas"]["NoteType"];
+      content: string;
+    };
+    UpdateNoteRequest: {
+      content: string;
+    };
+    AssignmentResponse: {
+      caseId: string;
+      userId: string;
+      role: components["schemas"]["AssignmentRole"];
+      assignedBy: string;
+      assignedAt: string;
+    };
+    CreateAssignmentRequest: {
+      userId: string;
+      role: components["schemas"]["AssignmentRole"];
+    };
+    /** @enum {string} */
+    CaseEntityType: "case" | "scope" | "section" | "procedure" | "document" | "note";
+    /** @enum {string} */
+    CaseAction: "created" | "updated" | "deleted" | "completed" | "archived" | "assigned" | "unassigned";
+    HistoryResponse: {
+      id: string;
+      caseId: string;
+      entityType: components["schemas"]["CaseEntityType"];
+      entityId: string;
+      action: components["schemas"]["CaseAction"];
+      changesBefore?: components["schemas"]["Record_string.unknown_"];
+      changesAfter?: components["schemas"]["Record_string.unknown_"];
+      changedBy: string;
+      changedAt: string;
+    };
+    /** @enum {string} */
+    EntityType: "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
+    /** @enum {string} */
+    AuditAction:
+      | "created"
+      | "updated"
+      | "deleted"
+      | "completed"
+      | "failed"
+      | "started"
+      | "cancelled"
+      | "retrying";
+    AuditLogUser: {
+      id: string;
+      name: string | null;
+      email: string;
+    };
+    AuditLogResponse: {
+      id: string;
+      entityType: components["schemas"]["EntityType"];
+      entityId: string;
+      action: components["schemas"]["AuditAction"];
+      organizationId: string | null;
+      userId: string | null;
+      metadata: components["schemas"]["Record_string.unknown_"] | null;
+      ipAddress: string | null;
+      userAgent: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      user?: components["schemas"]["AuditLogUser"] | null;
+    };
+    AuditLogFilters: {
+      entityType?: components["schemas"]["EntityType"];
+      entityId?: string;
+      action?: components["schemas"]["AuditAction"];
+      userId?: string;
+      startDate?: string;
+      endDate?: string;
+      /** Format: double */
+      limit?: number;
+      /** Format: double */
+      offset?: number;
+    };
+    ExportAuditLogsRequest: {
+      /** @enum {string} */
+      format: "csv" | "json";
+      filters?: components["schemas"]["AuditLogFilters"];
+    };
+    SubmitForApprovalResponse: {
+      requestId: string;
+      workflowId: string;
+      status: string;
+      message: string;
+    };
+    EntityData: {
+      entityType: components["schemas"]["EntityType"];
+      entityId: string;
+      /** Format: double */
+      amount?: number;
+      status?: string;
+      createdBy?: string;
+    } & {
+      [key: string]: unknown;
+    };
+    SubmitForApprovalRequest: {
+      entityType: string;
+      entityId: string;
+      entityData: components["schemas"]["EntityData"];
+    };
+    ApprovalStepResponse: {
+      id: string;
+      /** Format: double */
+      stepOrder: number;
+      approverId: string;
+      approverName?: string;
+      status: string;
+      comments?: string;
+      actionAt?: string;
+      delegatedTo?: string;
+      delegatedToName?: string;
+    };
+    ApprovalRequestResponse: {
+      id: string;
+      workflowId: string;
+      workflowName: string;
+      entityType: string;
+      entityId: string;
+      status: string;
+      requestedBy: string;
+      requestedByName?: string;
+      submittedAt: string;
+      completedAt?: string;
+      /** Format: double */
+      currentStep?: number;
+      /** Format: double */
+      totalSteps?: number;
+      steps: components["schemas"]["ApprovalStepResponse"][];
+    };
+    ApprovalActionResponse: {
+      success: boolean;
+      message: string;
+      requestStatus?: string;
+    };
+    ApprovalActionRequest: {
+      comments?: string;
+    };
+    DelegateApprovalRequest: {
+      delegateToUserId: string;
+      comments?: string;
     };
     Invoice: {
       id: string;
@@ -2633,554 +4037,6 @@ export interface components {
       /** Format: double */
       companyId: number;
       companyName?: string;
-    };
-    HealthCheck: {
-      /** @enum {string} */
-      status: "ok" | "error";
-      timestamp: string;
-      /** Format: double */
-      uptime: number;
-      version: string;
-    };
-    Employee: {
-      id: string;
-      firstName: string;
-      lastName: string;
-      email: string;
-      position: string;
-      /** Format: double */
-      salary: number;
-      startDate: string;
-    };
-    EmployeeCreateRequest: {
-      firstName: string;
-      lastName: string;
-      email: string;
-      position: string;
-      /** Format: double */
-      salary: number;
-      startDate: string;
-    };
-    Deal: {
-      id: string;
-      title: string;
-      /** Format: double */
-      value: number;
-      /** @enum {string} */
-      stage: "PROSPECT" | "QUALIFIED" | "PROPOSAL" | "NEGOTIATION" | "CLOSED_WON" | "CLOSED_LOST";
-      contactId: string;
-      expectedCloseDate: string;
-      /** Format: double */
-      probability: number;
-    };
-    DealCreateRequest: {
-      title: string;
-      /** Format: double */
-      value: number;
-      contactId: string;
-      expectedCloseDate: string;
-      /** Format: double */
-      probability: number;
-    };
-    /** @description Dashboard statistics response */
-    DashboardStatsResponse: {
-      /** Format: double */
-      activeCases: number;
-      /** Format: double */
-      pendingReviews: number;
-      /** Format: double */
-      completedAudits: number;
-      /** Format: double */
-      totalCases: number;
-      /** Format: double */
-      completionRate: number;
-    };
-    /** @description Case activity item */
-    CaseActivityResponse: {
-      id: string;
-      /** @enum {string} */
-      type: "case_update";
-      caseId: string;
-      caseNumber: string;
-      clientName: string;
-      status: string;
-      updatedAt: string;
-      updatedBy: {
-        name: string;
-        id: string;
-      };
-    };
-    /** @description Notification response */
-    NotificationResponse: {
-      id: string;
-      type: string;
-      title: string;
-      description: string;
-      timestamp: string;
-      isRead: boolean;
-      relatedEntityType: string | null;
-      relatedEntityId: string | null;
-      actionLabel: string | null;
-      actionUrl: string | null;
-    };
-    /** @description Unread notifications count response */
-    UnreadNotificationsCountResponse: {
-      /** Format: double */
-      count: number;
-    };
-    Contact: {
-      id: string;
-      name: string;
-      email: string;
-      phone: string;
-      company?: string;
-      /** @enum {string} */
-      type: "LEAD" | "CUSTOMER" | "VENDOR";
-      /** @enum {string} */
-      status: "ACTIVE" | "INACTIVE";
-    };
-    ContactCreateRequest: {
-      name: string;
-      email: string;
-      phone: string;
-      company?: string;
-      /** @enum {string} */
-      type: "LEAD" | "CUSTOMER" | "VENDOR";
-    };
-    /** @enum {string} */
-    ConnectorType:
-      | "postgresql"
-      | "mysql"
-      | "mssql"
-      | "storage_local"
-      | "storage_webdav"
-      | "storage_smb"
-      | "storage_cloud";
-    ConnectorResponse: {
-      id: string;
-      organizationId: string;
-      name: string;
-      description?: string;
-      type: components["schemas"]["ConnectorType"];
-      isActive: boolean;
-      tags: string[];
-      metadata: components["schemas"]["Record_string.unknown_"];
-      lastConnectionTest?: string;
-      lastConnectionStatus?: string;
-      lastConnectionError?: string;
-      createdAt: string;
-      updatedAt: string;
-    };
-    ConnectorConfig: {
-      host?: string;
-      /** Format: double */
-      port?: number;
-      database?: string;
-      username?: string;
-      password?: string;
-      ssl?: boolean;
-      url?: string;
-      apiKey?: string;
-      authToken?: string;
-    } & {
-      [key: string]: unknown;
-    };
-    CreateConnectorRequest: {
-      name: string;
-      description?: string;
-      type: components["schemas"]["ConnectorType"];
-      config: components["schemas"]["ConnectorConfig"];
-      tags?: string[];
-      metadata?: components["schemas"]["Record_string.unknown_"];
-    };
-    UpdateConnectorRequest: {
-      name?: string;
-      description?: string;
-      config?: components["schemas"]["ConnectorConfig"];
-      tags?: string[];
-      metadata?: components["schemas"]["Record_string.unknown_"];
-      isActive?: boolean;
-    };
-    QueryResponse: {
-      rows: unknown[];
-      /** Format: double */
-      rowCount: number;
-      /** Format: double */
-      executionTime: number;
-    };
-    QueryRequest: {
-      sql: string;
-      params?: unknown[];
-    };
-    SchemaResponse: {
-      tables: {
-        /** @enum {string} */
-        type: "table" | "view";
-        name: string;
-        schema: string;
-      }[];
-    };
-    TablePreviewResponse: {
-      schema: string;
-      table: string;
-      columns: {
-        nullable: boolean;
-        type: string;
-        name: string;
-      }[];
-      sampleData: unknown[];
-      /** Format: double */
-      totalRows: number;
-    };
-    FieldMapping: {
-      sourceColumn: string;
-      targetField: string;
-      /** @enum {string} */
-      transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean";
-      defaultValue?: unknown;
-    };
-    SuggestMappingsRequest: {
-      sourceColumns: string[];
-      /** @enum {string} */
-      targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
-    };
-    CaseResponse: {
-      id: string;
-      organizationId: string;
-      caseNumber: string;
-      clientName: string;
-      auditType: string;
-      /** @enum {string} */
-      status: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
-      /** @enum {string} */
-      priority: "low" | "medium" | "high" | "critical";
-      dueDate?: string;
-      completedDate?: string;
-      createdBy: string;
-      createdAt: string;
-      updatedAt: string;
-      assignments?: {
-        user?: {
-          email: string;
-          name: string | null;
-          id: string;
-        };
-        /** @enum {string} */
-        role: "lead" | "reviewer" | "team_member";
-        userId: string;
-      }[];
-    };
-    CreateCaseRequest: {
-      caseNumber?: string;
-      clientName: string;
-      auditType: string;
-      /** @enum {string} */
-      status?: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
-      /** @enum {string} */
-      priority?: "low" | "medium" | "high" | "critical";
-      dueDate?: string;
-    };
-    TemplateStructure: {
-      settings?: components["schemas"]["Record_string.unknown_"];
-      sections: {
-        procedures: {
-          /** Format: double */
-          sortOrder: number;
-          requirements?: components["schemas"]["Record_string.unknown_"];
-          description?: string;
-          title: string;
-          referenceNumber: string;
-        }[];
-        settings?: components["schemas"]["Record_string.unknown_"];
-        /** Format: double */
-        sortOrder: number;
-        description?: string;
-        name: string;
-      }[];
-    };
-    TemplateResponse: {
-      id: string;
-      organizationId?: string;
-      name: string;
-      description?: string;
-      auditType: string;
-      category?: string;
-      version: string;
-      isActive: boolean;
-      isPublic: boolean;
-      structure: components["schemas"]["TemplateStructure"];
-      createdBy: string;
-      createdAt: string;
-      updatedAt: string;
-    };
-    CreateTemplateRequest: {
-      organizationId?: string;
-      name: string;
-      description?: string;
-      auditType: string;
-      category?: string;
-      version?: string;
-      isActive?: boolean;
-      isPublic?: boolean;
-      structure: components["schemas"]["TemplateStructure"];
-    };
-    UpdateCaseRequest: {
-      caseNumber?: string;
-      clientName?: string;
-      auditType?: string;
-      /** @enum {string} */
-      status?: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
-      /** @enum {string} */
-      priority?: "low" | "medium" | "high" | "critical";
-      dueDate?: string;
-      completedDate?: string;
-    };
-    ScopeResponse: {
-      id: string;
-      caseId: string;
-      templateId?: string;
-      name: string;
-      description?: string;
-      /** @enum {string} */
-      status: "draft" | "in-progress" | "under-review" | "completed" | "archived";
-      metadata: components["schemas"]["Record_string.unknown_"];
-      createdBy: string;
-      completedBy?: string;
-      archivedBy?: string;
-      createdAt: string;
-      updatedAt: string;
-      completedAt?: string;
-      archivedAt?: string;
-    };
-    CreateScopeRequest: {
-      name: string;
-      description?: string;
-      /** @enum {string} */
-      status?: "draft" | "in-progress" | "under-review" | "completed" | "archived";
-      metadata?: components["schemas"]["Record_string.unknown_"];
-    };
-    CreateScopeFromTemplateRequest: {
-      templateId: string;
-    };
-    UpdateScopeStatusRequest: {
-      /** @enum {string} */
-      status: "draft" | "in-progress" | "under-review" | "completed" | "archived";
-    };
-    SectionResponse: {
-      id: string;
-      scopeId: string;
-      name: string;
-      description?: string;
-      /** Format: double */
-      sortOrder: number;
-      isCompleted: boolean;
-      settings: components["schemas"]["Record_string.unknown_"];
-      createdAt: string;
-      updatedAt: string;
-    };
-    ProcedureResponse: {
-      id: string;
-      sectionId: string;
-      referenceNumber: string;
-      title: string;
-      description?: string;
-      requirements: components["schemas"]["Record_string.unknown_"];
-      /** Format: double */
-      sortOrder: number;
-      isCompleted: boolean;
-      completedBy?: string;
-      completedAt?: string;
-      memo?: string;
-      fieldData: components["schemas"]["Record_string.unknown_"];
-      canEdit: boolean;
-      createdAt: string;
-      updatedAt: string;
-    };
-    CompleteProcedureRequest: {
-      fieldData?: components["schemas"]["Record_string.unknown_"];
-      memo?: string;
-    };
-    DocumentResponse: {
-      id: string;
-      caseId: string;
-      procedureId?: string;
-      fileName: string;
-      /** Format: double */
-      fileSize: number;
-      fileType: string;
-      storagePath: string;
-      /** Format: double */
-      version: number;
-      parentDocumentId?: string;
-      uploadedBy: string;
-      uploadedAt: string;
-      isDeleted: boolean;
-    };
-    CreateDocumentRequest: {
-      procedureId?: string;
-      fileName: string;
-      /** Format: double */
-      fileSize: number;
-      fileType: string;
-      storagePath: string;
-      /** Format: double */
-      version?: number;
-      parentDocumentId?: string;
-    };
-    NoteResponse: {
-      id: string;
-      caseId: string;
-      procedureId?: string;
-      /** @enum {string} */
-      noteType: "observation" | "review_comment" | "general" | "memo";
-      content: string;
-      createdBy: string;
-      createdAt: string;
-      updatedAt: string;
-      isEdited: boolean;
-    };
-    CreateNoteRequest: {
-      procedureId?: string;
-      /** @enum {string} */
-      noteType: "observation" | "review_comment" | "general" | "memo";
-      content: string;
-    };
-    UpdateNoteRequest: {
-      content: string;
-    };
-    AssignmentResponse: {
-      caseId: string;
-      userId: string;
-      /** @enum {string} */
-      role: "lead" | "reviewer" | "team_member";
-      assignedBy: string;
-      assignedAt: string;
-    };
-    CreateAssignmentRequest: {
-      userId: string;
-      /** @enum {string} */
-      role: "lead" | "reviewer" | "team_member";
-    };
-    HistoryResponse: {
-      id: string;
-      caseId: string;
-      entityType: string;
-      entityId: string;
-      action: string;
-      changesBefore?: components["schemas"]["Record_string.unknown_"];
-      changesAfter?: components["schemas"]["Record_string.unknown_"];
-      changedBy: string;
-      changedAt: string;
-    };
-    /** @enum {string} */
-    EntityType: "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
-    /** @enum {string} */
-    AuditAction:
-      | "created"
-      | "updated"
-      | "deleted"
-      | "completed"
-      | "failed"
-      | "started"
-      | "cancelled"
-      | "retrying";
-    AuditLogUser: {
-      id: string;
-      name: string | null;
-      email: string;
-    };
-    AuditLogResponse: {
-      id: string;
-      entityType: components["schemas"]["EntityType"];
-      entityId: string;
-      action: components["schemas"]["AuditAction"];
-      organizationId: string | null;
-      userId: string | null;
-      metadata: components["schemas"]["Record_string.unknown_"] | null;
-      ipAddress: string | null;
-      userAgent: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      user?: components["schemas"]["AuditLogUser"] | null;
-    };
-    AuditLogFilters: {
-      entityType?: components["schemas"]["EntityType"];
-      entityId?: string;
-      action?: components["schemas"]["AuditAction"];
-      userId?: string;
-      startDate?: string;
-      endDate?: string;
-      /** Format: double */
-      limit?: number;
-      /** Format: double */
-      offset?: number;
-    };
-    ExportAuditLogsRequest: {
-      /** @enum {string} */
-      format: "csv" | "json";
-      filters?: components["schemas"]["AuditLogFilters"];
-    };
-    SubmitForApprovalResponse: {
-      requestId: string;
-      workflowId: string;
-      status: string;
-      message: string;
-    };
-    EntityData: {
-      entityType: components["schemas"]["EntityType"];
-      entityId: string;
-      /** Format: double */
-      amount?: number;
-      status?: string;
-      createdBy?: string;
-    } & {
-      [key: string]: unknown;
-    };
-    SubmitForApprovalRequest: {
-      entityType: string;
-      entityId: string;
-      entityData: components["schemas"]["EntityData"];
-    };
-    ApprovalStepResponse: {
-      id: string;
-      /** Format: double */
-      stepOrder: number;
-      approverId: string;
-      approverName?: string;
-      status: string;
-      comments?: string;
-      actionAt?: string;
-      delegatedTo?: string;
-      delegatedToName?: string;
-    };
-    ApprovalRequestResponse: {
-      id: string;
-      workflowId: string;
-      workflowName: string;
-      entityType: string;
-      entityId: string;
-      status: string;
-      requestedBy: string;
-      requestedByName?: string;
-      submittedAt: string;
-      completedAt?: string;
-      /** Format: double */
-      currentStep?: number;
-      /** Format: double */
-      totalSteps?: number;
-      steps: components["schemas"]["ApprovalStepResponse"][];
-    };
-    ApprovalActionResponse: {
-      success: boolean;
-      message: string;
-      requestStatus?: string;
-    };
-    ApprovalActionRequest: {
-      comments?: string;
-    };
-    DelegateApprovalRequest: {
-      delegateToUserId: string;
-      comments?: string;
     };
     Account: {
       id: string;
@@ -3771,90 +4627,6 @@ export interface operations {
       };
     };
   };
-  GetPayrollRecords: {
-    parameters: {
-      query?: {
-        _page?: number;
-        _limit?: number;
-        _period?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            limit: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            total: number;
-            records: components["schemas"]["PayrollRecord"][];
-          };
-        };
-      };
-    };
-  };
-  CreatePayrollRecord: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PayrollCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Payroll record created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PayrollRecord"];
-        };
-      };
-    };
-  };
-  ProcessPayroll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          period: string;
-        };
-      };
-    };
-    responses: {
-      /** @description Payroll processed successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            message: string;
-          };
-        };
-      };
-    };
-  };
   ProvisionDatabase: {
     parameters: {
       query?: never;
@@ -3871,6 +4643,32 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["OdooProvisionResponse"];
+        };
+      };
+    };
+  };
+  ProvisionUser: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            hasApiKey: boolean;
+            odooLogin: string;
+            /** Format: double */
+            odooUid: number;
+            success: boolean;
+          };
         };
       };
     };
@@ -4179,6 +4977,190 @@ export interface operations {
       };
     };
   };
+  GetOdooDevCredentials: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            webUrl: string;
+            password: string;
+            login: string;
+          } | null;
+        };
+      };
+    };
+  };
+  GetOdooUserCredentials: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            webUrl: string;
+            password: string;
+            login: string;
+          } | null;
+        };
+      };
+    };
+  };
+  GetOdooAdminCredentialsEndpoint: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            webUrl: string;
+            adminPassword: string;
+            adminLogin: string;
+            databaseName: string;
+          } | null;
+        };
+      };
+    };
+  };
+  InstallOdooModules: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Modules installed successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  GetOdooModelFields: {
+    parameters: {
+      query?: {
+        simple?: boolean;
+      };
+      header?: never;
+      path: {
+        modelName: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json":
+            | components["schemas"]["Record_string.unknown_"]
+            | {
+                readonly?: boolean;
+                required?: boolean;
+                label: string;
+                type: string;
+                name: string;
+              }[];
+        };
+      };
+    };
+  };
+  GetOdooDatabaseInfo: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            accessGroups: {
+              users: number[];
+              category: string;
+              fullName: string;
+              name: string;
+              /** Format: double */
+              id: number;
+            }[];
+            modules: {
+              summary: string;
+              state: string;
+              displayName: string;
+              name: string;
+              /** Format: double */
+              id: number;
+            }[];
+            users: {
+              groups: {
+                fullName: string;
+                name: string;
+                /** Format: double */
+                id: number;
+              }[];
+              active: boolean;
+              email: string;
+              login: string;
+              name: string;
+              /** Format: double */
+              id: number;
+            }[];
+            database: {
+              loginUrl: string;
+              exists: boolean;
+              name: string;
+            };
+          };
+        };
+      };
+    };
+  };
   ConnectNAS: {
     parameters: {
       query?: never;
@@ -4265,11 +5247,11 @@ export interface operations {
       };
     };
   };
-  GetInvoices: {
+  GetHRManagementEmployees: {
     parameters: {
       query?: {
-        _page?: number;
-        _limit?: number;
+        departmentId?: string;
+        managerId?: string;
       };
       header?: never;
       path?: never;
@@ -4283,20 +5265,12 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            /** Format: double */
-            limit: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            total: number;
-            invoices: components["schemas"]["Invoice"][];
-          };
+          "application/json": components["schemas"]["EmployeeDbResponse"][];
         };
       };
     };
   };
-  CreateInvoice: {
+  CreateEmployee: {
     parameters: {
       query?: never;
       header?: never;
@@ -4305,33 +5279,28 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["InvoiceCreateRequest"];
+        "application/json": components["schemas"]["CreateEmployeeRequest"];
       };
     };
     responses: {
-      /** @description Invoice created successfully */
-      201: {
+      /** @description Ok */
+      200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["Invoice"];
+          "application/json": components["schemas"]["EmployeeDbResponse"];
         };
       };
     };
   };
-  GetHisabiqInvoices: {
+  GetHRManagementEmployee: {
     parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        type?: "SALES" | "PURCHASE";
-        state?: "draft" | "posted" | "cancel";
-        dateFrom?: string;
-        dateTo?: string;
-      };
+      query?: never;
       header?: never;
-      path?: never;
+      path: {
+        employeeId: string;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -4342,53 +5311,25 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            /** Format: double */
-            limit: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            total: number;
-            invoices: components["schemas"]["Invoice"][];
-          };
+          "application/json": components["schemas"]["EmployeeDbResponse"];
         };
       };
     };
   };
-  CreateHisabiqInvoice: {
+  UpdateEmployee: {
     parameters: {
       query?: never;
       header?: never;
-      path?: never;
+      path: {
+        employeeId: string;
+      };
       cookie?: never;
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["InvoiceCreateRequest"];
+        "application/json": components["schemas"]["UpdateEmployeeRequest"];
       };
     };
-    responses: {
-      /** @description Invoice created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Invoice"];
-        };
-      };
-    };
-  };
-  GetHisabiqInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
     responses: {
       /** @description Ok */
       200: {
@@ -4396,17 +5337,17 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["Invoice"];
+          "application/json": components["schemas"]["EmployeeDbResponse"];
         };
       };
     };
   };
-  ValidateHisabiqInvoice: {
+  DeactivateEmployee: {
     parameters: {
       query?: never;
       header?: never;
       path: {
-        invoiceId: string;
+        employeeId: string;
       };
       cookie?: never;
     };
@@ -4425,12 +5366,150 @@ export interface operations {
       };
     };
   };
-  CancelHisabiqInvoice: {
+  SyncEmployeeFromOdoo: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SyncEmployeeFromOdooRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EmployeeDbResponse"];
+        };
+      };
+    };
+  };
+  SyncAllEmployees: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SyncAllEmployeesResponse"];
+        };
+      };
+    };
+  };
+  GetHRManagementDepartments: {
+    parameters: {
+      query?: {
+        parentId?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DepartmentDbResponse"][];
+        };
+      };
+    };
+  };
+  CreateDepartment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateDepartmentRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DepartmentDbResponse"];
+        };
+      };
+    };
+  };
+  GetHRManagementDepartment: {
     parameters: {
       query?: never;
       header?: never;
       path: {
-        invoiceId: string;
+        departmentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DepartmentDbResponse"];
+        };
+      };
+    };
+  };
+  UpdateDepartment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        departmentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateDepartmentRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DepartmentDbResponse"];
+        };
+      };
+    };
+  };
+  DeleteDepartment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        departmentId: string;
       };
       cookie?: never;
     };
@@ -4449,23 +5528,16 @@ export interface operations {
       };
     };
   };
-  RefundHisabiqInvoice: {
+  SyncDepartmentFromOdoo: {
     parameters: {
       query?: never;
       header?: never;
-      path: {
-        invoiceId: string;
-      };
+      path?: never;
       cookie?: never;
     };
     requestBody: {
       content: {
-        "application/json": {
-          /** Format: double */
-          journalId?: number;
-          date?: string;
-          reason?: string;
-        };
+        "application/json": components["schemas"]["SyncDepartmentFromOdooRequest"];
       };
     };
     responses: {
@@ -4475,20 +5547,37 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            /** Format: double */
-            refundId: number;
-          };
+          "application/json": components["schemas"]["DepartmentDbResponse"];
         };
       };
     };
   };
-  GetHisabiqInvoicePDF: {
+  SyncAllDepartments: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SyncAllDepartmentsResponse"];
+        };
+      };
+    };
+  };
+  GetEmployeeLeaveBalances: {
     parameters: {
       query?: never;
       header?: never;
       path: {
-        invoiceId: string;
+        employeeId: string;
       };
       cookie?: never;
     };
@@ -4500,17 +5589,219 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": string;
+          "application/json": components["schemas"]["LeaveBalanceResponse"][];
         };
       };
     };
   };
-  GetHisabiqBills: {
+  GetEmployeeLeaveBalanceByType: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        employeeId: string;
+        leaveTypeId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LeaveBalanceResponse"];
+        };
+      };
+    };
+  };
+  GetHREmployees: {
     parameters: {
       query?: {
-        page?: number;
-        limit?: number;
-        state?: "draft" | "posted" | "cancel";
+        departmentId?: number;
+        active?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EmployeeResponse"][];
+        };
+      };
+    };
+  };
+  GetHREmployee: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        employeeId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EmployeeResponse"];
+        };
+      };
+    };
+  };
+  GetHRDepartments: {
+    parameters: {
+      query?: {
+        parentId?: number;
+        active?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DepartmentResponse"][];
+        };
+      };
+    };
+  };
+  GetHRDepartment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        departmentId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DepartmentResponse"];
+        };
+      };
+    };
+  };
+  GetContracts: {
+    parameters: {
+      query?: {
+        employeeId?: number;
+        state?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ContractResponse"][];
+        };
+      };
+    };
+  };
+  GetContract: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        contractId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ContractResponse"];
+        };
+      };
+    };
+  };
+  GetLeaveTypes: {
+    parameters: {
+      query?: {
+        active?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LeaveTypeResponse"][];
+        };
+      };
+    };
+  };
+  GetLeaveType: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        leaveTypeId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["LeaveTypeResponse"];
+        };
+      };
+    };
+  };
+  GetLeaveRequests: {
+    parameters: {
+      query?: {
+        employeeId?: number;
+        leaveTypeId?: number;
+        state?: string;
         dateFrom?: string;
         dateTo?: string;
       };
@@ -4526,49 +5817,17 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            /** Format: double */
-            limit: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            total: number;
-            bills: components["schemas"]["Invoice"][];
-          };
+          "application/json": components["schemas"]["LeaveRequestResponse"][];
         };
       };
     };
   };
-  CreateHisabiqBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InvoiceCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Bill created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Invoice"];
-        };
-      };
-    };
-  };
-  GetHisabiqBill: {
+  GetLeaveRequest: {
     parameters: {
       query?: never;
       header?: never;
       path: {
-        billId: string;
+        leaveId: number;
       };
       cookie?: never;
     };
@@ -4580,119 +5839,17 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["Invoice"];
+          "application/json": components["schemas"]["LeaveRequestResponse"];
         };
       };
     };
   };
-  ValidateHisabiqBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  CancelHisabiqBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  RefundHisabiqBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          /** Format: double */
-          journalId?: number;
-          date?: string;
-          reason?: string;
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            refundId: number;
-          };
-        };
-      };
-    };
-  };
-  GetHisabiqBillPDF: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-    };
-  };
-  GetHisabiqAccounts: {
+  GetLeaveAllocations: {
     parameters: {
       query?: {
-        accountType?: string;
+        employeeId?: number;
+        leaveTypeId?: number;
+        state?: string;
       };
       header?: never;
       path?: never;
@@ -4706,24 +5863,18 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            parentId?: string;
-            type: string;
-            name: string;
-            code: string;
-            id: string;
-          }[];
+          "application/json": components["schemas"]["LeaveAllocationResponse"][];
         };
       };
     };
   };
-  SearchHisabiqAccounts: {
+  GetLeaveAllocation: {
     parameters: {
-      query: {
-        q: string;
-      };
+      query?: never;
       header?: never;
-      path?: never;
+      path: {
+        allocationId: number;
+      };
       cookie?: never;
     };
     requestBody?: never;
@@ -4734,21 +5885,16 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            type: string;
-            name: string;
-            code: string;
-            id: string;
-          }[];
+          "application/json": components["schemas"]["LeaveAllocationResponse"];
         };
       };
     };
   };
-  GetHisabiqPayments: {
+  GetPayslips: {
     parameters: {
       query?: {
-        type?: "inbound" | "outbound" | "transfer";
-        state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
+        employeeId?: number;
+        state?: string;
         dateFrom?: string;
         dateTo?: string;
       };
@@ -4764,44 +5910,17 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["PaymentResponse"][];
+          "application/json": components["schemas"]["PayslipResponse"][];
         };
       };
     };
   };
-  CreateHisabiqPayment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreatePaymentDTO"];
-      };
-    };
-    responses: {
-      /** @description Payment created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            id: number;
-          };
-        };
-      };
-    };
-  };
-  ConfirmHisabiqPayment: {
+  GetPayslip: {
     parameters: {
       query?: never;
       header?: never;
       path: {
-        paymentId: string;
+        payslipId: number;
       };
       cookie?: never;
     };
@@ -4813,323 +5932,17 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            success: boolean;
-          };
+          "application/json": components["schemas"]["PayslipResponse"];
         };
       };
     };
   };
-  GetHisabiqPartners: {
-    parameters: {
-      query?: {
-        isCustomer?: boolean;
-        isSupplier?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PartnerResponse"][];
-        };
-      };
-    };
-  };
-  GetHisabiqJournals: {
-    parameters: {
-      query?: {
-        type?: "sale" | "purchase" | "cash" | "bank" | "general";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["JournalResponse"][];
-        };
-      };
-    };
-  };
-  GetHisabiqTaxes: {
-    parameters: {
-      query?: {
-        typeTaxUse?: "sale" | "purchase" | "none";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TaxResponse"][];
-        };
-      };
-    };
-  };
-  GetHisabiqTrialBalance: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["AccountBalanceQuery"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["AccountBalanceReportResponse"][];
-        };
-      };
-    };
-  };
-  GetHisabiqPartnerLedger: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PartnerLedgerQuery"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PartnerLedgerReportResponse"] | null;
-        };
-      };
-    };
-  };
-  GetHisabiqProfitLoss: {
-    parameters: {
-      query?: {
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ProfitLossResponse"];
-        };
-      };
-    };
-  };
-  GetHisabiqGeneralLedger: {
-    parameters: {
-      query?: {
-        accountId?: number;
-        partnerId?: number;
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["GLEntryResponse"][];
-        };
-      };
-    };
-  };
-  GetHisabiqPaymentTerms: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            note?: string;
-            name: string;
-            /** Format: double */
-            id: number;
-          }[];
-        };
-      };
-    };
-  };
-  GetHisabiqAgedReceivable: {
-    parameters: {
-      query?: {
-        asOfDate?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            total: number;
-            /** Format: double */
-            days_over_90: number;
-            /** Format: double */
-            days_61_90: number;
-            /** Format: double */
-            days_31_60: number;
-            /** Format: double */
-            days_1_30: number;
-            /** Format: double */
-            current: number;
-            partnerName: string;
-            /** Format: double */
-            partnerId: number;
-          }[];
-        };
-      };
-    };
-  };
-  GetHisabiqAgedPayable: {
-    parameters: {
-      query?: {
-        asOfDate?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            total: number;
-            /** Format: double */
-            days_over_90: number;
-            /** Format: double */
-            days_61_90: number;
-            /** Format: double */
-            days_31_60: number;
-            /** Format: double */
-            days_1_30: number;
-            /** Format: double */
-            current: number;
-            partnerName: string;
-            /** Format: double */
-            partnerId: number;
-          }[];
-        };
-      };
-    };
-  };
-  GetHisabiqBankStatements: {
-    parameters: {
-      query?: {
-        journalId?: number;
-        dateFrom?: string;
-        dateTo?: string;
-        state?: "open" | "confirm";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            state: string;
-            /** Format: double */
-            balanceEnd: number;
-            /** Format: double */
-            balanceEndReal: number;
-            /** Format: double */
-            balanceStart: number;
-            date: string;
-            journalName: string;
-            /** Format: double */
-            journalId: number;
-            name: string;
-            /** Format: double */
-            id: number;
-          }[];
-        };
-      };
-    };
-  };
-  GetHisabiqBankStatementLines: {
+  GetPayslipLines: {
     parameters: {
       query?: never;
       header?: never;
       path: {
-        statementId: number;
+        payslipId: number;
       };
       cookie?: never;
     };
@@ -5141,369 +5954,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            isReconciled: boolean;
-            /** Format: double */
-            amount: number;
-            partnerName?: string;
-            paymentRef: string;
-            date: string;
-            /** Format: double */
-            id: number;
-          }[];
-        };
-      };
-    };
-  };
-  GetHisabiqReconciliationSuggestions: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        lineId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            amount: number;
-            date: string;
-            partnerName: string;
-            moveName: string;
-            /** Format: double */
-            moveId: number;
-          }[];
-        };
-      };
-    };
-  };
-  ReconcileBankStatementLine: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        lineId: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          moveIds: number[];
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            message?: string;
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  GetHisabiqCurrencies: {
-    parameters: {
-      query?: {
-        onlyActive?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            active: boolean;
-            /** Format: double */
-            rounding: number;
-            /** @enum {string} */
-            position: "after" | "before";
-            symbol: string;
-            name: string;
-            /** Format: double */
-            id: number;
-          }[];
-        };
-      };
-    };
-  };
-  GetHisabiqCurrencyRates: {
-    parameters: {
-      query?: {
-        currencyId?: number;
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            companyId: number;
-            /** Format: double */
-            rate: number;
-            name: string;
-            currencyName: string;
-            /** Format: double */
-            currencyId: number;
-            /** Format: double */
-            id: number;
-          }[];
-        };
-      };
-    };
-  };
-  ConvertCurrency: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          date?: string;
-          /** Format: double */
-          toCurrencyId: number;
-          /** Format: double */
-          fromCurrencyId: number;
-          /** Format: double */
-          amount: number;
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            rate: number;
-            /** Format: double */
-            convertedAmount: number;
-          };
-        };
-      };
-    };
-  };
-  BatchValidateInvoices: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          invoiceIds: number[];
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              id: number;
-            }[];
-            success: number[];
-          };
-        };
-      };
-    };
-  };
-  BatchCancelInvoices: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          invoiceIds: number[];
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              id: number;
-            }[];
-            success: number[];
-          };
-        };
-      };
-    };
-  };
-  BatchCreateInvoices: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          invoices: components["schemas"]["InvoiceCreateRequest"][];
-        };
-      };
-    };
-    responses: {
-      /** @description Invoices created */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              index: number;
-            }[];
-            success: {
-              /** Format: double */
-              id: number;
-              /** Format: double */
-              index: number;
-            }[];
-          };
-        };
-      };
-    };
-  };
-  BatchCreatePayments: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          payments: {
-            reference?: string;
-            /** Format: double */
-            journalId: number;
-            date: string;
-            /** Format: double */
-            amount: number;
-            /** @enum {string} */
-            partnerType: "customer" | "supplier";
-            /** Format: double */
-            partnerId: number;
-            /** @enum {string} */
-            type: "inbound" | "outbound";
-          }[];
-        };
-      };
-    };
-    responses: {
-      /** @description Payments created */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              index: number;
-            }[];
-            success: {
-              /** Format: double */
-              id: number;
-              /** Format: double */
-              index: number;
-            }[];
-          };
-        };
-      };
-    };
-  };
-  BatchConfirmPayments: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          paymentIds: number[];
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              id: number;
-            }[];
-            success: number[];
-          };
+          "application/json": components["schemas"]["PayslipLineResponse"][];
         };
       };
     };
@@ -5528,11 +5979,76 @@ export interface operations {
       };
     };
   };
-  GetEmployees: {
+  GetTemplates: {
     parameters: {
-      query?: {
-        _page?: number;
-        _limit?: number;
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DocumentTemplateResponse"][];
+        };
+      };
+    };
+  };
+  CreateDocumentTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateDocumentTemplateRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DocumentTemplateResponse"];
+        };
+      };
+    };
+  };
+  GetTemplatesByType: {
+    parameters: {
+      query: {
+        documentType: components["schemas"]["DocumentType"];
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DocumentTemplateResponse"][];
+        };
+      };
+    };
+  };
+  GetActiveTemplate: {
+    parameters: {
+      query: {
+        documentType: components["schemas"]["DocumentType"];
       };
       header?: never;
       path?: never;
@@ -5547,19 +6063,107 @@ export interface operations {
         };
         content: {
           "application/json": {
-            /** Format: double */
-            limit: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            total: number;
-            employees: components["schemas"]["Employee"][];
+            templateId: string;
           };
         };
       };
     };
   };
-  CreateEmployee: {
+  GetOdooTemplates: {
+    parameters: {
+      query?: {
+        model?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["OdooReportTemplate"][];
+        };
+      };
+    };
+  };
+  UpdateTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        templateId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateTemplateRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DocumentTemplateResponse"];
+        };
+      };
+    };
+  };
+  DeleteTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        templateId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  ActivateTemplate: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        templateId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["DocumentTemplateResponse"];
+        };
+      };
+    };
+  };
+  CreateCustomTemplate: {
     parameters: {
       query?: never;
       header?: never;
@@ -5568,17 +6172,17 @@ export interface operations {
     };
     requestBody: {
       content: {
-        "application/json": components["schemas"]["EmployeeCreateRequest"];
+        "application/json": components["schemas"]["CreateCustomTemplateRequest"];
       };
     };
     responses: {
-      /** @description Employee created successfully */
-      201: {
+      /** @description Ok */
+      200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["Employee"];
+          "application/json": components["schemas"]["DocumentTemplateResponse"];
         };
       };
     };
@@ -5743,62 +6347,6 @@ export interface operations {
           "application/json": {
             success: boolean;
           };
-        };
-      };
-    };
-  };
-  GetContacts: {
-    parameters: {
-      query?: {
-        _page?: number;
-        _limit?: number;
-        _type?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            limit: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            total: number;
-            contacts: components["schemas"]["Contact"][];
-          };
-        };
-      };
-    };
-  };
-  CreateContact: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ContactCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Contact created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Contact"];
         };
       };
     };
@@ -6163,134 +6711,6 @@ export interface operations {
       };
     };
   };
-  GetOdooDevCredentials: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            webUrl: string;
-            password: string;
-            login: string;
-          } | null;
-        };
-      };
-    };
-  };
-  GetOdooUserCredentials: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            webUrl: string;
-            password: string;
-            login: string;
-          } | null;
-        };
-      };
-    };
-  };
-  GetOdooAdminCredentialsEndpoint: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            webUrl: string;
-            adminPassword: string;
-            adminLogin: string;
-            databaseName: string;
-          } | null;
-        };
-      };
-    };
-  };
-  InstallOdooModules: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Modules installed successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            message: string;
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  GetOdooModelFields: {
-    parameters: {
-      query?: {
-        simple?: boolean;
-      };
-      header?: never;
-      path: {
-        modelName: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json":
-            | components["schemas"]["Record_string.unknown_"]
-            | {
-                readonly?: boolean;
-                required?: boolean;
-                label: string;
-                type: string;
-                name: string;
-              }[];
-        };
-      };
-    };
-  };
   ListCases: {
     parameters: {
       query?: never;
@@ -6355,7 +6775,7 @@ export interface operations {
       };
     };
   };
-  CreateTemplate: {
+  CreateCaseTemplate: {
     parameters: {
       query?: never;
       header?: never;
@@ -7156,6 +7576,1194 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["ApprovalRequestResponse"][];
+        };
+      };
+    };
+  };
+  GetAccountingInvoices: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        type?: "SALES" | "PURCHASE";
+        state?: "draft" | "posted" | "cancel";
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            limit: number;
+            /** Format: double */
+            page: number;
+            /** Format: double */
+            total: number;
+            invoices: components["schemas"]["Invoice"][];
+          };
+        };
+      };
+    };
+  };
+  CreateAccountingInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["InvoiceCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Invoice created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Invoice"];
+        };
+      };
+    };
+  };
+  GetAccountingInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Invoice"];
+        };
+      };
+    };
+  };
+  ValidateAccountingInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  CancelAccountingInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  RefundAccountingInvoice: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** Format: double */
+          journalId?: number;
+          date?: string;
+          reason?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            refundId: number;
+          };
+        };
+      };
+    };
+  };
+  GetAccountingInvoicePDF: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        invoiceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": string;
+        };
+      };
+    };
+  };
+  GetAccountingBills: {
+    parameters: {
+      query?: {
+        page?: number;
+        limit?: number;
+        state?: "draft" | "posted" | "cancel";
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            limit: number;
+            /** Format: double */
+            page: number;
+            /** Format: double */
+            total: number;
+            bills: components["schemas"]["Invoice"][];
+          };
+        };
+      };
+    };
+  };
+  CreateAccountingBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["InvoiceCreateRequest"];
+      };
+    };
+    responses: {
+      /** @description Bill created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Invoice"];
+        };
+      };
+    };
+  };
+  GetAccountingBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Invoice"];
+        };
+      };
+    };
+  };
+  ValidateAccountingBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  CancelAccountingBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  RefundAccountingBill: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** Format: double */
+          journalId?: number;
+          date?: string;
+          reason?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            refundId: number;
+          };
+        };
+      };
+    };
+  };
+  GetAccountingBillPDF: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        billId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": string;
+        };
+      };
+    };
+  };
+  GetAccountingAccounts: {
+    parameters: {
+      query?: {
+        accountType?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            parentId?: string;
+            type: string;
+            name: string;
+            code: string;
+            id: string;
+          }[];
+        };
+      };
+    };
+  };
+  SearchAccountingAccounts: {
+    parameters: {
+      query: {
+        q: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            type: string;
+            name: string;
+            code: string;
+            id: string;
+          }[];
+        };
+      };
+    };
+  };
+  GetAccountingPayments: {
+    parameters: {
+      query?: {
+        type?: "inbound" | "outbound" | "transfer";
+        state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaymentResponse"][];
+        };
+      };
+    };
+  };
+  CreateAccountingPayment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreatePaymentDTO"];
+      };
+    };
+    responses: {
+      /** @description Payment created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            id: number;
+          };
+        };
+      };
+    };
+  };
+  ConfirmAccountingPayment: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        paymentId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  GetAccountingPartners: {
+    parameters: {
+      query?: {
+        isCustomer?: boolean;
+        isSupplier?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PartnerResponse"][];
+        };
+      };
+    };
+  };
+  GetAccountingJournals: {
+    parameters: {
+      query?: {
+        type?: "sale" | "purchase" | "cash" | "bank" | "general";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["JournalResponse"][];
+        };
+      };
+    };
+  };
+  GetAccountingTaxes: {
+    parameters: {
+      query?: {
+        typeTaxUse?: "sale" | "purchase" | "none";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["TaxResponse"][];
+        };
+      };
+    };
+  };
+  GetAccountingTrialBalance: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AccountBalanceQuery"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AccountBalanceReportResponse"][];
+        };
+      };
+    };
+  };
+  GetAccountingPartnerLedger: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["PartnerLedgerQuery"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PartnerLedgerReportResponse"] | null;
+        };
+      };
+    };
+  };
+  GetAccountingProfitLoss: {
+    parameters: {
+      query?: {
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ProfitLossResponse"];
+        };
+      };
+    };
+  };
+  GetAccountingGeneralLedger: {
+    parameters: {
+      query?: {
+        accountId?: number;
+        partnerId?: number;
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["GLEntryResponse"][];
+        };
+      };
+    };
+  };
+  GetAccountingPaymentTerms: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            note?: string;
+            name: string;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetAccountingAgedReceivable: {
+    parameters: {
+      query?: {
+        asOfDate?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            total: number;
+            /** Format: double */
+            days_over_90: number;
+            /** Format: double */
+            days_61_90: number;
+            /** Format: double */
+            days_31_60: number;
+            /** Format: double */
+            days_1_30: number;
+            /** Format: double */
+            current: number;
+            partnerName: string;
+            /** Format: double */
+            partnerId: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetAccountingAgedPayable: {
+    parameters: {
+      query?: {
+        asOfDate?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            total: number;
+            /** Format: double */
+            days_over_90: number;
+            /** Format: double */
+            days_61_90: number;
+            /** Format: double */
+            days_31_60: number;
+            /** Format: double */
+            days_1_30: number;
+            /** Format: double */
+            current: number;
+            partnerName: string;
+            /** Format: double */
+            partnerId: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetAccountingBankStatements: {
+    parameters: {
+      query?: {
+        journalId?: number;
+        dateFrom?: string;
+        dateTo?: string;
+        state?: "open" | "confirm";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            state: string;
+            /** Format: double */
+            balanceEnd: number;
+            /** Format: double */
+            balanceEndReal: number;
+            /** Format: double */
+            balanceStart: number;
+            date: string;
+            journalName: string;
+            /** Format: double */
+            journalId: number;
+            name: string;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetAccountingBankStatementLines: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        statementId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            isReconciled: boolean;
+            /** Format: double */
+            amount: number;
+            partnerName?: string;
+            paymentRef: string;
+            date: string;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetAccountingReconciliationSuggestions: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        lineId: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            amount: number;
+            date: string;
+            partnerName: string;
+            moveName: string;
+            /** Format: double */
+            moveId: number;
+          }[];
+        };
+      };
+    };
+  };
+  ReconcileAccountingBankStatementLine: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        lineId: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          moveIds: number[];
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message?: string;
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  GetAccountingCurrencies: {
+    parameters: {
+      query?: {
+        onlyActive?: boolean;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            active: boolean;
+            /** Format: double */
+            rounding: number;
+            /** @enum {string} */
+            position: "after" | "before";
+            symbol: string;
+            name: string;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  GetAccountingCurrencyRates: {
+    parameters: {
+      query?: {
+        currencyId?: number;
+        dateFrom?: string;
+        dateTo?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            companyId: number;
+            /** Format: double */
+            rate: number;
+            name: string;
+            currencyName: string;
+            /** Format: double */
+            currencyId: number;
+            /** Format: double */
+            id: number;
+          }[];
+        };
+      };
+    };
+  };
+  ConvertAccountingCurrency: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          date?: string;
+          /** Format: double */
+          toCurrencyId: number;
+          /** Format: double */
+          fromCurrencyId: number;
+          /** Format: double */
+          amount: number;
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: double */
+            rate: number;
+            /** Format: double */
+            convertedAmount: number;
+          };
+        };
+      };
+    };
+  };
+  BatchValidateAccountingInvoices: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          invoiceIds: number[];
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              id: number;
+            }[];
+            success: number[];
+          };
+        };
+      };
+    };
+  };
+  BatchCancelAccountingInvoices: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          invoiceIds: number[];
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              id: number;
+            }[];
+            success: number[];
+          };
+        };
+      };
+    };
+  };
+  BatchCreateAccountingInvoices: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          invoices: components["schemas"]["InvoiceCreateRequest"][];
+        };
+      };
+    };
+    responses: {
+      /** @description Invoices created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              index: number;
+            }[];
+            success: {
+              /** Format: double */
+              id: number;
+              /** Format: double */
+              index: number;
+            }[];
+          };
+        };
+      };
+    };
+  };
+  BatchCreateAccountingPayments: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          payments: {
+            reference?: string;
+            /** Format: double */
+            journalId: number;
+            date: string;
+            /** Format: double */
+            amount: number;
+            /** @enum {string} */
+            partnerType: "customer" | "supplier";
+            /** Format: double */
+            partnerId: number;
+            /** @enum {string} */
+            type: "inbound" | "outbound";
+          }[];
+        };
+      };
+    };
+    responses: {
+      /** @description Payments created */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              index: number;
+            }[];
+            success: {
+              /** Format: double */
+              id: number;
+              /** Format: double */
+              index: number;
+            }[];
+          };
+        };
+      };
+    };
+  };
+  BatchConfirmAccountingPayments: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          paymentIds: number[];
+        };
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            failed: {
+              error: string;
+              /** Format: double */
+              id: number;
+            }[];
+            success: number[];
+          };
         };
       };
     };

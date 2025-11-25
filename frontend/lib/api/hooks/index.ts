@@ -31,3 +31,12 @@ export * from "./permissions";
 
 // Re-export invoice style hooks
 export * from "./invoiceStyles";
+
+// Re-export HR Management hooks
+export * from "./hrManagement";
+
+// Re-export HR Data hooks (read-only from Odoo)
+export * from "./hrData";
+
+// Re-export document template hooks
+export * from "./documentTemplates";

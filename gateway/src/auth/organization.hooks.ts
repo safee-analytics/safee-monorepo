@@ -3,7 +3,7 @@ import { logger } from "../server/utils/logger.js";
 import { OdooDatabaseService } from "../server/services/odoo/database.service.js";
 import { OdooUserProvisioningService } from "../server/services/odoo/user-provisioning.service.js";
 import { canManageRole } from "./accessControl.js";
-import { connect } from "@safee/database";
+import { connect, createEmployee } from "@safee/database";
 import { getServerContext } from "../server/serverContext.js";
 
 const { drizzle } = connect("better-auth");
@@ -196,7 +196,7 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
   afterAddMember: async ({ member, user, organization }) => {
     logger.info(
       { userId: user.id, organizationId: organization.id, role: member.role },
-      "Member added to organization, provisioning Odoo user",
+      "Member added to organization, provisioning Odoo user and creating employee record",
     );
 
     setImmediate(async () => {
@@ -210,8 +210,33 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
           await odooUserProvisioningService.provisionUser(user.id, organization.id, member.role);
           logger.info({ userId: user.id }, "Odoo user provisioned for new member");
         }
+
+        // Auto-create employee record for new member
+        const existingEmployee = await drizzle.query.hrEmployees.findFirst({
+          where: (employees, { eq }) => eq(employees.userId, user.id),
+        });
+
+        if (!existingEmployee) {
+          logger.info({ userId: user.id }, "Creating employee record for new member");
+          await createEmployee(
+            { drizzle, logger },
+            {
+              organizationId: organization.id,
+              userId: user.id,
+              name: user.name,
+              workEmail: user.email,
+              active: true,
+            },
+          );
+          logger.info({ userId: user.id }, "Employee record created for new member");
+        } else {
+          logger.info({ userId: user.id }, "Employee record already exists for user");
+        }
       } catch (error) {
-        logger.error({ error, userId: user.id }, "Failed to provision Odoo user for new member");
+        logger.error(
+          { error, userId: user.id },
+          "Failed to provision Odoo user or create employee for new member",
+        );
       }
     });
   },

@@ -42,6 +42,10 @@ export {
 export class OdooAccountingService {
   constructor(private readonly client: OdooClient) {}
 
+  public getClient(): OdooClient {
+    return this.client;
+  }
+
   async getAccounts(filters?: { accountType?: string; onlyActive?: boolean }): Promise<OdooAccount[]> {
     const domain: Array<[string, string, unknown]> = [];
 

@@ -1,4 +1,19 @@
-import { Controller, Get, Post, Put, Delete, Route, Tags, Security, Request, Path, Body, Query } from "tsoa";
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Route,
+  Tags,
+  Security,
+  NoSecurity,
+  Request,
+  Path,
+  Body,
+  Query,
+  OperationId,
+} from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { BadRequest, NotFound } from "../errors.js";
 import type { ServerContext } from "../serverContext.js";
@@ -24,7 +39,12 @@ import {
   getLeaveBalanceByLeaveType,
 } from "@safee/database";
 import { getOdooClientManager } from "../services/odoo/manager.service.js";
-import { OdooHRService, parseEmployeeType, parseGender, parseMaritalStatus } from "../services/odoo/hr.service.js";
+import {
+  OdooHRService,
+  parseEmployeeType,
+  parseGender,
+  parseMaritalStatus,
+} from "../services/odoo/hr.service.js";
 import { mapEmployeeToResponse, mapDepartmentToResponse } from "./hrManagementController.mappers.js";
 import type {
   EmployeeDbResponse,
@@ -43,6 +63,7 @@ import type {
 @Route("hr-management")
 @Tags("HR Management")
 export class HRManagementController extends Controller {
+  @NoSecurity()
   private getServerContext(request: AuthenticatedRequest) {
     const userId = request.betterAuthSession?.user.id;
     const organizationId = request.betterAuthSession?.session.activeOrganizationId;
@@ -63,6 +84,7 @@ export class HRManagementController extends Controller {
     };
   }
 
+  @NoSecurity()
   private async getHRService(request: AuthenticatedRequest): Promise<OdooHRService> {
     const { userId, organizationId } = this.getServerContext(request);
     const odooClientManager = getOdooClientManager();
@@ -70,6 +92,7 @@ export class HRManagementController extends Controller {
     return new OdooHRService(client);
   }
 
+  @NoSecurity()
   private async resolveDepartmentUuid(
     ctx: { drizzle: ServerContext["drizzle"]; logger: ServerContext["logger"]; organizationId: string },
     odooDepartmentId: number,
@@ -89,6 +112,7 @@ export class HRManagementController extends Controller {
    */
   @Get("/employees")
   @Security("jwt")
+  @OperationId("GetHRManagementEmployees")
   public async getEmployees(
     @Request() request: AuthenticatedRequest,
     @Query() departmentId?: string,
@@ -116,6 +140,7 @@ export class HRManagementController extends Controller {
    */
   @Get("/employees/{employeeId}")
   @Security("jwt")
+  @OperationId("GetHRManagementEmployee")
   public async getEmployee(
     @Request() request: AuthenticatedRequest,
     @Path() employeeId: string,
@@ -133,6 +158,7 @@ export class HRManagementController extends Controller {
 
   /**
    * Create a new employee
+   * Automatically syncs to Odoo
    */
   @Post("/employees")
   @Security("jwt")
@@ -142,13 +168,70 @@ export class HRManagementController extends Controller {
   ): Promise<EmployeeDbResponse> {
     const ctx = this.getServerContext(request);
 
+    // Create employee in database
     const employee = await createEmployee(
       { drizzle: ctx.drizzle, logger: ctx.logger },
       {
         ...body,
         organizationId: ctx.organizationId,
+        userId: body.userId || ctx.userId, // Use provided userId or current user's userId
       },
     );
+
+    // Sync to Odoo in background
+    setImmediate(async () => {
+      try {
+        const hrService = await this.getHRService(request);
+
+        // Resolve department Odoo ID if department exists
+        let odooDepartmentId: number | undefined;
+        if (employee.departmentId) {
+          const department = await getDepartmentById(
+            { drizzle: ctx.drizzle, logger: ctx.logger },
+            employee.departmentId,
+          );
+          odooDepartmentId = department?.odooDepartmentId ?? undefined;
+        }
+
+        // Resolve manager Odoo ID if manager exists
+        let odooManagerId: number | undefined;
+        if (employee.managerId) {
+          const manager = await getEmployeeById(
+            { drizzle: ctx.drizzle, logger: ctx.logger },
+            employee.managerId,
+          );
+          odooManagerId = manager?.odooEmployeeId ?? undefined;
+        }
+
+        // Create in Odoo
+        const odooEmployeeId = await hrService.upsertEmployee({
+          name: employee.name,
+          workEmail: employee.workEmail ?? undefined,
+          workPhone: employee.workPhone ?? undefined,
+          mobilePhone: employee.mobile ?? undefined,
+          jobTitle: employee.jobTitle ?? undefined,
+          departmentId: odooDepartmentId,
+          managerId: odooManagerId,
+          employeeType: employee.employeeType ?? undefined,
+          gender: employee.gender ?? undefined,
+          maritalStatus: employee.maritalStatus ?? undefined,
+          birthday: employee.birthday ?? undefined,
+          identificationId: employee.identificationId ?? undefined,
+          passportId: employee.passportId ?? undefined,
+          emergencyContact: employee.emergencyContact ?? undefined,
+          emergencyPhone: employee.emergencyPhone ?? undefined,
+          placeOfBirth: employee.placeOfBirth ?? undefined,
+          active: employee.active,
+        });
+
+        // Update employee with Odoo ID
+        await updateEmployee({ drizzle: ctx.drizzle, logger: ctx.logger }, employee.id, { odooEmployeeId });
+
+        ctx.logger.info({ employeeId: employee.id, odooEmployeeId }, "Employee synced to Odoo");
+      } catch (error) {
+        ctx.logger.error({ error, employeeId: employee.id }, "Failed to sync employee to Odoo");
+      }
+    });
 
     this.setStatus(201);
 
@@ -157,6 +240,7 @@ export class HRManagementController extends Controller {
 
   /**
    * Update an employee
+   * Automatically syncs changes to Odoo
    */
   @Put("/employees/{employeeId}")
   @Security("jwt")
@@ -167,13 +251,76 @@ export class HRManagementController extends Controller {
   ): Promise<EmployeeDbResponse> {
     const ctx = this.getServerContext(request);
 
+    // Update employee in database
     const employee = await updateEmployee({ drizzle: ctx.drizzle, logger: ctx.logger }, employeeId, body);
+
+    // Sync to Odoo in background
+    setImmediate(async () => {
+      try {
+        if (!employee.odooEmployeeId) {
+          ctx.logger.warn({ employeeId: employee.id }, "Cannot sync to Odoo: employee has no odooEmployeeId");
+          return;
+        }
+
+        const hrService = await this.getHRService(request);
+
+        // Resolve department Odoo ID if department exists
+        let odooDepartmentId: number | undefined;
+        if (employee.departmentId) {
+          const department = await getDepartmentById(
+            { drizzle: ctx.drizzle, logger: ctx.logger },
+            employee.departmentId,
+          );
+          odooDepartmentId = department?.odooDepartmentId ?? undefined;
+        }
+
+        // Resolve manager Odoo ID if manager exists
+        let odooManagerId: number | undefined;
+        if (employee.managerId) {
+          const manager = await getEmployeeById(
+            { drizzle: ctx.drizzle, logger: ctx.logger },
+            employee.managerId,
+          );
+          odooManagerId = manager?.odooEmployeeId ?? undefined;
+        }
+
+        // Update in Odoo
+        await hrService.upsertEmployee({
+          odooEmployeeId: employee.odooEmployeeId,
+          name: employee.name,
+          workEmail: employee.workEmail ?? undefined,
+          workPhone: employee.workPhone ?? undefined,
+          mobilePhone: employee.mobile ?? undefined,
+          jobTitle: employee.jobTitle ?? undefined,
+          departmentId: odooDepartmentId,
+          managerId: odooManagerId,
+          employeeType: employee.employeeType ?? undefined,
+          gender: employee.gender ?? undefined,
+          maritalStatus: employee.maritalStatus ?? undefined,
+          birthday: employee.birthday ?? undefined,
+          identificationId: employee.identificationId ?? undefined,
+          passportId: employee.passportId ?? undefined,
+          emergencyContact: employee.emergencyContact ?? undefined,
+          emergencyPhone: employee.emergencyPhone ?? undefined,
+          placeOfBirth: employee.placeOfBirth ?? undefined,
+          active: employee.active,
+        });
+
+        ctx.logger.info(
+          { employeeId: employee.id, odooEmployeeId: employee.odooEmployeeId },
+          "Employee synced to Odoo",
+        );
+      } catch (error) {
+        ctx.logger.error({ error, employeeId: employee.id }, "Failed to sync employee update to Odoo");
+      }
+    });
 
     return mapEmployeeToResponse(employee);
   }
 
   /**
    * Deactivate an employee
+   * Automatically syncs deactivation to Odoo
    */
   @Delete("/employees/{employeeId}")
   @Security("jwt")
@@ -183,7 +330,35 @@ export class HRManagementController extends Controller {
   ): Promise<{ success: boolean }> {
     const ctx = this.getServerContext(request);
 
+    // Get employee before deactivating to get Odoo ID
+    const employee = await getEmployeeById({ drizzle: ctx.drizzle, logger: ctx.logger }, employeeId);
+
+    if (!employee) {
+      throw new NotFound(`Employee with ID ${employeeId} not found`);
+    }
+
+    // Deactivate in database
     await deactivateEmployee({ drizzle: ctx.drizzle, logger: ctx.logger }, employeeId);
+
+    // Sync to Odoo in background
+    setImmediate(async () => {
+      try {
+        if (!employee.odooEmployeeId) {
+          ctx.logger.warn({ employeeId }, "Cannot sync to Odoo: employee has no odooEmployeeId");
+          return;
+        }
+
+        const hrService = await this.getHRService(request);
+        await hrService.deactivateEmployee(employee.odooEmployeeId);
+
+        ctx.logger.info(
+          { employeeId, odooEmployeeId: employee.odooEmployeeId },
+          "Employee deactivated in Odoo",
+        );
+      } catch (error) {
+        ctx.logger.error({ error, employeeId }, "Failed to sync employee deactivation to Odoo");
+      }
+    });
 
     return { success: true };
   }
@@ -213,7 +388,13 @@ export class HRManagementController extends Controller {
       : undefined;
 
     const managerUuid = odooEmployee.parent_id?.[0]
-      ? (await getEmployeeByOdooId({ drizzle: ctx.drizzle, logger: ctx.logger }, odooEmployee.parent_id[0], ctx.organizationId))?.id
+      ? (
+          await getEmployeeByOdooId(
+            { drizzle: ctx.drizzle, logger: ctx.logger },
+            odooEmployee.parent_id[0],
+            ctx.organizationId,
+          )
+        )?.id
       : undefined;
 
     // Sync to database
@@ -221,6 +402,7 @@ export class HRManagementController extends Controller {
       { drizzle: ctx.drizzle, logger: ctx.logger },
       {
         organizationId: ctx.organizationId,
+        userId: ctx.userId, // Provide a userId for the synced employee
         odooEmployeeId: odooEmployee.id,
         name: odooEmployee.name,
         email: odooEmployee.work_email,
@@ -272,6 +454,7 @@ export class HRManagementController extends Controller {
           { drizzle: ctx.drizzle, logger: ctx.logger },
           {
             organizationId: ctx.organizationId,
+            userId: ctx.userId, // Provide userId for bulk sync
             odooEmployeeId: odooEmployee.id,
             name: odooEmployee.name,
             email: odooEmployee.work_email,
@@ -318,7 +501,9 @@ export class HRManagementController extends Controller {
           : undefined;
 
         // Resolve manager by Odoo employee ID
-        const managerUuid = odooEmployee.parent_id?.[0] ? odooIdToUuidMap.get(odooEmployee.parent_id[0]) : undefined;
+        const managerUuid = odooEmployee.parent_id?.[0]
+          ? odooIdToUuidMap.get(odooEmployee.parent_id[0])
+          : undefined;
 
         if (departmentUuid || managerUuid) {
           await updateEmployee({ drizzle: ctx.drizzle, logger: ctx.logger }, employeeUuid, {
@@ -341,6 +526,7 @@ export class HRManagementController extends Controller {
    */
   @Get("/departments")
   @Security("jwt")
+  @OperationId("GetHRManagementDepartments")
   public async getDepartments(
     @Request() request: AuthenticatedRequest,
     @Query() parentId?: string,
@@ -365,6 +551,7 @@ export class HRManagementController extends Controller {
    */
   @Get("/departments/{departmentId}")
   @Security("jwt")
+  @OperationId("GetHRManagementDepartment")
   public async getDepartment(
     @Request() request: AuthenticatedRequest,
     @Path() departmentId: string,
@@ -382,6 +569,7 @@ export class HRManagementController extends Controller {
 
   /**
    * Create a new department
+   * Automatically syncs to Odoo
    */
   @Post("/departments")
   @Security("jwt")
@@ -391,6 +579,7 @@ export class HRManagementController extends Controller {
   ): Promise<DepartmentDbResponse> {
     const ctx = this.getServerContext(request);
 
+    // Create department in database
     const department = await createDepartment(
       { drizzle: ctx.drizzle, logger: ctx.logger },
       {
@@ -399,6 +588,40 @@ export class HRManagementController extends Controller {
       },
     );
 
+    // Sync to Odoo in background
+    setImmediate(async () => {
+      try {
+        const hrService = await this.getHRService(request);
+
+        // Resolve parent department Odoo ID if exists
+        let odooParentId: number | undefined;
+        if (department.parentId) {
+          const parentDept = await getDepartmentById(
+            { drizzle: ctx.drizzle, logger: ctx.logger },
+            department.parentId,
+          );
+          odooParentId = parentDept?.odooDepartmentId ?? undefined;
+        }
+
+        // Create in Odoo
+        const odooDepartmentId = await hrService.upsertDepartment({
+          name: department.name,
+          parentId: odooParentId,
+          color: department.color ?? undefined,
+          note: department.note ?? undefined,
+        });
+
+        // Update department with Odoo ID
+        await updateDepartment({ drizzle: ctx.drizzle, logger: ctx.logger }, department.id, {
+          odooDepartmentId,
+        });
+
+        ctx.logger.info({ departmentId: department.id, odooDepartmentId }, "Department synced to Odoo");
+      } catch (error) {
+        ctx.logger.error({ error, departmentId: department.id }, "Failed to sync department to Odoo");
+      }
+    });
+
     this.setStatus(201);
 
     return mapDepartmentToResponse(department);
@@ -406,6 +629,7 @@ export class HRManagementController extends Controller {
 
   /**
    * Update a department
+   * Automatically syncs changes to Odoo
    */
   @Put("/departments/{departmentId}")
   @Security("jwt")
@@ -416,13 +640,60 @@ export class HRManagementController extends Controller {
   ): Promise<DepartmentDbResponse> {
     const ctx = this.getServerContext(request);
 
-    const department = await updateDepartment({ drizzle: ctx.drizzle, logger: ctx.logger }, departmentId, body);
+    // Update department in database
+    const department = await updateDepartment(
+      { drizzle: ctx.drizzle, logger: ctx.logger },
+      departmentId,
+      body,
+    );
+
+    // Sync to Odoo in background
+    setImmediate(async () => {
+      try {
+        if (!department.odooDepartmentId) {
+          ctx.logger.warn(
+            { departmentId: department.id },
+            "Cannot sync to Odoo: department has no odooDepartmentId",
+          );
+          return;
+        }
+
+        const hrService = await this.getHRService(request);
+
+        // Resolve parent department Odoo ID if exists
+        let odooParentId: number | undefined;
+        if (department.parentId) {
+          const parentDept = await getDepartmentById(
+            { drizzle: ctx.drizzle, logger: ctx.logger },
+            department.parentId,
+          );
+          odooParentId = parentDept?.odooDepartmentId ?? undefined;
+        }
+
+        // Update in Odoo
+        await hrService.upsertDepartment({
+          odooDepartmentId: department.odooDepartmentId,
+          name: department.name,
+          parentId: odooParentId,
+          color: department.color ?? undefined,
+          note: department.note ?? undefined,
+        });
+
+        ctx.logger.info(
+          { departmentId: department.id, odooDepartmentId: department.odooDepartmentId },
+          "Department synced to Odoo",
+        );
+      } catch (error) {
+        ctx.logger.error({ error, departmentId: department.id }, "Failed to sync department update to Odoo");
+      }
+    });
 
     return mapDepartmentToResponse(department);
   }
 
   /**
    * Delete a department
+   * Automatically deletes from Odoo
    */
   @Delete("/departments/{departmentId}")
   @Security("jwt")
@@ -432,7 +703,35 @@ export class HRManagementController extends Controller {
   ): Promise<{ success: boolean }> {
     const ctx = this.getServerContext(request);
 
+    // Get department before deleting to get Odoo ID
+    const department = await getDepartmentById({ drizzle: ctx.drizzle, logger: ctx.logger }, departmentId);
+
+    if (!department) {
+      throw new NotFound(`Department with ID ${departmentId} not found`);
+    }
+
+    // Delete from database
     await deleteDepartment({ drizzle: ctx.drizzle, logger: ctx.logger }, departmentId);
+
+    // Sync to Odoo in background
+    setImmediate(async () => {
+      try {
+        if (!department.odooDepartmentId) {
+          ctx.logger.warn({ departmentId }, "Cannot sync to Odoo: department has no odooDepartmentId");
+          return;
+        }
+
+        const hrService = await this.getHRService(request);
+        await hrService.deleteDepartment(department.odooDepartmentId);
+
+        ctx.logger.info(
+          { departmentId, odooDepartmentId: department.odooDepartmentId },
+          "Department deleted from Odoo",
+        );
+      } catch (error) {
+        ctx.logger.error({ error, departmentId }, "Failed to sync department deletion to Odoo");
+      }
+    });
 
     return { success: true };
   }
@@ -479,7 +778,9 @@ export class HRManagementController extends Controller {
    */
   @Post("/departments/sync-all")
   @Security("jwt")
-  public async syncAllDepartments(@Request() request: AuthenticatedRequest): Promise<SyncAllDepartmentsResponse> {
+  public async syncAllDepartments(
+    @Request() request: AuthenticatedRequest,
+  ): Promise<SyncAllDepartmentsResponse> {
     const ctx = this.getServerContext(request);
     const hrService = await this.getHRService(request);
 
@@ -526,7 +827,9 @@ export class HRManagementController extends Controller {
       if (!departmentUuid) continue;
 
       try {
-        const parentUuid = odooDepartment.parent_id?.[0] ? odooIdToUuidMap.get(odooDepartment.parent_id[0]) : undefined;
+        const parentUuid = odooDepartment.parent_id?.[0]
+          ? odooIdToUuidMap.get(odooDepartment.parent_id[0])
+          : undefined;
 
         if (parentUuid) {
           await updateDepartment({ drizzle: ctx.drizzle, logger: ctx.logger }, departmentUuid, {

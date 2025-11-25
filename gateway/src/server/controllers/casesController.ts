@@ -11,6 +11,7 @@ import {
   Path,
   Request,
   SuccessResponse,
+  OperationId,
 } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import {
@@ -148,6 +149,7 @@ export class CasesController extends Controller {
   @Post("/templates")
   @Security("jwt")
   @SuccessResponse("201", "Template created successfully")
+  @OperationId("CreateCaseTemplate")
   public async createTemplate(
     @Request() req: AuthenticatedRequest,
     @Body() request: CreateTemplateRequest,

@@ -1,4 +1,4 @@
-import { Controller, Get, Route, Tags, Security, Request, Path, Query } from "tsoa";
+import { Controller, Get, Route, Tags, Security, Request, Path, Query, OperationId } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getOdooClientManager } from "../services/odoo/manager.service.js";
 import { OdooHRService } from "../services/odoo/hr.service.js";
@@ -56,6 +56,7 @@ export class HRController extends Controller {
    */
   @Get("/employees")
   @Security("jwt")
+  @OperationId("GetHREmployees")
   public async getEmployees(
     @Request() request: AuthenticatedRequest,
     @Query() departmentId?: number,
@@ -71,6 +72,7 @@ export class HRController extends Controller {
    */
   @Get("/employees/{employeeId}")
   @Security("jwt")
+  @OperationId("GetHREmployee")
   public async getEmployee(
     @Request() request: AuthenticatedRequest,
     @Path() employeeId: number,
@@ -92,6 +94,7 @@ export class HRController extends Controller {
    */
   @Get("/departments")
   @Security("jwt")
+  @OperationId("GetHRDepartments")
   public async getDepartments(
     @Request() request: AuthenticatedRequest,
     @Query() parentId?: number,
@@ -107,6 +110,7 @@ export class HRController extends Controller {
    */
   @Get("/departments/{departmentId}")
   @Security("jwt")
+  @OperationId("GetHRDepartment")
   public async getDepartment(
     @Request() request: AuthenticatedRequest,
     @Path() departmentId: number,
