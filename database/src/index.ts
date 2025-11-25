@@ -40,4 +40,6 @@ export * from "./general-utils/i18n.js";
 
 export * from "./email/index.js";
 
+export * from "./hr/index.js";
+
 export * from "./test-helpers/integration-setup.js";
