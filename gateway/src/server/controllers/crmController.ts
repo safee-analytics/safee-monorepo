@@ -16,7 +16,9 @@ import {
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getOdooClientManager } from "../services/odoo/manager.service.js";
 import { OdooCRMService } from "../services/odoo/crm.service.js";
+import { CRMSyncService } from "../services/sync/crmSync.service.js";
 import { BadRequest, NotFound } from "../errors.js";
+import { getServerContext } from "../serverContext.js";
 import type {
   LeadResponse,
   StageResponse,
@@ -379,5 +381,65 @@ export class CRMController extends Controller {
     }
 
     return mapLostReason(reason);
+  }
+
+  @Post("/sync")
+  @Security("jwt")
+  @OperationId("SyncCRM")
+  public async syncCRM(
+    @Request() request: AuthenticatedRequest,
+    @Body() body?: { entity?: "leads" | "contacts" | "all" },
+  ): Promise<{
+    success: boolean;
+    leadsSync?: number;
+    contactsSync?: number;
+    stagesSync?: number;
+    teamsSync?: number;
+    lostReasonsSync?: number;
+    errors?: string[];
+  }> {
+    const userId = request.betterAuthSession?.user.id;
+    const organizationId = request.betterAuthSession?.session.activeOrganizationId;
+
+    if (!userId || !organizationId) {
+      throw new BadRequest("User not authenticated or no active organization");
+    }
+
+    const odooClientManager = getOdooClientManager();
+    const client = await odooClientManager.getClient(userId, organizationId);
+    const { drizzle, logger } = getServerContext();
+
+    const syncService = new CRMSyncService(client, { drizzle, logger }, organizationId);
+
+    const entity = body?.entity || "all";
+
+    if (entity === "leads") {
+      const result = await syncService.syncLeadsOnly();
+      return {
+        success: result.errors.length === 0,
+        leadsSync: result.leadsSync,
+        errors: result.errors.length > 0 ? result.errors : undefined,
+      };
+    }
+
+    if (entity === "contacts") {
+      const result = await syncService.syncContactsOnly();
+      return {
+        success: result.errors.length === 0,
+        contactsSync: result.contactsSync,
+        errors: result.errors.length > 0 ? result.errors : undefined,
+      };
+    }
+
+    const result = await syncService.syncAll();
+    return {
+      success: result.errors.length === 0,
+      leadsSync: result.leadsSync,
+      contactsSync: result.contactsSync,
+      stagesSync: result.stagesSync,
+      teamsSync: result.teamsSync,
+      lostReasonsSync: result.lostReasonsSync,
+      errors: result.errors.length > 0 ? result.errors : undefined,
+    };
   }
 }
