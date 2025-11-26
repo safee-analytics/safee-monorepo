@@ -24,6 +24,11 @@ import {
   FiX,
   FiSliders,
   FiGrid,
+  FiLayout,
+  FiTrendingUp,
+  FiClock,
+  FiPieChart,
+  FiActivity,
 } from "react-icons/fi";
 import { motion, AnimatePresence, Reorder } from "framer-motion";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
@@ -137,32 +142,31 @@ export const Sidebar = () => {
 
   const moduleNavItems: Record<string, Array<{ icon: IconType; title: string; href: string }>> = {
     audit: [
-      { icon: FiHome, title: t.nav.dashboard, href: "/" },
-      { icon: FiGrid, title: t.audit.casesOverview, href: "/audit/dashboard" },
+      { icon: FiActivity, title: t.nav.dashboard, href: "/audit/dashboard" },
       { icon: FiClipboard, title: t.audit.caseManagement, href: "/audit/cases" },
       { icon: FiFileText, title: t.audit.documentRepository, href: "/audit/documents" },
       { icon: FiBarChart, title: t.audit.auditReports, href: "/audit/reports" },
       { icon: FiClipboard, title: t.audit.auditPlanning, href: "/audit/planning" },
     ],
     hisabiq: [
-      { icon: FiHome, title: t.nav.dashboard, href: "/accounting" },
+      { icon: FiActivity, title: t.nav.dashboard, href: "/accounting" },
       { icon: FiFileText, title: "Invoices", href: "/accounting/invoices" },
       { icon: FiDollarSign, title: "Expenses", href: "/accounting/expenses" },
       { icon: FiBarChart, title: t.common.reports, href: "/accounting/reports" },
     ],
     kanz: [
-      { icon: FiHome, title: t.nav.dashboard, href: "/kanz/dashboard" },
+      { icon: FiActivity, title: t.nav.dashboard, href: "/kanz/dashboard" },
       { icon: FiUsers, title: "Employees", href: "/kanz/employees" },
       { icon: FiClipboard, title: "Attendance", href: "/kanz/attendance" },
       { icon: FiDollarSign, title: "Payroll", href: "/kanz/payroll" },
     ],
     hr: [
-      { icon: FiHome, title: t.nav.dashboard, href: "/hr" },
+      { icon: FiActivity, title: t.nav.dashboard, href: "/hr" },
       { icon: FiUsers, title: "Employees", href: "/hr/employees" },
       { icon: FiGrid, title: "Departments", href: "/hr/departments" },
     ],
     nisbah: [
-      { icon: FiHome, title: t.nav.dashboard, href: "/nisbah/dashboard" },
+      { icon: FiActivity, title: t.nav.dashboard, href: "/nisbah/dashboard" },
       { icon: FiUserPlus, title: "Leads", href: "/nisbah/leads" },
       { icon: FiUsers, title: "Contacts", href: "/nisbah/contacts" },
       { icon: FiDollarSign, title: "Deals", href: "/nisbah/deals" },
@@ -173,7 +177,6 @@ export const Sidebar = () => {
     currentModule && moduleNavItems[currentModule]
       ? moduleNavItems[currentModule]
       : [
-          { icon: FiHome, title: t.nav.dashboard, href: "/" },
           { icon: FiBookmark, title: t.common.bookmarks, href: "/bookmarks" },
           { icon: FiBarChart, title: t.common.reports, href: "/reports" },
         ];
@@ -249,6 +252,28 @@ export const Sidebar = () => {
             />
           )}
         </motion.button>
+
+        <Link href="/">
+          <motion.button
+            layout
+            className="relative flex h-10 w-full items-center rounded-lg transition-colors mb-2 hover:bg-safee-50 text-safee-700"
+          >
+            <motion.div layout className="grid h-full w-10 place-content-center text-lg">
+              <FiHome />
+            </motion.div>
+            {isExpanded && (
+              <motion.span
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.125 }}
+                className="text-xs font-medium"
+              >
+                Home
+              </motion.span>
+            )}
+          </motion.button>
+        </Link>
 
         <div className="border-b border-slate-300 mb-2" />
 

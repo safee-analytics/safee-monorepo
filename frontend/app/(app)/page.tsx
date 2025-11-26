@@ -22,6 +22,13 @@ import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useOrgStore } from "@/stores/useOrgStore";
 import { useAuth } from "@/lib/auth/hooks";
 import { useState } from "react";
+import { TodoWidget } from "@/components/dashboard/TodoWidget";
+import { QuickActionsDropdown } from "@/components/dashboard/QuickActionsDropdown";
+import { CustomizableGrid, type Widget, type WidgetSize } from "@/components/dashboard/CustomizableGrid";
+import { ProfitLossWidget } from "@/components/dashboard/widgets/ProfitLossWidget";
+import { BankAccountsWidget } from "@/components/dashboard/widgets/BankAccountsWidget";
+import { RecentActivityWidget } from "@/components/dashboard/widgets/RecentActivityWidget";
+import { ExpensesChartWidget } from "@/components/dashboard/widgets/ExpensesChartWidget";
 
 export default function HomePage() {
   const { t } = useTranslation();
@@ -29,6 +36,61 @@ export default function HomePage() {
   const { currentUser } = useOrgStore();
   const { user } = useAuth();
   const [hoveredModule, setHoveredModule] = useState<string | null>(null);
+
+  const [dashboardWidgets, setDashboardWidgets] = useState<Widget[]>([
+    {
+      id: "todo",
+      title: "Today's Tasks",
+      component: TodoWidget,
+      size: "large",
+      minSize: "medium",
+      maxSize: "large",
+    },
+    {
+      id: "profit-loss",
+      title: "Profit & Loss",
+      component: ProfitLossWidget,
+      size: "small",
+      minSize: "small",
+      maxSize: "medium",
+    },
+    {
+      id: "recent-activity",
+      title: "Recent Activity",
+      component: RecentActivityWidget,
+      size: "small",
+      minSize: "small",
+      maxSize: "medium",
+    },
+    {
+      id: "bank-accounts",
+      title: "Bank Accounts",
+      component: BankAccountsWidget,
+      size: "medium",
+      minSize: "small",
+      maxSize: "large",
+    },
+    {
+      id: "expenses-chart",
+      title: "Expenses Chart",
+      component: ExpensesChartWidget,
+      size: "small",
+      minSize: "small",
+      maxSize: "medium",
+    },
+  ]);
+
+  const handleReorderWidgets = (newOrder: Widget[]) => {
+    setDashboardWidgets(newOrder);
+  };
+
+  const handleRemoveWidget = (id: string) => {
+    setDashboardWidgets((prev) => prev.filter((w) => w.id !== id));
+  };
+
+  const handleResizeWidget = (id: string, newSize: WidgetSize) => {
+    setDashboardWidgets((prev) => prev.map((w) => (w.id === id ? { ...w, size: newSize } : w)));
+  };
 
   const displayUser = user || currentUser;
   const displayName = displayUser?.name?.split(" ")[0] || "User";
@@ -190,145 +252,35 @@ export default function HomePage() {
           transition={{ delay: 0.2 }}
           className="mb-8"
         >
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-semibold text-gray-700 mr-2">{t.dashboard.createActions}</span>
-            {quickActions.map((action) => (
-              <button
-                key={action.id}
-                onClick={action.onClick}
-                className="px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all"
-              >
-                {action.label}
-              </button>
-            ))}
+          <div className="flex items-center gap-4">
+            <QuickActionsDropdown />
+            <div className="flex items-center gap-2 flex-wrap">
+              {quickActions.slice(0, 3).map((action) => (
+                <button
+                  key={action.id}
+                  onClick={action.onClick}
+                  className="px-4 py-2 bg-white border border-gray-300 rounded-full text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-all"
+                >
+                  {action.label}
+                </button>
+              ))}
+            </div>
           </div>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="bg-white rounded-lg border border-gray-200 p-6"
-          >
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
-                  {t.dashboard.profitLoss}
-                </h3>
-                <p className="text-sm text-gray-600">{t.dashboard.profitLossDesc}</p>
-              </div>
-            </div>
-
-            <div className="space-y-4 mb-6">
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">{t.dashboard.income}</span>
-                  <span className="text-lg font-semibold text-gray-900">$0</span>
-                </div>
-                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500 rounded-full" style={{ width: "0%" }}></div>
-                </div>
-              </div>
-
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-gray-600">{t.dashboard.expensesLabel}</span>
-                  <span className="text-lg font-semibold text-gray-900">$0</span>
-                </div>
-                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-500 rounded-full" style={{ width: "0%" }}></div>
-                </div>
-              </div>
-            </div>
-
-            <button className="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
-              {t.dashboard.bringTransactionsAuto}
-            </button>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
-            className="bg-white rounded-lg border border-gray-200 p-6"
-          >
-            <div className="mb-6">
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
-                {t.dashboard.expensesWidget}
-              </h3>
-              <p className="text-sm text-gray-600">{t.dashboard.expensesWidgetDesc}</p>
-            </div>
-
-            <div className="flex items-center justify-center py-12">
-              <div className="w-40 h-40 rounded-full bg-gray-100 flex items-center justify-center">
-                <PieChart className="w-20 h-20 text-gray-300" />
-              </div>
-            </div>
-
-            <button className="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
-              {t.dashboard.bringTransactionsAuto}
-            </button>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="bg-white rounded-lg border border-gray-200 p-6"
-          >
-            <div className="mb-6">
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
-                {t.dashboard.bankAccounts}
-              </h3>
-              <p className="text-sm text-gray-600">{t.dashboard.bankAccountsDesc}</p>
-            </div>
-
-            <div className="space-y-3 mb-6">
-              <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
-                <div className="w-10 h-10 rounded bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center flex-shrink-0">
-                  <Building2 className="w-5 h-5 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">
-                    Desjardins Online Solutions - Business
-                  </p>
-                </div>
-                <button className="flex-shrink-0">
-                  <Plus className="w-5 h-5 text-safee-600" />
-                </button>
-              </div>
-
-              <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
-                <div className="w-10 h-10 rounded bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center flex-shrink-0">
-                  <CreditCard className="w-5 h-5 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">RBC Bank (CAN)</p>
-                </div>
-                <button className="flex-shrink-0">
-                  <Plus className="w-5 h-5 text-safee-600" />
-                </button>
-              </div>
-
-              <div className="flex items-center gap-3 p-3 rounded-lg border border-gray-200">
-                <div className="w-10 h-10 rounded bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center flex-shrink-0">
-                  <Building2 className="w-5 h-5 text-white" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-semibold text-gray-900 truncate">TD Canada Trust (EasyWeb)</p>
-                </div>
-                <button className="flex-shrink-0">
-                  <Plus className="w-5 h-5 text-safee-600" />
-                </button>
-              </div>
-            </div>
-
-            <button className="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-lg transition-colors flex items-center justify-center gap-2">
-              {t.dashboard.findYourBank}
-            </button>
-          </motion.div>
-        </div>
+        {/* Customizable Grid Dashboard */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          <CustomizableGrid
+            widgets={dashboardWidgets}
+            onReorderWidgets={handleReorderWidgets}
+            onRemoveWidget={handleRemoveWidget}
+            onResizeWidget={handleResizeWidget}
+          />
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
