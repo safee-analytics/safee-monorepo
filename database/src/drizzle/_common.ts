@@ -495,6 +495,8 @@ export const taxScopeEnum = financeSchema.enum("tax_scope", ["sale", "purchase",
 
 export const taxTypeEnum = financeSchema.enum("tax_type", ["sale", "purchase", "none"]);
 
+export const activityStateEnum = salesSchema.enum("activity_state", ["planned", "today", "overdue", "done"]);
+
 export type EmployeeType = (typeof employeeTypeEnum.enumValues)[number];
 export type Gender = (typeof genderEnum.enumValues)[number];
 export type MaritalStatus = (typeof maritalStatusEnum.enumValues)[number];
@@ -510,6 +512,7 @@ export type PayslipLineCategory = (typeof payslipLineCategoryEnum.enumValues)[nu
 export type TaxAmountType = (typeof taxAmountTypeEnum.enumValues)[number];
 export type TaxScope = (typeof taxScopeEnum.enumValues)[number];
 export type TaxType = (typeof taxTypeEnum.enumValues)[number];
+export type ActivityState = (typeof activityStateEnum.enumValues)[number];
 
 export const schemas = {
   identity: identitySchema,
