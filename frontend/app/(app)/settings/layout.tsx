@@ -100,52 +100,50 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="flex">
-        {/* Sidebar */}
-        <aside className="w-64 bg-white border-r border-gray-200 min-h-screen sticky top-0">
-          <div className="p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">{t.common.settings}</h2>
-            <nav className="space-y-6">
-              {(Object.keys(groupedLinks) as Array<keyof typeof groupedLinks>).map((category) => {
-                const links = groupedLinks[category];
-                if (links.length === 0) return null;
+    <div className="min-h-screen bg-gray-50 flex">
+      {/* Sidebar - Sticky */}
+      <aside className="w-64 bg-white border-r border-gray-200 h-screen sticky top-0 overflow-y-auto">
+        <div className="p-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-6">{t.common.settings}</h2>
+          <nav className="space-y-6">
+            {(Object.keys(groupedLinks) as Array<keyof typeof groupedLinks>).map((category) => {
+              const links = groupedLinks[category];
+              if (links.length === 0) return null;
 
-                return (
-                  <div key={category}>
-                    <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2 px-4">
-                      {categoryLabels[category]}
-                    </h3>
-                    <div className="space-y-1">
-                      {links.map((link) => {
-                        const Icon = link.icon;
-                        return (
-                          <Link key={link.href} href={link.href}>
-                            <motion.div
-                              whileHover={{ x: 4 }}
-                              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                                isActive(link.href)
-                                  ? "bg-blue-50 text-blue-700 font-medium"
-                                  : "text-gray-700 hover:bg-gray-50"
-                              }`}
-                            >
-                              <Icon className="w-5 h-5" />
-                              <span className="flex-1">{link.label}</span>
-                            </motion.div>
-                          </Link>
-                        );
-                      })}
-                    </div>
+              return (
+                <div key={category}>
+                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2 px-4">
+                    {categoryLabels[category]}
+                  </h3>
+                  <div className="space-y-1">
+                    {links.map((link) => {
+                      const Icon = link.icon;
+                      return (
+                        <Link key={link.href} href={link.href}>
+                          <motion.div
+                            whileHover={{ x: 4 }}
+                            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
+                              isActive(link.href)
+                                ? "bg-blue-50 text-blue-700 font-medium"
+                                : "text-gray-700 hover:bg-gray-50"
+                            }`}
+                          >
+                            <Icon className="w-5 h-5" />
+                            <span className="flex-1">{link.label}</span>
+                          </motion.div>
+                        </Link>
+                      );
+                    })}
                   </div>
-                );
-              })}
-            </nav>
-          </div>
-        </aside>
+                </div>
+              );
+            })}
+          </nav>
+        </div>
+      </aside>
 
-        {/* Main Content */}
-        <main className="flex-1">{children}</main>
-      </div>
+      {/* Main Content - Scrollable */}
+      <main className="flex-1 overflow-y-auto h-screen">{children}</main>
     </div>
   );
 }

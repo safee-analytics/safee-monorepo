@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   useActiveOrganization,
   useUpdateOrganization,
   useDeleteOrganization,
   useIsOrganizationOwner,
 } from "@/lib/api/hooks";
+import { useAuth } from "@/lib/auth/hooks";
 import {
   Building2,
   Trash2,
@@ -22,12 +23,17 @@ import {
   Save,
   X,
   Shield,
+  Upload,
+  Image as ImageIcon,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 interface OrganizationSettings {
   // Company Info
   name: string;
+  logo?: string;
   address?: string;
   email?: string;
   phone?: string;
@@ -54,6 +60,7 @@ interface OrganizationSettings {
 
 export default function OrganizationSettingsPage() {
   const { data: organization } = useActiveOrganization();
+  const { user } = useAuth();
   const updateOrganizationMutation = useUpdateOrganization();
   const deleteOrganizationMutation = useDeleteOrganization();
   const isOwner = useIsOrganizationOwner();
@@ -63,26 +70,41 @@ export default function OrganizationSettingsPage() {
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
+  const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   const [settings, setSettings] = useState<OrganizationSettings>({
     name: organization?.name || "",
-    address: "151 Mill Street, Toronto, ON M5A 0G2",
-    email: "mahmoudashraf960@yahoo.com",
-    phone: "+16047815604",
+    logo: undefined,
+    address: "",
+    email: "",
+    phone: "",
     website: "",
-    industry: "Computer systems design services",
+    industry: "",
     legalName: organization?.name || "",
     businessNumber: "",
     gstNumber: "",
-    businessType: "Sole proprietor",
+    businessType: "",
     legalAddress: "",
-    customerEmail: "mahmoudashraf960@yahoo.com",
+    customerEmail: "",
     customerAddress: "",
     fiscalYearStart: "January",
-    currency: "CAD",
+    currency: "QAR",
     dateFormat: "dd/mm/yyyy",
     language: "en",
   });
+
+  // Auto-fill from user data when available
+  useEffect(() => {
+    if (user && organization) {
+      setSettings((prev) => ({
+        ...prev,
+        name: organization.name || prev.name,
+        email: prev.email || user.email || "",
+        customerEmail: prev.customerEmail || user.email || "",
+        legalName: prev.legalName || organization.name || "",
+      }));
+    }
+  }, [user, organization]);
 
   // Owner-only access - check after all hooks are called
   if (!isOwner) {
@@ -128,18 +150,33 @@ export default function OrganizationSettingsPage() {
     }
   };
 
+  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const result = reader.result as string;
+        setLogoPreview(result);
+        setSettings({ ...settings, logo: result });
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const EditableField = ({
     label,
     value,
     field,
     icon: Icon,
     section,
+    type = "text",
   }: {
     label: string;
     value: string;
     field: keyof OrganizationSettings;
     icon: React.ComponentType<{ className?: string }>;
     section: string;
+    type?: "text" | "phone";
   }) => {
     const isEditingField = isEditing === `${section}-${field}`;
 
@@ -150,13 +187,23 @@ export default function OrganizationSettingsPage() {
           <div className="flex-1">
             <p className="text-sm font-medium text-gray-700">{label}</p>
             {isEditingField ? (
-              <input
-                type="text"
-                value={settings[field] as string}
-                onChange={(e) => setSettings({ ...settings, [field]: e.target.value })}
-                className="mt-1 w-full px-3 py-2 border border-blue-500 rounded-lg focus:ring-2 focus:ring-blue-500"
-                autoFocus
-              />
+              type === "phone" ? (
+                <PhoneInput
+                  international
+                  defaultCountry="QA"
+                  value={settings[field] as string}
+                  onChange={(value) => setSettings({ ...settings, [field]: value || "" })}
+                  className="mt-1 phone-input-custom"
+                />
+              ) : (
+                <input
+                  type="text"
+                  value={settings[field] as string}
+                  onChange={(e) => setSettings({ ...settings, [field]: e.target.value })}
+                  className="mt-1 w-full px-3 py-2 border border-blue-500 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  autoFocus
+                />
+              )
             ) : (
               <p className="text-sm text-gray-900 mt-1">{value || "None listed"}</p>
             )}
@@ -196,7 +243,62 @@ export default function OrganizationSettingsPage() {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Organization Settings</h1>
-          <p className="text-gray-600">Manage your organization information and preferences</p>
+          <p className="text-gray-600">
+            Manage your organization information. Fields are auto-filled from your account where possible.
+          </p>
+        </div>
+
+        {/* Logo Upload */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
+          <div className="flex items-start gap-6">
+            <div className="flex-shrink-0">
+              <div className="w-32 h-32 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
+                {logoPreview || settings.logo ? (
+                  <img
+                    src={logoPreview || settings.logo}
+                    alt="Organization logo"
+                    className="w-full h-full object-contain"
+                  />
+                ) : (
+                  <ImageIcon className="w-12 h-12 text-gray-400" />
+                )}
+              </div>
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Organization Logo</h3>
+              <p className="text-sm text-gray-600 mb-4">
+                Upload your organization logo. This will appear on invoices, reports, and other documents.
+              </p>
+              <div className="flex gap-3">
+                <label className="cursor-pointer">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLogoUpload}
+                    className="hidden"
+                  />
+                  <div className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 text-sm font-medium">
+                    <Upload className="w-4 h-4" />
+                    Upload Logo
+                  </div>
+                </label>
+                {(logoPreview || settings.logo) && (
+                  <button
+                    onClick={() => {
+                      setLogoPreview(null);
+                      setSettings({ ...settings, logo: undefined });
+                    }}
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+              <p className="text-xs text-gray-500 mt-2">
+                Recommended: Square image, at least 256x256px, PNG or JPG format
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Company Info */}
@@ -238,6 +340,7 @@ export default function OrganizationSettingsPage() {
               field="phone"
               icon={Phone}
               section="company"
+              type="phone"
             />
             <EditableField
               label="Website"
@@ -359,12 +462,25 @@ export default function OrganizationSettingsPage() {
                 onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
-                <option value="CAD">Canadian Dollar (CAD)</option>
-                <option value="USD">US Dollar (USD)</option>
-                <option value="EUR">Euro (EUR)</option>
-                <option value="GBP">British Pound (GBP)</option>
-                <option value="AED">UAE Dirham (AED)</option>
-                <option value="SAR">Saudi Riyal (SAR)</option>
+                <optgroup label="GCC Currencies">
+                  <option value="QAR">Qatari Riyal (QAR)</option>
+                  <option value="AED">UAE Dirham (AED)</option>
+                  <option value="SAR">Saudi Riyal (SAR)</option>
+                  <option value="KWD">Kuwaiti Dinar (KWD)</option>
+                  <option value="BHD">Bahraini Dinar (BHD)</option>
+                  <option value="OMR">Omani Rial (OMR)</option>
+                </optgroup>
+                <optgroup label="Major MENA Currencies">
+                  <option value="EGP">Egyptian Pound (EGP)</option>
+                  <option value="JOD">Jordanian Dinar (JOD)</option>
+                  <option value="TND">Tunisian Dinar (TND)</option>
+                  <option value="MAD">Moroccan Dirham (MAD)</option>
+                </optgroup>
+                <optgroup label="International">
+                  <option value="USD">US Dollar (USD)</option>
+                  <option value="EUR">Euro (EUR)</option>
+                  <option value="GBP">British Pound (GBP)</option>
+                </optgroup>
               </select>
             </div>
             <div>

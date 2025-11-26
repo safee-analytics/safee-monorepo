@@ -14,6 +14,8 @@ export const queryKeys = {
     files: (folderId?: string) => ["storage", "files", folderId] as const,
     file: (fileId: string) => ["storage", "file", fileId] as const,
     quota: ["storage", "quota"] as const,
+    config: ["storage", "config"] as const,
+    info: ["storage", "info"] as const,
   },
   cases: {
     all: ["cases"] as const,
@@ -138,5 +140,21 @@ export const queryKeys = {
     activeTemplate: (documentType?: string) =>
       ["settings", "document-templates", "active", documentType] as const,
     odooTemplates: (model?: string) => ["settings", "odoo-templates", model] as const,
+  },
+  database: {
+    stats: ["database", "stats"] as const,
+    backupSettings: ["database", "backup", "settings"] as const,
+    backups: ["database", "backups"] as const,
+  },
+  apiKeys: {
+    all: ["api-keys"] as const,
+    permissions: ["api-keys", "permissions"] as const,
+  },
+  security: {
+    settings: ["security", "settings"] as const,
+    sessions: ["security", "sessions"] as const,
+  },
+  integrations: {
+    all: ["integrations"] as const,
   },
 } as const;

@@ -2,91 +2,26 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Globe, Check, Settings, ExternalLink, Plus, Trash2 } from "lucide-react";
+import { Globe, Check, Settings, ExternalLink, Plus, Trash2, RefreshCw } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
-
-interface Integration {
-  id: string;
-  name: string;
-  description: string;
-  logo: string;
-  connected: boolean;
-  category: "accounting" | "communication" | "storage" | "productivity";
-  configUrl?: string;
-}
+import {
+  useGetIntegrations,
+  useConnectIntegration,
+  useDisconnectIntegration,
+  type Integration,
+} from "@/lib/api/hooks/integrations";
 
 export default function IntegrationsSettings() {
   const { t } = useTranslation();
-  const [integrations, setIntegrations] = useState<Integration[]>([
-    {
-      id: "1",
-      name: "Slack",
-      description: "Get notifications and updates in your Slack workspace",
-      logo: "💬",
-      connected: true,
-      category: "communication",
-      configUrl: "/settings/integrations/slack",
-    },
-    {
-      id: "2",
-      name: "Microsoft Teams",
-      description: "Collaborate with your team using Microsoft Teams",
-      logo: "👥",
-      connected: false,
-      category: "communication",
-    },
-    {
-      id: "3",
-      name: "Google Drive",
-      description: "Sync and store documents in Google Drive",
-      logo: "📁",
-      connected: true,
-      category: "storage",
-    },
-    {
-      id: "4",
-      name: "Dropbox",
-      description: "Store and share files with Dropbox",
-      logo: "📦",
-      connected: false,
-      category: "storage",
-    },
-    {
-      id: "5",
-      name: "QuickBooks",
-      description: "Sync accounting data with QuickBooks",
-      logo: "💰",
-      connected: false,
-      category: "accounting",
-    },
-    {
-      id: "6",
-      name: "Xero",
-      description: "Connect your Xero accounting software",
-      logo: "📊",
-      connected: false,
-      category: "accounting",
-    },
-    {
-      id: "7",
-      name: "Zapier",
-      description: "Automate workflows with thousands of apps",
-      logo: "⚡",
-      connected: false,
-      category: "productivity",
-    },
-    {
-      id: "8",
-      name: "Odoo",
-      description: "Enterprise Resource Planning integration",
-      logo: "🏢",
-      connected: false,
-      category: "accounting",
-    },
-  ]);
-
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+
+  // Fetch data
+  const { data: integrations = [], isLoading } = useGetIntegrations();
+
+  // Mutations
+  const connectIntegration = useConnectIntegration();
+  const disconnectIntegration = useDisconnectIntegration();
 
   const categories = [
     { id: "all", name: "All Integrations" },
@@ -99,12 +34,16 @@ export default function IntegrationsSettings() {
   const filteredIntegrations =
     selectedCategory === "all" ? integrations : integrations.filter((i) => i.category === selectedCategory);
 
-  const toggleIntegration = (id: string) => {
-    setIntegrations(
-      integrations.map((integration) =>
-        integration.id === id ? { ...integration, connected: !integration.connected } : integration,
-      ),
-    );
+  const handleToggleIntegration = async (id: string, connected: boolean) => {
+    try {
+      if (connected) {
+        await disconnectIntegration.mutateAsync(id);
+      } else {
+        await connectIntegration.mutateAsync(id);
+      }
+    } catch (error) {
+      alert(`Failed to ${connected ? "disconnect" : "connect"} integration`);
+    }
   };
 
   return (
@@ -136,11 +75,18 @@ export default function IntegrationsSettings() {
             </div>
           </div>
 
-          {/* Connected Integrations */}
-          {integrations.some((i) => i.connected) && (
-            <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-900 mb-4">Connected</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Loading State */}
+          {isLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <RefreshCw className="w-8 h-8 animate-spin text-gray-400" />
+            </div>
+          ) : (
+            <>
+              {/* Connected Integrations */}
+              {integrations.some((i) => i.connected) && (
+                <div className="mb-6">
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Connected</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {integrations
                   .filter((i) => i.connected)
                   .map((integration) => (
@@ -160,8 +106,9 @@ export default function IntegrationsSettings() {
                           </div>
                         </div>
                         <button
-                          onClick={() => toggleIntegration(integration.id)}
-                          className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                          onClick={() => handleToggleIntegration(integration.id, integration.connected)}
+                          disabled={disconnectIntegration.isPending}
+                          className="p-2 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
                           title="Disconnect"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -206,11 +153,12 @@ export default function IntegrationsSettings() {
                     </div>
                     <p className="text-sm text-gray-600 mb-4">{integration.description}</p>
                     <button
-                      onClick={() => toggleIntegration(integration.id)}
-                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                      onClick={() => handleToggleIntegration(integration.id, integration.connected)}
+                      disabled={connectIntegration.isPending}
+                      className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium disabled:opacity-50"
                     >
                       <Plus className="w-4 h-4" />
-                      Connect
+                      {connectIntegration.isPending ? "Connecting..." : "Connect"}
                     </button>
                   </div>
                 ))}
@@ -260,6 +208,8 @@ export default function IntegrationsSettings() {
               <p>No webhooks configured yet</p>
             </div>
           </div>
+          </>
+          )}
         </motion.div>
       </div>
     </SettingsPermissionGate>
