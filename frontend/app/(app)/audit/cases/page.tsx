@@ -8,8 +8,14 @@ import { CaseFilters, type FilterToken } from "@/components/audit/cases/CaseFilt
 import { CaseTable, type CaseRow } from "@/components/audit/cases/CaseTable";
 import { CaseGrid } from "@/components/audit/cases/CaseGrid";
 import { CaseKanban } from "@/components/audit/cases/CaseKanban";
-import { CreateCaseModal } from "@/components/audit/cases/CreateCaseModal";
+import { CreateCaseWizard } from "@/components/audit/cases/CreateCaseWizard";
 import { CasePreviewDrawer } from "@/components/audit/cases/CasePreviewDrawer";
+import { CaseCommands, useCaseCommands } from "@/components/audit/cases/CaseCommands";
+import { KeyboardShortcutsOverlay } from "@/components/audit/cases/KeyboardShortcutsOverlay";
+import { BatchOperationsBar } from "@/components/audit/cases/BatchOperationsBar";
+import { SavedViewsManager } from "@/components/audit/cases/SavedViewsManager";
+import { useAuditStore } from "@/stores/useAuditStore";
+import { useKeyboardShortcuts, COMMON_SHORTCUTS } from "@/lib/hooks/useKeyboardShortcuts";
 import { isValidCaseStatus, isValidCasePriority } from "@/lib/api/schemas";
 import { useToast } from "@safee/ui";
 import type { CaseStatus, CasePriority } from "@/types/audit";
@@ -17,12 +23,97 @@ import type { CaseStatus, CasePriority } from "@/types/audit";
 export default function CaseManagement() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const toast = useToast();
+
+  // Local state
   const [selectedCases, setSelectedCases] = useState<string[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
+  const [shortcutsOverlayOpen, setShortcutsOverlayOpen] = useState(false);
   const [filters, setFilters] = useState<FilterToken[]>([]);
   const [activeStatusTab, setActiveStatusTab] = useState<"all" | "active" | "completed">("all");
   const [viewMode, setViewMode] = useState<"list" | "grid" | "kanban">("list");
   const [previewCase, setPreviewCase] = useState<CaseRow | null>(null);
+
+  // Global store
+  const {
+    savedViews,
+    activeView,
+    saveView,
+    deleteView,
+    applyView,
+    toggleViewFavorite,
+    updateView,
+  } = useAuditStore();
+
+  // Enable Cmd+K for command palette
+  useCaseCommands(() => setCommandPaletteOpen(true));
+
+  // Keyboard shortcuts
+  useKeyboardShortcuts({
+    enabled: !commandPaletteOpen && !isCreateModalOpen && !shortcutsOverlayOpen,
+    shortcuts: [
+      {
+        key: COMMON_SHORTCUTS.NEW.key,
+        action: () => setIsCreateModalOpen(true),
+        description: COMMON_SHORTCUTS.NEW.description,
+        category: COMMON_SHORTCUTS.NEW.category,
+      },
+      {
+        key: COMMON_SHORTCUTS.SEARCH.key,
+        action: () => {
+          const searchInput = document.querySelector<HTMLInputElement>('input[type="text"]');
+          searchInput?.focus();
+        },
+        description: COMMON_SHORTCUTS.SEARCH.description,
+        category: COMMON_SHORTCUTS.SEARCH.category,
+      },
+      {
+        key: COMMON_SHORTCUTS.HELP.key,
+        action: () => setShortcutsOverlayOpen(true),
+        description: COMMON_SHORTCUTS.HELP.description,
+        category: COMMON_SHORTCUTS.HELP.category,
+      },
+    ],
+    sequences: [
+      {
+        sequence: COMMON_SHORTCUTS.GO_DASHBOARD.sequence,
+        action: () => router.push("/audit/dashboard"),
+        description: COMMON_SHORTCUTS.GO_DASHBOARD.description,
+        category: COMMON_SHORTCUTS.GO_DASHBOARD.category,
+      },
+      {
+        sequence: COMMON_SHORTCUTS.GO_CASES.sequence,
+        action: () => router.push("/audit/cases"),
+        description: COMMON_SHORTCUTS.GO_CASES.description,
+        category: COMMON_SHORTCUTS.GO_CASES.category,
+      },
+      {
+        sequence: COMMON_SHORTCUTS.GO_DOCUMENTS.sequence,
+        action: () => router.push("/audit/documents"),
+        description: COMMON_SHORTCUTS.GO_DOCUMENTS.description,
+        category: COMMON_SHORTCUTS.GO_DOCUMENTS.category,
+      },
+      {
+        sequence: COMMON_SHORTCUTS.VIEW_TABLE.sequence,
+        action: () => setViewMode("list"),
+        description: COMMON_SHORTCUTS.VIEW_TABLE.description,
+        category: COMMON_SHORTCUTS.VIEW_TABLE.category,
+      },
+      {
+        sequence: COMMON_SHORTCUTS.VIEW_GRID.sequence,
+        action: () => setViewMode("grid"),
+        description: COMMON_SHORTCUTS.VIEW_GRID.description,
+        category: COMMON_SHORTCUTS.VIEW_GRID.category,
+      },
+      {
+        sequence: COMMON_SHORTCUTS.VIEW_KANBAN.sequence,
+        action: () => setViewMode("kanban"),
+        description: COMMON_SHORTCUTS.VIEW_KANBAN.description,
+        category: COMMON_SHORTCUTS.VIEW_KANBAN.category,
+      },
+    ],
+  });
 
   useEffect(() => {
     const statusParam = searchParams.get("status");
@@ -64,7 +155,6 @@ export default function CaseManagement() {
 
   const { data: apiCases, isLoading, refetch } = useCases(apiFilters);
   const createCaseMutation = useCreateCase();
-  const toast = useToast();
 
   const handleQuickCreate = async (title: string) => {
     try {
@@ -258,6 +348,22 @@ export default function CaseManagement() {
               availableAssignees={availableAssignees}
             />
 
+            <SavedViewsManager
+              savedViews={savedViews}
+              activeViewId={activeView || undefined}
+              currentFilters={filters}
+              currentViewMode={viewMode}
+              onSaveView={saveView}
+              onLoadView={(view) => {
+                setFilters(view.filters);
+                setViewMode(view.viewMode);
+                applyView(view.id);
+              }}
+              onDeleteView={deleteView}
+              onToggleFavorite={toggleViewFavorite}
+              onUpdateView={updateView}
+            />
+
             <div className="mb-4 flex items-center justify-end">
               <div className="flex items-center bg-white rounded-lg border border-gray-300 p-1 gap-1">
                 <button
@@ -376,7 +482,7 @@ export default function CaseManagement() {
         )}
       </div>
 
-      <CreateCaseModal
+      <CreateCaseWizard
         isOpen={isCreateModalOpen}
         onClose={() => setIsCreateModalOpen(false)}
         onSuccess={() => refetch()}
@@ -400,6 +506,67 @@ export default function CaseManagement() {
               }
             : null
         }
+      />
+
+      <CaseCommands
+        isOpen={commandPaletteOpen}
+        onClose={() => setCommandPaletteOpen(false)}
+        onNewCase={() => {
+          setCommandPaletteOpen(false);
+          setIsCreateModalOpen(true);
+        }}
+        onDuplicateCase={() => {
+          setCommandPaletteOpen(false);
+          if (selectedCases.length === 1) {
+            const selectedCase = cases.find((c) => c.id === selectedCases[0]);
+            if (selectedCase) {
+              toast.info("Duplicate case feature coming soon");
+            }
+          } else {
+            toast.warning("Please select exactly one case to duplicate");
+          }
+        }}
+        onSaveTemplate={() => {
+          setCommandPaletteOpen(false);
+          toast.info("Save as template feature coming soon");
+        }}
+        onArchiveSelected={() => {
+          setCommandPaletteOpen(false);
+          toast.info(`Archive ${selectedCases.length} case(s) - Coming soon`);
+        }}
+        onExport={() => {
+          setCommandPaletteOpen(false);
+          toast.info("Export feature coming soon");
+        }}
+        onBulkStatusChange={() => {
+          setCommandPaletteOpen(false);
+          toast.info("Bulk status change feature coming soon");
+        }}
+        onViewChange={(view) => {
+          setCommandPaletteOpen(false);
+          setViewMode(view);
+          toast.success(`Switched to ${view} view`);
+        }}
+        onShowShortcuts={() => {
+          setCommandPaletteOpen(false);
+          setShortcutsOverlayOpen(true);
+        }}
+        selectedCasesCount={selectedCases.length}
+      />
+
+      <BatchOperationsBar
+        selectedCount={selectedCases.length}
+        onClearSelection={() => setSelectedCases([])}
+        onArchive={() => toast.info(`Archive ${selectedCases.length} case(s) - Coming soon`)}
+        onDelete={() => toast.info(`Delete ${selectedCases.length} case(s) - Coming soon`)}
+        onStatusChange={() => toast.info("Bulk status change feature coming soon")}
+        onAssignTeam={() => toast.info("Assign team feature coming soon")}
+        onExport={() => toast.info("Export feature coming soon")}
+      />
+
+      <KeyboardShortcutsOverlay
+        isOpen={shortcutsOverlayOpen}
+        onClose={() => setShortcutsOverlayOpen(false)}
       />
     </div>
   );
