@@ -4,8814 +4,9690 @@
  */
 
 export interface paths {
-  "/workflows": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description List all workflows */
-    get: operations["ListWorkflows"];
-    put?: never;
-    /** @description Create a new workflow */
-    post: operations["CreateWorkflow"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/workflows/{workflowId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get workflow details */
-    get: operations["GetWorkflow"];
-    /** @description Update workflow */
-    put: operations["UpdateWorkflow"];
-    post?: never;
-    /** @description Delete workflow */
-    delete: operations["DeleteWorkflow"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/workflows/{workflowId}/activate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Activate workflow */
-    post: operations["ActivateWorkflow"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/workflows/{workflowId}/deactivate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Deactivate workflow */
-    post: operations["DeactivateWorkflow"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/workflows/rules": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description List approval rules */
-    get: operations["ListRules"];
-    put?: never;
-    /** @description Create approval rule */
-    post: operations["CreateRule"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/workflows/rules/{ruleId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** @description Delete approval rule */
-    delete: operations["DeleteRule"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/users/me": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetCurrentUser"];
-    put: operations["UpdateCurrentUser"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/users/me/locale": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put: operations["UpdateCurrentUserLocale"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/storage/upload": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Upload a file to storage */
-    post: operations["UploadFile"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/storage/upload/batch": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Upload multiple files */
-    post: operations["UploadFiles"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/storage/files/{fileId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get file metadata */
-    get: operations["GetFile"];
-    put?: never;
-    post?: never;
-    /** @description Delete file */
-    delete: operations["DeleteFile"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/storage/files/{fileId}/download": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Download file */
-    get: operations["DownloadFile"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/storage/files/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Search files */
-    get: operations["SearchFiles"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/storage/folders": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Create folder */
-    post: operations["CreateFolder"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/storage/folders/{folderId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get folder contents */
-    get: operations["GetFolderContents"];
-    put?: never;
-    post?: never;
-    /** @description Delete folder */
-    delete: operations["DeleteFolder"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/storage/quota": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get storage quota information */
-    get: operations["GetQuota"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/provision": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["ProvisionDatabase"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/provision-user": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["ProvisionUser"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/info": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetDatabaseInfo"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations["DeleteDatabase"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/duplicate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["DuplicateDatabase"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/backup": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["BackupDatabase"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/databases": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["ListAllDatabases"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/organizations/{organizationId}/info": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetDatabaseInfoByOrganization"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/rpc/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["Search"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/rpc/search_read": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["SearchRead"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/rpc/read": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["Read"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/rpc/create": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["Create"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/rpc/write": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["Write"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/rpc/unlink": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["Unlink"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/rpc/execute": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["Execute"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/dev-credentials": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetOdooDevCredentials"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/user-credentials": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetOdooUserCredentials"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/admin-credentials": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetOdooAdminCredentialsEndpoint"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/install-modules": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["InstallOdooModules"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/models/{modelName}/fields": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetOdooModelFields"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/odoo/database-info": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetOdooDatabaseInfo"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/nas/connect": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * @description Connect to a NAS drive
-     *     Supports SMB/CIFS, NFS, and WebDAV protocols
-     */
-    post: operations["ConnectNAS"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/nas/{name}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** @description Disconnect from a NAS drive */
-    delete: operations["DisconnectNAS"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/nas/status": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get status of all connected NAS drives */
-    get: operations["GetAllNASStatus"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/nas/all": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    /** @description Disconnect from all NAS drives */
-    delete: operations["DisconnectAll"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr-management/employees": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get all employees in the organization */
-    get: operations["GetHRManagementEmployees"];
-    put?: never;
-    /**
-     * @description Create a new employee
-     *     Automatically syncs to Odoo
-     */
-    post: operations["CreateEmployee"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr-management/employees/{employeeId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get a single employee by ID */
-    get: operations["GetHRManagementEmployee"];
-    /**
-     * @description Update an employee
-     *     Automatically syncs changes to Odoo
-     */
-    put: operations["UpdateEmployee"];
-    post?: never;
-    /**
-     * @description Deactivate an employee
-     *     Automatically syncs deactivation to Odoo
-     */
-    delete: operations["DeactivateEmployee"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr-management/employees/sync": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Sync a single employee from Odoo */
-    post: operations["SyncEmployeeFromOdoo"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr-management/employees/sync-all": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Sync all employees from Odoo */
-    post: operations["SyncAllEmployees"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr-management/departments": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get all departments in the organization */
-    get: operations["GetHRManagementDepartments"];
-    put?: never;
-    /**
-     * @description Create a new department
-     *     Automatically syncs to Odoo
-     */
-    post: operations["CreateDepartment"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr-management/departments/{departmentId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get a single department by ID */
-    get: operations["GetHRManagementDepartment"];
-    /**
-     * @description Update a department
-     *     Automatically syncs changes to Odoo
-     */
-    put: operations["UpdateDepartment"];
-    post?: never;
-    /**
-     * @description Delete a department
-     *     Automatically deletes from Odoo
-     */
-    delete: operations["DeleteDepartment"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr-management/departments/sync": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Sync a single department from Odoo */
-    post: operations["SyncDepartmentFromOdoo"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr-management/departments/sync-all": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Sync all departments from Odoo */
-    post: operations["SyncAllDepartments"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr-management/employees/{employeeId}/leave-balances": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get leave balances for an employee */
-    get: operations["GetEmployeeLeaveBalances"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr-management/employees/{employeeId}/leave-balances/{leaveTypeId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get leave balance for a specific leave type */
-    get: operations["GetEmployeeLeaveBalanceByType"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/employees": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get list of employees */
-    get: operations["GetHREmployees"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/employees/{employeeId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get a single employee by ID */
-    get: operations["GetHREmployee"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/departments": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get list of departments */
-    get: operations["GetHRDepartments"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/departments/{departmentId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get a single department by ID */
-    get: operations["GetHRDepartment"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/contracts": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get list of contracts */
-    get: operations["GetContracts"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/contracts/{contractId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get a single contract by ID */
-    get: operations["GetContract"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/leave-types": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get list of leave types */
-    get: operations["GetLeaveTypes"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/leave-types/{leaveTypeId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get a single leave type by ID */
-    get: operations["GetLeaveType"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/leave-requests": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get list of leave requests */
-    get: operations["GetLeaveRequests"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/leave-requests/{leaveId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get a single leave request by ID */
-    get: operations["GetLeaveRequest"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/leave-allocations": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get list of leave allocations */
-    get: operations["GetLeaveAllocations"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/leave-allocations/{allocationId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get a single leave allocation by ID */
-    get: operations["GetLeaveAllocation"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/payslips": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get list of payslips */
-    get: operations["GetPayslips"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/payslips/{payslipId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get a single payslip by ID */
-    get: operations["GetPayslip"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/hr/payslips/{payslipId}/lines": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get payslip lines for a specific payslip */
-    get: operations["GetPayslipLines"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/health": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetHealth"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/settings/document-templates": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get all document templates for the organization */
-    get: operations["GetTemplates"];
-    put?: never;
-    /** @description Create a new document template */
-    post: operations["CreateDocumentTemplate"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/settings/document-templates/by-type": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get templates for a specific document type */
-    get: operations["GetTemplatesByType"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/settings/document-templates/active": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get the active template for a document type */
-    get: operations["GetActiveTemplate"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/settings/document-templates/odoo-templates": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get available report templates from Odoo */
-    get: operations["GetOdooTemplates"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/settings/document-templates/{templateId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    /** @description Update a document template */
-    put: operations["UpdateTemplate"];
-    post?: never;
-    /** @description Delete a document template */
-    delete: operations["DeleteTemplate"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/settings/document-templates/{templateId}/activate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Set a template as active for its document type */
-    post: operations["ActivateTemplate"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/settings/document-templates/custom": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Create a custom QWeb template in Odoo and register it */
-    post: operations["CreateCustomTemplate"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/deals": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetDeals"];
-    put?: never;
-    post: operations["CreateDeal"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/dashboard/stats": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * @description Get dashboard statistics
-     *     Returns aggregate statistics for the organization's cases
-     */
-    get: operations["GetStats"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/dashboard/activity": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * @description Get recent case activity
-     *     Returns the most recent case updates for the organization
-     */
-    get: operations["GetActivity"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/dashboard/notifications": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * @description Get recent notifications for the current user
-     *     Returns the most recent notifications for the authenticated user
-     */
-    get: operations["GetNotifications"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/dashboard/notifications/unread-count": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /**
-     * @description Get unread notifications count
-     *     Returns the count of unread notifications for the authenticated user
-     */
-    get: operations["GetUnreadNotificationsCount"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/dashboard/notifications/{notificationId}/read": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /**
-     * @description Mark a notification as read
-     *     Marks a specific notification as read for the authenticated user
-     */
-    post: operations["MarkNotificationAsRead"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/types": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetConnectorTypes"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/types/{type}/fields": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetFieldDefinitions"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["ListConnectors"];
-    put?: never;
-    post: operations["CreateConnector"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/{connectorId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetConnector"];
-    put: operations["UpdateConnector"];
-    post?: never;
-    delete: operations["DeleteConnector"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/{connectorId}/test": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["TestConnection"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/{connectorId}/health": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetConnectorHealth"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/{connectorId}/query": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["ExecuteQuery"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/{connectorId}/schema": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetSchema"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/{connectorId}/schema/{schemaName}/tables/{tableName}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetTablePreview"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/{connectorId}/schema/{schemaName}/tables/{tableName}/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["SearchTable"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/connectors/mappings/suggest": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["SuggestMappings"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["ListCases"];
-    put?: never;
-    post: operations["CreateCase"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/templates": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["ListPublicTemplates"];
-    put?: never;
-    post: operations["CreateCaseTemplate"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/templates/{templateId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetTemplate"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetCase"];
-    put: operations["UpdateCase"];
-    post?: never;
-    delete: operations["DeleteCase"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/scopes": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["ListScopes"];
-    put?: never;
-    post: operations["CreateScope"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/scopes/from-template": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["CreateScopeFromTemplate"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/scopes/{scopeId}/status": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put: operations["UpdateScopeStatus"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/scopes/{scopeId}/sections": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["ListSections"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/scopes/{scopeId}/sections/{sectionId}/procedures": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["ListProcedures"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/scopes/{scopeId}/sections/{sectionId}/procedures/{procedureId}/complete": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["CompleteProcedure"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/documents": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["ListDocuments"];
-    put?: never;
-    post: operations["CreateDocument"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/documents/{documentId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations["DeleteDocument"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/notes": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["ListNotes"];
-    put?: never;
-    post: operations["CreateNote"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/notes/{noteId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put: operations["UpdateNote"];
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/assignments": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["ListAssignments"];
-    put?: never;
-    post: operations["CreateAssignment"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/assignments/{userId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete: operations["DeleteAssignment"];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/cases/{caseId}/history": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetHistory"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/organizations/{orgId}/audit-logs": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get audit logs for an organization with optional filtering */
-    get: operations["GetOrganizationAuditLogs"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/organizations/{orgId}/audit-logs/export": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Export audit logs to CSV or JSON */
-    post: operations["ExportAuditLogs"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/users/{userId}/activity-logs": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get activity logs for a specific user */
-    get: operations["GetUserActivityLogs"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/approvals/submit": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Submit an entity for approval */
-    post: operations["SubmitForApproval"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/approvals": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get pending approvals for current user */
-    get: operations["GetPendingApprovals"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/approvals/{requestId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get approval request details */
-    get: operations["GetApprovalRequest"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/approvals/{requestId}/approve": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Approve an approval request */
-    post: operations["Approve"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/approvals/{requestId}/reject": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Reject an approval request */
-    post: operations["Reject"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/approvals/{requestId}/delegate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** @description Delegate an approval to another user */
-    post: operations["Delegate"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/approvals/history/{entityType}/{entityId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description Get approval history for an entity */
-    get: operations["GetApprovalHistory"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingInvoices"];
-    put?: never;
-    post: operations["CreateAccountingInvoice"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/{invoiceId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingInvoice"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/{invoiceId}/validate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["ValidateAccountingInvoice"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/{invoiceId}/cancel": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["CancelAccountingInvoice"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/{invoiceId}/refund": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["RefundAccountingInvoice"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/{invoiceId}/pdf": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingInvoicePDF"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bills": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingBills"];
-    put?: never;
-    post: operations["CreateAccountingBill"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bills/{billId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingBill"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bills/{billId}/validate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["ValidateAccountingBill"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bills/{billId}/cancel": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["CancelAccountingBill"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bills/{billId}/refund": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["RefundAccountingBill"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bills/{billId}/pdf": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingBillPDF"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/accounts": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingAccounts"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/accounts/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["SearchAccountingAccounts"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/payments": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingPayments"];
-    put?: never;
-    post: operations["CreateAccountingPayment"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/payments/{paymentId}/confirm": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["ConfirmAccountingPayment"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/partners": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingPartners"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/journals": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingJournals"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/taxes": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingTaxes"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/reports/trial-balance": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["GetAccountingTrialBalance"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/reports/partner-ledger": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["GetAccountingPartnerLedger"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/reports/profit-loss": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingProfitLoss"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/general-ledger": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingGeneralLedger"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/payment-terms": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingPaymentTerms"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/reports/aged-receivable": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingAgedReceivable"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/reports/aged-payable": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingAgedPayable"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bank-statements": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingBankStatements"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bank-statements/{statementId}/lines": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingBankStatementLines"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bank-statements/lines/{lineId}/suggestions": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingReconciliationSuggestions"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bank-statements/lines/{lineId}/reconcile": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["ReconcileAccountingBankStatementLine"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/currencies": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingCurrencies"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/currency-rates": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccountingCurrencyRates"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/currency-convert": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["ConvertAccountingCurrency"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/batch-validate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["BatchValidateAccountingInvoices"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/batch-cancel": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["BatchCancelAccountingInvoices"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/batch-create": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["BatchCreateAccountingInvoices"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/payments/batch-create": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["BatchCreateAccountingPayments"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/payments/batch-confirm": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post: operations["BatchConfirmAccountingPayments"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounts": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["GetAccounts"];
-    put?: never;
-    post: operations["CreateAccount"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
+    "/workflows": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description List all workflows */
+        get: operations["ListWorkflows"];
+        put?: never;
+        /** @description Create a new workflow */
+        post: operations["CreateWorkflow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/{workflowId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get workflow details */
+        get: operations["GetWorkflow"];
+        /** @description Update workflow */
+        put: operations["UpdateWorkflow"];
+        post?: never;
+        /** @description Delete workflow */
+        delete: operations["DeleteWorkflow"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/{workflowId}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Activate workflow */
+        post: operations["ActivateWorkflow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/{workflowId}/deactivate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Deactivate workflow */
+        post: operations["DeactivateWorkflow"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/rules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description List approval rules */
+        get: operations["ListRules"];
+        put?: never;
+        /** @description Create approval rule */
+        post: operations["CreateRule"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/workflows/rules/{ruleId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description Delete approval rule */
+        delete: operations["DeleteRule"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCurrentUser"];
+        put: operations["UpdateCurrentUser"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/me/locale": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpdateCurrentUserLocale"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/storage/upload": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Upload a file to storage */
+        post: operations["UploadFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/storage/upload/batch": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Upload multiple files */
+        post: operations["UploadFiles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/storage/files/{fileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get file metadata */
+        get: operations["GetFile"];
+        put?: never;
+        post?: never;
+        /** @description Delete file */
+        delete: operations["DeleteFile"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/storage/files/{fileId}/download": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Download file */
+        get: operations["DownloadFile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/storage/files/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Search files */
+        get: operations["SearchFiles"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/storage/folders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Create folder */
+        post: operations["CreateFolder"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/storage/folders/{folderId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get folder contents */
+        get: operations["GetFolderContents"];
+        put?: never;
+        post?: never;
+        /** @description Delete folder */
+        delete: operations["DeleteFolder"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/storage/quota": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get storage quota information */
+        get: operations["GetQuota"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/provision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ProvisionDatabase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/provision-user": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ProvisionUser"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetDatabaseInfo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteDatabase"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/duplicate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DuplicateDatabase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/backup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BackupDatabase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/databases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListAllDatabases"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/organizations/{organizationId}/info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetDatabaseInfoByOrganization"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/rpc/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Search"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/rpc/search_read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SearchRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/rpc/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Read"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/rpc/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/rpc/write": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Write"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/rpc/unlink": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Unlink"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/rpc/execute": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["Execute"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/dev-credentials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetOdooDevCredentials"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/user-credentials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetOdooUserCredentials"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/admin-credentials": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetOdooAdminCredentialsEndpoint"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/install-modules": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["InstallOdooModules"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/models/{modelName}/fields": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetOdooModelFields"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/odoo/database-info": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetOdooDatabaseInfo"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/nas/connect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description Connect to a NAS drive
+         *     Supports SMB/CIFS, NFS, and WebDAV protocols
+         */
+        post: operations["ConnectNAS"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/nas/{name}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description Disconnect from a NAS drive */
+        delete: operations["DisconnectNAS"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/nas/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get status of all connected NAS drives */
+        get: operations["GetAllNASStatus"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/nas/all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** @description Disconnect from all NAS drives */
+        delete: operations["DisconnectAll"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr-management/employees": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get all employees in the organization */
+        get: operations["GetHRManagementEmployees"];
+        put?: never;
+        /**
+         * @description Create a new employee
+         *     Automatically syncs to Odoo
+         */
+        post: operations["CreateEmployee"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr-management/employees/{employeeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a single employee by ID */
+        get: operations["GetHRManagementEmployee"];
+        /**
+         * @description Update an employee
+         *     Automatically syncs changes to Odoo
+         */
+        put: operations["UpdateEmployee"];
+        post?: never;
+        /**
+         * @description Deactivate an employee
+         *     Automatically syncs deactivation to Odoo
+         */
+        delete: operations["DeactivateEmployee"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr-management/employees/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Sync a single employee from Odoo */
+        post: operations["SyncEmployeeFromOdoo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr-management/employees/sync-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Sync all employees from Odoo */
+        post: operations["SyncAllEmployees"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr-management/departments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get all departments in the organization */
+        get: operations["GetHRManagementDepartments"];
+        put?: never;
+        /**
+         * @description Create a new department
+         *     Automatically syncs to Odoo
+         */
+        post: operations["CreateDepartment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr-management/departments/{departmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a single department by ID */
+        get: operations["GetHRManagementDepartment"];
+        /**
+         * @description Update a department
+         *     Automatically syncs changes to Odoo
+         */
+        put: operations["UpdateDepartment"];
+        post?: never;
+        /**
+         * @description Delete a department
+         *     Automatically deletes from Odoo
+         */
+        delete: operations["DeleteDepartment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr-management/departments/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Sync a single department from Odoo */
+        post: operations["SyncDepartmentFromOdoo"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr-management/departments/sync-all": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Sync all departments from Odoo */
+        post: operations["SyncAllDepartments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr-management/employees/{employeeId}/leave-balances": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get leave balances for an employee */
+        get: operations["GetEmployeeLeaveBalances"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr-management/employees/{employeeId}/leave-balances/{leaveTypeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get leave balance for a specific leave type */
+        get: operations["GetEmployeeLeaveBalanceByType"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/employees": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get list of employees */
+        get: operations["GetHREmployees"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/employees/{employeeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a single employee by ID */
+        get: operations["GetHREmployee"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/departments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get list of departments */
+        get: operations["GetHRDepartments"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/departments/{departmentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a single department by ID */
+        get: operations["GetHRDepartment"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/contracts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get list of contracts */
+        get: operations["GetContracts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/contracts/{contractId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a single contract by ID */
+        get: operations["GetContract"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/leave-types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get list of leave types */
+        get: operations["GetLeaveTypes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/leave-types/{leaveTypeId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a single leave type by ID */
+        get: operations["GetLeaveType"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/leave-requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get list of leave requests */
+        get: operations["GetLeaveRequests"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/leave-requests/{leaveId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a single leave request by ID */
+        get: operations["GetLeaveRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/leave-allocations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get list of leave allocations */
+        get: operations["GetLeaveAllocations"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/leave-allocations/{allocationId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a single leave allocation by ID */
+        get: operations["GetLeaveAllocation"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/payslips": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get list of payslips */
+        get: operations["GetPayslips"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/payslips/{payslipId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get a single payslip by ID */
+        get: operations["GetPayslip"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/hr/payslips/{payslipId}/lines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get payslip lines for a specific payslip */
+        get: operations["GetPayslipLines"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetHealth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/document-templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get all document templates for the organization */
+        get: operations["GetTemplates"];
+        put?: never;
+        /** @description Create a new document template */
+        post: operations["CreateDocumentTemplate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/document-templates/by-type": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get templates for a specific document type */
+        get: operations["GetTemplatesByType"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/document-templates/active": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get the active template for a document type */
+        get: operations["GetActiveTemplate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/document-templates/odoo-templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get available report templates from Odoo */
+        get: operations["GetOdooTemplates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/document-templates/{templateId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Update a document template */
+        put: operations["UpdateTemplate"];
+        post?: never;
+        /** @description Delete a document template */
+        delete: operations["DeleteTemplate"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/document-templates/{templateId}/activate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Set a template as active for its document type */
+        post: operations["ActivateTemplate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/settings/document-templates/custom": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Create a custom QWeb template in Odoo and register it */
+        post: operations["CreateCustomTemplate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dashboard/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Get dashboard statistics
+         *     Returns aggregate statistics for the organization's cases
+         */
+        get: operations["GetStats"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dashboard/activity": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Get recent case activity
+         *     Returns the most recent case updates for the organization
+         */
+        get: operations["GetActivity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dashboard/notifications": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Get recent notifications for the current user
+         *     Returns the most recent notifications for the authenticated user
+         */
+        get: operations["GetNotifications"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dashboard/notifications/unread-count": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * @description Get unread notifications count
+         *     Returns the count of unread notifications for the authenticated user
+         */
+        get: operations["GetUnreadNotificationsCount"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dashboard/notifications/{notificationId}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * @description Mark a notification as read
+         *     Marks a specific notification as read for the authenticated user
+         */
+        post: operations["MarkNotificationAsRead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/leads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCRMLeads"];
+        put?: never;
+        post: operations["CreateCRMLead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/leads/{leadId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCRMLead"];
+        put: operations["UpdateCRMLead"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/leads/{leadId}/convert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ConvertCRMLead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/leads/{leadId}/win": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["WinCRMLead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/leads/{leadId}/lose": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["LoseCRMLead"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/stages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCRMStages"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/stages/{stageId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCRMStage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/contacts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCRMContacts"];
+        put?: never;
+        post: operations["CreateCRMContact"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/contacts/{contactId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCRMContact"];
+        put: operations["UpdateCRMContact"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/activities": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCRMActivities"];
+        put?: never;
+        post: operations["CreateCRMActivity"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/activities/{activityId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCRMActivity"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/activities/{activityId}/done": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["MarkCRMActivityDone"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/teams": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCRMTeams"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/teams/{teamId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCRMTeam"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/lost-reasons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCRMLostReasons"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/lost-reasons/{reasonId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCRMLostReason"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/crm/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SyncCRM"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors/types": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetConnectorTypes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors/types/{type}/fields": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetFieldDefinitions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListConnectors"];
+        put?: never;
+        post: operations["CreateConnector"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors/{connectorId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetConnector"];
+        put: operations["UpdateConnector"];
+        post?: never;
+        delete: operations["DeleteConnector"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors/{connectorId}/test": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TestConnection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors/{connectorId}/health": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetConnectorHealth"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors/{connectorId}/query": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ExecuteQuery"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors/{connectorId}/schema": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetSchema"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors/{connectorId}/schema/{schemaName}/tables/{tableName}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetTablePreview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors/{connectorId}/schema/{schemaName}/tables/{tableName}/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["SearchTable"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/connectors/mappings/suggest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SuggestMappings"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListCases"];
+        put?: never;
+        post: operations["CreateCase"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListPublicTemplates"];
+        put?: never;
+        post: operations["CreateCaseTemplate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/templates/{templateId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetTemplate"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetCase"];
+        put: operations["UpdateCase"];
+        post?: never;
+        delete: operations["DeleteCase"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/scopes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListScopes"];
+        put?: never;
+        post: operations["CreateScope"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/scopes/from-template": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateScopeFromTemplate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/scopes/{scopeId}/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpdateScopeStatus"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/scopes/{scopeId}/sections": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListSections"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/scopes/{scopeId}/sections/{sectionId}/procedures": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListProcedures"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/scopes/{scopeId}/sections/{sectionId}/procedures/{procedureId}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CompleteProcedure"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/documents": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListDocuments"];
+        put?: never;
+        post: operations["CreateDocument"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/documents/{documentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteDocument"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/notes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListNotes"];
+        put?: never;
+        post: operations["CreateNote"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/notes/{noteId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpdateNote"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["ListAssignments"];
+        put?: never;
+        post: operations["CreateAssignment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/assignments/{userId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["DeleteAssignment"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/cases/{caseId}/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{orgId}/audit-logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get audit logs for an organization with optional filtering */
+        get: operations["GetOrganizationAuditLogs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/organizations/{orgId}/audit-logs/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Export audit logs to CSV or JSON */
+        post: operations["ExportAuditLogs"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/users/{userId}/activity-logs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get activity logs for a specific user */
+        get: operations["GetUserActivityLogs"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/submit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Submit an entity for approval */
+        post: operations["SubmitForApproval"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get pending approvals for current user */
+        get: operations["GetPendingApprovals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/{requestId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get approval request details */
+        get: operations["GetApprovalRequest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/{requestId}/approve": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Approve an approval request */
+        post: operations["Approve"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/{requestId}/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Reject an approval request */
+        post: operations["Reject"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/{requestId}/delegate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Delegate an approval to another user */
+        post: operations["Delegate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/approvals/history/{entityType}/{entityId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** @description Get approval history for an entity */
+        get: operations["GetApprovalHistory"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingInvoices"];
+        put?: never;
+        post: operations["CreateAccountingInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/invoices/{invoiceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingInvoice"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/invoices/{invoiceId}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ValidateAccountingInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/invoices/{invoiceId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CancelAccountingInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/invoices/{invoiceId}/refund": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RefundAccountingInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/invoices/{invoiceId}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingInvoicePDF"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/bills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingBills"];
+        put?: never;
+        post: operations["CreateAccountingBill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/bills/{billId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingBill"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/bills/{billId}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ValidateAccountingBill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/bills/{billId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CancelAccountingBill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/bills/{billId}/refund": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RefundAccountingBill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/bills/{billId}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingBillPDF"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingAccounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/accounts/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["SearchAccountingAccounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingPayments"];
+        put?: never;
+        post: operations["CreateAccountingPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/payments/{paymentId}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ConfirmAccountingPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/partners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingPartners"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/journals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingJournals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/taxes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingTaxes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/reports/trial-balance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetAccountingTrialBalance"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/reports/partner-ledger": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetAccountingPartnerLedger"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/reports/profit-loss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingProfitLoss"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/general-ledger": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingGeneralLedger"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/payment-terms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingPaymentTerms"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/reports/aged-receivable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingAgedReceivable"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/reports/aged-payable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingAgedPayable"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/bank-statements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingBankStatements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/bank-statements/{statementId}/lines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingBankStatementLines"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/bank-statements/lines/{lineId}/suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingReconciliationSuggestions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/bank-statements/lines/{lineId}/reconcile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReconcileAccountingBankStatementLine"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/currencies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingCurrencies"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/currency-rates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingCurrencyRates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/currency-convert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ConvertAccountingCurrency"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/invoices/batch-validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BatchValidateAccountingInvoices"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/invoices/batch-cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BatchCancelAccountingInvoices"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/invoices/batch-create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BatchCreateAccountingInvoices"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/payments/batch-create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BatchCreateAccountingPayments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounting/payments/batch-confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BatchConfirmAccountingPayments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccounts"];
+        put?: never;
+        post: operations["CreateAccount"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    WorkflowRules: {
-      autoApprove?: boolean;
-      requireComments?: boolean;
-      allowReassignment?: boolean;
-      /** Format: double */
-      timeoutHours?: number;
-      escalationUserIds?: string[];
-      notifyOnSubmit?: boolean;
-      notifyOnComplete?: boolean;
-    };
-    /** @enum {string} */
-    StepType: "single" | "parallel" | "any";
-    /** @enum {string} */
-    ApproverType: "role" | "team" | "user";
-    WorkflowStepResponse: {
-      id: string;
-      /** Format: double */
-      stepOrder: number;
-      stepType: components["schemas"]["StepType"];
-      approverType: components["schemas"]["ApproverType"];
-      approverId?: string;
-      /** Format: double */
-      minApprovals: number;
-      /** Format: double */
-      requiredApprovers: number;
-    };
-    WorkflowResponse: {
-      id: string;
-      name: string;
-      organizationId: string;
-      entityType: string;
-      isActive: boolean;
-      rules?: components["schemas"]["WorkflowRules"];
-      createdAt: string;
-      updatedAt: string;
-      steps: components["schemas"]["WorkflowStepResponse"][];
-    };
-    WorkflowStepInput: {
-      /** Format: double */
-      stepOrder: number;
-      stepType: components["schemas"]["StepType"];
-      approverType: components["schemas"]["ApproverType"];
-      approverId?: string;
-      /** Format: double */
-      minApprovals?: number;
-      /** Format: double */
-      requiredApprovers?: number;
-    };
-    CreateWorkflowRequest: {
-      name: string;
-      entityType: string;
-      rules?: components["schemas"]["WorkflowRules"];
-      steps: components["schemas"]["WorkflowStepInput"][];
-    };
-    UpdateWorkflowRequest: {
-      name?: string;
-      isActive?: boolean;
-      rules?: components["schemas"]["WorkflowRules"];
-      steps?: components["schemas"]["WorkflowStepInput"][];
-    };
-    RuleCondition:
-      | {
-          /** Format: double */
-          value: number;
-          /** @enum {string} */
-          operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq";
-          /** @enum {string} */
-          type: "amount";
-        }
-      | {
-          value: string;
-          /** @enum {string} */
-          operator?: "eq";
-          /** @enum {string} */
-          type: "entityType";
-        }
-      | {
-          value: string;
-          /** @enum {string} */
-          operator?: "eq";
-          /** @enum {string} */
-          type: "userRole";
-        }
-      | {
-          /** @enum {string} */
-          type: "manual";
-        }
-      | {
-          value: string | number | boolean;
-          /** @enum {string} */
-          operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq" | "contains";
-          field: string;
-          /** @enum {string} */
-          type: "field";
+    schemas: {
+        WorkflowRules: {
+            autoApprove?: boolean;
+            requireComments?: boolean;
+            allowReassignment?: boolean;
+            /** Format: double */
+            timeoutHours?: number;
+            escalationUserIds?: string[];
+            notifyOnSubmit?: boolean;
+            notifyOnComplete?: boolean;
         };
-    Rule: {
-      conditions: components["schemas"]["RuleCondition"][];
-      /** @enum {string} */
-      logic?: "AND" | "OR";
-    };
-    RuleResponse: {
-      id: string;
-      organizationId: string;
-      entityType: string;
-      ruleName: string;
-      conditions: components["schemas"]["Rule"];
-      workflowId: string;
-      /** Format: double */
-      priority: number;
-    };
-    CreateRuleRequest: {
-      entityType: string;
-      ruleName: string;
-      conditions: string;
-      workflowId: string;
-      /** Format: double */
-      priority?: number;
-    };
-    /** @enum {string} */
-    Locale: "en" | "ar";
-    UserProfileResponse: {
-      id: string;
-      email: string;
-      name?: string | null;
-      preferredLocale: components["schemas"]["Locale"];
-      activeOrganizationId?: string | null;
-    };
-    UpdateProfileRequest: {
-      name?: string;
-      preferredLocale?: components["schemas"]["Locale"];
-    };
-    UpdateLocaleRequest: {
-      locale: components["schemas"]["Locale"];
-    };
-    /** @description Construct a type with a set of properties K of type T */
-    "Record_string.unknown_": {
-      [key: string]: unknown;
-    };
-    FileMetadata: {
-      id: string;
-      name: string;
-      path: string;
-      /** Format: double */
-      size: number;
-      mimeType: string;
-      createdAt: string;
-      modifiedAt: string;
-      createdBy: string;
-      modifiedBy?: string;
-      folderId?: string;
-      tags?: string[];
-      metadata?: components["schemas"]["Record_string.unknown_"];
-    };
-    FolderMetadata: {
-      id: string;
-      name: string;
-      path: string;
-      parentId?: string;
-      createdAt: string;
-      modifiedAt: string;
-      createdBy: string;
-      modifiedBy?: string;
-      /** Format: double */
-      fileCount: number;
-      /** Format: double */
-      subFolderCount: number;
-    };
-    CreateFolderRequest: {
-      name: string;
-      parentId?: string;
-    };
-    OdooProvisionResponse: {
-      success: boolean;
-      databaseName: string;
-      adminLogin: string;
-      adminPassword: string;
-      odooUrl: string;
-      loginUrl: string;
-    };
-    OdooInfoResponse: {
-      databaseName: string;
-      exists: boolean;
-      loginUrl: string | null;
-    };
-    OdooDeleteResponse: {
-      success: boolean;
-      message: string;
-    };
-    OdooDuplicateResponse: {
-      success: boolean;
-      originalName: string;
-      newName: string;
-    };
-    OdooDuplicateRequest: {
-      newName: string;
-      neutralize?: boolean;
-    };
-    OdooListResponse: {
-      databases: string[];
-    };
-    OdooSearchRequest: {
-      model: string;
-      domain?: unknown[];
-      /** Format: double */
-      limit?: number;
-      /** Format: double */
-      offset?: number;
-      order?: string;
-    };
-    OdooSearchReadRequest: {
-      model: string;
-      domain?: unknown[];
-      fields?: string[];
-      /** Format: double */
-      limit?: number;
-      /** Format: double */
-      offset?: number;
-      order?: string;
-      context?: components["schemas"]["Record_string.unknown_"];
-    };
-    OdooReadRequest: {
-      model: string;
-      ids: number[];
-      fields?: string[];
-      context?: components["schemas"]["Record_string.unknown_"];
-    };
-    OdooCreateRequest: {
-      model: string;
-      values: components["schemas"]["Record_string.unknown_"];
-      context?: components["schemas"]["Record_string.unknown_"];
-    };
-    OdooWriteRequest: {
-      model: string;
-      ids: number[];
-      values: components["schemas"]["Record_string.unknown_"];
-      context?: components["schemas"]["Record_string.unknown_"];
-    };
-    OdooUnlinkRequest: {
-      model: string;
-      ids: number[];
-      context?: components["schemas"]["Record_string.unknown_"];
-    };
-    OdooExecuteRequest: {
-      model: string;
-      method: string;
-      args?: unknown[];
-      kwargs?: components["schemas"]["Record_string.unknown_"];
-    };
-    NASConnectionStatus: {
-      connected: boolean;
-      mountPoint?: string;
-      error?: string;
-      /** Format: double */
-      freeSpace?: number;
-      /** Format: double */
-      totalSpace?: number;
-      /** Format: double */
-      usedSpace?: number;
-    };
-    ConnectNASRequest: {
-      name: string;
-      /** @enum {string} */
-      type: "smb" | "nfs" | "webdav";
-      host: string;
-      shareName: string;
-      username?: string;
-      password?: string;
-      domain?: string;
-      mountPoint?: string;
-      /** Format: double */
-      port?: number;
-    };
-    NASStatusResponse: {
-      [key: string]: components["schemas"]["NASConnectionStatus"];
-    };
-    /** @enum {string} */
-    EmployeeType: "employee" | "student" | "trainee" | "contractor" | "freelance";
-    /** @enum {string} */
-    Gender: "male" | "female" | "other";
-    /** @enum {string} */
-    MaritalStatus: "single" | "married" | "cohabitant" | "widower" | "divorced";
-    EmployeeDbResponse: {
-      id: string;
-      organizationId: string;
-      userId?: string;
-      /** Format: double */
-      odooEmployeeId?: number;
-      name: string;
-      email?: string;
-      phone?: string;
-      mobile?: string;
-      workEmail?: string;
-      workPhone?: string;
-      workLocation?: string;
-      jobTitle?: string;
-      departmentId?: string;
-      managerId?: string;
-      employeeType?: components["schemas"]["EmployeeType"];
-      gender?: components["schemas"]["Gender"];
-      maritalStatus?: components["schemas"]["MaritalStatus"];
-      birthday?: string;
-      placeOfBirth?: string;
-      countryOfBirth?: string;
-      nationality?: string;
-      identificationId?: string;
-      passportId?: string;
-      bankAccountNumber?: string;
-      bankName?: string;
-      bankIban?: string;
-      emergencyContact?: string;
-      emergencyPhone?: string;
-      emergencyRelation?: string;
-      hireDate?: string;
-      terminationDate?: string;
-      photoUrl?: string;
-      notes?: string;
-      active: boolean;
-      lastSyncedAt?: string;
-      createdAt: string;
-      updatedAt: string;
-    };
-    CreateEmployeeRequest: {
-      userId?: string;
-      /** Format: double */
-      odooEmployeeId?: number;
-      name: string;
-      email?: string;
-      phone?: string;
-      mobile?: string;
-      workEmail?: string;
-      workPhone?: string;
-      workLocation?: string;
-      jobTitle?: string;
-      departmentId?: string;
-      managerId?: string;
-      employeeType?: components["schemas"]["EmployeeType"];
-      gender?: components["schemas"]["Gender"];
-      maritalStatus?: components["schemas"]["MaritalStatus"];
-      birthday?: string;
-      placeOfBirth?: string;
-      countryOfBirth?: string;
-      nationality?: string;
-      identificationId?: string;
-      passportId?: string;
-      bankAccountNumber?: string;
-      bankName?: string;
-      bankIban?: string;
-      emergencyContact?: string;
-      emergencyPhone?: string;
-      emergencyRelation?: string;
-      hireDate?: string;
-      terminationDate?: string;
-      photoUrl?: string;
-      notes?: string;
-      active?: boolean;
-    };
-    UpdateEmployeeRequest: {
-      name?: string;
-      email?: string;
-      phone?: string;
-      mobile?: string;
-      workEmail?: string;
-      workPhone?: string;
-      workLocation?: string;
-      jobTitle?: string;
-      departmentId?: string;
-      managerId?: string;
-      employeeType?: components["schemas"]["EmployeeType"];
-      gender?: components["schemas"]["Gender"];
-      maritalStatus?: components["schemas"]["MaritalStatus"];
-      birthday?: string;
-      placeOfBirth?: string;
-      countryOfBirth?: string;
-      nationality?: string;
-      identificationId?: string;
-      passportId?: string;
-      bankAccountNumber?: string;
-      bankName?: string;
-      bankIban?: string;
-      emergencyContact?: string;
-      emergencyPhone?: string;
-      emergencyRelation?: string;
-      hireDate?: string;
-      terminationDate?: string;
-      photoUrl?: string;
-      notes?: string;
-      active?: boolean;
-    };
-    SyncEmployeeFromOdooRequest: {
-      /** Format: double */
-      odooEmployeeId: number;
-    };
-    SyncAllEmployeesResponse: {
-      /** Format: double */
-      synced: number;
-      /** Format: double */
-      created: number;
-      /** Format: double */
-      updated: number;
-      errors: string[];
-    };
-    DepartmentDbResponse: {
-      id: string;
-      organizationId: string;
-      /** Format: double */
-      odooDepartmentId?: number;
-      name: string;
-      code?: string;
-      parentId?: string;
-      managerId?: string;
-      /** Format: double */
-      color?: number;
-      note?: string;
-      lastSyncedAt?: string;
-      createdAt: string;
-      updatedAt: string;
-    };
-    CreateDepartmentRequest: {
-      /** Format: double */
-      odooDepartmentId?: number;
-      name: string;
-      code?: string;
-      parentId?: string;
-      managerId?: string;
-      /** Format: double */
-      color?: number;
-      note?: string;
-    };
-    UpdateDepartmentRequest: {
-      name?: string;
-      code?: string;
-      parentId?: string;
-      managerId?: string;
-      /** Format: double */
-      color?: number;
-      note?: string;
-    };
-    SyncDepartmentFromOdooRequest: {
-      /** Format: double */
-      odooDepartmentId: number;
-    };
-    SyncAllDepartmentsResponse: {
-      /** Format: double */
-      synced: number;
-      /** Format: double */
-      created: number;
-      /** Format: double */
-      updated: number;
-      errors: string[];
-    };
-    LeaveBalanceResponse: {
-      employeeId: string;
-      leaveTypeId: string;
-      leaveTypeName: string;
-      /** Format: double */
-      totalAllocated: number;
-      /** Format: double */
-      totalUsed: number;
-      /** Format: double */
-      totalRemaining: number;
-    };
-    /**
-     * @description HR Controller DTOs - TSOA-compatible types
-     *     These types convert Odoo's tuple format [id, name] to proper objects
-     */
-    OdooRelation: {
-      /** Format: double */
-      id: number;
-      name: string;
-    };
-    EmployeeResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      work_email?: string;
-      work_phone?: string;
-      mobile_phone?: string;
-      job_title?: string;
-      department_id?: components["schemas"]["OdooRelation"];
-      parent_id?: components["schemas"]["OdooRelation"];
-      address_id?: components["schemas"]["OdooRelation"];
-      work_location_id?: components["schemas"]["OdooRelation"];
-      user_id?: components["schemas"]["OdooRelation"];
-      employee_type?: string;
-      gender?: string;
-      marital?: string;
-      birthday?: string;
-      identification_id?: string;
-      passport_id?: string;
-      bank_account_id?: components["schemas"]["OdooRelation"];
-      emergency_contact?: string;
-      emergency_phone?: string;
-      visa_no?: string;
-      visa_expire?: string;
-      work_permit_no?: string;
-      work_permit_expiration_date?: string;
-      certificate?: string;
-      study_field?: string;
-      study_school?: string;
-      place_of_birth?: string;
-      country_of_birth?: components["schemas"]["OdooRelation"];
-      active?: boolean;
-    };
-    DepartmentResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      complete_name?: string;
-      manager_id?: components["schemas"]["OdooRelation"];
-      parent_id?: components["schemas"]["OdooRelation"];
-      company_id?: components["schemas"]["OdooRelation"];
-      active?: boolean;
-      /** Format: double */
-      total_employee?: number;
-      /** Format: double */
-      color?: number;
-      note?: string;
-    };
-    ContractResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      employee_id: components["schemas"]["OdooRelation"];
-      date_start: string;
-      date_end?: string;
-      state: string;
-      job_id?: components["schemas"]["OdooRelation"];
-      department_id?: components["schemas"]["OdooRelation"];
-      /** Format: double */
-      wage: number;
-      wage_type: string;
-      struct_id?: components["schemas"]["OdooRelation"];
-      resource_calendar_id?: components["schemas"]["OdooRelation"];
-      notes?: string;
-    };
-    LeaveTypeResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      request_unit: string;
-      time_type: string;
-      /** Format: double */
-      color?: number;
-      leave_validation_type?: string;
-      requires_allocation?: boolean;
-      employee_requests?: boolean;
-      allocation_validation_type?: string;
-      /** Format: double */
-      max_leaves?: number;
-      unpaid?: boolean;
-      active?: boolean;
-      support_document?: boolean;
-    };
-    LeaveRequestResponse: {
-      /** Format: double */
-      id: number;
-      employee_id: components["schemas"]["OdooRelation"];
-      holiday_status_id: components["schemas"]["OdooRelation"];
-      date_from: string;
-      date_to: string;
-      /** Format: double */
-      number_of_days: number;
-      state: string;
-      request_date_from?: string;
-      request_unit_half?: boolean;
-      request_unit_hours?: boolean;
-      request_hour_from?: string;
-      request_hour_to?: string;
-      notes?: string;
-      manager_id?: components["schemas"]["OdooRelation"];
-      department_id?: components["schemas"]["OdooRelation"];
-    };
-    LeaveAllocationResponse: {
-      /** Format: double */
-      id: number;
-      employee_id: components["schemas"]["OdooRelation"];
-      holiday_status_id: components["schemas"]["OdooRelation"];
-      /** Format: double */
-      number_of_days: number;
-      /** Format: double */
-      number_of_days_display?: number;
-      date_from?: string;
-      date_to?: string;
-      state: string;
-      name?: string;
-      notes?: string;
-    };
-    PayslipResponse: {
-      /** Format: double */
-      id: number;
-      number: string;
-      employee_id: components["schemas"]["OdooRelation"];
-      date_from: string;
-      date_to: string;
-      state: string;
-      /** Format: double */
-      basic_wage?: number;
-      /** Format: double */
-      net_wage?: number;
-      /** Format: double */
-      gross_wage?: number;
-      contract_id?: components["schemas"]["OdooRelation"];
-      struct_id?: components["schemas"]["OdooRelation"];
-      credit_note?: boolean;
-      paid_date?: string;
-    };
-    PayslipLineResponse: {
-      /** Format: double */
-      id: number;
-      slip_id: components["schemas"]["OdooRelation"];
-      name: string;
-      code: string;
-      category_id?: components["schemas"]["OdooRelation"];
-      /** Format: double */
-      sequence?: number;
-      /** Format: double */
-      quantity?: number;
-      /** Format: double */
-      rate?: number;
-      /** Format: double */
-      amount: number;
-    };
-    HealthCheck: {
-      /** @enum {string} */
-      status: "ok" | "error";
-      timestamp: string;
-      /** Format: double */
-      uptime: number;
-      version: string;
-    };
-    /** @enum {string} */
-    DocumentType:
-      | "invoice"
-      | "bill"
-      | "quote"
-      | "purchase_order"
-      | "delivery_note"
-      | "receipt"
-      | "credit_note"
-      | "debit_note"
-      | "payslip"
-      | "contract"
-      | "payment_receipt"
-      | "refund";
-    DocumentTemplateResponse: {
-      id: string;
-      organizationId: string;
-      documentType: components["schemas"]["DocumentType"];
-      templateId: string;
-      templateName: string;
-      templateDescription: string | null;
-      isActive: boolean;
-      customizations: components["schemas"]["Record_string.unknown_"] | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    OdooReportTemplate: {
-      /** Format: double */
-      id: number;
-      name: string;
-      report_name: string;
-      model: string;
-      report_type: string;
-    };
-    CreateDocumentTemplateRequest: {
-      documentType: components["schemas"]["DocumentType"];
-      templateId: string;
-      templateName: string;
-      templateDescription?: string;
-      isActive?: boolean;
-      customizations?: components["schemas"]["Record_string.unknown_"];
-    };
-    UpdateTemplateRequest: {
-      templateName?: string;
-      templateDescription?: string;
-      customizations?: components["schemas"]["Record_string.unknown_"];
-    };
-    CreateCustomTemplateRequest: {
-      documentType: components["schemas"]["DocumentType"];
-      templateName: string;
-      templateDescription?: string;
-      qwebXml: string;
-      model: string;
-      isActive?: boolean;
-      customizations?: components["schemas"]["Record_string.unknown_"];
-    };
-    Deal: {
-      id: string;
-      title: string;
-      /** Format: double */
-      value: number;
-      /** @enum {string} */
-      stage: "PROSPECT" | "QUALIFIED" | "PROPOSAL" | "NEGOTIATION" | "CLOSED_WON" | "CLOSED_LOST";
-      contactId: string;
-      expectedCloseDate: string;
-      /** Format: double */
-      probability: number;
-    };
-    DealCreateRequest: {
-      title: string;
-      /** Format: double */
-      value: number;
-      contactId: string;
-      expectedCloseDate: string;
-      /** Format: double */
-      probability: number;
-    };
-    /** @description Dashboard statistics response */
-    DashboardStatsResponse: {
-      /** Format: double */
-      activeCases: number;
-      /** Format: double */
-      pendingReviews: number;
-      /** Format: double */
-      completedAudits: number;
-      /** Format: double */
-      totalCases: number;
-      /** Format: double */
-      completionRate: number;
-    };
-    /** @description Case activity item */
-    CaseActivityResponse: {
-      id: string;
-      /** @enum {string} */
-      type: "case_update";
-      caseId: string;
-      caseNumber: string;
-      clientName: string;
-      status: string;
-      updatedAt: string;
-      updatedBy: {
-        name: string;
-        id: string;
-      };
-    };
-    /** @description Notification response */
-    NotificationResponse: {
-      id: string;
-      type: string;
-      title: string;
-      description: string;
-      timestamp: string;
-      isRead: boolean;
-      relatedEntityType: string | null;
-      relatedEntityId: string | null;
-      actionLabel: string | null;
-      actionUrl: string | null;
-    };
-    /** @description Unread notifications count response */
-    UnreadNotificationsCountResponse: {
-      /** Format: double */
-      count: number;
-    };
-    /** @enum {string} */
-    ConnectorType:
-      | "postgresql"
-      | "mysql"
-      | "mssql"
-      | "storage_local"
-      | "storage_webdav"
-      | "storage_smb"
-      | "storage_cloud";
-    ConnectorResponse: {
-      id: string;
-      organizationId: string;
-      name: string;
-      description?: string;
-      type: components["schemas"]["ConnectorType"];
-      isActive: boolean;
-      tags: string[];
-      metadata: components["schemas"]["Record_string.unknown_"];
-      lastConnectionTest?: string;
-      lastConnectionStatus?: string;
-      lastConnectionError?: string;
-      createdAt: string;
-      updatedAt: string;
-    };
-    ConnectorConfig: {
-      host?: string;
-      /** Format: double */
-      port?: number;
-      database?: string;
-      username?: string;
-      password?: string;
-      ssl?: boolean;
-      url?: string;
-      apiKey?: string;
-      authToken?: string;
-    } & {
-      [key: string]: unknown;
-    };
-    CreateConnectorRequest: {
-      name: string;
-      description?: string;
-      type: components["schemas"]["ConnectorType"];
-      config: components["schemas"]["ConnectorConfig"];
-      tags?: string[];
-      metadata?: components["schemas"]["Record_string.unknown_"];
-    };
-    UpdateConnectorRequest: {
-      name?: string;
-      description?: string;
-      config?: components["schemas"]["ConnectorConfig"];
-      tags?: string[];
-      metadata?: components["schemas"]["Record_string.unknown_"];
-      isActive?: boolean;
-    };
-    QueryResponse: {
-      rows: unknown[];
-      /** Format: double */
-      rowCount: number;
-      /** Format: double */
-      executionTime: number;
-    };
-    QueryRequest: {
-      sql: string;
-      params?: unknown[];
-    };
-    SchemaResponse: {
-      tables: {
         /** @enum {string} */
-        type: "table" | "view";
-        name: string;
-        schema: string;
-      }[];
-    };
-    TablePreviewResponse: {
-      schema: string;
-      table: string;
-      columns: {
-        nullable: boolean;
-        type: string;
-        name: string;
-      }[];
-      sampleData: unknown[];
-      /** Format: double */
-      totalRows: number;
-    };
-    FieldMapping: {
-      sourceColumn: string;
-      targetField: string;
-      /** @enum {string} */
-      transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean";
-      defaultValue?: unknown;
-    };
-    SuggestMappingsRequest: {
-      sourceColumns: string[];
-      /** @enum {string} */
-      targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
-    };
-    /** @enum {string} */
-    AuditType:
-      | "ICV"
-      | "ISO_9001"
-      | "ISO_14001"
-      | "ISO_45001"
-      | "financial_audit"
-      | "internal_audit"
-      | "compliance_audit"
-      | "operational_audit";
-    /** @enum {string} */
-    CaseStatus: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
-    /** @enum {string} */
-    CasePriority: "low" | "medium" | "high" | "critical";
-    /** @enum {string} */
-    AssignmentRole: "lead" | "reviewer" | "team_member";
-    CaseResponse: {
-      id: string;
-      organizationId: string;
-      caseNumber: string;
-      clientName: string;
-      auditType: components["schemas"]["AuditType"];
-      status: components["schemas"]["CaseStatus"];
-      priority: components["schemas"]["CasePriority"];
-      dueDate?: string;
-      completedDate?: string;
-      createdBy: string;
-      createdAt: string;
-      updatedAt: string;
-      assignments?: {
-        user?: {
-          email: string;
-          name: string | null;
-          id: string;
-        };
-        role: components["schemas"]["AssignmentRole"];
-        userId: string;
-      }[];
-    };
-    CreateCaseRequest: {
-      caseNumber?: string;
-      clientName: string;
-      auditType: components["schemas"]["AuditType"];
-      status?: components["schemas"]["CaseStatus"];
-      priority?: components["schemas"]["CasePriority"];
-      dueDate?: string;
-    };
-    /** @enum {string} */
-    AuditCategory: "certification" | "financial" | "operational" | "compliance";
-    TemplateStructure: {
-      settings?: components["schemas"]["Record_string.unknown_"];
-      sections: {
-        procedures: {
-          /** Format: double */
-          sortOrder: number;
-          requirements?: components["schemas"]["Record_string.unknown_"];
-          description?: string;
-          title: string;
-          referenceNumber: string;
-        }[];
-        settings?: components["schemas"]["Record_string.unknown_"];
-        /** Format: double */
-        sortOrder: number;
-        description?: string;
-        name: string;
-      }[];
-    };
-    TemplateResponse: {
-      id: string;
-      organizationId?: string;
-      name: string;
-      description?: string;
-      auditType: components["schemas"]["AuditType"];
-      category?: components["schemas"]["AuditCategory"];
-      version: string;
-      isActive: boolean;
-      isPublic: boolean;
-      structure: components["schemas"]["TemplateStructure"];
-      createdBy: string;
-      createdAt: string;
-      updatedAt: string;
-    };
-    CreateTemplateRequest: {
-      organizationId?: string;
-      name: string;
-      description?: string;
-      auditType: components["schemas"]["AuditType"];
-      category?: components["schemas"]["AuditCategory"];
-      version?: string;
-      isActive?: boolean;
-      isPublic?: boolean;
-      structure: components["schemas"]["TemplateStructure"];
-    };
-    UpdateCaseRequest: {
-      caseNumber?: string;
-      clientName?: string;
-      auditType?: components["schemas"]["AuditType"];
-      status?: components["schemas"]["CaseStatus"];
-      priority?: components["schemas"]["CasePriority"];
-      dueDate?: string;
-      completedDate?: string;
-    };
-    /** @enum {string} */
-    AuditStatus: "draft" | "in-progress" | "under-review" | "completed" | "archived";
-    ScopeResponse: {
-      id: string;
-      caseId: string;
-      templateId?: string;
-      name: string;
-      description?: string;
-      status: components["schemas"]["AuditStatus"];
-      metadata: components["schemas"]["Record_string.unknown_"];
-      createdBy: string;
-      completedBy?: string;
-      archivedBy?: string;
-      createdAt: string;
-      updatedAt: string;
-      completedAt?: string;
-      archivedAt?: string;
-    };
-    CreateScopeRequest: {
-      name: string;
-      description?: string;
-      status?: components["schemas"]["AuditStatus"];
-      metadata?: components["schemas"]["Record_string.unknown_"];
-    };
-    CreateScopeFromTemplateRequest: {
-      templateId: string;
-    };
-    UpdateScopeStatusRequest: {
-      status: components["schemas"]["AuditStatus"];
-    };
-    SectionResponse: {
-      id: string;
-      scopeId: string;
-      name: string;
-      description?: string;
-      /** Format: double */
-      sortOrder: number;
-      isCompleted: boolean;
-      settings: components["schemas"]["Record_string.unknown_"];
-      createdAt: string;
-      updatedAt: string;
-    };
-    ProcedureResponse: {
-      id: string;
-      sectionId: string;
-      referenceNumber: string;
-      title: string;
-      description?: string;
-      requirements: components["schemas"]["Record_string.unknown_"];
-      /** Format: double */
-      sortOrder: number;
-      isCompleted: boolean;
-      completedBy?: string;
-      completedAt?: string;
-      memo?: string;
-      fieldData: components["schemas"]["Record_string.unknown_"];
-      canEdit: boolean;
-      createdAt: string;
-      updatedAt: string;
-    };
-    CompleteProcedureRequest: {
-      fieldData?: components["schemas"]["Record_string.unknown_"];
-      memo?: string;
-    };
-    DocumentResponse: {
-      id: string;
-      caseId: string;
-      procedureId?: string;
-      fileName: string;
-      /** Format: double */
-      fileSize: number;
-      fileType: string;
-      storagePath: string;
-      /** Format: double */
-      version: number;
-      parentDocumentId?: string;
-      uploadedBy: string;
-      uploadedAt: string;
-      isDeleted: boolean;
-    };
-    CreateDocumentRequest: {
-      procedureId?: string;
-      fileName: string;
-      /** Format: double */
-      fileSize: number;
-      fileType: string;
-      storagePath: string;
-      /** Format: double */
-      version?: number;
-      parentDocumentId?: string;
-    };
-    /** @enum {string} */
-    NoteType: "observation" | "review_comment" | "general" | "memo";
-    NoteResponse: {
-      id: string;
-      caseId: string;
-      procedureId?: string;
-      noteType: components["schemas"]["NoteType"];
-      content: string;
-      createdBy: string;
-      createdAt: string;
-      updatedAt: string;
-      isEdited: boolean;
-    };
-    CreateNoteRequest: {
-      procedureId?: string;
-      noteType: components["schemas"]["NoteType"];
-      content: string;
-    };
-    UpdateNoteRequest: {
-      content: string;
-    };
-    AssignmentResponse: {
-      caseId: string;
-      userId: string;
-      role: components["schemas"]["AssignmentRole"];
-      assignedBy: string;
-      assignedAt: string;
-    };
-    CreateAssignmentRequest: {
-      userId: string;
-      role: components["schemas"]["AssignmentRole"];
-    };
-    /** @enum {string} */
-    CaseEntityType: "case" | "scope" | "section" | "procedure" | "document" | "note";
-    /** @enum {string} */
-    CaseAction: "created" | "updated" | "deleted" | "completed" | "archived" | "assigned" | "unassigned";
-    HistoryResponse: {
-      id: string;
-      caseId: string;
-      entityType: components["schemas"]["CaseEntityType"];
-      entityId: string;
-      action: components["schemas"]["CaseAction"];
-      changesBefore?: components["schemas"]["Record_string.unknown_"];
-      changesAfter?: components["schemas"]["Record_string.unknown_"];
-      changedBy: string;
-      changedAt: string;
-    };
-    /** @enum {string} */
-    EntityType: "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
-    /** @enum {string} */
-    AuditAction:
-      | "created"
-      | "updated"
-      | "deleted"
-      | "completed"
-      | "failed"
-      | "started"
-      | "cancelled"
-      | "retrying";
-    AuditLogUser: {
-      id: string;
-      name: string | null;
-      email: string;
-    };
-    AuditLogResponse: {
-      id: string;
-      entityType: components["schemas"]["EntityType"];
-      entityId: string;
-      action: components["schemas"]["AuditAction"];
-      organizationId: string | null;
-      userId: string | null;
-      metadata: components["schemas"]["Record_string.unknown_"] | null;
-      ipAddress: string | null;
-      userAgent: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      user?: components["schemas"]["AuditLogUser"] | null;
-    };
-    AuditLogFilters: {
-      entityType?: components["schemas"]["EntityType"];
-      entityId?: string;
-      action?: components["schemas"]["AuditAction"];
-      userId?: string;
-      startDate?: string;
-      endDate?: string;
-      /** Format: double */
-      limit?: number;
-      /** Format: double */
-      offset?: number;
-    };
-    ExportAuditLogsRequest: {
-      /** @enum {string} */
-      format: "csv" | "json";
-      filters?: components["schemas"]["AuditLogFilters"];
-    };
-    SubmitForApprovalResponse: {
-      requestId: string;
-      workflowId: string;
-      status: string;
-      message: string;
-    };
-    EntityData: {
-      entityType: components["schemas"]["EntityType"];
-      entityId: string;
-      /** Format: double */
-      amount?: number;
-      status?: string;
-      createdBy?: string;
-    } & {
-      [key: string]: unknown;
-    };
-    SubmitForApprovalRequest: {
-      entityType: string;
-      entityId: string;
-      entityData: components["schemas"]["EntityData"];
-    };
-    ApprovalStepResponse: {
-      id: string;
-      /** Format: double */
-      stepOrder: number;
-      approverId: string;
-      approverName?: string;
-      status: string;
-      comments?: string;
-      actionAt?: string;
-      delegatedTo?: string;
-      delegatedToName?: string;
-    };
-    ApprovalRequestResponse: {
-      id: string;
-      workflowId: string;
-      workflowName: string;
-      entityType: string;
-      entityId: string;
-      status: string;
-      requestedBy: string;
-      requestedByName?: string;
-      submittedAt: string;
-      completedAt?: string;
-      /** Format: double */
-      currentStep?: number;
-      /** Format: double */
-      totalSteps?: number;
-      steps: components["schemas"]["ApprovalStepResponse"][];
-    };
-    ApprovalActionResponse: {
-      success: boolean;
-      message: string;
-      requestStatus?: string;
-    };
-    ApprovalActionRequest: {
-      comments?: string;
-    };
-    DelegateApprovalRequest: {
-      delegateToUserId: string;
-      comments?: string;
-    };
-    Invoice: {
-      id: string;
-      number: string;
-      /** @enum {string} */
-      type: "SALES" | "PURCHASE";
-      date: string;
-      /** Format: double */
-      total: number;
-      status: string;
-    };
-    InvoiceCreateRequest: {
-      /** @enum {string} */
-      type: "SALES" | "PURCHASE";
-      customerId?: string;
-      supplierId?: string;
-      date: string;
-      dueDate?: string;
-      items: {
-        /** Format: double */
-        unitPrice: number;
-        /** Format: double */
-        quantity: number;
-        description: string;
-      }[];
-    };
-    /**
-     * @description Hisabiq (Accounting) API Response Types
-     *
-     *     These are simplified types for API responses that TSOA can handle.
-     *     Internal Odoo types use tuples [number, string] which TSOA doesn't support.
-     *     All fields use camelCase naming convention for JavaScript/TypeScript APIs.
-     */
-    PaymentResponse: {
-      /** Format: double */
-      id?: number;
-      /** @enum {string} */
-      paymentType: "inbound" | "outbound" | "transfer";
-      /** @enum {string} */
-      partnerType: "customer" | "supplier";
-      /** Format: double */
-      partnerId: number;
-      partnerName?: string;
-      /** Format: double */
-      amount: number;
-      /** Format: double */
-      currencyId?: number;
-      paymentDate: string;
-      /** Format: double */
-      journalId: number;
-      journalName?: string;
-      /** Format: double */
-      paymentMethodId?: number;
-      ref?: string;
-      /** @enum {string} */
-      state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
-    };
-    CreatePaymentDTO: {
-      /** @enum {string} */
-      type: "inbound" | "outbound";
-      /** Format: double */
-      partnerId: number;
-      /** @enum {string} */
-      partnerType: "customer" | "supplier";
-      /** Format: double */
-      amount: number;
-      date: string;
-      /** Format: double */
-      journalId: number;
-      reference?: string;
-      invoiceIds?: number[];
-    };
-    PartnerResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      email?: string;
-      phone?: string;
-      vat?: string;
-      /** Format: double */
-      accountReceivableId?: number;
-      /** Format: double */
-      accountPayableId?: number;
-      /** Format: double */
-      paymentTermId?: number;
-      /** Format: double */
-      customerRank?: number;
-      /** Format: double */
-      supplierRank?: number;
-    };
-    JournalResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      code: string;
-      /** @enum {string} */
-      type: "sale" | "purchase" | "cash" | "bank" | "general";
-      /** Format: double */
-      currencyId?: number;
-      currencyName?: string;
-      /** Format: double */
-      companyId: number;
-      companyName?: string;
-      /** Format: double */
-      defaultAccountId: number;
-      defaultAccountName?: string;
-    };
-    TaxResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      /** Format: double */
-      amount: number;
-      /** @enum {string} */
-      amountType: "percent" | "division" | "fixed" | "group";
-      /** @enum {string} */
-      typeTaxUse: "sale" | "purchase" | "none";
-      active: boolean;
-    };
-    AccountBalanceReportResponse: {
-      /** Format: double */
-      accountId: number;
-      accountCode: string;
-      accountName: string;
-      /** Format: double */
-      debit: number;
-      /** Format: double */
-      credit: number;
-      /** Format: double */
-      balance: number;
-    };
-    AccountBalanceQuery: {
-      accountIds?: number[];
-      dateFrom?: string;
-      dateTo?: string;
-    };
-    PartnerLedgerEntryResponse: {
-      date: string;
-      moveName: string;
-      label: string;
-      /** Format: double */
-      debit: number;
-      /** Format: double */
-      credit: number;
-      /** Format: double */
-      balance: number;
-    };
-    PartnerLedgerReportResponse: {
-      /** Format: double */
-      partnerId: number;
-      partnerName: string;
-      /** Format: double */
-      debit: number;
-      /** Format: double */
-      credit: number;
-      /** Format: double */
-      balance: number;
-      entries: components["schemas"]["PartnerLedgerEntryResponse"][];
-    };
-    PartnerLedgerQuery: {
-      /** Format: double */
-      partnerId: number;
-      dateFrom?: string;
-      dateTo?: string;
-    };
-    ProfitLossResponse: {
-      /** Format: double */
-      income: number;
-      /** Format: double */
-      expenses: number;
-      /** Format: double */
-      netProfit: number;
-    };
-    GLEntryResponse: {
-      /** Format: double */
-      id: number;
-      /** Format: double */
-      moveId: number;
-      moveName?: string;
-      date: string;
-      /** Format: double */
-      accountId: number;
-      accountName?: string;
-      /** Format: double */
-      partnerId?: number;
-      partnerName?: string;
-      name: string;
-      /** Format: double */
-      debit: number;
-      /** Format: double */
-      credit: number;
-      /** Format: double */
-      balance: number;
-      /** Format: double */
-      amountCurrency?: number;
-      /** Format: double */
-      currencyId?: number;
-      currencyName?: string;
-      /** Format: double */
-      companyId: number;
-      companyName?: string;
-    };
-    Account: {
-      id: string;
-      code: string;
-      name: string;
-      /** @enum {string} */
-      type: "ASSET" | "LIABILITY" | "EQUITY" | "REVENUE" | "EXPENSE";
-      /** Format: double */
-      balance: number;
-      parentId?: string;
-    };
-    AccountCreateRequest: {
-      code: string;
-      name: string;
-      /** @enum {string} */
-      type: "ASSET" | "LIABILITY" | "EQUITY" | "REVENUE" | "EXPENSE";
-      parentId?: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
-}
-export type $defs = Record<string, never>;
-export interface operations {
-  ListWorkflows: {
-    parameters: {
-      query?: {
-        entityType?: string;
-        isActive?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WorkflowResponse"][];
-        };
-      };
-    };
-  };
-  CreateWorkflow: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateWorkflowRequest"];
-      };
-    };
-    responses: {
-      /** @description Workflow created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WorkflowResponse"];
-        };
-      };
-    };
-  };
-  GetWorkflow: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        workflowId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WorkflowResponse"];
-        };
-      };
-    };
-  };
-  UpdateWorkflow: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        workflowId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateWorkflowRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WorkflowResponse"];
-        };
-      };
-    };
-  };
-  DeleteWorkflow: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        workflowId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  ActivateWorkflow: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        workflowId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  DeactivateWorkflow: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        workflowId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  ListRules: {
-    parameters: {
-      query?: {
-        entityType?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["RuleResponse"][];
-        };
-      };
-    };
-  };
-  CreateRule: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateRuleRequest"];
-      };
-    };
-    responses: {
-      /** @description Rule created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["RuleResponse"];
-        };
-      };
-    };
-  };
-  DeleteRule: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        ruleId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  GetCurrentUser: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description User profile retrieved */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserProfileResponse"];
-        };
-      };
-    };
-  };
-  UpdateCurrentUser: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateProfileRequest"];
-      };
-    };
-    responses: {
-      /** @description User profile updated */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UserProfileResponse"];
-        };
-      };
-    };
-  };
-  UpdateCurrentUserLocale: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateLocaleRequest"];
-      };
-    };
-    responses: {
-      /** @description User locale updated */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            locale: components["schemas"]["Locale"];
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  UploadFile: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "multipart/form-data": {
-          /** Format: binary */
-          file: string;
-          folderId?: string;
-          tags?: string;
-          metadata?: string;
-        };
-      };
-    };
-    responses: {
-      /** @description File uploaded successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["FileMetadata"];
-        };
-      };
-    };
-  };
-  UploadFiles: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "multipart/form-data": {
-          /** Format: binary */
-          files: string;
-          folderId?: string;
-          tags?: string;
-          metadata?: string;
-        };
-      };
-    };
-    responses: {
-      /** @description Files uploaded successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["FileMetadata"][];
-        };
-      };
-    };
-  };
-  GetFile: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        fileId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["FileMetadata"];
-        };
-      };
-    };
-  };
-  DeleteFile: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        fileId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description File deleted successfully */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  DownloadFile: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        fileId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description No content */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  SearchFiles: {
-    parameters: {
-      query?: {
-        query?: string;
-        folderId?: string;
-        mimeTypes?: string[];
-        tags?: string[];
-        dateFrom?: string;
-        dateTo?: string;
-        createdBy?: string;
-        limit?: number;
-        offset?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            hasMore: boolean;
+        StepType: "single" | "parallel" | "any";
+        /** @enum {string} */
+        ApproverType: "role" | "team" | "user";
+        WorkflowStepResponse: {
+            id: string;
             /** Format: double */
-            total: number;
-            files: components["schemas"]["FileMetadata"][];
-          };
-        };
-      };
-    };
-  };
-  CreateFolder: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateFolderRequest"];
-      };
-    };
-    responses: {
-      /** @description Folder created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["FolderMetadata"];
-        };
-      };
-    };
-  };
-  GetFolderContents: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        folderId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            subFolders: components["schemas"]["FolderMetadata"][];
-            files: components["schemas"]["FileMetadata"][];
-            folder: components["schemas"]["FolderMetadata"];
-          };
-        };
-      };
-    };
-  };
-  DeleteFolder: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        folderId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Folder deleted successfully */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  GetQuota: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            unit: string;
+            stepOrder: number;
+            stepType: components["schemas"]["StepType"];
+            approverType: components["schemas"]["ApproverType"];
+            approverId?: string;
             /** Format: double */
-            remaining: number;
+            minApprovals: number;
             /** Format: double */
-            total: number;
-            /** Format: double */
-            used: number;
-          };
+            requiredApprovers: number;
         };
-      };
-    };
-  };
-  ProvisionDatabase: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OdooProvisionResponse"];
-        };
-      };
-    };
-  };
-  ProvisionUser: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            hasApiKey: boolean;
-            odooLogin: string;
-            /** Format: double */
-            odooUid: number;
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  GetDatabaseInfo: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OdooInfoResponse"];
-        };
-      };
-    };
-  };
-  DeleteDatabase: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OdooDeleteResponse"];
-        };
-      };
-    };
-  };
-  DuplicateDatabase: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["OdooDuplicateRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OdooDuplicateResponse"];
-        };
-      };
-    };
-  };
-  BackupDatabase: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            data: string;
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  ListAllDatabases: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OdooListResponse"];
-        };
-      };
-    };
-  };
-  GetDatabaseInfoByOrganization: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        organizationId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OdooInfoResponse"];
-        };
-      };
-    };
-  };
-  Search: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["OdooSearchRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": number[];
-        };
-      };
-    };
-  };
-  SearchRead: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["OdooSearchReadRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Record_string.unknown_"][];
-        };
-      };
-    };
-  };
-  Read: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["OdooReadRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Record_string.unknown_"][];
-        };
-      };
-    };
-  };
-  Create: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["OdooCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            id: number;
-          };
-        };
-      };
-    };
-  };
-  Write: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["OdooWriteRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  Unlink: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["OdooUnlinkRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  Execute: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["OdooExecuteRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown;
-        };
-      };
-    };
-  };
-  GetOdooDevCredentials: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            webUrl: string;
-            password: string;
-            login: string;
-          } | null;
-        };
-      };
-    };
-  };
-  GetOdooUserCredentials: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            webUrl: string;
-            password: string;
-            login: string;
-          } | null;
-        };
-      };
-    };
-  };
-  GetOdooAdminCredentialsEndpoint: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            webUrl: string;
-            adminPassword: string;
-            adminLogin: string;
-            databaseName: string;
-          } | null;
-        };
-      };
-    };
-  };
-  InstallOdooModules: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Modules installed successfully */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            message: string;
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  GetOdooModelFields: {
-    parameters: {
-      query?: {
-        simple?: boolean;
-      };
-      header?: never;
-      path: {
-        modelName: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json":
-            | components["schemas"]["Record_string.unknown_"]
-            | {
-                readonly?: boolean;
-                required?: boolean;
-                label: string;
-                type: string;
-                name: string;
-              }[];
-        };
-      };
-    };
-  };
-  GetOdooDatabaseInfo: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            accessGroups: {
-              users: number[];
-              category: string;
-              fullName: string;
-              name: string;
-              /** Format: double */
-              id: number;
-            }[];
-            modules: {
-              summary: string;
-              state: string;
-              displayName: string;
-              name: string;
-              /** Format: double */
-              id: number;
-            }[];
-            users: {
-              groups: {
-                fullName: string;
-                name: string;
-                /** Format: double */
-                id: number;
-              }[];
-              active: boolean;
-              email: string;
-              login: string;
-              name: string;
-              /** Format: double */
-              id: number;
-            }[];
-            database: {
-              loginUrl: string;
-              exists: boolean;
-              name: string;
-            };
-          };
-        };
-      };
-    };
-  };
-  ConnectNAS: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ConnectNASRequest"];
-      };
-    };
-    responses: {
-      /** @description NAS connected successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["NASConnectionStatus"];
-        };
-      };
-    };
-  };
-  DisconnectNAS: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        name: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description NAS disconnected successfully */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
-  GetAllNASStatus: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["NASStatusResponse"];
-        };
-      };
-    };
-  };
-  DisconnectAll: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description All NAS drives disconnected */
-      204: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            message: string;
-          };
-        };
-      };
-    };
-  };
-  GetHRManagementEmployees: {
-    parameters: {
-      query?: {
-        departmentId?: string;
-        managerId?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EmployeeDbResponse"][];
-        };
-      };
-    };
-  };
-  CreateEmployee: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateEmployeeRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EmployeeDbResponse"];
-        };
-      };
-    };
-  };
-  GetHRManagementEmployee: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        employeeId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EmployeeDbResponse"];
-        };
-      };
-    };
-  };
-  UpdateEmployee: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        employeeId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateEmployeeRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EmployeeDbResponse"];
-        };
-      };
-    };
-  };
-  DeactivateEmployee: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        employeeId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  SyncEmployeeFromOdoo: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SyncEmployeeFromOdooRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EmployeeDbResponse"];
-        };
-      };
-    };
-  };
-  SyncAllEmployees: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SyncAllEmployeesResponse"];
-        };
-      };
-    };
-  };
-  GetHRManagementDepartments: {
-    parameters: {
-      query?: {
-        parentId?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DepartmentDbResponse"][];
-        };
-      };
-    };
-  };
-  CreateDepartment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateDepartmentRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DepartmentDbResponse"];
-        };
-      };
-    };
-  };
-  GetHRManagementDepartment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        departmentId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DepartmentDbResponse"];
-        };
-      };
-    };
-  };
-  UpdateDepartment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        departmentId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateDepartmentRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DepartmentDbResponse"];
-        };
-      };
-    };
-  };
-  DeleteDepartment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        departmentId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  SyncDepartmentFromOdoo: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SyncDepartmentFromOdooRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DepartmentDbResponse"];
-        };
-      };
-    };
-  };
-  SyncAllDepartments: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SyncAllDepartmentsResponse"];
-        };
-      };
-    };
-  };
-  GetEmployeeLeaveBalances: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        employeeId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LeaveBalanceResponse"][];
-        };
-      };
-    };
-  };
-  GetEmployeeLeaveBalanceByType: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        employeeId: string;
-        leaveTypeId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LeaveBalanceResponse"];
-        };
-      };
-    };
-  };
-  GetHREmployees: {
-    parameters: {
-      query?: {
-        departmentId?: number;
-        active?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EmployeeResponse"][];
-        };
-      };
-    };
-  };
-  GetHREmployee: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        employeeId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["EmployeeResponse"];
-        };
-      };
-    };
-  };
-  GetHRDepartments: {
-    parameters: {
-      query?: {
-        parentId?: number;
-        active?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DepartmentResponse"][];
-        };
-      };
-    };
-  };
-  GetHRDepartment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        departmentId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DepartmentResponse"];
-        };
-      };
-    };
-  };
-  GetContracts: {
-    parameters: {
-      query?: {
-        employeeId?: number;
-        state?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ContractResponse"][];
-        };
-      };
-    };
-  };
-  GetContract: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        contractId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ContractResponse"];
-        };
-      };
-    };
-  };
-  GetLeaveTypes: {
-    parameters: {
-      query?: {
-        active?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LeaveTypeResponse"][];
-        };
-      };
-    };
-  };
-  GetLeaveType: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        leaveTypeId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LeaveTypeResponse"];
-        };
-      };
-    };
-  };
-  GetLeaveRequests: {
-    parameters: {
-      query?: {
-        employeeId?: number;
-        leaveTypeId?: number;
-        state?: string;
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LeaveRequestResponse"][];
-        };
-      };
-    };
-  };
-  GetLeaveRequest: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        leaveId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LeaveRequestResponse"];
-        };
-      };
-    };
-  };
-  GetLeaveAllocations: {
-    parameters: {
-      query?: {
-        employeeId?: number;
-        leaveTypeId?: number;
-        state?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LeaveAllocationResponse"][];
-        };
-      };
-    };
-  };
-  GetLeaveAllocation: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        allocationId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["LeaveAllocationResponse"];
-        };
-      };
-    };
-  };
-  GetPayslips: {
-    parameters: {
-      query?: {
-        employeeId?: number;
-        state?: string;
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PayslipResponse"][];
-        };
-      };
-    };
-  };
-  GetPayslip: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        payslipId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PayslipResponse"];
-        };
-      };
-    };
-  };
-  GetPayslipLines: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        payslipId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PayslipLineResponse"][];
-        };
-      };
-    };
-  };
-  GetHealth: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HealthCheck"];
-        };
-      };
-    };
-  };
-  GetTemplates: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DocumentTemplateResponse"][];
-        };
-      };
-    };
-  };
-  CreateDocumentTemplate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateDocumentTemplateRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DocumentTemplateResponse"];
-        };
-      };
-    };
-  };
-  GetTemplatesByType: {
-    parameters: {
-      query: {
-        documentType: components["schemas"]["DocumentType"];
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DocumentTemplateResponse"][];
-        };
-      };
-    };
-  };
-  GetActiveTemplate: {
-    parameters: {
-      query: {
-        documentType: components["schemas"]["DocumentType"];
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            templateId: string;
-          };
-        };
-      };
-    };
-  };
-  GetOdooTemplates: {
-    parameters: {
-      query?: {
-        model?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["OdooReportTemplate"][];
-        };
-      };
-    };
-  };
-  UpdateTemplate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        templateId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateTemplateRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DocumentTemplateResponse"];
-        };
-      };
-    };
-  };
-  DeleteTemplate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        templateId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  ActivateTemplate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        templateId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DocumentTemplateResponse"];
-        };
-      };
-    };
-  };
-  CreateCustomTemplate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateCustomTemplateRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DocumentTemplateResponse"];
-        };
-      };
-    };
-  };
-  GetDeals: {
-    parameters: {
-      query?: {
-        _page?: number;
-        _limit?: number;
-        _stage?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            limit: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            total: number;
-            deals: components["schemas"]["Deal"][];
-          };
-        };
-      };
-    };
-  };
-  CreateDeal: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["DealCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Deal created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Deal"];
-        };
-      };
-    };
-  };
-  GetStats: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DashboardStatsResponse"];
-        };
-      };
-    };
-  };
-  GetActivity: {
-    parameters: {
-      query?: {
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CaseActivityResponse"][];
-        };
-      };
-    };
-  };
-  GetNotifications: {
-    parameters: {
-      query?: {
-        limit?: number;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["NotificationResponse"][];
-        };
-      };
-    };
-  };
-  GetUnreadNotificationsCount: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["UnreadNotificationsCountResponse"];
-        };
-      };
-    };
-  };
-  MarkNotificationAsRead: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        notificationId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  GetConnectorTypes: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            optionalFields: string[];
-            requiredFields: string[];
-            description: string;
+        WorkflowResponse: {
+            id: string;
             name: string;
-            type: components["schemas"]["ConnectorType"];
-          }[];
+            organizationId: string;
+            entityType: string;
+            isActive: boolean;
+            rules?: components["schemas"]["WorkflowRules"];
+            createdAt: string;
+            updatedAt: string;
+            steps: components["schemas"]["WorkflowStepResponse"][];
         };
-      };
-    };
-  };
-  GetFieldDefinitions: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        type: components["schemas"]["ConnectorType"];
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        WorkflowStepInput: {
+            /** Format: double */
+            stepOrder: number;
+            stepType: components["schemas"]["StepType"];
+            approverType: components["schemas"]["ApproverType"];
+            approverId?: string;
+            /** Format: double */
+            minApprovals?: number;
+            /** Format: double */
+            requiredApprovers?: number;
         };
-        content: {
-          "application/json": {
-            helpText?: string;
-            defaultValue?: unknown;
-            required: boolean;
-            placeholder?: string;
-            label: string;
+        CreateWorkflowRequest: {
+            name: string;
+            entityType: string;
+            rules?: components["schemas"]["WorkflowRules"];
+            steps: components["schemas"]["WorkflowStepInput"][];
+        };
+        UpdateWorkflowRequest: {
+            name?: string;
+            isActive?: boolean;
+            rules?: components["schemas"]["WorkflowRules"];
+            steps?: components["schemas"]["WorkflowStepInput"][];
+        };
+        RuleCondition: {
+            /** Format: double */
+            value: number;
             /** @enum {string} */
-            type: "text" | "number" | "password" | "boolean";
+            operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq";
+            /** @enum {string} */
+            type: "amount";
+        } | {
+            value: string;
+            /** @enum {string} */
+            operator?: "eq";
+            /** @enum {string} */
+            type: "entityType";
+        } | {
+            value: string;
+            /** @enum {string} */
+            operator?: "eq";
+            /** @enum {string} */
+            type: "userRole";
+        } | {
+            /** @enum {string} */
+            type: "manual";
+        } | {
+            value: string | number | boolean;
+            /** @enum {string} */
+            operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq" | "contains";
+            field: string;
+            /** @enum {string} */
+            type: "field";
+        };
+        Rule: {
+            conditions: components["schemas"]["RuleCondition"][];
+            /** @enum {string} */
+            logic?: "AND" | "OR";
+        };
+        RuleResponse: {
+            id: string;
+            organizationId: string;
+            entityType: string;
+            ruleName: string;
+            conditions: components["schemas"]["Rule"];
+            workflowId: string;
+            /** Format: double */
+            priority: number;
+        };
+        CreateRuleRequest: {
+            entityType: string;
+            ruleName: string;
+            conditions: string;
+            workflowId: string;
+            /** Format: double */
+            priority?: number;
+        };
+        /** @enum {string} */
+        Locale: "en" | "ar";
+        UserProfileResponse: {
+            id: string;
+            email: string;
+            name?: string | null;
+            preferredLocale: components["schemas"]["Locale"];
+            activeOrganizationId?: string | null;
+        };
+        UpdateProfileRequest: {
+            name?: string;
+            preferredLocale?: components["schemas"]["Locale"];
+        };
+        UpdateLocaleRequest: {
+            locale: components["schemas"]["Locale"];
+        };
+        /** @description Construct a type with a set of properties K of type T */
+        "Record_string.unknown_": {
+            [key: string]: unknown;
+        };
+        FileMetadata: {
+            id: string;
             name: string;
-          }[];
-        };
-      };
-    };
-  };
-  ListConnectors: {
-    parameters: {
-      query?: {
-        type?: components["schemas"]["ConnectorType"];
-        isActive?: boolean;
-        tags?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ConnectorResponse"][];
-        };
-      };
-    };
-  };
-  CreateConnector: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateConnectorRequest"];
-      };
-    };
-    responses: {
-      /** @description Connector created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ConnectorResponse"];
-        };
-      };
-    };
-  };
-  GetConnector: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        connectorId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ConnectorResponse"];
-        };
-      };
-    };
-  };
-  UpdateConnector: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        connectorId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateConnectorRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  DeleteConnector: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        connectorId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  TestConnection: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        connectorId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            error?: string;
+            path: string;
+            /** Format: double */
+            size: number;
+            mimeType: string;
+            createdAt: string;
+            modifiedAt: string;
+            createdBy: string;
+            modifiedBy?: string;
+            folderId?: string;
+            tags?: string[];
             metadata?: components["schemas"]["Record_string.unknown_"];
-            /** Format: double */
-            latency?: number;
-            message: string;
-            status: string;
-          };
         };
-      };
-    };
-  };
-  GetConnectorHealth: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        connectorId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            details?: components["schemas"]["Record_string.unknown_"];
-            message?: string;
-            healthy: boolean;
-          };
-        };
-      };
-    };
-  };
-  ExecuteQuery: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        connectorId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["QueryRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["QueryResponse"];
-        };
-      };
-    };
-  };
-  GetSchema: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        connectorId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SchemaResponse"];
-        };
-      };
-    };
-  };
-  GetTablePreview: {
-    parameters: {
-      query?: {
-        limit?: number;
-      };
-      header?: never;
-      path: {
-        connectorId: string;
-        schemaName: string;
-        tableName: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TablePreviewResponse"];
-        };
-      };
-    };
-  };
-  SearchTable: {
-    parameters: {
-      query: {
-        searchTerm: string;
-        searchColumns: string;
-        limit?: number;
-      };
-      header?: never;
-      path: {
-        connectorId: string;
-        schemaName: string;
-        tableName: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": unknown[];
-        };
-      };
-    };
-  };
-  SuggestMappings: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SuggestMappingsRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["FieldMapping"][];
-        };
-      };
-    };
-  };
-  ListCases: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CaseResponse"][];
-        };
-      };
-    };
-  };
-  CreateCase: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateCaseRequest"];
-      };
-    };
-    responses: {
-      /** @description Case created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CaseResponse"];
-        };
-      };
-    };
-  };
-  ListPublicTemplates: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TemplateResponse"][];
-        };
-      };
-    };
-  };
-  CreateCaseTemplate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateTemplateRequest"];
-      };
-    };
-    responses: {
-      /** @description Template created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TemplateResponse"];
-        };
-      };
-    };
-  };
-  GetTemplate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        templateId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["TemplateResponse"];
-        };
-      };
-    };
-  };
-  GetCase: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CaseResponse"];
-        };
-      };
-    };
-  };
-  UpdateCase: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateCaseRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["CaseResponse"];
-        };
-      };
-    };
-  };
-  DeleteCase: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  ListScopes: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ScopeResponse"][];
-        };
-      };
-    };
-  };
-  CreateScope: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateScopeRequest"];
-      };
-    };
-    responses: {
-      /** @description Scope created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ScopeResponse"];
-        };
-      };
-    };
-  };
-  CreateScopeFromTemplate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateScopeFromTemplateRequest"];
-      };
-    };
-    responses: {
-      /** @description Scope created from template successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ScopeResponse"];
-        };
-      };
-    };
-  };
-  UpdateScopeStatus: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-        scopeId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateScopeStatusRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ScopeResponse"];
-        };
-      };
-    };
-  };
-  ListSections: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-        scopeId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SectionResponse"][];
-        };
-      };
-    };
-  };
-  ListProcedures: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-        scopeId: string;
-        sectionId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ProcedureResponse"][];
-        };
-      };
-    };
-  };
-  CompleteProcedure: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-        scopeId: string;
-        sectionId: string;
-        procedureId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CompleteProcedureRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ProcedureResponse"];
-        };
-      };
-    };
-  };
-  ListDocuments: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DocumentResponse"][];
-        };
-      };
-    };
-  };
-  CreateDocument: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateDocumentRequest"];
-      };
-    };
-    responses: {
-      /** @description Document created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["DocumentResponse"];
-        };
-      };
-    };
-  };
-  DeleteDocument: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-        documentId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  ListNotes: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["NoteResponse"][];
-        };
-      };
-    };
-  };
-  CreateNote: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateNoteRequest"];
-      };
-    };
-    responses: {
-      /** @description Note created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["NoteResponse"];
-        };
-      };
-    };
-  };
-  UpdateNote: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-        noteId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["UpdateNoteRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["NoteResponse"];
-        };
-      };
-    };
-  };
-  ListAssignments: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["AssignmentResponse"][];
-        };
-      };
-    };
-  };
-  CreateAssignment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreateAssignmentRequest"];
-      };
-    };
-    responses: {
-      /** @description Assignment created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["AssignmentResponse"];
-        };
-      };
-    };
-  };
-  DeleteAssignment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-        userId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  GetHistory: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        caseId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HistoryResponse"][];
-        };
-      };
-    };
-  };
-  GetOrganizationAuditLogs: {
-    parameters: {
-      query?: {
-        entityType?: components["schemas"]["EntityType"];
-        entityId?: string;
-        action?: components["schemas"]["AuditAction"];
-        userId?: string;
-        startDate?: string;
-        endDate?: string;
-        limit?: number;
-        offset?: number;
-      };
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            total: number;
-            logs: components["schemas"]["AuditLogResponse"][];
-          };
-        };
-      };
-    };
-  };
-  ExportAuditLogs: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        orgId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ExportAuditLogsRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            contentType: string;
-            filename: string;
-            data: string;
-          };
-        };
-      };
-    };
-  };
-  GetUserActivityLogs: {
-    parameters: {
-      query?: {
-        entityType?: components["schemas"]["EntityType"];
-        action?: components["schemas"]["AuditAction"];
-        startDate?: string;
-        endDate?: string;
-        limit?: number;
-        offset?: number;
-      };
-      header?: never;
-      path: {
-        userId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            total: number;
-            logs: components["schemas"]["AuditLogResponse"][];
-          };
-        };
-      };
-    };
-  };
-  SubmitForApproval: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SubmitForApprovalRequest"];
-      };
-    };
-    responses: {
-      /** @description Entity submitted for approval */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SubmitForApprovalResponse"];
-        };
-      };
-    };
-  };
-  GetPendingApprovals: {
-    parameters: {
-      query?: {
-        status?: "pending" | "approved" | "rejected" | "cancelled";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApprovalRequestResponse"][];
-        };
-      };
-    };
-  };
-  GetApprovalRequest: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        requestId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApprovalRequestResponse"];
-        };
-      };
-    };
-  };
-  Approve: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        requestId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ApprovalActionRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApprovalActionResponse"];
-        };
-      };
-    };
-  };
-  Reject: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        requestId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["ApprovalActionRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApprovalActionResponse"];
-        };
-      };
-    };
-  };
-  Delegate: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        requestId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["DelegateApprovalRequest"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApprovalActionResponse"];
-        };
-      };
-    };
-  };
-  GetApprovalHistory: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        entityType: string;
-        entityId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ApprovalRequestResponse"][];
-        };
-      };
-    };
-  };
-  GetAccountingInvoices: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        type?: "SALES" | "PURCHASE";
-        state?: "draft" | "posted" | "cancel";
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            limit: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            total: number;
-            invoices: components["schemas"]["Invoice"][];
-          };
-        };
-      };
-    };
-  };
-  CreateAccountingInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InvoiceCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Invoice created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Invoice"];
-        };
-      };
-    };
-  };
-  GetAccountingInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Invoice"];
-        };
-      };
-    };
-  };
-  ValidateAccountingInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  CancelAccountingInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  RefundAccountingInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          /** Format: double */
-          journalId?: number;
-          date?: string;
-          reason?: string;
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            refundId: number;
-          };
-        };
-      };
-    };
-  };
-  GetAccountingInvoicePDF: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-    };
-  };
-  GetAccountingBills: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        state?: "draft" | "posted" | "cancel";
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            limit: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            total: number;
-            bills: components["schemas"]["Invoice"][];
-          };
-        };
-      };
-    };
-  };
-  CreateAccountingBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InvoiceCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Bill created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Invoice"];
-        };
-      };
-    };
-  };
-  GetAccountingBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Invoice"];
-        };
-      };
-    };
-  };
-  ValidateAccountingBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  CancelAccountingBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  RefundAccountingBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          /** Format: double */
-          journalId?: number;
-          date?: string;
-          reason?: string;
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            refundId: number;
-          };
-        };
-      };
-    };
-  };
-  GetAccountingBillPDF: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-    };
-  };
-  GetAccountingAccounts: {
-    parameters: {
-      query?: {
-        accountType?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
+        FolderMetadata: {
+            id: string;
+            name: string;
+            path: string;
             parentId?: string;
-            type: string;
-            name: string;
-            code: string;
-            id: string;
-          }[];
-        };
-      };
-    };
-  };
-  SearchAccountingAccounts: {
-    parameters: {
-      query: {
-        q: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            type: string;
-            name: string;
-            code: string;
-            id: string;
-          }[];
-        };
-      };
-    };
-  };
-  GetAccountingPayments: {
-    parameters: {
-      query?: {
-        type?: "inbound" | "outbound" | "transfer";
-        state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PaymentResponse"][];
-        };
-      };
-    };
-  };
-  CreateAccountingPayment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreatePaymentDTO"];
-      };
-    };
-    responses: {
-      /** @description Payment created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
+            createdAt: string;
+            modifiedAt: string;
+            createdBy: string;
+            modifiedBy?: string;
             /** Format: double */
-            id: number;
-          };
+            fileCount: number;
+            /** Format: double */
+            subFolderCount: number;
         };
-      };
-    };
-  };
-  ConfirmAccountingPayment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        paymentId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        CreateFolderRequest: {
+            name: string;
+            parentId?: string;
         };
-        content: {
-          "application/json": {
+        OdooProvisionResponse: {
             success: boolean;
-          };
+            databaseName: string;
+            adminLogin: string;
+            adminPassword: string;
+            odooUrl: string;
+            loginUrl: string;
         };
-      };
-    };
-  };
-  GetAccountingPartners: {
-    parameters: {
-      query?: {
-        isCustomer?: boolean;
-        isSupplier?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        OdooInfoResponse: {
+            databaseName: string;
+            exists: boolean;
+            loginUrl: string | null;
         };
-        content: {
-          "application/json": components["schemas"]["PartnerResponse"][];
+        OdooDeleteResponse: {
+            success: boolean;
+            message: string;
         };
-      };
-    };
-  };
-  GetAccountingJournals: {
-    parameters: {
-      query?: {
-        type?: "sale" | "purchase" | "cash" | "bank" | "general";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        OdooDuplicateResponse: {
+            success: boolean;
+            originalName: string;
+            newName: string;
         };
-        content: {
-          "application/json": components["schemas"]["JournalResponse"][];
+        OdooDuplicateRequest: {
+            newName: string;
+            neutralize?: boolean;
         };
-      };
-    };
-  };
-  GetAccountingTaxes: {
-    parameters: {
-      query?: {
-        typeTaxUse?: "sale" | "purchase" | "none";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        OdooListResponse: {
+            databases: string[];
         };
-        content: {
-          "application/json": components["schemas"]["TaxResponse"][];
+        OdooSearchRequest: {
+            model: string;
+            domain?: unknown[];
+            /** Format: double */
+            limit?: number;
+            /** Format: double */
+            offset?: number;
+            order?: string;
         };
-      };
-    };
-  };
-  GetAccountingTrialBalance: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["AccountBalanceQuery"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        OdooSearchReadRequest: {
+            model: string;
+            domain?: unknown[];
+            fields?: string[];
+            /** Format: double */
+            limit?: number;
+            /** Format: double */
+            offset?: number;
+            order?: string;
+            context?: components["schemas"]["Record_string.unknown_"];
         };
-        content: {
-          "application/json": components["schemas"]["AccountBalanceReportResponse"][];
+        OdooReadRequest: {
+            model: string;
+            ids: number[];
+            fields?: string[];
+            context?: components["schemas"]["Record_string.unknown_"];
         };
-      };
-    };
-  };
-  GetAccountingPartnerLedger: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PartnerLedgerQuery"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        OdooCreateRequest: {
+            model: string;
+            values: components["schemas"]["Record_string.unknown_"];
+            context?: components["schemas"]["Record_string.unknown_"];
         };
-        content: {
-          "application/json": components["schemas"]["PartnerLedgerReportResponse"] | null;
+        OdooWriteRequest: {
+            model: string;
+            ids: number[];
+            values: components["schemas"]["Record_string.unknown_"];
+            context?: components["schemas"]["Record_string.unknown_"];
         };
-      };
-    };
-  };
-  GetAccountingProfitLoss: {
-    parameters: {
-      query?: {
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        OdooUnlinkRequest: {
+            model: string;
+            ids: number[];
+            context?: components["schemas"]["Record_string.unknown_"];
         };
-        content: {
-          "application/json": components["schemas"]["ProfitLossResponse"];
+        OdooExecuteRequest: {
+            model: string;
+            method: string;
+            args?: unknown[];
+            kwargs?: components["schemas"]["Record_string.unknown_"];
         };
-      };
-    };
-  };
-  GetAccountingGeneralLedger: {
-    parameters: {
-      query?: {
-        accountId?: number;
-        partnerId?: number;
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        NASConnectionStatus: {
+            connected: boolean;
+            mountPoint?: string;
+            error?: string;
+            /** Format: double */
+            freeSpace?: number;
+            /** Format: double */
+            totalSpace?: number;
+            /** Format: double */
+            usedSpace?: number;
         };
-        content: {
-          "application/json": components["schemas"]["GLEntryResponse"][];
-        };
-      };
-    };
-  };
-  GetAccountingPaymentTerms: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            note?: string;
+        ConnectNASRequest: {
             name: string;
+            /** @enum {string} */
+            type: "smb" | "nfs" | "webdav";
+            host: string;
+            shareName: string;
+            username?: string;
+            password?: string;
+            domain?: string;
+            mountPoint?: string;
+            /** Format: double */
+            port?: number;
+        };
+        NASStatusResponse: {
+            [key: string]: components["schemas"]["NASConnectionStatus"];
+        };
+        /** @enum {string} */
+        EmployeeType: "employee" | "student" | "trainee" | "contractor" | "freelance";
+        /** @enum {string} */
+        Gender: "male" | "female" | "other";
+        /** @enum {string} */
+        MaritalStatus: "single" | "married" | "cohabitant" | "widower" | "divorced";
+        EmployeeDbResponse: {
+            id: string;
+            organizationId: string;
+            userId?: string;
+            /** Format: double */
+            odooEmployeeId?: number;
+            name: string;
+            email?: string;
+            phone?: string;
+            mobile?: string;
+            workEmail?: string;
+            workPhone?: string;
+            workLocation?: string;
+            jobTitle?: string;
+            departmentId?: string;
+            managerId?: string;
+            employeeType?: components["schemas"]["EmployeeType"];
+            gender?: components["schemas"]["Gender"];
+            maritalStatus?: components["schemas"]["MaritalStatus"];
+            birthday?: string;
+            placeOfBirth?: string;
+            countryOfBirth?: string;
+            nationality?: string;
+            identificationId?: string;
+            passportId?: string;
+            bankAccountNumber?: string;
+            bankName?: string;
+            bankIban?: string;
+            emergencyContact?: string;
+            emergencyPhone?: string;
+            emergencyRelation?: string;
+            hireDate?: string;
+            terminationDate?: string;
+            photoUrl?: string;
+            notes?: string;
+            active: boolean;
+            lastSyncedAt?: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        CreateEmployeeRequest: {
+            userId?: string;
+            /** Format: double */
+            odooEmployeeId?: number;
+            name: string;
+            email?: string;
+            phone?: string;
+            mobile?: string;
+            workEmail?: string;
+            workPhone?: string;
+            workLocation?: string;
+            jobTitle?: string;
+            departmentId?: string;
+            managerId?: string;
+            employeeType?: components["schemas"]["EmployeeType"];
+            gender?: components["schemas"]["Gender"];
+            maritalStatus?: components["schemas"]["MaritalStatus"];
+            birthday?: string;
+            placeOfBirth?: string;
+            countryOfBirth?: string;
+            nationality?: string;
+            identificationId?: string;
+            passportId?: string;
+            bankAccountNumber?: string;
+            bankName?: string;
+            bankIban?: string;
+            emergencyContact?: string;
+            emergencyPhone?: string;
+            emergencyRelation?: string;
+            hireDate?: string;
+            terminationDate?: string;
+            photoUrl?: string;
+            notes?: string;
+            active?: boolean;
+        };
+        UpdateEmployeeRequest: {
+            name?: string;
+            email?: string;
+            phone?: string;
+            mobile?: string;
+            workEmail?: string;
+            workPhone?: string;
+            workLocation?: string;
+            jobTitle?: string;
+            departmentId?: string;
+            managerId?: string;
+            employeeType?: components["schemas"]["EmployeeType"];
+            gender?: components["schemas"]["Gender"];
+            maritalStatus?: components["schemas"]["MaritalStatus"];
+            birthday?: string;
+            placeOfBirth?: string;
+            countryOfBirth?: string;
+            nationality?: string;
+            identificationId?: string;
+            passportId?: string;
+            bankAccountNumber?: string;
+            bankName?: string;
+            bankIban?: string;
+            emergencyContact?: string;
+            emergencyPhone?: string;
+            emergencyRelation?: string;
+            hireDate?: string;
+            terminationDate?: string;
+            photoUrl?: string;
+            notes?: string;
+            active?: boolean;
+        };
+        SyncEmployeeFromOdooRequest: {
+            /** Format: double */
+            odooEmployeeId: number;
+        };
+        SyncAllEmployeesResponse: {
+            /** Format: double */
+            synced: number;
+            /** Format: double */
+            created: number;
+            /** Format: double */
+            updated: number;
+            errors: string[];
+        };
+        DepartmentDbResponse: {
+            id: string;
+            organizationId: string;
+            /** Format: double */
+            odooDepartmentId?: number;
+            name: string;
+            code?: string;
+            parentId?: string;
+            managerId?: string;
+            /** Format: double */
+            color?: number;
+            note?: string;
+            lastSyncedAt?: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        CreateDepartmentRequest: {
+            /** Format: double */
+            odooDepartmentId?: number;
+            name: string;
+            code?: string;
+            parentId?: string;
+            managerId?: string;
+            /** Format: double */
+            color?: number;
+            note?: string;
+        };
+        UpdateDepartmentRequest: {
+            name?: string;
+            code?: string;
+            parentId?: string;
+            managerId?: string;
+            /** Format: double */
+            color?: number;
+            note?: string;
+        };
+        SyncDepartmentFromOdooRequest: {
+            /** Format: double */
+            odooDepartmentId: number;
+        };
+        SyncAllDepartmentsResponse: {
+            /** Format: double */
+            synced: number;
+            /** Format: double */
+            created: number;
+            /** Format: double */
+            updated: number;
+            errors: string[];
+        };
+        LeaveBalanceResponse: {
+            employeeId: string;
+            leaveTypeId: string;
+            leaveTypeName: string;
+            /** Format: double */
+            totalAllocated: number;
+            /** Format: double */
+            totalUsed: number;
+            /** Format: double */
+            totalRemaining: number;
+        };
+        OdooRelation: {
             /** Format: double */
             id: number;
-          }[];
+            name: string;
         };
-      };
-    };
-  };
-  GetAccountingAgedReceivable: {
-    parameters: {
-      query?: {
-        asOfDate?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        EmployeeResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            work_email?: string;
+            work_phone?: string;
+            mobile_phone?: string;
+            job_title?: string;
+            department_id?: components["schemas"]["OdooRelation"];
+            parent_id?: components["schemas"]["OdooRelation"];
+            address_id?: components["schemas"]["OdooRelation"];
+            work_location_id?: components["schemas"]["OdooRelation"];
+            user_id?: components["schemas"]["OdooRelation"];
+            employee_type?: string;
+            gender?: string;
+            marital?: string;
+            birthday?: string;
+            identification_id?: string;
+            passport_id?: string;
+            bank_account_id?: components["schemas"]["OdooRelation"];
+            emergency_contact?: string;
+            emergency_phone?: string;
+            visa_no?: string;
+            visa_expire?: string;
+            work_permit_no?: string;
+            work_permit_expiration_date?: string;
+            certificate?: string;
+            study_field?: string;
+            study_school?: string;
+            place_of_birth?: string;
+            country_of_birth?: components["schemas"]["OdooRelation"];
+            active?: boolean;
         };
-        content: {
-          "application/json": {
+        DepartmentResponse: {
             /** Format: double */
-            total: number;
+            id: number;
+            name: string;
+            complete_name?: string;
+            manager_id?: components["schemas"]["OdooRelation"];
+            parent_id?: components["schemas"]["OdooRelation"];
+            company_id?: components["schemas"]["OdooRelation"];
+            active?: boolean;
             /** Format: double */
-            days_over_90: number;
+            total_employee?: number;
             /** Format: double */
-            days_61_90: number;
-            /** Format: double */
-            days_31_60: number;
-            /** Format: double */
-            days_1_30: number;
-            /** Format: double */
-            current: number;
-            partnerName: string;
-            /** Format: double */
-            partnerId: number;
-          }[];
+            color?: number;
+            note?: string;
         };
-      };
-    };
-  };
-  GetAccountingAgedPayable: {
-    parameters: {
-      query?: {
-        asOfDate?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        ContractResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            employee_id: components["schemas"]["OdooRelation"];
+            date_start: string;
+            date_end?: string;
+            state: string;
+            job_id?: components["schemas"]["OdooRelation"];
+            department_id?: components["schemas"]["OdooRelation"];
+            /** Format: double */
+            wage: number;
+            wage_type: string;
+            struct_id?: components["schemas"]["OdooRelation"];
+            resource_calendar_id?: components["schemas"]["OdooRelation"];
+            notes?: string;
         };
-        content: {
-          "application/json": {
+        LeaveTypeResponse: {
             /** Format: double */
-            total: number;
+            id: number;
+            name: string;
+            request_unit: string;
+            time_type: string;
             /** Format: double */
-            days_over_90: number;
+            color?: number;
+            leave_validation_type?: string;
+            requires_allocation?: boolean;
+            employee_requests?: boolean;
+            allocation_validation_type?: string;
             /** Format: double */
-            days_61_90: number;
-            /** Format: double */
-            days_31_60: number;
-            /** Format: double */
-            days_1_30: number;
-            /** Format: double */
-            current: number;
-            partnerName: string;
-            /** Format: double */
-            partnerId: number;
-          }[];
+            max_leaves?: number;
+            unpaid?: boolean;
+            active?: boolean;
+            support_document?: boolean;
         };
-      };
-    };
-  };
-  GetAccountingBankStatements: {
-    parameters: {
-      query?: {
-        journalId?: number;
-        dateFrom?: string;
-        dateTo?: string;
-        state?: "open" | "confirm";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        LeaveRequestResponse: {
+            /** Format: double */
+            id: number;
+            employee_id: components["schemas"]["OdooRelation"];
+            holiday_status_id: components["schemas"]["OdooRelation"];
+            date_from: string;
+            date_to: string;
+            /** Format: double */
+            number_of_days: number;
+            state: string;
+            request_date_from?: string;
+            request_unit_half?: boolean;
+            request_unit_hours?: boolean;
+            request_hour_from?: string;
+            request_hour_to?: string;
+            notes?: string;
+            manager_id?: components["schemas"]["OdooRelation"];
+            department_id?: components["schemas"]["OdooRelation"];
         };
-        content: {
-          "application/json": {
+        LeaveAllocationResponse: {
+            /** Format: double */
+            id: number;
+            employee_id: components["schemas"]["OdooRelation"];
+            holiday_status_id: components["schemas"]["OdooRelation"];
+            /** Format: double */
+            number_of_days: number;
+            /** Format: double */
+            number_of_days_display?: number;
+            date_from?: string;
+            date_to?: string;
+            state: string;
+            name?: string;
+            notes?: string;
+        };
+        PayslipResponse: {
+            /** Format: double */
+            id: number;
+            number: string;
+            employee_id: components["schemas"]["OdooRelation"];
+            date_from: string;
+            date_to: string;
             state: string;
             /** Format: double */
-            balanceEnd: number;
+            basic_wage?: number;
             /** Format: double */
-            balanceEndReal: number;
+            net_wage?: number;
             /** Format: double */
-            balanceStart: number;
-            date: string;
-            journalName: string;
+            gross_wage?: number;
+            contract_id?: components["schemas"]["OdooRelation"];
+            struct_id?: components["schemas"]["OdooRelation"];
+            credit_note?: boolean;
+            paid_date?: string;
+        };
+        PayslipLineResponse: {
             /** Format: double */
-            journalId: number;
+            id: number;
+            slip_id: components["schemas"]["OdooRelation"];
             name: string;
+            code: string;
+            category_id?: components["schemas"]["OdooRelation"];
             /** Format: double */
-            id: number;
-          }[];
-        };
-      };
-    };
-  };
-  GetAccountingBankStatementLines: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        statementId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            isReconciled: boolean;
+            sequence?: number;
+            /** Format: double */
+            quantity?: number;
+            /** Format: double */
+            rate?: number;
             /** Format: double */
             amount: number;
-            partnerName?: string;
-            paymentRef: string;
-            date: string;
-            /** Format: double */
-            id: number;
-          }[];
         };
-      };
-    };
-  };
-  GetAccountingReconciliationSuggestions: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        lineId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            amount: number;
-            date: string;
-            partnerName: string;
-            moveName: string;
-            /** Format: double */
-            moveId: number;
-          }[];
-        };
-      };
-    };
-  };
-  ReconcileAccountingBankStatementLine: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        lineId: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          moveIds: number[];
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            message?: string;
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  GetAccountingCurrencies: {
-    parameters: {
-      query?: {
-        onlyActive?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            active: boolean;
-            /** Format: double */
-            rounding: number;
+        HealthCheck: {
             /** @enum {string} */
-            position: "after" | "before";
-            symbol: string;
-            name: string;
+            status: "ok" | "error";
+            timestamp: string;
+            /** Format: double */
+            uptime: number;
+            version: string;
+        };
+        /** @enum {string} */
+        DocumentType: "invoice" | "bill" | "quote" | "purchase_order" | "delivery_note" | "receipt" | "credit_note" | "debit_note" | "payslip" | "contract" | "payment_receipt" | "refund";
+        DocumentTemplateResponse: {
+            id: string;
+            organizationId: string;
+            documentType: components["schemas"]["DocumentType"];
+            templateId: string;
+            templateName: string;
+            templateDescription: string | null;
+            isActive: boolean;
+            customizations: components["schemas"]["Record_string.unknown_"] | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        OdooReportTemplate: {
             /** Format: double */
             id: number;
-          }[];
-        };
-      };
-    };
-  };
-  GetAccountingCurrencyRates: {
-    parameters: {
-      query?: {
-        currencyId?: number;
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            companyId: number;
-            /** Format: double */
-            rate: number;
             name: string;
-            currencyName: string;
+            report_name: string;
+            model: string;
+            report_type: string;
+        };
+        CreateDocumentTemplateRequest: {
+            documentType: components["schemas"]["DocumentType"];
+            templateId: string;
+            templateName: string;
+            templateDescription?: string;
+            isActive?: boolean;
+            customizations?: components["schemas"]["Record_string.unknown_"];
+        };
+        UpdateTemplateRequest: {
+            templateName?: string;
+            templateDescription?: string;
+            customizations?: components["schemas"]["Record_string.unknown_"];
+        };
+        CreateCustomTemplateRequest: {
+            documentType: components["schemas"]["DocumentType"];
+            templateName: string;
+            templateDescription?: string;
+            qwebXml: string;
+            model: string;
+            isActive?: boolean;
+            customizations?: components["schemas"]["Record_string.unknown_"];
+        };
+        /** @description Dashboard statistics response */
+        DashboardStatsResponse: {
             /** Format: double */
-            currencyId: number;
+            activeCases: number;
+            /** Format: double */
+            pendingReviews: number;
+            /** Format: double */
+            completedAudits: number;
+            /** Format: double */
+            totalCases: number;
+            /** Format: double */
+            completionRate: number;
+        };
+        /** @description Case activity item */
+        CaseActivityResponse: {
+            id: string;
+            /** @enum {string} */
+            type: "case_update";
+            caseId: string;
+            caseNumber: string;
+            clientName: string;
+            status: string;
+            updatedAt: string;
+            updatedBy: {
+                name: string;
+                id: string;
+            };
+        };
+        /** @description Notification response */
+        NotificationResponse: {
+            id: string;
+            type: string;
+            title: string;
+            description: string;
+            timestamp: string;
+            isRead: boolean;
+            relatedEntityType: string | null;
+            relatedEntityId: string | null;
+            actionLabel: string | null;
+            actionUrl: string | null;
+        };
+        /** @description Unread notifications count response */
+        UnreadNotificationsCountResponse: {
+            /** Format: double */
+            count: number;
+        };
+        LeadResponse: {
             /** Format: double */
             id: number;
-          }[];
-        };
-      };
-    };
-  };
-  ConvertAccountingCurrency: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          date?: string;
-          /** Format: double */
-          toCurrencyId: number;
-          /** Format: double */
-          fromCurrencyId: number;
-          /** Format: double */
-          amount: number;
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
+            name: string;
+            type: string;
+            contactName?: string;
+            partnerName?: string;
+            emailFrom?: string;
+            phone?: string;
+            website?: string;
+            function?: string;
+            street?: string;
+            street2?: string;
+            city?: string;
+            state?: components["schemas"]["OdooRelation"];
+            country?: components["schemas"]["OdooRelation"];
+            zip?: string;
+            partner?: components["schemas"]["OdooRelation"];
+            commercialPartner?: components["schemas"]["OdooRelation"];
+            stage?: components["schemas"]["OdooRelation"];
+            team?: components["schemas"]["OdooRelation"];
+            user?: components["schemas"]["OdooRelation"];
+            company?: components["schemas"]["OdooRelation"];
+            campaign?: components["schemas"]["OdooRelation"];
+            source?: components["schemas"]["OdooRelation"];
+            medium?: components["schemas"]["OdooRelation"];
+            language?: components["schemas"]["OdooRelation"];
+            tags?: number[];
             /** Format: double */
-            rate: number;
+            expectedRevenue?: number;
             /** Format: double */
-            convertedAmount: number;
-          };
-        };
-      };
-    };
-  };
-  BatchValidateAccountingInvoices: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          invoiceIds: number[];
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              id: number;
-            }[];
-            success: number[];
-          };
-        };
-      };
-    };
-  };
-  BatchCancelAccountingInvoices: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          invoiceIds: number[];
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              id: number;
-            }[];
-            success: number[];
-          };
-        };
-      };
-    };
-  };
-  BatchCreateAccountingInvoices: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          invoices: components["schemas"]["InvoiceCreateRequest"][];
-        };
-      };
-    };
-    responses: {
-      /** @description Invoices created */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              index: number;
-            }[];
-            success: {
-              /** Format: double */
-              id: number;
-              /** Format: double */
-              index: number;
-            }[];
-          };
-        };
-      };
-    };
-  };
-  BatchCreateAccountingPayments: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          payments: {
-            reference?: string;
+            proratedRevenue?: number;
             /** Format: double */
-            journalId: number;
+            recurringRevenue?: number;
+            recurringPlan?: components["schemas"]["OdooRelation"];
+            /** Format: double */
+            recurringRevenueMonthly?: number;
+            /** Format: double */
+            probability?: number;
+            dateOpen?: string;
+            dateDeadline?: string;
+            dateClosed?: string;
+            dateConversion?: string;
+            dateLastStageUpdate?: string;
+            priority?: string;
+            active?: boolean;
+            description?: string;
+            referred?: string;
+            /** Format: double */
+            color?: number;
+            lostReason?: components["schemas"]["OdooRelation"];
+        };
+        CreateLeadRequest: {
+            name: string;
+            /** @enum {string} */
+            type?: "lead" | "opportunity";
+            contactName?: string;
+            emailFrom?: string;
+            phone?: string;
+            /** Format: double */
+            partnerId?: number;
+            /** Format: double */
+            teamId?: number;
+            /** Format: double */
+            userId?: number;
+            /** Format: double */
+            expectedRevenue?: number;
+            description?: string;
+        };
+        UpdateLeadRequest: {
+            name?: string;
+            /** Format: double */
+            stageId?: number;
+            /** Format: double */
+            userId?: number;
+            /** Format: double */
+            expectedRevenue?: number;
+            dateDeadline?: string;
+            priority?: string;
+            description?: string;
+        };
+        StageResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            /** Format: double */
+            sequence?: number;
+            fold?: boolean;
+            isWon?: boolean;
+            /** Format: double */
+            rottingThresholdDays?: number;
+            requirements?: string;
+            teamIds?: number[];
+            /** Format: double */
+            color?: number;
+        };
+        ContactResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            isCompany?: boolean;
+            companyType?: string;
+            email?: string;
+            phone?: string;
+            mobile?: string;
+            website?: string;
+            function?: string;
+            comment?: string;
+            street?: string;
+            street2?: string;
+            city?: string;
+            state?: components["schemas"]["OdooRelation"];
+            country?: components["schemas"]["OdooRelation"];
+            zip?: string;
+            vat?: string;
+            industry?: components["schemas"]["OdooRelation"];
+            ref?: string;
+            barcode?: string;
+            isCustomer?: boolean;
+            isSupplier?: boolean;
+            active?: boolean;
+        };
+        CreateContactRequest: {
+            name: string;
+            isCompany?: boolean;
+            email?: string;
+            phone?: string;
+            mobile?: string;
+            website?: string;
+            street?: string;
+            city?: string;
+            zip?: string;
+            /** Format: double */
+            countryId?: number;
+        };
+        UpdateContactRequest: {
+            name?: string;
+            email?: string;
+            phone?: string;
+            mobile?: string;
+            website?: string;
+            street?: string;
+            city?: string;
+            zip?: string;
+        };
+        ActivityResponse: {
+            /** Format: double */
+            id: number;
+            /** Format: double */
+            leadId: number;
+            activityType: components["schemas"]["OdooRelation"];
+            summary?: string;
+            note?: string;
+            dateDeadline: string;
+            user: components["schemas"]["OdooRelation"];
+            state: string;
+        };
+        CreateActivityRequest: {
+            /** Format: double */
+            leadId: number;
+            /** Format: double */
+            activityTypeId: number;
+            summary?: string;
+            note?: string;
+            dateDeadline: string;
+            /** Format: double */
+            userId?: number;
+        };
+        TeamResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            active?: boolean;
+            leader?: components["schemas"]["OdooRelation"];
+            memberIds?: number[];
+        };
+        LostReasonResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            active?: boolean;
+        };
+        /** @enum {string} */
+        ConnectorType: "postgresql" | "mysql" | "mssql" | "storage_local" | "storage_webdav" | "storage_smb" | "storage_cloud";
+        ConnectorResponse: {
+            id: string;
+            organizationId: string;
+            name: string;
+            description?: string;
+            type: components["schemas"]["ConnectorType"];
+            isActive: boolean;
+            tags: string[];
+            metadata: components["schemas"]["Record_string.unknown_"];
+            lastConnectionTest?: string;
+            lastConnectionStatus?: string;
+            lastConnectionError?: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        ConnectorConfig: {
+            host?: string;
+            /** Format: double */
+            port?: number;
+            database?: string;
+            username?: string;
+            password?: string;
+            ssl?: boolean;
+            url?: string;
+            apiKey?: string;
+            authToken?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        CreateConnectorRequest: {
+            name: string;
+            description?: string;
+            type: components["schemas"]["ConnectorType"];
+            config: components["schemas"]["ConnectorConfig"];
+            tags?: string[];
+            metadata?: components["schemas"]["Record_string.unknown_"];
+        };
+        UpdateConnectorRequest: {
+            name?: string;
+            description?: string;
+            config?: components["schemas"]["ConnectorConfig"];
+            tags?: string[];
+            metadata?: components["schemas"]["Record_string.unknown_"];
+            isActive?: boolean;
+        };
+        QueryResponse: {
+            rows: unknown[];
+            /** Format: double */
+            rowCount: number;
+            /** Format: double */
+            executionTime: number;
+        };
+        QueryRequest: {
+            sql: string;
+            params?: unknown[];
+        };
+        SchemaResponse: {
+            tables: {
+                /** @enum {string} */
+                type: "table" | "view";
+                name: string;
+                schema: string;
+            }[];
+        };
+        TablePreviewResponse: {
+            schema: string;
+            table: string;
+            columns: {
+                nullable: boolean;
+                type: string;
+                name: string;
+            }[];
+            sampleData: unknown[];
+            /** Format: double */
+            totalRows: number;
+        };
+        FieldMapping: {
+            sourceColumn: string;
+            targetField: string;
+            /** @enum {string} */
+            transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean";
+            defaultValue?: unknown;
+        };
+        SuggestMappingsRequest: {
+            sourceColumns: string[];
+            /** @enum {string} */
+            targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
+        };
+        /** @enum {string} */
+        AuditType: "ICV" | "ISO_9001" | "ISO_14001" | "ISO_45001" | "financial_audit" | "internal_audit" | "compliance_audit" | "operational_audit";
+        /** @enum {string} */
+        CaseStatus: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
+        /** @enum {string} */
+        CasePriority: "low" | "medium" | "high" | "critical";
+        /** @enum {string} */
+        AssignmentRole: "lead" | "reviewer" | "team_member";
+        CaseResponse: {
+            id: string;
+            organizationId: string;
+            caseNumber: string;
+            clientName: string;
+            auditType: components["schemas"]["AuditType"];
+            status: components["schemas"]["CaseStatus"];
+            priority: components["schemas"]["CasePriority"];
+            dueDate?: string;
+            completedDate?: string;
+            createdBy: string;
+            createdAt: string;
+            updatedAt: string;
+            assignments?: {
+                user?: {
+                    email: string;
+                    name: string | null;
+                    id: string;
+                };
+                role: components["schemas"]["AssignmentRole"];
+                userId: string;
+            }[];
+        };
+        CreateCaseRequest: {
+            caseNumber?: string;
+            clientName: string;
+            auditType: components["schemas"]["AuditType"];
+            status?: components["schemas"]["CaseStatus"];
+            priority?: components["schemas"]["CasePriority"];
+            dueDate?: string;
+        };
+        /** @enum {string} */
+        AuditCategory: "certification" | "financial" | "operational" | "compliance";
+        TemplateStructure: {
+            settings?: components["schemas"]["Record_string.unknown_"];
+            sections: {
+                procedures: {
+                    /** Format: double */
+                    sortOrder: number;
+                    requirements?: components["schemas"]["Record_string.unknown_"];
+                    description?: string;
+                    title: string;
+                    referenceNumber: string;
+                }[];
+                settings?: components["schemas"]["Record_string.unknown_"];
+                /** Format: double */
+                sortOrder: number;
+                description?: string;
+                name: string;
+            }[];
+        };
+        TemplateResponse: {
+            id: string;
+            organizationId?: string;
+            name: string;
+            description?: string;
+            auditType: components["schemas"]["AuditType"];
+            category?: components["schemas"]["AuditCategory"];
+            version: string;
+            isActive: boolean;
+            isPublic: boolean;
+            structure: components["schemas"]["TemplateStructure"];
+            createdBy: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        CreateTemplateRequest: {
+            organizationId?: string;
+            name: string;
+            description?: string;
+            auditType: components["schemas"]["AuditType"];
+            category?: components["schemas"]["AuditCategory"];
+            version?: string;
+            isActive?: boolean;
+            isPublic?: boolean;
+            structure: components["schemas"]["TemplateStructure"];
+        };
+        UpdateCaseRequest: {
+            caseNumber?: string;
+            clientName?: string;
+            auditType?: components["schemas"]["AuditType"];
+            status?: components["schemas"]["CaseStatus"];
+            priority?: components["schemas"]["CasePriority"];
+            dueDate?: string;
+            completedDate?: string;
+        };
+        /** @enum {string} */
+        AuditStatus: "draft" | "in-progress" | "under-review" | "completed" | "archived";
+        ScopeResponse: {
+            id: string;
+            caseId: string;
+            templateId?: string;
+            name: string;
+            description?: string;
+            status: components["schemas"]["AuditStatus"];
+            metadata: components["schemas"]["Record_string.unknown_"];
+            createdBy: string;
+            completedBy?: string;
+            archivedBy?: string;
+            createdAt: string;
+            updatedAt: string;
+            completedAt?: string;
+            archivedAt?: string;
+        };
+        CreateScopeRequest: {
+            name: string;
+            description?: string;
+            status?: components["schemas"]["AuditStatus"];
+            metadata?: components["schemas"]["Record_string.unknown_"];
+        };
+        CreateScopeFromTemplateRequest: {
+            templateId: string;
+        };
+        UpdateScopeStatusRequest: {
+            status: components["schemas"]["AuditStatus"];
+        };
+        SectionResponse: {
+            id: string;
+            scopeId: string;
+            name: string;
+            description?: string;
+            /** Format: double */
+            sortOrder: number;
+            isCompleted: boolean;
+            settings: components["schemas"]["Record_string.unknown_"];
+            createdAt: string;
+            updatedAt: string;
+        };
+        ProcedureResponse: {
+            id: string;
+            sectionId: string;
+            referenceNumber: string;
+            title: string;
+            description?: string;
+            requirements: components["schemas"]["Record_string.unknown_"];
+            /** Format: double */
+            sortOrder: number;
+            isCompleted: boolean;
+            completedBy?: string;
+            completedAt?: string;
+            memo?: string;
+            fieldData: components["schemas"]["Record_string.unknown_"];
+            canEdit: boolean;
+            createdAt: string;
+            updatedAt: string;
+        };
+        CompleteProcedureRequest: {
+            fieldData?: components["schemas"]["Record_string.unknown_"];
+            memo?: string;
+        };
+        DocumentResponse: {
+            id: string;
+            caseId: string;
+            procedureId?: string;
+            fileName: string;
+            /** Format: double */
+            fileSize: number;
+            fileType: string;
+            storagePath: string;
+            /** Format: double */
+            version: number;
+            parentDocumentId?: string;
+            uploadedBy: string;
+            uploadedAt: string;
+            isDeleted: boolean;
+        };
+        CreateDocumentRequest: {
+            procedureId?: string;
+            fileName: string;
+            /** Format: double */
+            fileSize: number;
+            fileType: string;
+            storagePath: string;
+            /** Format: double */
+            version?: number;
+            parentDocumentId?: string;
+        };
+        /** @enum {string} */
+        NoteType: "observation" | "review_comment" | "general" | "memo";
+        NoteResponse: {
+            id: string;
+            caseId: string;
+            procedureId?: string;
+            noteType: components["schemas"]["NoteType"];
+            content: string;
+            createdBy: string;
+            createdAt: string;
+            updatedAt: string;
+            isEdited: boolean;
+        };
+        CreateNoteRequest: {
+            procedureId?: string;
+            noteType: components["schemas"]["NoteType"];
+            content: string;
+        };
+        UpdateNoteRequest: {
+            content: string;
+        };
+        AssignmentResponse: {
+            caseId: string;
+            userId: string;
+            role: components["schemas"]["AssignmentRole"];
+            assignedBy: string;
+            assignedAt: string;
+        };
+        CreateAssignmentRequest: {
+            userId: string;
+            role: components["schemas"]["AssignmentRole"];
+        };
+        /** @enum {string} */
+        CaseEntityType: "case" | "scope" | "section" | "procedure" | "document" | "note";
+        /** @enum {string} */
+        CaseAction: "created" | "updated" | "deleted" | "completed" | "archived" | "assigned" | "unassigned";
+        HistoryResponse: {
+            id: string;
+            caseId: string;
+            entityType: components["schemas"]["CaseEntityType"];
+            entityId: string;
+            action: components["schemas"]["CaseAction"];
+            changesBefore?: components["schemas"]["Record_string.unknown_"];
+            changesAfter?: components["schemas"]["Record_string.unknown_"];
+            changedBy: string;
+            changedAt: string;
+        };
+        /** @enum {string} */
+        EntityType: "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
+        /** @enum {string} */
+        AuditAction: "created" | "updated" | "deleted" | "completed" | "failed" | "started" | "cancelled" | "retrying";
+        AuditLogUser: {
+            id: string;
+            name: string | null;
+            email: string;
+        };
+        AuditLogResponse: {
+            id: string;
+            entityType: components["schemas"]["EntityType"];
+            entityId: string;
+            action: components["schemas"]["AuditAction"];
+            organizationId: string | null;
+            userId: string | null;
+            metadata: components["schemas"]["Record_string.unknown_"] | null;
+            ipAddress: string | null;
+            userAgent: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            user?: components["schemas"]["AuditLogUser"] | null;
+        };
+        AuditLogFilters: {
+            entityType?: components["schemas"]["EntityType"];
+            entityId?: string;
+            action?: components["schemas"]["AuditAction"];
+            userId?: string;
+            startDate?: string;
+            endDate?: string;
+            /** Format: double */
+            limit?: number;
+            /** Format: double */
+            offset?: number;
+        };
+        ExportAuditLogsRequest: {
+            /** @enum {string} */
+            format: "csv" | "json";
+            filters?: components["schemas"]["AuditLogFilters"];
+        };
+        SubmitForApprovalResponse: {
+            requestId: string;
+            workflowId: string;
+            status: string;
+            message: string;
+        };
+        EntityData: {
+            entityType: components["schemas"]["EntityType"];
+            entityId: string;
+            /** Format: double */
+            amount?: number;
+            status?: string;
+            createdBy?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        SubmitForApprovalRequest: {
+            entityType: string;
+            entityId: string;
+            entityData: components["schemas"]["EntityData"];
+        };
+        ApprovalStepResponse: {
+            id: string;
+            /** Format: double */
+            stepOrder: number;
+            approverId: string;
+            approverName?: string;
+            status: string;
+            comments?: string;
+            actionAt?: string;
+            delegatedTo?: string;
+            delegatedToName?: string;
+        };
+        ApprovalRequestResponse: {
+            id: string;
+            workflowId: string;
+            workflowName: string;
+            entityType: string;
+            entityId: string;
+            status: string;
+            requestedBy: string;
+            requestedByName?: string;
+            submittedAt: string;
+            completedAt?: string;
+            /** Format: double */
+            currentStep?: number;
+            /** Format: double */
+            totalSteps?: number;
+            steps: components["schemas"]["ApprovalStepResponse"][];
+        };
+        ApprovalActionResponse: {
+            success: boolean;
+            message: string;
+            requestStatus?: string;
+        };
+        ApprovalActionRequest: {
+            comments?: string;
+        };
+        DelegateApprovalRequest: {
+            delegateToUserId: string;
+            comments?: string;
+        };
+        Invoice: {
+            id: string;
+            number: string;
+            /** @enum {string} */
+            type: "SALES" | "PURCHASE";
             date: string;
             /** Format: double */
-            amount: number;
+            total: number;
+            status: string;
+        };
+        InvoiceCreateRequest: {
+            /** @enum {string} */
+            type: "SALES" | "PURCHASE";
+            customerId?: string;
+            supplierId?: string;
+            date: string;
+            dueDate?: string;
+            items: {
+                /** Format: double */
+                unitPrice: number;
+                /** Format: double */
+                quantity: number;
+                description: string;
+            }[];
+        };
+        /**
+         * @description Hisabiq (Accounting) API Response Types
+         *
+         *     These are simplified types for API responses that TSOA can handle.
+         *     Internal Odoo types use tuples [number, string] which TSOA doesn't support.
+         *     All fields use camelCase naming convention for JavaScript/TypeScript APIs.
+         */
+        PaymentResponse: {
+            /** Format: double */
+            id?: number;
+            /** @enum {string} */
+            paymentType: "inbound" | "outbound" | "transfer";
             /** @enum {string} */
             partnerType: "customer" | "supplier";
             /** Format: double */
             partnerId: number;
+            partnerName?: string;
+            /** Format: double */
+            amount: number;
+            /** Format: double */
+            currencyId?: number;
+            paymentDate: string;
+            /** Format: double */
+            journalId: number;
+            journalName?: string;
+            /** Format: double */
+            paymentMethodId?: number;
+            ref?: string;
+            /** @enum {string} */
+            state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
+        };
+        CreatePaymentDTO: {
             /** @enum {string} */
             type: "inbound" | "outbound";
-          }[];
+            /** Format: double */
+            partnerId: number;
+            /** @enum {string} */
+            partnerType: "customer" | "supplier";
+            /** Format: double */
+            amount: number;
+            date: string;
+            /** Format: double */
+            journalId: number;
+            reference?: string;
+            invoiceIds?: number[];
         };
-      };
-    };
-    responses: {
-      /** @description Payments created */
-      201: {
-        headers: {
-          [name: string]: unknown;
+        PartnerResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            email?: string;
+            phone?: string;
+            vat?: string;
+            /** Format: double */
+            accountReceivableId?: number;
+            /** Format: double */
+            accountPayableId?: number;
+            /** Format: double */
+            paymentTermId?: number;
+            /** Format: double */
+            customerRank?: number;
+            /** Format: double */
+            supplierRank?: number;
         };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              index: number;
-            }[];
-            success: {
-              /** Format: double */
-              id: number;
-              /** Format: double */
-              index: number;
-            }[];
-          };
+        JournalResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            code: string;
+            /** @enum {string} */
+            type: "sale" | "purchase" | "cash" | "bank" | "general";
+            /** Format: double */
+            currencyId?: number;
+            currencyName?: string;
+            /** Format: double */
+            companyId: number;
+            companyName?: string;
+            /** Format: double */
+            defaultAccountId: number;
+            defaultAccountName?: string;
         };
-      };
-    };
-  };
-  BatchConfirmAccountingPayments: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          paymentIds: number[];
+        TaxResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            /** Format: double */
+            amount: number;
+            /** @enum {string} */
+            amountType: "percent" | "division" | "fixed" | "group";
+            /** @enum {string} */
+            typeTaxUse: "sale" | "purchase" | "none";
+            active: boolean;
         };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        AccountBalanceReportResponse: {
+            /** Format: double */
+            accountId: number;
+            accountCode: string;
+            accountName: string;
+            /** Format: double */
+            debit: number;
+            /** Format: double */
+            credit: number;
+            /** Format: double */
+            balance: number;
         };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              id: number;
-            }[];
-            success: number[];
-          };
+        AccountBalanceQuery: {
+            accountIds?: number[];
+            dateFrom?: string;
+            dateTo?: string;
         };
-      };
-    };
-  };
-  GetAccounts: {
-    parameters: {
-      query?: {
-        _type?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        PartnerLedgerEntryResponse: {
+            date: string;
+            moveName: string;
+            label: string;
+            /** Format: double */
+            debit: number;
+            /** Format: double */
+            credit: number;
+            /** Format: double */
+            balance: number;
         };
-        content: {
-          "application/json": components["schemas"]["Account"][];
+        PartnerLedgerReportResponse: {
+            /** Format: double */
+            partnerId: number;
+            partnerName: string;
+            /** Format: double */
+            debit: number;
+            /** Format: double */
+            credit: number;
+            /** Format: double */
+            balance: number;
+            entries: components["schemas"]["PartnerLedgerEntryResponse"][];
         };
-      };
-    };
-  };
-  CreateAccount: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["AccountCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Account created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
+        PartnerLedgerQuery: {
+            /** Format: double */
+            partnerId: number;
+            dateFrom?: string;
+            dateTo?: string;
         };
-        content: {
-          "application/json": components["schemas"]["Account"];
+        ProfitLossResponse: {
+            /** Format: double */
+            income: number;
+            /** Format: double */
+            expenses: number;
+            /** Format: double */
+            netProfit: number;
         };
-      };
+        GLEntryResponse: {
+            /** Format: double */
+            id: number;
+            /** Format: double */
+            moveId: number;
+            moveName?: string;
+            date: string;
+            /** Format: double */
+            accountId: number;
+            accountName?: string;
+            /** Format: double */
+            partnerId?: number;
+            partnerName?: string;
+            name: string;
+            /** Format: double */
+            debit: number;
+            /** Format: double */
+            credit: number;
+            /** Format: double */
+            balance: number;
+            /** Format: double */
+            amountCurrency?: number;
+            /** Format: double */
+            currencyId?: number;
+            currencyName?: string;
+            /** Format: double */
+            companyId: number;
+            companyName?: string;
+        };
+        Account: {
+            id: string;
+            code: string;
+            name: string;
+            /** @enum {string} */
+            type: "ASSET" | "LIABILITY" | "EQUITY" | "REVENUE" | "EXPENSE";
+            /** Format: double */
+            balance: number;
+            parentId?: string;
+        };
+        AccountCreateRequest: {
+            code: string;
+            name: string;
+            /** @enum {string} */
+            type: "ASSET" | "LIABILITY" | "EQUITY" | "REVENUE" | "EXPENSE";
+            parentId?: string;
+        };
     };
-  };
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
+}
+export type $defs = Record<string, never>;
+export interface operations {
+    ListWorkflows: {
+        parameters: {
+            query?: {
+                entityType?: string;
+                isActive?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowResponse"][];
+                };
+            };
+        };
+    };
+    CreateWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateWorkflowRequest"];
+            };
+        };
+        responses: {
+            /** @description Workflow created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowResponse"];
+                };
+            };
+        };
+    };
+    GetWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workflowId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowResponse"];
+                };
+            };
+        };
+    };
+    UpdateWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workflowId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateWorkflowRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WorkflowResponse"];
+                };
+            };
+        };
+    };
+    DeleteWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workflowId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    ActivateWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workflowId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    DeactivateWorkflow: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                workflowId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    ListRules: {
+        parameters: {
+            query?: {
+                entityType?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleResponse"][];
+                };
+            };
+        };
+    };
+    CreateRule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateRuleRequest"];
+            };
+        };
+        responses: {
+            /** @description Rule created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleResponse"];
+                };
+            };
+        };
+    };
+    DeleteRule: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                ruleId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetCurrentUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description User profile retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfileResponse"];
+                };
+            };
+        };
+    };
+    UpdateCurrentUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateProfileRequest"];
+            };
+        };
+        responses: {
+            /** @description User profile updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UserProfileResponse"];
+                };
+            };
+        };
+    };
+    UpdateCurrentUserLocale: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateLocaleRequest"];
+            };
+        };
+        responses: {
+            /** @description User locale updated */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        locale: components["schemas"]["Locale"];
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    UploadFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    file: string;
+                    folderId?: string;
+                    tags?: string;
+                    metadata?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description File uploaded successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileMetadata"];
+                };
+            };
+        };
+    };
+    UploadFiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    /** Format: binary */
+                    files: string;
+                    folderId?: string;
+                    tags?: string;
+                    metadata?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Files uploaded successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileMetadata"][];
+                };
+            };
+        };
+    };
+    GetFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FileMetadata"];
+                };
+            };
+        };
+    };
+    DeleteFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description File deleted successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    DownloadFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    SearchFiles: {
+        parameters: {
+            query?: {
+                query?: string;
+                folderId?: string;
+                mimeTypes?: string[];
+                tags?: string[];
+                dateFrom?: string;
+                dateTo?: string;
+                createdBy?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        hasMore: boolean;
+                        /** Format: double */
+                        total: number;
+                        files: components["schemas"]["FileMetadata"][];
+                    };
+                };
+            };
+        };
+    };
+    CreateFolder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFolderRequest"];
+            };
+        };
+        responses: {
+            /** @description Folder created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FolderMetadata"];
+                };
+            };
+        };
+    };
+    GetFolderContents: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                folderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        subFolders: components["schemas"]["FolderMetadata"][];
+                        files: components["schemas"]["FileMetadata"][];
+                        folder: components["schemas"]["FolderMetadata"];
+                    };
+                };
+            };
+        };
+    };
+    DeleteFolder: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                folderId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Folder deleted successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetQuota: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        unit: string;
+                        /** Format: double */
+                        remaining: number;
+                        /** Format: double */
+                        total: number;
+                        /** Format: double */
+                        used: number;
+                    };
+                };
+            };
+        };
+    };
+    ProvisionDatabase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OdooProvisionResponse"];
+                };
+            };
+        };
+    };
+    ProvisionUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        hasApiKey: boolean;
+                        odooLogin: string;
+                        /** Format: double */
+                        odooUid: number;
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetDatabaseInfo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OdooInfoResponse"];
+                };
+            };
+        };
+    };
+    DeleteDatabase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OdooDeleteResponse"];
+                };
+            };
+        };
+    };
+    DuplicateDatabase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OdooDuplicateRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OdooDuplicateResponse"];
+                };
+            };
+        };
+    };
+    BackupDatabase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: string;
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    ListAllDatabases: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OdooListResponse"];
+                };
+            };
+        };
+    };
+    GetDatabaseInfoByOrganization: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                organizationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OdooInfoResponse"];
+                };
+            };
+        };
+    };
+    Search: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OdooSearchRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": number[];
+                };
+            };
+        };
+    };
+    SearchRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OdooSearchReadRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Record_string.unknown_"][];
+                };
+            };
+        };
+    };
+    Read: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OdooReadRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Record_string.unknown_"][];
+                };
+            };
+        };
+    };
+    Create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OdooCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        id: number;
+                    };
+                };
+            };
+        };
+    };
+    Write: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OdooWriteRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    Unlink: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OdooUnlinkRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    Execute: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OdooExecuteRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+        };
+    };
+    GetOdooDevCredentials: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        webUrl: string;
+                        password: string;
+                        login: string;
+                    } | null;
+                };
+            };
+        };
+    };
+    GetOdooUserCredentials: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        webUrl: string;
+                        password: string;
+                        login: string;
+                    } | null;
+                };
+            };
+        };
+    };
+    GetOdooAdminCredentialsEndpoint: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        webUrl: string;
+                        adminPassword: string;
+                        adminLogin: string;
+                        databaseName: string;
+                    } | null;
+                };
+            };
+        };
+    };
+    InstallOdooModules: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Modules installed successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetOdooModelFields: {
+        parameters: {
+            query?: {
+                simple?: boolean;
+            };
+            header?: never;
+            path: {
+                modelName: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Record_string.unknown_"] | {
+                        readonly?: boolean;
+                        required?: boolean;
+                        label: string;
+                        type: string;
+                        name: string;
+                    }[];
+                };
+            };
+        };
+    };
+    GetOdooDatabaseInfo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        accessGroups: {
+                            users: number[];
+                            category: string;
+                            fullName: string;
+                            name: string;
+                            /** Format: double */
+                            id: number;
+                        }[];
+                        modules: {
+                            summary: string;
+                            state: string;
+                            displayName: string;
+                            name: string;
+                            /** Format: double */
+                            id: number;
+                        }[];
+                        users: {
+                            groups: {
+                                fullName: string;
+                                name: string;
+                                /** Format: double */
+                                id: number;
+                            }[];
+                            active: boolean;
+                            email: string;
+                            login: string;
+                            name: string;
+                            /** Format: double */
+                            id: number;
+                        }[];
+                        database: {
+                            loginUrl: string;
+                            exists: boolean;
+                            name: string;
+                        };
+                    };
+                };
+            };
+        };
+    };
+    ConnectNAS: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConnectNASRequest"];
+            };
+        };
+        responses: {
+            /** @description NAS connected successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NASConnectionStatus"];
+                };
+            };
+        };
+    };
+    DisconnectNAS: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                name: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NAS disconnected successfully */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    GetAllNASStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NASStatusResponse"];
+                };
+            };
+        };
+    };
+    DisconnectAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description All NAS drives disconnected */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message: string;
+                    };
+                };
+            };
+        };
+    };
+    GetHRManagementEmployees: {
+        parameters: {
+            query?: {
+                departmentId?: string;
+                managerId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeDbResponse"][];
+                };
+            };
+        };
+    };
+    CreateEmployee: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateEmployeeRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeDbResponse"];
+                };
+            };
+        };
+    };
+    GetHRManagementEmployee: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employeeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeDbResponse"];
+                };
+            };
+        };
+    };
+    UpdateEmployee: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employeeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateEmployeeRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeDbResponse"];
+                };
+            };
+        };
+    };
+    DeactivateEmployee: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employeeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    SyncEmployeeFromOdoo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SyncEmployeeFromOdooRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeDbResponse"];
+                };
+            };
+        };
+    };
+    SyncAllEmployees: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SyncAllEmployeesResponse"];
+                };
+            };
+        };
+    };
+    GetHRManagementDepartments: {
+        parameters: {
+            query?: {
+                parentId?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentDbResponse"][];
+                };
+            };
+        };
+    };
+    CreateDepartment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDepartmentRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentDbResponse"];
+                };
+            };
+        };
+    };
+    GetHRManagementDepartment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                departmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentDbResponse"];
+                };
+            };
+        };
+    };
+    UpdateDepartment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                departmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDepartmentRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentDbResponse"];
+                };
+            };
+        };
+    };
+    DeleteDepartment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                departmentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    SyncDepartmentFromOdoo: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SyncDepartmentFromOdooRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentDbResponse"];
+                };
+            };
+        };
+    };
+    SyncAllDepartments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SyncAllDepartmentsResponse"];
+                };
+            };
+        };
+    };
+    GetEmployeeLeaveBalances: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employeeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaveBalanceResponse"][];
+                };
+            };
+        };
+    };
+    GetEmployeeLeaveBalanceByType: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employeeId: string;
+                leaveTypeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaveBalanceResponse"];
+                };
+            };
+        };
+    };
+    GetHREmployees: {
+        parameters: {
+            query?: {
+                departmentId?: number;
+                active?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeResponse"][];
+                };
+            };
+        };
+    };
+    GetHREmployee: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                employeeId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EmployeeResponse"];
+                };
+            };
+        };
+    };
+    GetHRDepartments: {
+        parameters: {
+            query?: {
+                parentId?: number;
+                active?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentResponse"][];
+                };
+            };
+        };
+    };
+    GetHRDepartment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                departmentId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DepartmentResponse"];
+                };
+            };
+        };
+    };
+    GetContracts: {
+        parameters: {
+            query?: {
+                employeeId?: number;
+                state?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContractResponse"][];
+                };
+            };
+        };
+    };
+    GetContract: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contractId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContractResponse"];
+                };
+            };
+        };
+    };
+    GetLeaveTypes: {
+        parameters: {
+            query?: {
+                active?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaveTypeResponse"][];
+                };
+            };
+        };
+    };
+    GetLeaveType: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leaveTypeId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaveTypeResponse"];
+                };
+            };
+        };
+    };
+    GetLeaveRequests: {
+        parameters: {
+            query?: {
+                employeeId?: number;
+                leaveTypeId?: number;
+                state?: string;
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaveRequestResponse"][];
+                };
+            };
+        };
+    };
+    GetLeaveRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leaveId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaveRequestResponse"];
+                };
+            };
+        };
+    };
+    GetLeaveAllocations: {
+        parameters: {
+            query?: {
+                employeeId?: number;
+                leaveTypeId?: number;
+                state?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaveAllocationResponse"][];
+                };
+            };
+        };
+    };
+    GetLeaveAllocation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                allocationId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaveAllocationResponse"];
+                };
+            };
+        };
+    };
+    GetPayslips: {
+        parameters: {
+            query?: {
+                employeeId?: number;
+                state?: string;
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayslipResponse"][];
+                };
+            };
+        };
+    };
+    GetPayslip: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                payslipId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayslipResponse"];
+                };
+            };
+        };
+    };
+    GetPayslipLines: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                payslipId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PayslipLineResponse"][];
+                };
+            };
+        };
+    };
+    GetHealth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HealthCheck"];
+                };
+            };
+        };
+    };
+    GetTemplates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentTemplateResponse"][];
+                };
+            };
+        };
+    };
+    CreateDocumentTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDocumentTemplateRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentTemplateResponse"];
+                };
+            };
+        };
+    };
+    GetTemplatesByType: {
+        parameters: {
+            query: {
+                documentType: components["schemas"]["DocumentType"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentTemplateResponse"][];
+                };
+            };
+        };
+    };
+    GetActiveTemplate: {
+        parameters: {
+            query: {
+                documentType: components["schemas"]["DocumentType"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        templateId: string;
+                    };
+                };
+            };
+        };
+    };
+    GetOdooTemplates: {
+        parameters: {
+            query?: {
+                model?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OdooReportTemplate"][];
+                };
+            };
+        };
+    };
+    UpdateTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                templateId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTemplateRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentTemplateResponse"];
+                };
+            };
+        };
+    };
+    DeleteTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                templateId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    ActivateTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                templateId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentTemplateResponse"];
+                };
+            };
+        };
+    };
+    CreateCustomTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCustomTemplateRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentTemplateResponse"];
+                };
+            };
+        };
+    };
+    GetStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DashboardStatsResponse"];
+                };
+            };
+        };
+    };
+    GetActivity: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseActivityResponse"][];
+                };
+            };
+        };
+    };
+    GetNotifications: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NotificationResponse"][];
+                };
+            };
+        };
+    };
+    GetUnreadNotificationsCount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UnreadNotificationsCountResponse"];
+                };
+            };
+        };
+    };
+    MarkNotificationAsRead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                notificationId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetCRMLeads: {
+        parameters: {
+            query?: {
+                type?: "lead" | "opportunity";
+                stageId?: number;
+                teamId?: number;
+                userId?: number;
+                partnerId?: number;
+                active?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeadResponse"][];
+                };
+            };
+        };
+    };
+    CreateCRMLead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateLeadRequest"];
+            };
+        };
+        responses: {
+            /** @description Lead created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        id: number;
+                    };
+                };
+            };
+        };
+    };
+    GetCRMLead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leadId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeadResponse"];
+                };
+            };
+        };
+    };
+    UpdateCRMLead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leadId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateLeadRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    ConvertCRMLead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leadId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: double */
+                    partnerId?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    WinCRMLead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leadId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    LoseCRMLead: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                leadId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: double */
+                    lostReasonId?: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetCRMStages: {
+        parameters: {
+            query?: {
+                teamId?: number;
+                isWon?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StageResponse"][];
+                };
+            };
+        };
+    };
+    GetCRMStage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                stageId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StageResponse"];
+                };
+            };
+        };
+    };
+    GetCRMContacts: {
+        parameters: {
+            query?: {
+                isCustomer?: boolean;
+                isSupplier?: boolean;
+                isCompany?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactResponse"][];
+                };
+            };
+        };
+    };
+    CreateCRMContact: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateContactRequest"];
+            };
+        };
+        responses: {
+            /** @description Contact created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        id: number;
+                    };
+                };
+            };
+        };
+    };
+    GetCRMContact: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contactId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContactResponse"];
+                };
+            };
+        };
+    };
+    UpdateCRMContact: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                contactId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateContactRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetCRMActivities: {
+        parameters: {
+            query?: {
+                leadId?: number;
+                userId?: number;
+                state?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActivityResponse"][];
+                };
+            };
+        };
+    };
+    CreateCRMActivity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateActivityRequest"];
+            };
+        };
+        responses: {
+            /** @description Activity created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        id: number;
+                    };
+                };
+            };
+        };
+    };
+    GetCRMActivity: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                activityId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ActivityResponse"];
+                };
+            };
+        };
+    };
+    MarkCRMActivityDone: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                activityId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetCRMTeams: {
+        parameters: {
+            query?: {
+                active?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamResponse"][];
+                };
+            };
+        };
+    };
+    GetCRMTeam: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                teamId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamResponse"];
+                };
+            };
+        };
+    };
+    GetCRMLostReasons: {
+        parameters: {
+            query?: {
+                active?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LostReasonResponse"][];
+                };
+            };
+        };
+    };
+    GetCRMLostReason: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                reasonId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LostReasonResponse"];
+                };
+            };
+        };
+    };
+    SyncCRM: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": {
+                    /** @enum {string} */
+                    entity?: "leads" | "contacts" | "all";
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        errors?: string[];
+                        /** Format: double */
+                        lostReasonsSync?: number;
+                        /** Format: double */
+                        teamsSync?: number;
+                        /** Format: double */
+                        stagesSync?: number;
+                        /** Format: double */
+                        contactsSync?: number;
+                        /** Format: double */
+                        leadsSync?: number;
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetConnectorTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        optionalFields: string[];
+                        requiredFields: string[];
+                        description: string;
+                        name: string;
+                        type: components["schemas"]["ConnectorType"];
+                    }[];
+                };
+            };
+        };
+    };
+    GetFieldDefinitions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                type: components["schemas"]["ConnectorType"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        helpText?: string;
+                        defaultValue?: unknown;
+                        required: boolean;
+                        placeholder?: string;
+                        label: string;
+                        /** @enum {string} */
+                        type: "text" | "number" | "password" | "boolean";
+                        name: string;
+                    }[];
+                };
+            };
+        };
+    };
+    ListConnectors: {
+        parameters: {
+            query?: {
+                type?: components["schemas"]["ConnectorType"];
+                isActive?: boolean;
+                tags?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConnectorResponse"][];
+                };
+            };
+        };
+    };
+    CreateConnector: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateConnectorRequest"];
+            };
+        };
+        responses: {
+            /** @description Connector created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConnectorResponse"];
+                };
+            };
+        };
+    };
+    GetConnector: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                connectorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConnectorResponse"];
+                };
+            };
+        };
+    };
+    UpdateConnector: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                connectorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateConnectorRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    DeleteConnector: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                connectorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    TestConnection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                connectorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        error?: string;
+                        metadata?: components["schemas"]["Record_string.unknown_"];
+                        /** Format: double */
+                        latency?: number;
+                        message: string;
+                        status: string;
+                    };
+                };
+            };
+        };
+    };
+    GetConnectorHealth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                connectorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        details?: components["schemas"]["Record_string.unknown_"];
+                        message?: string;
+                        healthy: boolean;
+                    };
+                };
+            };
+        };
+    };
+    ExecuteQuery: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                connectorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["QueryRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["QueryResponse"];
+                };
+            };
+        };
+    };
+    GetSchema: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                connectorId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SchemaResponse"];
+                };
+            };
+        };
+    };
+    GetTablePreview: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                connectorId: string;
+                schemaName: string;
+                tableName: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TablePreviewResponse"];
+                };
+            };
+        };
+    };
+    SearchTable: {
+        parameters: {
+            query: {
+                searchTerm: string;
+                searchColumns: string;
+                limit?: number;
+            };
+            header?: never;
+            path: {
+                connectorId: string;
+                schemaName: string;
+                tableName: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown[];
+                };
+            };
+        };
+    };
+    SuggestMappings: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SuggestMappingsRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FieldMapping"][];
+                };
+            };
+        };
+    };
+    ListCases: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseResponse"][];
+                };
+            };
+        };
+    };
+    CreateCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCaseRequest"];
+            };
+        };
+        responses: {
+            /** @description Case created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseResponse"];
+                };
+            };
+        };
+    };
+    ListPublicTemplates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateResponse"][];
+                };
+            };
+        };
+    };
+    CreateCaseTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTemplateRequest"];
+            };
+        };
+        responses: {
+            /** @description Template created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateResponse"];
+                };
+            };
+        };
+    };
+    GetTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                templateId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateResponse"];
+                };
+            };
+        };
+    };
+    GetCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseResponse"];
+                };
+            };
+        };
+    };
+    UpdateCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCaseRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CaseResponse"];
+                };
+            };
+        };
+    };
+    DeleteCase: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    ListScopes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScopeResponse"][];
+                };
+            };
+        };
+    };
+    CreateScope: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateScopeRequest"];
+            };
+        };
+        responses: {
+            /** @description Scope created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScopeResponse"];
+                };
+            };
+        };
+    };
+    CreateScopeFromTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateScopeFromTemplateRequest"];
+            };
+        };
+        responses: {
+            /** @description Scope created from template successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScopeResponse"];
+                };
+            };
+        };
+    };
+    UpdateScopeStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateScopeStatusRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ScopeResponse"];
+                };
+            };
+        };
+    };
+    ListSections: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+                scopeId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SectionResponse"][];
+                };
+            };
+        };
+    };
+    ListProcedures: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+                scopeId: string;
+                sectionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProcedureResponse"][];
+                };
+            };
+        };
+    };
+    CompleteProcedure: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+                scopeId: string;
+                sectionId: string;
+                procedureId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompleteProcedureRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProcedureResponse"];
+                };
+            };
+        };
+    };
+    ListDocuments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentResponse"][];
+                };
+            };
+        };
+    };
+    CreateDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDocumentRequest"];
+            };
+        };
+        responses: {
+            /** @description Document created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DocumentResponse"];
+                };
+            };
+        };
+    };
+    DeleteDocument: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+                documentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    ListNotes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoteResponse"][];
+                };
+            };
+        };
+    };
+    CreateNote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateNoteRequest"];
+            };
+        };
+        responses: {
+            /** @description Note created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoteResponse"];
+                };
+            };
+        };
+    };
+    UpdateNote: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+                noteId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateNoteRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoteResponse"];
+                };
+            };
+        };
+    };
+    ListAssignments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentResponse"][];
+                };
+            };
+        };
+    };
+    CreateAssignment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAssignmentRequest"];
+            };
+        };
+        responses: {
+            /** @description Assignment created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentResponse"];
+                };
+            };
+        };
+    };
+    DeleteAssignment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetHistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                caseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HistoryResponse"][];
+                };
+            };
+        };
+    };
+    GetOrganizationAuditLogs: {
+        parameters: {
+            query?: {
+                entityType?: components["schemas"]["EntityType"];
+                entityId?: string;
+                action?: components["schemas"]["AuditAction"];
+                userId?: string;
+                startDate?: string;
+                endDate?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        total: number;
+                        logs: components["schemas"]["AuditLogResponse"][];
+                    };
+                };
+            };
+        };
+    };
+    ExportAuditLogs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                orgId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ExportAuditLogsRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        contentType: string;
+                        filename: string;
+                        data: string;
+                    };
+                };
+            };
+        };
+    };
+    GetUserActivityLogs: {
+        parameters: {
+            query?: {
+                entityType?: components["schemas"]["EntityType"];
+                action?: components["schemas"]["AuditAction"];
+                startDate?: string;
+                endDate?: string;
+                limit?: number;
+                offset?: number;
+            };
+            header?: never;
+            path: {
+                userId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        total: number;
+                        logs: components["schemas"]["AuditLogResponse"][];
+                    };
+                };
+            };
+        };
+    };
+    SubmitForApproval: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitForApprovalRequest"];
+            };
+        };
+        responses: {
+            /** @description Entity submitted for approval */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SubmitForApprovalResponse"];
+                };
+            };
+        };
+    };
+    GetPendingApprovals: {
+        parameters: {
+            query?: {
+                status?: "pending" | "approved" | "rejected" | "cancelled";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalRequestResponse"][];
+                };
+            };
+        };
+    };
+    GetApprovalRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalRequestResponse"];
+                };
+            };
+        };
+    };
+    Approve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApprovalActionRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalActionResponse"];
+                };
+            };
+        };
+    };
+    Reject: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApprovalActionRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalActionResponse"];
+                };
+            };
+        };
+    };
+    Delegate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                requestId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DelegateApprovalRequest"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalActionResponse"];
+                };
+            };
+        };
+    };
+    GetApprovalHistory: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                entityType: string;
+                entityId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApprovalRequestResponse"][];
+                };
+            };
+        };
+    };
+    GetAccountingInvoices: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                type?: "SALES" | "PURCHASE";
+                state?: "draft" | "posted" | "cancel";
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        limit: number;
+                        /** Format: double */
+                        page: number;
+                        /** Format: double */
+                        total: number;
+                        invoices: components["schemas"]["Invoice"][];
+                    };
+                };
+            };
+        };
+    };
+    CreateAccountingInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvoiceCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Invoice created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invoice"];
+                };
+            };
+        };
+    };
+    GetAccountingInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invoice"];
+                };
+            };
+        };
+    };
+    ValidateAccountingInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    CancelAccountingInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    RefundAccountingInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: double */
+                    journalId?: number;
+                    date?: string;
+                    reason?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        refundId: number;
+                    };
+                };
+            };
+        };
+    };
+    GetAccountingInvoicePDF: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+        };
+    };
+    GetAccountingBills: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                state?: "draft" | "posted" | "cancel";
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        limit: number;
+                        /** Format: double */
+                        page: number;
+                        /** Format: double */
+                        total: number;
+                        bills: components["schemas"]["Invoice"][];
+                    };
+                };
+            };
+        };
+    };
+    CreateAccountingBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvoiceCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Bill created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invoice"];
+                };
+            };
+        };
+    };
+    GetAccountingBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invoice"];
+                };
+            };
+        };
+    };
+    ValidateAccountingBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    CancelAccountingBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    RefundAccountingBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: double */
+                    journalId?: number;
+                    date?: string;
+                    reason?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        refundId: number;
+                    };
+                };
+            };
+        };
+    };
+    GetAccountingBillPDF: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+        };
+    };
+    GetAccountingAccounts: {
+        parameters: {
+            query?: {
+                accountType?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        parentId?: string;
+                        type: string;
+                        name: string;
+                        code: string;
+                        id: string;
+                    }[];
+                };
+            };
+        };
+    };
+    SearchAccountingAccounts: {
+        parameters: {
+            query: {
+                q: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        type: string;
+                        name: string;
+                        code: string;
+                        id: string;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingPayments: {
+        parameters: {
+            query?: {
+                type?: "inbound" | "outbound" | "transfer";
+                state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentResponse"][];
+                };
+            };
+        };
+    };
+    CreateAccountingPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePaymentDTO"];
+            };
+        };
+        responses: {
+            /** @description Payment created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        id: number;
+                    };
+                };
+            };
+        };
+    };
+    ConfirmAccountingPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paymentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetAccountingPartners: {
+        parameters: {
+            query?: {
+                isCustomer?: boolean;
+                isSupplier?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerResponse"][];
+                };
+            };
+        };
+    };
+    GetAccountingJournals: {
+        parameters: {
+            query?: {
+                type?: "sale" | "purchase" | "cash" | "bank" | "general";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JournalResponse"][];
+                };
+            };
+        };
+    };
+    GetAccountingTaxes: {
+        parameters: {
+            query?: {
+                typeTaxUse?: "sale" | "purchase" | "none";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaxResponse"][];
+                };
+            };
+        };
+    };
+    GetAccountingTrialBalance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountBalanceQuery"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountBalanceReportResponse"][];
+                };
+            };
+        };
+    };
+    GetAccountingPartnerLedger: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartnerLedgerQuery"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerLedgerReportResponse"] | null;
+                };
+            };
+        };
+    };
+    GetAccountingProfitLoss: {
+        parameters: {
+            query?: {
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfitLossResponse"];
+                };
+            };
+        };
+    };
+    GetAccountingGeneralLedger: {
+        parameters: {
+            query?: {
+                accountId?: number;
+                partnerId?: number;
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GLEntryResponse"][];
+                };
+            };
+        };
+    };
+    GetAccountingPaymentTerms: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        note?: string;
+                        name: string;
+                        /** Format: double */
+                        id: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingAgedReceivable: {
+        parameters: {
+            query?: {
+                asOfDate?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        total: number;
+                        /** Format: double */
+                        days_over_90: number;
+                        /** Format: double */
+                        days_61_90: number;
+                        /** Format: double */
+                        days_31_60: number;
+                        /** Format: double */
+                        days_1_30: number;
+                        /** Format: double */
+                        current: number;
+                        partnerName: string;
+                        /** Format: double */
+                        partnerId: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingAgedPayable: {
+        parameters: {
+            query?: {
+                asOfDate?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        total: number;
+                        /** Format: double */
+                        days_over_90: number;
+                        /** Format: double */
+                        days_61_90: number;
+                        /** Format: double */
+                        days_31_60: number;
+                        /** Format: double */
+                        days_1_30: number;
+                        /** Format: double */
+                        current: number;
+                        partnerName: string;
+                        /** Format: double */
+                        partnerId: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingBankStatements: {
+        parameters: {
+            query?: {
+                journalId?: number;
+                dateFrom?: string;
+                dateTo?: string;
+                state?: "open" | "confirm";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        state: string;
+                        /** Format: double */
+                        balanceEnd: number;
+                        /** Format: double */
+                        balanceEndReal: number;
+                        /** Format: double */
+                        balanceStart: number;
+                        date: string;
+                        journalName: string;
+                        /** Format: double */
+                        journalId: number;
+                        name: string;
+                        /** Format: double */
+                        id: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingBankStatementLines: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                statementId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        isReconciled: boolean;
+                        /** Format: double */
+                        amount: number;
+                        partnerName?: string;
+                        paymentRef: string;
+                        date: string;
+                        /** Format: double */
+                        id: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingReconciliationSuggestions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lineId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        amount: number;
+                        date: string;
+                        partnerName: string;
+                        moveName: string;
+                        /** Format: double */
+                        moveId: number;
+                    }[];
+                };
+            };
+        };
+    };
+    ReconcileAccountingBankStatementLine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lineId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    moveIds: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message?: string;
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetAccountingCurrencies: {
+        parameters: {
+            query?: {
+                onlyActive?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        active: boolean;
+                        /** Format: double */
+                        rounding: number;
+                        /** @enum {string} */
+                        position: "after" | "before";
+                        symbol: string;
+                        name: string;
+                        /** Format: double */
+                        id: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingCurrencyRates: {
+        parameters: {
+            query?: {
+                currencyId?: number;
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        companyId: number;
+                        /** Format: double */
+                        rate: number;
+                        name: string;
+                        currencyName: string;
+                        /** Format: double */
+                        currencyId: number;
+                        /** Format: double */
+                        id: number;
+                    }[];
+                };
+            };
+        };
+    };
+    ConvertAccountingCurrency: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    date?: string;
+                    /** Format: double */
+                    toCurrencyId: number;
+                    /** Format: double */
+                    fromCurrencyId: number;
+                    /** Format: double */
+                    amount: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        rate: number;
+                        /** Format: double */
+                        convertedAmount: number;
+                    };
+                };
+            };
+        };
+    };
+    BatchValidateAccountingInvoices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    invoiceIds: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        failed: {
+                            error: string;
+                            /** Format: double */
+                            id: number;
+                        }[];
+                        success: number[];
+                    };
+                };
+            };
+        };
+    };
+    BatchCancelAccountingInvoices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    invoiceIds: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        failed: {
+                            error: string;
+                            /** Format: double */
+                            id: number;
+                        }[];
+                        success: number[];
+                    };
+                };
+            };
+        };
+    };
+    BatchCreateAccountingInvoices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    invoices: components["schemas"]["InvoiceCreateRequest"][];
+                };
+            };
+        };
+        responses: {
+            /** @description Invoices created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        failed: {
+                            error: string;
+                            /** Format: double */
+                            index: number;
+                        }[];
+                        success: {
+                            /** Format: double */
+                            id: number;
+                            /** Format: double */
+                            index: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    BatchCreateAccountingPayments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    payments: {
+                        reference?: string;
+                        /** Format: double */
+                        journalId: number;
+                        date: string;
+                        /** Format: double */
+                        amount: number;
+                        /** @enum {string} */
+                        partnerType: "customer" | "supplier";
+                        /** Format: double */
+                        partnerId: number;
+                        /** @enum {string} */
+                        type: "inbound" | "outbound";
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Payments created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        failed: {
+                            error: string;
+                            /** Format: double */
+                            index: number;
+                        }[];
+                        success: {
+                            /** Format: double */
+                            id: number;
+                            /** Format: double */
+                            index: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    BatchConfirmAccountingPayments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    paymentIds: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        failed: {
+                            error: string;
+                            /** Format: double */
+                            id: number;
+                        }[];
+                        success: number[];
+                    };
+                };
+            };
+        };
+    };
+    GetAccounts: {
+        parameters: {
+            query?: {
+                _type?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Account"][];
+                };
+            };
+        };
+    };
+    CreateAccount: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Account created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Account"];
+                };
+            };
+        };
+    };
 }

@@ -534,11 +534,10 @@ export class OdooCRMService {
     if (filters?.userId) {
       domain.push(["user_id", "=", filters.userId]);
     }
-    if (filters?.state) {
-      domain.push(["state", "=", filters.state]);
-    }
+    // Note: state is a computed field in Odoo and cannot be used in domain filters
+    // We'll filter by state in-memory after fetching
 
-    return this.client.searchRead<OdooActivity>("mail.activity", domain, [
+    const activities = await this.client.searchRead<OdooActivity>("mail.activity", domain, [
       "res_id",
       "res_model",
       "activity_type_id",
@@ -548,6 +547,13 @@ export class OdooCRMService {
       "user_id",
       "state",
     ]);
+
+    // Filter by state in-memory if requested
+    if (filters?.state) {
+      return activities.filter((activity) => activity.state === filters.state);
+    }
+
+    return activities;
   }
 
   async getActivity(activityId: number): Promise<OdooActivity | null> {

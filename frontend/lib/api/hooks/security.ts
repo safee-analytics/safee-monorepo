@@ -64,8 +64,8 @@ export function useGetActiveSessions() {
   });
 }
 
-// Revoke session
-export function useRevokeSession() {
+// Revoke session (security settings)
+export function useSecurityRevokeSession() {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -79,8 +79,8 @@ export function useRevokeSession() {
   });
 }
 
-// Change password
-export function useChangePassword() {
+// Change password (security settings)
+export function useSecurityChangePassword() {
   return useMutation({
     mutationFn: async (request: ChangePasswordRequest) => {
       const response = await apiClient.post("/security/change-password", request);

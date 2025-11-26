@@ -29,6 +29,7 @@ import {
   FiClock,
   FiPieChart,
   FiActivity,
+  FiCheckCircle,
 } from "react-icons/fi";
 import { motion, AnimatePresence, Reorder } from "framer-motion";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
@@ -135,6 +136,7 @@ export const Sidebar = () => {
     if (pathname?.startsWith("/kanz")) return "kanz";
     if (pathname?.startsWith("/hr")) return "hr";
     if (pathname?.startsWith("/nisbah")) return "nisbah";
+    if (pathname?.startsWith("/crm")) return "crm";
     return null;
   };
 
@@ -171,6 +173,13 @@ export const Sidebar = () => {
       { icon: FiUsers, title: "Contacts", href: "/nisbah/contacts" },
       { icon: FiDollarSign, title: "Deals", href: "/nisbah/deals" },
     ],
+    crm: [
+      { icon: FiTrendingUp, title: "Dashboard", href: "/crm" },
+      { icon: FiUserPlus, title: "Leads", href: "/crm/leads" },
+      { icon: FiUsers, title: "Contacts", href: "/crm/contacts" },
+      { icon: FiCheckCircle, title: "Activities", href: "/crm/activities" },
+      { icon: FiSettings, title: "Settings", href: "/crm/settings" },
+    ],
   };
 
   const sidebarItems =
@@ -196,6 +205,11 @@ export const Sidebar = () => {
       { label: t.nisbah.createMenu.lead, icon: FiUserPlus },
       { label: t.nisbah.createMenu.contact, icon: FiUsers },
       { label: t.nisbah.createMenu.deal, icon: FiDollarSign },
+    ],
+    crm: [
+      { label: "New Lead", icon: FiUserPlus, href: "/crm/leads/new" },
+      { label: "New Contact", icon: FiUsers, href: "/crm/contacts/new" },
+      { label: "New Activity", icon: FiCheckCircle, href: "/crm/activities/new" },
     ],
     audit: [
       { label: t.audit.createMenu.newCase, icon: FiFileText },
@@ -525,6 +539,31 @@ export const Sidebar = () => {
                           <Icon className="w-4 h-4 text-gray-400" />
                           {item.label}
                         </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* CRM */}
+                <div>
+                  <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2 flex items-center gap-2">
+                    <FiTrendingUp className="w-3 h-3" />
+                    CRM
+                  </h4>
+                  <div className="space-y-1">
+                    {createMenuItems.crm.map((item, idx) => {
+                      const Icon = item.icon;
+                      return (
+                        <Link
+                          key={idx}
+                          href={(item as any).href || "#"}
+                          onClick={() => setShowCreateMenu(false)}
+                        >
+                          <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                            <Icon className="w-4 h-4 text-gray-400" />
+                            {item.label}
+                          </button>
+                        </Link>
                       );
                     })}
                   </div>
