@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, text, integer, timestamp } from "drizzle-orm/pg-core";
+import { uuid, varchar, text, integer, timestamp } from "drizzle-orm/pg-core";
 import { salesSchema, idpk, activityStateEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { crmLeads } from "./crmLeads.js";

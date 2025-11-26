@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, integer, timestamp, boolean } from "drizzle-orm/pg-core";
+import { uuid, varchar, text, integer, timestamp, boolean } from "drizzle-orm/pg-core";
 import { salesSchema, idpk } from "./_common.js";
 import { organizations } from "./organizations.js";
 
@@ -13,10 +13,13 @@ export const crmContacts = salesSchema.table("contacts", {
 
   name: varchar("name", { length: 255 }).notNull(),
   isCompany: boolean("is_company").default(false),
+  companyType: varchar("company_type", { length: 20 }),
   email: varchar("email", { length: 255 }),
   phone: varchar("phone", { length: 50 }),
-  mobile: varchar("mobile", { length: 50 }),
+  phoneMobileSearch: varchar("phone_mobile_search", { length: 50 }),
   website: varchar("website", { length: 255 }),
+  function: varchar("function", { length: 255 }),
+  comment: text("comment"),
 
   street: varchar("street", { length: 255 }),
   street2: varchar("street2", { length: 255 }),

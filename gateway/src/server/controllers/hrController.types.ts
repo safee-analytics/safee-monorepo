@@ -1,12 +1,4 @@
-/**
- * HR Controller DTOs - TSOA-compatible types
- * These types convert Odoo's tuple format [id, name] to proper objects
- */
-
-export interface OdooRelation {
-  id: number;
-  name: string;
-}
+import type { OdooRelation } from "./shared.types.js";
 
 export interface EmployeeResponse {
   id: number;

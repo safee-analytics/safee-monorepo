@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, integer, timestamp, boolean } from "drizzle-orm/pg-core";
+import { uuid, varchar, text, integer, timestamp, boolean } from "drizzle-orm/pg-core";
 import { salesSchema, idpk } from "./_common.js";
 import { organizations } from "./organizations.js";
 
@@ -13,10 +13,12 @@ export const crmStages = salesSchema.table("stages", {
 
   name: varchar("name", { length: 100 }).notNull(),
   sequence: integer("sequence").default(10),
-  foldStage: boolean("fold_stage").default(false),
+  fold: boolean("fold").default(false),
   isWon: boolean("is_won").default(false),
-
-  teamId: integer("team_id"),
+  rottingThresholdDays: integer("rotting_threshold_days"),
+  requirements: text("requirements"),
+  teamIds: integer("team_ids").array(),
+  color: integer("color"),
 
   lastSyncedAt: timestamp("last_synced_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),

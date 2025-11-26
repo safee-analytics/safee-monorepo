@@ -42,4 +42,6 @@ export * from "./email/index.js";
 
 export * from "./hr/index.js";
 
+export * from "./crm/index.js";
+
 export * from "./test-helpers/integration-setup.js";

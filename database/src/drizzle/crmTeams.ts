@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, integer, timestamp, boolean } from "drizzle-orm/pg-core";
+import { uuid, varchar, integer, timestamp, boolean } from "drizzle-orm/pg-core";
 import { salesSchema, idpk } from "./_common.js";
 import { organizations } from "./organizations.js";
 
