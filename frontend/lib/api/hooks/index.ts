@@ -40,3 +40,18 @@ export * from "./hrData";
 
 // Re-export document template hooks
 export * from "./documentTemplates";
+
+// Re-export database hooks
+export * from "./database";
+
+// Re-export storage settings hooks
+export * from "./storage-settings";
+
+// Re-export API keys hooks
+export * from "./api-keys";
+
+// Re-export security hooks
+export * from "./security";
+
+// Re-export integrations hooks
+export * from "./integrations";

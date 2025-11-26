@@ -60,3 +60,35 @@ body {
   padding: 0 8px;
   margin-bottom: 8px;
 }
+
+/* Phone Input Styling */
+.phone-input-custom {
+  width: 100%;
+}
+
+.phone-input-custom .PhoneInputInput {
+  padding: 0.5rem 0.75rem;
+  border: 2px solid #3b82f6;
+  border-radius: 0.5rem;
+  width: 100%;
+  font-size: 0.875rem;
+  outline: none;
+}
+
+.phone-input-custom .PhoneInputInput:focus {
+  ring: 2px;
+  ring-color: #3b82f6;
+  border-color: #3b82f6;
+}
+
+.phone-input-custom .PhoneInputCountrySelect {
+  margin-right: 0.5rem;
+  padding: 0.5rem;
+  border: 2px solid #3b82f6;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.phone-input-custom .PhoneInputCountry {
+  margin-right: 0.5rem;
+}

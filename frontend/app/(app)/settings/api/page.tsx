@@ -2,19 +2,17 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Key, Copy, Eye, EyeOff, Plus, Trash2, AlertCircle, CheckCircle } from "lucide-react";
+import { Key, Copy, Eye, EyeOff, Plus, Trash2, AlertCircle, CheckCircle, RefreshCw } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
-
-interface APIKey {
-  id: string;
-  name: string;
-  key: string;
-  created: string;
-  lastUsed: string;
-  status: "active" | "revoked";
-  permissions: string[];
-}
+import {
+  useGetAPIKeys,
+  useGetAvailablePermissions,
+  useCreateAPIKey,
+  useRevokeAPIKey,
+  useDeleteAPIKey,
+  type APIKey,
+} from "@/lib/api/hooks/api-keys";
 
 export default function APIKeysSettings() {
   const { t } = useTranslation();
@@ -24,42 +22,14 @@ export default function APIKeysSettings() {
   const [revealedKeys, setRevealedKeys] = useState<Set<string>>(new Set());
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
-  const [apiKeys, setApiKeys] = useState<APIKey[]>([
-    {
-      id: "1",
-      name: "Production API",
-      key: "sk_live_abc123xyz789def456ghi012jkl",
-      created: "2024-01-15",
-      lastUsed: "2 hours ago",
-      status: "active",
-      permissions: ["read", "write"],
-    },
-    {
-      id: "2",
-      name: "Development API",
-      key: "sk_test_xyz789abc123def456ghi012jkl",
-      created: "2024-01-10",
-      lastUsed: "5 days ago",
-      status: "active",
-      permissions: ["read"],
-    },
-    {
-      id: "3",
-      name: "Legacy Integration",
-      key: "sk_live_old123key456revoked789xyz",
-      created: "2023-12-01",
-      lastUsed: "30 days ago",
-      status: "revoked",
-      permissions: ["read", "write"],
-    },
-  ]);
+  // Fetch data
+  const { data: apiKeys = [], isLoading: keysLoading } = useGetAPIKeys();
+  const { data: availablePermissions = [], isLoading: permissionsLoading } = useGetAvailablePermissions();
 
-  const availablePermissions = [
-    { id: "read", name: "Read", description: "View data and resources" },
-    { id: "write", name: "Write", description: "Create and update resources" },
-    { id: "delete", name: "Delete", description: "Delete resources" },
-    { id: "admin", name: "Admin", description: "Full administrative access" },
-  ];
+  // Mutations
+  const createKey = useCreateAPIKey();
+  const revokeKey = useRevokeAPIKey();
+  const deleteKey = useDeleteAPIKey();
 
   const toggleKeyVisibility = (keyId: string) => {
     const newRevealed = new Set(revealedKeys);
@@ -83,7 +53,7 @@ export default function APIKeysSettings() {
     return `${prefix}${"•".repeat(20)}${suffix}`;
   };
 
-  const createAPIKey = () => {
+  const createAPIKey = async () => {
     if (!newKeyName.trim()) {
       alert("Please enter a name for the API key");
       return;
@@ -93,31 +63,36 @@ export default function APIKeysSettings() {
       return;
     }
 
-    const newKey: APIKey = {
-      id: Date.now().toString(),
-      name: newKeyName,
-      key: `sk_live_${Math.random().toString(36).substring(2, 15)}${Math.random().toString(36).substring(2, 15)}`,
-      created: new Date().toISOString().split("T")[0],
-      lastUsed: "Never",
-      status: "active",
-      permissions: newKeyPermissions,
-    };
-
-    setApiKeys([newKey, ...apiKeys]);
-    setShowCreateModal(false);
-    setNewKeyName("");
-    setNewKeyPermissions([]);
-  };
-
-  const revokeKey = (keyId: string) => {
-    if (confirm("Are you sure you want to revoke this API key? This action cannot be undone.")) {
-      setApiKeys(apiKeys.map((key) => (key.id === keyId ? { ...key, status: "revoked" as const } : key)));
+    try {
+      await createKey.mutateAsync({
+        name: newKeyName,
+        permissions: newKeyPermissions,
+      });
+      setShowCreateModal(false);
+      setNewKeyName("");
+      setNewKeyPermissions([]);
+    } catch (error) {
+      alert("Failed to create API key");
     }
   };
 
-  const deleteKey = (keyId: string) => {
+  const handleRevokeKey = async (keyId: string) => {
+    if (confirm("Are you sure you want to revoke this API key? This action cannot be undone.")) {
+      try {
+        await revokeKey.mutateAsync(keyId);
+      } catch (error) {
+        alert("Failed to revoke API key");
+      }
+    }
+  };
+
+  const handleDeleteKey = async (keyId: string) => {
     if (confirm("Are you sure you want to permanently delete this API key?")) {
-      setApiKeys(apiKeys.filter((key) => key.id !== keyId));
+      try {
+        await deleteKey.mutateAsync(keyId);
+      } catch (error) {
+        alert("Failed to delete API key");
+      }
     }
   };
 
@@ -163,8 +138,13 @@ export default function APIKeysSettings() {
           </div>
 
           {/* API Keys List */}
-          <div className="space-y-4">
-            {apiKeys.map((apiKey) => (
+          {keysLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <RefreshCw className="w-8 h-8 animate-spin text-gray-400" />
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {apiKeys.map((apiKey) => (
               <div
                 key={apiKey.id}
                 className={`bg-white rounded-lg border p-5 ${
@@ -200,15 +180,17 @@ export default function APIKeysSettings() {
                   <div className="flex items-center gap-2">
                     {apiKey.status === "active" && (
                       <button
-                        onClick={() => revokeKey(apiKey.id)}
-                        className="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded transition-colors"
+                        onClick={() => handleRevokeKey(apiKey.id)}
+                        disabled={revokeKey.isPending}
+                        className="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
                       >
-                        Revoke
+                        {revokeKey.isPending ? "Revoking..." : "Revoke"}
                       </button>
                     )}
                     <button
-                      onClick={() => deleteKey(apiKey.id)}
-                      className="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                      onClick={() => handleDeleteKey(apiKey.id)}
+                      disabled={deleteKey.isPending}
+                      className="p-2 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -250,19 +232,20 @@ export default function APIKeysSettings() {
               </div>
             ))}
 
-            {apiKeys.length === 0 && (
-              <div className="bg-gray-50 rounded-lg p-12 text-center">
-                <Key className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                <p className="text-gray-600 mb-4">No API keys created yet</p>
-                <button
-                  onClick={() => setShowCreateModal(true)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  Create your first API key
-                </button>
-              </div>
-            )}
-          </div>
+              {apiKeys.length === 0 && (
+                <div className="bg-gray-50 rounded-lg p-12 text-center">
+                  <Key className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                  <p className="text-gray-600 mb-4">No API keys created yet</p>
+                  <button
+                    onClick={() => setShowCreateModal(true)}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Create your first API key
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Documentation */}
           <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
@@ -334,9 +317,10 @@ export default function APIKeysSettings() {
                   </button>
                   <button
                     onClick={createAPIKey}
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    disabled={createKey.isPending}
+                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
                   >
-                    Create Key
+                    {createKey.isPending ? "Creating..." : "Create Key"}
                   </button>
                 </div>
               </motion.div>

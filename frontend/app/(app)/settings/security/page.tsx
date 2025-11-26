@@ -1,17 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Lock, Shield, Smartphone, Key, Eye, EyeOff, AlertTriangle, Save } from "lucide-react";
+import { Lock, Shield, Smartphone, Key, Eye, EyeOff, AlertTriangle, Save, RefreshCw } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
+import {
+  useGetSecuritySettings,
+  useUpdateSecuritySettings,
+  useGetActiveSessions,
+  useRevokeSession,
+  useChangePassword,
+  type SecuritySettings as SecuritySettingsType,
+} from "@/lib/api/hooks/security";
 
 export default function SecuritySettings() {
   const { t } = useTranslation();
-  const [isSaving, setIsSaving] = useState(false);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  // Fetch data
+  const { data: securitySettings, isLoading: settingsLoading } = useGetSecuritySettings();
+  const { data: sessions = [], isLoading: sessionsLoading } = useGetActiveSessions();
+
+  // Mutations
+  const updateSettings = useUpdateSecuritySettings();
+  const revokeSession = useRevokeSession();
+  const changePassword = useChangePassword();
 
   const [passwordData, setPasswordData] = useState({
     currentPassword: "",
@@ -19,7 +35,7 @@ export default function SecuritySettings() {
     confirmPassword: "",
   });
 
-  const [security, setSecurity] = useState({
+  const [security, setSecurity] = useState<SecuritySettingsType>({
     twoFactorEnabled: false,
     sessionTimeout: "30",
     passwordExpiry: "90",
@@ -29,28 +45,20 @@ export default function SecuritySettings() {
     loginNotifications: true,
   });
 
-  const [sessions] = useState([
-    {
-      id: "1",
-      device: "Chrome on macOS",
-      location: "Dubai, UAE",
-      lastActive: "2 minutes ago",
-      current: true,
-    },
-    {
-      id: "2",
-      device: "Safari on iPhone",
-      location: "Dubai, UAE",
-      lastActive: "2 hours ago",
-      current: false,
-    },
-  ]);
+  // Update local state when data is fetched
+  useEffect(() => {
+    if (securitySettings) {
+      setSecurity(securitySettings);
+    }
+  }, [securitySettings]);
 
   const handleSave = async () => {
-    setIsSaving(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSaving(false);
-    alert("Security settings updated successfully");
+    try {
+      await updateSettings.mutateAsync(security);
+      alert("Security settings updated successfully");
+    } catch (error) {
+      alert("Failed to update security settings");
+    }
   };
 
   const handlePasswordChange = async () => {
@@ -58,11 +66,21 @@ export default function SecuritySettings() {
       alert("Passwords do not match");
       return;
     }
-    setIsSaving(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSaving(false);
-    setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-    alert("Password changed successfully");
+    try {
+      await changePassword.mutateAsync(passwordData);
+      setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
+      alert("Password changed successfully");
+    } catch (error) {
+      alert("Failed to change password");
+    }
+  };
+
+  const handleRevokeSession = async (sessionId: string) => {
+    try {
+      await revokeSession.mutateAsync(sessionId);
+    } catch (error) {
+      alert("Failed to revoke session");
+    }
   };
 
   return (
@@ -141,9 +159,10 @@ export default function SecuritySettings() {
               </div>
               <button
                 onClick={handlePasswordChange}
-                className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
+                disabled={changePassword.isPending}
+                className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
               >
-                Change Password
+                {changePassword.isPending ? "Changing..." : "Change Password"}
               </button>
             </div>
           </div>
@@ -273,36 +292,50 @@ export default function SecuritySettings() {
           {/* Active Sessions */}
           <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Active Sessions</h2>
-            <div className="space-y-4">
-              {sessions.map((session) => (
-                <div
-                  key={session.id}
-                  className="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
-                >
-                  <div className="flex items-start gap-3">
-                    <Shield className="w-5 h-5 text-gray-500 mt-1" />
-                    <div>
-                      <p className="font-medium text-gray-900">
-                        {session.device}
-                        {session.current && (
-                          <span className="ml-2 text-xs px-2 py-1 bg-green-100 text-green-700 rounded">
-                            Current
-                          </span>
-                        )}
-                      </p>
-                      <p className="text-sm text-gray-500">{session.location}</p>
-                      <p className="text-xs text-gray-400">Last active: {session.lastActive}</p>
+            {sessionsLoading ? (
+              <div className="flex items-center justify-center py-8">
+                <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
+              </div>
+            ) : (
+              <>
+                <div className="space-y-4">
+                  {sessions.map((session) => (
+                    <div
+                      key={session.id}
+                      className="flex items-center justify-between p-4 border border-gray-200 rounded-lg"
+                    >
+                      <div className="flex items-start gap-3">
+                        <Shield className="w-5 h-5 text-gray-500 mt-1" />
+                        <div>
+                          <p className="font-medium text-gray-900">
+                            {session.device}
+                            {session.current && (
+                              <span className="ml-2 text-xs px-2 py-1 bg-green-100 text-green-700 rounded">
+                                Current
+                              </span>
+                            )}
+                          </p>
+                          <p className="text-sm text-gray-500">{session.location}</p>
+                          <p className="text-xs text-gray-400">Last active: {session.lastActive}</p>
+                        </div>
+                      </div>
+                      {!session.current && (
+                        <button
+                          onClick={() => handleRevokeSession(session.id)}
+                          disabled={revokeSession.isPending}
+                          className="text-sm text-red-600 hover:text-red-700 font-medium disabled:opacity-50"
+                        >
+                          {revokeSession.isPending ? "Revoking..." : "Revoke"}
+                        </button>
+                      )}
                     </div>
-                  </div>
-                  {!session.current && (
-                    <button className="text-sm text-red-600 hover:text-red-700 font-medium">Revoke</button>
-                  )}
+                  ))}
                 </div>
-              ))}
-            </div>
-            <button className="mt-4 text-sm text-red-600 hover:text-red-700 font-medium">
-              Revoke All Other Sessions
-            </button>
+                <button className="mt-4 text-sm text-red-600 hover:text-red-700 font-medium">
+                  Revoke All Other Sessions
+                </button>
+              </>
+            )}
           </div>
 
           {/* Danger Zone */}
@@ -325,11 +358,11 @@ export default function SecuritySettings() {
           <div className="flex justify-end">
             <button
               onClick={handleSave}
-              disabled={isSaving}
+              disabled={updateSettings.isPending}
               className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
-              {isSaving ? "Saving..." : "Save Changes"}
+              {updateSettings.isPending ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </motion.div>

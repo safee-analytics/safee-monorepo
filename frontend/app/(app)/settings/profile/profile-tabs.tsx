@@ -252,12 +252,12 @@ function ProfileTab() {
               <Phone className="w-4 h-4 inline mr-2" />
               Phone Number
             </label>
-            <input
-              type="tel"
+            <PhoneInput
+              international
+              defaultCountry="QA"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="+1 (555) 123-4567"
+              onChange={(value) => setPhone(value || "")}
+              className="phone-input-custom"
             />
           </div>
 
