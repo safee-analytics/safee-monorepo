@@ -1,4 +1,4 @@
-import { uuid, varchar, timestamp, text, jsonb, index, boolean } from "drizzle-orm/pg-core";
+import { uuid, varchar, timestamp, text, jsonb, index } from "drizzle-orm/pg-core";
 import { auditSchema, idpk } from "./_common.js";
 import { cases } from "./cases.js";
 import { auditReportTemplates } from "./auditReportTemplates.js";

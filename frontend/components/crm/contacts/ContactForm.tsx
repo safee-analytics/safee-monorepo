@@ -219,7 +219,7 @@ export function ContactForm({ contact, onSubmit, isSubmitting = false }: Contact
 
       {/* Form Actions */}
       <div className="flex items-center justify-end space-x-4">
-        <AnimatedButton type="button" variant="outline" onClick={() => window.history.back()}>
+        <AnimatedButton type="button" variant="secondary" onClick={() => window.history.back()}>
           Cancel
         </AnimatedButton>
         <AnimatedButton type="submit" variant="primary" disabled={isSubmitting}>

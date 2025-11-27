@@ -12,12 +12,10 @@ import {
   Request,
   SuccessResponse,
   OperationId,
-  Query,
 } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import type {
   AuditReportResponse,
-  CreateAuditReportRequest,
   UpdateAuditReportRequest,
   AuditReportTemplateResponse,
   CreateAuditReportTemplateRequest,
@@ -26,13 +24,11 @@ import type {
 import {
   getAuditReportsByCase,
   getAuditReportById,
-  createAuditReport,
   updateAuditReport,
   deleteAuditReport,
   getAuditReportTemplates,
   getAuditReportTemplateById,
   createAuditReportTemplate,
-  updateAuditReportTemplate,
 } from "@safee/database";
 import { generateReport as generateReportOp } from "../operations/reports/generateReport.js";
 
@@ -151,6 +147,7 @@ export class ReportsController extends Controller {
 
   @Get("/templates")
   @Security("jwt")
+  @OperationId("ListReportTemplates")
   public async listTemplates(@Request() req: AuthenticatedRequest): Promise<AuditReportTemplateResponse[]> {
     const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
@@ -205,6 +202,7 @@ export class ReportsController extends Controller {
 
   @Get("/templates/{templateId}")
   @Security("jwt")
+  @OperationId("GetReportTemplate")
   public async getTemplate(
     @Request() req: AuthenticatedRequest,
     @Path() templateId: string,

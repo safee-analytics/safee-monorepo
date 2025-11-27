@@ -11,10 +11,10 @@ export const caseHistory = auditSchema.table(
       .references(() => cases.id, { onDelete: "cascade" })
       .notNull(),
     entityType: caseEntityTypeEnum("entity_type").notNull(),
-    entityId: uuid("entity_id").notNull(), // ID of the changed entity
+    entityId: uuid("entity_id").notNull(),
     action: caseActionEnum("action").notNull(),
-    changesBefore: jsonb("changes_before").$type<Record<string, unknown>>(), // State before change
-    changesAfter: jsonb("changes_after").$type<Record<string, unknown>>(), // State after change
+    changesBefore: jsonb("changes_before").$type<Record<string, unknown>>(),
+    changesAfter: jsonb("changes_after").$type<Record<string, unknown>>(),
     changedBy: uuid("changed_by")
       .references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" })
       .notNull(),

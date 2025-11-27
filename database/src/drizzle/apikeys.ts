@@ -2,7 +2,6 @@ import { text, timestamp, boolean, integer, uuid } from "drizzle-orm/pg-core";
 import { identitySchema, idpk } from "./_common.js";
 import { users } from "./users.js";
 
-// API keys table for programmatic access
 export const apikeys = identitySchema.table("apikeys", {
   id: idpk("id"),
   name: text("name"),

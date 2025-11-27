@@ -32,7 +32,8 @@ export function useGetSecuritySettings() {
   return useQuery<SecuritySettings>({
     queryKey: queryKeys.security.settings,
     queryFn: async () => {
-      const response = await apiClient.get("/security/settings");
+      const response = await apiClient.GET("/security/settings", {});
+      if (response.error) throw response.error;
       return response.data;
     },
   });
@@ -44,7 +45,7 @@ export function useUpdateSecuritySettings() {
 
   return useMutation({
     mutationFn: async (settings: SecuritySettings) => {
-      const response = await apiClient.put("/security/settings", settings);
+      const response = await apiClient.PUT("/security/settings", { body: settings });
       return response.data;
     },
     onSuccess: () => {
@@ -58,7 +59,8 @@ export function useGetActiveSessions() {
   return useQuery<Session[]>({
     queryKey: queryKeys.security.sessions,
     queryFn: async () => {
-      const response = await apiClient.get("/security/sessions");
+      const response = await apiClient.GET("/security/sessions", {});
+      if (response.error) throw response.error;
       return response.data;
     },
   });
@@ -70,7 +72,7 @@ export function useSecurityRevokeSession() {
 
   return useMutation({
     mutationFn: async (sessionId: string) => {
-      const response = await apiClient.delete(`/security/sessions/${sessionId}`);
+      const response = await apiClient.DELETE(`/security/sessions/${sessionId}`, {});
       return response.data;
     },
     onSuccess: () => {
@@ -79,15 +81,21 @@ export function useSecurityRevokeSession() {
   });
 }
 
+// Alias for backwards compatibility
+export const useRevokeSession = useSecurityRevokeSession;
+
 // Change password (security settings)
 export function useSecurityChangePassword() {
   return useMutation({
     mutationFn: async (request: ChangePasswordRequest) => {
-      const response = await apiClient.post("/security/change-password", request);
+      const response = await apiClient.POST("/security/change-password", { body: request });
       return response.data;
     },
   });
 }
+
+// Alias for backwards compatibility
+export const useChangePassword = useSecurityChangePassword;
 
 // Enable two-factor authentication
 export function useEnableTwoFactor() {
@@ -95,7 +103,7 @@ export function useEnableTwoFactor() {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await apiClient.post("/security/two-factor/enable");
+      const response = await apiClient.POST("/security/two-factor/enable", {});
       return response.data;
     },
     onSuccess: () => {
@@ -110,7 +118,7 @@ export function useDisableTwoFactor() {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await apiClient.post("/security/two-factor/disable");
+      const response = await apiClient.POST("/security/two-factor/disable", {});
       return response.data;
     },
     onSuccess: () => {

@@ -34,7 +34,8 @@ export function useGetDatabaseStats() {
   return useQuery<DatabaseStats>({
     queryKey: queryKeys.database.stats,
     queryFn: async () => {
-      const response = await apiClient.get("/database/stats");
+      const response = await apiClient.GET("/database/stats", {});
+      if (response.error) throw response.error;
       return response.data;
     },
   });
@@ -45,7 +46,8 @@ export function useGetBackupSettings() {
   return useQuery<BackupSettings>({
     queryKey: queryKeys.database.backupSettings,
     queryFn: async () => {
-      const response = await apiClient.get("/database/backup/settings");
+      const response = await apiClient.GET("/database/backup/settings", {});
+      if (response.error) throw response.error;
       return response.data;
     },
   });
@@ -57,7 +59,7 @@ export function useUpdateBackupSettings() {
 
   return useMutation({
     mutationFn: async (settings: BackupSettings) => {
-      const response = await apiClient.put("/database/backup/settings", settings);
+      const response = await apiClient.PUT("/database/backup/settings", { body: settings });
       return response.data;
     },
     onSuccess: () => {
@@ -71,7 +73,8 @@ export function useGetBackupHistory() {
   return useQuery<Backup[]>({
     queryKey: queryKeys.database.backups,
     queryFn: async () => {
-      const response = await apiClient.get("/database/backups");
+      const response = await apiClient.GET("/database/backups", {});
+      if (response.error) throw response.error;
       return response.data;
     },
   });
@@ -83,7 +86,7 @@ export function useCreateBackup() {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await apiClient.post("/database/backup");
+      const response = await apiClient.POST("/database/backup", {});
       return response.data;
     },
     onSuccess: () => {
@@ -96,7 +99,7 @@ export function useCreateBackup() {
 export function useRestoreBackup() {
   return useMutation({
     mutationFn: async (backupId: string) => {
-      const response = await apiClient.post(`/database/backup/${backupId}/restore`);
+      const response = await apiClient.POST(`/database/backup/${backupId}/restore`, {});
       return response.data;
     },
   });
@@ -106,8 +109,8 @@ export function useRestoreBackup() {
 export function useDownloadBackup() {
   return useMutation({
     mutationFn: async (backupId: string) => {
-      const response = await apiClient.get(`/database/backup/${backupId}/download`, {
-        responseType: "blob",
+      const response = await apiClient.GET(`/database/backup/${backupId}/download`, {
+        parseAs: "blob",
       });
 
       // Create download link
@@ -130,7 +133,7 @@ export function useOptimizeDatabase() {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await apiClient.post("/database/optimize");
+      const response = await apiClient.POST("/database/optimize", {});
       return response.data;
     },
     onSuccess: () => {
@@ -145,7 +148,7 @@ export function useRunMaintenance() {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await apiClient.post("/database/maintenance");
+      const response = await apiClient.POST("/database/maintenance", {});
       return response.data;
     },
     onSuccess: () => {

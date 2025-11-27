@@ -1,4 +1,4 @@
-import { uuid, varchar, timestamp, text, jsonb, index, integer, decimal, date } from "drizzle-orm/pg-core";
+import { uuid, varchar, timestamp, jsonb, index, integer, decimal, date } from "drizzle-orm/pg-core";
 import { auditSchema, idpk, auditTypeEnum } from "./_common.js";
 import { cases } from "./cases.js";
 import { users } from "./users.js";
@@ -27,22 +27,20 @@ export const auditPlans = auditSchema.table(
     targetCompletion: date("target_completion"),
     objectives: jsonb("objectives")
       .default([])
-      .$type<Array<{ id: string; description: string; priority?: string }>>(),
+      .$type<{ id: string; description: string; priority?: string }[]>(),
     businessUnits: jsonb("business_units").default({}).$type<Record<string, boolean>>(),
     financialAreas: jsonb("financial_areas").default({}).$type<Record<string, boolean>>(),
     teamMembers: jsonb("team_members")
       .default([])
-      .$type<Array<{ userId: string; name: string; role: string; hours?: number }>>(),
+      .$type<{ userId: string; name: string; role: string; hours?: number }[]>(),
     phaseBreakdown: jsonb("phase_breakdown")
       .default([])
-      .$type<
-        Array<{ name: string; duration: number; description?: string; startDate?: string; endDate?: string }>
-      >(),
+      .$type<{ name: string; duration: number; description?: string; startDate?: string; endDate?: string }[]>(),
     totalBudget: decimal("total_budget", { precision: 15, scale: 2 }),
     totalHours: integer("total_hours"),
     materialityThreshold: decimal("materiality_threshold", { precision: 15, scale: 2 }),
     riskAssessment: jsonb("risk_assessment").$type<{
-      risks?: Array<{ type: string; severity: string; message: string }>;
+      risks?: { type: string; severity: string; message: string }[];
       overallRisk?: string;
       score?: number;
     }>(),

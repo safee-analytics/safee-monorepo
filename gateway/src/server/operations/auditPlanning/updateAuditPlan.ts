@@ -1,5 +1,5 @@
 import type { DrizzleClient } from "@safee/database";
-import { updateAuditPlan as dbUpdateAuditPlan, getAuditPlanById, eq, schema } from "@safee/database";
+import { updateAuditPlan as dbUpdateAuditPlan, getAuditPlanById } from "@safee/database";
 import { pino } from "pino";
 import { OperationFailed, InvalidInput, NotFound } from "../../errors.js";
 import type { UpdateAuditPlanRequest, AuditPlanResponse } from "../../dtos/auditPlanning.js";

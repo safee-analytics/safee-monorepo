@@ -211,11 +211,10 @@ export function CreateCaseWizard({ isOpen, onClose, onSuccess }: CreateCaseWizar
     try {
       await createCaseMutation.mutateAsync({
         clientName: wizardData.clientName!,
-        auditType: wizardData.auditType!,
-        status: wizardData.status || "pending",
-        priority: wizardData.priority || "medium",
+        auditType: wizardData.auditType! as "ICV" | "ISO_9001" | "ISO_14001" | "ISO_45001" | "financial_audit" | "internal_audit" | "compliance_audit" | "operational_audit",
+        status: (wizardData.status || "pending") as "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived",
+        priority: (wizardData.priority || "medium") as "low" | "medium" | "high" | "critical",
         dueDate: wizardData.dueDate,
-        description: wizardData.description,
         // Additional fields can be added here as the API supports them
       });
 

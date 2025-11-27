@@ -36,6 +36,10 @@ export * from "./auditPlanning/index.js";
 
 export * from "./reports/index.js";
 
+export * from "./collaboration/index.js";
+
+export * from "./ocr/index.js";
+
 export * from "./approvals.js";
 
 export * from "./auditLogs/auditLogs.js";

@@ -26,7 +26,8 @@ export function useGetStorageConfig() {
   return useQuery<NASConfig>({
     queryKey: queryKeys.storage.config,
     queryFn: async () => {
-      const response = await apiClient.get("/storage/config");
+      const response = await apiClient.GET("/storage/config", {});
+      if (response.error) throw response.error;
       return response.data;
     },
   });
@@ -38,7 +39,7 @@ export function useUpdateStorageConfig() {
 
   return useMutation({
     mutationFn: async (config: NASConfig) => {
-      const response = await apiClient.put("/storage/config", config);
+      const response = await apiClient.PUT("/storage/config", { body: config });
       return response.data;
     },
     onSuccess: () => {
@@ -51,7 +52,7 @@ export function useUpdateStorageConfig() {
 export function useTestStorageConnection() {
   return useMutation({
     mutationFn: async (config: NASConfig) => {
-      const response = await apiClient.post("/storage/test-connection", config);
+      const response = await apiClient.POST("/storage/test-connection", { body: config });
       return response.data;
     },
   });
@@ -62,7 +63,8 @@ export function useGetStorageInfo() {
   return useQuery<StorageInfo>({
     queryKey: queryKeys.storage.info,
     queryFn: async () => {
-      const response = await apiClient.get("/storage/info");
+      const response = await apiClient.GET("/storage/info", {});
+      if (response.error) throw response.error;
       return response.data;
     },
   });

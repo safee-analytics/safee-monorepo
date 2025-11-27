@@ -18,7 +18,8 @@ export function useGetIntegrations() {
   return useQuery<Integration[]>({
     queryKey: queryKeys.integrations.all,
     queryFn: async () => {
-      const response = await apiClient.get("/integrations");
+      const response = await apiClient.GET("/integrations", {});
+      if (response.error) throw response.error;
       return response.data;
     },
   });
@@ -30,7 +31,7 @@ export function useConnectIntegration() {
 
   return useMutation({
     mutationFn: async (integrationId: string) => {
-      const response = await apiClient.post(`/integrations/${integrationId}/connect`);
+      const response = await apiClient.POST(`/integrations/${integrationId}/connect`, {});
       return response.data;
     },
     onSuccess: () => {
@@ -45,7 +46,7 @@ export function useDisconnectIntegration() {
 
   return useMutation({
     mutationFn: async (integrationId: string) => {
-      const response = await apiClient.post(`/integrations/${integrationId}/disconnect`);
+      const response = await apiClient.POST(`/integrations/${integrationId}/disconnect`, {});
       return response.data;
     },
     onSuccess: () => {

@@ -117,7 +117,7 @@ export default function CRMSettingsPage() {
             ) : stages && stages.length > 0 ? (
               <div className="space-y-3">
                 {stages
-                  .sort((a, b) => a.sequence - b.sequence)
+                  .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0))
                   .map((stage) => (
                     <div
                       key={stage.id}

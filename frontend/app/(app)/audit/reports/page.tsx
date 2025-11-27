@@ -1,7 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Filter, FileDown, TrendingUp, DollarSign, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { ReportWizard } from "@/components/audit/reports/ReportWizard";
+import { ReportViewer } from "@/components/audit/reports/ReportViewer";
+import { useReports, useExportReport } from "@/lib/api/hooks/reports";
+import { useDashboardStats, useDashboardActivity } from "@/lib/api/hooks/dashboard";
+import { useCases, type CaseData } from "@/lib/api/hooks/cases";
+import type { AuditReportResponse } from "@/lib/types/reports";
 
 export default function AuditReports() {
   const [reportType, setReportType] = useState("financial");
@@ -10,66 +16,94 @@ export default function AuditReports() {
   const [status, setStatus] = useState("all");
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [trendView, setTrendView] = useState("monthly");
+  const [showWizard, setShowWizard] = useState(false);
+  const [viewingReport, setViewingReport] = useState<AuditReportResponse | null>(null);
 
-  const auditTrendsData = {
-    monthly: [
-      { month: "Jan", completed: 12, findings: 8 },
-      { month: "Feb", completed: 15, findings: 10 },
-      { month: "Mar", completed: 18, findings: 12 },
-      { month: "Apr", completed: 22, findings: 15 },
-      { month: "May", completed: 20, findings: 13 },
-      { month: "Jun", completed: 25, findings: 17 },
-      { month: "Jul", completed: 24, findings: 16 },
-      { month: "Aug", completed: 28, findings: 19 },
-      { month: "Sep", completed: 26, findings: 18 },
-      { month: "Oct", completed: 23, findings: 15 },
-      { month: "Nov", completed: 27, findings: 19 },
-      { month: "Dec", completed: 30, findings: 20 },
-    ],
+  const { data: reports = [] } = useReports();
+  const { data: dashboardStats } = useDashboardStats();
+  const { data: activity = [] } = useDashboardActivity(12);
+  const { data: cases = [] } = useCases({});
+  const exportMutation = useExportReport();
+
+  // Calculate audit trends from activity data
+  const auditTrendsData = useMemo(() => {
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const now = new Date();
+    const monthlyData = [];
+
+    for (let i = 11; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthName = monthNames[date.getMonth()];
+
+      // Count completed cases and findings for this month
+      const monthStart = date.getTime();
+      const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0).getTime();
+
+      const monthActivity = activity.filter((a) => {
+        const activityDate = new Date(a.updatedAt).getTime();
+        return activityDate >= monthStart && activityDate <= monthEnd;
+      });
+
+      const completed = monthActivity.filter((a) => a.status === "completed").length;
+      const findings = monthActivity.filter((a) => a.status === "in_review" || a.status === "pending").length;
+
+      monthlyData.push({
+        month: monthName,
+        completed,
+        findings,
+      });
+    }
+
+    return monthlyData;
+  }, [activity]);
+
+  const maxTrendValue = Math.max(...auditTrendsData.map((d) => Math.max(d.completed, d.findings)), 10);
+
+  // Calculate compliance scores from cases
+  const complianceScores = useMemo(() => {
+    const frameworks = ["ISO 27001", "SOC 2", "GDPR", "PCI DSS", "NIST"];
+
+    return frameworks.map((framework) => {
+      // Calculate score based on completed cases
+      const frameworkCases = cases.filter((c: CaseData) =>
+        c.auditType.toLowerCase().includes(framework.toLowerCase().replace(/\s+/g, ""))
+      );
+
+      const completedCases = frameworkCases.filter((c: CaseData) => c.status === "completed").length;
+      const totalCases = frameworkCases.length || 1;
+      const score = Math.round((completedCases / totalCases) * 100);
+
+      return {
+        framework,
+        score: score || 0,
+      };
+    });
+  }, [cases]);
+
+  // Calculate risk assessment from cases
+  const riskAssessment = useMemo(() => {
+    const highRisk = cases.filter((c: CaseData) => c.priority === "high").length;
+    const mediumRisk = cases.filter((c: CaseData) => c.priority === "medium").length;
+    const lowRisk = cases.filter((c: CaseData) => c.priority === "low").length;
+    const total = cases.length || 1;
+
+    return {
+      high: Math.round((highRisk / total) * 100),
+      medium: Math.round((mediumRisk / total) * 100),
+      low: Math.round((lowRisk / total) * 100),
+      criticalIssues: highRisk,
+    };
+  }, [cases]);
+
+  // Calculate financial metrics (placeholder until we have actual financial data)
+  const financialMetrics = {
+    totalAssets: "$2.4M",
+    revenueVerified: "$1.8M",
+    discrepancies: "$24K",
+    accuracyRate: dashboardStats?.completionRate
+      ? `${dashboardStats.completionRate.toFixed(1)}%`
+      : "98.7%",
   };
-
-  const complianceScores = [
-    { framework: "SOX", score: 92 },
-    { framework: "GAAP", score: 88 },
-    { framework: "IFRS", score: 90 },
-    { framework: "PCAOB", score: 85 },
-    { framework: "SEC", score: 87 },
-  ];
-
-  const generatedReports = [
-    {
-      id: "1",
-      name: "Financial Audit - ABC Corp",
-      generated: "Dec 12, 2024",
-      pages: 24,
-      size: "2.4 MB",
-      status: "Completed",
-      icon: "📄",
-      color: "bg-blue-100",
-    },
-    {
-      id: "2",
-      name: "Risk Assessment - XYZ Ltd",
-      generated: "Dec 10, 2024",
-      pages: 18,
-      size: "1.8 MB",
-      status: "In Review",
-      icon: "📊",
-      color: "bg-yellow-100",
-    },
-    {
-      id: "3",
-      name: "Compliance Report - MFG Co",
-      generated: "Dec 8, 2024",
-      pages: 32,
-      size: "3.2 MB",
-      status: "Completed",
-      icon: "📋",
-      color: "bg-green-100",
-    },
-  ];
-
-  const maxTrendValue = Math.max(...auditTrendsData.monthly.map((d) => Math.max(d.completed, d.findings)));
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -89,101 +123,78 @@ export default function AuditReports() {
               <FileDown className="w-4 h-4" />
               Export
             </button>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors">
+            <button
+              onClick={() => setShowWizard(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            >
               + Generate Report
             </button>
           </div>
         </div>
 
-        {/* Report Generator */}
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Report Generator</h2>
-            <div className="flex items-center gap-2">
-              <span className="text-sm text-gray-600">Auto-refresh</span>
-              <button
-                onClick={() => setAutoRefresh(!autoRefresh)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  autoRefresh ? "bg-blue-600" : "bg-gray-300"
-                }`}
-              >
-                <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    autoRefresh ? "translate-x-6" : "translate-x-1"
-                  }`}
-                />
-              </button>
+        {/* Report Wizard Modal */}
+        {showWizard && <ReportWizard onClose={() => setShowWizard(false)} />}
+
+        {/* Report Viewer Modal */}
+        {viewingReport && (
+          <ReportViewer
+            report={viewingReport}
+            onClose={() => setViewingReport(null)}
+            onExport={(format) => exportMutation.mutate({ reportId: viewingReport.id, format })}
+          />
+        )}
+
+        {/* Quick Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <FileDown className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Total Reports</p>
+                <p className="text-2xl font-bold text-gray-900">{reports.length}</p>
+              </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Report Type</label>
-              <select
-                value={reportType}
-                onChange={(e) => setReportType(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-              >
-                <option value="financial">Financial Audit</option>
-                <option value="compliance">Compliance Audit</option>
-                <option value="risk">Risk Assessment</option>
-                <option value="operational">Operational Audit</option>
-              </select>
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                <CheckCircle2 className="w-6 h-6 text-green-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Ready</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {reports.filter((r) => r.status === "ready").length}
+                </p>
+              </div>
             </div>
+          </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Time Period</label>
-              <select
-                value={timePeriod}
-                onChange={(e) => setTimePeriod(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-              >
-                <option value="last-30">Last 30 days</option>
-                <option value="last-90">Last 90 days</option>
-                <option value="last-6">Last 6 months</option>
-                <option value="last-year">Last year</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Client</label>
-              <select
-                value={client}
-                onChange={(e) => setClient(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-              >
-                <option value="all">All Clients</option>
-                <option value="abc">ABC Corporation</option>
-                <option value="xyz">XYZ Retail Ltd</option>
-                <option value="mfg">Manufacturing Co</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value)}
-                className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-              >
-                <option value="all">All Status</option>
-                <option value="completed">Completed</option>
-                <option value="in-review">In Review</option>
-                <option value="draft">Draft</option>
-              </select>
+          <div className="bg-white rounded-xl border border-gray-200 p-6">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-yellow-600" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-600">Generating</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {reports.filter((r) => r.status === "generating").length}
+                </p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Metrics Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-          {/* Audit Completion Rate */}
+        {/* Metrics Cards Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          {/* Completion Rate Gauge */}
           <div className="bg-white rounded-xl border border-gray-200 p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-sm font-semibold text-gray-900">Audit Completion Rate</h3>
             </div>
 
-            {/* Gauge Chart */}
             <div className="relative w-48 h-48 mx-auto mb-4">
               <svg className="w-full h-full transform -rotate-90">
                 <circle cx="96" cy="96" r="80" stroke="#e5e7eb" strokeWidth="16" fill="none" />
@@ -194,13 +205,15 @@ export default function AuditReports() {
                   stroke="#10b981"
                   strokeWidth="16"
                   fill="none"
-                  strokeDasharray={`${(87 / 100) * 502.4} 502.4`}
+                  strokeDasharray={`${((dashboardStats?.completionRate || 0) / 100) * 502.4} 502.4`}
                   strokeLinecap="round"
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-center">
-                  <p className="text-4xl font-bold text-gray-900">87%</p>
+                  <p className="text-4xl font-bold text-gray-900">
+                    {dashboardStats?.completionRate.toFixed(0) || 0}%
+                  </p>
                   <p className="text-sm text-gray-600">Overall completion rate</p>
                 </div>
               </div>
@@ -217,30 +230,30 @@ export default function AuditReports() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">High Risk</span>
-                  <span className="text-sm font-bold text-red-600">12%</span>
+                  <span className="text-sm font-bold text-red-600">{riskAssessment.high}%</span>
                 </div>
                 <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-red-500" style={{ width: "12%" }} />
+                  <div className="h-full bg-red-500" style={{ width: `${riskAssessment.high}%` }} />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">Medium Risk</span>
-                  <span className="text-sm font-bold text-yellow-600">35%</span>
+                  <span className="text-sm font-bold text-yellow-600">{riskAssessment.medium}%</span>
                 </div>
                 <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-yellow-500" style={{ width: "35%" }} />
+                  <div className="h-full bg-yellow-500" style={{ width: `${riskAssessment.medium}%` }} />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-gray-700">Low Risk</span>
-                  <span className="text-sm font-bold text-green-600">53%</span>
+                  <span className="text-sm font-bold text-green-600">{riskAssessment.low}%</span>
                 </div>
                 <div className="w-full h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500" style={{ width: "53%" }} />
+                  <div className="h-full bg-green-500" style={{ width: `${riskAssessment.low}%` }} />
                 </div>
               </div>
 
@@ -248,7 +261,7 @@ export default function AuditReports() {
                 <div className="flex items-center gap-2 text-yellow-600">
                   <AlertTriangle className="w-5 h-5" />
                   <div>
-                    <p className="text-sm font-semibold">3 Critical Issues</p>
+                    <p className="text-sm font-semibold">{riskAssessment.criticalIssues} Critical Issues</p>
                     <p className="text-xs text-gray-600">Require immediate attention</p>
                   </div>
                 </div>
@@ -269,7 +282,7 @@ export default function AuditReports() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-600 mb-1">Total Assets Audited</p>
-                  <p className="text-2xl font-bold text-gray-900">$2.4M</p>
+                  <p className="text-2xl font-bold text-gray-900">{financialMetrics.totalAssets}</p>
                 </div>
               </div>
 
@@ -279,7 +292,7 @@ export default function AuditReports() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-600 mb-1">Revenue Verified</p>
-                  <p className="text-2xl font-bold text-gray-900">$1.8M</p>
+                  <p className="text-2xl font-bold text-gray-900">{financialMetrics.revenueVerified}</p>
                 </div>
               </div>
 
@@ -289,7 +302,7 @@ export default function AuditReports() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-600 mb-1">Discrepancies Found</p>
-                  <p className="text-2xl font-bold text-gray-900">$24K</p>
+                  <p className="text-2xl font-bold text-gray-900">{financialMetrics.discrepancies}</p>
                 </div>
               </div>
 
@@ -299,7 +312,7 @@ export default function AuditReports() {
                 </div>
                 <div>
                   <p className="text-xs text-gray-600 mb-1">Accuracy Rate</p>
-                  <p className="text-2xl font-bold text-gray-900">98.7%</p>
+                  <p className="text-2xl font-bold text-gray-900">{financialMetrics.accuracyRate}</p>
                 </div>
               </div>
             </div>
@@ -358,7 +371,7 @@ export default function AuditReports() {
 
                 {/* Completed line */}
                 <polyline
-                  points={auditTrendsData.monthly
+                  points={auditTrendsData
                     .map((d, i) => {
                       const x = 60 + (i * 700) / 12;
                       const y = 232 - (d.completed / maxTrendValue) * 180;
@@ -373,7 +386,7 @@ export default function AuditReports() {
 
                 {/* Findings line */}
                 <polyline
-                  points={auditTrendsData.monthly
+                  points={auditTrendsData
                     .map((d, i) => {
                       const x = 60 + (i * 700) / 12;
                       const y = 232 - (d.findings / maxTrendValue) * 180;
@@ -387,7 +400,7 @@ export default function AuditReports() {
                 />
 
                 {/* X-axis labels */}
-                {auditTrendsData.monthly.map((d, i) => (
+                {auditTrendsData.map((d, i) => (
                   <text
                     key={i}
                     x={60 + (i * 700) / 12}
@@ -457,49 +470,48 @@ export default function AuditReports() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {generatedReports.map((report) => (
-              <div
-                key={report.id}
-                className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-start gap-3 mb-3">
-                  <div
-                    className={`w-12 h-12 rounded-lg flex items-center justify-center text-2xl ${report.color}`}
-                  >
-                    {report.icon}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-1 truncate">{report.name}</h3>
-                    <p className="text-xs text-gray-600">Generated: {report.generated}</p>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between text-xs text-gray-600 mb-3">
-                  <span>Pages: {report.pages}</span>
-                  <span>Size: {report.size}</span>
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <span
-                    className={`text-xs px-2 py-1 rounded ${
-                      report.status === "Completed"
-                        ? "bg-green-100 text-green-700"
-                        : "bg-yellow-100 text-yellow-700"
-                    }`}
-                  >
-                    {report.status}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <FileDown className="w-4 h-4 text-gray-600" />
-                    </button>
-                    <button className="p-1 hover:bg-gray-100 rounded">
-                      <Filter className="w-4 h-4 text-gray-600" />
-                    </button>
-                  </div>
-                </div>
+            {reports.length === 0 ? (
+              <div className="col-span-3 text-center py-12 text-gray-500">
+                <p>No reports generated yet. Click "Generate Report" to create your first report.</p>
               </div>
-            ))}
+            ) : (
+              reports.map((report) => (
+                <button
+                  key={report.id}
+                  onClick={() => setViewingReport(report)}
+                  className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow text-left"
+                >
+                  <div className="flex items-start gap-3 mb-3">
+                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-2xl">
+                      📄
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-sm font-semibold text-gray-900 mb-1 truncate">{report.title}</h3>
+                      <p className="text-xs text-gray-600">
+                        Generated: {report.generatedAt ? new Date(report.generatedAt).toLocaleDateString() : "Processing..."}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <span
+                      className={`text-xs px-2 py-1 rounded ${
+                        report.status === "ready"
+                          ? "bg-green-100 text-green-700"
+                          : report.status === "generating"
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {report.status === "ready" ? "Ready" : report.status === "generating" ? "Generating..." : "Failed"}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <FileDown className="w-4 h-4 text-gray-600" />
+                    </div>
+                  </div>
+                </button>
+              ))
+            )}
           </div>
         </div>
       </div>

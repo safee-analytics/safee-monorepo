@@ -21,6 +21,7 @@ export type CaseData = {
   priority: string;
   dueDate?: string;
   createdBy: string;
+  createdAt: string;
   assignments?: CaseAssignment[];
 };
 

@@ -12,14 +12,12 @@ import {
   Request,
   SuccessResponse,
   OperationId,
-  Query,
 } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import type {
   AuditPlanResponse,
   CreateAuditPlanRequest,
   UpdateAuditPlanRequest,
-  ConvertPlanToCaseRequest,
   AuditPlanTemplateResponse,
   CreateAuditPlanTemplateRequest,
   CreatePlanFromTemplateRequest,
@@ -171,6 +169,7 @@ export class AuditPlanningController extends Controller {
 
   @Get("/templates")
   @Security("jwt")
+  @OperationId("ListAuditPlanTemplates")
   public async listTemplates(@Request() req: AuthenticatedRequest): Promise<AuditPlanTemplateResponse[]> {
     const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
@@ -239,6 +238,7 @@ export class AuditPlanningController extends Controller {
 
   @Get("/templates/{templateId}")
   @Security("jwt")
+  @OperationId("GetAuditPlanTemplate")
   public async getTemplate(
     @Request() req: AuthenticatedRequest,
     @Path() templateId: string,

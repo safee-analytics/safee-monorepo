@@ -180,4 +180,18 @@ export const queryKeys = {
     lostReasons: (params?: { active?: boolean }) => ["crm", "lost-reasons", params] as const,
     lostReason: (id: number) => ["crm", "lost-reasons", id] as const,
   },
+  dashboard: {
+    stats: () => ["dashboard", "stats"] as const,
+    activity: (limit?: number) => ["dashboard", "activity", limit] as const,
+  },
+  auditPlans: {
+    all: () => ["audit-plans"] as const,
+    detail: (id: string) => ["audit-plans", id] as const,
+    templates: () => ["audit-plans", "templates"] as const,
+    template: (id: string) => ["audit-plans", "templates", id] as const,
+  },
+  collaboration: {
+    activities: (caseId: string) => ["collaboration", "activities", caseId] as const,
+    presence: (caseId: string) => ["collaboration", "presence", caseId] as const,
+  },
 } as const;

@@ -7,7 +7,7 @@ export const auditTemplates = auditSchema.table(
   "audit_templates",
   {
     id: idpk("id"),
-    organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade" }), // null = global template
+    organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade" }),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description"),
     auditType: auditTypeEnum("audit_type").notNull(),

@@ -29,7 +29,8 @@ export function useGetAPIKeys() {
   return useQuery<APIKey[]>({
     queryKey: queryKeys.apiKeys.all,
     queryFn: async () => {
-      const response = await apiClient.get("/api-keys");
+      const response = await apiClient.GET("/api-keys", {});
+      if (response.error) throw response.error;
       return response.data;
     },
   });
@@ -40,7 +41,8 @@ export function useGetAvailablePermissions() {
   return useQuery<Permission[]>({
     queryKey: queryKeys.apiKeys.permissions,
     queryFn: async () => {
-      const response = await apiClient.get("/api-keys/permissions");
+      const response = await apiClient.GET("/api-keys/permissions", {});
+      if (response.error) throw response.error;
       return response.data;
     },
   });
@@ -52,7 +54,7 @@ export function useCreateAPIKey() {
 
   return useMutation({
     mutationFn: async (request: CreateAPIKeyRequest) => {
-      const response = await apiClient.post("/api-keys", request);
+      const response = await apiClient.POST("/api-keys", { body: request });
       return response.data;
     },
     onSuccess: () => {
@@ -67,7 +69,7 @@ export function useRevokeAPIKey() {
 
   return useMutation({
     mutationFn: async (keyId: string) => {
-      const response = await apiClient.post(`/api-keys/${keyId}/revoke`);
+      const response = await apiClient.POST(`/api-keys/${keyId}/revoke`, {});
       return response.data;
     },
     onSuccess: () => {
@@ -82,7 +84,7 @@ export function useDeleteAPIKey() {
 
   return useMutation({
     mutationFn: async (keyId: string) => {
-      const response = await apiClient.delete(`/api-keys/${keyId}`);
+      const response = await apiClient.DELETE(`/api-keys/${keyId}`, {});
       return response.data;
     },
     onSuccess: () => {

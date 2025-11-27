@@ -12,7 +12,7 @@ export interface KeyboardShortcut {
 }
 
 export interface KeySequence {
-  sequence: string[];
+  sequence: readonly string[] | string[];
   action: () => void;
   description: string;
   category: string;

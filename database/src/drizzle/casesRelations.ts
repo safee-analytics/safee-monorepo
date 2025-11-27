@@ -7,6 +7,8 @@ import { caseDocuments } from "./caseDocuments.js";
 import { caseNotes } from "./caseNotes.js";
 import { caseAssignments } from "./caseAssignments.js";
 import { caseHistory } from "./caseHistory.js";
+import { caseActivities } from "./caseActivities.js";
+import { casePresence } from "./casePresence.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
 
@@ -27,4 +29,6 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
   notes: many(caseNotes),
   assignments: many(caseAssignments),
   history: many(caseHistory),
+  activities: many(caseActivities),
+  presence: many(casePresence),
 }));

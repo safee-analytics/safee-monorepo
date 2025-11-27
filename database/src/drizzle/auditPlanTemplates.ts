@@ -11,11 +11,11 @@ export const auditPlanTemplates = auditSchema.table(
     description: text("description"),
     defaultObjectives: jsonb("default_objectives")
       .default([])
-      .$type<Array<{ id: string; description: string; priority?: string }>>(),
-    defaultScope: jsonb("default_scope").default({}).$type<Record<string, any>>(),
+      .$type<{ id: string; description: string; priority?: string }[]>(),
+    defaultScope: jsonb("default_scope").default({}).$type<Record<string, unknown>>(),
     defaultPhases: jsonb("default_phases")
       .default([])
-      .$type<Array<{ name: string; duration: number; description?: string }>>(),
+      .$type<{ name: string; duration: number; description?: string }[]>(),
     defaultBusinessUnits: jsonb("default_business_units").default({}).$type<Record<string, boolean>>(),
     defaultFinancialAreas: jsonb("default_financial_areas").default({}).$type<Record<string, boolean>>(),
     estimatedDuration: integer("estimated_duration"),

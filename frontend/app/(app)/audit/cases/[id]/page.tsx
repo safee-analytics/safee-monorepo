@@ -7,6 +7,8 @@ import { useCase } from "@/lib/api/hooks";
 import { DocumentBrowser } from "@/components/audit/cases/DocumentBrowser";
 import { DocumentPreviewDrawer } from "@/components/audit/cases/DocumentPreviewDrawer";
 import { BulkUploadModal } from "@/components/audit/cases/BulkUploadModal";
+import { ActivityFeed } from "@/components/collaboration/ActivityFeed";
+import { ActiveViewers } from "@/components/collaboration/ActiveViewers";
 import { AnimatedButton } from "@safee/ui";
 
 type TabType = "overview" | "documents" | "activity" | "team";
@@ -156,6 +158,7 @@ export default function CaseDetailPage() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
+              <ActiveViewers caseId={caseId} enableRealtime={true} variant="compact" />
               <AnimatedButton variant="outline" size="md" className="flex items-center space-x-2">
                 <Edit2 className="h-4 w-4" />
                 <span>Edit</span>
@@ -315,9 +318,24 @@ export default function CaseDetailPage() {
         )}
 
         {activeTab === "activity" && (
-          <div className="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Activity Timeline</h2>
-            <p className="text-sm text-gray-600">Activity timeline coming soon...</p>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Activity Feed */}
+            <div className="lg:col-span-2">
+              <div className="bg-white rounded-xl border border-gray-200 p-6">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Activity Timeline</h2>
+                <ActivityFeed
+                  caseId={caseId}
+                  enableRealtime={true}
+                  showMarkAsRead={true}
+                  limit={50}
+                />
+              </div>
+            </div>
+
+            {/* Active Viewers Sidebar */}
+            <div className="lg:col-span-1">
+              <ActiveViewers caseId={caseId} enableRealtime={true} variant="full" />
+            </div>
           </div>
         )}
 
