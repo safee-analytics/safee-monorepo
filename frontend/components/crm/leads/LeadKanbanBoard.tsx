@@ -6,10 +6,8 @@ import { LeadCard } from "./LeadCard";
 import { useUpdateLead } from "@/lib/api/hooks";
 import type { paths } from "@/lib/api/types";
 
-type LeadResponse =
-  paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];
-type StageResponse =
-  paths["/crm/stages"]["get"]["responses"]["200"]["content"]["application/json"][number];
+type LeadResponse = paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];
+type StageResponse = paths["/crm/stages"]["get"]["responses"]["200"]["content"]["application/json"][number];
 
 interface LeadKanbanBoardProps {
   leads: LeadResponse[];
@@ -35,7 +33,7 @@ export function LeadKanbanBoard({ leads, stages }: LeadKanbanBoardProps) {
         lead,
         stageId: lead.stage?.id || 0,
       })),
-    [leads]
+    [leads],
   );
 
   const [cards, setCards] = useState<CardType[]>(initialCards);
@@ -47,23 +45,21 @@ export function LeadKanbanBoard({ leads, stages }: LeadKanbanBoardProps) {
         id: lead.id.toString(),
         lead,
         stageId: lead.stage?.id || 0,
-      }))
+      })),
     );
   }, [leads]);
 
   const sortedStages = useMemo(
     () => [...stages].sort((a, b) => (a.sequence || 0) - (b.sequence || 0)),
-    [stages]
+    [stages],
   );
 
   // Generate default colors
-  const defaultColors = ['#3B82F6', '#8B5CF6', '#EC4899', '#10B981', '#F59E0B', '#EF4444'];
+  const defaultColors = ["#3B82F6", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B", "#EF4444"];
 
   const getStageColor = (stage: StageResponse) => {
     if (stage.color) {
-      return typeof stage.color === 'number'
-        ? `#${stage.color.toString(16).padStart(6, '0')}`
-        : stage.color;
+      return typeof stage.color === "number" ? `#${stage.color.toString(16).padStart(6, "0")}` : stage.color;
     }
     return defaultColors[(stage.sequence || 0) % defaultColors.length];
   };
@@ -196,16 +192,14 @@ const Column = ({ stage, cards, setCards, color, onCardMove }: ColumnProps) => {
       {
         offset: Number.NEGATIVE_INFINITY,
         element: indicators[indicators.length - 1],
-      }
+      },
     );
 
     return el;
   };
 
   const getIndicators = () => {
-    return Array.from(
-      document.querySelectorAll(`[data-column="${stage.id}"]`) as unknown as HTMLElement[]
-    );
+    return Array.from(document.querySelectorAll(`[data-column="${stage.id}"]`) as unknown as HTMLElement[]);
   };
 
   const handleDragLeave = () => {

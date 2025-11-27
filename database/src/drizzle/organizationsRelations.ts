@@ -11,6 +11,9 @@ import { teams } from "./teams.js";
 import { organizationRoles } from "./organizationRoles.js";
 import { cases } from "./cases.js";
 import { auditTemplates } from "./auditTemplates.js";
+import { auditPlans } from "./auditPlans.js";
+import { auditPlanTemplates } from "./auditPlanTemplates.js";
+import { auditReportTemplates } from "./auditReportTemplates.js";
 import { approvalWorkflows } from "./approvalWorkflows.js";
 import { approvalRules } from "./approvalRules.js";
 
@@ -26,6 +29,9 @@ export const organizationsRelations = relations(organizations, ({ many, one }) =
   organizationRoles: many(organizationRoles),
   cases: many(cases),
   auditTemplates: many(auditTemplates),
+  auditPlans: many(auditPlans),
+  auditPlanTemplates: many(auditPlanTemplates),
+  auditReportTemplates: many(auditReportTemplates),
   approvalWorkflows: many(approvalWorkflows),
   approvalRules: many(approvalRules),
 }));

@@ -183,7 +183,11 @@ export default function LeadDetailPage() {
                 <span>Mark as Lost</span>
               </AnimatedButton>
               <Link href={`/crm/leads/${leadId}/edit`}>
-                <AnimatedButton variant="primary" size="md" className="flex items-center space-x-2 whitespace-nowrap">
+                <AnimatedButton
+                  variant="primary"
+                  size="md"
+                  className="flex items-center space-x-2 whitespace-nowrap"
+                >
                   <Edit className="h-4 w-4" />
                   <span>Edit</span>
                 </AnimatedButton>
@@ -309,9 +313,7 @@ export default function LeadDetailPage() {
                   <div className="text-gray-900">
                     {lead.street && <p>{lead.street}</p>}
                     {lead.street2 && <p>{lead.street2}</p>}
-                    <p>
-                      {[lead.city, lead.zip].filter(Boolean).join(", ")}
-                    </p>
+                    <p>{[lead.city, lead.zip].filter(Boolean).join(", ")}</p>
                   </div>
                 </div>
               )}
@@ -362,9 +364,7 @@ export default function LeadDetailPage() {
                         <Calendar className="h-4 w-4 mr-1" />
                         Expected Closing
                       </p>
-                      <p className="text-gray-900">
-                        {new Date(lead.dateDeadline).toLocaleDateString()}
-                      </p>
+                      <p className="text-gray-900">{new Date(lead.dateDeadline).toLocaleDateString()}</p>
                     </div>
                   )}
                 </div>

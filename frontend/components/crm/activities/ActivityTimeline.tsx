@@ -52,7 +52,7 @@ export function ActivityTimeline({ activities }: ActivityTimelineProps) {
       today: [] as ActivityResponse[],
       upcoming: [] as ActivityResponse[],
       done: [] as ActivityResponse[],
-    }
+    },
   );
 
   const getStateIcon = (state: string, dateDeadline: string) => {
@@ -89,7 +89,7 @@ export function ActivityTimeline({ activities }: ActivityTimelineProps) {
     <div
       className={`p-4 rounded-lg border-2 transition-all hover:shadow-md ${getStateColor(
         activity.state,
-        activity.dateDeadline
+        activity.dateDeadline,
       )}`}
     >
       <div className="flex items-start justify-between">
@@ -97,9 +97,7 @@ export function ActivityTimeline({ activities }: ActivityTimelineProps) {
           <div className="mt-1">{getStateIcon(activity.state, activity.dateDeadline)}</div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center space-x-2 mb-1">
-              <h3 className="font-semibold text-gray-900">
-                {activity.activityType?.name || "Activity"}
-              </h3>
+              <h3 className="font-semibold text-gray-900">{activity.activityType?.name || "Activity"}</h3>
               <span
                 className={`inline-flex px-2 py-0.5 rounded text-xs font-medium ${
                   activity.state === "done"
@@ -115,19 +113,12 @@ export function ActivityTimeline({ activities }: ActivityTimelineProps) {
               </span>
             </div>
 
-            {activity.summary && (
-              <p className="text-sm text-gray-700 mb-2">{activity.summary}</p>
-            )}
+            {activity.summary && <p className="text-sm text-gray-700 mb-2">{activity.summary}</p>}
 
-            {activity.note && (
-              <p className="text-sm text-gray-600 mb-3 line-clamp-2">{activity.note}</p>
-            )}
+            {activity.note && <p className="text-sm text-gray-600 mb-3 line-clamp-2">{activity.note}</p>}
 
             <div className="flex flex-wrap items-center gap-3 text-xs text-gray-500">
-              <Link
-                href={`/crm/leads/${activity.leadId}`}
-                className="flex items-center hover:text-blue-600"
-              >
+              <Link href={`/crm/leads/${activity.leadId}`} className="flex items-center hover:text-blue-600">
                 <Calendar className="h-3 w-3 mr-1" />
                 View Lead
               </Link>
@@ -184,9 +175,7 @@ export function ActivityTimeline({ activities }: ActivityTimelineProps) {
         <div>
           <div className="flex items-center space-x-2 mb-4">
             <AlertCircle className="h-5 w-5 text-yellow-600" />
-            <h2 className="text-lg font-semibold text-gray-900">
-              Today ({groupedActivities.today.length})
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-900">Today ({groupedActivities.today.length})</h2>
           </div>
           <div className="space-y-3">
             {groupedActivities.today.map((activity) => (

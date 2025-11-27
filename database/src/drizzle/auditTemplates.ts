@@ -14,7 +14,7 @@ export const auditTemplates = auditSchema.table(
     category: auditCategoryEnum("category"),
     version: varchar("version", { length: 50 }).notNull().default("1.0"),
     isActive: boolean("is_active").notNull().default(true),
-    isPublic: boolean("is_public").notNull().default(false), // Available to all organizations
+    isPublic: boolean("is_public").notNull().default(false),
     structure: jsonb("structure").notNull().$type<{
       sections: {
         name: string;

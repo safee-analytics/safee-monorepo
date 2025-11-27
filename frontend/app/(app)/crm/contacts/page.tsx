@@ -25,9 +25,7 @@ export default function ContactsPage() {
     }
   };
 
-  const handleTypeFilter = (
-    filterType: "all" | "companies" | "individuals" | "customers" | "suppliers"
-  ) => {
+  const handleTypeFilter = (filterType: "all" | "companies" | "individuals" | "customers" | "suppliers") => {
     switch (filterType) {
       case "all":
         setContactFilters({});
@@ -65,9 +63,7 @@ export default function ContactsPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Contacts</h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Manage customers, suppliers, and business contacts
-              </p>
+              <p className="text-sm text-gray-600 mt-1">Manage customers, suppliers, and business contacts</p>
             </div>
             <div className="flex items-center space-x-3">
               <AnimatedButton
@@ -77,13 +73,15 @@ export default function ContactsPage() {
                 disabled={syncMutation.isPending}
                 className="flex items-center space-x-2 whitespace-nowrap"
               >
-                <RefreshCw
-                  className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`}
-                />
+                <RefreshCw className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`} />
                 <span>Refresh</span>
               </AnimatedButton>
               <Link href="/crm/contacts/new">
-                <AnimatedButton variant="primary" size="md" className="flex items-center space-x-2 whitespace-nowrap">
+                <AnimatedButton
+                  variant="primary"
+                  size="md"
+                  className="flex items-center space-x-2 whitespace-nowrap"
+                >
                   <Plus className="h-4 w-4" />
                   <span>New Contact</span>
                 </AnimatedButton>
@@ -96,9 +94,7 @@ export default function ContactsPage() {
               <button
                 onClick={() => handleTypeFilter("all")}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  activeFilterType === "all"
-                    ? "bg-blue-100 text-blue-700"
-                    : "text-gray-600 hover:bg-gray-100"
+                  activeFilterType === "all" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
                 All
@@ -224,7 +220,11 @@ export default function ContactsPage() {
               Get started by creating your first contact or click Refresh to load existing contacts.
             </p>
             <Link href="/crm/contacts/new">
-              <AnimatedButton variant="primary" size="md" className="inline-flex items-center space-x-2 whitespace-nowrap">
+              <AnimatedButton
+                variant="primary"
+                size="md"
+                className="inline-flex items-center space-x-2 whitespace-nowrap"
+              >
                 <Plus className="h-4 w-4" />
                 <span>Create First Contact</span>
               </AnimatedButton>

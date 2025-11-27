@@ -67,9 +67,7 @@ const SHORTCUTS: ShortcutCategory[] = [
   },
   {
     category: "Filters",
-    shortcuts: [
-      { keys: ["⇧", "F"], description: "Toggle filters panel" },
-    ],
+    shortcuts: [{ keys: ["⇧", "F"], description: "Toggle filters panel" }],
   },
 ];
 
@@ -128,10 +126,7 @@ export function KeyboardShortcutsOverlay({ isOpen, onClose }: KeyboardShortcutsO
                     </p>
                   </div>
                 </div>
-                <button
-                  onClick={onClose}
-                  className="p-2 hover:bg-white rounded-lg transition-colors"
-                >
+                <button onClick={onClose} className="p-2 hover:bg-white rounded-lg transition-colors">
                   <X className="h-5 w-5 text-gray-500" />
                 </button>
               </div>
@@ -174,7 +169,13 @@ export function KeyboardShortcutsOverlay({ isOpen, onClose }: KeyboardShortcutsO
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <Command className="h-4 w-4" />
-                    <span>Press <kbd className="px-1.5 py-0.5 text-xs font-semibold bg-white border border-gray-300 rounded">?</kbd> anytime to see this menu</span>
+                    <span>
+                      Press{" "}
+                      <kbd className="px-1.5 py-0.5 text-xs font-semibold bg-white border border-gray-300 rounded">
+                        ?
+                      </kbd>{" "}
+                      anytime to see this menu
+                    </span>
                   </div>
                   <button
                     onClick={onClose}

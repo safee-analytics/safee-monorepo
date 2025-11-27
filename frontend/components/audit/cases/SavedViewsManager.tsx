@@ -2,19 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Save,
-  Star,
-  StarOff,
-  Trash2,
-  Eye,
-  Clock,
-  Filter,
-  Plus,
-  Edit2,
-  Check,
-  X,
-} from "lucide-react";
+import { Save, Star, StarOff, Trash2, Eye, Clock, Filter, Plus, Edit2, Check, X } from "lucide-react";
 import type { FilterToken } from "./CaseFilters";
 
 export interface SavedView {
@@ -236,9 +224,7 @@ export function SavedViewsManager({
                 <div className="text-center py-8 text-gray-500">
                   <Eye className="h-12 w-12 mx-auto mb-2 opacity-30" />
                   <p className="text-sm">No saved views yet</p>
-                  <p className="text-xs mt-1">
-                    Save your current filters and view mode for quick access
-                  </p>
+                  <p className="text-xs mt-1">Save your current filters and view mode for quick access</p>
                 </div>
               )}
             </div>
@@ -267,9 +253,7 @@ export function SavedViewsManager({
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    View Name *
-                  </label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">View Name *</label>
                   <input
                     type="text"
                     value={newViewName}
@@ -297,7 +281,9 @@ export function SavedViewsManager({
                   <p className="text-sm font-medium text-gray-700">Will save:</p>
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <Filter className="h-4 w-4" />
-                    <span>{currentFilters.length} filter{currentFilters.length !== 1 ? "s" : ""}</span>
+                    <span>
+                      {currentFilters.length} filter{currentFilters.length !== 1 ? "s" : ""}
+                    </span>
                   </div>
                   <div className="flex items-center space-x-2 text-sm text-gray-600">
                     <Eye className="h-4 w-4" />
@@ -362,9 +348,7 @@ function ViewCard({
   return (
     <div
       className={`p-3 rounded-lg border transition-all ${
-        isActive
-          ? "bg-blue-50 border-blue-200"
-          : "bg-gray-50 border-gray-200 hover:border-gray-300"
+        isActive ? "bg-blue-50 border-blue-200" : "bg-gray-50 border-gray-200 hover:border-gray-300"
       }`}
     >
       <div className="flex items-start justify-between">
@@ -378,24 +362,15 @@ function ViewCard({
                 className="flex-1 px-2 py-1 text-sm border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
                 autoFocus
               />
-              <button
-                onClick={onSaveEdit}
-                className="p-1 text-green-600 hover:bg-green-50 rounded"
-              >
+              <button onClick={onSaveEdit} className="p-1 text-green-600 hover:bg-green-50 rounded">
                 <Check className="h-4 w-4" />
               </button>
-              <button
-                onClick={onCancelEdit}
-                className="p-1 text-gray-600 hover:bg-gray-100 rounded"
-              >
+              <button onClick={onCancelEdit} className="p-1 text-gray-600 hover:bg-gray-100 rounded">
                 <X className="h-4 w-4" />
               </button>
             </div>
           ) : (
-            <button
-              onClick={onLoad}
-              className="text-left w-full group"
-            >
+            <button onClick={onLoad} className="text-left w-full group">
               <div className="flex items-center space-x-2 mb-1">
                 <span
                   className={`font-medium text-sm ${
@@ -405,9 +380,7 @@ function ViewCard({
                   {view.name}
                 </span>
               </div>
-              {view.description && (
-                <p className="text-xs text-gray-600 mb-1">{view.description}</p>
-              )}
+              {view.description && <p className="text-xs text-gray-600 mb-1">{view.description}</p>}
               <div className="flex items-center space-x-3 text-xs text-gray-500">
                 <span className="flex items-center space-x-1">
                   <Filter className="h-3 w-3" />

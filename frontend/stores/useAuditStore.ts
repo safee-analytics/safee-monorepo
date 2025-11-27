@@ -103,7 +103,7 @@ export const useAuditStore = create<AuditState>()(
           // Update last used timestamp
           set((state) => ({
             savedViews: state.savedViews.map((v) =>
-              v.id === id ? { ...v, lastUsed: new Date().toISOString() } : v
+              v.id === id ? { ...v, lastUsed: new Date().toISOString() } : v,
             ),
             activeView: id,
             casesViewMode: view.viewMode,
@@ -113,9 +113,7 @@ export const useAuditStore = create<AuditState>()(
       setActiveView: (id) => set({ activeView: id }),
       toggleViewFavorite: (id) => {
         set((state) => ({
-          savedViews: state.savedViews.map((v) =>
-            v.id === id ? { ...v, isFavorite: !v.isFavorite } : v
-          ),
+          savedViews: state.savedViews.map((v) => (v.id === id ? { ...v, isFavorite: !v.isFavorite } : v)),
         }));
       },
       updateView: (id, updates) => {

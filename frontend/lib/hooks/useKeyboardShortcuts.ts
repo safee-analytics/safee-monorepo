@@ -66,9 +66,7 @@ export function useKeyboardShortcuts({
     for (const seq of sequences) {
       if (seq.sequence.length !== buffer.length) continue;
 
-      const match = seq.sequence.every(
-        (key, index) => key.toLowerCase() === buffer[index],
-      );
+      const match = seq.sequence.every((key, index) => key.toLowerCase() === buffer[index]);
 
       if (match) {
         return seq;
@@ -84,16 +82,9 @@ export function useKeyboardShortcuts({
     const handleKeyDown = (event: KeyboardEvent) => {
       // Don't trigger shortcuts when typing in inputs, textareas, or contenteditable
       const target = event.target as HTMLElement;
-      if (
-        target.tagName === "INPUT" ||
-        target.tagName === "TEXTAREA" ||
-        target.isContentEditable
-      ) {
+      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
         // Exception: Allow Cmd+K to work everywhere
-        if (
-          (event.metaKey || event.ctrlKey) &&
-          event.key.toLowerCase() === "k"
-        ) {
+        if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
           // Let this through (handled by QuickActions hook)
         } else {
           return;
@@ -117,12 +108,7 @@ export function useKeyboardShortcuts({
       }
 
       // For key sequences, add to buffer if it's a letter key without modifiers
-      if (
-        event.key.length === 1 &&
-        !event.ctrlKey &&
-        !event.metaKey &&
-        !event.altKey
-      ) {
+      if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
         addToSequenceBuffer(event.key);
         const matchedSequence = checkSequenceMatch();
 
@@ -140,14 +126,7 @@ export function useKeyboardShortcuts({
       window.removeEventListener("keydown", handleKeyDown);
       clearSequenceBuffer();
     };
-  }, [
-    enabled,
-    shortcuts,
-    sequences,
-    addToSequenceBuffer,
-    checkSequenceMatch,
-    clearSequenceBuffer,
-  ]);
+  }, [enabled, shortcuts, sequences, addToSequenceBuffer, checkSequenceMatch, clearSequenceBuffer]);
 
   return { clearSequenceBuffer };
 }

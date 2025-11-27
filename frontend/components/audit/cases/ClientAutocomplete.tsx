@@ -29,11 +29,10 @@ export function ClientAutocomplete({
   const recentClients = getRecentClients();
 
   // Filter clients based on input
-  const filteredClients = value.length > 0
-    ? recentClients.filter((client) =>
-        client.name.toLowerCase().includes(value.toLowerCase())
-      )
-    : recentClients;
+  const filteredClients =
+    value.length > 0
+      ? recentClients.filter((client) => client.name.toLowerCase().includes(value.toLowerCase()))
+      : recentClients;
 
   // Show suggestions when focused and have matches
   useEffect(() => {
@@ -124,10 +123,7 @@ export function ClientAutocomplete({
 
               {/* Client List */}
               {filteredClients.map((client, index) => (
-                <div
-                  key={`${client.name}-${index}`}
-                  className="group hover:bg-blue-50 transition-colors"
-                >
+                <div key={`${client.name}-${index}`} className="group hover:bg-blue-50 transition-colors">
                   <button
                     onClick={() => handleClientClick(client.name)}
                     className="w-full px-4 py-3 text-left flex items-start justify-between"
@@ -177,9 +173,7 @@ export function ClientAutocomplete({
                   </button>
 
                   {/* Divider */}
-                  {index < filteredClients.length - 1 && (
-                    <div className="mx-4 border-b border-gray-100" />
-                  )}
+                  {index < filteredClients.length - 1 && <div className="mx-4 border-b border-gray-100" />}
                 </div>
               ))}
             </div>

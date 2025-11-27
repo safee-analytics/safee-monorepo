@@ -3,29 +3,23 @@ import { apiClient, handleApiError } from "../client";
 import { queryKeys } from "./queryKeys";
 import type { paths } from "../types";
 
-type LeadResponse =
-  paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];
+type LeadResponse = paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];
 type CreateLeadRequest = paths["/crm/leads"]["post"]["requestBody"]["content"]["application/json"];
-type UpdateLeadRequest =
-  paths["/crm/leads/{leadId}"]["put"]["requestBody"]["content"]["application/json"];
+type UpdateLeadRequest = paths["/crm/leads/{leadId}"]["put"]["requestBody"]["content"]["application/json"];
 
-type StageResponse =
-  paths["/crm/stages"]["get"]["responses"]["200"]["content"]["application/json"][number];
+type StageResponse = paths["/crm/stages"]["get"]["responses"]["200"]["content"]["application/json"][number];
 
 type ContactResponse =
   paths["/crm/contacts"]["get"]["responses"]["200"]["content"]["application/json"][number];
-type CreateContactRequest =
-  paths["/crm/contacts"]["post"]["requestBody"]["content"]["application/json"];
+type CreateContactRequest = paths["/crm/contacts"]["post"]["requestBody"]["content"]["application/json"];
 type UpdateContactRequest =
   paths["/crm/contacts/{contactId}"]["put"]["requestBody"]["content"]["application/json"];
 
 type ActivityResponse =
   paths["/crm/activities"]["get"]["responses"]["200"]["content"]["application/json"][number];
-type CreateActivityRequest =
-  paths["/crm/activities"]["post"]["requestBody"]["content"]["application/json"];
+type CreateActivityRequest = paths["/crm/activities"]["post"]["requestBody"]["content"]["application/json"];
 
-type TeamResponse =
-  paths["/crm/teams"]["get"]["responses"]["200"]["content"]["application/json"][number];
+type TeamResponse = paths["/crm/teams"]["get"]["responses"]["200"]["content"]["application/json"][number];
 
 type LostReasonResponse =
   paths["/crm/lost-reasons"]["get"]["responses"]["200"]["content"]["application/json"][number];
@@ -183,15 +177,11 @@ export function useStage(stageId: number) {
   });
 }
 
-export function useContacts(params?: {
-  isCustomer?: boolean;
-  isSupplier?: boolean;
-  isCompany?: boolean;
-}) {
+export function useContacts(params?: { isCustomer?: boolean; isSupplier?: boolean; isCompany?: boolean }) {
   return useQuery({
     queryKey: queryKeys.crm.contacts(params),
     queryFn: async () => {
-      const { data, error} = await apiClient.GET("/crm/contacts", {
+      const { data, error } = await apiClient.GET("/crm/contacts", {
         params: { query: params },
       });
       if (error) throw new Error(handleApiError(error));

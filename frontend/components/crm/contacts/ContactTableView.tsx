@@ -65,9 +65,7 @@ export function ContactTableView({ contacts }: ContactTableViewProps) {
       className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
     >
       <span>{children}</span>
-      <ArrowUpDown
-        className={`h-4 w-4 ${sortField === field ? "text-blue-600" : "text-gray-400"}`}
-      />
+      <ArrowUpDown className={`h-4 w-4 ${sortField === field ? "text-blue-600" : "text-gray-400"}`} />
     </button>
   );
 
@@ -115,15 +113,10 @@ export function ContactTableView({ contacts }: ContactTableViewProps) {
               sortedContacts.map((contact) => (
                 <tr key={contact.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4">
-                    <Link
-                      href={`/crm/contacts/${contact.id}`}
-                      className="flex items-center space-x-3"
-                    >
+                    <Link href={`/crm/contacts/${contact.id}`} className="flex items-center space-x-3">
                       <div
                         className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
-                          contact.isCompany
-                            ? "bg-purple-100 text-purple-700"
-                            : "bg-blue-100 text-blue-700"
+                          contact.isCompany ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
                         }`}
                       >
                         {contact.isCompany ? (
@@ -133,21 +126,15 @@ export function ContactTableView({ contacts }: ContactTableViewProps) {
                         )}
                       </div>
                       <div>
-                        <p className="text-sm font-medium text-blue-600 hover:underline">
-                          {contact.name}
-                        </p>
-                        {contact.function && (
-                          <p className="text-xs text-gray-500">{contact.function}</p>
-                        )}
+                        <p className="text-sm font-medium text-blue-600 hover:underline">{contact.name}</p>
+                        {contact.function && <p className="text-xs text-gray-500">{contact.function}</p>}
                       </div>
                     </Link>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        contact.isCompany
-                          ? "bg-purple-100 text-purple-700"
-                          : "bg-blue-100 text-blue-700"
+                        contact.isCompany ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
                       }`}
                     >
                       {contact.isCompany ? (
@@ -184,18 +171,14 @@ export function ContactTableView({ contacts }: ContactTableViewProps) {
                           </a>
                         </div>
                       )}
-                      {!contact.email && !contact.phone && (
-                        <span className="text-sm text-gray-400">-</span>
-                      )}
+                      {!contact.email && !contact.phone && <span className="text-sm text-gray-400">-</span>}
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     {contact.city || contact.country ? (
                       <div className="flex items-center text-sm text-gray-600">
                         <MapPin className="h-4 w-4 mr-1 text-gray-400" />
-                        <span>
-                          {[contact.city, contact.country?.name].filter(Boolean).join(", ")}
-                        </span>
+                        <span>{[contact.city, contact.country?.name].filter(Boolean).join(", ")}</span>
                       </div>
                     ) : (
                       <span className="text-sm text-gray-400">-</span>

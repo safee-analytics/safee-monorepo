@@ -32,6 +32,10 @@ export * from "./sessions/index.js";
 
 export * from "./cases/index.js";
 
+export * from "./auditPlanning/index.js";
+
+export * from "./reports/index.js";
+
 export * from "./approvals.js";
 
 export * from "./auditLogs/auditLogs.js";

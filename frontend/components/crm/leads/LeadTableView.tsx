@@ -5,8 +5,7 @@ import Link from "next/link";
 import { ArrowUpDown, Mail, Phone, DollarSign, Target, User, Calendar } from "lucide-react";
 import type { paths } from "@/lib/api/types";
 
-type LeadResponse =
-  paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];
+type LeadResponse = paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];
 
 interface LeadTableViewProps {
   leads: LeadResponse[];
@@ -69,9 +68,7 @@ export function LeadTableView({ leads }: LeadTableViewProps) {
       className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
     >
       <span>{children}</span>
-      <ArrowUpDown
-        className={`h-4 w-4 ${sortField === field ? "text-blue-600" : "text-gray-400"}`}
-      />
+      <ArrowUpDown className={`h-4 w-4 ${sortField === field ? "text-blue-600" : "text-gray-400"}`} />
     </button>
   );
 
@@ -161,9 +158,7 @@ export function LeadTableView({ leads }: LeadTableViewProps) {
                     </span>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-gray-900">
-                      {lead.partnerName || lead.contactName || "-"}
-                    </div>
+                    <div className="text-sm text-gray-900">{lead.partnerName || lead.contactName || "-"}</div>
                     <div className="flex items-center space-x-3 mt-1">
                       {lead.emailFrom && (
                         <div className="flex items-center text-xs text-gray-500">

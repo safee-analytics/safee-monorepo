@@ -62,11 +62,7 @@ export default function EditLeadPage() {
       </div>
 
       <div className="max-w-5xl mx-auto whitespace-nowrap py-8">
-        <LeadForm
-          lead={lead}
-          onSubmit={handleSubmit}
-          isSubmitting={updateLeadMutation.isPending}
-        />
+        <LeadForm lead={lead} onSubmit={handleSubmit} isSubmitting={updateLeadMutation.isPending} />
       </div>
     </div>
   );

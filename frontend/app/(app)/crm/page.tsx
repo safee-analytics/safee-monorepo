@@ -32,14 +32,9 @@ export default function CRMDashboardPage() {
   const activeLeads = leads?.filter((l) => l.type === "lead") || [];
 
   const wonStage = stages?.find((s) => s.isWon);
-  const wonOpportunities = wonStage
-    ? leads?.filter((l) => l.stage?.id === wonStage.id) || []
-    : [];
+  const wonOpportunities = wonStage ? leads?.filter((l) => l.stage?.id === wonStage.id) || [] : [];
 
-  const totalExpectedRevenue = opportunities.reduce(
-    (sum, opp) => sum + (opp.expectedRevenue || 0),
-    0
-  );
+  const totalExpectedRevenue = opportunities.reduce((sum, opp) => sum + (opp.expectedRevenue || 0), 0);
 
   const totalLeads = leads?.length || 0;
   const totalContacts = contacts?.length || 0;
@@ -51,7 +46,7 @@ export default function CRMDashboardPage() {
 
   const overdueActivities =
     activities?.filter(
-      (a) => a.state === "overdue" || (a.state === "today" && new Date(a.dateDeadline) < new Date())
+      (a) => a.state === "overdue" || (a.state === "today" && new Date(a.dateDeadline) < new Date()),
     ) || [];
 
   const stats = [
@@ -125,9 +120,7 @@ export default function CRMDashboardPage() {
   ];
 
   const topOpportunities =
-    opportunities
-      .sort((a, b) => (b.expectedRevenue || 0) - (a.expectedRevenue || 0))
-      .slice(0, 5) || [];
+    opportunities.sort((a, b) => (b.expectedRevenue || 0) - (a.expectedRevenue || 0)).slice(0, 5) || [];
 
   return (
     <div className="p-6 space-y-6">
@@ -148,44 +141,46 @@ export default function CRMDashboardPage() {
           </>
         ) : (
           stats.map((stat, index) => {
-          const Icon = stat.icon;
-          const TrendIcon = stat.trend === "up" ? ArrowUpRight : ArrowDownRight;
-          return (
-            <motion.div
-              key={stat.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: index * 0.1 }}
-            >
-              <Link
-                href={stat.href}
-                className="block bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-gray-300 transition-all group"
+            const Icon = stat.icon;
+            const TrendIcon = stat.trend === "up" ? ArrowUpRight : ArrowDownRight;
+            return (
+              <motion.div
+                key={stat.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex-1">
-                    <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                    <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
-                    <div className="flex items-center mt-2">
-                      <TrendIcon
-                        className={`h-4 w-4 ${stat.trend === "up" ? "text-green-600" : "text-red-600"}`}
-                      />
-                      <span
-                        className={`text-sm ml-1 font-medium ${
-                          stat.trend === "up" ? "text-green-600" : "text-red-600"
-                        }`}
-                      >
-                        {stat.change}
-                      </span>
+                <Link
+                  href={stat.href}
+                  className="block bg-white rounded-xl border border-gray-200 p-6 hover:shadow-lg hover:border-gray-300 transition-all group"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1">
+                      <p className="text-sm font-medium text-gray-600">{stat.title}</p>
+                      <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
+                      <div className="flex items-center mt-2">
+                        <TrendIcon
+                          className={`h-4 w-4 ${stat.trend === "up" ? "text-green-600" : "text-red-600"}`}
+                        />
+                        <span
+                          className={`text-sm ml-1 font-medium ${
+                            stat.trend === "up" ? "text-green-600" : "text-red-600"
+                          }`}
+                        >
+                          {stat.change}
+                        </span>
+                      </div>
+                    </div>
+                    <div
+                      className={`${stat.bgColor} p-3 rounded-xl group-hover:scale-110 transition-transform`}
+                    >
+                      <Icon className={`h-8 w-8 ${stat.color}`} />
                     </div>
                   </div>
-                  <div className={`${stat.bgColor} p-3 rounded-xl group-hover:scale-110 transition-transform`}>
-                    <Icon className={`h-8 w-8 ${stat.color}`} />
-                  </div>
-                </div>
-              </Link>
-            </motion.div>
-          );
-        })
+                </Link>
+              </motion.div>
+            );
+          })
         )}
       </div>
 
@@ -226,10 +221,7 @@ export default function CRMDashboardPage() {
             <div className="text-center py-8">
               <Target className="h-12 w-12 text-gray-300 mx-auto mb-3" />
               <p className="text-gray-500">No opportunities yet</p>
-              <Link
-                href="/crm/leads/new"
-                className="text-blue-600 hover:underline text-sm mt-2 inline-block"
-              >
+              <Link href="/crm/leads/new" className="text-blue-600 hover:underline text-sm mt-2 inline-block">
                 Create your first lead
               </Link>
             </div>
@@ -246,9 +238,7 @@ export default function CRMDashboardPage() {
                       <h3 className="font-medium text-gray-900">{opp.name}</h3>
                       <p className="text-sm text-gray-500 mt-1">{opp.partnerName || opp.contactName}</p>
                       <div className="flex items-center mt-2 space-x-4">
-                        <span className="text-xs text-gray-500">
-                          Stage: {opp.stage?.name || "N/A"}
-                        </span>
+                        <span className="text-xs text-gray-500">Stage: {opp.stage?.name || "N/A"}</span>
                         {opp.probability !== undefined && (
                           <span className="text-xs text-gray-500">{opp.probability}% probability</span>
                         )}
@@ -310,9 +300,7 @@ export default function CRMDashboardPage() {
                       <h3 className="font-medium text-gray-900">
                         {activity.activityType?.name || "Activity"}
                       </h3>
-                      {activity.summary && (
-                        <p className="text-sm text-gray-600 mt-1">{activity.summary}</p>
-                      )}
+                      {activity.summary && <p className="text-sm text-gray-600 mt-1">{activity.summary}</p>}
                       <div className="flex items-center mt-2 space-x-3 text-xs text-gray-500">
                         <span>Due: {new Date(activity.dateDeadline).toLocaleDateString()}</span>
                         <span>{activity.user?.name || "Unassigned"}</span>

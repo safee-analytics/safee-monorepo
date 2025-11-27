@@ -82,8 +82,18 @@ export function ActivityCalendar({ activities }: ActivityCalendarProps) {
   };
 
   const monthNames = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   const getActivityIcon = (activity: ActivityResponse) => {
@@ -184,7 +194,7 @@ export function ActivityCalendar({ activities }: ActivityCalendarProps) {
                       key={activity.id}
                       href={`/crm/leads/${activity.leadId}`}
                       className={`block text-xs px-1.5 py-1 rounded border truncate hover:shadow-sm transition-all ${getActivityColor(
-                        activity
+                        activity,
                       )}`}
                       title={activity.activityType?.name || "Activity"}
                     >
@@ -195,9 +205,7 @@ export function ActivityCalendar({ activities }: ActivityCalendarProps) {
                     </Link>
                   ))}
                   {dayActivities.length > 3 && (
-                    <div className="text-xs text-gray-500 px-1.5">
-                      +{dayActivities.length - 3} more
-                    </div>
+                    <div className="text-xs text-gray-500 px-1.5">+{dayActivities.length - 3} more</div>
                   )}
                 </div>
               </div>

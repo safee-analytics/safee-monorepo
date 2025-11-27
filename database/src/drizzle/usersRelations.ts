@@ -12,6 +12,8 @@ import { auditTemplates } from "./auditTemplates.js";
 import { auditScopes } from "./auditScopes.js";
 import { auditSections } from "./auditSections.js";
 import { auditProcedures } from "./auditProcedures.js";
+import { auditPlans } from "./auditPlans.js";
+import { auditReports } from "./auditReports.js";
 import { caseDocuments } from "./caseDocuments.js";
 import { caseNotes } from "./caseNotes.js";
 import { caseAssignments } from "./caseAssignments.js";
@@ -32,6 +34,7 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   // Audit/Cases relations
   createdCases: many(cases, { relationName: "caseCreator" }),
   createdTemplates: many(auditTemplates),
+  createdPlans: many(auditPlans, { relationName: "auditPlanCreator" }),
   createdScopes: many(auditScopes, { relationName: "auditScopeCreator" }),
   completedScopes: many(auditScopes, { relationName: "auditScopeCompletor" }),
   archivedScopes: many(auditScopes, { relationName: "auditScopeArchiver" }),
@@ -46,6 +49,8 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   requestedApprovals: many(approvalRequests, { relationName: "approvalRequestUser" }),
   approvalSteps: many(approvalSteps, { relationName: "approvalStepApprover" }),
   delegatedApprovalSteps: many(approvalSteps, { relationName: "approvalStepDelegatedTo" }),
+  // Report relations
+  generatedReports: many(auditReports, { relationName: "reportGenerator" }),
   // Settings relations
   notificationSettings: one(notificationSettings),
   appearanceSettings: one(appearanceSettings),

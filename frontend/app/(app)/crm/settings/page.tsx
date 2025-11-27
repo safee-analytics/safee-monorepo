@@ -41,9 +41,7 @@ export default function CRMSettingsPage() {
                 <Settings className="h-7 w-7" />
                 <span>CRM Settings</span>
               </h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Configure stages, lost reasons, and sales teams
-              </p>
+              <p className="text-sm text-gray-600 mt-1">Configure stages, lost reasons, and sales teams</p>
             </div>
           </div>
         </div>
@@ -75,9 +73,7 @@ export default function CRMSettingsPage() {
             >
               <XCircle className="h-4 w-4" />
               <span>Lost Reasons</span>
-              {lostReasons && (
-                <span className="text-xs text-gray-500">({lostReasons.length})</span>
-              )}
+              {lostReasons && <span className="text-xs text-gray-500">({lostReasons.length})</span>}
             </button>
             <button
               onClick={() => setActiveTab("teams")}
@@ -100,9 +96,7 @@ export default function CRMSettingsPage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">Sales Stages</h2>
-                <p className="text-sm text-gray-600 mt-1">
-                  Pipeline stages for tracking lead progress
-                </p>
+                <p className="text-sm text-gray-600 mt-1">Pipeline stages for tracking lead progress</p>
               </div>
               <AnimatedButton
                 onClick={() => handleSync("stages")}
@@ -111,9 +105,7 @@ export default function CRMSettingsPage() {
                 disabled={syncMutation.isPending}
                 className="flex items-center space-x-2 whitespace-nowrap"
               >
-                <RefreshCw
-                  className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`}
-                />
+                <RefreshCw className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`} />
                 <span>Refresh</span>
               </AnimatedButton>
             </div>
@@ -180,9 +172,7 @@ export default function CRMSettingsPage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">Lost Reasons</h2>
-                <p className="text-sm text-gray-600 mt-1">
-                  Reasons for marking leads as lost
-                </p>
+                <p className="text-sm text-gray-600 mt-1">Reasons for marking leads as lost</p>
               </div>
               <AnimatedButton
                 onClick={() => handleSync("lost-reasons")}
@@ -191,9 +181,7 @@ export default function CRMSettingsPage() {
                 disabled={syncMutation.isPending}
                 className="flex items-center space-x-2 whitespace-nowrap"
               >
-                <RefreshCw
-                  className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`}
-                />
+                <RefreshCw className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`} />
                 <span>Refresh</span>
               </AnimatedButton>
             </div>
@@ -214,9 +202,7 @@ export default function CRMSettingsPage() {
                       <span className="font-medium text-gray-900">{reason.name}</span>
                     </div>
                     {reason.active === false && (
-                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">
-                        Inactive
-                      </span>
+                      <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded">Inactive</span>
                     )}
                   </div>
                 ))}
@@ -237,9 +223,7 @@ export default function CRMSettingsPage() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h2 className="text-lg font-semibold text-gray-900">Sales Teams</h2>
-                <p className="text-sm text-gray-600 mt-1">
-                  Organize your sales force into teams
-                </p>
+                <p className="text-sm text-gray-600 mt-1">Organize your sales force into teams</p>
               </div>
               <AnimatedButton
                 onClick={() => handleSync("teams")}
@@ -248,9 +232,7 @@ export default function CRMSettingsPage() {
                 disabled={syncMutation.isPending}
                 className="flex items-center space-x-2 whitespace-nowrap"
               >
-                <RefreshCw
-                  className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`}
-                />
+                <RefreshCw className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`} />
                 <span>Refresh</span>
               </AnimatedButton>
             </div>
@@ -273,9 +255,7 @@ export default function CRMSettingsPage() {
                           <div className="flex items-center space-x-2 mt-2">
                             <span
                               className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                                team.useLeads
-                                  ? "bg-blue-100 text-blue-700"
-                                  : "bg-gray-100 text-gray-700"
+                                team.useLeads ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700"
                               }`}
                             >
                               {team.useLeads ? "Leads Enabled" : "Opportunities Only"}
@@ -289,9 +269,7 @@ export default function CRMSettingsPage() {
                         )}
                       </div>
                       {team.active === false && (
-                        <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded">
-                          Inactive
-                        </span>
+                        <span className="text-xs bg-gray-100 text-gray-600 px-3 py-1 rounded">Inactive</span>
                       )}
                     </div>
 

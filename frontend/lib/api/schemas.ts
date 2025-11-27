@@ -47,7 +47,11 @@ export const leadFormSchema = z.object({
   teamId: z.number().optional(),
   userId: z.number().optional(),
   expectedRevenue: z.number().positive("Expected revenue must be positive").optional(),
-  probability: z.number().min(0, "Probability must be at least 0").max(100, "Probability must be at most 100").optional(),
+  probability: z
+    .number()
+    .min(0, "Probability must be at least 0")
+    .max(100, "Probability must be at most 100")
+    .optional(),
   dateDeadline: z.string().optional(),
   priority: z.enum(["0", "1", "2", "3"]).optional(),
   description: z.string().optional(),

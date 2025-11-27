@@ -63,25 +63,17 @@ export default function ContactDetailPage() {
             <div className="flex items-center space-x-4">
               <div
                 className={`w-16 h-16 rounded-full flex items-center justify-center text-xl font-medium ${
-                  contact.isCompany
-                    ? "bg-purple-100 text-purple-700"
-                    : "bg-blue-100 text-blue-700"
+                  contact.isCompany ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
                 }`}
               >
-                {contact.isCompany ? (
-                  <Building2 className="h-8 w-8" />
-                ) : (
-                  contact.name.charAt(0).toUpperCase()
-                )}
+                {contact.isCompany ? <Building2 className="h-8 w-8" /> : contact.name.charAt(0).toUpperCase()}
               </div>
               <div>
                 <div className="flex items-center space-x-3 mb-2">
                   <h1 className="text-2xl font-bold text-gray-900">{contact.name}</h1>
                   <span
                     className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                      contact.isCompany
-                        ? "bg-purple-100 text-purple-700"
-                        : "bg-blue-100 text-blue-700"
+                      contact.isCompany ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
                     }`}
                   >
                     {contact.isCompany ? "Company" : "Individual"}
@@ -113,7 +105,11 @@ export default function ContactDetailPage() {
             </div>
 
             <Link href={`/crm/contacts/${contactId}/edit`}>
-              <AnimatedButton variant="primary" size="md" className="flex items-center space-x-2 whitespace-nowrap">
+              <AnimatedButton
+                variant="primary"
+                size="md"
+                className="flex items-center space-x-2 whitespace-nowrap"
+              >
                 <Edit className="h-4 w-4" />
                 <span>Edit</span>
               </AnimatedButton>
@@ -193,9 +189,7 @@ export default function ContactDetailPage() {
                 <div className="text-gray-900">
                   {contact.street && <p>{contact.street}</p>}
                   {contact.street2 && <p>{contact.street2}</p>}
-                  <p>
-                    {[contact.city, contact.zip].filter(Boolean).join(", ")}
-                  </p>
+                  <p>{[contact.city, contact.zip].filter(Boolean).join(", ")}</p>
                   {contact.country && <p>{contact.country.name}</p>}
                 </div>
               </div>
@@ -217,9 +211,7 @@ export default function ContactDetailPage() {
                       <div className="flex items-center justify-between">
                         <div>
                           <h3 className="font-medium text-gray-900">{lead.name}</h3>
-                          <p className="text-sm text-gray-500 mt-1">
-                            Stage: {lead.stage?.name || "N/A"}
-                          </p>
+                          <p className="text-sm text-gray-500 mt-1">Stage: {lead.stage?.name || "N/A"}</p>
                         </div>
                         {lead.expectedRevenue && (
                           <p className="text-lg font-bold text-green-600">

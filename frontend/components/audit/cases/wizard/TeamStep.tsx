@@ -42,9 +42,7 @@ export function TeamStep({ data, onChange }: WizardStepProps) {
   };
 
   const handleChangeRole = (userId: string, newRole: string) => {
-    const newAssignments = currentAssignments.map((a) =>
-      a.userId === userId ? { ...a, role: newRole } : a,
-    );
+    const newAssignments = currentAssignments.map((a) => (a.userId === userId ? { ...a, role: newRole } : a));
     onChange({ assignments: newAssignments });
   };
 
@@ -61,8 +59,7 @@ export function TeamStep({ data, onChange }: WizardStepProps) {
       <div>
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Assign Team Members</h3>
         <p className="text-sm text-gray-600">
-          Optionally assign team members to this case. You can also do this later from the case detail
-          page.
+          Optionally assign team members to this case. You can also do this later from the case detail page.
         </p>
       </div>
 
@@ -84,9 +81,7 @@ export function TeamStep({ data, onChange }: WizardStepProps) {
                   className="bg-white border border-blue-200 rounded-lg p-3 flex items-center justify-between"
                 >
                   <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold"
-                    >
+                    <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold">
                       {user.name.charAt(0)}
                     </div>
                     <div>
@@ -150,9 +145,7 @@ export function TeamStep({ data, onChange }: WizardStepProps) {
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div
-                      className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-semibold"
-                    >
+                    <div className="w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center text-white font-semibold">
                       {user.name.charAt(0)}
                     </div>
                     <div>
@@ -210,8 +203,8 @@ export function TeamStep({ data, onChange }: WizardStepProps) {
       {currentAssignments.length === 0 && (
         <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
           <p className="text-sm text-gray-700">
-            💡 <strong>Optional:</strong> You can assign team members now or skip this step and assign
-            them later from the case detail page.
+            💡 <strong>Optional:</strong> You can assign team members now or skip this step and assign them
+            later from the case detail page.
           </p>
         </div>
       )}

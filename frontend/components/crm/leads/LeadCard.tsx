@@ -4,8 +4,7 @@ import Link from "next/link";
 import { DollarSign, Mail, Phone, Clock, MoreVertical, Target } from "lucide-react";
 import type { paths } from "@/lib/api/types";
 
-type LeadResponse =
-  paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];
+type LeadResponse = paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];
 
 interface LeadCardProps {
   lead: LeadResponse;
@@ -38,9 +37,7 @@ export function LeadCard({ lead, isDragging = false }: LeadCardProps) {
         <div className="flex-1 min-w-0">
           <h3 className="font-semibold text-gray-900 truncate">{lead.name}</h3>
           {(lead.partnerName || lead.contactName) && (
-            <p className="text-sm text-gray-600 truncate mt-1">
-              {lead.partnerName || lead.contactName}
-            </p>
+            <p className="text-sm text-gray-600 truncate mt-1">{lead.partnerName || lead.contactName}</p>
           )}
         </div>
         <button
@@ -70,9 +67,7 @@ export function LeadCard({ lead, isDragging = false }: LeadCardProps) {
         {lead.type && (
           <span
             className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-              lead.type === "opportunity"
-                ? "bg-purple-100 text-purple-700"
-                : "bg-blue-100 text-blue-700"
+              lead.type === "opportunity" ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
             }`}
           >
             <Target className="h-3 w-3 mr-1" />

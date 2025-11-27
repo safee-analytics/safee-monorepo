@@ -47,9 +47,7 @@ export function ContactCardView({ contacts }: ContactCardViewProps) {
               <div className="flex items-start space-x-3 mb-4">
                 <div
                   className={`w-12 h-12 rounded-full flex items-center justify-center text-lg font-medium flex-shrink-0 ${
-                    contact.isCompany
-                      ? "bg-purple-100 text-purple-700"
-                      : "bg-blue-100 text-blue-700"
+                    contact.isCompany ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
                   }`}
                 >
                   {contact.isCompany ? (
@@ -62,9 +60,7 @@ export function ContactCardView({ contacts }: ContactCardViewProps) {
                   <h3 className="font-semibold text-gray-900 truncate group-hover:text-blue-600 transition-colors">
                     {contact.name}
                   </h3>
-                  {contact.function && (
-                    <p className="text-sm text-gray-500 truncate">{contact.function}</p>
-                  )}
+                  {contact.function && <p className="text-sm text-gray-500 truncate">{contact.function}</p>}
                 </div>
               </div>
 
@@ -72,9 +68,7 @@ export function ContactCardView({ contacts }: ContactCardViewProps) {
               <div className="mb-3">
                 <span
                   className={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium ${
-                    contact.isCompany
-                      ? "bg-purple-100 text-purple-700"
-                      : "bg-blue-100 text-blue-700"
+                    contact.isCompany ? "bg-purple-100 text-purple-700" : "bg-blue-100 text-blue-700"
                   }`}
                 >
                   {contact.isCompany ? (

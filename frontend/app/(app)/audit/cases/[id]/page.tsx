@@ -130,14 +130,16 @@ export default function CaseDetailPage() {
             </button>
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-2">
-                <h1 className="text-2xl font-bold text-gray-900">
-                  {caseData.clientName || "Unnamed Case"}
-                </h1>
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${statusBadge.bg} ${statusBadge.text} flex items-center space-x-1`}>
+                <h1 className="text-2xl font-bold text-gray-900">{caseData.clientName || "Unnamed Case"}</h1>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${statusBadge.bg} ${statusBadge.text} flex items-center space-x-1`}
+                >
                   <StatusIcon className="h-3 w-3" />
                   <span>{caseData.status}</span>
                 </span>
-                <span className={`px-3 py-1 rounded-full text-xs font-medium ${priorityBadge.bg} ${priorityBadge.text}`}>
+                <span
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${priorityBadge.bg} ${priorityBadge.text}`}
+                >
                   {caseData.priority}
                 </span>
               </div>
@@ -154,11 +156,7 @@ export default function CaseDetailPage() {
               </div>
             </div>
             <div className="flex items-center space-x-2">
-              <AnimatedButton
-                variant="outline"
-                size="md"
-                className="flex items-center space-x-2"
-              >
+              <AnimatedButton variant="outline" size="md" className="flex items-center space-x-2">
                 <Edit2 className="h-4 w-4" />
                 <span>Edit</span>
               </AnimatedButton>

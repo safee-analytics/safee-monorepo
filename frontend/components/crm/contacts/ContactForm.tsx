@@ -186,9 +186,7 @@ export function ContactForm({ contact, onSubmit, isSubmitting = false }: Contact
           </div>
 
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Street 2 (Optional)
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Street 2 (Optional)</label>
             <input
               {...register("street2")}
               type="text"

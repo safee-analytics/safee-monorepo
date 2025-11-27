@@ -85,9 +85,7 @@ export function BulkUploadModal({
   };
 
   const updateFileCategory = (index: number, category: string) => {
-    setFiles((prev) =>
-      prev.map((item, i) => (i === index ? { ...item, category } : item))
-    );
+    setFiles((prev) => prev.map((item, i) => (i === index ? { ...item, category } : item)));
   };
 
   const handleUpload = async () => {
@@ -99,20 +97,14 @@ export function BulkUploadModal({
     const uploadPromises = files.map(async (fileItem, index) => {
       // Update status to uploading
       setFiles((prev) =>
-        prev.map((item, i) =>
-          i === index ? { ...item, status: "uploading", progress: 0 } : item
-        )
+        prev.map((item, i) => (i === index ? { ...item, status: "uploading", progress: 0 } : item)),
       );
 
       try {
         // Simulate progress updates
         for (let progress = 0; progress <= 100; progress += 10) {
           await new Promise((resolve) => setTimeout(resolve, 100));
-          setFiles((prev) =>
-            prev.map((item, i) =>
-              i === index ? { ...item, progress } : item
-            )
-          );
+          setFiles((prev) => prev.map((item, i) => (i === index ? { ...item, progress } : item)));
         }
 
         // Call actual upload function
@@ -120,18 +112,14 @@ export function BulkUploadModal({
 
         // Mark as success
         setFiles((prev) =>
-          prev.map((item, i) =>
-            i === index ? { ...item, status: "success", progress: 100 } : item
-          )
+          prev.map((item, i) => (i === index ? { ...item, status: "success", progress: 100 } : item)),
         );
       } catch (error) {
         // Mark as error
         setFiles((prev) =>
           prev.map((item, i) =>
-            i === index
-              ? { ...item, status: "error", error: (error as Error).message }
-              : item
-          )
+            i === index ? { ...item, status: "error", error: (error as Error).message } : item,
+          ),
         );
       }
     });
@@ -253,9 +241,7 @@ export function BulkUploadModal({
                       {dragActive ? "Drop files here" : "Upload Documents"}
                     </h3>
 
-                    <p className="text-sm text-gray-600 mb-6">
-                      Drag and drop files here, or click to browse
-                    </p>
+                    <p className="text-sm text-gray-600 mb-6">Drag and drop files here, or click to browse</p>
 
                     <button
                       onClick={() => fileInputRef.current?.click()}
@@ -280,11 +266,9 @@ export function BulkUploadModal({
                       >
                         {/* File Icon & Status */}
                         <div className="flex-shrink-0">
-                          {fileItem.status === "pending" || fileItem.status === "uploading" ? (
-                            getFileIcon(fileItem.file.type)
-                          ) : (
-                            getStatusIcon(fileItem.status)
-                          )}
+                          {fileItem.status === "pending" || fileItem.status === "uploading"
+                            ? getFileIcon(fileItem.file.type)
+                            : getStatusIcon(fileItem.status)}
                         </div>
 
                         {/* File Info */}
@@ -385,7 +369,9 @@ export function BulkUploadModal({
                     ) : (
                       <>
                         <Upload className="h-4 w-4" />
-                        <span>Upload {files.length} File{files.length > 1 ? "s" : ""}</span>
+                        <span>
+                          Upload {files.length} File{files.length > 1 ? "s" : ""}
+                        </span>
                       </>
                     )}
                   </button>

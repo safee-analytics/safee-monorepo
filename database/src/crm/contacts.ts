@@ -17,7 +17,7 @@ export async function getContactById(deps: DbDeps, contactId: string): Promise<C
 export async function getContactByOdooId(
   deps: DbDeps,
   odooPartnerId: number,
-  organizationId: string
+  organizationId: string,
 ): Promise<Contact | undefined> {
   return deps.drizzle.query.crmContacts.findFirst({
     where: and(eq(crmContacts.odooPartnerId, odooPartnerId), eq(crmContacts.organizationId, organizationId)),
@@ -30,7 +30,7 @@ export async function getContactsByOrganization(
   filters?: {
     isCustomer?: boolean;
     isSupplier?: boolean;
-  }
+  },
 ): Promise<Contact[]> {
   const conditions = [eq(crmContacts.organizationId, organizationId)];
 
@@ -47,7 +47,11 @@ export async function getContactsByOrganization(
   });
 }
 
-export async function updateContact(deps: DbDeps, contactId: string, input: UpdateContactInput): Promise<Contact> {
+export async function updateContact(
+  deps: DbDeps,
+  contactId: string,
+  input: UpdateContactInput,
+): Promise<Contact> {
   const [updated] = await deps.drizzle
     .update(crmContacts)
     .set({

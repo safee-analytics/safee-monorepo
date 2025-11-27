@@ -39,9 +39,7 @@ export default function LeadsPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Leads & Opportunities</h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Manage your sales pipeline and track opportunities
-              </p>
+              <p className="text-sm text-gray-600 mt-1">Manage your sales pipeline and track opportunities</p>
             </div>
             <div className="flex items-center space-x-3">
               <AnimatedButton
@@ -51,13 +49,15 @@ export default function LeadsPage() {
                 disabled={syncMutation.isPending}
                 className="flex items-center space-x-2 whitespace-nowrap"
               >
-                <RefreshCw
-                  className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`}
-                />
+                <RefreshCw className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`} />
                 <span>Refresh</span>
               </AnimatedButton>
               <Link href="/crm/leads/new">
-                <AnimatedButton variant="primary" size="md" className="flex items-center space-x-2 whitespace-nowrap">
+                <AnimatedButton
+                  variant="primary"
+                  size="md"
+                  className="flex items-center space-x-2 whitespace-nowrap"
+                >
                   <Plus className="h-4 w-4" />
                   <span>New Lead</span>
                 </AnimatedButton>
@@ -73,9 +73,7 @@ export default function LeadsPage() {
                 <button
                   onClick={() => handleTypeFilter(undefined)}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                    !leadFilters.type
-                      ? "bg-blue-100 text-blue-700"
-                      : "text-gray-600 hover:bg-gray-100"
+                    !leadFilters.type ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                   }`}
                 >
                   All

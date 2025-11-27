@@ -2,11 +2,23 @@
 
 import { useState, useMemo } from "react";
 import {
-  Upload, Search, Grid3x3, List, FolderPlus, Download,
-  Trash2, MoreVertical, File, FileText, Image as ImageIcon,
-  CheckSquare, Square, X
+  Upload,
+  Search,
+  Grid3x3,
+  List,
+  FolderPlus,
+  Download,
+  Trash2,
+  MoreVertical,
+  File,
+  FileText,
+  Image as ImageIcon,
+  CheckSquare,
+  Square,
+  X,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { DocumentPreviewDrawer } from "./DocumentPreviewDrawer";
 
 interface Document {
   id: string;
@@ -45,6 +57,7 @@ export function DocumentBrowser({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDocs, setSelectedDocs] = useState<Set<string>>(new Set());
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [previewDocument, setPreviewDocument] = useState<Document | null>(null);
 
   // Group documents by category (folders)
   const folders = useMemo(() => {
@@ -130,184 +143,215 @@ export function DocumentBrowser({
     return styles[status as keyof typeof styles] || styles.pending;
   };
 
+  const handleDocumentClick = (doc: Document) => {
+    if (onDocumentClick) {
+      onDocumentClick(doc);
+    } else {
+      // Default behavior: open preview drawer
+      setPreviewDocument(doc);
+    }
+  };
+
+  const handleStatusChange = (documentId: string, status: string) => {
+    // Update document status - this would typically call an API
+    console.log(`Updating document ${documentId} status to ${status}`);
+  };
+
   return (
-    <div className="flex h-[calc(100vh-200px)] bg-white rounded-xl border border-gray-200 overflow-hidden">
-      {/* Left Sidebar - Folders */}
-      <aside className="w-64 border-r border-gray-200 bg-gray-50">
-        <div className="p-4">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-gray-900">Folders</h3>
-            <button
-              className="p-1.5 hover:bg-gray-200 rounded-lg transition-colors"
-              title="New folder"
-            >
-              <FolderPlus className="h-4 w-4 text-gray-600" />
-            </button>
-          </div>
+    <>
+      <div className="flex h-[calc(100vh-200px)] bg-white rounded-xl border border-gray-200 overflow-hidden">
+        {/* Left Sidebar - Folders */}
+        <aside className="w-64 border-r border-gray-200 bg-gray-50">
+          <div className="p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-gray-900">Folders</h3>
+              <button className="p-1.5 hover:bg-gray-200 rounded-lg transition-colors" title="New folder">
+                <FolderPlus className="h-4 w-4 text-gray-600" />
+              </button>
+            </div>
 
-          <nav className="space-y-1">
-            <button
-              onClick={() => setSelectedFolder("all")}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                selectedFolder === "all"
-                  ? "bg-blue-100 text-blue-700 font-medium"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
-            >
-              <span>All Documents</span>
-              <span className="text-xs px-2 py-0.5 bg-gray-200 rounded-full">{documents.length}</span>
-            </button>
-
-            {folders.map((folder) => (
+            <nav className="space-y-1">
               <button
-                key={folder.name}
-                onClick={() => setSelectedFolder(folder.name)}
+                onClick={() => setSelectedFolder("all")}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                  selectedFolder === folder.name
+                  selectedFolder === "all"
                     ? "bg-blue-100 text-blue-700 font-medium"
                     : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
-                <span className="truncate">{folder.name}</span>
-                <span className="text-xs px-2 py-0.5 bg-gray-200 rounded-full">{folder.count}</span>
+                <span>All Documents</span>
+                <span className="text-xs px-2 py-0.5 bg-gray-200 rounded-full">{documents.length}</span>
               </button>
-            ))}
-          </nav>
-        </div>
-      </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 flex flex-col overflow-hidden">
-        {/* Actions Bar */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200">
-          <div className="flex items-center space-x-3 flex-1">
-            {/* Search */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search documents..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
-            </div>
-
-            {/* Upload Button */}
-            <button
-              onClick={() => setShowUploadModal(true)}
-              className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-            >
-              <Upload className="h-4 w-4" />
-              <span>Upload</span>
-            </button>
+              {folders.map((folder) => (
+                <button
+                  key={folder.name}
+                  onClick={() => setSelectedFolder(folder.name)}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
+                    selectedFolder === folder.name
+                      ? "bg-blue-100 text-blue-700 font-medium"
+                      : "text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  <span className="truncate">{folder.name}</span>
+                  <span className="text-xs px-2 py-0.5 bg-gray-200 rounded-full">{folder.count}</span>
+                </button>
+              ))}
+            </nav>
           </div>
+        </aside>
 
-          {/* View Toggle */}
-          <div className="flex items-center bg-gray-100 rounded-lg p-1 ml-3">
-            <button
-              onClick={() => setViewMode("list")}
-              className={`p-1.5 rounded transition-colors ${
-                viewMode === "list" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-900"
-              }`}
-              title="List view"
-            >
-              <List className="h-4 w-4" />
-            </button>
-            <button
-              onClick={() => setViewMode("grid")}
-              className={`p-1.5 rounded transition-colors ${
-                viewMode === "grid" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-900"
-              }`}
-              title="Grid view"
-            >
-              <Grid3x3 className="h-4 w-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Bulk Actions Bar */}
-        <AnimatePresence>
-          {selectedDocs.size > 0 && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="bg-blue-50 border-b border-blue-200 px-4 py-3 flex items-center justify-between overflow-hidden"
-            >
-              <span className="text-sm font-medium text-blue-900">
-                {selectedDocs.size} document{selectedDocs.size > 1 ? "s" : ""} selected
-              </span>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={handleBulkDownload}
-                  className="flex items-center space-x-1 px-3 py-1.5 bg-white hover:bg-blue-100 text-blue-700 rounded-lg transition-colors text-sm"
-                >
-                  <Download className="h-4 w-4" />
-                  <span>Download</span>
-                </button>
-                <button
-                  onClick={handleBulkDelete}
-                  className="flex items-center space-x-1 px-3 py-1.5 bg-white hover:bg-red-100 text-red-700 rounded-lg transition-colors text-sm"
-                >
-                  <Trash2 className="h-4 w-4" />
-                  <span>Delete</span>
-                </button>
-                <button
-                  onClick={() => setSelectedDocs(new Set())}
-                  className="p-1.5 hover:bg-white rounded-lg transition-colors"
-                  title="Clear selection"
-                >
-                  <X className="h-4 w-4 text-blue-700" />
-                </button>
+        {/* Main Content */}
+        <main className="flex-1 flex flex-col overflow-hidden">
+          {/* Actions Bar */}
+          <div className="flex items-center justify-between p-4 border-b border-gray-200">
+            <div className="flex items-center space-x-3 flex-1">
+              {/* Search */}
+              <div className="relative flex-1 max-w-md">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search documents..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
-        {/* Document List/Grid */}
-        <div className="flex-1 overflow-y-auto p-4">
-          {isLoading ? (
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+              {/* Upload Button */}
+              <button
+                onClick={() => setShowUploadModal(true)}
+                className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+              >
+                <Upload className="h-4 w-4" />
+                <span>Upload</span>
+              </button>
             </div>
-          ) : filteredDocs.length > 0 ? (
-            viewMode === "list" ? (
-              <DocumentListView
-                documents={filteredDocs}
-                selectedDocs={selectedDocs}
-                onToggleSelect={toggleSelectDoc}
-                onToggleSelectAll={toggleSelectAll}
-                onDocumentClick={onDocumentClick}
-                getFileIcon={getFileIcon}
-                formatFileSize={formatFileSize}
-                getStatusBadge={getStatusBadge}
-              />
+
+            {/* View Toggle */}
+            <div className="flex items-center bg-gray-100 rounded-lg p-1 ml-3">
+              <button
+                onClick={() => setViewMode("list")}
+                className={`p-1.5 rounded transition-colors ${
+                  viewMode === "list"
+                    ? "bg-white text-blue-600 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+                title="List view"
+              >
+                <List className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setViewMode("grid")}
+                className={`p-1.5 rounded transition-colors ${
+                  viewMode === "grid"
+                    ? "bg-white text-blue-600 shadow-sm"
+                    : "text-gray-600 hover:text-gray-900"
+                }`}
+                title="Grid view"
+              >
+                <Grid3x3 className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Bulk Actions Bar */}
+          <AnimatePresence>
+            {selectedDocs.size > 0 && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="bg-blue-50 border-b border-blue-200 px-4 py-3 flex items-center justify-between overflow-hidden"
+              >
+                <span className="text-sm font-medium text-blue-900">
+                  {selectedDocs.size} document{selectedDocs.size > 1 ? "s" : ""} selected
+                </span>
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={handleBulkDownload}
+                    className="flex items-center space-x-1 px-3 py-1.5 bg-white hover:bg-blue-100 text-blue-700 rounded-lg transition-colors text-sm"
+                  >
+                    <Download className="h-4 w-4" />
+                    <span>Download</span>
+                  </button>
+                  <button
+                    onClick={handleBulkDelete}
+                    className="flex items-center space-x-1 px-3 py-1.5 bg-white hover:bg-red-100 text-red-700 rounded-lg transition-colors text-sm"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    <span>Delete</span>
+                  </button>
+                  <button
+                    onClick={() => setSelectedDocs(new Set())}
+                    className="p-1.5 hover:bg-white rounded-lg transition-colors"
+                    title="Clear selection"
+                  >
+                    <X className="h-4 w-4 text-blue-700" />
+                  </button>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Document List/Grid */}
+          <div className="flex-1 overflow-y-auto p-4">
+            {isLoading ? (
+              <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+              </div>
+            ) : filteredDocs.length > 0 ? (
+              viewMode === "list" ? (
+                <DocumentListView
+                  documents={filteredDocs}
+                  selectedDocs={selectedDocs}
+                  onToggleSelect={toggleSelectDoc}
+                  onToggleSelectAll={toggleSelectAll}
+                  onDocumentClick={handleDocumentClick}
+                  getFileIcon={getFileIcon}
+                  formatFileSize={formatFileSize}
+                  getStatusBadge={getStatusBadge}
+                />
+              ) : (
+                <DocumentGridView
+                  documents={filteredDocs}
+                  selectedDocs={selectedDocs}
+                  onToggleSelect={toggleSelectDoc}
+                  onDocumentClick={handleDocumentClick}
+                  getFileIcon={getFileIcon}
+                  formatFileSize={formatFileSize}
+                  getStatusBadge={getStatusBadge}
+                />
+              )
             ) : (
-              <DocumentGridView
-                documents={filteredDocs}
-                selectedDocs={selectedDocs}
-                onToggleSelect={toggleSelectDoc}
-                onDocumentClick={onDocumentClick}
-                getFileIcon={getFileIcon}
-                formatFileSize={formatFileSize}
-                getStatusBadge={getStatusBadge}
-              />
-            )
-          ) : (
-            <div className="flex flex-col items-center justify-center h-64 text-gray-500">
-              <File className="h-16 w-16 mb-4 opacity-30" />
-              <p className="text-lg font-medium">No documents found</p>
-              <p className="text-sm mt-1">
-                {searchQuery
-                  ? "Try adjusting your search"
-                  : "Upload documents to get started"}
-              </p>
-            </div>
-          )}
-        </div>
-      </main>
-    </div>
+              <div className="flex flex-col items-center justify-center h-64 text-gray-500">
+                <File className="h-16 w-16 mb-4 opacity-30" />
+                <p className="text-lg font-medium">No documents found</p>
+                <p className="text-sm mt-1">
+                  {searchQuery ? "Try adjusting your search" : "Upload documents to get started"}
+                </p>
+              </div>
+            )}
+          </div>
+        </main>
+      </div>
+
+      {/* Document Preview Drawer */}
+      <DocumentPreviewDrawer
+        isOpen={previewDocument !== null}
+        onClose={() => setPreviewDocument(null)}
+        document={previewDocument}
+        onDownload={onDownload}
+        onDelete={(docId) => {
+          if (onDelete) {
+            onDelete([docId]);
+          }
+          setPreviewDocument(null);
+        }}
+        onStatusChange={handleStatusChange}
+        onCategoryChange={onCategoryChange}
+      />
+    </>
   );
 }
 
@@ -352,10 +396,7 @@ function DocumentListView({
             }`}
           >
             <div className="col-span-1 flex items-center">
-              <button
-                onClick={() => onToggleSelect(doc.id)}
-                className="p-1 hover:bg-gray-200 rounded"
-              >
+              <button onClick={() => onToggleSelect(doc.id)} className="p-1 hover:bg-gray-200 rounded">
                 {selectedDocs.has(doc.id) ? (
                   <CheckSquare className="h-4 w-4 text-blue-600" />
                 ) : (

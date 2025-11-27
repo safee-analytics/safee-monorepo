@@ -145,14 +145,19 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
                   <span className="text-2xl">{type.icon}</span>
                   <div className="flex-1">
                     <p className="font-medium text-gray-900">{type.label}</p>
-                    {isFromTemplate && (
-                      <p className="text-xs text-gray-500 mt-1">Set by template</p>
-                    )}
+                    {isFromTemplate && <p className="text-xs text-gray-500 mt-1">Set by template</p>}
                   </div>
                   {isSelected && (
                     <div className="w-5 h-5 bg-blue-600 rounded-full flex items-center justify-center">
                       <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 12 12">
-                        <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                        <path
+                          d="M10 3L4.5 8.5L2 6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          fill="none"
+                        />
                       </svg>
                     </div>
                   )}
@@ -191,15 +196,20 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
                   {isSelected && (
                     <div className="w-5 h-5 bg-current rounded-full flex items-center justify-center opacity-70">
                       <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 12 12">
-                        <path d="M10 3L4.5 8.5L2 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+                        <path
+                          d="M10 3L4.5 8.5L2 6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          fill="none"
+                        />
                       </svg>
                     </div>
                   )}
                 </div>
                 <p className="text-xs opacity-70">{priority.description}</p>
-                {isFromTemplate && (
-                  <p className="text-xs mt-1 font-medium">Suggested by template</p>
-                )}
+                {isFromTemplate && <p className="text-xs mt-1 font-medium">Suggested by template</p>}
               </button>
             );
           })}
@@ -223,14 +233,11 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
         />
         {data.selectedTemplate && data.dueDate && (
           <p className="mt-1 text-xs text-blue-600">
-            Suggested based on template's estimated duration ({data.selectedTemplate.estimatedDuration}{" "}
-            days)
+            Suggested based on template's estimated duration ({data.selectedTemplate.estimatedDuration} days)
           </p>
         )}
         {!data.dueDate && (
-          <p className="mt-1 text-xs text-gray-500">
-            Optional - You can set this later if needed
-          </p>
+          <p className="mt-1 text-xs text-gray-500">Optional - You can set this later if needed</p>
         )}
       </div>
 

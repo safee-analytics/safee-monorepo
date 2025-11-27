@@ -2,7 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Plus, Filter, CheckCircle2, XCircle, Clock, AlertCircle, RefreshCw, CalendarDays, List } from "lucide-react";
+import {
+  Plus,
+  Filter,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  AlertCircle,
+  RefreshCw,
+  CalendarDays,
+  List,
+} from "lucide-react";
 import { ActivityTimeline } from "@/components/crm/activities/ActivityTimeline";
 import { ActivityCalendar } from "@/components/crm/activities/ActivityCalendar";
 import { useCrmActivities, useSyncCRM } from "@/lib/api/hooks";
@@ -51,7 +61,7 @@ export default function ActivitiesPage() {
       }
       return acc;
     },
-    { overdue: 0, today: 0, upcoming: 0, done: 0 }
+    { overdue: 0, today: 0, upcoming: 0, done: 0 },
   ) || { overdue: 0, today: 0, upcoming: 0, done: 0 };
 
   const activeFilter = activityFilters.state;
@@ -63,9 +73,7 @@ export default function ActivitiesPage() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Activities</h1>
-              <p className="text-sm text-gray-600 mt-1">
-                Track and manage all your sales activities
-              </p>
+              <p className="text-sm text-gray-600 mt-1">Track and manage all your sales activities</p>
             </div>
             <div className="flex items-center space-x-3">
               <AnimatedButton
@@ -75,13 +83,15 @@ export default function ActivitiesPage() {
                 disabled={syncMutation.isPending}
                 className="flex items-center space-x-2 whitespace-nowrap"
               >
-                <RefreshCw
-                  className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`}
-                />
+                <RefreshCw className={`h-4 w-4 ${syncMutation.isPending ? "animate-spin" : ""}`} />
                 <span>Refresh</span>
               </AnimatedButton>
               <Link href="/crm/activities/new">
-                <AnimatedButton variant="primary" size="md" className="flex items-center space-x-2 whitespace-nowrap">
+                <AnimatedButton
+                  variant="primary"
+                  size="md"
+                  className="flex items-center space-x-2 whitespace-nowrap"
+                >
                   <Plus className="h-4 w-4" />
                   <span>New Activity</span>
                 </AnimatedButton>
@@ -170,9 +180,7 @@ export default function ActivitiesPage() {
               <button
                 onClick={() => handleStateFilter()}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  !activeFilter
-                    ? "bg-blue-100 text-blue-700"
-                    : "text-gray-600 hover:bg-gray-100"
+                  !activeFilter ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
                 All
@@ -180,9 +188,7 @@ export default function ActivitiesPage() {
               <button
                 onClick={() => handleStateFilter("overdue")}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  activeFilter === "overdue"
-                    ? "bg-blue-100 text-blue-700"
-                    : "text-gray-600 hover:bg-gray-100"
+                  activeFilter === "overdue" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
                 Overdue
@@ -190,9 +196,7 @@ export default function ActivitiesPage() {
               <button
                 onClick={() => handleStateFilter("today")}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  activeFilter === "today"
-                    ? "bg-blue-100 text-blue-700"
-                    : "text-gray-600 hover:bg-gray-100"
+                  activeFilter === "today" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
                 Today
@@ -200,9 +204,7 @@ export default function ActivitiesPage() {
               <button
                 onClick={() => handleStateFilter("planned")}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  activeFilter === "planned"
-                    ? "bg-blue-100 text-blue-700"
-                    : "text-gray-600 hover:bg-gray-100"
+                  activeFilter === "planned" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
                 Upcoming
@@ -210,9 +212,7 @@ export default function ActivitiesPage() {
               <button
                 onClick={() => handleStateFilter("done")}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-                  activeFilter === "done"
-                    ? "bg-blue-100 text-blue-700"
-                    : "text-gray-600 hover:bg-gray-100"
+                  activeFilter === "done" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                 }`}
               >
                 Completed

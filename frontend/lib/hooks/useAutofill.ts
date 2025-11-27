@@ -40,17 +40,20 @@ export function useAutofill(): AutofillSuggestions {
         if (!clientName) return undefined;
 
         const clientCases = cases.filter((c) =>
-          c.clientName?.toLowerCase().includes(clientName.toLowerCase())
+          c.clientName?.toLowerCase().includes(clientName.toLowerCase()),
         );
 
         if (clientCases.length === 0) return undefined;
 
         // Count audit type frequency
-        const typeCounts = clientCases.reduce((acc, c) => {
-          const type = c.auditType || "general_audit";
-          acc[type] = (acc[type] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
+        const typeCounts = clientCases.reduce(
+          (acc, c) => {
+            const type = c.auditType || "general_audit";
+            acc[type] = (acc[type] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
 
         // Return most common audit type
         const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
@@ -104,11 +107,11 @@ export function useAutofill(): AutofillSuggestions {
 
         // Check if client typically requires high priority
         const clientCases = cases.filter((c) =>
-          c.clientName?.toLowerCase().includes(clientName.toLowerCase())
+          c.clientName?.toLowerCase().includes(clientName.toLowerCase()),
         );
 
         const highPriorityCount = clientCases.filter(
-          (c) => c.priority === "high" || c.priority === "critical"
+          (c) => c.priority === "high" || c.priority === "critical",
         ).length;
         const isHighPriorityClient = clientCases.length > 0 && highPriorityCount / clientCases.length > 0.6;
 
@@ -134,15 +137,12 @@ export function useAutofill(): AutofillSuggestions {
       /**
        * Suggests team members based on audit type and client history
        */
-      suggestTeam: (
-        auditType: string,
-        clientName?: string
-      ): Array<{ userId: string; role: string }> => {
+      suggestTeam: (auditType: string, clientName?: string): Array<{ userId: string; role: string }> => {
         // Find similar cases
         const similarCases = cases.filter(
           (c) =>
             c.auditType === auditType ||
-            (clientName && c.clientName?.toLowerCase().includes(clientName.toLowerCase()))
+            (clientName && c.clientName?.toLowerCase().includes(clientName.toLowerCase())),
         );
 
         if (similarCases.length === 0) return [];
@@ -193,7 +193,7 @@ export function useAutofill(): AutofillSuggestions {
         }
 
         const clientCases = cases.filter((c) =>
-          c.clientName?.toLowerCase().includes(clientName.toLowerCase())
+          c.clientName?.toLowerCase().includes(clientName.toLowerCase()),
         );
 
         if (clientCases.length === 0) {
@@ -207,31 +207,40 @@ export function useAutofill(): AutofillSuggestions {
         }
 
         // Most common audit type
-        const typeCounts = clientCases.reduce((acc, c) => {
-          const type = c.auditType || "general_audit";
-          acc[type] = (acc[type] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
+        const typeCounts = clientCases.reduce(
+          (acc, c) => {
+            const type = c.auditType || "general_audit";
+            acc[type] = (acc[type] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
         const mostCommonAuditType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
 
         // Average duration
-        const completedCases = clientCases.filter((c) => c.status === "completed" && c.dueDate && c.createdAt);
-        const durations = completedCases.map((c) =>
-          differenceInDays(new Date(c.dueDate!), new Date(c.createdAt))
+        const completedCases = clientCases.filter(
+          (c) => c.status === "completed" && c.dueDate && c.createdAt,
         );
-        const averageDuration = durations.length > 0 ? durations.reduce((a, b) => a + b, 0) / durations.length : 30;
+        const durations = completedCases.map((c) =>
+          differenceInDays(new Date(c.dueDate!), new Date(c.createdAt)),
+        );
+        const averageDuration =
+          durations.length > 0 ? durations.reduce((a, b) => a + b, 0) / durations.length : 30;
 
         // Most common priority
-        const priorityCounts = clientCases.reduce((acc, c) => {
-          const priority = c.priority || "medium";
-          acc[priority] = (acc[priority] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
+        const priorityCounts = clientCases.reduce(
+          (acc, c) => {
+            const priority = c.priority || "medium";
+            acc[priority] = (acc[priority] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
         const commonPriority = Object.entries(priorityCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
 
         // Last case
         const sortedCases = [...clientCases].sort(
-          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         );
         const lastCase = sortedCases[0];
 
@@ -281,11 +290,14 @@ export function useAutofill(): AutofillSuggestions {
        * Gets audit type statistics for insights
        */
       getAuditTypeStats: () => {
-        return cases.reduce((acc, c) => {
-          const type = c.auditType || "general_audit";
-          acc[type] = (acc[type] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>);
+        return cases.reduce(
+          (acc, c) => {
+            const type = c.auditType || "general_audit";
+            acc[type] = (acc[type] || 0) + 1;
+            return acc;
+          },
+          {} as Record<string, number>,
+        );
       },
     };
   }, [recentCases]);

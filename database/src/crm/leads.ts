@@ -17,7 +17,7 @@ export async function getLeadById(deps: DbDeps, leadId: string): Promise<Lead | 
 export async function getLeadByOdooId(
   deps: DbDeps,
   odooLeadId: number,
-  organizationId: string
+  organizationId: string,
 ): Promise<Lead | undefined> {
   return deps.drizzle.query.crmLeads.findFirst({
     where: and(eq(crmLeads.odooLeadId, odooLeadId), eq(crmLeads.organizationId, organizationId)),
@@ -31,7 +31,7 @@ export async function getLeadsByOrganization(
     type?: string;
     stageId?: number;
     active?: boolean;
-  }
+  },
 ): Promise<Lead[]> {
   const conditions = [eq(crmLeads.organizationId, organizationId)];
 

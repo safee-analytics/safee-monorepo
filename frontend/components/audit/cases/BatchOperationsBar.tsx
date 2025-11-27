@@ -1,16 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  Archive,
-  Trash2,
-  Edit,
-  Users,
-  Download,
-  X,
-  CheckSquare,
-  Tag,
-} from "lucide-react";
+import { Archive, Trash2, Edit, Users, Download, X, CheckSquare, Tag } from "lucide-react";
 
 interface BatchOperationsBarProps {
   selectedCount: number;
@@ -71,9 +62,7 @@ export function BatchOperationsBar({
                 title="Change status (S)"
               >
                 <Edit className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
-                <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600">
-                  Status
-                </span>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600">Status</span>
               </button>
 
               <button
@@ -82,9 +71,7 @@ export function BatchOperationsBar({
                 title="Assign team (Shift+T)"
               >
                 <Users className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
-                <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600">
-                  Assign
-                </span>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600">Assign</span>
               </button>
 
               {onAddTags && (
@@ -94,9 +81,7 @@ export function BatchOperationsBar({
                   title="Add tags"
                 >
                   <Tag className="h-5 w-5 text-gray-600 group-hover:text-blue-600" />
-                  <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600">
-                    Tags
-                  </span>
+                  <span className="text-sm font-medium text-gray-700 group-hover:text-blue-600">Tags</span>
                 </button>
               )}
 
@@ -106,9 +91,7 @@ export function BatchOperationsBar({
                 title="Archive (Shift+A)"
               >
                 <Archive className="h-5 w-5 text-gray-600 group-hover:text-amber-600" />
-                <span className="text-sm font-medium text-gray-700 group-hover:text-amber-600">
-                  Archive
-                </span>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-amber-600">Archive</span>
               </button>
 
               <button
@@ -117,9 +100,7 @@ export function BatchOperationsBar({
                 title="Export (E)"
               >
                 <Download className="h-5 w-5 text-gray-600 group-hover:text-green-600" />
-                <span className="text-sm font-medium text-gray-700 group-hover:text-green-600">
-                  Export
-                </span>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-green-600">Export</span>
               </button>
 
               <button
@@ -128,16 +109,18 @@ export function BatchOperationsBar({
                 title="Delete (Shift+D)"
               >
                 <Trash2 className="h-5 w-5 text-gray-600 group-hover:text-red-600" />
-                <span className="text-sm font-medium text-gray-700 group-hover:text-red-600">
-                  Delete
-                </span>
+                <span className="text-sm font-medium text-gray-700 group-hover:text-red-600">Delete</span>
               </button>
             </div>
 
             {/* Keyboard hints */}
             <div className="px-6 py-2 bg-gray-50 border-t border-gray-200">
               <p className="text-xs text-gray-500 text-center">
-                Tip: Press <kbd className="px-1.5 py-0.5 text-xs font-semibold bg-white border border-gray-300 rounded">⌘K</kbd> to access all actions
+                Tip: Press{" "}
+                <kbd className="px-1.5 py-0.5 text-xs font-semibold bg-white border border-gray-300 rounded">
+                  ⌘K
+                </kbd>{" "}
+                to access all actions
               </p>
             </div>
           </div>

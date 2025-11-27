@@ -36,15 +36,8 @@ export default function CaseManagement() {
   const [previewCase, setPreviewCase] = useState<CaseRow | null>(null);
 
   // Global store
-  const {
-    savedViews,
-    activeView,
-    saveView,
-    deleteView,
-    applyView,
-    toggleViewFavorite,
-    updateView,
-  } = useAuditStore();
+  const { savedViews, activeView, saveView, deleteView, applyView, toggleViewFavorite, updateView } =
+    useAuditStore();
 
   // Enable Cmd+K for command palette
   useCaseCommands(() => setCommandPaletteOpen(true));

@@ -31,12 +31,7 @@ const ACTIVITY_TYPES = [
   { id: 8, name: "Presentation" },
 ];
 
-export function ActivityForm({
-  activity,
-  onSubmit,
-  isSubmitting,
-  defaultLeadId,
-}: ActivityFormProps) {
+export function ActivityForm({ activity, onSubmit, isSubmitting, defaultLeadId }: ActivityFormProps) {
   const {
     register,
     handleSubmit,
@@ -152,9 +147,7 @@ export function ActivityForm({
                 </option>
               ))}
             </select>
-            {errors.leadId && (
-              <p className="mt-1 text-sm text-red-600">{errors.leadId.message}</p>
-            )}
+            {errors.leadId && <p className="mt-1 text-sm text-red-600">{errors.leadId.message}</p>}
           </div>
 
           <div>
@@ -192,9 +185,7 @@ export function ActivityForm({
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Assigned To
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Assigned To</label>
             <select
               {...register("userId", { valueAsNumber: true })}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -215,33 +206,25 @@ export function ActivityForm({
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Summary & Notes</h2>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Summary
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Summary</label>
             <input
               type="text"
               {...register("summary")}
               placeholder="Brief description of the activity"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
-            {errors.summary && (
-              <p className="mt-1 text-sm text-red-600">{errors.summary.message}</p>
-            )}
+            {errors.summary && <p className="mt-1 text-sm text-red-600">{errors.summary.message}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Notes
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Notes</label>
             <textarea
               {...register("note")}
               rows={5}
               placeholder="Detailed notes about the activity..."
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 resize-none"
             />
-            {errors.note && (
-              <p className="mt-1 text-sm text-red-600">{errors.note.message}</p>
-            )}
+            {errors.note && <p className="mt-1 text-sm text-red-600">{errors.note.message}</p>}
           </div>
         </div>
       </div>

@@ -100,9 +100,7 @@ export function DocumentsStep({ data, onChange }: WizardStepProps) {
           {dragActive ? "Drop files here" : "Upload Documents"}
         </h4>
 
-        <p className="text-sm text-gray-600 mb-4">
-          Drag and drop files here, or click to browse
-        </p>
+        <p className="text-sm text-gray-600 mb-4">Drag and drop files here, or click to browse</p>
 
         <button
           onClick={() => fileInputRef.current?.click()}
@@ -152,9 +150,7 @@ export function DocumentsStep({ data, onChange }: WizardStepProps) {
           {/* Suggested Categories */}
           {data.selectedTemplate && (
             <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <p className="text-sm font-semibold text-blue-900 mb-2">
-                Suggested Document Categories:
-              </p>
+              <p className="text-sm font-semibold text-blue-900 mb-2">Suggested Document Categories:</p>
               <div className="flex flex-wrap gap-2">
                 {data.selectedTemplate.documentCategories.slice(0, 6).map((category) => (
                   <span
@@ -177,8 +173,8 @@ export function DocumentsStep({ data, onChange }: WizardStepProps) {
       {documentPreviews.length === 0 && (
         <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
           <p className="text-sm text-gray-700">
-            💡 <strong>Optional:</strong> You can upload documents now to get a head start, or skip this
-            step and add them later when you have the files ready.
+            💡 <strong>Optional:</strong> You can upload documents now to get a head start, or skip this step
+            and add them later when you have the files ready.
           </p>
         </div>
       )}
@@ -187,7 +183,10 @@ export function DocumentsStep({ data, onChange }: WizardStepProps) {
       {documentPreviews.length > 0 && (
         <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
           <p className="text-sm text-green-700">
-            ✓ <strong>{documentPreviews.length} document{documentPreviews.length > 1 ? "s" : ""}</strong>{" "}
+            ✓{" "}
+            <strong>
+              {documentPreviews.length} document{documentPreviews.length > 1 ? "s" : ""}
+            </strong>{" "}
             ready to upload. They will be uploaded when you create the case.
           </p>
         </div>

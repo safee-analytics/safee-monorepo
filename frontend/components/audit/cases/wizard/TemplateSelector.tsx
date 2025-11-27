@@ -8,7 +8,7 @@ import { FileText, Clock, CheckCircle } from "lucide-react";
 export function TemplateSelector({ data, onChange, onNext }: WizardStepProps) {
   const [hoveredTemplate, setHoveredTemplate] = useState<string | null>(null);
 
-  const handleTemplateSelect = (template: typeof SAMPLE_TEMPLATES[0]) => {
+  const handleTemplateSelect = (template: (typeof SAMPLE_TEMPLATES)[0]) => {
     const dueDate = getSuggestedDueDate(template);
     onChange({
       selectedTemplate: template,

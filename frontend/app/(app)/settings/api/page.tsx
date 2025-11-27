@@ -145,92 +145,94 @@ export default function APIKeysSettings() {
           ) : (
             <div className="space-y-4">
               {apiKeys.map((apiKey) => (
-              <div
-                key={apiKey.id}
-                className={`bg-white rounded-lg border p-5 ${
-                  apiKey.status === "revoked" ? "border-red-200 bg-red-50" : "border-gray-200"
-                }`}
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h3 className="font-semibold text-gray-900">{apiKey.name}</h3>
-                      {apiKey.status === "active" ? (
-                        <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded">Active</span>
-                      ) : (
-                        <span className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded">Revoked</span>
-                      )}
-                    </div>
-                    <div className="text-sm text-gray-500 space-y-1">
-                      <p>Created: {apiKey.created}</p>
-                      <p>Last used: {apiKey.lastUsed}</p>
-                      <div className="flex items-center gap-2">
-                        <span>Permissions:</span>
-                        {apiKey.permissions.map((permission) => (
-                          <span
-                            key={permission}
-                            className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs"
-                          >
-                            {permission}
+                <div
+                  key={apiKey.id}
+                  className={`bg-white rounded-lg border p-5 ${
+                    apiKey.status === "revoked" ? "border-red-200 bg-red-50" : "border-gray-200"
+                  }`}
+                >
+                  <div className="flex items-start justify-between mb-4">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="font-semibold text-gray-900">{apiKey.name}</h3>
+                        {apiKey.status === "active" ? (
+                          <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded">
+                            Active
                           </span>
-                        ))}
+                        ) : (
+                          <span className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded">Revoked</span>
+                        )}
+                      </div>
+                      <div className="text-sm text-gray-500 space-y-1">
+                        <p>Created: {apiKey.created}</p>
+                        <p>Last used: {apiKey.lastUsed}</p>
+                        <div className="flex items-center gap-2">
+                          <span>Permissions:</span>
+                          {apiKey.permissions.map((permission) => (
+                            <span
+                              key={permission}
+                              className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs"
+                            >
+                              {permission}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {apiKey.status === "active" && (
+                        <button
+                          onClick={() => handleRevokeKey(apiKey.id)}
+                          disabled={revokeKey.isPending}
+                          className="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
+                        >
+                          {revokeKey.isPending ? "Revoking..." : "Revoke"}
+                        </button>
+                      )}
+                      <button
+                        onClick={() => handleDeleteKey(apiKey.id)}
+                        disabled={deleteKey.isPending}
+                        className="p-2 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* API Key Display */}
+                  <div className="bg-gray-900 rounded-lg p-4 font-mono text-sm">
+                    <div className="flex items-center justify-between">
+                      <code className="text-gray-100">
+                        {revealedKeys.has(apiKey.id) ? apiKey.key : maskKey(apiKey.key)}
+                      </code>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => toggleKeyVisibility(apiKey.id)}
+                          className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors"
+                          title={revealedKeys.has(apiKey.id) ? "Hide" : "Reveal"}
+                        >
+                          {revealedKeys.has(apiKey.id) ? (
+                            <EyeOff className="w-4 h-4" />
+                          ) : (
+                            <Eye className="w-4 h-4" />
+                          )}
+                        </button>
+                        <button
+                          onClick={() => copyToClipboard(apiKey.key, apiKey.id)}
+                          className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors"
+                          title="Copy to clipboard"
+                        >
+                          {copiedKey === apiKey.id ? (
+                            <CheckCircle className="w-4 h-4 text-green-400" />
+                          ) : (
+                            <Copy className="w-4 h-4" />
+                          )}
+                        </button>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {apiKey.status === "active" && (
-                      <button
-                        onClick={() => handleRevokeKey(apiKey.id)}
-                        disabled={revokeKey.isPending}
-                        className="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
-                      >
-                        {revokeKey.isPending ? "Revoking..." : "Revoke"}
-                      </button>
-                    )}
-                    <button
-                      onClick={() => handleDeleteKey(apiKey.id)}
-                      disabled={deleteKey.isPending}
-                      className="p-2 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
                 </div>
-
-                {/* API Key Display */}
-                <div className="bg-gray-900 rounded-lg p-4 font-mono text-sm">
-                  <div className="flex items-center justify-between">
-                    <code className="text-gray-100">
-                      {revealedKeys.has(apiKey.id) ? apiKey.key : maskKey(apiKey.key)}
-                    </code>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => toggleKeyVisibility(apiKey.id)}
-                        className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors"
-                        title={revealedKeys.has(apiKey.id) ? "Hide" : "Reveal"}
-                      >
-                        {revealedKeys.has(apiKey.id) ? (
-                          <EyeOff className="w-4 h-4" />
-                        ) : (
-                          <Eye className="w-4 h-4" />
-                        )}
-                      </button>
-                      <button
-                        onClick={() => copyToClipboard(apiKey.key, apiKey.id)}
-                        className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors"
-                        title="Copy to clipboard"
-                      >
-                        {copiedKey === apiKey.id ? (
-                          <CheckCircle className="w-4 h-4 text-green-400" />
-                        ) : (
-                          <Copy className="w-4 h-4" />
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+              ))}
 
               {apiKeys.length === 0 && (
                 <div className="bg-gray-50 rounded-lg p-12 text-center">

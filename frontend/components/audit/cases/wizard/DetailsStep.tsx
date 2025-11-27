@@ -74,7 +74,9 @@ export function DetailsStep({ data, onChange }: WizardStepProps) {
         <input
           type="number"
           value={data.estimatedHours || ""}
-          onChange={(e) => onChange({ estimatedHours: e.target.value ? parseInt(e.target.value) : undefined })}
+          onChange={(e) =>
+            onChange({ estimatedHours: e.target.value ? parseInt(e.target.value) : undefined })
+          }
           placeholder="e.g., 40"
           min="1"
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -101,16 +103,14 @@ export function DetailsStep({ data, onChange }: WizardStepProps) {
           step="1000"
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />
-        <p className="mt-1 text-xs text-gray-500">
-          Estimated budget for this audit engagement
-        </p>
+        <p className="mt-1 text-xs text-gray-500">Estimated budget for this audit engagement</p>
       </div>
 
       {/* Info Box */}
       <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
         <p className="text-sm text-blue-700">
-          💡 <strong>Tip:</strong> These details can be updated later. You can skip this step and add
-          them when you have more information.
+          💡 <strong>Tip:</strong> These details can be updated later. You can skip this step and add them
+          when you have more information.
         </p>
       </div>
     </div>

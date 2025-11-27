@@ -88,7 +88,8 @@ export function DocumentPreviewDrawer({
     {
       id: "1",
       author: "Sarah Wilson",
-      content: "Please review the revenue figures on page 3. They seem to be inconsistent with the quarterly report.",
+      content:
+        "Please review the revenue figures on page 3. They seem to be inconsistent with the quarterly report.",
       createdAt: "2024-01-15T11:00:00Z",
       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
     },
@@ -183,10 +184,7 @@ export function DocumentPreviewDrawer({
                   {formatFileSize(document.size)} • Version {document.version || 1}
                 </p>
               </div>
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
+              <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <X className="h-5 w-5 text-gray-500" />
               </button>
             </div>
@@ -244,9 +242,7 @@ export function DocumentPreviewDrawer({
             <div className="flex-1 overflow-y-auto">
               {activeTab === "preview" && (
                 <div className="h-full p-4">
-                  <div className="h-full bg-gray-50 rounded-lg overflow-hidden">
-                    {renderPreview()}
-                  </div>
+                  <div className="h-full bg-gray-50 rounded-lg overflow-hidden">{renderPreview()}</div>
                 </div>
               )}
 

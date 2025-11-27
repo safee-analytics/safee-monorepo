@@ -13,9 +13,7 @@ export default function NewActivityPage() {
   const createActivityMutation = useCreateCrmActivity();
 
   // Check if a lead ID was passed as a query param
-  const defaultLeadId = searchParams.get("leadId")
-    ? parseInt(searchParams.get("leadId")!)
-    : undefined;
+  const defaultLeadId = searchParams.get("leadId") ? parseInt(searchParams.get("leadId")!) : undefined;
 
   const handleSubmit = async (data: ActivityFormData) => {
     try {

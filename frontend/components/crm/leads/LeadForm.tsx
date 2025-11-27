@@ -9,8 +9,7 @@ import { Building2, Mail, Phone, Globe, MapPin, DollarSign, Calendar, User } fro
 import { AnimatedButton } from "@safee/ui";
 import type { paths } from "@/lib/api/types";
 
-type LeadResponse =
-  paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];
+type LeadResponse = paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];
 
 interface LeadFormProps {
   lead?: LeadResponse;
@@ -155,9 +154,7 @@ export function LeadForm({ lead, onSubmit, isSubmitting = false }: LeadFormProps
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Select Contact (Auto-fill)
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Select Contact (Auto-fill)</label>
             <select
               {...register("partnerId", { valueAsNumber: true })}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -202,9 +199,7 @@ export function LeadForm({ lead, onSubmit, isSubmitting = false }: LeadFormProps
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="email@example.com"
             />
-            {errors.emailFrom && (
-              <p className="mt-1 text-sm text-red-600">{errors.emailFrom.message}</p>
-            )}
+            {errors.emailFrom && <p className="mt-1 text-sm text-red-600">{errors.emailFrom.message}</p>}
           </div>
 
           <div>
@@ -349,9 +344,7 @@ export function LeadForm({ lead, onSubmit, isSubmitting = false }: LeadFormProps
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Probability (%)
-            </label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Probability (%)</label>
             <input
               {...register("probability", { valueAsNumber: true })}
               type="number"
@@ -360,9 +353,7 @@ export function LeadForm({ lead, onSubmit, isSubmitting = false }: LeadFormProps
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="50"
             />
-            {errors.probability && (
-              <p className="mt-1 text-sm text-red-600">{errors.probability.message}</p>
-            )}
+            {errors.probability && <p className="mt-1 text-sm text-red-600">{errors.probability.message}</p>}
           </div>
 
           <div>
