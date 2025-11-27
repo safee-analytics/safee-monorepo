@@ -104,6 +104,35 @@ export default function APIKeysSettings() {
     }
   };
 
+  const toggleAllResourcePermissions = (resource: string) => {
+    const resourcePerms = availablePermissions
+      .filter((p) => p.id.endsWith(`:${resource}`))
+      .map((p) => p.id);
+
+    const allSelected = resourcePerms.every((p) => newKeyPermissions.includes(p));
+
+    if (allSelected) {
+      setNewKeyPermissions(newKeyPermissions.filter((p) => !resourcePerms.includes(p)));
+    } else {
+      const newPerms = [...newKeyPermissions];
+      resourcePerms.forEach((p) => {
+        if (!newPerms.includes(p)) newPerms.push(p);
+      });
+      setNewKeyPermissions(newPerms);
+    }
+  };
+
+  // Group permissions by resource
+  const permissionsByResource = availablePermissions.reduce(
+    (acc, perm) => {
+      const [action, resource] = perm.id.split(":");
+      if (!acc[resource]) acc[resource] = [];
+      acc[resource].push({ action, id: perm.id });
+      return acc;
+    },
+    {} as Record<string, Array<{ action: string; id: string }>>,
+  );
+
   return (
     <SettingsPermissionGate>
       <div className="p-6">
@@ -262,15 +291,15 @@ export default function APIKeysSettings() {
 
           {/* Create API Key Modal */}
           {showCreateModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="bg-white rounded-lg p-6 w-full max-w-md"
+                className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] flex flex-col"
               >
                 <h2 className="text-xl font-bold text-gray-900 mb-4">Create API Key</h2>
 
-                <div className="space-y-4 mb-6">
+                <div className="space-y-4 mb-6 flex-1 overflow-y-auto">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Key Name</label>
                     <input
@@ -283,30 +312,54 @@ export default function APIKeysSettings() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-3">Permissions</label>
-                    <div className="space-y-2">
-                      {availablePermissions.map((permission) => (
-                        <label
-                          key={permission.id}
-                          className="flex items-start gap-3 p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={newKeyPermissions.includes(permission.id)}
-                            onChange={() => togglePermission(permission.id)}
-                            className="mt-1 w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                          />
-                          <div>
-                            <p className="font-medium text-gray-900">{permission.name}</p>
-                            <p className="text-sm text-gray-500">{permission.description}</p>
+                    <label className="block text-sm font-medium text-gray-700 mb-3">
+                      Permissions ({newKeyPermissions.length} selected)
+                    </label>
+                    <div className="grid grid-cols-2 gap-4">
+                      {Object.entries(permissionsByResource).map(([resource, actions]) => {
+                        const allSelected = actions.every((a) => newKeyPermissions.includes(a.id));
+                        const someSelected = actions.some((a) => newKeyPermissions.includes(a.id));
+
+                        return (
+                          <div key={resource} className="border border-gray-200 rounded-lg p-4">
+                            <div className="flex items-center justify-between mb-3">
+                              <h3 className="font-semibold text-gray-900 capitalize">{resource}</h3>
+                              <button
+                                onClick={() => toggleAllResourcePermissions(resource)}
+                                className={`text-xs px-2 py-1 rounded ${
+                                  allSelected
+                                    ? "bg-blue-600 text-white"
+                                    : someSelected
+                                      ? "bg-blue-100 text-blue-700"
+                                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                }`}
+                              >
+                                {allSelected ? "Deselect All" : "Select All"}
+                              </button>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2">
+                              {actions.map(({ action, id }) => (
+                                <label key={id} className="flex items-center gap-2 text-sm cursor-pointer group">
+                                  <input
+                                    type="checkbox"
+                                    checked={newKeyPermissions.includes(id)}
+                                    onChange={() => togglePermission(id)}
+                                    className="w-3.5 h-3.5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                                  />
+                                  <span className="text-gray-700 group-hover:text-gray-900 capitalize">
+                                    {action}
+                                  </span>
+                                </label>
+                              ))}
+                            </div>
                           </div>
-                        </label>
-                      ))}
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex gap-3">
+                <div className="flex gap-3 pt-4 border-t">
                   <button
                     onClick={() => {
                       setShowCreateModal(false);

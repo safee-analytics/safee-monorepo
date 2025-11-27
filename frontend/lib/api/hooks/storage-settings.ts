@@ -27,7 +27,7 @@ export function useGetStorageConfig() {
     queryKey: queryKeys.storage.config,
     queryFn: async () => {
       const response = await apiClient.GET("/storage/config", {});
-      if (response.error) throw response.error;
+      if (!response.data) throw new Error("Failed to fetch storage config");
       return response.data;
     },
   });
@@ -64,7 +64,7 @@ export function useGetStorageInfo() {
     queryKey: queryKeys.storage.info,
     queryFn: async () => {
       const response = await apiClient.GET("/storage/info", {});
-      if (response.error) throw response.error;
+      if (!response.data) throw new Error("Failed to fetch storage info");
       return response.data;
     },
   });

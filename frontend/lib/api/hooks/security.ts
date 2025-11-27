@@ -33,20 +33,20 @@ export function useGetSecuritySettings() {
     queryKey: queryKeys.security.settings,
     queryFn: async () => {
       const response = await apiClient.GET("/security/settings", {});
-      if (response.error) throw response.error;
+      if (!response.data) throw new Error("Failed to fetch security settings");
       return response.data;
     },
   });
 }
 
-// Update security settings
+// Update security settings (not yet implemented in backend)
 export function useUpdateSecuritySettings() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (settings: SecuritySettings) => {
-      const response = await apiClient.PUT("/security/settings", { body: settings });
-      return response.data;
+      // TODO: Implement PUT /security/settings in backend
+      throw new Error("Not yet implemented");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.security.settings });
@@ -54,75 +54,9 @@ export function useUpdateSecuritySettings() {
   });
 }
 
-// Get active sessions
-export function useGetActiveSessions() {
-  return useQuery<Session[]>({
-    queryKey: queryKeys.security.sessions,
-    queryFn: async () => {
-      const response = await apiClient.GET("/security/sessions", {});
-      if (response.error) throw response.error;
-      return response.data;
-    },
-  });
-}
-
-// Revoke session (security settings)
-export function useSecurityRevokeSession() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async (sessionId: string) => {
-      const response = await apiClient.DELETE(`/security/sessions/${sessionId}`, {});
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.security.sessions });
-    },
-  });
-}
-
-// Alias for backwards compatibility
-export const useRevokeSession = useSecurityRevokeSession;
-
-// Change password (security settings)
-export function useSecurityChangePassword() {
-  return useMutation({
-    mutationFn: async (request: ChangePasswordRequest) => {
-      const response = await apiClient.POST("/security/change-password", { body: request });
-      return response.data;
-    },
-  });
-}
-
-// Alias for backwards compatibility
-export const useChangePassword = useSecurityChangePassword;
-
-// Enable two-factor authentication
-export function useEnableTwoFactor() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async () => {
-      const response = await apiClient.POST("/security/two-factor/enable", {});
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.security.settings });
-    },
-  });
-}
-
-// Disable two-factor authentication
-export function useDisableTwoFactor() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async () => {
-      const response = await apiClient.POST("/security/two-factor/disable", {});
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.security.settings });
-    },
-  });
-}
+// Note: Session management, password change, and 2FA hooks are provided by better-auth
+// Import from './auth' instead:
+// - useListSessions (or create useGetActiveSessions alias)
+// - useRevokeSession
+// - useChangePassword
+// - useTwoFactor
