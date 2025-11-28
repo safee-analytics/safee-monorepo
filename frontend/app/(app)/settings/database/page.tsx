@@ -78,7 +78,7 @@ export default function DatabaseSettings() {
     try {
       await updateSettings.mutateAsync(settings);
       alert("Database settings updated successfully");
-    } catch (error) {
+    } catch (_error) {
       alert("Failed to update settings");
     }
   };
@@ -87,7 +87,7 @@ export default function DatabaseSettings() {
     try {
       await createBackup.mutateAsync();
       alert("Backup completed successfully");
-    } catch (error) {
+    } catch (_error) {
       alert("Failed to create backup");
     }
   };
@@ -101,7 +101,7 @@ export default function DatabaseSettings() {
       try {
         await restoreBackup.mutateAsync(backupId);
         alert("Database restored successfully");
-      } catch (error) {
+      } catch (_error) {
         alert("Failed to restore backup");
       }
     }
@@ -110,7 +110,7 @@ export default function DatabaseSettings() {
   const handleDownload = async (backupId: string) => {
     try {
       await downloadBackup.mutateAsync(backupId);
-    } catch (error) {
+    } catch (_error) {
       alert("Failed to download backup");
     }
   };
@@ -119,7 +119,7 @@ export default function DatabaseSettings() {
     try {
       await optimizeDb.mutateAsync();
       alert("Database optimized successfully");
-    } catch (error) {
+    } catch (_error) {
       alert("Failed to optimize database");
     }
   };
@@ -128,7 +128,7 @@ export default function DatabaseSettings() {
     try {
       await runMaintenance.mutateAsync();
       alert("Maintenance completed successfully");
-    } catch (error) {
+    } catch (_error) {
       alert("Failed to run maintenance");
     }
   };

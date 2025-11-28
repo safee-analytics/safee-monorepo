@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, useDragControls } from "framer-motion";
+import { motion } from "framer-motion";
 import { Grip, X, ChevronsLeftRight } from "lucide-react";
 
 export type WidgetSize = "small" | "medium" | "large";
@@ -39,7 +39,7 @@ export const CustomizableGrid = ({
   const [draggedWidget, setDraggedWidget] = useState<string | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
-  const handleDragStart = (id: string, index: number) => {
+  const handleDragStart = (id: string, _index: number) => {
     setDraggedWidget(id);
   };
 
@@ -103,7 +103,7 @@ export const CustomizableGrid = ({
           e.preventDefault();
           // If dropped on empty space, append to end
           if (draggedWidget && onReorderWidgets) {
-            handleDrop(e as any, widgets.length);
+            handleDrop(e, widgets.length);
           }
         }}
       >
@@ -144,7 +144,7 @@ interface GridWidgetProps {
 
 const GridWidget = ({
   widget,
-  index,
+  index: _index,
   isCustomizing,
   isDragged,
   isDragOver,

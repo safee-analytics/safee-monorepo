@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type { WizardStepProps } from "../CreateCaseWizard";
 import { Building2, Calendar, Flag, Sparkles } from "lucide-react";
 import { ClientAutocomplete } from "../ClientAutocomplete";
-import { useAutofill } from "@/lib/hooks/useAutofill";
+import { useAutofill, type AutofillClientHistory } from "@/lib/hooks/useAutofill";
 
 const AUDIT_TYPES = [
   { value: "financial_audit", label: "Financial Audit", icon: "💰" },
@@ -44,7 +44,7 @@ const PRIORITIES = [
 
 export function QuickStartStep({ data, onChange }: WizardStepProps) {
   const [showAutofillSuggestion, setShowAutofillSuggestion] = useState(false);
-  const { suggestAuditType, suggestDueDate, suggestPriority } = useAutofill();
+  const { suggestAuditType: _suggestAuditType, suggestDueDate, suggestPriority: _suggestPriority } = useAutofill();
 
   // Pre-fill from template if selected
   useEffect(() => {
@@ -55,14 +55,14 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
   }, [data.selectedTemplate, data.clientName]);
 
   // Handle client selection with autofill
-  const handleClientSelect = (clientHistory: any) => {
+  const handleClientSelect = (clientHistory: AutofillClientHistory) => {
     if (!clientHistory || clientHistory.totalCases === 0) return;
 
     setShowAutofillSuggestion(true);
 
     // Auto-apply suggestions if no template is selected
     if (!data.selectedTemplate) {
-      const updates: any = {};
+      const updates: Partial<WizardStepProps['data']> = {};
 
       // Suggest audit type based on history
       if (!data.auditType && clientHistory.mostCommonAuditType) {
@@ -233,7 +233,7 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
         />
         {data.selectedTemplate && data.dueDate && (
           <p className="mt-1 text-xs text-blue-600">
-            Suggested based on template's estimated duration ({data.selectedTemplate.estimatedDuration} days)
+            Suggested based on template&apos;s estimated duration ({data.selectedTemplate.estimatedDuration} days)
           </p>
         )}
         {!data.dueDate && (

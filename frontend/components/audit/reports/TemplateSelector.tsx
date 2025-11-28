@@ -62,7 +62,7 @@ export function TemplateSelector({ selected, onSelect }: TemplateSelectorProps) 
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Choose Report Template</h3>
         <p className="text-sm text-gray-600">
-          Select a pre-built template that matches your audit type. You'll be able to customize
+          Select a pre-built template that matches your audit type. You&apos;ll be able to customize
           sections in the next step.
         </p>
       </div>

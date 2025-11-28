@@ -17,7 +17,7 @@ export default function EditLeadPage() {
 
   const handleSubmit = async (data: LeadFormData) => {
     try {
-      await updateLeadMutation.mutateAsync({ leadId, data: data as any });
+      await updateLeadMutation.mutateAsync({ leadId, data });
       toast.success("Lead updated successfully!");
       router.push(`/crm/leads/${leadId}`);
     } catch (error) {
@@ -38,7 +38,7 @@ export default function EditLeadPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h2 className="text-xl font-semibold text-gray-900 mb-2">Lead Not Found</h2>
-        <p className="text-gray-600">The lead you're trying to edit doesn't exist.</p>
+        <p className="text-gray-600">The lead you&apos;re trying to edit doesn&apos;t exist.</p>
       </div>
     );
   }

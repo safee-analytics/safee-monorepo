@@ -5,20 +5,17 @@ import { motion } from "framer-motion";
 import {
   Users,
   Target,
-  Phone,
-  TrendingUp,
   DollarSign,
   CheckCircle2,
   XCircle,
   Clock,
   UserPlus,
-  Building2,
   ListTodo,
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
 import { useLeads, useContacts, useCrmActivities, useStages } from "@/lib/api/hooks";
-import { StatsCardSkeleton, ListItemSkeleton } from "@/components/crm/shared/LoadingSkeleton";
+import { StatsCardSkeleton } from "@/components/crm/shared/LoadingSkeleton";
 
 export default function CRMDashboardPage() {
   const { data: leads, isLoading: leadsLoading } = useLeads({ active: true });
@@ -29,7 +26,7 @@ export default function CRMDashboardPage() {
   const isLoading = leadsLoading || contactsLoading || activitiesLoading;
 
   const opportunities = leads?.filter((l) => l.type === "opportunity") || [];
-  const activeLeads = leads?.filter((l) => l.type === "lead") || [];
+  const _activeLeads = leads?.filter((l) => l.type === "lead") || [];
 
   const wonStage = stages?.find((s) => s.isWon);
   const wonOpportunities = wonStage ? leads?.filter((l) => l.stage?.id === wonStage.id) || [] : [];
@@ -38,7 +35,7 @@ export default function CRMDashboardPage() {
 
   const totalLeads = leads?.length || 0;
   const totalContacts = contacts?.length || 0;
-  const totalActivities = activities?.length || 0;
+  const _totalActivities = activities?.length || 0;
   const wonCount = wonOpportunities.length;
 
   const conversionRate =

@@ -14,9 +14,6 @@ import {
   AlertCircle,
   Sparkles,
   BarChart3,
-  PieChart,
-  CreditCard,
-  Building2,
 } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useOrgStore } from "@/stores/useOrgStore";

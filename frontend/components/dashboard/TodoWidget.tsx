@@ -56,7 +56,7 @@ const Header = ({ todosCount }: { todosCount: number }) => {
     <div className="mb-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">Today's Tasks</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Today&apos;s Tasks</h3>
           <p className="text-sm text-gray-600">
             {todosCount} {todosCount === 1 ? "task" : "tasks"} remaining
           </p>

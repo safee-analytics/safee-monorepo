@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Upload,
   Search,
@@ -43,10 +43,10 @@ interface DocumentBrowserProps {
 }
 
 export function DocumentBrowser({
-  caseId,
+  caseId: _caseId,
   documents = [],
   isLoading = false,
-  onUpload,
+  onUpload: _onUpload,
   onDelete,
   onDownload,
   onCategoryChange,
@@ -56,7 +56,7 @@ export function DocumentBrowser({
   const [selectedFolder, setSelectedFolder] = useState<string>("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDocs, setSelectedDocs] = useState<Set<string>>(new Set());
-  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [_showUploadModal, _setShowUploadModal] = useState(false);
   const [previewDocument, setPreviewDocument] = useState<Document | null>(null);
 
   // Group documents by category (folders)
@@ -154,7 +154,7 @@ export function DocumentBrowser({
 
   const handleStatusChange = (documentId: string, status: string) => {
     // Update document status - this would typically call an API
-    console.log(`Updating document ${documentId} status to ${status}`);
+    console.warn(`Updating document ${documentId} status to ${status}`);
   };
 
   return (
@@ -220,7 +220,7 @@ export function DocumentBrowser({
 
               {/* Upload Button */}
               <button
-                onClick={() => setShowUploadModal(true)}
+                onClick={() => _setShowUploadModal(true)}
                 className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
               >
                 <Upload className="h-4 w-4" />
@@ -341,7 +341,7 @@ export function DocumentBrowser({
         isOpen={previewDocument !== null}
         onClose={() => setPreviewDocument(null)}
         document={previewDocument}
-        onDownload={onDownload}
+        onDownload={(docId) => onDownload?.([docId])}
         onDelete={(docId) => {
           if (onDelete) {
             onDelete([docId]);
@@ -356,6 +356,17 @@ export function DocumentBrowser({
 }
 
 // List View Component
+interface DocumentListViewProps {
+  documents: Document[];
+  selectedDocs: Set<string>;
+  onToggleSelect: (docId: string) => void;
+  onToggleSelectAll: () => void;
+  onDocumentClick: (document: Document) => void;
+  getFileIcon: (type: string) => React.ReactElement;
+  formatFileSize: (bytes: number) => string;
+  getStatusBadge: (status: string) => string;
+}
+
 function DocumentListView({
   documents,
   selectedDocs,
@@ -365,7 +376,7 @@ function DocumentListView({
   getFileIcon,
   formatFileSize,
   getStatusBadge,
-}: any) {
+}: DocumentListViewProps) {
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       {/* Table Header */}
@@ -388,7 +399,7 @@ function DocumentListView({
 
       {/* Table Rows */}
       <div className="divide-y divide-gray-200">
-        {documents.map((doc: any) => (
+        {documents.map((doc: Document) => (
           <div
             key={doc.id}
             className={`grid grid-cols-12 gap-4 px-4 py-3 hover:bg-gray-50 transition-colors ${
@@ -435,6 +446,16 @@ function DocumentListView({
 }
 
 // Grid View Component
+interface DocumentGridViewProps {
+  documents: Document[];
+  selectedDocs: Set<string>;
+  onToggleSelect: (docId: string) => void;
+  onDocumentClick: (document: Document) => void;
+  getFileIcon: (type: string) => React.ReactElement;
+  formatFileSize: (bytes: number) => string;
+  getStatusBadge: (status: string) => string;
+}
+
 function DocumentGridView({
   documents,
   selectedDocs,
@@ -443,10 +464,10 @@ function DocumentGridView({
   getFileIcon,
   formatFileSize,
   getStatusBadge,
-}: any) {
+}: DocumentGridViewProps) {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {documents.map((doc: any) => (
+      {documents.map((doc: Document) => (
         <motion.div
           key={doc.id}
           whileHover={{ scale: 1.02 }}

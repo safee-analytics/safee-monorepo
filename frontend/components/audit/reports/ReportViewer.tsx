@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { X, Download, FileText, FileSpreadsheet, Eye, ZoomIn, ZoomOut } from "lucide-react";
+import { X, Download, FileText, FileSpreadsheet, ZoomIn, ZoomOut } from "lucide-react";
 import type { AuditReportResponse } from "@/lib/types/reports";
 
 interface ReportViewerProps {

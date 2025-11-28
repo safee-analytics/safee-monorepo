@@ -12,7 +12,6 @@ import {
   Palette,
   Key,
   Database,
-  Lock,
   Users,
   FileText,
   Building2,

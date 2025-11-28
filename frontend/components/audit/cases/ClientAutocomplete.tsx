@@ -2,15 +2,22 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Search, Clock, TrendingUp, Copy } from "lucide-react";
-import { useAutofill } from "@/lib/hooks/useAutofill";
+import { useAutofill, type AutofillClientHistory } from "@/lib/hooks/useAutofill";
 import { formatDistanceToNow } from "date-fns";
+import type { CaseData } from "@/lib/api/hooks/cases";
 
 interface ClientAutocompleteProps {
   value: string;
   onChange: (value: string) => void;
-  onClientSelect?: (clientHistory: any) => void;
+  onClientSelect?: (clientHistory: AutofillClientHistory) => void;
   placeholder?: string;
   className?: string;
+}
+
+interface ClientFromRecent {
+  name: string;
+  lastCase: CaseData;
+  count: number;
 }
 
 export function ClientAutocomplete({
@@ -67,7 +74,7 @@ export function ClientAutocomplete({
     }
   };
 
-  const handleCopyFromLast = (client: any) => {
+  const handleCopyFromLast = (client: ClientFromRecent) => {
     onChange(client.name);
     setShowSuggestions(false);
 

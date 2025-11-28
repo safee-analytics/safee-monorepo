@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { ArrowLeft, Settings, Users, Target, XCircle, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useStages, useLostReasons, useCrmTeams, useSyncCRM } from "@/lib/api/hooks";
@@ -16,11 +15,11 @@ export default function CRMSettingsPage() {
   const { data: teams, isLoading: teamsLoading } = useCrmTeams();
   const syncMutation = useSyncCRM();
 
-  const handleSync = async (type: "stages" | "lost-reasons" | "teams") => {
+  const handleSync = async (_type: "stages" | "lost-reasons" | "teams") => {
     try {
-      await syncMutation.mutateAsync(type);
+      await syncMutation.mutateAsync("all");
     } catch (error) {
-      console.error(`Failed to sync ${type}:`, error);
+      console.error(`Failed to sync ${_type}:`, error);
     }
   };
 
@@ -141,7 +140,7 @@ export default function CRMSettingsPage() {
                               </span>
                             )}
                             <span className="text-xs text-gray-500">
-                              Team: {stage.team?.name || "All Teams"}
+                              Team: {stage.teamIds?.length ? "Specific Teams" : "All Teams"}
                             </span>
                           </div>
                         </div>
@@ -251,20 +250,15 @@ export default function CRMSettingsPage() {
                     <div className="flex items-start justify-between mb-4">
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900">{team.name}</h3>
-                        {team.useLeads !== undefined && (
+                        {team.active !== undefined && (
                           <div className="flex items-center space-x-2 mt-2">
                             <span
                               className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${
-                                team.useLeads ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700"
+                                team.active ? "bg-blue-100 text-blue-700" : "bg-gray-100 text-gray-700"
                               }`}
                             >
-                              {team.useLeads ? "Leads Enabled" : "Opportunities Only"}
+                              {team.active ? "Active" : "Inactive"}
                             </span>
-                            {team.useOpportunities && (
-                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700">
-                                Opportunities Enabled
-                              </span>
-                            )}
                           </div>
                         )}
                       </div>
@@ -274,19 +268,19 @@ export default function CRMSettingsPage() {
                     </div>
 
                     {/* Team Members */}
-                    {team.members && team.members.length > 0 && (
+                    {team.memberIds && team.memberIds.length > 0 && (
                       <div>
                         <p className="text-sm font-medium text-gray-700 mb-2">Team Members:</p>
                         <div className="flex flex-wrap gap-2">
-                          {team.members.map((member) => (
+                          {team.memberIds.map((memberId: number) => (
                             <div
-                              key={member.id}
+                              key={memberId}
                               className="flex items-center space-x-2 px-3 py-1.5 bg-gray-50 rounded-full"
                             >
                               <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-medium">
-                                {member.name.charAt(0).toUpperCase()}
+                                U
                               </div>
-                              <span className="text-sm text-gray-900">{member.name}</span>
+                              <span className="text-sm text-gray-900">User {memberId}</span>
                             </div>
                           ))}
                         </div>

@@ -27,7 +27,7 @@ const logger = pino({
 });
 
 async function main() {
-  const { drizzle, pool } = connect("gateway");
+  const { drizzle } = connect("gateway");
   const redis = await redisConnect();
 
   const storage = getStorage("safee-storage");
@@ -41,7 +41,7 @@ async function main() {
     },
   });
 
-  const httpServer = await startServer({ logger, drizzle, redis, pool, storage, pubsub, scheduler });
+  const httpServer = await startServer({ logger, drizzle, redis, storage, pubsub, scheduler });
 
   return async () => {
     logger.info("Cleaning up resources");
@@ -61,11 +61,6 @@ async function main() {
     if (redis) {
       await redis.quit();
       logger.info("Redis connection closed");
-    }
-
-    if (pool) {
-      await pool.end();
-      logger.info("Database pool closed");
     }
   };
 }

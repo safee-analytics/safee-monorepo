@@ -12,6 +12,7 @@ import {
   useRevokeAPIKey,
   useDeleteAPIKey,
   type APIKey,
+  type Permission,
 } from "@/lib/api/hooks/api-keys";
 
 export default function APIKeysSettings() {
@@ -24,7 +25,7 @@ export default function APIKeysSettings() {
 
   // Fetch data
   const { data: apiKeys = [], isLoading: keysLoading } = useGetAPIKeys();
-  const { data: availablePermissions = [], isLoading: permissionsLoading } = useGetAvailablePermissions();
+  const { data: availablePermissions = [], isLoading: _permissionsLoading } = useGetAvailablePermissions();
 
   // Mutations
   const createKey = useCreateAPIKey();
@@ -71,7 +72,7 @@ export default function APIKeysSettings() {
       setShowCreateModal(false);
       setNewKeyName("");
       setNewKeyPermissions([]);
-    } catch (error) {
+    } catch (_error) {
       alert("Failed to create API key");
     }
   };
@@ -80,7 +81,7 @@ export default function APIKeysSettings() {
     if (confirm("Are you sure you want to revoke this API key? This action cannot be undone.")) {
       try {
         await revokeKey.mutateAsync(keyId);
-      } catch (error) {
+      } catch (_error) {
         alert("Failed to revoke API key");
       }
     }
@@ -90,7 +91,7 @@ export default function APIKeysSettings() {
     if (confirm("Are you sure you want to permanently delete this API key?")) {
       try {
         await deleteKey.mutateAsync(keyId);
-      } catch (error) {
+      } catch (_error) {
         alert("Failed to delete API key");
       }
     }
@@ -106,16 +107,16 @@ export default function APIKeysSettings() {
 
   const toggleAllResourcePermissions = (resource: string) => {
     const resourcePerms = availablePermissions
-      .filter((p) => p.id.endsWith(`:${resource}`))
-      .map((p) => p.id);
+      .filter((p: Permission) => p.id.endsWith(`:${resource}`))
+      .map((p: Permission) => p.id);
 
-    const allSelected = resourcePerms.every((p) => newKeyPermissions.includes(p));
+    const allSelected = resourcePerms.every((p: string) => newKeyPermissions.includes(p));
 
     if (allSelected) {
-      setNewKeyPermissions(newKeyPermissions.filter((p) => !resourcePerms.includes(p)));
+      setNewKeyPermissions(newKeyPermissions.filter((p: string) => !resourcePerms.includes(p)));
     } else {
       const newPerms = [...newKeyPermissions];
-      resourcePerms.forEach((p) => {
+      resourcePerms.forEach((p: string) => {
         if (!newPerms.includes(p)) newPerms.push(p);
       });
       setNewKeyPermissions(newPerms);
@@ -124,7 +125,7 @@ export default function APIKeysSettings() {
 
   // Group permissions by resource
   const permissionsByResource = availablePermissions.reduce(
-    (acc, perm) => {
+    (acc: Record<string, Array<{ action: string; id: string }>>, perm: Permission) => {
       const [action, resource] = perm.id.split(":");
       if (!acc[resource]) acc[resource] = [];
       acc[resource].push({ action, id: perm.id });
@@ -173,7 +174,7 @@ export default function APIKeysSettings() {
             </div>
           ) : (
             <div className="space-y-4">
-              {apiKeys.map((apiKey) => (
+              {apiKeys.map((apiKey: APIKey) => (
                 <div
                   key={apiKey.id}
                   className={`bg-white rounded-lg border p-5 ${
@@ -197,7 +198,7 @@ export default function APIKeysSettings() {
                         <p>Last used: {apiKey.lastUsed}</p>
                         <div className="flex items-center gap-2">
                           <span>Permissions:</span>
-                          {apiKey.permissions.map((permission) => (
+                          {apiKey.permissions.map((permission: string) => (
                             <span
                               key={permission}
                               className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs"
@@ -316,9 +317,9 @@ export default function APIKeysSettings() {
                       Permissions ({newKeyPermissions.length} selected)
                     </label>
                     <div className="grid grid-cols-2 gap-4">
-                      {Object.entries(permissionsByResource).map(([resource, actions]) => {
-                        const allSelected = actions.every((a) => newKeyPermissions.includes(a.id));
-                        const someSelected = actions.some((a) => newKeyPermissions.includes(a.id));
+                      {Object.entries(permissionsByResource).map(([resource, actions]: [string, Array<{ action: string; id: string }>]) => {
+                        const allSelected = actions.every((a: { id: string }) => newKeyPermissions.includes(a.id));
+                        const someSelected = actions.some((a: { id: string }) => newKeyPermissions.includes(a.id));
 
                         return (
                           <div key={resource} className="border border-gray-200 rounded-lg p-4">
@@ -338,7 +339,7 @@ export default function APIKeysSettings() {
                               </button>
                             </div>
                             <div className="grid grid-cols-2 gap-2">
-                              {actions.map(({ action, id }) => (
+                              {actions.map(({ action, id }: { action: string; id: string }) => (
                                 <label key={id} className="flex items-center gap-2 text-sm cursor-pointer group">
                                   <input
                                     type="checkbox"

@@ -13,7 +13,7 @@ export default function NewLeadPage() {
 
   const handleSubmit = async (data: LeadFormData) => {
     try {
-      await createLeadMutation.mutateAsync(data as any);
+      await createLeadMutation.mutateAsync(data);
       toast.success("Lead created successfully!");
       router.push("/crm/leads");
     } catch (error) {

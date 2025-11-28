@@ -13,7 +13,7 @@ export interface CaseTemplateData {
   color: string;
   defaultFields: {
     status?: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   documentCategories: string[];
   checklistItems?: string[];

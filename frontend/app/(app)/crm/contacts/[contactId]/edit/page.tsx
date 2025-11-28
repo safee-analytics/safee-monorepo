@@ -17,7 +17,7 @@ export default function EditContactPage() {
 
   const handleSubmit = async (data: ContactFormData) => {
     try {
-      await updateContactMutation.mutateAsync({ contactId, data: data as any });
+      await updateContactMutation.mutateAsync({ contactId, data });
       toast.success("Contact updated successfully!");
       router.push(`/crm/contacts/${contactId}`);
     } catch (error) {
@@ -38,7 +38,7 @@ export default function EditContactPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen">
         <h2 className="text-xl font-semibold text-gray-900 mb-2">Contact Not Found</h2>
-        <p className="text-gray-600">The contact you're trying to edit doesn't exist.</p>
+        <p className="text-gray-600">The contact you&apos;re trying to edit doesn&apos;t exist.</p>
       </div>
     );
   }

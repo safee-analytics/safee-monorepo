@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Edit2, MoreVertical, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { useCase } from "@/lib/api/hooks";
 import { DocumentBrowser } from "@/components/audit/cases/DocumentBrowser";
-import { DocumentPreviewDrawer } from "@/components/audit/cases/DocumentPreviewDrawer";
+import { DocumentPreviewDrawer, type Document as DocumentType } from "@/components/audit/cases/DocumentPreviewDrawer";
 import { BulkUploadModal } from "@/components/audit/cases/BulkUploadModal";
 import { ActivityFeed } from "@/components/collaboration/ActivityFeed";
 import { ActiveViewers } from "@/components/collaboration/ActiveViewers";
@@ -20,7 +20,7 @@ export default function CaseDetailPage() {
 
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [previewDocument, setPreviewDocument] = useState<any>(null);
+  const [previewDocument, setPreviewDocument] = useState<DocumentType | null>(null);
 
   // Fetch case data
   const { data: caseData, isLoading } = useCase(caseId);
@@ -65,9 +65,9 @@ export default function CaseDetailPage() {
     },
   ];
 
-  const handleUpload = async (files: Array<{ file: File; category: string }>) => {
+  const handleUpload = async (_files: Array<{ file: File; category: string }>) => {
     // Implement actual upload logic here
-    console.log("Uploading files:", files);
+    console.warn("Uploading files:", _files);
     await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
@@ -105,7 +105,7 @@ export default function CaseDetailPage() {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Case Not Found</h2>
-          <p className="text-gray-600 mb-4">The case you're looking for doesn't exist.</p>
+          <p className="text-gray-600 mb-4">The case you&apos;re looking for doesn&apos;t exist.</p>
           <AnimatedButton onClick={() => router.push("/audit/cases")} variant="primary">
             Back to Cases
           </AnimatedButton>
@@ -304,15 +304,15 @@ export default function CaseDetailPage() {
             caseId={caseId}
             documents={mockDocuments}
             isLoading={false}
-            onUpload={(files) => {
+            onUpload={(_files) => {
               setShowUploadModal(true);
             }}
             onDocumentClick={(doc) => setPreviewDocument(doc)}
             onDownload={(docIds) => {
-              console.log("Download documents:", docIds);
+              console.warn("Download documents:", docIds);
             }}
             onDelete={(docIds) => {
-              console.log("Delete documents:", docIds);
+              console.warn("Delete documents:", docIds);
             }}
           />
         )}

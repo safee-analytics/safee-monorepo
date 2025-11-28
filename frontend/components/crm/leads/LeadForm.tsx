@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { leadFormSchema, type LeadFormData } from "@/lib/api/schemas";
 import { useStages, useCrmTeams, useContacts } from "@/lib/api/hooks";
-import { Building2, Mail, Phone, Globe, MapPin, DollarSign, Calendar, User } from "lucide-react";
+import { Mail, Phone, Globe, MapPin, DollarSign, Calendar, User } from "lucide-react";
 import { AnimatedButton } from "@safee/ui";
 import type { paths } from "@/lib/api/types";
 
@@ -61,7 +61,7 @@ export function LeadForm({ lead, onSubmit, isSubmitting = false }: LeadFormProps
   });
 
   const selectedPartnerId = watch("partnerId");
-  const selectedType = watch("type");
+  const _selectedType = watch("type");
   const selectedStageId = watch("stageId");
 
   // Auto-fill from selected contact

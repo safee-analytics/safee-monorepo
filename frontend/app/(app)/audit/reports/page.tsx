@@ -10,11 +10,11 @@ import { useCases, type CaseData } from "@/lib/api/hooks/cases";
 import type { AuditReportResponse } from "@/lib/types/reports";
 
 export default function AuditReports() {
-  const [reportType, setReportType] = useState("financial");
-  const [timePeriod, setTimePeriod] = useState("last-30");
-  const [client, setClient] = useState("all");
-  const [status, setStatus] = useState("all");
-  const [autoRefresh, setAutoRefresh] = useState(true);
+  const [_reportType, _setReportType] = useState("financial");
+  const [_timePeriod, _setTimePeriod] = useState("last-30");
+  const [_client, _setClient] = useState("all");
+  const [_status, _setStatus] = useState("all");
+  const [_autoRefresh, _setAutoRefresh] = useState(true);
   const [trendView, setTrendView] = useState("monthly");
   const [showWizard, setShowWizard] = useState(false);
   const [viewingReport, setViewingReport] = useState<AuditReportResponse | null>(null);
@@ -472,7 +472,7 @@ export default function AuditReports() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {reports.length === 0 ? (
               <div className="col-span-3 text-center py-12 text-gray-500">
-                <p>No reports generated yet. Click "Generate Report" to create your first report.</p>
+                <p>No reports generated yet. Click &quot;Generate Report&quot; to create your first report.</p>
               </div>
             ) : (
               reports.map((report) => (

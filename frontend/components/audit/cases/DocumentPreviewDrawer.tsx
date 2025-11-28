@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { X, Download, Trash2, Edit2, Eye, History, MessageSquare, User } from "lucide-react";
+import { X, Download, Trash2, Edit2, Eye, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PDFViewer } from "@safee/ui";
 import { formatDistanceToNow } from "date-fns";
 
-interface Document {
+export interface Document {
   id: string;
   name: string;
   type: string;
@@ -119,13 +118,23 @@ export function DocumentPreviewDrawer({
     return colors[status as keyof typeof colors] || colors.pending;
   };
 
-  const statusColors = getStatusColor(document.status);
+  const _statusColors = getStatusColor(document.status);
 
   const renderPreview = () => {
     if (document.type.includes("pdf")) {
+      // For now, use iframe for external PDFs
+      // PDFViewer from @safee/ui is for rendering react-pdf documents, not viewing external PDFs
       return (
-        <div className="h-full">
-          <PDFViewer url={document.url || ""} />
+        <div className="h-full flex items-center justify-center bg-gray-100">
+          {document.url ? (
+            <iframe
+              src={document.url}
+              className="w-full h-full border-0"
+              title={document.name}
+            />
+          ) : (
+            <p className="text-gray-500">No preview available</p>
+          )}
         </div>
       );
     } else if (document.type.includes("image")) {
@@ -143,7 +152,7 @@ export function DocumentPreviewDrawer({
         <div className="flex flex-col items-center justify-center h-full text-gray-500">
           <Eye className="h-16 w-16 mb-4 opacity-30" />
           <p className="text-lg font-medium">Preview not available</p>
-          <p className="text-sm mt-2">This file type doesn't support preview</p>
+          <p className="text-sm mt-2">This file type doesn&apos;t support preview</p>
           <button
             onClick={() => onDownload?.(document.id)}
             className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"

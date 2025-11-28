@@ -10,7 +10,7 @@ import { AnimatedButton } from "@safee/ui";
 import type { paths } from "@/lib/api/types";
 
 type ActivityResponse =
-  paths["/crm/activities/{activity_id}"]["get"]["responses"]["200"]["content"]["application/json"];
+  paths["/crm/activities/{activityId}"]["get"]["responses"]["200"]["content"]["application/json"];
 
 interface ActivityFormProps {
   activity?: ActivityResponse;
@@ -67,10 +67,11 @@ export function ActivityForm({ activity, onSubmit, isSubmitting, defaultLeadId }
     if (!teams) return [];
     const allUsers: Array<{ id: number; name: string }> = [];
     teams.forEach((team) => {
-      if (team.members) {
-        team.members.forEach((member) => {
-          if (!allUsers.find((u) => u.id === member.id)) {
-            allUsers.push(member);
+      if (team.memberIds) {
+        team.memberIds.forEach((memberId) => {
+          if (!allUsers.find((u) => u.id === memberId)) {
+            // TODO: Fetch user details from memberId
+            allUsers.push({ id: memberId, name: `User ${memberId}` });
           }
         });
       }

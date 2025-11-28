@@ -1,6 +1,27 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth/client";
 import { queryKeys } from "./queryKeys";
+
+// Permission resources and actions
+const PERMISSION_RESOURCES = [
+  "invoices",
+  "bills",
+  "payments",
+  "accounts",
+  "partners",
+  "employees",
+  "departments",
+  "contracts",
+  "leaves",
+  "payslips",
+  "leads",
+  "contacts",
+  "activities",
+  "cases",
+  "reports",
+] as const;
+
+const PERMISSION_ACTIONS = ["read", "create", "update", "delete"] as const;
 
 // Types
 export interface APIKey {
@@ -13,47 +34,28 @@ export interface APIKey {
   permissions: string[];
 }
 
-export interface CreateAPIKeyRequest {
-  name: string;
-  permissions: string[];
-  expiresIn?: number; // seconds until expiration (optional)
-}
-
 export interface Permission {
   id: string;
   name: string;
   description: string;
 }
 
-// Permission enums from database schema
-const PERMISSION_ACTIONS = [
-  "create",
-  "read",
-  "update",
-  "delete",
-  "list",
-  "export",
-  "import",
-  "approve",
-  "reject",
-  "manage",
-] as const;
+export interface CreateAPIKeyRequest {
+  name: string;
+  expiresIn?: number;
+  permissions: string[];
+}
 
-const PERMISSION_RESOURCES = [
-  "users",
-  "roles",
-  "permissions",
-  "organizations",
-  "invoices",
-  "accounts",
-  "contacts",
-  "deals",
-  "employees",
-  "payroll",
-  "reports",
-  "settings",
-  "audit",
-] as const;
+interface BetterAuthApiKey {
+  id: string;
+  name: string;
+  key: string;
+  createdAt: string;
+  lastRequest: string | null;
+  enabled: boolean;
+  metadata?: string | { permissions?: string[] };
+  permissions?: string | string[];
+}
 
 // Get all API keys (using better-auth)
 export function useGetAPIKeys() {
@@ -64,7 +66,9 @@ export function useGetAPIKeys() {
       if (error) throw new Error(error.message);
 
       // Transform better-auth format to our APIKey type
-      return (data?.keys || []).map((key: any) => {
+      const keysData = data?.keys;
+      const keys = Array.isArray(keysData) ? keysData : [];
+      return keys.map((key: BetterAuthApiKey) => {
         let permissions: string[] = [];
         try {
           if (key.metadata) {

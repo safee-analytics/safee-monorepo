@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, CheckCircle2, Clock, AlertCircle, XCircle } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import type { paths } from "@/lib/api/types";
 
 type ActivityResponse =
@@ -17,7 +17,7 @@ export function ActivityCalendar({ activities }: ActivityCalendarProps) {
   const [currentDate, setCurrentDate] = useState(new Date());
 
   // Get calendar days for current month
-  const { days, firstDay, daysInMonth } = useMemo(() => {
+  const { days } = useMemo(() => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const firstDay = new Date(year, month, 1).getDay();

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { GripVertical, Eye, EyeOff } from "lucide-react";
 import type { ReportSection } from "@/lib/types/reports";
 
@@ -57,8 +57,8 @@ const templateSections: Record<string, ReportSection[]> = {
   ],
 };
 
-export function SectionConfigurator({ templateId, selectedSections, onChange }: SectionConfiguratorProps) {
-  const sections = templateSections[templateId] || [];
+export function SectionConfigurator({ templateId, onChange }: SectionConfiguratorProps) {
+  const sections = useMemo(() => templateSections[templateId] || [], [templateId]);
   const [activeSections, setActiveSections] = useState<string[]>([]);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ export function SectionConfigurator({ templateId, selectedSections, onChange }: 
     const requiredSections = sections.filter((s) => s.required).map((s) => s.id);
     setActiveSections(requiredSections);
     onChange(requiredSections);
-  }, [templateId]);
+  }, [sections, onChange]);
 
   const toggleSection = (sectionId: string) => {
     const section = sections.find((s) => s.id === sectionId);

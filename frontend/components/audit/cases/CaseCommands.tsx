@@ -128,44 +128,43 @@ export function CaseCommands({
             onExecute: () => onBulkStatusChange?.(),
           },
           {
-            id: "bulk-assign",
-            label: `Assign Team (${selectedCasesCount} selected)`,
-            icon: <Users className="h-4 w-4" />,
-            shortcut: "Shift+T",
-            onExecute: () => console.log("Assign team"),
-          },
-          {
-            id: "bulk-delete",
-            label: `Delete ${selectedCasesCount} Case${selectedCasesCount > 1 ? "s" : ""}`,
-            icon: <Trash2 className="h-4 w-4" />,
-            shortcut: "Shift+D",
-            onExecute: () => console.log("Delete cases"),
-          },
-        ]
-      : []),
-
-    // Actions
-    {
-      id: "export",
-      label: "Export Cases",
-      icon: <Download className="h-4 w-4" />,
-      shortcut: "E",
-      onExecute: () => onExport?.(),
-    },
-    {
-      id: "toggle-filters",
-      label: "Toggle Filters",
-      icon: <Filter className="h-4 w-4" />,
-      shortcut: "Shift+F",
-      onExecute: () => console.log("Toggle filters"),
-    },
-    {
-      id: "select-all",
-      label: "Select All Cases",
-      icon: <CheckSquare className="h-4 w-4" />,
-      shortcut: "Cmd+A",
-      onExecute: () => console.log("Select all"),
-    },
+                        id: "bulk-assign",
+                        label: `Assign Team (${selectedCasesCount} selected)`,
+                        icon: <Users className="h-4 w-4" />,
+                        shortcut: "Shift+T",
+                        onExecute: () => console.warn("Assign team"),
+                      },
+                      {
+                        id: "bulk-delete",
+                        label: `Delete ${selectedCasesCount} Case${selectedCasesCount > 1 ? "s" : ""}`,
+                        icon: <Trash2 className="h-4 w-4" />,
+                        shortcut: "Shift+D",
+                        onExecute: () => console.warn("Delete cases"),
+                      },
+                    ]
+                  : []),
+            
+                // Actions
+                {
+                  id: "export",
+                  label: "Export Cases",
+                  icon: <Download className="h-4 w-4" />,
+                  shortcut: "E",
+                  onExecute: () => onExport?.(),
+                },
+                {
+                  id: "toggle-filters",
+                  label: "Toggle Filters",
+                  icon: <Filter className="h-4 w-4" />,
+                  shortcut: "Shift+F",
+                  onExecute: () => console.warn("Toggle filters"),
+                },
+                {
+                  id: "select-all",
+                  label: "Select All Cases",
+                  icon: <CheckSquare className="h-4 w-4" />,
+                  shortcut: "Cmd+A",
+                        onExecute: () => console.warn("Select all"),    },
 
     // View Changes
     {

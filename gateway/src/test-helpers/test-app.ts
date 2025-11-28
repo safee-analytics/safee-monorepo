@@ -5,7 +5,6 @@ import { JobScheduler } from "@safee/database";
 import { FileSystemStorage } from "@safee/database";
 import { pino, type Logger } from "pino";
 import { server } from "../server/index.js";
-import pg from "pg";
 
 export interface TestApp {
   app: Application;
@@ -28,11 +27,6 @@ export async function createTestApp(): Promise<TestApp> {
   // Connect to test Redis
   const redis = await redisConnect(TEST_REDIS_URL);
 
-  // Create pg pool
-  const pool = new pg.Pool({
-    connectionString: TEST_DATABASE_URL,
-  });
-
   // Create test storage (uses local filesystem for tests)
   const storage = new FileSystemStorage("test-storage", "test-bucket");
 
@@ -53,7 +47,6 @@ export async function createTestApp(): Promise<TestApp> {
     logger,
     redis,
     drizzle,
-    pool,
     storage,
     pubsub,
     scheduler,
@@ -62,7 +55,6 @@ export async function createTestApp(): Promise<TestApp> {
   const cleanup = async () => {
     await scheduler.stop();
     await pubsub.close();
-    await pool.end();
     await redis.quit();
     await closeDb();
   };

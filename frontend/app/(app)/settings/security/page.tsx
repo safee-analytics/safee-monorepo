@@ -21,7 +21,7 @@ export default function SecuritySettings() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Fetch data
-  const { data: securitySettings, isLoading: settingsLoading } = useGetSecuritySettings();
+  const { data: securitySettings, isLoading: _settingsLoading } = useGetSecuritySettings();
   const { data: sessions = [], isLoading: sessionsLoading } = useGetActiveSessions();
 
   // Mutations
@@ -56,7 +56,7 @@ export default function SecuritySettings() {
     try {
       await updateSettings.mutateAsync(security);
       alert("Security settings updated successfully");
-    } catch (error) {
+    } catch (_error) {
       alert("Failed to update security settings");
     }
   };
@@ -70,7 +70,7 @@ export default function SecuritySettings() {
       await changePassword.mutateAsync(passwordData);
       setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
       alert("Password changed successfully");
-    } catch (error) {
+    } catch (_error) {
       alert("Failed to change password");
     }
   };
@@ -78,7 +78,7 @@ export default function SecuritySettings() {
   const handleRevokeSession = async (sessionId: string) => {
     try {
       await revokeSession.mutateAsync(sessionId);
-    } catch (error) {
+    } catch (_error) {
       alert("Failed to revoke session");
     }
   };

@@ -29,7 +29,7 @@ export default function ActivitiesPage() {
 
   const handleSync = async () => {
     try {
-      await syncMutation.mutateAsync("activities");
+      await syncMutation.mutateAsync("all");
     } catch (error) {
       console.error("Failed to sync activities:", error);
     }

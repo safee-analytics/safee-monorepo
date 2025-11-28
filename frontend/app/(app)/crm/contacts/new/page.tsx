@@ -13,7 +13,7 @@ export default function NewContactPage() {
 
   const handleSubmit = async (data: ContactFormData) => {
     try {
-      await createContactMutation.mutateAsync(data as any);
+      await createContactMutation.mutateAsync(data);
       toast.success("Contact created successfully!");
       router.push("/crm/contacts");
     } catch (error) {

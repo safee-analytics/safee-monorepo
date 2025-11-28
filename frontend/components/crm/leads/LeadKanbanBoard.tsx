@@ -20,8 +20,6 @@ interface CardType {
   stageId: number;
 }
 
-type ColumnType = string;
-
 export function LeadKanbanBoard({ leads, stages }: LeadKanbanBoardProps) {
   const updateLeadMutation = useUpdateLead();
 
@@ -109,11 +107,11 @@ interface ColumnProps {
 const Column = ({ stage, cards, setCards, color, onCardMove }: ColumnProps) => {
   const [active, setActive] = useState(false);
 
-  const handleDragStart = (e: DragEvent, card: CardType) => {
+  const handleDragStart = (e: React.DragEvent, card: CardType) => {
     e.dataTransfer.setData("cardId", card.id);
   };
 
-  const handleDragEnd = (e: DragEvent) => {
+  const handleDragEnd = (e: React.DragEvent) => {
     const cardId = e.dataTransfer.getData("cardId");
 
     setActive(false);
@@ -245,7 +243,7 @@ const Column = ({ stage, cards, setCards, color, onCardMove }: ColumnProps) => {
 
 interface CardProps {
   card: CardType;
-  handleDragStart: (e: DragEvent, card: CardType) => void;
+  handleDragStart: (e: React.DragEvent, card: CardType) => void;
   stageId: number;
 }
 
@@ -257,7 +255,11 @@ const Card = ({ card, handleDragStart, stageId }: CardProps) => {
         layout
         layoutId={card.id}
         draggable="true"
-        onDragStart={(e) => handleDragStart(e as any, card)}
+        onDragStart={(e) => {
+          if ('dataTransfer' in e) {
+            handleDragStart(e as unknown as React.DragEvent, card);
+          }
+        }}
         className="cursor-grab active:cursor-grabbing"
       >
         <LeadCard lead={card.lead} />

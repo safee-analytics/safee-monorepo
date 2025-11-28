@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowUpDown, Mail, Phone, DollarSign, Target, User, Calendar } from "lucide-react";
+import { ArrowUpDown, Mail, Phone, DollarSign, Target, Calendar } from "lucide-react";
 import type { paths } from "@/lib/api/types";
 
 type LeadResponse = paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];

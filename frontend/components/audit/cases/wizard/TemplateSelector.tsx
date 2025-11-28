@@ -5,7 +5,7 @@ import type { WizardStepProps } from "../CreateCaseWizard";
 import { SAMPLE_TEMPLATES, getSuggestedDueDate } from "@/lib/data/caseTemplates";
 import { FileText, Clock, CheckCircle } from "lucide-react";
 
-export function TemplateSelector({ data, onChange, onNext }: WizardStepProps) {
+export function TemplateSelector({ data, onChange }: WizardStepProps) {
   const [hoveredTemplate, setHoveredTemplate] = useState<string | null>(null);
 
   const handleTemplateSelect = (template: (typeof SAMPLE_TEMPLATES)[0]) => {
@@ -124,7 +124,7 @@ export function TemplateSelector({ data, onChange, onNext }: WizardStepProps) {
                         <li key={category}>• {category}</li>
                       ))}
                       {template.documentCategories.length > 5 && (
-                        <li>• +{template.documentCategories.length - 5} more...</li>
+                        <li>• +{template.documentCategories.length - 5} more&hellip;</li>
                       )}
                     </ul>
                   </div>
@@ -137,7 +137,7 @@ export function TemplateSelector({ data, onChange, onNext }: WizardStepProps) {
                           <li key={item}>• {item}</li>
                         ))}
                         {template.checklistItems.length > 5 && (
-                          <li>• +{template.checklistItems.length - 5} more...</li>
+                          <li>• +{template.checklistItems.length - 5} more&hellip;</li>
                         )}
                       </ul>
                     </div>
@@ -184,7 +184,7 @@ export function TemplateSelector({ data, onChange, onNext }: WizardStepProps) {
       {/* Continue Button Helper */}
       {(data.selectedTemplate || data.useTemplate === false) && (
         <div className="pt-4 text-center">
-          <p className="text-sm text-gray-600">Press "Next" to continue with your selection</p>
+          <p className="text-sm text-gray-600">Press &quot;Next&quot; to continue with your selection</p>
         </div>
       )}
     </div>

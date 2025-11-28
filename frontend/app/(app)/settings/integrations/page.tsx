@@ -9,7 +9,6 @@ import {
   useGetIntegrations,
   useConnectIntegration,
   useDisconnectIntegration,
-  type Integration,
 } from "@/lib/api/hooks/integrations";
 
 export default function IntegrationsSettings() {
@@ -41,7 +40,7 @@ export default function IntegrationsSettings() {
       } else {
         await connectIntegration.mutateAsync(id);
       }
-    } catch (error) {
+    } catch (_error) {
       alert(`Failed to ${connected ? "disconnect" : "connect"} integration`);
     }
   };

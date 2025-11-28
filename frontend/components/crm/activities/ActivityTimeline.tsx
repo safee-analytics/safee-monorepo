@@ -21,7 +21,7 @@ export function ActivityTimeline({ activities }: ActivityTimelineProps) {
     try {
       await markDoneMutation.mutateAsync(activityId);
       toast.success("Activity marked as done!");
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to mark activity as done");
     }
   };

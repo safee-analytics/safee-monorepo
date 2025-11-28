@@ -23,20 +23,17 @@ export function useGenerateReport() {
   });
 }
 
-export function useReports(filters?: {
-  caseId?: string;
-  status?: string;
-  limit?: number;
-}) {
+export function useReports(caseId?: string) {
   return useQuery({
-    queryKey: ["reports", filters],
+    queryKey: ["reports", caseId],
+    enabled: !!caseId,
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/reports", {
+      if (!caseId) throw new Error("Case ID is required");
+
+      const { data, error } = await apiClient.GET("/reports/case/{caseId}", {
         params: {
-          query: {
-            caseId: filters?.caseId,
-            status: filters?.status as never,
-            limit: filters?.limit,
+          path: {
+            caseId,
           },
         },
       });
@@ -67,39 +64,41 @@ export function useReport(reportId: string) {
 export function useExportReport() {
   return useMutation({
     mutationFn: async ({
-      reportId,
-      format,
+      reportId: _reportId,
+      format: _format,
     }: {
       reportId: string;
       format: "pdf" | "excel";
     }) => {
-      const endpoint = format === "pdf"
-        ? "/reports/{id}/export/pdf"
-        : "/reports/{id}/export/excel";
+      // TODO: Implement export endpoints in backend
+      throw new Error("Report export is not yet implemented");
 
-      const { data, error } = await apiClient.GET(endpoint as never, {
-        params: {
-          path: { id: reportId },
-        },
-        parseAs: "blob",
-      });
-
-      if (error) throw error;
-
-      const blob = new Blob([data as never], {
-        type: format === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      });
-
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `audit-report-${reportId}.${format}`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-
-      return data;
+      // When backend endpoints are ready, uncomment and fix:
+      // const endpoint = format === "pdf"
+      //   ? "/reports/{id}/export/pdf"
+      //   : "/reports/{id}/export/excel";
+      //
+      // const { data, error } = await apiClient.GET(endpoint, {
+      //   params: { path: { id: reportId } },
+      //   parseAs: "blob",
+      // });
+      //
+      // if (error) throw error;
+      //
+      // const blob = new Blob([data], {
+      //   type: format === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      // });
+      //
+      // const url = window.URL.createObjectURL(blob);
+      // const link = document.createElement("a");
+      // link.href = url;
+      // link.download = `audit-report-${reportId}.${format}`;
+      // document.body.appendChild(link);
+      // link.click();
+      // document.body.removeChild(link);
+      // window.URL.revokeObjectURL(url);
+      //
+      // return data;
     },
   });
 }

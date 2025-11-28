@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Save, CheckCircle, Edit2, X, Loader2 } from "lucide-react";
+import { Plus, Save, CheckCircle, X, Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import {
   useAuditPlan,
@@ -217,7 +217,7 @@ export default function AuditPlanning() {
 
   const handleApplyRiskSuggestion = (risks: Array<{ type: string; severity: string; message: string }>) => {
     // Store risks in state - could be added to the plan data structure
-    console.log("Applied risk suggestions:", risks);
+    console.warn("Applied risk suggestions:", risks);
   };
 
   const isSaving = createMutation.isPending || updateMutation.isPending;

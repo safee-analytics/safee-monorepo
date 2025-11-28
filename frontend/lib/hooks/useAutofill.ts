@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { useCases } from "@/lib/api/hooks";
+import { useCases, type CaseData } from "@/lib/api/hooks";
 import { differenceInDays, addDays, isBefore } from "date-fns";
 
 interface AutofillSuggestions {
@@ -9,15 +9,15 @@ interface AutofillSuggestions {
   suggestStatus: (dueDate: Date) => string;
   suggestTeam: (auditType: string, clientName?: string) => Array<{ userId: string; role: string }>;
   getClientHistory: (clientName: string) => AutofillClientHistory;
-  getRecentClients: () => Array<{ name: string; lastCase: any; count: number }>;
+  getRecentClients: () => Array<{ name: string; lastCase: CaseData; count: number }>;
   getAuditTypeStats: () => Record<string, number>;
 }
 
-interface AutofillClientHistory {
+export interface AutofillClientHistory {
   totalCases: number;
   mostCommonAuditType: string | undefined;
   averageDuration: number;
-  lastCase: any;
+  lastCase: CaseData | undefined;
   commonPriority: string | undefined;
 }
 
@@ -257,7 +257,7 @@ export function useAutofill(): AutofillSuggestions {
        * Gets list of recent clients for autocomplete
        */
       getRecentClients: () => {
-        const clientMap = new Map<string, { lastCase: any; count: number }>();
+        const clientMap = new Map<string, { lastCase: CaseData; count: number }>();
 
         cases.forEach((c) => {
           if (!c.clientName) return;
@@ -277,7 +277,7 @@ export function useAutofill(): AutofillSuggestions {
         });
 
         return Array.from(clientMap.entries())
-          .map(([name, data]) => ({
+          .map(([_name, data]) => ({
             name: data.lastCase.clientName, // Use original casing
             lastCase: data.lastCase,
             count: data.count,

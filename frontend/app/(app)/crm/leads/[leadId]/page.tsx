@@ -39,7 +39,7 @@ export default function LeadDetailPage() {
     try {
       await winLeadMutation.mutateAsync(leadId);
       toast.success("Lead marked as won!");
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to mark lead as won");
     }
   };
@@ -48,7 +48,7 @@ export default function LeadDetailPage() {
     try {
       await loseLeadMutation.mutateAsync({ leadId });
       toast.success("Lead marked as lost");
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to mark lead as lost");
     }
   };
@@ -57,7 +57,7 @@ export default function LeadDetailPage() {
     try {
       await convertLeadMutation.mutateAsync({ leadId });
       toast.success("Lead converted to opportunity!");
-    } catch (error) {
+    } catch (_error) {
       toast.error("Failed to convert lead");
     }
   };
@@ -75,7 +75,7 @@ export default function LeadDetailPage() {
       <div className="flex flex-col items-center justify-center min-h-screen">
         <Target className="h-16 w-16 text-gray-300 mb-4" />
         <h2 className="text-xl font-semibold text-gray-900 mb-2">Lead Not Found</h2>
-        <p className="text-gray-600 mb-4">The lead you're looking for doesn't exist.</p>
+        <p className="text-gray-600 mb-4">The lead you&apos;re looking for doesn&apos;t exist.</p>
         <Link href="/crm/leads">
           <AnimatedButton variant="primary">Back to Leads</AnimatedButton>
         </Link>

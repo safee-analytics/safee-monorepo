@@ -130,7 +130,7 @@ export function useAuditPlans() {
   return useQuery({
     queryKey: queryKeys.auditPlans.all(),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/audit-plans/", {});
+      const { data, error } = await apiClient.GET("/audit-plans", {});
       if (error) throw new Error(handleApiError(error));
       return data as AuditPlanResponse[];
     },

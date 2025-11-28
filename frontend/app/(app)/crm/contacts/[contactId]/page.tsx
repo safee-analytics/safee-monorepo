@@ -38,7 +38,7 @@ export default function ContactDetailPage() {
       <div className="flex flex-col items-center justify-center min-h-screen">
         <User className="h-16 w-16 text-gray-300 mb-4" />
         <h2 className="text-xl font-semibold text-gray-900 mb-2">Contact Not Found</h2>
-        <p className="text-gray-600 mb-4">The contact you're looking for doesn't exist.</p>
+        <p className="text-gray-600 mb-4">The contact you&apos;re looking for doesn&apos;t exist.</p>
         <Link href="/crm/contacts">
           <AnimatedButton variant="primary">Back to Contacts</AnimatedButton>
         </Link>

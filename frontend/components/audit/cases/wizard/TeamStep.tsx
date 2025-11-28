@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { WizardStepProps } from "../CreateCaseWizard";
-import { Users, Plus, X } from "lucide-react";
+import { Users, X } from "lucide-react";
 
 // Mock users - in real implementation, fetch from API
 const AVAILABLE_USERS = [

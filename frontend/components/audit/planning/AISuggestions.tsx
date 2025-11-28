@@ -15,11 +15,11 @@ interface AISuggestionsProps {
 }
 
 export function AISuggestions({
-  clientName,
-  auditType,
-  auditYear,
-  totalBudget,
-  totalHours,
+  clientName: _clientName,
+  auditType: _auditType,
+  auditYear: _auditYear,
+  totalBudget: _totalBudget,
+  totalHours: _totalHours,
   onApplyTeamSuggestion,
   onApplyBudgetSuggestion,
   onApplyRiskSuggestion,

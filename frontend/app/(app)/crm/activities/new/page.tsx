@@ -17,7 +17,7 @@ export default function NewActivityPage() {
 
   const handleSubmit = async (data: ActivityFormData) => {
     try {
-      await createActivityMutation.mutateAsync(data as any);
+      await createActivityMutation.mutateAsync(data);
       toast.success("Activity created successfully!");
 
       // Redirect to activities list or back to lead detail if came from there
