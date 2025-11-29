@@ -9,22 +9,28 @@ export * from "./test-helpers/test-app.js";
 
 const isDevelopment = ENV === "local" || ENV === "development";
 
-const logger = pino({
-  level: LOG_LEVEL,
-  base: { app: "gateway" },
-  customLevels: { http: 27 },
-  transport: isDevelopment
+const logger = pino(
+  isDevelopment
     ? {
-        target: "pino-pretty",
-        options: {
-          colorize: true,
-          translateTime: "HH:MM:ss",
-          ignore: "pid,hostname",
-          singleLine: false,
+        level: LOG_LEVEL,
+        base: { app: "gateway" },
+        customLevels: { http: 27 },
+        transport: {
+          target: "pino-pretty",
+          options: {
+            colorize: true,
+            translateTime: "HH:MM:ss",
+            ignore: "pid,hostname",
+            singleLine: false,
+          },
         },
       }
-    : undefined,
-});
+    : {
+        level: LOG_LEVEL,
+        base: { app: "gateway" },
+        customLevels: { http: 27 },
+      }
+);
 
 async function main() {
   const { drizzle } = connect("gateway");

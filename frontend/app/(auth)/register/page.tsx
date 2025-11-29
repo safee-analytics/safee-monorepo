@@ -97,7 +97,7 @@ export default function RegisterPage() {
 
   const handleGoogleSignUp = async () => {
     try {
-      signInWithGoogle();
+      signInWithGoogle("/");
     } catch (error) {
       console.error("Google signup failed:", error);
       setError("Google signup failed. Please try again.");

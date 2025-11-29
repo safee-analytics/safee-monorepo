@@ -141,7 +141,7 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     try {
-      signInWithGoogle();
+      signInWithGoogle("/");
     } catch (error) {
       console.error("Google login failed:", error);
       setError("Google login failed. Please try again.");

@@ -17,7 +17,7 @@
   "scripts": {
     "build": "npx tsoa spec-and-routes && tsc --build .",
     "dev": "nodemon",
-    "start": "node dist/src/server.js",
+    "start": "node build/src/index.js",
     "routes": "tsoa routes",
     "spec": "tsoa spec",
     "db:generate": "cd ../database && npm run prisma:generate",
