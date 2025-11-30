@@ -5,6 +5,7 @@ import {
   boolean,
   bigint,
   integer,
+  text,
   index,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
@@ -33,7 +34,9 @@ export const caseDocuments = auditSchema.table(
       .references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" })
       .notNull(),
     uploadedAt: timestamp("uploaded_at", { withTimezone: true }).defaultNow().notNull(),
-    isDeleted: boolean("is_deleted").notNull().default(false), // Soft delete
+    isDeleted: boolean("is_deleted").notNull().default(false),
+    ocrText: text("ocr_text"),
+    ocrProcessedAt: timestamp("ocr_processed_at", { withTimezone: true }),
   },
   (table) => [
     index("case_documents_case_id_idx").on(table.caseId),

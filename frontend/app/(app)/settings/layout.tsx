@@ -12,7 +12,6 @@ import {
   Palette,
   Key,
   Database,
-  Lock,
   Users,
   FileText,
   Building2,
@@ -37,7 +36,14 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
   // Organized settings with explicit ordering
   const allSettingsLinks: SettingLink[] = [
     // Personal Settings (1-10)
-    { href: "/settings/profile", label: "Profile", icon: User, pageKey: "profile", order: 1, category: "personal" },
+    {
+      href: "/settings/profile",
+      label: "Profile",
+      icon: User,
+      pageKey: "profile",
+      order: 1,
+      category: "personal",
+    },
     {
       href: "/settings/notifications",
       label: t.common.notifications || "Notifications",
@@ -46,11 +52,32 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
       order: 2,
       category: "personal",
     },
-    { href: "/settings/appearance", label: "Appearance", icon: Palette, pageKey: "appearance", order: 3, category: "personal" },
+    {
+      href: "/settings/appearance",
+      label: "Appearance",
+      icon: Palette,
+      pageKey: "appearance",
+      order: 3,
+      category: "personal",
+    },
 
     // Organization Settings (11-20)
-    { href: "/settings/organization", label: "Organization", icon: Building2, pageKey: "organization", order: 11, category: "organization" },
-    { href: "/settings/team", label: "Team", icon: Users, pageKey: "team", order: 12, category: "organization" },
+    {
+      href: "/settings/organization",
+      label: "Organization",
+      icon: Building2,
+      pageKey: "organization",
+      order: 11,
+      category: "organization",
+    },
+    {
+      href: "/settings/team",
+      label: "Team",
+      icon: Users,
+      pageKey: "team",
+      order: 12,
+      category: "organization",
+    },
     {
       href: "/settings/invoice-styles",
       label: "Invoice Styles",
@@ -59,10 +86,24 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
       order: 13,
       category: "organization",
     },
-    { href: "/settings/audit-logs", label: "Audit Logs", icon: FileText, pageKey: "audit-logs", order: 14, category: "organization" },
+    {
+      href: "/settings/audit-logs",
+      label: "Audit Logs",
+      icon: FileText,
+      pageKey: "audit-logs",
+      order: 14,
+      category: "organization",
+    },
 
     // Advanced Settings (21-30)
-    { href: "/settings/security", label: "Security", icon: Shield, pageKey: "security", order: 21, category: "advanced" },
+    {
+      href: "/settings/security",
+      label: "Security",
+      icon: Shield,
+      pageKey: "security",
+      order: 21,
+      category: "advanced",
+    },
     {
       href: "/settings/storage",
       label: t.common.storage || "Storage",
@@ -71,9 +112,23 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
       order: 22,
       category: "advanced",
     },
-    { href: "/settings/integrations", label: "Integrations", icon: Globe, pageKey: "integrations", order: 23, category: "advanced" },
+    {
+      href: "/settings/integrations",
+      label: "Integrations",
+      icon: Globe,
+      pageKey: "integrations",
+      order: 23,
+      category: "advanced",
+    },
     { href: "/settings/api", label: "API Keys", icon: Key, pageKey: "api", order: 24, category: "advanced" },
-    { href: "/settings/database", label: "Database", icon: Database, pageKey: "database", order: 25, category: "advanced" },
+    {
+      href: "/settings/database",
+      label: "Database",
+      icon: Database,
+      pageKey: "database",
+      order: 25,
+      category: "advanced",
+    },
   ];
 
   // Filter links based on permissions and sort by order

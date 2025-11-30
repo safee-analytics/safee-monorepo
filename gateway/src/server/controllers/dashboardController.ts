@@ -23,7 +23,7 @@ export interface DashboardStatsResponse {
 /**
  * Case activity item
  */
-export interface CaseActivityResponse {
+export interface RecentCaseUpdateResponse {
   id: string;
   type: "case_update";
   caseId: string;
@@ -91,7 +91,7 @@ export class DashboardController extends Controller {
   public async getActivity(
     @Request() req: AuthenticatedRequest,
     @Query() limit?: number,
-  ): Promise<CaseActivityResponse[]> {
+  ): Promise<RecentCaseUpdateResponse[]> {
     const { drizzle, logger } = getServerContext();
     const organizationId = req.betterAuthSession?.session.activeOrganizationId;
 

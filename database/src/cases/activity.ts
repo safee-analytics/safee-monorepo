@@ -2,7 +2,7 @@ import { schema, eq, desc, DbDeps } from "../index.js";
 
 const { cases } = schema;
 
-export interface CaseActivity {
+export interface RecentCaseUpdate {
   id: string;
   type: "case_update";
   caseId: string;
@@ -20,7 +20,7 @@ export async function getRecentCaseActivity(
   deps: DbDeps,
   organizationId: string,
   limit = 10,
-): Promise<CaseActivity[]> {
+): Promise<RecentCaseUpdate[]> {
   const { drizzle } = deps;
 
   const recentCases = await drizzle.query.cases.findMany({

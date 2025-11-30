@@ -124,6 +124,7 @@ export class CasesController extends Controller {
 
   @Get("/templates")
   @Security("jwt")
+  @OperationId("ListCaseTemplates")
   public async listPublicTemplates(@Request() req: AuthenticatedRequest): Promise<TemplateResponse[]> {
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
@@ -192,6 +193,7 @@ export class CasesController extends Controller {
 
   @Get("/templates/{templateId}")
   @Security("jwt")
+  @OperationId("GetCaseTemplate")
   public async getTemplate(
     @Request() req: AuthenticatedRequest,
     @Path() templateId: string,

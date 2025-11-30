@@ -271,12 +271,7 @@ export default function OrganizationSettingsPage() {
               </p>
               <div className="flex gap-3">
                 <label className="cursor-pointer">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLogoUpload}
-                    className="hidden"
-                  />
+                  <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
                   <div className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 text-sm font-medium">
                     <Upload className="w-4 h-4" />
                     Upload Logo

@@ -55,3 +55,6 @@ export * from "./security";
 
 // Re-export integrations hooks
 export * from "./integrations";
+
+// Re-export CRM hooks
+export * from "./crm";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { motion, useDragControls } from "framer-motion";
+import { motion } from "framer-motion";
 import { Grip, X, ChevronsLeftRight } from "lucide-react";
 
 export type WidgetSize = "small" | "medium" | "large";
@@ -33,13 +33,13 @@ export const CustomizableGrid = ({
   widgets,
   onReorderWidgets,
   onRemoveWidget,
-  onResizeWidget
+  onResizeWidget,
 }: CustomizableGridProps) => {
   const [isCustomizing, setIsCustomizing] = useState(false);
   const [draggedWidget, setDraggedWidget] = useState<string | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
-  const handleDragStart = (id: string, index: number) => {
+  const handleDragStart = (id: string, _index: number) => {
     setDraggedWidget(id);
   };
 
@@ -54,7 +54,7 @@ export const CustomizableGrid = ({
     e.preventDefault();
     if (!draggedWidget || !onReorderWidgets) return;
 
-    const dragIndex = widgets.findIndex(w => w.id === draggedWidget);
+    const dragIndex = widgets.findIndex((w) => w.id === draggedWidget);
     if (dragIndex === -1 || dragIndex === dropIndex) {
       setDraggedWidget(null);
       setDragOverIndex(null);
@@ -103,7 +103,7 @@ export const CustomizableGrid = ({
           e.preventDefault();
           // If dropped on empty space, append to end
           if (draggedWidget && onReorderWidgets) {
-            handleDrop(e as any, widgets.length);
+            handleDrop(e, widgets.length);
           }
         }}
       >
@@ -144,7 +144,7 @@ interface GridWidgetProps {
 
 const GridWidget = ({
   widget,
-  index,
+  index: _index,
   isCustomizing,
   isDragged,
   isDragOver,
@@ -153,11 +153,11 @@ const GridWidget = ({
   onDragStart,
   onDragOver,
   onDrop,
-  onDragEnd
+  onDragEnd,
 }: GridWidgetProps) => {
   const [isResizing, setIsResizing] = useState(false);
   const [resizeStartX, setResizeStartX] = useState(0);
-  const [resizeDirection, setResizeDirection] = useState<'grow' | 'shrink' | null>(null);
+  const [resizeDirection, setResizeDirection] = useState<"grow" | "shrink" | null>(null);
   const Component = widget.component;
 
   const handleRemove = (e: React.MouseEvent) => {
@@ -165,7 +165,7 @@ const GridWidget = ({
     onRemove?.();
   };
 
-  const handleResizeDragStart = (e: React.DragEvent, direction: 'grow' | 'shrink') => {
+  const handleResizeDragStart = (e: React.DragEvent, direction: "grow" | "shrink") => {
     e.stopPropagation();
     setIsResizing(true);
     setResizeStartX(e.clientX);
@@ -186,7 +186,7 @@ const GridWidget = ({
       const sizeValues = { small: 1, medium: 2, large: 3 };
       const currentIndex = sizes.indexOf(widget.size);
 
-      if (resizeDirection === 'grow') {
+      if (resizeDirection === "grow") {
         const nextIndex = currentIndex + 1;
         if (nextIndex < sizes.length) {
           const nextSize = sizes[nextIndex];
@@ -223,9 +223,7 @@ const GridWidget = ({
       onDragOver={onDragOver}
       onDrop={onDrop}
       onDragEnd={onDragEnd}
-      className={`${sizeClasses[widget.size]} h-full relative ${
-        isDragged ? "opacity-50" : ""
-      }`}
+      className={`${sizeClasses[widget.size]} h-full relative ${isDragged ? "opacity-50" : ""}`}
       transition={{
         layout: { duration: 0.3, ease: [0.4, 0, 0.2, 1] },
       }}
@@ -272,7 +270,7 @@ const GridWidget = ({
             {widget.size !== widget.maxSize && (
               <div
                 draggable
-                onDragStart={(e) => handleResizeDragStart(e, 'grow')}
+                onDragStart={(e) => handleResizeDragStart(e, "grow")}
                 onDrag={handleResizeDrag}
                 onDragEnd={handleResizeDragEnd}
                 className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-16 flex items-center justify-center cursor-ew-resize hover:bg-safee-100 rounded-lg transition-colors z-10 group"
@@ -288,7 +286,7 @@ const GridWidget = ({
             {widget.size !== widget.minSize && (
               <div
                 draggable
-                onDragStart={(e) => handleResizeDragStart(e, 'shrink')}
+                onDragStart={(e) => handleResizeDragStart(e, "shrink")}
                 onDrag={handleResizeDrag}
                 onDragEnd={handleResizeDragEnd}
                 className="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-16 flex items-center justify-center cursor-ew-resize hover:bg-safee-100 rounded-lg transition-colors z-10 group"

@@ -96,6 +96,24 @@ export default function LoginPage() {
     }
   }, [isAuthenticated, isLoading, router]);
 
+  // Show loading state while checking authentication to prevent flash
+  if (isLoading) {
+    return (
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-safee-500"></div>
+      </div>
+    );
+  }
+
+  // If already authenticated, show loading while redirecting
+  if (isAuthenticated) {
+    return (
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-safee-500"></div>
+      </div>
+    );
+  }
+
   const handleSubmit = async (email: string, password: string) => {
     try {
       setError(null);
@@ -141,7 +159,7 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     try {
-      signInWithGoogle();
+      signInWithGoogle("/");
     } catch (error) {
       console.error("Google login failed:", error);
       setError("Google login failed. Please try again.");

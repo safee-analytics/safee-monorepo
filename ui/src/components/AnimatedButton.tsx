@@ -5,7 +5,7 @@ import { ArrowRight, Loader2 } from "lucide-react";
 
 export interface AnimatedButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: "default" | "primary" | "secondary" | "ghost" | "danger";
+  variant?: "default" | "primary" | "secondary" | "ghost" | "danger" | "outline";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
   icon?: ReactNode;
@@ -45,6 +45,7 @@ export function AnimatedButton({
     secondary: "bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300",
     ghost: "bg-transparent text-gray-700 hover:bg-gray-100",
     danger: "bg-red-600 text-white hover:bg-red-700",
+    outline: "bg-transparent text-gray-700 hover:bg-gray-100 border border-gray-300",
   };
 
   const sizeClasses = {

@@ -68,6 +68,24 @@ export default function RegisterPage() {
     }
   }, [isAuthenticated, isLoading, router]);
 
+  // Show loading state while checking authentication to prevent flash
+  if (isLoading) {
+    return (
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-safee-500"></div>
+      </div>
+    );
+  }
+
+  // If already authenticated, show loading while redirecting
+  if (isAuthenticated) {
+    return (
+      <div className="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-safee-500"></div>
+      </div>
+    );
+  }
+
   const handleSubmit = async (name: string, email: string, password: string, confirmPassword: string) => {
     try {
       setError(null);
@@ -97,7 +115,7 @@ export default function RegisterPage() {
 
   const handleGoogleSignUp = async () => {
     try {
-      signInWithGoogle();
+      signInWithGoogle("/");
     } catch (error) {
       console.error("Google signup failed:", error);
       setError("Google signup failed. Please try again.");

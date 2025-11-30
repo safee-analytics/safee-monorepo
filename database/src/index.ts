@@ -32,6 +32,14 @@ export * from "./sessions/index.js";
 
 export * from "./cases/index.js";
 
+export * from "./auditPlanning/index.js";
+
+export * from "./reports/index.js";
+
+export * from "./collaboration/index.js";
+
+export * from "./ocr/index.js";
+
 export * from "./approvals.js";
 
 export * from "./auditLogs/auditLogs.js";
@@ -41,5 +49,7 @@ export * from "./general-utils/i18n.js";
 export * from "./email/index.js";
 
 export * from "./hr/index.js";
+
+export * from "./crm/index.js";
 
 export * from "./test-helpers/integration-setup.js";

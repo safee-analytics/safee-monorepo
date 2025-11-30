@@ -157,4 +157,41 @@ export const queryKeys = {
   integrations: {
     all: ["integrations"] as const,
   },
+  crm: {
+    leads: (params?: {
+      type?: "lead" | "opportunity";
+      stageId?: number;
+      teamId?: number;
+      userId?: number;
+      partnerId?: number;
+      active?: boolean;
+    }) => ["crm", "leads", params] as const,
+    lead: (id: number) => ["crm", "leads", id] as const,
+    stages: (params?: { teamId?: number; isWon?: boolean }) => ["crm", "stages", params] as const,
+    stage: (id: number) => ["crm", "stages", id] as const,
+    contacts: (params?: { isCustomer?: boolean; isSupplier?: boolean; isCompany?: boolean }) =>
+      ["crm", "contacts", params] as const,
+    contact: (id: number) => ["crm", "contacts", id] as const,
+    activities: (params?: { leadId?: number; userId?: number; state?: string }) =>
+      ["crm", "activities", params] as const,
+    activity: (id: number) => ["crm", "activities", id] as const,
+    teams: (params?: { active?: boolean }) => ["crm", "teams", params] as const,
+    team: (id: number) => ["crm", "teams", id] as const,
+    lostReasons: (params?: { active?: boolean }) => ["crm", "lost-reasons", params] as const,
+    lostReason: (id: number) => ["crm", "lost-reasons", id] as const,
+  },
+  dashboard: {
+    stats: () => ["dashboard", "stats"] as const,
+    activity: (limit?: number) => ["dashboard", "activity", limit] as const,
+  },
+  auditPlans: {
+    all: () => ["audit-plans"] as const,
+    detail: (id: string) => ["audit-plans", id] as const,
+    templates: () => ["audit-plans", "templates"] as const,
+    template: (id: string) => ["audit-plans", "templates", id] as const,
+  },
+  collaboration: {
+    activities: (caseId: string) => ["collaboration", "activities", caseId] as const,
+    presence: (caseId: string) => ["collaboration", "presence", caseId] as const,
+  },
 } as const;

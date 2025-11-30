@@ -5,6 +5,7 @@ const monorepoRoot = path.join(__dirname, "..");
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: monorepoRoot,
+  output: "standalone",
 };
 
 export default nextConfig;

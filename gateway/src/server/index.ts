@@ -24,7 +24,6 @@ import { loggingMiddleware } from "./middleware/logging.js";
 import type { AuthenticatedRequest } from "./middleware/auth.js";
 import { ApiError } from "./errors.js";
 import swaggerDocument from "./swagger.json" with { type: "json" };
-import pg from "pg";
 import { initServerContext } from "./serverContext.js";
 import { initOdooClientManager } from "./services/odoo/manager.service.js";
 import { hoursToMilliseconds } from "date-fns";
@@ -45,21 +44,12 @@ type Dependencies = {
   logger: Logger<"http">;
   redis: RedisClient;
   drizzle: DrizzleClient;
-  pool: pg.Pool;
   storage: Storage;
   pubsub: PubSub;
   scheduler: JobScheduler;
 };
 
-export async function server({
-  logger,
-  redis,
-  drizzle,
-  pool: _pool,
-  storage,
-  pubsub,
-  scheduler,
-}: Dependencies) {
+export async function server({ logger, redis, drizzle, storage, pubsub, scheduler }: Dependencies) {
   logger.info("Configuring Safee Analytics API server");
 
   const app: Application = express();

@@ -56,7 +56,7 @@ const Header = ({ todosCount }: { todosCount: number }) => {
     <div className="mb-4">
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-900">Today's Tasks</h3>
+          <h3 className="text-lg font-semibold text-gray-900">Today&apos;s Tasks</h3>
           <p className="text-sm text-gray-600">
             {todosCount} {todosCount === 1 ? "task" : "tasks"} remaining
           </p>
@@ -262,7 +262,9 @@ const Todo = ({
       ref={scope}
       layout
       className={`relative flex w-full items-center gap-3 rounded-lg border p-3 transition-all ${
-        checked ? "bg-gray-50 border-gray-200" : "bg-white border-gray-200 hover:border-safee-300 hover:shadow-sm"
+        checked
+          ? "bg-gray-50 border-gray-200"
+          : "bg-white border-gray-200 hover:border-safee-300 hover:shadow-sm"
       }`}
     >
       <button
@@ -276,7 +278,9 @@ const Todo = ({
         {checked && <FiCheck className="w-3 h-3 text-white" />}
       </button>
 
-      <p className={`text-sm flex-1 transition-all ${checked ? "text-gray-400 line-through" : "text-gray-900"}`}>
+      <p
+        className={`text-sm flex-1 transition-all ${checked ? "text-gray-400 line-through" : "text-gray-900"}`}
+      >
         {children}
       </p>
 

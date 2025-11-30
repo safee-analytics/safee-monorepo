@@ -1,6 +1,13 @@
+import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../client";
 import { queryKeys } from "./queryKeys";
+import {
+  useChangePassword,
+  useListSessions,
+  useRevokeSession,
+  useSession,
+} from "./auth";
 
 // Types
 export interface SecuritySettings {
@@ -32,20 +39,21 @@ export function useGetSecuritySettings() {
   return useQuery<SecuritySettings>({
     queryKey: queryKeys.security.settings,
     queryFn: async () => {
-      const response = await apiClient.get("/security/settings");
+      const response = await apiClient.GET("/security/settings", {});
+      if (!response.data) throw new Error("Failed to fetch security settings");
       return response.data;
     },
   });
 }
 
-// Update security settings
+// Update security settings (not yet implemented in backend)
 export function useUpdateSecuritySettings() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (settings: SecuritySettings) => {
-      const response = await apiClient.put("/security/settings", settings);
-      return response.data;
+    mutationFn: async (_settings: SecuritySettings) => {
+      // TODO: Implement PUT /security/settings in backend
+      throw new Error("Not yet implemented");
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.security.settings });
@@ -53,68 +61,34 @@ export function useUpdateSecuritySettings() {
   });
 }
 
-// Get active sessions
+// Note: Session management, password change, and 2FA hooks are provided by better-auth
+// Import from './auth' instead:
+// - useListSessions (or create useGetActiveSessions alias)
+// - useRevokeSession
+// - useChangePassword
+// - useTwoFactor
+export { useChangePassword, useRevokeSession };
+
 export function useGetActiveSessions() {
-  return useQuery<Session[]>({
-    queryKey: queryKeys.security.sessions,
-    queryFn: async () => {
-      const response = await apiClient.get("/security/sessions");
-      return response.data;
-    },
-  });
-}
+  const { data: sessions, isLoading } = useListSessions();
+  const { data: currentSession } = useSession();
 
-// Revoke session
-export function useRevokeSession() {
-  const queryClient = useQueryClient();
+  const mappedSessions = useMemo(() => {
+    if (!sessions) return [];
+    // sessions is already an array of session objects
+    const sessionArray = Array.isArray(sessions) ? sessions : [];
+    return sessionArray.map((s: { id: string; userAgent?: string | null; ipAddress?: string | null; updatedAt: Date }) => {
+      const userAgent = s.userAgent || "Unknown device";
+      const ipAddress = s.ipAddress || "Unknown location";
+      return {
+        id: s.id,
+        device: userAgent,
+        location: ipAddress,
+        lastActive: new Date(s.updatedAt).toLocaleString(),
+        current: s.id === currentSession?.session?.id,
+      };
+    });
+  }, [sessions, currentSession]);
 
-  return useMutation({
-    mutationFn: async (sessionId: string) => {
-      const response = await apiClient.delete(`/security/sessions/${sessionId}`);
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.security.sessions });
-    },
-  });
-}
-
-// Change password
-export function useChangePassword() {
-  return useMutation({
-    mutationFn: async (request: ChangePasswordRequest) => {
-      const response = await apiClient.post("/security/change-password", request);
-      return response.data;
-    },
-  });
-}
-
-// Enable two-factor authentication
-export function useEnableTwoFactor() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async () => {
-      const response = await apiClient.post("/security/two-factor/enable");
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.security.settings });
-    },
-  });
-}
-
-// Disable two-factor authentication
-export function useDisableTwoFactor() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async () => {
-      const response = await apiClient.post("/security/two-factor/disable");
-      return response.data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.security.settings });
-    },
-  });
+  return { data: mappedSessions, isLoading };
 }

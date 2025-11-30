@@ -17,7 +17,10 @@ export const RecentActivityWidget = () => {
 
       <div className="space-y-2 flex-1">
         {activities.map((activity, idx) => (
-          <div key={idx} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors">
+          <div
+            key={idx}
+            className="flex items-center justify-between p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors"
+          >
             <span className="text-sm text-gray-700">{activity.name}</span>
             <span className={`text-sm font-semibold ${activity.color}`}>{activity.amount}</span>
           </div>

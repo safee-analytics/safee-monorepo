@@ -7,14 +7,14 @@ export const auditTemplates = auditSchema.table(
   "audit_templates",
   {
     id: idpk("id"),
-    organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade" }), // null = global template
+    organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade" }),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description"),
     auditType: auditTypeEnum("audit_type").notNull(),
     category: auditCategoryEnum("category"),
     version: varchar("version", { length: 50 }).notNull().default("1.0"),
     isActive: boolean("is_active").notNull().default(true),
-    isPublic: boolean("is_public").notNull().default(false), // Available to all organizations
+    isPublic: boolean("is_public").notNull().default(false),
     structure: jsonb("structure").notNull().$type<{
       sections: {
         name: string;

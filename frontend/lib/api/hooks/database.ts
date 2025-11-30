@@ -34,8 +34,9 @@ export function useGetDatabaseStats() {
   return useQuery<DatabaseStats>({
     queryKey: queryKeys.database.stats,
     queryFn: async () => {
-      const response = await apiClient.get("/database/stats");
-      return response.data;
+      const { data, error } = await apiClient.GET("/database/stats", {});
+      if (error) throw new Error(String(error));
+      return data;
     },
   });
 }
@@ -45,8 +46,9 @@ export function useGetBackupSettings() {
   return useQuery<BackupSettings>({
     queryKey: queryKeys.database.backupSettings,
     queryFn: async () => {
-      const response = await apiClient.get("/database/backup/settings");
-      return response.data;
+      const { data, error } = await apiClient.GET("/database/backup/settings", {});
+      if (error) throw new Error(String(error));
+      return data;
     },
   });
 }
@@ -57,7 +59,7 @@ export function useUpdateBackupSettings() {
 
   return useMutation({
     mutationFn: async (settings: BackupSettings) => {
-      const response = await apiClient.put("/database/backup/settings", settings);
+      const response = await apiClient.PUT("/database/backup/settings", { body: settings });
       return response.data;
     },
     onSuccess: () => {
@@ -71,8 +73,9 @@ export function useGetBackupHistory() {
   return useQuery<Backup[]>({
     queryKey: queryKeys.database.backups,
     queryFn: async () => {
-      const response = await apiClient.get("/database/backups");
-      return response.data;
+      const { data, error } = await apiClient.GET("/database/backups", {});
+      if (error) throw new Error(String(error));
+      return data;
     },
   });
 }
@@ -83,7 +86,7 @@ export function useCreateBackup() {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await apiClient.post("/database/backup");
+      const response = await apiClient.POST("/database/backup", {});
       return response.data;
     },
     onSuccess: () => {
@@ -96,7 +99,13 @@ export function useCreateBackup() {
 export function useRestoreBackup() {
   return useMutation({
     mutationFn: async (backupId: string) => {
-      const response = await apiClient.post(`/database/backup/${backupId}/restore`);
+      const response = await apiClient.POST("/database/backup/{backupId}/restore", {
+        params: {
+          path: {
+            backupId,
+          },
+        },
+      });
       return response.data;
     },
   });
@@ -106,18 +115,25 @@ export function useRestoreBackup() {
 export function useDownloadBackup() {
   return useMutation({
     mutationFn: async (backupId: string) => {
-      const response = await apiClient.get(`/database/backup/${backupId}/download`, {
-        responseType: "blob",
+      const response = await apiClient.GET("/database/backup/{backupId}/download", {
+        params: {
+          path: {
+            backupId,
+          },
+        },
+        parseAs: "blob",
       });
 
       // Create download link
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", `backup-${backupId}.sql.gz`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
+      if (response.data) {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", `backup-${backupId}.sql.gz`);
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+      }
 
       return response.data;
     },
@@ -130,7 +146,7 @@ export function useOptimizeDatabase() {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await apiClient.post("/database/optimize");
+      const response = await apiClient.POST("/database/optimize", {});
       return response.data;
     },
     onSuccess: () => {
@@ -145,7 +161,7 @@ export function useRunMaintenance() {
 
   return useMutation({
     mutationFn: async () => {
-      const response = await apiClient.post("/database/maintenance");
+      const response = await apiClient.POST("/database/maintenance", {});
       return response.data;
     },
     onSuccess: () => {
