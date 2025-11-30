@@ -2,7 +2,9 @@
 
 import { useRequireAuth } from "@/lib/auth/hooks";
 import { useState, useEffect } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { DashboardSkeleton } from "@/components/dashboard/DashboardSkeleton";
+import { authClient } from "@/lib/auth/client";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -17,23 +19,60 @@ export function ProtectedRoute({
 }: ProtectedRouteProps) {
   const { isAuthenticated, isLoading } = useRequireAuth(redirectTo);
   const [mounted, setMounted] = useState(false);
+  const [checkingOrganization, setCheckingOrganization] = useState(true);
+  const router = useRouter();
+  const pathname = usePathname();
 
   // Wait for client-side mount to avoid hydration mismatch
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  // During SSR or before mount, render nothing to avoid hydration mismatch
-  if (!mounted) {
-    return null;
-  }
+  // Check if user has an organization
+  useEffect(() => {
+    async function checkOrganization() {
+      // Skip check if not authenticated or still loading
+      if (!isAuthenticated || isLoading) {
+        setCheckingOrganization(false);
+        return;
+      }
 
-  if (isLoading) {
+      // Skip check if already on onboarding page
+      if (pathname === "/onboarding") {
+        setCheckingOrganization(false);
+        return;
+      }
+
+      try {
+        // Get user's active organization
+        const { data } = await authClient.organization.getFullOrganization();
+
+        // If no organization, redirect to onboarding
+        if (!data) {
+          router.push("/onboarding");
+          return;
+        }
+
+        setCheckingOrganization(false);
+      } catch (error) {
+        console.error("Error checking organization:", error);
+        // If error, redirect to onboarding to be safe
+        router.push("/onboarding");
+      }
+    }
+
+    checkOrganization();
+  }, [isAuthenticated, isLoading, pathname, router]);
+
+  // Show loading state during SSR, initial mount, auth check, or organization check
+  // This prevents the flash of login screen
+  if (!mounted || isLoading || checkingOrganization) {
     return <>{fallback}</>;
   }
 
+  // If not authenticated after all checks are complete, let useRequireAuth handle redirect
   if (!isAuthenticated) {
-    return null;
+    return <>{fallback}</>;
   }
 
   return <>{children}</>;
