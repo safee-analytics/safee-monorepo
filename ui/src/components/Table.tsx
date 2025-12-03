@@ -31,20 +31,20 @@ export function Table<T>({
   striped = false,
 }: TableProps<T>) {
   const RowComponent = animated ? motion.tr : "tr";
-  const getRowProps = (row: T, index: number) => {
+  function getRowProps(row: T, index: number) {
     const key = keyExtractor(row, index);
-    return animated ? { layout: true, layoutId: `row-${key}` } : {};
-  };
+    return animated ? { layout: true, layoutId: `row-${String(key)}` } : {};
+  }
 
   return (
     <div className={`w-full bg-white shadow-lg rounded-lg overflow-x-auto ${className}`}>
       <table className="w-full">
         <thead>
           <tr className="border-b border-gray-200 text-gray-600 text-sm">
-            {columns.map((column, idx) => (
+            {columns.map((column, rowIndex) => (
               <th
-                key={`header-${String(column.key)}-${idx}`}
-                className={`text-left p-4 font-medium uppercase tracking-wider ${column.headerClassName || ""}`}
+                key={`header-${String(column.key)}-${rowIndex}`}
+                className={`text-left p-4 font-medium uppercase tracking-wider ${column.headerClassName ?? ""}`}
               >
                 {column.header}
               </th>
@@ -66,7 +66,7 @@ export function Table<T>({
                 {columns.map((column, colIdx) => (
                   <td
                     key={`cell-${key}-${String(column.key)}-${colIdx}`}
-                    className={`p-4 ${column.className || ""}`}
+                    className={`p-4 ${column.className ?? ""}`}
                   >
                     {column.render ? column.render(row, index) : (row[column.key] as ReactNode)}
                   </td>
@@ -88,12 +88,12 @@ interface PaginationProps {
   className?: string;
 }
 
-export function Pagination({ currentPage, totalPages, onPageChange, className = "" }: PaginationProps) {
+export function Pagination({ currentPage, totalPages, onPageChange, className }: PaginationProps) {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
   const visiblePages = pages.slice(Math.max(0, currentPage - 2), Math.min(totalPages, currentPage + 1));
 
   return (
-    <div className={`flex items-center justify-between ${className}`}>
+    <div className={`flex items-center justify-between ${className ?? ""}`}>
       <button
         onClick={() => { onPageChange(currentPage - 1); }}
         disabled={currentPage === 1}

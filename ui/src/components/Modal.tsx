@@ -70,10 +70,10 @@ export function Modal({
             className={`bg-white rounded-lg w-full ${sizeClasses[size]} shadow-2xl ${className}`}
           >
             {/* Header */}
-            {(title || showCloseButton) && (
+            {(title ?? showCloseButton) ? (
               <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                {title && <h2 className="text-xl font-semibold text-gray-900">{title}</h2>}
-                {showCloseButton && (
+                {title ? <h2 className="text-xl font-semibold text-gray-900">{title}</h2> : null}
+                {showCloseButton ? (
                   <button
                     onClick={onClose}
                     className="p-2 rounded-lg hover:bg-gray-100 transition-colors ml-auto"
@@ -81,9 +81,9 @@ export function Modal({
                   >
                     <X size={20} className="text-gray-500" />
                   </button>
-                )}
+                ) : null}
               </div>
-            )}
+            ) : null}
 
             {/* Content */}
             <div className="p-6">{children}</div>
@@ -102,10 +102,10 @@ export interface ModalFooterProps {
   className?: string;
 }
 
-export function ModalFooter({ children, className = "" }: ModalFooterProps) {
+export function ModalFooter({ children, className }: ModalFooterProps) {
   return (
     <div
-      className={`flex items-center justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg ${className}`}
+      className={`flex items-center justify-end gap-3 px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg ${className ?? ""}`}
     >
       {children}
     </div>

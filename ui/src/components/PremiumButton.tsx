@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, MotionProps } from "framer-motion";
+import { motion } from "framer-motion";
 import { ReactNode, ButtonHTMLAttributes, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { springs, tapScale } from "../utils/animations";
+import { springs } from "../utils/animations";
 
 export interface PremiumButtonProps
   extends Omit<
@@ -85,9 +85,9 @@ export function PremiumButton({
         }
       : {};
 
-  const isDisabled = disabled || loading;
+  const isDisabled = disabled ?? loading;
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+  function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
     if (isDisabled || !onClick) return;
 
     // Create ripple effect
@@ -105,7 +105,7 @@ export function PremiumButton({
     }
 
     onClick(e);
-  };
+  }
 
   return (
     <motion.button
@@ -174,7 +174,11 @@ export function PremiumButton({
           animate={{ opacity: 1, scale: 1 }}
           transition={springs.bouncy}
         >
-          <Loader2 className="animate-spin" size={size === "sm" ? 16 : size === "lg" ? 20 : 18} />
+          {(() => {
+            if (size === "sm") return <Loader2 className="animate-spin" size={16} />;
+            if (size === "lg") return <Loader2 className="animate-spin" size={20} />;
+            return <Loader2 className="animate-spin" size={18} />;
+          })()}
         </motion.div>
       )}
 
@@ -255,7 +259,7 @@ export function FAB({
       >
         {icon}
       </motion.span>
-      {extended && label && (
+      {extended && label ? (
         <motion.span
           initial={{ opacity: 0, width: 0 }}
           animate={{ opacity: 1, width: "auto" }}
@@ -264,7 +268,7 @@ export function FAB({
         >
           {label}
         </motion.span>
-      )}
+      ) : null}
     </motion.button>
   );
 }

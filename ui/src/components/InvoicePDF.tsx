@@ -172,13 +172,14 @@ export interface InvoicePDFProps {
   invoice: InvoiceData;
 }
 
-export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
-  const currency = invoice.currency || "USD";
-  const formatCurrency = (amount: number) =>
-    new Intl.NumberFormat("en-US", {
+export function InvoicePDF({ invoice }: InvoicePDFProps) {
+  const currency = invoice.currency ?? "USD";
+  function formatCurrency(amount: number) {
+    return new Intl.NumberFormat("en-US", {
       style: "currency",
       currency,
     }).format(amount);
+  }
 
   return (
     <Document>
@@ -271,4 +272,4 @@ export const InvoicePDF: React.FC<InvoicePDFProps> = ({ invoice }) => {
       </Page>
     </Document>
   );
-};
+}

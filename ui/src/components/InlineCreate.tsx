@@ -50,7 +50,7 @@ export function InlineCreateRow({
     }
   }, [isEditing]);
 
-  const handleSubmit = async () => {
+  async function handleSubmit() {
     if (!value.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
@@ -58,27 +58,27 @@ export function InlineCreateRow({
       await onSubmit(value.trim());
       setValue("");
       setIsEditing(false);
-    } catch (err) {
-      console.error("Failed to create:", err);
+    } catch {
+      // Silently handle error
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+  function handleKeyDown(e: KeyboardEvent<HTMLInputElement>) {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit();
+      void handleSubmit();
     } else if (e.key === "Escape") {
       setValue("");
       setIsEditing(false);
     }
-  };
+  }
 
-  const handleCancel = () => {
+  function handleCancel() {
     setValue("");
     setIsEditing(false);
-  };
+  }
 
   if (!isEditing) {
     return (
@@ -117,7 +117,7 @@ export function InlineCreateRow({
             autoFocus={autoFocus}
           />
           <motion.button
-            onClick={handleSubmit}
+            onClick={() => { void handleSubmit(); }}
             disabled={!value.trim() || isSubmitting}
             className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             whileHover={{ scale: 1.05 }}
@@ -169,7 +169,7 @@ export function InlineCreateCard({
     }
   }, [isEditing]);
 
-  const handleSubmit = async () => {
+  async function handleSubmit() {
     if (!value.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
@@ -177,22 +177,22 @@ export function InlineCreateCard({
       await onSubmit(value.trim());
       setValue("");
       setIsEditing(false);
-    } catch (err) {
-      console.error("Failed to create:", err);
+    } catch {
+      // Silently handle error
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+  function handleKeyDown(e: KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) {
       e.preventDefault();
-      handleSubmit();
+      void handleSubmit();
     } else if (e.key === "Escape") {
       setValue("");
       setIsEditing(false);
     }
-  };
+  }
 
   if (!isEditing) {
     return (
@@ -242,7 +242,7 @@ export function InlineCreateCard({
             Cancel
           </motion.button>
           <motion.button
-            onClick={handleSubmit}
+            onClick={() => { void handleSubmit(); }}
             disabled={!value.trim() || isSubmitting}
             className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             whileTap={{ scale: 0.95 }}
@@ -266,15 +266,15 @@ export interface QuickAddButtonProps {
 
 export function QuickAddButton({ onClick, label = "New", shortcut = "N" }: QuickAddButtonProps) {
   useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
+    function handleKeyDown(e: KeyboardEvent) {
       if (e.key === shortcut.toLowerCase() && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         onClick();
       }
-    };
+    }
 
-    document.addEventListener("keydown", handleKeyDown as any);
-    return () => { document.removeEventListener("keydown", handleKeyDown as any); };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => { document.removeEventListener("keydown", handleKeyDown); };
   }, [onClick, shortcut]);
 
   return (

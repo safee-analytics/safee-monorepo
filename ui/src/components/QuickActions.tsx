@@ -49,7 +49,9 @@ export function QuickActions({ actions, isOpen, onClose }: QuickActionsProps) {
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const filtered = actions.filter((a) => a.label.toLowerCase().includes(search.toLowerCase()));
+  const filtered = actions.filter((a) =>
+    a.label.toLowerCase().includes(search.toLowerCase())
+  );
 
   useEffect(() => {
     if (isOpen) {
@@ -62,7 +64,7 @@ export function QuickActions({ actions, isOpen, onClose }: QuickActionsProps) {
   useEffect(() => {
     if (!isOpen) return;
 
-    const handle = (e: KeyboardEvent) => {
+    function handle(e: KeyboardEvent) {
       if (e.key === "Escape") {
         onClose();
       } else if (e.key === "ArrowDown") {
@@ -76,7 +78,7 @@ export function QuickActions({ actions, isOpen, onClose }: QuickActionsProps) {
         filtered[selected].onExecute();
         onClose();
       }
-    };
+    }
 
     document.addEventListener("keydown", handle);
     return () => { document.removeEventListener("keydown", handle); };
@@ -170,12 +172,12 @@ export function QuickActions({ actions, isOpen, onClose }: QuickActionsProps) {
  */
 export function useQuickActions(onOpen: () => void) {
   useEffect(() => {
-    const handle = (e: KeyboardEvent) => {
+    function handle(e: KeyboardEvent) {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         onOpen();
       }
-    };
+    }
 
     document.addEventListener("keydown", handle);
     return () => { document.removeEventListener("keydown", handle); };

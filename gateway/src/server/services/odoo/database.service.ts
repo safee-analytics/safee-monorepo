@@ -118,7 +118,7 @@ export class OdooDatabaseService {
 
       // Portal
       "portal",
-      "website", // Required for portal
+      // "website", // Disabled: has broken dependencies (website_blog) in current Odoo version
 
       // ========================================
       // Custom Modules from /custom_addons

@@ -49,7 +49,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     setToasts((prev) => [...prev, newToast]);
 
     // Auto remove after duration
-    const duration = toast.duration || 5000;
+    const duration = toast.duration ?? 5000;
     setTimeout(() => {
       removeToast(id);
     }, duration);
@@ -203,7 +203,7 @@ function ToastItem({ toast, onClose }: ToastItemProps) {
         className="absolute bottom-0 left-0 h-1 bg-gradient-to-r from-blue-600 to-purple-600"
         initial={{ width: "100%" }}
         animate={{ width: "0%" }}
-        transition={{ duration: (toast.duration || 5000) / 1000, ease: "linear" }}
+        transition={{ duration: (toast.duration ?? 5000) / 1000, ease: "linear" }}
       />
     </motion.div>
   );

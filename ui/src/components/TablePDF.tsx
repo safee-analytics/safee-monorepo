@@ -8,14 +8,14 @@ export interface TableColumn {
   key: string;
   width?: number; // flex value or percentage
   align?: "left" | "center" | "right";
-  format?: (value: any) => string;
+  format?: (value: unknown) => string;
 }
 
 export interface TablePDFData {
   title?: string;
   subtitle?: string;
   columns: TableColumn[];
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   footer?: string;
   orientation?: "portrait" | "landscape";
 }
@@ -90,48 +90,54 @@ export interface TablePDFProps {
   data: TablePDFData;
 }
 
-export const TablePDF: React.FC<TablePDFProps> = ({ data }) => {
-  const getTotalFlex = () => {
-    return data.columns.reduce((sum, col) => sum + (col.width || 1), 0);
-  };
-
-  const getColumnStyle = (column: TableColumn) => {
-    const flex = column.width || 1;
-    const textAlign = column.align || "left";
+export function TablePDF({ data }: TablePDFProps) {
+  function getColumnStyle(column: TableColumn) {
+    const flex = column.width ?? 1;
+    const textAlign = column.align ?? "left";
     return {
       flex,
       textAlign,
       paddingHorizontal: 5,
     };
-  };
+  }
 
-  const formatValue = (value: any, column: TableColumn): string => {
+  function formatValue(value: unknown, column: TableColumn): string {
     if (column.format) {
       return column.format(value);
     }
     if (value === null || value === undefined) {
       return "-";
     }
-    return String(value);
-  };
+    if (typeof value === "object") {
+      try {
+        return JSON.stringify(value);
+      } catch {
+        return "[object]";
+      }
+    }
+    if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+      return String(value);
+    }
+    return "";
+  }
 
   return (
     <Document>
-      <Page size="A4" orientation={data.orientation || "portrait"} style={styles.page}>
+      <Page size="A4" orientation={data.orientation ?? "portrait"} style={styles.page}>
         {/* Header */}
-        {(data.title || data.subtitle) && (
+        {(data.title ?? data.subtitle) ? (
           <View style={styles.header}>
-            {data.title && <Text style={styles.title}>{data.title}</Text>}
-            {data.subtitle && <Text style={styles.subtitle}>{data.subtitle}</Text>}
+            {data.title ? <Text style={styles.title}>{data.title}</Text> : null}
+            {data.subtitle ? <Text style={styles.subtitle}>{data.subtitle}</Text> : null}
           </View>
-        )}
+        ) : null}
 
         {/* Table */}
         <View style={styles.table}>
           {/* Table Header */}
           <View style={styles.tableHeader}>
-            {data.columns.map((column, index) => (
-              <Text key={index} style={getColumnStyle(column)}>
+            {data.columns.map((column, _index) => (
+              <Text key={column.key} style={getColumnStyle(column)}>
                 {column.header}
               </Text>
             ))}
@@ -140,8 +146,8 @@ export const TablePDF: React.FC<TablePDFProps> = ({ data }) => {
           {/* Table Rows */}
           {data.data.map((row, rowIndex) => (
             <View key={rowIndex} style={rowIndex % 2 === 0 ? styles.tableRow : styles.tableRowAlt}>
-              {data.columns.map((column, colIndex) => (
-                <Text key={colIndex} style={getColumnStyle(column)}>
+              {data.columns.map((column) => (
+                <Text key={column.key} style={getColumnStyle(column)}>
                   {formatValue(row[column.key], column)}
                 </Text>
               ))}
@@ -150,11 +156,11 @@ export const TablePDF: React.FC<TablePDFProps> = ({ data }) => {
         </View>
 
         {/* Footer */}
-        {data.footer && (
+        {data.footer ? (
           <View style={styles.footer}>
             <Text>{data.footer}</Text>
           </View>
-        )}
+        ) : null}
 
         {/* Page Number */}
         <Text
@@ -165,4 +171,4 @@ export const TablePDF: React.FC<TablePDFProps> = ({ data }) => {
       </Page>
     </Document>
   );
-};
+}

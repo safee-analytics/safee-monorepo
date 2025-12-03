@@ -44,7 +44,7 @@ export const auth = betterAuth({
 
   // User schema configuration
   user: {
-    modelName: "users",
+    modelName: "user",
     fields: userFields,
     additionalFields: userAdditionalFields,
     changeEmail: {
@@ -91,7 +91,7 @@ export const auth = betterAuth({
 
   // Session configuration
   session: {
-    modelName: "sessions",
+    modelName: "session",
     expiresIn: sessionConfig.expiresIn,
     updateAge: sessionConfig.updateAge,
     cookieCache: sessionConfig.cookieCache,

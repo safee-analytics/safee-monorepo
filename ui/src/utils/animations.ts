@@ -3,7 +3,7 @@
  * Premium motion configurations for smooth, professional animations
  */
 
-import type { Transition, Variants } from "framer-motion";
+import type { Transition as _Transition, Variants } from "framer-motion";
 
 // ============================================
 // SPRING PHYSICS - Natural, smooth motion

@@ -25,9 +25,9 @@ export async function downloadPDF(
   const a = window.document.createElement("a");
   a.href = url;
   a.download = filename.endsWith(".pdf") ? filename : `${filename}.pdf`;
-  window.document.body?.appendChild(a);
+  window.document.body.appendChild(a);
   a.click();
-  window.document.body?.removeChild(a);
+  window.document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 

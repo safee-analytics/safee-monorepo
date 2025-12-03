@@ -1,4 +1,4 @@
-import ExcelJS from "exceljs";
+import * as ExcelJS from "exceljs";
 
 export interface ExcelColumn {
   header: string;
@@ -11,7 +11,7 @@ export interface ExcelExportOptions {
   filename: string;
   sheetName?: string;
   columns: ExcelColumn[];
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   headerStyle?: Partial<ExcelJS.Style>;
   autoFilter?: boolean;
   freezeHeader?: boolean;
@@ -39,14 +39,14 @@ export async function exportToExcel(options: ExcelExportOptions): Promise<void> 
   worksheet.columns = columns.map((col) => ({
     header: col.header,
     key: col.key,
-    width: col.width || 15,
+    width: col.width ?? 15,
     style: col.style,
   }));
 
   // Style header row
   const headerRow = worksheet.getRow(1);
   headerRow.font = { bold: true, ...headerStyle?.font };
-  headerRow.fill = headerStyle?.fill || {
+  headerRow.fill = headerStyle?.fill ?? {
     type: "pattern",
     pattern: "solid",
     fgColor: { argb: "FF0070C0" },
@@ -81,8 +81,8 @@ export async function exportToExcel(options: ExcelExportOptions): Promise<void> 
  * @param data - Array of objects to export
  * @param filename - Name of the file (without extension)
  */
-export async function simpleExportToExcel(data: Record<string, any>[], filename: string): Promise<void> {
-  if (!data || data.length === 0) {
+export async function simpleExportToExcel(data: Record<string, unknown>[], filename: string): Promise<void> {
+  if (data.length === 0) {
     throw new Error("No data to export");
   }
 
@@ -107,7 +107,7 @@ export async function exportWithConditionalFormatting(
   options: ExcelExportOptions & {
     conditionalRules?: {
       column: string;
-      condition: (value: any) => boolean;
+      condition: (value: unknown) => boolean;
       style: Partial<ExcelJS.Style>;
     }[];
   },
@@ -115,13 +115,13 @@ export async function exportWithConditionalFormatting(
   const { conditionalRules, ...exportOptions } = options;
 
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet(exportOptions.sheetName || "Sheet1");
+  const worksheet = workbook.addWorksheet(exportOptions.sheetName ?? "Sheet1");
 
   // Set up columns
   worksheet.columns = exportOptions.columns.map((col) => ({
     header: col.header,
     key: col.key,
-    width: col.width || 15,
+    width: col.width ?? 15,
   }));
 
   // Style header
@@ -134,18 +134,19 @@ export async function exportWithConditionalFormatting(
   };
 
   // Add data and apply conditional formatting
-  for (const [index, item] of exportOptions.data.entries()) {
+  for (const [_index, item] of exportOptions.data.entries()) {
     const row = worksheet.addRow(item);
-    const rowNumber = index + 2; // +2 because header is row 1 and data starts at row 2
 
     // Apply conditional rules
-    if (conditionalRules) for (const rule of conditionalRules) {
-      const columnIndex = exportOptions.columns.findIndex((col) => col.key === rule.column);
-      if (columnIndex !== -1 && rule.condition(item[rule.column])) {
-        const cell = row.getCell(columnIndex + 1);
-        if (rule.style.fill) cell.fill = rule.style.fill;
-        if (rule.style.font) cell.font = rule.style.font;
-        if (rule.style.border) cell.border = rule.style.border;
+    if (conditionalRules) {
+      for (const rule of conditionalRules) {
+        const columnIndex = exportOptions.columns.findIndex((col) => col.key === rule.column);
+        if (columnIndex !== -1 && rule.condition(item[rule.column])) {
+          const cell = row.getCell(columnIndex + 1);
+          if (rule.style.fill) cell.fill = rule.style.fill;
+          if (rule.style.font) cell.font = rule.style.font;
+          if (rule.style.border) cell.border = rule.style.border;
+        }
       }
     }
   }
@@ -160,13 +161,13 @@ export async function exportWithConditionalFormatting(
  * @param file - File object from input element
  * @returns Parsed data as array of objects
  */
-export async function importFromExcel(file: File): Promise<Record<string, any>[]> {
+export async function importFromExcel(file: File): Promise<Record<string, unknown>[]> {
   const buffer = await file.arrayBuffer();
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.load(buffer);
 
   const worksheet = workbook.worksheets[0];
-  const data: Record<string, any>[] = [];
+  const data: Record<string, unknown>[] = [];
 
   // Get headers from first row
   const headers: string[] = [];
@@ -175,10 +176,10 @@ export async function importFromExcel(file: File): Promise<Record<string, any>[]
   });
 
   // Parse data rows
-  worksheet.eachRow((row, rowNumber) => {
-    if (rowNumber === 1) return; // Skip header row
+  worksheet.eachRow((row, _rowNumber) => {
+    if (_rowNumber === 1) return; // Skip header row
 
-    const rowData: Record<string, any> = {};
+    const rowData: Record<string, unknown> = {};
     row.eachCell((cell, colNumber) => {
       const header = headers[colNumber - 1];
       if (header) {

@@ -15,18 +15,18 @@ export interface PDFDownloadButtonProps {
 /**
  * A wrapper component for PDFDownloadLink that provides a consistent UI
  */
-export const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
+export function PDFDownloadButton({
   document,
   fileName,
   children,
-  className = "",
+  className,
   loadingText = "Generating PDF...",
   onError,
-}) => {
+}: PDFDownloadButtonProps) {
   const defaultChildren = (
     <button
       type="button"
-      className={className || "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"}
+      className={className ?? "px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"}
     >
       Download PDF
     </button>
@@ -61,8 +61,8 @@ export const PDFDownloadButton: React.FC<PDFDownloadButtonProps> = ({
           );
         }
 
-        return children || defaultChildren;
+        return children ?? defaultChildren;
       }}
     </PDFDownloadLink>
   );
-};
+}

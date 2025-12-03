@@ -3,7 +3,7 @@ import type { ExcelColumn } from "../utils/excel";
 
 export interface ExcelPreviewProps {
   columns: ExcelColumn[];
-  data: Record<string, any>[];
+  data: Record<string, unknown>[];
   maxRows?: number;
   className?: string;
 }
@@ -11,12 +11,12 @@ export interface ExcelPreviewProps {
 /**
  * Component to preview Excel data in a table before exporting
  */
-export const ExcelPreview: React.FC<ExcelPreviewProps> = ({
+export function ExcelPreview({
   columns,
   data,
   maxRows = 10,
   className = "",
-}) => {
+}: ExcelPreviewProps) {
   const displayData = maxRows ? data.slice(0, maxRows) : data;
   const hasMore = maxRows && data.length > maxRows;
 
@@ -31,9 +31,9 @@ export const ExcelPreview: React.FC<ExcelPreviewProps> = ({
         <table className="min-w-full text-sm">
           <thead className="bg-blue-600 text-white">
             <tr>
-              {columns.map((column, idx) => (
+              {columns.map((column, rowIndex) => (
                 <th
-                  key={idx}
+                  key={rowIndex}
                   className="px-4 py-2 text-left font-semibold border-r border-blue-500 last:border-r-0"
                   style={{ width: column.width ? `${column.width}ch` : "auto" }}
                 >
@@ -63,14 +63,21 @@ export const ExcelPreview: React.FC<ExcelPreviewProps> = ({
       )}
     </div>
   );
-};
+}
 
-function formatCellValue(value: any): string {
+function formatCellValue(value: unknown): string {
   if (value === null || value === undefined) {
     return "-";
   }
   if (typeof value === "object") {
-    return JSON.stringify(value);
+    try {
+      return JSON.stringify(value);
+    } catch {
+      return "[object]";
+    }
   }
-  return String(value);
+  if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+    return String(value);
+  }
+  return "";
 }

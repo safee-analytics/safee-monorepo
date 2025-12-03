@@ -49,7 +49,7 @@ export function PremiumCard({
   const shineX = useTransform(mouseX, [-0.5, 0.5], [0, 100]);
   const shineY = useTransform(mouseY, [-0.5, 0.5], [0, 100]);
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+  function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     if (!tilt || !cardRef.current) return;
 
     const rect = cardRef.current.getBoundingClientRect();
@@ -58,12 +58,12 @@ export function PremiumCard({
 
     mouseX.set(x);
     mouseY.set(y);
-  };
+  }
 
-  const handleMouseLeave = () => {
+  function handleMouseLeave() {
     mouseX.set(0);
     mouseY.set(0);
-  };
+  }
 
   return (
     <motion.div
@@ -103,7 +103,7 @@ export function PremiumCard({
         <motion.div
           className="absolute inset-0 pointer-events-none"
           style={{
-            background: `radial-gradient(circle at ${shineX}% ${shineY}%, rgba(255, 255, 255, 0.3) 0%, transparent 50%)`,
+            background: `radial-gradient(circle at ${shineX.get()}% ${shineY.get()}%, rgba(255, 255, 255, 0.3) 0%, transparent 50%)`,
           }}
         />
       )}
@@ -236,17 +236,21 @@ export function StatCard({
         )}
       </div>
 
-      {change !== undefined && (
+      {change !== undefined ? (
         <motion.div
           className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-sm font-medium ${trendColors[trend]}`}
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2, ...springs.smooth }}
         >
-          <span>{change > 0 ? "↑" : change < 0 ? "↓" : "→"}</span>
+          <span>
+            {change > 0 ? "↑" : ""}
+            {change < 0 ? "↓" : ""}
+            {change === 0 ? "→" : ""}
+          </span>
           <span>{Math.abs(change)}%</span>
         </motion.div>
-      )}
+      ) : null}
     </PremiumCard>
   );
 }
