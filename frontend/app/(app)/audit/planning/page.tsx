@@ -250,11 +250,7 @@ export default function AuditPlanning() {
               disabled={isSaving}
               className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSaving ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <Save className="w-4 h-4" />
-              )}
+              {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
               Save Draft
             </button>
             <button
@@ -281,11 +277,7 @@ export default function AuditPlanning() {
           >
             <span
               className={`w-2 h-2 rounded-full ${
-                status === "draft"
-                  ? "bg-blue-600"
-                  : status === "in_review"
-                    ? "bg-yellow-600"
-                    : "bg-green-600"
+                status === "draft" ? "bg-blue-600" : status === "in_review" ? "bg-yellow-600" : "bg-green-600"
               }`}
             />
             {status === "draft" ? "Draft" : status === "in_review" ? "In Review" : "Approved"}

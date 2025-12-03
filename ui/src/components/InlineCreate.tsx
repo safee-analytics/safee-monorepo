@@ -58,8 +58,8 @@ export function InlineCreateRow({
       await onSubmit(value.trim());
       setValue("");
       setIsEditing(false);
-    } catch (error) {
-      console.error("Failed to create:", error);
+    } catch (err) {
+      console.error("Failed to create:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -85,7 +85,7 @@ export function InlineCreateRow({
       <tr className="border-t border-gray-200">
         <td colSpan={columns} className="p-0">
           <motion.button
-            onClick={() => setIsEditing(true)}
+            onClick={() => { setIsEditing(true); }}
             className="w-full px-4 py-3 text-left text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors flex items-center gap-2 group"
             whileHover={{ x: 2 }}
             transition={springs.snappy}
@@ -109,7 +109,7 @@ export function InlineCreateRow({
             ref={inputRef}
             type="text"
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => { setValue(e.target.value); }}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={isSubmitting}
@@ -177,8 +177,8 @@ export function InlineCreateCard({
       await onSubmit(value.trim());
       setValue("");
       setIsEditing(false);
-    } catch (error) {
-      console.error("Failed to create:", error);
+    } catch (err) {
+      console.error("Failed to create:", err);
     } finally {
       setIsSubmitting(false);
     }
@@ -197,7 +197,7 @@ export function InlineCreateCard({
   if (!isEditing) {
     return (
       <motion.button
-        onClick={() => setIsEditing(true)}
+        onClick={() => { setIsEditing(true); }}
         className="w-full px-3 py-2 text-left text-sm text-gray-500 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2"
         whileHover={{ scale: 1.01 }}
         transition={springs.snappy}
@@ -218,7 +218,7 @@ export function InlineCreateCard({
       <textarea
         ref={textareaRef}
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => { setValue(e.target.value); }}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={isSubmitting}
@@ -274,7 +274,7 @@ export function QuickAddButton({ onClick, label = "New", shortcut = "N" }: Quick
     };
 
     document.addEventListener("keydown", handleKeyDown as any);
-    return () => document.removeEventListener("keydown", handleKeyDown as any);
+    return () => { document.removeEventListener("keydown", handleKeyDown as any); };
   }, [onClick, shortcut]);
 
   return (

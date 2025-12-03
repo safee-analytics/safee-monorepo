@@ -13,7 +13,8 @@ const templates: ReportTemplate[] = [
     id: "financial",
     name: "Financial Audit Report",
     nameAr: "تقرير التدقيق المالي",
-    description: "Comprehensive financial audit with detailed balance sheet, income statement, and cash flow analysis",
+    description:
+      "Comprehensive financial audit with detailed balance sheet, income statement, and cash flow analysis",
     descriptionAr: "تدقيق مالي شامل مع تحليل مفصل للميزانية العمومية وبيان الدخل والتدفق النقدي",
     auditType: "financial_audit",
     preview: "📊 Cover | Executive Summary | Financial Statements | Findings | Recommendations",
@@ -50,7 +51,8 @@ const templates: ReportTemplate[] = [
     name: "Executive Summary Report",
     nameAr: "تقرير الملخص التنفيذي",
     description: "High-level overview report for stakeholders with key metrics and visual dashboards",
-    descriptionAr: "تقرير نظرة عامة رفيعة المستوى لأصحاب المصلحة مع المقاييس الرئيسية ولوحات المعلومات المرئية",
+    descriptionAr:
+      "تقرير نظرة عامة رفيعة المستوى لأصحاب المصلحة مع المقاييس الرئيسية ولوحات المعلومات المرئية",
     auditType: "general",
     preview: "📈 Cover | Key Metrics | Trends | Highlights | Next Steps",
   },
@@ -62,8 +64,8 @@ export function TemplateSelector({ selected, onSelect }: TemplateSelectorProps) 
       <div className="mb-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-2">Choose Report Template</h3>
         <p className="text-sm text-gray-600">
-          Select a pre-built template that matches your audit type. You&apos;ll be able to customize
-          sections in the next step.
+          Select a pre-built template that matches your audit type. You&apos;ll be able to customize sections
+          in the next step.
         </p>
       </div>
 
@@ -105,8 +107,7 @@ export function TemplateSelector({ selected, onSelect }: TemplateSelectorProps) 
       {selected && (
         <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-sm text-blue-800">
-            ✓ Template selected. Click <span className="font-semibold">Next</span> to configure data
-            sources.
+            ✓ Template selected. Click <span className="font-semibold">Next</span> to configure data sources.
           </p>
         </div>
       )}

@@ -1,7 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, TrendingUp, Users, DollarSign, AlertTriangle, Loader2, ChevronDown, ChevronUp } from "lucide-react";
+import {
+  Sparkles,
+  TrendingUp,
+  Users,
+  DollarSign,
+  AlertTriangle,
+  Loader2,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
 
 interface AISuggestionsProps {
   clientName?: string;
@@ -9,7 +18,9 @@ interface AISuggestionsProps {
   auditYear?: number;
   totalBudget?: string;
   totalHours?: number;
-  onApplyTeamSuggestion?: (members: Array<{ userId: string; name: string; role: string; hours?: number }>) => void;
+  onApplyTeamSuggestion?: (
+    members: Array<{ userId: string; name: string; role: string; hours?: number }>,
+  ) => void;
   onApplyBudgetSuggestion?: (budget: string, hours: number) => void;
   onApplyRiskSuggestion?: (risks: Array<{ type: string; severity: string; message: string }>) => void;
 }
@@ -183,7 +194,9 @@ export function AISuggestions({
                 {activeTab === "team" && (
                   <div className="space-y-4">
                     <div className="flex items-center justify-between mb-4">
-                      <p className="text-sm text-gray-600">Recommended team composition based on audit scope</p>
+                      <p className="text-sm text-gray-600">
+                        Recommended team composition based on audit scope
+                      </p>
                       <button
                         onClick={handleApplyTeam}
                         className="px-3 py-1.5 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white text-xs rounded-lg transition-all"
@@ -229,7 +242,9 @@ export function AISuggestions({
 
                     <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-lg p-4 mb-4">
                       <div className="flex items-baseline gap-2 mb-2">
-                        <span className="text-3xl font-bold text-gray-900">${budgetSuggestion.totalBudget}</span>
+                        <span className="text-3xl font-bold text-gray-900">
+                          ${budgetSuggestion.totalBudget}
+                        </span>
                         <span className="text-sm text-gray-600">total budget</span>
                       </div>
                       <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -325,7 +340,8 @@ export function AISuggestions({
               <div className="bg-white/60 backdrop-blur-sm rounded-lg p-3 border border-purple-200">
                 <p className="text-xs text-gray-600 text-center">
                   <Sparkles className="w-3 h-3 inline mr-1" />
-                  AI suggestions are based on historical data and industry standards. Review and adjust as needed.
+                  AI suggestions are based on historical data and industry standards. Review and adjust as
+                  needed.
                 </p>
               </div>
             </>

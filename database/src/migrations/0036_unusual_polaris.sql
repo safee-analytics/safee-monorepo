@@ -1,0 +1,1 @@
+ALTER TYPE "identity"."invitation_status" ADD VALUE 'cancelled';

@@ -317,45 +317,54 @@ export default function APIKeysSettings() {
                       Permissions ({newKeyPermissions.length} selected)
                     </label>
                     <div className="grid grid-cols-2 gap-4">
-                      {Object.entries(permissionsByResource).map(([resource, actions]: [string, Array<{ action: string; id: string }>]) => {
-                        const allSelected = actions.every((a: { id: string }) => newKeyPermissions.includes(a.id));
-                        const someSelected = actions.some((a: { id: string }) => newKeyPermissions.includes(a.id));
+                      {Object.entries(permissionsByResource).map(
+                        ([resource, actions]: [string, Array<{ action: string; id: string }>]) => {
+                          const allSelected = actions.every((a: { id: string }) =>
+                            newKeyPermissions.includes(a.id),
+                          );
+                          const someSelected = actions.some((a: { id: string }) =>
+                            newKeyPermissions.includes(a.id),
+                          );
 
-                        return (
-                          <div key={resource} className="border border-gray-200 rounded-lg p-4">
-                            <div className="flex items-center justify-between mb-3">
-                              <h3 className="font-semibold text-gray-900 capitalize">{resource}</h3>
-                              <button
-                                onClick={() => toggleAllResourcePermissions(resource)}
-                                className={`text-xs px-2 py-1 rounded ${
-                                  allSelected
-                                    ? "bg-blue-600 text-white"
-                                    : someSelected
-                                      ? "bg-blue-100 text-blue-700"
-                                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                                }`}
-                              >
-                                {allSelected ? "Deselect All" : "Select All"}
-                              </button>
+                          return (
+                            <div key={resource} className="border border-gray-200 rounded-lg p-4">
+                              <div className="flex items-center justify-between mb-3">
+                                <h3 className="font-semibold text-gray-900 capitalize">{resource}</h3>
+                                <button
+                                  onClick={() => toggleAllResourcePermissions(resource)}
+                                  className={`text-xs px-2 py-1 rounded ${
+                                    allSelected
+                                      ? "bg-blue-600 text-white"
+                                      : someSelected
+                                        ? "bg-blue-100 text-blue-700"
+                                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                  }`}
+                                >
+                                  {allSelected ? "Deselect All" : "Select All"}
+                                </button>
+                              </div>
+                              <div className="grid grid-cols-2 gap-2">
+                                {actions.map(({ action, id }: { action: string; id: string }) => (
+                                  <label
+                                    key={id}
+                                    className="flex items-center gap-2 text-sm cursor-pointer group"
+                                  >
+                                    <input
+                                      type="checkbox"
+                                      checked={newKeyPermissions.includes(id)}
+                                      onChange={() => togglePermission(id)}
+                                      className="w-3.5 h-3.5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                                    />
+                                    <span className="text-gray-700 group-hover:text-gray-900 capitalize">
+                                      {action}
+                                    </span>
+                                  </label>
+                                ))}
+                              </div>
                             </div>
-                            <div className="grid grid-cols-2 gap-2">
-                              {actions.map(({ action, id }: { action: string; id: string }) => (
-                                <label key={id} className="flex items-center gap-2 text-sm cursor-pointer group">
-                                  <input
-                                    type="checkbox"
-                                    checked={newKeyPermissions.includes(id)}
-                                    onChange={() => togglePermission(id)}
-                                    className="w-3.5 h-3.5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
-                                  />
-                                  <span className="text-gray-700 group-hover:text-gray-900 capitalize">
-                                    {action}
-                                  </span>
-                                </label>
-                              ))}
-                            </div>
-                          </div>
-                        );
-                      })}
+                          );
+                        },
+                      )}
                     </div>
                   </div>
                 </div>

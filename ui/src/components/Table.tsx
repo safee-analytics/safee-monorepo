@@ -95,7 +95,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className = 
   return (
     <div className={`flex items-center justify-between ${className}`}>
       <button
-        onClick={() => onPageChange(currentPage - 1)}
+        onClick={() => { onPageChange(currentPage - 1); }}
         disabled={currentPage === 1}
         className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
@@ -106,7 +106,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className = 
         {visiblePages.map((page) => (
           <button
             key={page}
-            onClick={() => onPageChange(page)}
+            onClick={() => { onPageChange(page); }}
             className={`w-8 h-8 rounded text-sm font-medium transition-colors ${
               page === currentPage ? "bg-blue-600 text-white" : "hover:bg-gray-100 text-gray-600"
             }`}
@@ -117,7 +117,7 @@ export function Pagination({ currentPage, totalPages, onPageChange, className = 
       </div>
 
       <button
-        onClick={() => onPageChange(currentPage + 1)}
+        onClick={() => { onPageChange(currentPage + 1); }}
         disabled={currentPage === totalPages}
         className="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >

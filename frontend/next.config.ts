@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: monorepoRoot,
   output: "standalone",
+  serverExternalPackages: ["@safee/database"],
 };
 
 export default nextConfig;

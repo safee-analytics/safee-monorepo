@@ -66,7 +66,7 @@ export default function AuditReports() {
     return frameworks.map((framework) => {
       // Calculate score based on completed cases
       const frameworkCases = cases.filter((c: CaseData) =>
-        c.auditType.toLowerCase().includes(framework.toLowerCase().replace(/\s+/g, ""))
+        c.auditType.toLowerCase().includes(framework.toLowerCase().replace(/\s+/g, "")),
       );
 
       const completedCases = frameworkCases.filter((c: CaseData) => c.status === "completed").length;
@@ -100,9 +100,7 @@ export default function AuditReports() {
     totalAssets: "$2.4M",
     revenueVerified: "$1.8M",
     discrepancies: "$24K",
-    accuracyRate: dashboardStats?.completionRate
-      ? `${dashboardStats.completionRate.toFixed(1)}%`
-      : "98.7%",
+    accuracyRate: dashboardStats?.completionRate ? `${dashboardStats.completionRate.toFixed(1)}%` : "98.7%",
   };
 
   return (
@@ -472,7 +470,9 @@ export default function AuditReports() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {reports.length === 0 ? (
               <div className="col-span-3 text-center py-12 text-gray-500">
-                <p>No reports generated yet. Click &quot;Generate Report&quot; to create your first report.</p>
+                <p>
+                  No reports generated yet. Click &quot;Generate Report&quot; to create your first report.
+                </p>
               </div>
             ) : (
               reports.map((report) => (
@@ -488,7 +488,10 @@ export default function AuditReports() {
                     <div className="flex-1 min-w-0">
                       <h3 className="text-sm font-semibold text-gray-900 mb-1 truncate">{report.title}</h3>
                       <p className="text-xs text-gray-600">
-                        Generated: {report.generatedAt ? new Date(report.generatedAt).toLocaleDateString() : "Processing..."}
+                        Generated:{" "}
+                        {report.generatedAt
+                          ? new Date(report.generatedAt).toLocaleDateString()
+                          : "Processing..."}
                       </p>
                     </div>
                   </div>
@@ -503,7 +506,11 @@ export default function AuditReports() {
                             : "bg-red-100 text-red-700"
                       }`}
                     >
-                      {report.status === "ready" ? "Ready" : report.status === "generating" ? "Generating..." : "Failed"}
+                      {report.status === "ready"
+                        ? "Ready"
+                        : report.status === "generating"
+                          ? "Generating..."
+                          : "Failed"}
                     </span>
                     <div className="flex items-center gap-2">
                       <FileDown className="w-4 h-4 text-gray-600" />

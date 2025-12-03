@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Path, Post, Put, Request, Route, Security, Tags } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
+import { getServerContext } from "../serverContext.js";
 
 // Types
 interface DatabaseStats {
@@ -33,7 +34,7 @@ interface BackupSettings {
 export class DatabaseController extends Controller {
   @Get("/stats")
   @Security("jwt")
-  public async getDatabaseStats(@Request() req: AuthenticatedRequest): Promise<DatabaseStats> {
+  public async getDatabaseStats(@Request() _req: AuthenticatedRequest): Promise<DatabaseStats> {
     // TODO: Implement actual database stats query
     return {
       totalSize: "2.5 GB",
@@ -46,7 +47,7 @@ export class DatabaseController extends Controller {
 
   @Get("/backup/settings")
   @Security("jwt")
-  public async getBackupSettings(@Request() req: AuthenticatedRequest): Promise<BackupSettings> {
+  public async getBackupSettings(@Request() _req: AuthenticatedRequest): Promise<BackupSettings> {
     // TODO: Implement actual settings query
     return {
       autoBackup: true,
@@ -61,7 +62,7 @@ export class DatabaseController extends Controller {
   @Put("/backup/settings")
   @Security("jwt")
   public async updateBackupSettings(
-    @Request() req: AuthenticatedRequest,
+    @Request() _req: AuthenticatedRequest,
     @Body() settings: BackupSettings,
   ): Promise<BackupSettings> {
     // TODO: Implement actual settings update
@@ -70,14 +71,14 @@ export class DatabaseController extends Controller {
 
   @Get("/backups")
   @Security("jwt")
-  public async getBackupHistory(@Request() req: AuthenticatedRequest): Promise<Backup[]> {
+  public async getBackupHistory(@Request() _req: AuthenticatedRequest): Promise<Backup[]> {
     // TODO: Implement actual backup history query
     return [];
   }
 
   @Post("/backup")
   @Security("jwt")
-  public async createBackup(@Request() req: AuthenticatedRequest): Promise<Backup> {
+  public async createBackup(@Request() _req: AuthenticatedRequest): Promise<Backup> {
     // TODO: Implement actual backup creation
     return {
       id: crypto.randomUUID(),
@@ -92,33 +93,37 @@ export class DatabaseController extends Controller {
   @Post("/backup/{backupId}/restore")
   @Security("jwt")
   public async restoreBackup(
-    @Request() req: AuthenticatedRequest,
+    @Request() _req: AuthenticatedRequest,
     @Path() backupId: string,
   ): Promise<{ success: boolean }> {
     // TODO: Implement actual backup restoration
+    const { logger } = getServerContext();
+    logger.debug({ backupId }, "Restoring backup");
     return { success: true };
   }
 
   @Get("/backup/{backupId}/download")
   @Security("jwt")
   public async downloadBackup(
-    @Request() req: AuthenticatedRequest,
+    @Request() _req: AuthenticatedRequest,
     @Path() backupId: string,
   ): Promise<Buffer> {
     // TODO: Implement actual backup download
+    const { logger } = getServerContext();
+    logger.debug({ backupId }, "Downloading backup");
     return Buffer.from("");
   }
 
   @Post("/optimize")
   @Security("jwt")
-  public async optimizeDatabase(@Request() req: AuthenticatedRequest): Promise<{ success: boolean }> {
+  public async optimizeDatabase(@Request() _req: AuthenticatedRequest): Promise<{ success: boolean }> {
     // TODO: Implement actual database optimization
     return { success: true };
   }
 
   @Post("/maintenance")
   @Security("jwt")
-  public async runMaintenance(@Request() req: AuthenticatedRequest): Promise<{ success: boolean }> {
+  public async runMaintenance(@Request() _req: AuthenticatedRequest): Promise<{ success: boolean }> {
     // TODO: Implement actual database maintenance
     return { success: true };
   }

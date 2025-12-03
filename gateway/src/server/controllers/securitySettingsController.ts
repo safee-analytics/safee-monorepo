@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Put, Request, Route, Security, Tags } from "tsoa";
+import { Controller, Get, Request, Route, Security, Tags } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 
 // Types
@@ -17,7 +17,7 @@ interface SecuritySettings {
 export class SecuritySettingsController extends Controller {
   @Get("/settings")
   @Security("jwt")
-  public async getSecuritySettings(@Request() req: AuthenticatedRequest): Promise<SecuritySettings> {
+  public async getSecuritySettings(@Request() _req: AuthenticatedRequest): Promise<SecuritySettings> {
     // TODO: Implement actual database query
     return {
       twoFactorEnabled: false,

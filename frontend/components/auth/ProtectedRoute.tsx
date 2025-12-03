@@ -45,10 +45,18 @@ export function ProtectedRoute({
 
       try {
         // Get user's active organization
-        const { data } = await authClient.organization.getFullOrganization();
+        const { data, error } = await authClient.organization.getFullOrganization();
 
-        // If no organization, redirect to onboarding
-        if (!data) {
+        // If no organization or error, redirect to onboarding
+        if (!data || error) {
+          console.warn("No organization found for user, redirecting to onboarding");
+          router.push("/onboarding");
+          return;
+        }
+
+        // Additional check: ensure user is a member of the organization
+        if (!data.members || data.members.length === 0) {
+          console.warn("User is not a member of any organization, redirecting to onboarding");
           router.push("/onboarding");
           return;
         }

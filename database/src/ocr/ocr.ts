@@ -3,10 +3,7 @@ import { caseDocuments, type CaseDocument } from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
 import type { ProcessOcrInput } from "./types.js";
 
-export async function updateDocumentOcrText(
-  deps: DbDeps,
-  input: ProcessOcrInput,
-): Promise<CaseDocument> {
+export async function updateDocumentOcrText(deps: DbDeps, input: ProcessOcrInput): Promise<CaseDocument> {
   const [updated] = await deps.drizzle
     .update(caseDocuments)
     .set({
@@ -36,8 +33,7 @@ export async function searchDocumentsByOcrText(
   searchText: string,
 ): Promise<CaseDocument[]> {
   const documents = await deps.drizzle.query.caseDocuments.findMany({
-    where: (docs, { and, eq, ilike }) =>
-      and(eq(docs.caseId, caseId), ilike(docs.ocrText, `%${searchText}%`)),
+    where: (docs, { and, eq, ilike }) => and(eq(docs.caseId, caseId), ilike(docs.ocrText, `%${searchText}%`)),
   });
 
   return documents;

@@ -45,7 +45,7 @@ export function DepartmentForm({
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<DepartmentFormValues>({
+  } = useForm({
     resolver: zodResolver(departmentFormSchema),
     defaultValues: {
       name: defaultValues?.name || "",

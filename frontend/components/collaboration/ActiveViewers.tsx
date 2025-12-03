@@ -79,7 +79,10 @@ export function ActiveViewers({
           <Eye className="w-4 h-4" />
           <span className="font-medium">{viewers.length}</span>
           {enableRealtime && (
-            <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse ml-1" title="Real-time updates active" />
+            <span
+              className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse ml-1"
+              title="Real-time updates active"
+            />
           )}
         </div>
       </div>

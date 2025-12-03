@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useOrgStore } from "@/stores/useOrgStore";
 import { LanguageSwitcher } from "@/components/ui/LanguageSwitcher";
+import { SafeeLogo } from "@/components/common/SafeeLogo";
 import {
   FiUser,
   FiLogOut,
@@ -90,15 +91,7 @@ export function Navigation() {
           {/* Logo & Company Name */}
           <div className="flex items-center gap-3 flex-shrink-0">
             <Link href="/" className="flex items-center gap-2">
-              {/* Safee Logo */}
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-safee-500 to-safee-700 flex items-center justify-center shadow">
-                <span className="text-white font-bold text-base">S</span>
-              </div>
-              {/* Platform Name - Stacked */}
-              <div className="hidden sm:flex flex-col leading-tight">
-                <span className="text-sm font-bold text-gray-900">Safee</span>
-                <span className="text-xs font-semibold text-gray-600">Analytics</span>
-              </div>
+              <SafeeLogo size="md" showText={true} />
             </Link>
 
             {/* Divider - always show */}

@@ -13,7 +13,11 @@ import {
   Archive,
   FileSpreadsheet,
 } from "lucide-react";
-import { useCaseActivities, useMarkActivitiesAsRead, type CaseActivityResponse } from "@/lib/api/hooks/collaboration";
+import {
+  useCaseActivities,
+  useMarkActivitiesAsRead,
+  type CaseActivityResponse,
+} from "@/lib/api/hooks/collaboration";
 import { formatDistanceToNow } from "date-fns";
 
 interface ActivityFeedProps {
@@ -184,7 +188,9 @@ export function ActivityFeed({
               key={activity.id}
               className="flex items-start gap-3 p-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors group"
             >
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${colorClass}`}>
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${colorClass}`}
+              >
                 <Icon className="w-5 h-5" />
               </div>
 
@@ -195,7 +201,10 @@ export function ActivityFeed({
                     {formatDistanceToNow(new Date(activity.createdAt), { addSuffix: true })}
                   </span>
                   {enableRealtime && (
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" title="Real-time updates enabled" />
+                    <span
+                      className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"
+                      title="Real-time updates enabled"
+                    />
                   )}
                 </div>
               </div>

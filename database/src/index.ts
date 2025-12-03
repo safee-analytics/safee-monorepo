@@ -46,10 +46,20 @@ export * from "./auditLogs/auditLogs.js";
 
 export * from "./general-utils/i18n.js";
 
-export * from "./email/index.js";
+export type { EmailProvider, EmailMessage, EmailAddress, EmailResult } from "./email/types.js";
+export { EmailService } from "./email/emailService.js";
+export { AzureEmailProvider } from "./email/providers/azure.js";
+export { ResendEmailProvider } from "./email/providers/resend.js";
+export { recordEmailBounce, shouldSendEmail, getEmailBounces } from "./email/bounceService.js";
 
 export * from "./hr/index.js";
 
 export * from "./crm/index.js";
+
+export * from "./accounting/index.js";
+
+export * from "./llm/index.js";
+
+export * as generalUtils from "./general-utils/index.js";
 
 export * from "./test-helpers/integration-setup.js";

@@ -246,6 +246,20 @@
       "when": 1764203702837,
       "tag": "0034_cheerful_carmella_unuscione",
       "breakpoints": false
+    },
+    {
+      "idx": 35,
+      "version": "7",
+      "when": 1764642299798,
+      "tag": "0035_petite_crystal",
+      "breakpoints": false
+    },
+    {
+      "idx": 36,
+      "version": "7",
+      "when": 1764654326508,
+      "tag": "0036_unusual_polaris",
+      "breakpoints": false
     }
   ]
 }

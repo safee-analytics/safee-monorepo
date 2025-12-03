@@ -32,7 +32,7 @@ export interface CalendarEventData extends CalendarEvent {
   title: string;
   start: Date;
   end: Date;
-  resource?: any;
+  resource?: unknown;
   allDay?: boolean;
 }
 
@@ -53,7 +53,7 @@ export interface CalendarSchedulerProps {
  * Calendar/Scheduler component wrapper for React Big Calendar
  * Provides a Google Calendar-like interface for scheduling
  */
-export const CalendarScheduler: React.FC<CalendarSchedulerProps> = ({
+export function CalendarScheduler({
   events,
   onSelectEvent,
   onSelectSlot,
@@ -64,7 +64,7 @@ export const CalendarScheduler: React.FC<CalendarSchedulerProps> = ({
   selectable = true,
   className = "",
   style = {},
-}) => {
+}: CalendarSchedulerProps) {
   const containerStyle: React.CSSProperties = {
     height,
     ...style,
@@ -89,7 +89,7 @@ export const CalendarScheduler: React.FC<CalendarSchedulerProps> = ({
       />
     </div>
   );
-};
+}
 
 // Export types for convenience
 export type { View, Views, SlotInfo } from "react-big-calendar";

@@ -256,7 +256,7 @@ const Card = ({ card, handleDragStart, stageId }: CardProps) => {
         layoutId={card.id}
         draggable="true"
         onDragStart={(e) => {
-          if ('dataTransfer' in e) {
+          if ("dataTransfer" in e) {
             handleDragStart(e as unknown as React.DragEvent, card);
           }
         }}

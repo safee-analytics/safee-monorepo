@@ -1,28 +1,38 @@
+/**
+ * Better Auth Configuration for Safee Analytics
+ * Main authentication setup with all plugins and configurations
+ */
+
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import {
-  organization,
-  openAPI,
-  admin,
-  username,
-  lastLoginMethod,
-  phoneNumber,
-  twoFactor,
-  magicLink,
-  emailOTP,
-  genericOAuth,
-  apiKey,
-} from "better-auth/plugins";
-import { connect, schema } from "@safee/database";
+import { connect, schema, EmailService, ResendEmailProvider } from "@safee/database";
 import { randomUUID } from "crypto";
-import { organizationHooks } from "./organization.hooks.js";
 import { createSessionHooks } from "./session.hooks.js";
-import { ac } from "./accessControl.js";
+import { createPluginsConfig } from "./plugins.config.js";
+import { createEmailConfig } from "./email.config.js";
+import { userAdditionalFields, userFields, sessionConfig } from "./schema.config.js";
+import pino from "pino";
+
+const logger = pino({ name: "auth" });
 
 const { drizzle } = connect("better-auth");
 
+// Initialize email service if API key is available
+let emailService: EmailService | undefined;
+if (process.env.RESEND_API_KEY) {
+  const resendProvider = new ResendEmailProvider({
+    apiKey: process.env.RESEND_API_KEY,
+    senderAddress: process.env.EMAIL_FROM_ADDRESS || "noreply@safee.dev",
+    senderName: process.env.EMAIL_FROM_NAME || "Safee Analytics",
+  });
+  emailService = new EmailService({ drizzle, logger, emailProvider: resendProvider });
+}
+
 export const auth = betterAuth({
+  appName: "Safee Analytics",
   baseURL: process.env.BETTER_AUTH_URL || "http://app.localhost:8080/api/v1",
+  experimental: { joins: true },
+
   database: drizzleAdapter(drizzle, {
     provider: "pg",
     usePlural: true,
@@ -31,73 +41,60 @@ export const auth = betterAuth({
       accounts: schema.oauthAccounts,
     },
   }),
-  plugins: [
-    openAPI(),
-    admin(),
-    username(),
-    twoFactor(),
-    phoneNumber({
-      sendOTP: ({ phoneNumber: _phoneNumber, code: _code }, _request) => {
-        // Implement sending OTP code via SMS
-      },
-    }),
-    magicLink({
-      sendMagicLink: async ({ email: _email, token: _token, url: _url }, _request) => {
-        // send email to user
-      },
-    }),
-    emailOTP({
-      async sendVerificationOTP({ email: _email, otp: _otp, type }) {
-        if (type === "sign-in") {
-          // Send the OTP for sign in
-        } else if (type === "email-verification") {
-          // Send the OTP for email verification
-        } else {
-          // Send the OTP for password reset
-        }
-      },
-    }),
-    apiKey(),
-    genericOAuth({
-      config: [
-        {
-          providerId: "provider-id",
-          clientId: "test-client-id",
-          clientSecret: "test-client-secret",
-          discoveryUrl: "https://auth.example.com/.well-known/openid-configuration",
-          // ... other config options
-        },
-        // Add more providers as needed
-      ],
-    }),
-    lastLoginMethod({
-      storeInDatabase: true,
-    }),
-    organization({
-      organizationHooks,
-      teams: {
-        enabled: true,
-        maximumTeams: 100,
-        allowRemovingAllTeams: false,
-      },
-      dynamicAccessControl: {
-        enabled: true,
-        ac,
-        maximumRolesPerOrganization: async () => {
-          // TODO: Make this plan-based in the future
-          return 50;
-        },
-      },
-    }),
-  ],
-  databaseHooks: createSessionHooks(drizzle),
-  session: {
-    expiresIn: 60 * 60 * 24 * 7,
-    updateAge: 60 * 60 * 24,
-    cookieCache: {
+
+  // User schema configuration
+  user: {
+    modelName: "users",
+    fields: userFields,
+    additionalFields: userAdditionalFields,
+    changeEmail: {
       enabled: true,
-      maxAge: 5 * 60,
+      sendChangeEmailConfirmation: async ({
+        user,
+        newEmail,
+        url: _url,
+        token: _token,
+      }: {
+        user: { id: string; email: string; name: string };
+        newEmail: string;
+        url: string;
+        token: string;
+      }) => {
+        if (!emailService) {
+          logger.warn({ userId: user.id, newEmail }, "Email service not configured");
+          return;
+        }
+        // TODO: Implement change email confirmation
+        logger.info({ userId: user.id, newEmail }, "Change email confirmation would be sent");
+      },
     },
+    deleteUser: {
+      enabled: true,
+      sendDeleteAccountVerification: async ({
+        user,
+        url: _url,
+        token: _token,
+      }: {
+        user: { id: string; email: string; name: string };
+        url: string;
+        token: string;
+      }) => {
+        if (!emailService) {
+          logger.warn({ userId: user.id }, "Email service not configured");
+          return;
+        }
+        // TODO: Implement delete account verification
+        logger.info({ userId: user.id }, "Delete account verification would be sent");
+      },
+    },
+  },
+
+  // Session configuration
+  session: {
+    modelName: "sessions",
+    expiresIn: sessionConfig.expiresIn,
+    updateAge: sessionConfig.updateAge,
+    cookieCache: sessionConfig.cookieCache,
     cookieOptions: {
       sameSite: "lax",
       domain: process.env.COOKIE_DOMAIN || "app.localhost",
@@ -106,18 +103,55 @@ export const auth = betterAuth({
       secure: process.env.NODE_ENV === "production",
     },
   },
+
+  // Email and password configuration
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false, // TODO: Enable in production
     minPasswordLength: 8,
     maxPasswordLength: 128,
+    autoSignIn: true,
+    sendResetPassword: async ({ user, url: _url, token: _token }) => {
+      // TODO: Send reset password email
+      logger.info({ userId: user.id }, "Reset password email would be sent");
+    },
+    resetPasswordTokenExpiresIn: 3600,
   },
+
+  // Social providers
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID || "",
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
       redirectURI: `${process.env.BETTER_AUTH_URL}/callback/google`,
       enabled: !!process.env.GOOGLE_CLIENT_ID,
+    },
+  },
+
+  // Plugins configuration
+  plugins: createPluginsConfig(emailService, logger),
+
+  // Database hooks
+  databaseHooks: {
+    ...createSessionHooks(drizzle),
+    user: {
+      create: {
+        after: async (user) => {
+          // Send welcome email to new users
+          if (emailService && user.email) {
+            try {
+              const emailConfig = createEmailConfig(emailService, logger);
+              await emailConfig.welcomeEmail.sendWelcomeEmail({
+                email: user.email,
+                name: user.name,
+              });
+              logger.info({ userId: user.id, email: user.email }, "Welcome email sent to new user");
+            } catch (error) {
+              logger.error({ error, userId: user.id }, "Failed to send welcome email");
+            }
+          }
+        },
+      },
     },
   },
   advanced: {
@@ -142,7 +176,7 @@ export const auth = betterAuth({
   ],
 });
 
+// Export types for client inference
 export type Auth = typeof auth;
-
 export type Session = typeof auth extends { $Infer: { Session: infer S } } ? S : never;
 export type AuthUser = Session extends { user: infer U } ? U : never;

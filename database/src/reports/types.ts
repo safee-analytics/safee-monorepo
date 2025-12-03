@@ -1,4 +1,9 @@
-import type { AuditReport, NewAuditReport, AuditReportTemplate, NewAuditReportTemplate } from "../drizzle/index.js";
+import type {
+  AuditReport,
+  NewAuditReport,
+  AuditReportTemplate,
+  NewAuditReportTemplate,
+} from "../drizzle/index.js";
 
 export type { AuditReport, AuditReportTemplate };
 

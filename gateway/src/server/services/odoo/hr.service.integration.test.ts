@@ -4,7 +4,7 @@ import { OdooDatabaseService } from "./database.service.js";
 import { type OdooClient, createOdooClient } from "./client.service.js";
 import { odooClient } from "./client.js";
 import { type DrizzleClient, type RedisClient, schema, connectTest } from "@safee/database";
-import { eq } from "drizzle-orm";
+import { eq } from "@safee/database";
 import { initTestServerContext } from "../../test-helpers/testServerContext.js";
 import { getServerContext } from "../../serverContext.js";
 import { pino } from "pino";

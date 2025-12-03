@@ -1,6 +1,6 @@
 import type { DrizzleClient } from "@safee/database";
 import { schema } from "@safee/database";
-import { eq, and } from "drizzle-orm";
+import { eq, and } from "@safee/database";
 import { StorageFactory, type StorageConfig } from "./storage-factory.js";
 import type { StorageAdapter } from "./storage-adapter.interface.js";
 

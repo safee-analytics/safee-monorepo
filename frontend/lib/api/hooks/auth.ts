@@ -155,16 +155,19 @@ export function useCheckUsernameAvailability() {
  */
 export function useForgetPassword() {
   return useMutation({
-    mutationFn: async (email: string) => {
-      const { data, error } = await authClient.forgetPassword({
-        email,
+    mutationFn: async (data: { email: string }) => {
+      const { data: result, error } = await authClient.forgetPassword({
+        email: data.email,
         redirectTo: "/reset-password",
       });
       if (error) throw new Error(error.message);
-      return data;
+      return result;
     },
   });
 }
+
+// Alias for common typo
+export const useForgotPassword = useForgetPassword;
 
 /**
  * Reset password with token
@@ -588,7 +591,7 @@ export function useSendMagicLink() {
     mutationFn: async ({ email, callbackURL }: { email: string; callbackURL?: string }) => {
       const { data, error } = await authClient.signIn.magicLink({
         email,
-        callbackURL: callbackURL || "/magic-link",
+        callbackURL: callbackURL || "/verify-magic-link",
       });
       if (error) throw new Error(error.message);
       return data;

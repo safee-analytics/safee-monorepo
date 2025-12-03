@@ -1,9 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../client";
-import type {
-  GenerateReportRequest,
-  AuditReportResponse,
-} from "@/lib/types/reports";
+import type { GenerateReportRequest, AuditReportResponse } from "@/lib/types/reports";
 
 export function useGenerateReport() {
   const queryClient = useQueryClient();

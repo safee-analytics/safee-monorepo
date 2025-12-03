@@ -1,5 +1,6 @@
-import { Body, Controller, Get, Path, Post, Request, Route, Security, Tags } from "tsoa";
+import { Controller, Get, Path, Post, Request, Route, Security, Tags } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
+import { getServerContext } from "../serverContext.js";
 
 // Types
 interface Integration {
@@ -17,7 +18,7 @@ interface Integration {
 export class IntegrationsController extends Controller {
   @Get("/")
   @Security("jwt")
-  public async listIntegrations(@Request() req: AuthenticatedRequest): Promise<Integration[]> {
+  public async listIntegrations(@Request() _req: AuthenticatedRequest): Promise<Integration[]> {
     // Return mock integrations
     return [
       {
@@ -42,20 +43,24 @@ export class IntegrationsController extends Controller {
   @Post("/{integrationId}/connect")
   @Security("jwt")
   public async connectIntegration(
-    @Request() req: AuthenticatedRequest,
+    @Request() _req: AuthenticatedRequest,
     @Path() integrationId: string,
   ): Promise<{ success: boolean }> {
     // TODO: Implement actual integration connection
+    const { logger } = getServerContext();
+    logger.debug({ integrationId }, "Connecting integration");
     return { success: true };
   }
 
   @Post("/{integrationId}/disconnect")
   @Security("jwt")
   public async disconnectIntegration(
-    @Request() req: AuthenticatedRequest,
+    @Request() _req: AuthenticatedRequest,
     @Path() integrationId: string,
   ): Promise<{ success: boolean }> {
     // TODO: Implement actual integration disconnection
+    const { logger } = getServerContext();
+    logger.debug({ integrationId }, "Disconnecting integration");
     return { success: true };
   }
 }

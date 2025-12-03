@@ -83,8 +83,8 @@ export type ContactFormData = z.infer<typeof contactFormSchema>;
 
 // CRM Activity form schema
 export const activityFormSchema = z.object({
-  leadId: z.number({ required_error: "Lead is required" }),
-  activityTypeId: z.number({ required_error: "Activity type is required" }),
+  leadId: z.number({ message: "Lead is required" }),
+  activityTypeId: z.number({ message: "Activity type is required" }),
   summary: z.string().optional(),
   note: z.string().optional(),
   dateDeadline: z.string().min(1, "Due date is required"),

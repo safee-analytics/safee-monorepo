@@ -14,7 +14,7 @@ export const fileMetadataSchema = z.object({
   modifiedBy: z.string().optional(),
   folderId: z.string().optional(),
   tags: z.array(z.string()).optional(),
-  metadata: z.record(z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 export type FileMetadata = z.infer<typeof fileMetadataSchema>;

@@ -194,7 +194,7 @@ export default function LoginPage() {
       const redirectUrl = getRedirectUrl();
       await sendMagicLinkMutation.mutateAsync({
         email,
-        callbackURL: `${window.location.origin}/auth/verify-magic-link?redirect=${encodeURIComponent(redirectUrl)}`,
+        callbackURL: `${window.location.origin}/verify-magic-link?redirect=${encodeURIComponent(redirectUrl)}`,
       });
       setMagicLinkSent(true);
       setLoginEmail(email);

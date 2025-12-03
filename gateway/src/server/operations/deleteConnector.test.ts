@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { type DrizzleClient, type RedisClient, schema } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
-import { eq } from "drizzle-orm";
+import { eq } from "@safee/database";
 import { deleteConnector } from "./deleteConnector.js";
 import { encryptionService } from "../services/encryption.js";
 import { initTestServerContext } from "../test-helpers/testServerContext.js";

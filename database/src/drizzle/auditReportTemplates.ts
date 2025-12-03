@@ -17,13 +17,11 @@ export const auditReportTemplates = auditSchema.table(
     name: varchar("name", { length: 255 }).notNull(),
     auditType: auditTypeEnum("audit_type"),
     description: text("description"),
-    templateStructure: jsonb("template_structure")
-      .notNull()
-      .$type<{
-        sections: TemplateSection[];
-        styles?: Record<string, unknown>;
-        metadata?: Record<string, unknown>;
-      }>(),
+    templateStructure: jsonb("template_structure").notNull().$type<{
+      sections: TemplateSection[];
+      styles?: Record<string, unknown>;
+      metadata?: Record<string, unknown>;
+    }>(),
     isDefault: boolean("is_default").notNull().default(false),
     isActive: boolean("is_active").notNull().default(true),
     organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade" }),

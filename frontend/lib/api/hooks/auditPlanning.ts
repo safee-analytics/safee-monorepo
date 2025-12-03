@@ -4,7 +4,13 @@ import { queryKeys } from "./queryKeys";
 
 export type PlanType = "standalone" | "case_integrated";
 export type PlanStatus = "draft" | "in_review" | "approved" | "converted" | "archived";
-export type AuditType = "financial_audit" | "compliance_audit" | "operational_audit" | "it_audit" | "internal_controls" | "risk_assessment";
+export type AuditType =
+  | "financial_audit"
+  | "compliance_audit"
+  | "operational_audit"
+  | "it_audit"
+  | "internal_controls"
+  | "risk_assessment";
 
 export interface AuditPlanResponse {
   id: string;

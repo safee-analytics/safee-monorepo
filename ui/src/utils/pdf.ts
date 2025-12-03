@@ -123,7 +123,7 @@ export const commonPDFStyles = {
 /**
  * Format currency for PDF display
  */
-export function formatCurrencyForPDF(value: number, currency: string = "USD"): string {
+export function formatCurrencyForPDF(value: number, currency = "USD"): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,

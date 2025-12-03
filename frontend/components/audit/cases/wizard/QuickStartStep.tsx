@@ -44,7 +44,11 @@ const PRIORITIES = [
 
 export function QuickStartStep({ data, onChange }: WizardStepProps) {
   const [showAutofillSuggestion, setShowAutofillSuggestion] = useState(false);
-  const { suggestAuditType: _suggestAuditType, suggestDueDate, suggestPriority: _suggestPriority } = useAutofill();
+  const {
+    suggestAuditType: _suggestAuditType,
+    suggestDueDate,
+    suggestPriority: _suggestPriority,
+  } = useAutofill();
 
   // Pre-fill from template if selected
   useEffect(() => {
@@ -62,7 +66,7 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
 
     // Auto-apply suggestions if no template is selected
     if (!data.selectedTemplate) {
-      const updates: Partial<WizardStepProps['data']> = {};
+      const updates: Partial<WizardStepProps["data"]> = {};
 
       // Suggest audit type based on history
       if (!data.auditType && clientHistory.mostCommonAuditType) {
@@ -233,7 +237,8 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
         />
         {data.selectedTemplate && data.dueDate && (
           <p className="mt-1 text-xs text-blue-600">
-            Suggested based on template&apos;s estimated duration ({data.selectedTemplate.estimatedDuration} days)
+            Suggested based on template&apos;s estimated duration ({data.selectedTemplate.estimatedDuration}{" "}
+            days)
           </p>
         )}
         {!data.dueDate && (

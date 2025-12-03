@@ -54,9 +54,9 @@ export async function exportToExcel(options: ExcelExportOptions): Promise<void> 
   headerRow.alignment = { vertical: "middle", horizontal: "center" };
 
   // Add data rows
-  data.forEach((item) => {
+  for (const item of data) {
     worksheet.addRow(item);
-  });
+  }
 
   // Apply auto-filter
   if (autoFilter) {
@@ -89,7 +89,7 @@ export async function simpleExportToExcel(data: Record<string, any>[], filename:
   // Auto-generate columns from first data item
   const columns: ExcelColumn[] = Object.keys(data[0]).map((key) => ({
     header: key.charAt(0).toUpperCase() + key.slice(1),
-    key: key,
+    key,
     width: 20,
   }));
 
@@ -105,11 +105,11 @@ export async function simpleExportToExcel(data: Record<string, any>[], filename:
  */
 export async function exportWithConditionalFormatting(
   options: ExcelExportOptions & {
-    conditionalRules?: Array<{
+    conditionalRules?: {
       column: string;
       condition: (value: any) => boolean;
       style: Partial<ExcelJS.Style>;
-    }>;
+    }[];
   },
 ): Promise<void> {
   const { conditionalRules, ...exportOptions } = options;
@@ -134,21 +134,21 @@ export async function exportWithConditionalFormatting(
   };
 
   // Add data and apply conditional formatting
-  exportOptions.data.forEach((item, index) => {
+  for (const [index, item] of exportOptions.data.entries()) {
     const row = worksheet.addRow(item);
     const rowNumber = index + 2; // +2 because header is row 1 and data starts at row 2
 
     // Apply conditional rules
-    conditionalRules?.forEach((rule) => {
+    if (conditionalRules) for (const rule of conditionalRules) {
       const columnIndex = exportOptions.columns.findIndex((col) => col.key === rule.column);
       if (columnIndex !== -1 && rule.condition(item[rule.column])) {
         const cell = row.getCell(columnIndex + 1);
-        if (rule.style.fill) cell.fill = rule.style.fill as ExcelJS.Fill;
+        if (rule.style.fill) cell.fill = rule.style.fill;
         if (rule.style.font) cell.font = rule.style.font;
         if (rule.style.border) cell.border = rule.style.border;
       }
-    });
-  });
+    }
+  }
 
   // Generate and download
   const buffer = await workbook.xlsx.writeBuffer();
@@ -212,7 +212,7 @@ function downloadBuffer(buffer: ExcelJS.Buffer, filename: string): void {
 /**
  * Format currency for Excel export
  */
-export function formatCurrency(value: number, currency: string = "USD"): string {
+export function formatCurrency(value: number, currency = "USD"): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,

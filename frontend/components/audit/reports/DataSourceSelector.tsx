@@ -101,9 +101,7 @@ export function DataSourceSelector({ caseId, value, onChange }: DataSourceSelect
               />
             </div>
           </div>
-          <p className="text-xs text-gray-500 mt-1">
-            Leave blank to include all data from the case
-          </p>
+          <p className="text-xs text-gray-500 mt-1">Leave blank to include all data from the case</p>
         </div>
 
         {/* Filters */}

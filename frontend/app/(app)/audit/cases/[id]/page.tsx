@@ -5,7 +5,10 @@ import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Edit2, MoreVertical, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { useCase } from "@/lib/api/hooks";
 import { DocumentBrowser } from "@/components/audit/cases/DocumentBrowser";
-import { DocumentPreviewDrawer, type Document as DocumentType } from "@/components/audit/cases/DocumentPreviewDrawer";
+import {
+  DocumentPreviewDrawer,
+  type Document as DocumentType,
+} from "@/components/audit/cases/DocumentPreviewDrawer";
 import { BulkUploadModal } from "@/components/audit/cases/BulkUploadModal";
 import { ActivityFeed } from "@/components/collaboration/ActivityFeed";
 import { ActiveViewers } from "@/components/collaboration/ActiveViewers";
@@ -323,12 +326,7 @@ export default function CaseDetailPage() {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-xl border border-gray-200 p-6">
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">Activity Timeline</h2>
-                <ActivityFeed
-                  caseId={caseId}
-                  enableRealtime={true}
-                  showMarkAsRead={true}
-                  limit={50}
-                />
+                <ActivityFeed caseId={caseId} enableRealtime={true} showMarkAsRead={true} limit={50} />
               </div>
             </div>
 

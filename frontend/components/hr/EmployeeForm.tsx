@@ -53,7 +53,7 @@ export function EmployeeForm({
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<EmployeeFormValues>({
+  } = useForm({
     resolver: zodResolver(employeeFormSchema),
     defaultValues: {
       name: defaultValues?.name || "",

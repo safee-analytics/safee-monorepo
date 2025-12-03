@@ -93,10 +93,7 @@ export function ReportWizard({ onClose, caseId }: ReportWizardProps) {
             <h2 className="text-xl font-bold text-gray-900">Generate Audit Report</h2>
             <p className="text-sm text-gray-600">Follow the steps to configure your report</p>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <X className="w-5 h-5 text-gray-600" />
           </button>
         </div>
@@ -132,11 +129,7 @@ export function ReportWizard({ onClose, caseId }: ReportWizardProps) {
                     </span>
                   </div>
                   {index < steps.length - 1 && (
-                    <div
-                      className={`flex-1 h-0.5 mx-4 ${
-                        isCompleted ? "bg-green-500" : "bg-gray-200"
-                      }`}
-                    />
+                    <div className={`flex-1 h-0.5 mx-4 ${isCompleted ? "bg-green-500" : "bg-gray-200"}`} />
                   )}
                 </div>
               );
@@ -147,17 +140,10 @@ export function ReportWizard({ onClose, caseId }: ReportWizardProps) {
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6">
           {currentStep === "template" && (
-            <TemplateSelector
-              selected={selectedTemplate}
-              onSelect={setSelectedTemplate}
-            />
+            <TemplateSelector selected={selectedTemplate} onSelect={setSelectedTemplate} />
           )}
           {currentStep === "data" && (
-            <DataSourceSelector
-              caseId={caseId}
-              value={dataSource}
-              onChange={setDataSource}
-            />
+            <DataSourceSelector caseId={caseId} value={dataSource} onChange={setDataSource} />
           )}
           {currentStep === "sections" && (
             <SectionConfigurator
@@ -187,10 +173,7 @@ export function ReportWizard({ onClose, caseId }: ReportWizardProps) {
             Back
           </button>
           <div className="flex items-center gap-2">
-            <button
-              onClick={onClose}
-              className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg"
-            >
+            <button onClick={onClose} className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg">
               Cancel
             </button>
             {currentStep !== "generate" ? (

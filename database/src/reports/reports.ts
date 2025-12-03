@@ -128,7 +128,10 @@ export async function getAuditReportTemplates(
     return deps.drizzle.query.auditReportTemplates.findMany({
       where: and(
         eq(auditReportTemplates.isActive, true),
-        or(eq(auditReportTemplates.organizationId, organizationId), isNull(auditReportTemplates.organizationId)),
+        or(
+          eq(auditReportTemplates.organizationId, organizationId),
+          isNull(auditReportTemplates.organizationId),
+        ),
       ),
       orderBy: [desc(auditReportTemplates.isDefault), asc(auditReportTemplates.name)],
     });

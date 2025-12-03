@@ -127,11 +127,7 @@ export function DocumentPreviewDrawer({
       return (
         <div className="h-full flex items-center justify-center bg-gray-100">
           {document.url ? (
-            <iframe
-              src={document.url}
-              className="w-full h-full border-0"
-              title={document.name}
-            />
+            <iframe src={document.url} className="w-full h-full border-0" title={document.name} />
           ) : (
             <p className="text-gray-500">No preview available</p>
           )}

@@ -1,15 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { Search, Users, UserCheck, Clock, Shield, UserPlus, AlertCircle } from "lucide-react";
+import {
+  Search,
+  Users,
+  UserCheck,
+  Clock,
+  Shield,
+  UserPlus,
+  AlertCircle,
+  X,
+  RefreshCw,
+  Mail,
+} from "lucide-react";
 import {
   useSession,
   useOrganizationMembers,
+  useOrganizationInvitations,
   useInviteMember,
   useRemoveMember,
   useUpdateMemberRole,
   useAssignableRoles,
   useManageableUsers,
+  useCancelInvitation,
 } from "@/lib/api/hooks";
 import Link from "next/link";
 
@@ -21,26 +34,38 @@ export default function TeamManagement() {
   const { data: session } = useSession();
   const orgId = session?.session.activeOrganizationId;
 
-  const { data: members, isLoading } = useOrganizationMembers(orgId || "");
+  const { data: members, isLoading } = useOrganizationMembers(orgId!);
+  const { data: invitations } = useOrganizationInvitations(orgId!);
 
-  // Infer member type from the hook's return data
-  type Member = NonNullable<typeof members>[number];
   const inviteMemberMutation = useInviteMember();
   const removeMemberMutation = useRemoveMember();
   const updateMemberRoleMutation = useUpdateMemberRole();
+  const cancelInvitationMutation = useCancelInvitation();
 
   // Hierarchical permissions
   const assignableRoles = useAssignableRoles();
   const manageableUserIds = useManageableUsers();
 
+  // Calculate statistics
+  const totalUsers = members?.length || 0;
+  const adminCount = members?.filter((m) => m.role === "admin" || m.role === "owner").length || 0;
+  const pendingInvitesCount = invitations?.length || 0;
+
+  // For now, consider all members as active since we don't have lastActiveAt field
+  // TODO: Add lastActiveAt field to member schema and filter by recent activity
+  const activeUsers = totalUsers;
+
+  // Calculate activity rate (active / total)
+  const activityRate = totalUsers > 0 ? Math.round((activeUsers / totalUsers) * 100) : 0;
+
   const stats = {
-    totalUsers: members?.length || 0,
-    totalUsersChange: "+8% from last month", // TODO: Calculate from historical data
-    activeUsers: members?.length || 0, // TODO: Filter by last active time
-    activityRate: "87% activity rate", // TODO: Calculate from activity logs
-    pendingInvites: 0, // TODO: Get from invitations API
-    pendingNote: "Expire soon",
-    adminRoles: members?.filter((m: Member) => m.role === "admin" || m.role === "owner").length || 0,
+    totalUsers,
+    totalUsersChange: "No historical data", // TODO: Implement after adding member creation timestamps
+    activeUsers,
+    activityRate: `${activityRate}% active`,
+    pendingInvites: pendingInvitesCount,
+    pendingNote: pendingInvitesCount === 1 ? "1 pending" : `${pendingInvitesCount} pending`,
+    adminRoles: adminCount,
     adminNote: "Admin & Owner",
   };
 
@@ -54,7 +79,7 @@ export default function TeamManagement() {
     return colors[role] || "bg-gray-100 text-gray-700";
   };
 
-  const filteredMembers = (members || []).filter((member: Member) => {
+  const filteredMembers = (members || []).filter((member) => {
     const matchesSearch =
       searchQuery === "" ||
       member.user.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -103,6 +128,26 @@ export default function TeamManagement() {
       return;
     }
     updateMemberRoleMutation.mutate({ orgId, userId, role: newRole });
+  };
+
+  const handleCancelInvitation = (invitationId: string) => {
+    if (!orgId) return;
+    if (confirm("Are you sure you want to cancel this invitation?")) {
+      cancelInvitationMutation.mutate({ orgId, invitationId });
+    }
+  };
+
+  const handleResendInvitation = (email: string, role: string) => {
+    if (!orgId) return;
+    // Cancel existing and resend
+    inviteMemberMutation.mutate(
+      { orgId, invitation: { email, role } },
+      {
+        onSuccess: () => {
+          // TODO: Show success toast
+        },
+      },
+    );
   };
 
   return (
@@ -292,6 +337,100 @@ export default function TeamManagement() {
           </table>
         </div>
       </div>
+
+      {/* Pending Invitations Section */}
+      {invitations && invitations.length > 0 && (
+        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-lg font-semibold text-gray-900">Pending Invitations</h2>
+                <p className="text-sm text-gray-600 mt-1">Manage pending team member invitations</p>
+              </div>
+              <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
+                {invitations.length} pending
+              </span>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                    Email
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                    Role
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                    Sent
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                    Status
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {invitations.map((invitation) => (
+                  <tr key={invitation.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
+                          <Mail className="w-5 h-5 text-gray-500" />
+                        </div>
+                        <div>
+                          <p className="font-medium text-gray-900">{invitation.email}</p>
+                          <p className="text-sm text-gray-600">Pending invitation</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-2.5 py-1 rounded-md text-xs font-medium ${getRoleBadgeColor(invitation.role)}`}
+                      >
+                        {invitation.role}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {new Date(invitation.expiresAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="px-2.5 py-1 rounded-md text-xs font-medium bg-yellow-100 text-yellow-700">
+                        {invitation.status || "pending"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => handleResendInvitation(invitation.email, invitation.role)}
+                          disabled={inviteMemberMutation.isPending}
+                          className="text-blue-600 hover:text-blue-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                          title="Resend invitation email"
+                        >
+                          <RefreshCw className="w-4 h-4" />
+                          Resend
+                        </button>
+                        <button
+                          onClick={() => handleCancelInvitation(invitation.id)}
+                          disabled={cancelInvitationMutation.isPending}
+                          className="text-red-600 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
+                          title="Cancel invitation"
+                        >
+                          <X className="w-4 h-4" />
+                          Cancel
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {showInviteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">

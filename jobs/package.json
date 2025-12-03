@@ -20,8 +20,13 @@
   ],
   "license": "ISC",
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.71.0",
+    "@google-cloud/bigquery": "^8.1.1",
+    "@google/genai": "1.25.0",
+    "langsmith": "^0.3.82",
+    "openai": "^6.9.1",
     "pino": "^8.20.0",
-    "zod": "^3.23.8"
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@types/node": "^20.14.7",

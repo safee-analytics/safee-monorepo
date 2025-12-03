@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Lock, Shield, Smartphone, Key, Eye, EyeOff, AlertTriangle, Save, RefreshCw } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
+import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
 import {
   useGetSecuritySettings,
   useUpdateSecuritySettings,
@@ -19,6 +20,7 @@ export default function SecuritySettings() {
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [show2FASetup, setShow2FASetup] = useState(false);
 
   // Fetch data
   const { data: securitySettings, isLoading: _settingsLoading } = useGetSecuritySettings();
@@ -177,23 +179,29 @@ export default function SecuritySettings() {
                   <p className="text-sm text-gray-500">Add an extra layer of security to your account</p>
                 </div>
               </div>
-              <label className="relative inline-flex items-center cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={security.twoFactorEnabled}
-                  onChange={(e) => setSecurity({ ...security, twoFactorEnabled: e.target.checked })}
-                  className="sr-only peer"
-                />
-                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-              </label>
+              {!security.twoFactorEnabled ? (
+                <button
+                  onClick={() => setShow2FASetup(true)}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                >
+                  Enable
+                </button>
+              ) : (
+                <button
+                  onClick={() => setSecurity({ ...security, twoFactorEnabled: false })}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
+                >
+                  Disable
+                </button>
+              )}
             </div>
             {security.twoFactorEnabled && (
-              <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                <p className="text-sm text-blue-800">
+              <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                <p className="text-sm text-green-800 mb-2">
                   Two-factor authentication is enabled. You&apos;ll need to enter a code from your
                   authenticator app when signing in.
                 </p>
-                <button className="mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium">
+                <button className="text-sm text-green-700 hover:text-green-800 font-medium">
                   View Recovery Codes
                 </button>
               </div>
@@ -366,6 +374,16 @@ export default function SecuritySettings() {
             </button>
           </div>
         </motion.div>
+
+        {/* Two-Factor Setup Modal */}
+        <TwoFactorSetup
+          isOpen={show2FASetup}
+          onClose={() => setShow2FASetup(false)}
+          onSuccess={() => {
+            setSecurity({ ...security, twoFactorEnabled: true });
+            handleSave();
+          }}
+        />
       </div>
     </SettingsPermissionGate>
   );

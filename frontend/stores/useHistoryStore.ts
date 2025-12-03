@@ -3,7 +3,7 @@ import { create } from "zustand";
 export interface HistoryAction {
   type: string;
   timestamp: number;
-  data: any;
+  data: unknown;
   undo: () => Promise<void>;
   redo: () => Promise<void>;
   description: string;
@@ -112,9 +112,9 @@ export function useHistory() {
    */
   const createUpdateAction = (
     caseId: string,
-    oldData: any,
-    newData: any,
-    updateFn: (data: any) => Promise<void>,
+    oldData: Record<string, unknown>,
+    newData: Record<string, unknown>,
+    updateFn: (data: Record<string, unknown>) => Promise<void>,
     description: string,
   ): HistoryAction => ({
     type: "UPDATE_CASE",
@@ -133,9 +133,9 @@ export function useHistory() {
    * Create a history action for deleting a case
    */
   const createDeleteAction = (
-    caseData: any,
+    caseData: Record<string, unknown> & { id: string },
     deleteFn: (id: string) => Promise<void>,
-    restoreFn: (data: any) => Promise<void>,
+    restoreFn: (data: Record<string, unknown>) => Promise<void>,
     description: string,
   ): HistoryAction => ({
     type: "DELETE_CASE",
@@ -154,8 +154,8 @@ export function useHistory() {
    * Create a history action for creating a case
    */
   const createCreateAction = (
-    caseData: any,
-    createFn: (data: any) => Promise<any>,
+    caseData: Record<string, unknown>,
+    createFn: (data: Record<string, unknown>) => Promise<{ id: string }>,
     deleteFn: (id: string) => Promise<void>,
     description: string,
   ): HistoryAction => {
@@ -183,9 +183,9 @@ export function useHistory() {
    */
   const createBulkAction = (
     caseIds: string[],
-    oldStates: Record<string, any>,
-    newStates: Record<string, any>,
-    updateFn: (updates: Record<string, any>) => Promise<void>,
+    oldStates: Record<string, unknown>,
+    newStates: Record<string, unknown>,
+    updateFn: (updates: Record<string, unknown>) => Promise<void>,
     description: string,
   ): HistoryAction => ({
     type: "BULK_UPDATE",

@@ -1,5 +1,5 @@
 import { schema } from "@safee/database";
-import { eq } from "drizzle-orm";
+import { eq } from "@safee/database";
 import crypto from "crypto";
 import { odooClient } from "./client.js";
 import { type OdooConnectionConfig } from "./client.service.js";
@@ -72,17 +72,209 @@ export class OdooDatabaseService {
     };
 
     const modulesToInstall = [
+      // Core
       "base",
+      "web",
+
+      // Accounting
       "account",
-      "sale",
+
+      // CRM & Sales
       "crm",
+      "sale",
+      "sale_crm", // Opportunity to Quotation
+
+      // HR - Core
       "hr",
       "hr_holidays",
-      "hr_contract",
-      "hr_payroll",
-      "website",
+      "hr_attendance",
+      "hr_expense",
+      "hr_recruitment",
+      "hr_timesheet",
+      "hr_presence",
+
+      // HR - Extended
+      "hr_recruitment_skills",
+      "hr_work_entry",
+      "hr_hourly_cost",
+
+      // Project Management
+      "project",
+      "project_timesheet_holidays",
+
+      // Automation & Workflows
+      "base_automation",
+
+      // Communication
+      "mail_group",
+
+      // Rating/Feedback
+      "rating",
+
+      // Address & Validation
+      "base_address_extended",
+      "base_vat",
+      "google_address_autocomplete",
+
+      // Portal
       "portal",
+      "website", // Required for portal
+
+      // ========================================
+      // Custom Modules from /custom_addons
+      // ========================================
+
+      // Safee Custom Modules
       "api_key_service",
+      "safee_webhooks",
+
+      // Server Tools
+      "auditlog",
+      "auto_backup",
+      "base_name_search_improved",
+      "base_technical_user",
+      "database_cleanup",
+      "module_auto_update",
+      "scheduler_error_mailer",
+
+      // Queue/Background Jobs
+      "queue_job",
+      "queue_job_cron",
+
+      // Document Management
+      "dms",
+      "dms_auto_classification",
+      "dms_field",
+
+      // Reporting
+      "report_xlsx",
+      "report_csv",
+      "report_qr",
+      "report_xml",
+      "report_py3o",
+      "report_qweb_parameter",
+      "report_qweb_encrypt",
+      "report_qweb_pdf_watermark",
+      "bi_sql_editor",
+      "sql_export",
+      "sql_export_excel",
+
+      // Mail/Communication
+      "mail_tracking",
+      "mail_tracking_mass_mailing",
+      "mail_debrand",
+      "mail_optional_autofollow",
+      "mail_activity_board",
+
+      // Partner/Contact
+      "partner_firstname",
+      "partner_second_lastname",
+      "partner_statement",
+      "partner_multi_relation",
+      "partner_identification",
+      "partner_company_group",
+      "partner_external_map",
+
+      // Contract
+      "contract",
+      "contract_sale",
+      "contract_payment_mode",
+      "contract_variable_quantity",
+
+      // Account - OCA Extensions
+      "account_asset_management",
+      "account_asset_number",
+      "account_financial_report",
+      "account_fiscal_year",
+      "account_fiscal_year_auto_create",
+      "account_global_discount",
+      "account_invoice_refund_link",
+      "account_invoice_section_sale_order",
+      "account_invoice_supplier_ref_unique",
+      "account_invoice_triple_discount",
+      "account_move_line_purchase_info",
+      "account_move_line_sale_info",
+      "account_move_template",
+      "account_netting",
+      "account_spread_cost_revenue",
+      "account_tax_balance",
+
+      // Analytics
+      "analytic_base_department",
+
+      // Sale - OCA Extensions
+      "sale_automatic_workflow",
+      "sale_exception",
+      "sale_global_discount",
+      "sale_order_invoicing_grouping_criteria",
+      "sale_order_type",
+      "sale_product_set",
+      "sale_quotation_number",
+      "sale_stock_picking_invoicing",
+      "sale_tier_validation",
+
+      // Project - OCA Extensions
+      "project_department",
+      "project_hr",
+      "project_key",
+      "project_task_code",
+      "project_task_parent_completion_blocking",
+      "project_template",
+      "project_timeline",
+
+      // HR - OCA Extensions
+      "hr_contract_reference",
+      "hr_course",
+      "hr_department_code",
+      "hr_employee_age",
+      "hr_employee_calendar_planning",
+      "hr_employee_firstname",
+      "hr_employee_id",
+      "hr_employee_medical_examination",
+      "hr_employee_relative",
+      "hr_employee_service",
+      "hr_expense_analytic_tag",
+      "hr_timesheet_analytic_tag",
+      "hr_timesheet_sheet",
+
+      // Helpdesk
+      "helpdesk_mgmt",
+      "helpdesk_mgmt_rating",
+      "helpdesk_mgmt_sla",
+      "helpdesk_mgmt_timesheet",
+
+      // MIS Builder (Financial Reports)
+      "mis_builder",
+
+      // Web UI Improvements
+      "web_responsive",
+      "web_m2x_options",
+      "web_notify",
+      "web_timeline",
+      "web_environment_ribbon",
+      "web_dialog_size",
+
+      // API/Integration - REST Framework
+      "component", // Required for base_rest
+      "component_event",
+      "extendable", // Required for component
+      "pydantic", // Pydantic utility addon
+      "base_rest", // REST API framework
+      "base_rest_pydantic", // Pydantic integration for REST
+      "base_rest_auth_api_key", // API key auth for REST
+      "rest_log", // REST API call logging
+      "endpoint_route_handler", // Route handling
+      "fastapi", // FastAPI integration
+      "fastapi_auth_api_key", // API key auth for FastAPI
+
+      // Security & Auth
+      "auth_api_key",
+      "password_security",
+      "base_user_show_email",
+
+      // Debranding
+      "disable_odoo_online",
+      "portal_odoo_debranding",
     ];
 
     await this.odooModuleService.installModules({

@@ -98,9 +98,7 @@ export function SectionConfigurator({ templateId, onChange }: SectionConfigurato
             <div
               key={section.id}
               className={`p-4 rounded-lg border-2 transition-all ${
-                isActive
-                  ? "border-blue-500 bg-blue-50"
-                  : "border-gray-200 bg-gray-50"
+                isActive ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-gray-50"
               } ${isRequired ? "opacity-100" : "cursor-pointer hover:border-gray-300"}`}
               onClick={() => !isRequired && toggleSection(section.id)}
             >
@@ -110,9 +108,7 @@ export function SectionConfigurator({ templateId, onChange }: SectionConfigurato
                   <div className="flex items-center gap-2">
                     <h4 className="font-medium text-gray-900">{section.title}</h4>
                     {isRequired && (
-                      <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">
-                        Required
-                      </span>
+                      <span className="text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded">Required</span>
                     )}
                     <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
                       {section.type.replace("_", " ")}

@@ -47,13 +47,13 @@ export function Dropdown({
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
+  function handleClickOutside(event: MouseEvent) {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsOpen(false);
+    }
+  }
 
+  useEffect(() => {
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
@@ -69,17 +69,17 @@ export function Dropdown({
     center: "left-1/2 -translate-x-1/2",
   };
 
-  const handleItemClick = (item: DropdownItem) => {
+  function handleItemClick(item: DropdownItem) {
     if (item.disabled) return;
 
     item.onClick?.();
     onSelect?.(item);
     setIsOpen(false);
-  };
+  }
 
   return (
     <div ref={dropdownRef} className={`relative inline-block ${className}`}>
-      <div onClick={() => setIsOpen(!isOpen)}>{trigger}</div>
+      <div onClick={() => { setIsOpen(!isOpen); }}>{trigger}</div>
 
       <AnimatePresence>
         {isOpen && (
@@ -97,7 +97,7 @@ export function Dropdown({
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  onClick={() => handleItemClick(item)}
+                  onClick={() => { handleItemClick(item); }}
                   disabled={item.disabled}
                   className={`
                     w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors

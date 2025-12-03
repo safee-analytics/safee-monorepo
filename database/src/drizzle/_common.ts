@@ -324,6 +324,7 @@ export const invitationStatusEnum = identitySchema.enum("invitation_status", [
   "accepted",
   "rejected",
   "expired",
+  "canceled",
 ]);
 
 export const accountTypeEnum = financeSchema.enum("account_type", [
@@ -494,6 +495,33 @@ export const taxAmountTypeEnum = financeSchema.enum("tax_amount_type", ["percent
 export const taxScopeEnum = financeSchema.enum("tax_scope", ["sale", "purchase", "none"]);
 
 export const taxTypeEnum = financeSchema.enum("tax_type", ["sale", "purchase", "none"]);
+
+// Odoo invoice/payment enums
+export const odooMoveTypeEnum = financeSchema.enum("odoo_move_type", [
+  "out_invoice",
+  "out_refund",
+  "in_invoice",
+  "in_refund",
+  "entry",
+]);
+
+export const odooInvoiceStateEnum = financeSchema.enum("odoo_invoice_state", ["draft", "posted", "cancel"]);
+
+export const odooPaymentStateEnum = financeSchema.enum("odoo_payment_state", [
+  "not_paid",
+  "in_payment",
+  "paid",
+  "partial",
+  "reversed",
+]);
+
+export const odooPaymentTypeEnum = financeSchema.enum("odoo_payment_type", [
+  "inbound",
+  "outbound",
+  "transfer",
+]);
+
+export const odooPartnerTypeEnum = financeSchema.enum("odoo_partner_type", ["customer", "supplier"]);
 
 export const activityStateEnum = salesSchema.enum("activity_state", ["planned", "today", "overdue", "done"]);
 

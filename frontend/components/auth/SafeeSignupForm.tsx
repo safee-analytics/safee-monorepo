@@ -6,6 +6,7 @@ import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { useDirection } from "@/lib/hooks/useDirection";
+import { SafeeLogo as SafeeLogoComponent } from "@/components/common/SafeeLogo";
 
 interface SignupFormProps {
   t: {
@@ -264,10 +265,7 @@ const CornerGrid = ({ isRTL }: { isRTL: boolean }) => {
 const SafeeLogo = () => {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-safee-500 to-safee-700 flex items-center justify-center shadow-lg shadow-safee-500/50">
-        <span className="text-white font-bold text-2xl">S</span>
-      </div>
-      <span className="text-2xl font-bold text-gray-900">Safee Analytics</span>
+      <SafeeLogoComponent size="lg" />
     </div>
   );
 };

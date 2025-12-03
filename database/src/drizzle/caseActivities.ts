@@ -29,8 +29,7 @@ export const caseActivities = auditSchema.table(
       .references(() => cases.id, { onDelete: "cascade" })
       .notNull(),
     activityType: activityTypeEnum("activity_type").notNull(),
-    userId: uuid("user_id")
-      .references(() => users.id, { onDelete: "set null" }),
+    userId: uuid("user_id").references(() => users.id, { onDelete: "set null" }),
     metadata: jsonb("metadata").$type<{
       caseName?: string;
       oldValue?: string;

@@ -1,5 +1,5 @@
 import { schema, ruleSchema, type Rule, type RuleCondition } from "@safee/database";
-import { eq, and, desc } from "drizzle-orm";
+import { eq, and, desc } from "@safee/database";
 import type { ServerContext } from "../serverContext.js";
 
 // Explicit type for TSOA compatibility

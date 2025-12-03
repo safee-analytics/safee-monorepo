@@ -17,18 +17,16 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
-export interface ChartDataPoint {
-  [key: string]: string | number;
-}
+export type ChartDataPoint = Record<string, string | number>;
 
 export interface LineChartProps {
   data: ChartDataPoint[];
-  lines: Array<{
+  lines: {
     dataKey: string;
     name?: string;
     color?: string;
     strokeWidth?: number;
-  }>;
+  }[];
   xAxisKey: string;
   height?: number;
   showGrid?: boolean;
@@ -38,11 +36,11 @@ export interface LineChartProps {
 
 export interface BarChartProps {
   data: ChartDataPoint[];
-  bars: Array<{
+  bars: {
     dataKey: string;
     name?: string;
     color?: string;
-  }>;
+  }[];
   xAxisKey: string;
   height?: number;
   showGrid?: boolean;
@@ -68,11 +66,11 @@ export interface PieChartProps {
 
 export interface AreaChartProps {
   data: ChartDataPoint[];
-  areas: Array<{
+  areas: {
     dataKey: string;
     name?: string;
     color?: string;
-  }>;
+  }[];
   xAxisKey: string;
   height?: number;
   showGrid?: boolean;
@@ -92,7 +90,7 @@ const DEFAULT_COLORS = [
 /**
  * Line Chart Component
  */
-export const LineChart: React.FC<LineChartProps> = ({
+export function LineChart({
   data,
   lines,
   xAxisKey,
@@ -100,7 +98,7 @@ export const LineChart: React.FC<LineChartProps> = ({
   showGrid = true,
   showLegend = true,
   className = "",
-}) => {
+}: LineChartProps) {
   return (
     <div className={className}>
       <ResponsiveContainer width="100%" height={height}>
@@ -115,21 +113,21 @@ export const LineChart: React.FC<LineChartProps> = ({
               key={line.dataKey}
               type="monotone"
               dataKey={line.dataKey}
-              name={line.name || line.dataKey}
-              stroke={line.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length]}
-              strokeWidth={line.strokeWidth || 2}
+              name={line.name ?? line.dataKey}
+              stroke={line.color ?? DEFAULT_COLORS[index % DEFAULT_COLORS.length]}
+              strokeWidth={line.strokeWidth ?? 2}
             />
           ))}
         </RechartsLineChart>
       </ResponsiveContainer>
     </div>
   );
-};
+}
 
 /**
  * Bar Chart Component
  */
-export const BarChart: React.FC<BarChartProps> = ({
+export function BarChart({
   data,
   bars,
   xAxisKey,
@@ -137,7 +135,7 @@ export const BarChart: React.FC<BarChartProps> = ({
   showGrid = true,
   showLegend = true,
   className = "",
-}) => {
+}: BarChartProps) {
   return (
     <div className={className}>
       <ResponsiveContainer width="100%" height={height}>
@@ -151,20 +149,20 @@ export const BarChart: React.FC<BarChartProps> = ({
             <Bar
               key={bar.dataKey}
               dataKey={bar.dataKey}
-              name={bar.name || bar.dataKey}
-              fill={bar.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length]}
+              name={bar.name ?? bar.dataKey}
+              fill={bar.color ?? DEFAULT_COLORS[index % DEFAULT_COLORS.length]}
             />
           ))}
         </RechartsBarChart>
       </ResponsiveContainer>
     </div>
   );
-};
+}
 
 /**
  * Pie Chart Component
  */
-export const PieChart: React.FC<PieChartProps> = ({
+export function PieChart({
   data,
   colors = DEFAULT_COLORS,
   height = 300,
@@ -172,7 +170,7 @@ export const PieChart: React.FC<PieChartProps> = ({
   innerRadius = 0,
   outerRadius = 100,
   className = "",
-}) => {
+}: PieChartProps) {
   return (
     <div className={className}>
       <ResponsiveContainer width="100%" height={height}>
@@ -198,12 +196,12 @@ export const PieChart: React.FC<PieChartProps> = ({
       </ResponsiveContainer>
     </div>
   );
-};
+}
 
 /**
  * Area Chart Component
  */
-export const AreaChart: React.FC<AreaChartProps> = ({
+export function AreaChart({
   data,
   areas,
   xAxisKey,
@@ -211,7 +209,7 @@ export const AreaChart: React.FC<AreaChartProps> = ({
   showGrid = true,
   showLegend = true,
   className = "",
-}) => {
+}: AreaChartProps) {
   return (
     <div className={className}>
       <ResponsiveContainer width="100%" height={height}>
@@ -226,13 +224,13 @@ export const AreaChart: React.FC<AreaChartProps> = ({
               key={area.dataKey}
               type="monotone"
               dataKey={area.dataKey}
-              name={area.name || area.dataKey}
-              fill={area.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length]}
-              stroke={area.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length]}
+              name={area.name ?? area.dataKey}
+              fill={area.color ?? DEFAULT_COLORS[index % DEFAULT_COLORS.length]}
+              stroke={area.color ?? DEFAULT_COLORS[index % DEFAULT_COLORS.length]}
             />
           ))}
         </RechartsAreaChart>
       </ResponsiveContainer>
     </div>
   );
-};
+}

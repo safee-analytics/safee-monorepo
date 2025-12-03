@@ -29,7 +29,7 @@ const logger = pino(
         level: LOG_LEVEL,
         base: { app: "gateway" },
         customLevels: { http: 27 },
-      }
+      },
 );
 
 async function main() {

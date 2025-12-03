@@ -6,7 +6,7 @@
 
 import type { DrizzleClient } from "@safee/database";
 import { schema } from "@safee/database";
-import { eq } from "drizzle-orm";
+import { eq } from "@safee/database";
 import { encryptionService } from "../services/encryption.js";
 
 export interface OdooAdminCredentials {

@@ -1,39 +1,40 @@
 #!/usr/bin/env node
+/* eslint-disable no-console */
 
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { execSync } from 'child_process';
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
+import { execSync } from "child_process";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SWAGGER_PATH = path.join(__dirname, '../../gateway/src/server/swagger.json');
-const OUTPUT_DIR = path.join(__dirname, '../lib/api/types');
-const TEMP_DIR = path.join(__dirname, '../.temp-types');
+const SWAGGER_PATH = path.join(__dirname, "../../gateway/src/server/swagger.json");
+const OUTPUT_DIR = path.join(__dirname, "../lib/api/types");
+const TEMP_DIR = path.join(__dirname, "../.temp-types");
 
 // Module groupings - combine related tags into logical modules
 const MODULE_GROUPS = {
-  accounting: ['Accounting'],
-  audit: ['Cases', 'Audit Planning', 'Audit Logs'],
-  reports: ['Reports'],
-  collaboration: ['Collaboration'],
-  crm: ['CRM'],
-  hr: ['HR & Payroll', 'HR Management'],
-  workflows: ['Workflows', 'Approvals'],
-  storage: ['Storage', 'NAS Management'],
-  integrations: ['Integrations', 'Odoo', 'Connectors'],
-  settings: ['Settings', 'Security', 'Database'],
-  users: ['Users'],
-  dashboard: ['Dashboard'],
-  ocr: ['OCR'],
-  health: ['Health'],
+  accounting: ["Accounting"],
+  audit: ["Cases", "Audit Planning", "Audit Logs"],
+  reports: ["Reports"],
+  collaboration: ["Collaboration"],
+  crm: ["CRM"],
+  hr: ["HR & Payroll", "HR Management"],
+  workflows: ["Workflows", "Approvals"],
+  storage: ["Storage", "NAS Management"],
+  integrations: ["Integrations", "Odoo", "Connectors"],
+  settings: ["Settings", "Security", "Database"],
+  users: ["Users"],
+  dashboard: ["Dashboard"],
+  ocr: ["OCR"],
+  health: ["Health"],
 };
 
-console.log('🔧 Generating modular API types...\n');
+console.log("🔧 Generating modular API types...\n");
 
 // Read the full swagger spec
-const swaggerSpec = JSON.parse(fs.readFileSync(SWAGGER_PATH, 'utf-8'));
+const swaggerSpec = JSON.parse(fs.readFileSync(SWAGGER_PATH, "utf-8"));
 
 // Create output directories
 if (fs.existsSync(OUTPUT_DIR)) {
@@ -54,10 +55,10 @@ function filterPathsByTags(spec, tags) {
     let hasMatch = false;
 
     for (const [method, operation] of Object.entries(methods)) {
-      if (method === 'parameters') continue;
+      if (method === "parameters") continue;
 
       const operationTags = operation.tags || [];
-      if (operationTags.some(tag => tags.includes(tag))) {
+      if (operationTags.some((tag) => tags.includes(tag))) {
         filteredMethods[method] = operation;
         hasMatch = true;
       }
@@ -75,7 +76,7 @@ function filterPathsByTags(spec, tags) {
 const indexExports = [];
 
 for (const [moduleName, tags] of Object.entries(MODULE_GROUPS)) {
-  console.log(`📦 Generating types for ${moduleName} module (${tags.join(', ')})...`);
+  console.log(`📦 Generating types for ${moduleName} module (${tags.join(", ")})...`);
 
   // Filter spec for this module
   const moduleSpec = filterPathsByTags(swaggerSpec, tags);
@@ -93,10 +94,7 @@ for (const [moduleName, tags] of Object.entries(MODULE_GROUPS)) {
   // Generate types using openapi-typescript
   const outputPath = path.join(OUTPUT_DIR, `${moduleName}.ts`);
   try {
-    execSync(
-      `npx openapi-typescript ${tempSpecPath} -o ${outputPath}`,
-      { stdio: 'inherit' }
-    );
+    execSync(`npx openapi-typescript ${tempSpecPath} -o ${outputPath}`, { stdio: "inherit" });
     console.log(`   ✅ Generated ${moduleName}.ts\n`);
 
     // Add to index exports
@@ -108,8 +106,8 @@ for (const [moduleName, tags] of Object.entries(MODULE_GROUPS)) {
 
 // Generate index file with namespaced exports
 const namespacedExports = Object.keys(MODULE_GROUPS)
-  .filter(module => indexExports.some(exp => exp.includes(module)))
-  .map(module => {
+  .filter((module) => indexExports.some((exp) => exp.includes(module)))
+  .map((module) => {
     const capitalizedName = module.charAt(0).toUpperCase() + module.slice(1);
     return `export * as ${capitalizedName} from './${module}.js';`;
   });
@@ -126,14 +124,14 @@ const indexContent = `/**
  * import type { paths } from '@/lib/api/types/accounting'
  */
 
-${namespacedExports.join('\n')}
+${namespacedExports.join("\n")}
 
 // Re-export the unified paths type for backward compatibility
 export type { paths } from './paths.js';
 `;
 
-fs.writeFileSync(path.join(OUTPUT_DIR, 'index.ts'), indexContent);
-console.log('📄 Generated index.ts with namespaced exports');
+fs.writeFileSync(path.join(OUTPUT_DIR, "index.ts"), indexContent);
+console.log("📄 Generated index.ts with namespaced exports");
 
 // Generate a unified paths type that combines all modules
 const unifiedPathsContent = `/**
@@ -141,23 +139,27 @@ const unifiedPathsContent = `/**
  */
 
 ${Object.keys(MODULE_GROUPS)
-  .map(module => `import type { paths as ${module.charAt(0).toUpperCase() + module.slice(1)}Paths } from './${module}.js';`)
-  .join('\n')}
+  .map(
+    (module) =>
+      `import type { paths as ${module.charAt(0).toUpperCase() + module.slice(1)}Paths } from './${module}.js';`,
+  )
+  .join("\n")}
 
 export type paths =
 ${Object.keys(MODULE_GROUPS)
-  .map((module, idx, arr) =>
-    `  ${module.charAt(0).toUpperCase() + module.slice(1)}Paths${idx < arr.length - 1 ? ' &' : ';'}`
+  .map(
+    (module, idx, arr) =>
+      `  ${module.charAt(0).toUpperCase() + module.slice(1)}Paths${idx < arr.length - 1 ? " &" : ";"}`,
   )
-  .join('\n')}
+  .join("\n")}
 `;
 
-fs.writeFileSync(path.join(OUTPUT_DIR, 'paths.ts'), unifiedPathsContent);
-console.log('📄 Generated unified paths.ts');
+fs.writeFileSync(path.join(OUTPUT_DIR, "paths.ts"), unifiedPathsContent);
+console.log("📄 Generated unified paths.ts");
 
 // Clean up temp directory
 fs.rmSync(TEMP_DIR, { recursive: true });
 
-console.log('\n✨ Type generation complete!');
+console.log("\n✨ Type generation complete!");
 console.log(`📁 Output directory: ${OUTPUT_DIR}`);
 console.log(`📊 Generated ${indexExports.length} module files`);

@@ -34,10 +34,7 @@ export function ReportViewer({ report, onClose, onExport }: ReportViewerProps) {
               </p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <X className="w-5 h-5 text-gray-600" />
           </button>
         </div>
@@ -87,7 +84,7 @@ export function ReportViewer({ report, onClose, onExport }: ReportViewerProps) {
             style={{
               width: `${zoom}%`,
               maxWidth: "100%",
-              minHeight: "100%"
+              minHeight: "100%",
             }}
           >
             {report.status === "generating" ? (
@@ -109,7 +106,8 @@ export function ReportViewer({ report, onClose, onExport }: ReportViewerProps) {
                 <div className="text-center py-12 border-b border-gray-200">
                   <h1 className="text-4xl font-bold text-gray-900 mb-4">{report.title}</h1>
                   <p className="text-gray-600">
-                    Generated on {report.generatedAt ? new Date(report.generatedAt).toLocaleDateString() : "N/A"}
+                    Generated on{" "}
+                    {report.generatedAt ? new Date(report.generatedAt).toLocaleDateString() : "N/A"}
                   </p>
                 </div>
 
@@ -140,8 +138,8 @@ export function ReportViewer({ report, onClose, onExport }: ReportViewerProps) {
                     <div className="space-y-2 text-sm">
                       {report.settings.dateRange && (
                         <p className="text-gray-700">
-                          <span className="font-medium">Date Range:</span>{" "}
-                          {report.settings.dateRange.start} - {report.settings.dateRange.end}
+                          <span className="font-medium">Date Range:</span> {report.settings.dateRange.start} -{" "}
+                          {report.settings.dateRange.end}
                         </p>
                       )}
                       {report.settings.includeSections && (

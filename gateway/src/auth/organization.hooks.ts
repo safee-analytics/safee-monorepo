@@ -2,6 +2,7 @@ import type { OrganizationOptions } from "better-auth/plugins/organization";
 import { logger } from "../server/utils/logger.js";
 import { OdooDatabaseService } from "../server/services/odoo/database.service.js";
 import { OdooUserProvisioningService } from "../server/services/odoo/user-provisioning.service.js";
+import { configureOdooWebhooks } from "../server/services/odoo/webhookConfig.service.js";
 import { canManageRole } from "./accessControl.js";
 import { connect, createEmployee } from "@safee/database";
 import { getServerContext } from "../server/serverContext.js";
@@ -184,6 +185,11 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
           await odooUserProvisioningService.provisionUser(user.id, organization.id, member.role);
           logger.info({ userId: user.id }, "Odoo user provisioned");
         }
+
+        // Configure Odoo webhooks for the organization
+        logger.info({ organizationId: organization.id }, "Configuring Odoo webhooks");
+        await configureOdooWebhooks(logger, user.id, organization.id);
+        logger.info({ organizationId: organization.id }, "Odoo webhooks configured");
       } catch (error) {
         logger.error(
           { error, userId: user.id, organizationId: organization.id },
@@ -211,7 +217,6 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
           logger.info({ userId: user.id }, "Odoo user provisioned for new member");
         }
 
-        // Auto-create employee record for new member
         const existingEmployee = await drizzle.query.hrEmployees.findFirst({
           where: (employees, { eq }) => eq(employees.userId, user.id),
         });

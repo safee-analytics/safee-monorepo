@@ -1,6 +1,6 @@
 import type { AuthenticatedRequest } from "./auth.js";
 import { getServerContext } from "../serverContext.js";
-import { eq, and } from "drizzle-orm";
+import { eq, and } from "@safee/database";
 import { schema } from "@safee/database";
 import { InsufficientPermissions } from "../errors.js";
 

@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Post, Put, Request, Route, Security, Tags } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
+import { getServerContext } from "../serverContext.js";
 
 // Types
 interface NASConfig {
@@ -25,7 +26,7 @@ interface StorageInfo {
 export class StorageSettingsController extends Controller {
   @Get("/config")
   @Security("jwt")
-  public async getStorageConfig(@Request() req: AuthenticatedRequest): Promise<NASConfig> {
+  public async getStorageConfig(@Request() _req: AuthenticatedRequest): Promise<NASConfig> {
     // TODO: Implement actual config query
     return {
       type: "local",
@@ -39,26 +40,30 @@ export class StorageSettingsController extends Controller {
   @Put("/config")
   @Security("jwt")
   public async updateStorageConfig(
-    @Request() req: AuthenticatedRequest,
+    @Request() _req: AuthenticatedRequest,
     @Body() config: NASConfig,
   ): Promise<NASConfig> {
     // TODO: Implement actual config update
+    const { logger } = getServerContext();
+    logger.debug({ config }, "Updating storage config");
     return config;
   }
 
   @Post("/test-connection")
   @Security("jwt")
   public async testStorageConnection(
-    @Request() req: AuthenticatedRequest,
+    @Request() _req: AuthenticatedRequest,
     @Body() config: NASConfig,
   ): Promise<{ success: boolean; message: string }> {
     // TODO: Implement actual connection test
+    const { logger } = getServerContext();
+    logger.debug({ config }, "Testing storage connection");
     return { success: true, message: "Connection successful" };
   }
 
   @Get("/info")
   @Security("jwt")
-  public async getStorageInfo(@Request() req: AuthenticatedRequest): Promise<StorageInfo> {
+  public async getStorageInfo(@Request() _req: AuthenticatedRequest): Promise<StorageInfo> {
     // TODO: Implement actual storage info query
     return {
       totalSpace: "100 GB",

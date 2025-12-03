@@ -123,9 +123,9 @@ export function PremiumButton({
       whileHover={!isDisabled ? { scale: 1.02, y: -1 } : undefined}
       whileTap={!isDisabled ? { scale: 0.98 } : undefined}
       transition={springs.snappy}
-      onTapStart={() => setIsPressed(true)}
-      onTap={() => setIsPressed(false)}
-      onTapCancel={() => setIsPressed(false)}
+      onTapStart={() => { setIsPressed(true); }}
+      onTap={() => { setIsPressed(false); }}
+      onTapCancel={() => { setIsPressed(false); }}
       {...props}
     >
       {/* Background gradient animation */}

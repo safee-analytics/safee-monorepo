@@ -1,5 +1,5 @@
 import { schema } from "@safee/database";
-import { eq, and } from "drizzle-orm";
+import { eq, and } from "@safee/database";
 import { OdooModuleService } from "./odoo/module.service.js";
 import { OdooDatabaseService } from "./odoo/database.service.js";
 import { ServiceNotFound, ServiceAlreadyEnabled } from "../errors.js";

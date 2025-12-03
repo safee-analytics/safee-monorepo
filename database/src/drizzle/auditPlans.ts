@@ -35,7 +35,9 @@ export const auditPlans = auditSchema.table(
       .$type<{ userId: string; name: string; role: string; hours?: number }[]>(),
     phaseBreakdown: jsonb("phase_breakdown")
       .default([])
-      .$type<{ name: string; duration: number; description?: string; startDate?: string; endDate?: string }[]>(),
+      .$type<
+        { name: string; duration: number; description?: string; startDate?: string; endDate?: string }[]
+      >(),
     totalBudget: decimal("total_budget", { precision: 15, scale: 2 }),
     totalHours: integer("total_hours"),
     materialityThreshold: decimal("materiality_threshold", { precision: 15, scale: 2 }),

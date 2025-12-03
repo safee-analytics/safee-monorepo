@@ -54,7 +54,7 @@ export function AnimatedButton({
     lg: "h-12 px-6 text-base gap-2.5",
   };
 
-  const isDisabled = disabled || loading;
+  const isDisabled = disabled ?? loading;
 
   return (
     <button
@@ -75,7 +75,16 @@ export function AnimatedButton({
       )}
 
       {/* Loading Spinner */}
-      {loading && <Loader2 className="animate-spin" size={size === "sm" ? 14 : size === "lg" ? 18 : 16} />}
+      {loading && (
+        <Loader2
+          className="animate-spin"
+          size={(() => {
+            if (size === "sm") return 14;
+            if (size === "lg") return 18;
+            return 16;
+          })()}
+        />
+      )}
 
       {/* Text */}
       <span>{children}</span>

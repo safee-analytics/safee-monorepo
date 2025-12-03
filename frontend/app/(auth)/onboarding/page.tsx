@@ -4,12 +4,23 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  Building2, Users, Sparkles, CheckCircle2, ArrowRight, ArrowLeft,
-  Calculator, FileCheck, UserCircle, Mail, Plus, X
+  Building2,
+  Users,
+  Sparkles,
+  CheckCircle2,
+  ArrowRight,
+  ArrowLeft,
+  Calculator,
+  FileCheck,
+  UserCircle,
+  Mail,
+  Plus,
+  X,
 } from "lucide-react";
 import { authClient } from "@/lib/auth/client";
 import { useCheckOrgSlug } from "@/lib/api/hooks/organization";
 import { twMerge } from "tailwind-merge";
+import { SafeeLogo as SafeeLogoComponent } from "@/components/common/SafeeLogo";
 
 // Multi-step onboarding types
 type OnboardingStep = "organization" | "team" | "modules" | "complete";
@@ -100,7 +111,7 @@ export default function OnboardingPage() {
 
   // Add team member
   const handleAddTeamMember = () => {
-    if (newMemberEmail && !teamMembers.find(m => m.email === newMemberEmail)) {
+    if (newMemberEmail && !teamMembers.find((m) => m.email === newMemberEmail)) {
       setTeamMembers([...teamMembers, { email: newMemberEmail, role: "user" }]);
       setNewMemberEmail("");
     }
@@ -108,15 +119,13 @@ export default function OnboardingPage() {
 
   // Remove team member
   const handleRemoveTeamMember = (email: string) => {
-    setTeamMembers(teamMembers.filter(m => m.email !== email));
+    setTeamMembers(teamMembers.filter((m) => m.email !== email));
   };
 
   // Toggle module selection
   const toggleModule = (moduleId: string) => {
-    setSelectedModules(prev =>
-      prev.includes(moduleId)
-        ? prev.filter(id => id !== moduleId)
-        : [...prev, moduleId]
+    setSelectedModules((prev) =>
+      prev.includes(moduleId) ? prev.filter((id) => id !== moduleId) : [...prev, moduleId],
     );
   };
 
@@ -139,7 +148,7 @@ export default function OnboardingPage() {
       while (!isAvailable && counter < 100) {
         const result = await checkSlugMutation.mutateAsync(finalSlug);
 
-        if (result?.exists === false) {
+        if (result?.status === false) {
           isAvailable = true;
         } else {
           counter++;
@@ -153,7 +162,7 @@ export default function OnboardingPage() {
         slug: finalSlug,
         metadata: {
           industry,
-        }
+        },
       });
 
       if (response.error) {
@@ -207,8 +216,8 @@ export default function OnboardingPage() {
     if (currentStep === "modules") setCurrentStep("team");
   };
 
-  const canProceed = () => {
-    if (currentStep === "organization") return organizationName && organizationSlug;
+  const canProceed = (): boolean => {
+    if (currentStep === "organization") return !!(organizationName && organizationSlug);
     if (currentStep === "team") return true; // Team is optional
     if (currentStep === "modules") return selectedModules.length > 0;
     return false;
@@ -220,7 +229,7 @@ export default function OnboardingPage() {
     { id: "modules", label: "Modules", icon: Sparkles },
   ];
 
-  const currentStepIndex = steps.findIndex(s => s.id === currentStep);
+  const currentStepIndex = steps.findIndex((s) => s.id === currentStep);
 
   return (
     <div className="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen py-20 relative overflow-hidden">
@@ -237,11 +246,7 @@ export default function OnboardingPage() {
       <div className="relative z-10 mx-auto w-full max-w-4xl p-4">
         {/* Logo */}
         {currentStep !== "complete" && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8"
-          >
+          <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
             <SafeeLogo />
           </motion.div>
         )}
@@ -267,7 +272,7 @@ export default function OnboardingPage() {
                         "flex items-center gap-2 px-4 py-2 rounded-full transition-all",
                         isActive && "bg-safee-100 ring-2 ring-safee-500",
                         isCompleted && "bg-green-100",
-                        !isActive && !isCompleted && "bg-gray-100"
+                        !isActive && !isCompleted && "bg-gray-100",
                       )}
                     >
                       {isCompleted ? (
@@ -278,7 +283,7 @@ export default function OnboardingPage() {
                       <span
                         className={twMerge(
                           "text-sm font-medium",
-                          isActive ? "text-safee-600" : isCompleted ? "text-green-600" : "text-gray-500"
+                          isActive ? "text-safee-600" : isCompleted ? "text-green-600" : "text-gray-500",
                         )}
                       >
                         {step.label}
@@ -288,7 +293,7 @@ export default function OnboardingPage() {
                       <div
                         className={twMerge(
                           "w-12 h-0.5 mx-2",
-                          index < currentStepIndex ? "bg-green-500" : "bg-gray-300"
+                          index < currentStepIndex ? "bg-green-500" : "bg-gray-300",
                         )}
                       />
                     )}
@@ -338,9 +343,7 @@ export default function OnboardingPage() {
             />
           )}
 
-          {currentStep === "complete" && (
-            <CompleteStep key="complete" organizationName={organizationName} />
-          )}
+          {currentStep === "complete" && <CompleteStep key="complete" organizationName={organizationName} />}
         </AnimatePresence>
       </div>
     </div>
@@ -376,7 +379,7 @@ function OrganizationStep({
         <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-safee-500 to-safee-700 flex items-center justify-center shadow-lg shadow-safee-500/50 mb-6">
           <Building2 className="w-8 h-8 text-white" />
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Let's create your organization</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-2">Let&apos;s create your organization</h1>
         <p className="text-gray-600">This will be your workspace where your team collaborates</p>
       </div>
 
@@ -424,7 +427,7 @@ function OrganizationStep({
           disabled={!canProceed || isLoading}
           className={twMerge(
             "flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-br from-safee-400 to-safee-700 text-white font-semibold transition-all hover:scale-105 active:scale-95",
-            (!canProceed || isLoading) && "opacity-50 cursor-not-allowed hover:scale-100"
+            (!canProceed || isLoading) && "opacity-50 cursor-not-allowed hover:scale-100",
           )}
         >
           {isLoading ? "Creating Organization..." : "Create & Continue"}
@@ -585,7 +588,7 @@ function ModulesStep({
                 "relative p-6 rounded-xl border-2 text-left transition-all hover:scale-105 active:scale-95",
                 isSelected
                   ? "border-safee-500 bg-safee-50 shadow-lg shadow-safee-500/20"
-                  : "border-gray-200 bg-white hover:border-safee-300"
+                  : "border-gray-200 bg-white hover:border-safee-300",
               )}
             >
               {isSelected && (
@@ -593,7 +596,9 @@ function ModulesStep({
                   <CheckCircle2 className="w-6 h-6 text-safee-500" />
                 </div>
               )}
-              <div className={`w-12 h-12 rounded-lg bg-gradient-to-br ${module.color} flex items-center justify-center mb-4`}>
+              <div
+                className={`w-12 h-12 rounded-lg bg-gradient-to-br ${module.color} flex items-center justify-center mb-4`}
+              >
                 <Icon className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">{module.name}</h3>
@@ -617,7 +622,7 @@ function ModulesStep({
           disabled={!canProceed || isLoading}
           className={twMerge(
             "flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-br from-safee-400 to-safee-700 text-white font-semibold transition-all hover:scale-105 active:scale-95",
-            (!canProceed || isLoading) && "opacity-50 cursor-not-allowed hover:scale-100"
+            (!canProceed || isLoading) && "opacity-50 cursor-not-allowed hover:scale-100",
           )}
         >
           {isLoading ? "Creating..." : "Complete Setup"}
@@ -678,10 +683,7 @@ function CompleteStep({ organizationName }: { organizationName: string }) {
 const SafeeLogo = () => {
   return (
     <div className="flex items-center gap-3">
-      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-safee-500 to-safee-700 flex items-center justify-center shadow-lg shadow-safee-500/50">
-        <span className="text-white font-bold text-2xl">S</span>
-      </div>
-      <span className="text-2xl font-bold text-gray-900">Safee Analytics</span>
+      <SafeeLogoComponent size="lg" />
     </div>
   );
 };

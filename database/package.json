@@ -47,13 +47,14 @@
     "cron": "^3.1.7",
     "date-fns": "4.1.0",
     "dotenv": "^16.6.1",
+    "drizzle-kit": "0.31.4",
     "drizzle-orm": "0.44.2",
     "pg": "^8.13.0",
     "pino": "^9.3.2",
     "redis": "^5.8.2",
+    "resend": "^6.5.2",
     "uuid": "^11.0.5",
-    "zod": "^4.0.5",
-    "drizzle-kit": "0.31.4"
+    "zod": "^4.0.5"
   },
   "devDependencies": {
     "@types/node": "^24.3.0",
@@ -71,6 +72,7 @@
     ".": "./build/src/index.js",
     "./logging": "./build/src/logging.js",
     "./storage": "./build/src/storage/index.js",
-    "./test-helpers": "./build/src/test-helpers/index.js"
+    "./test-helpers": "./build/src/test-helpers/index.js",
+    "./email-templates": "./build/src/email-templates.js"
   }
 }

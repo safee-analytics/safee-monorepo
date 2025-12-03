@@ -81,9 +81,7 @@ export function GenerationProgress({
                 ) : (
                   <Loader2 className="w-5 h-5 text-blue-600 animate-spin" />
                 )}
-                <span
-                  className={`text-sm ${step.completed ? "text-green-700" : "text-blue-700"}`}
-                >
+                <span className={`text-sm ${step.completed ? "text-green-700" : "text-blue-700"}`}>
                   {step.label}
                 </span>
               </div>
@@ -100,10 +98,7 @@ export function GenerationProgress({
               </div>
             </div>
             <div className="w-full h-2 bg-blue-200 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-blue-600 rounded-full animate-pulse"
-                style={{ width: "45%" }}
-              />
+              <div className="h-full bg-blue-600 rounded-full animate-pulse" style={{ width: "45%" }} />
             </div>
           </div>
         </div>

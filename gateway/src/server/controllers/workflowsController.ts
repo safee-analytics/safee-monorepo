@@ -16,7 +16,7 @@ import {
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext } from "../serverContext.js";
 import { schema, workflowRulesSchema, ruleSchema } from "@safee/database";
-import { eq, and } from "drizzle-orm";
+import { eq, and } from "@safee/database";
 import { z } from "zod";
 
 type StepType = "single" | "parallel" | "any";

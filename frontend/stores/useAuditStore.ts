@@ -48,8 +48,8 @@ interface AuditState {
   updateView: (id: string, updates: Partial<SavedView>) => void;
 
   // Wizard state
-  wizardDraft: Record<string, any> | null;
-  saveWizardDraft: (data: Record<string, any>) => void;
+  wizardDraft: Record<string, unknown> | null;
+  saveWizardDraft: (data: Record<string, unknown>) => void;
   clearWizardDraft: () => void;
 }
 

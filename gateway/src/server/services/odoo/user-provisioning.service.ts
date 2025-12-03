@@ -1,6 +1,6 @@
 import type { DrizzleClient } from "@safee/database";
 import { schema } from "@safee/database";
-import { eq, and } from "drizzle-orm";
+import { eq, and } from "@safee/database";
 import crypto from "crypto";
 import { encryptionService } from "../encryption.js";
 import { env } from "../../../env.js";

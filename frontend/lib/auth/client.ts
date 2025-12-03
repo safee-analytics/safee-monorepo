@@ -21,12 +21,15 @@ const getBaseURL = () => {
     return window.location.origin;
   }
 
-  return "http://localhost:3000";
+  return "http://localhost:8080";
 };
 
 const baseURL = getBaseURL();
 
 export const authClient = createAuthClient({
+  experimental: {
+    joins: true, // Set the joins flag to true
+  },
   baseURL: `${baseURL}/api/v1`,
   fetchOptions: {
     credentials: "include",
