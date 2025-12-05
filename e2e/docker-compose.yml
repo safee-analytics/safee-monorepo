@@ -30,11 +30,7 @@ services:
     profiles:
       - odoo
     # Uses published image from GHCR (built by GitHub Actions)
-    # Fallback to local build if odoo directory exists
     image: ${ODOO_IMAGE:-ghcr.io/safee-analytics/odoo:19}
-    build:
-      context: ../odoo
-      dockerfile: Dockerfile
     depends_on:
       postgres:
         condition: service_healthy

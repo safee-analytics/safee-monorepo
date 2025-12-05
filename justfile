@@ -237,10 +237,21 @@ test-e2e: build-e2e (start-e2e "")
 start-e2e service="" $DATABASE_URL=test_database_url $REDIS_URL="redis://localhost:26379":
     @echo "Starting e2e services..."
     #!/usr/bin/env bash
-    if [ "{{service}}" = "odoo" ] && [ -d "odoo" ]; then \
-        docker compose -f e2e/docker-compose.yml --profile odoo up -d --wait postgres redis odoo; \
+    set -e
+    # Determine compose file arguments
+    COMPOSE_FILES="-f e2e/docker-compose.yml"
+
+    # Use local build override if odoo directory exists and we want to build locally
+    if [ "{{service}}" = "odoo" ] && [ -d "odoo" ] && [ -f "e2e/docker-compose.local.yml" ]; then \
+        echo "Using local Odoo build..."; \
+        COMPOSE_FILES="$COMPOSE_FILES -f e2e/docker-compose.local.yml"; \
+    fi
+
+    # Start services
+    if [ "{{service}}" = "odoo" ]; then \
+        docker compose $COMPOSE_FILES --profile odoo up -d --wait postgres redis odoo; \
     else \
-        docker compose -f e2e/docker-compose.yml up -d --wait postgres redis; \
+        docker compose $COMPOSE_FILES up -d --wait postgres redis; \
     fi
     sleep 1
     @echo "Resetting test database..."
