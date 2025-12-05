@@ -321,7 +321,7 @@ build-frontend: build-eslint-plugin-safee build-ui
 
 [group('frontend')]
 check-frontend: build-eslint-plugin-safee
-    npx -w frontend tsc --build --emitDeclarationOnly
+    npx -w frontend tsc --noEmit
 
 [group('frontend')]
 lint-frontend: build-eslint-plugin-safee
@@ -351,7 +351,7 @@ build-landing: build-eslint-plugin-safee
 
 [group('landing')]
 check-landing: build-eslint-plugin-safee
-    npx -w landing tsc --build --emitDeclarationOnly
+    npx -w landing tsc --noEmit
 
 [group('landing')]
 lint-landing: build-eslint-plugin-safee
