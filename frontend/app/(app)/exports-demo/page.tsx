@@ -119,7 +119,7 @@ const salesReportData: TablePDFData = {
       key: "amount",
       width: 1.2,
       align: "right",
-      format: (value) => `${value.toLocaleString()}`,
+      format: (value: unknown) => `${(value as number).toLocaleString()}`,
     },
     { header: "Status", key: "status", width: 1, align: "center" },
   ],

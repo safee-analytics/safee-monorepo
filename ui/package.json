@@ -24,7 +24,8 @@
     "lint:fix": "eslint . --max-warnings 0 --fix",
     "fmt": "prettier . --write --cache",
     "fmt:check": "prettier . --check",
-    "check": "tsc --noEmit"
+    "check": "tsc --noEmit",
+    "test": "echo 'No tests configured for UI package yet' && exit 0"
   },
   "keywords": [
     "ui",

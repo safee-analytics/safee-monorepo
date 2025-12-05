@@ -23,6 +23,10 @@ import { oauthAccounts } from "../drizzle/oauthAccounts.js";
 import { verifications } from "../drizzle/verifications.js";
 import { loginAttempts } from "../drizzle/loginAttempts.js";
 import { securityEvents } from "../drizzle/securityEvents.js";
+import { fileEncryptionMetadata } from "../drizzle/fileEncryptionMetadata.js";
+import { auditorAccess } from "../drizzle/auditorAccess.js";
+import { userKeypairs } from "../drizzle/userKeypairs.js";
+import { encryptionKeys } from "../drizzle/encryptionKeys.js";
 
 export type TestOrganization = InferSelectModel<typeof organizations>;
 export type TestUser = InferSelectModel<typeof users>;
@@ -232,6 +236,11 @@ export async function nukeDatabase(db: DrizzleClient): Promise<void> {
   await db.delete(jobs);
   await db.delete(jobSchedules);
   await db.delete(members);
+  // Delete encryption tables before users and organizations
+  await db.delete(fileEncryptionMetadata);
+  await db.delete(auditorAccess);
+  await db.delete(userKeypairs);
+  await db.delete(encryptionKeys);
   await db.delete(users);
   await db.delete(organizations);
 }

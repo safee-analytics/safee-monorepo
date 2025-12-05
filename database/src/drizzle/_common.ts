@@ -43,7 +43,12 @@ export const jobStatusEnum = jobsSchema.enum("job_status", [
 
 export const jobTypeEnum = jobsSchema.enum("job_type", ["cron", "scheduled", "immediate", "recurring"]);
 
-export const jobNameEnum = jobsSchema.enum("job_name", ["send_email"]);
+export const jobNameEnum = jobsSchema.enum("job_name", [
+  "send_email",
+  "encrypt_file",
+  "rotate_encryption_key",
+  "reencrypt_files",
+]);
 
 export const priorityEnum = jobsSchema.enum("priority", ["low", "normal", "high", "critical"]);
 

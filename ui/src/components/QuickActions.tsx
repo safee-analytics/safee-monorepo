@@ -49,9 +49,7 @@ export function QuickActions({ actions, isOpen, onClose }: QuickActionsProps) {
   const [selected, setSelected] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const filtered = actions.filter((a) =>
-    a.label.toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = actions.filter((a) => a.label.toLowerCase().includes(search.toLowerCase()));
 
   useEffect(() => {
     if (isOpen) {
@@ -81,7 +79,9 @@ export function QuickActions({ actions, isOpen, onClose }: QuickActionsProps) {
     }
 
     document.addEventListener("keydown", handle);
-    return () => { document.removeEventListener("keydown", handle); };
+    return () => {
+      document.removeEventListener("keydown", handle);
+    };
   }, [isOpen, filtered, selected, onClose]);
 
   return (
@@ -103,7 +103,9 @@ export function QuickActions({ actions, isOpen, onClose }: QuickActionsProps) {
               exit={{ opacity: 0, scale: 0.95, y: -20 }}
               transition={springs.snappy}
               className="w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden pointer-events-auto"
-              onClick={(e) => { e.stopPropagation(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
             >
               {/* Search */}
               <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200">
@@ -180,6 +182,8 @@ export function useQuickActions(onOpen: () => void) {
     }
 
     document.addEventListener("keydown", handle);
-    return () => { document.removeEventListener("keydown", handle); };
+    return () => {
+      document.removeEventListener("keydown", handle);
+    };
   }, [onOpen]);
 }
