@@ -211,7 +211,7 @@ build-e2e: build-gateway
     npm -w e2e run build
 
 [group('e2e')]
-check-e2e: build-database build-jobs
+check-e2e: build-gateway
     npx -w e2e tsc --build
 
 
@@ -320,7 +320,7 @@ build-frontend: build-eslint-plugin-safee build-ui
     npm -w frontend run build
 
 [group('frontend')]
-check-frontend: build-eslint-plugin-safee
+check-frontend: build-eslint-plugin-safee build-ui
     npx -w frontend tsc --noEmit
 
 [group('frontend')]
