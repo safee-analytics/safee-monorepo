@@ -103,6 +103,9 @@ jobs:
   test-each:
     runs-on: ubuntu-latest
     needs: prepare
+    permissions:
+      contents: read
+      packages: read
     strategy:
       matrix:
         package: ${{ fromJson(needs.prepare.outputs.test) }}
