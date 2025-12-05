@@ -30,7 +30,7 @@ services:
     profiles:
       - odoo
     # Uses published image from GHCR (built by GitHub Actions)
-    image: ${ODOO_IMAGE:-ghcr.io/safee-analytics/odoo:19}
+    image: ${ODOO_IMAGE:-ghcr.io/safee-analytics/odoo:main-27b5612}
     depends_on:
       postgres:
         condition: service_healthy
