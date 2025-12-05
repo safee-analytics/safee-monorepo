@@ -79,7 +79,13 @@ export function Dropdown({
 
   return (
     <div ref={dropdownRef} className={`relative inline-block ${className}`}>
-      <div onClick={() => { setIsOpen(!isOpen); }}>{trigger}</div>
+      <div
+        onClick={() => {
+          setIsOpen(!isOpen);
+        }}
+      >
+        {trigger}
+      </div>
 
       <AnimatePresence>
         {isOpen && (
@@ -97,7 +103,9 @@ export function Dropdown({
                   initial={{ opacity: 0, x: -10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.05 }}
-                  onClick={() => { handleItemClick(item); }}
+                  onClick={() => {
+                    handleItemClick(item);
+                  }}
                   disabled={item.disabled}
                   className={`
                     w-full flex items-center gap-3 px-4 py-2.5 text-sm text-left transition-colors

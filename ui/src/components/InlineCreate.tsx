@@ -85,7 +85,9 @@ export function InlineCreateRow({
       <tr className="border-t border-gray-200">
         <td colSpan={columns} className="p-0">
           <motion.button
-            onClick={() => { setIsEditing(true); }}
+            onClick={() => {
+              setIsEditing(true);
+            }}
             className="w-full px-4 py-3 text-left text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700 transition-colors flex items-center gap-2 group"
             whileHover={{ x: 2 }}
             transition={springs.snappy}
@@ -109,7 +111,9 @@ export function InlineCreateRow({
             ref={inputRef}
             type="text"
             value={value}
-            onChange={(e) => { setValue(e.target.value); }}
+            onChange={(e) => {
+              setValue(e.target.value);
+            }}
             onKeyDown={handleKeyDown}
             placeholder={placeholder}
             disabled={isSubmitting}
@@ -117,7 +121,9 @@ export function InlineCreateRow({
             autoFocus={autoFocus}
           />
           <motion.button
-            onClick={() => { void handleSubmit(); }}
+            onClick={() => {
+              void handleSubmit();
+            }}
             disabled={!value.trim() || isSubmitting}
             className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             whileHover={{ scale: 1.05 }}
@@ -197,7 +203,9 @@ export function InlineCreateCard({
   if (!isEditing) {
     return (
       <motion.button
-        onClick={() => { setIsEditing(true); }}
+        onClick={() => {
+          setIsEditing(true);
+        }}
         className="w-full px-3 py-2 text-left text-sm text-gray-500 hover:bg-gray-100 rounded-lg transition-colors flex items-center gap-2"
         whileHover={{ scale: 1.01 }}
         transition={springs.snappy}
@@ -218,7 +226,9 @@ export function InlineCreateCard({
       <textarea
         ref={textareaRef}
         value={value}
-        onChange={(e) => { setValue(e.target.value); }}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         disabled={isSubmitting}
@@ -242,7 +252,9 @@ export function InlineCreateCard({
             Cancel
           </motion.button>
           <motion.button
-            onClick={() => { void handleSubmit(); }}
+            onClick={() => {
+              void handleSubmit();
+            }}
             disabled={!value.trim() || isSubmitting}
             className="px-3 py-1 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             whileTap={{ scale: 0.95 }}
@@ -274,7 +286,9 @@ export function QuickAddButton({ onClick, label = "New", shortcut = "N" }: Quick
     }
 
     document.addEventListener("keydown", handleKeyDown);
-    return () => { document.removeEventListener("keydown", handleKeyDown); };
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [onClick, shortcut]);
 
   return (

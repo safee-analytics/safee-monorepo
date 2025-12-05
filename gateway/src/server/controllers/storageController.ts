@@ -16,6 +16,7 @@ import {
 } from "tsoa";
 import { StorageServiceV2 } from "../services/storage.service.v2.js";
 import { StorageConnectorService } from "../services/storage/storage-connector.service.js";
+import { ClientEncryptionService } from "../services/clientEncryption.service.js";
 import type { Response } from "express";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext } from "../serverContext.js";
@@ -326,5 +327,35 @@ export class StorageController extends Controller {
     );
 
     return await storageService.getQuota(request.betterAuthSession!.user.id);
+  }
+
+  /**
+   * Get file encryption metadata
+   */
+  @Get("files/{fileId}/encryption-metadata")
+  @Security("jwt")
+  public async getFileEncryptionMetadata(@Path() fileId: string): Promise<{
+    iv: string;
+    authTag: string;
+    algorithm: string;
+    chunkSize: number;
+    keyVersion: number;
+  } | null> {
+    const context = getServerContext();
+    const service = new ClientEncryptionService(context.drizzle);
+
+    const metadata = await service.getFileEncryptionMetadata(fileId);
+
+    if (!metadata) {
+      return null;
+    }
+
+    return {
+      iv: metadata.iv,
+      authTag: metadata.authTag,
+      algorithm: metadata.algorithm,
+      chunkSize: metadata.chunkSize,
+      keyVersion: metadata.keyVersion,
+    };
   }
 }

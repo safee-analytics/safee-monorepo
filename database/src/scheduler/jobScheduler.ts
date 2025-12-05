@@ -2,7 +2,7 @@ import { eq, and, isNotNull } from "drizzle-orm";
 import { CronJob } from "cron";
 import type { PubSub } from "../pubsub/index.js";
 import type { DbDeps } from "../deps.js";
-import { jobSchedules } from "../drizzle/index.js";
+import { jobSchedules, type JobName } from "../drizzle/index.js";
 import { createJob, updateJobStatus } from "../jobs/jobs.js";
 import { logJobEvent } from "../jobs/auditEvents.js";
 import { logger } from "../logger.js";
@@ -153,7 +153,7 @@ export class JobScheduler {
 
   private async executeCronJob(
     deps: DbDeps,
-    schedule: { id: string; jobName: "send_email"; cronExpression: string; timezone?: string },
+    schedule: { id: string; jobName: JobName; cronExpression: string; timezone?: string },
   ): Promise<void> {
     logger.debug({ scheduleId: schedule.id }, "Executing cron job");
 

@@ -89,8 +89,12 @@ function DragDropItem<T extends DragDropItem>({
         ${isDragging ? "border-blue-400 shadow-2xl z-50" : "border-gray-200 shadow-sm"}
         ${itemClassName}
       `}
-      onDragStart={() => { setIsDragging(true); }}
-      onDragEnd={() => { setIsDragging(false); }}
+      onDragStart={() => {
+        setIsDragging(true);
+      }}
+      onDragEnd={() => {
+        setIsDragging(false);
+      }}
       whileDrag={{
         scale: 1.03,
         rotate: isDragging ? 1 : 0,
@@ -102,7 +106,9 @@ function DragDropItem<T extends DragDropItem>({
         {showHandle && (
           <motion.div
             className="p-2 cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-600"
-            onPointerDown={(e) => { controls.start(e); }}
+            onPointerDown={(e) => {
+              controls.start(e);
+            }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -173,7 +179,9 @@ export function KanbanBoard({ columns, onColumnUpdate, renderCard, className = "
           <Reorder.Group
             axis="y"
             values={column.items}
-            onReorder={(items) => { onColumnUpdate(column.id, items); }}
+            onReorder={(items) => {
+              onColumnUpdate(column.id, items);
+            }}
             className="space-y-2 min-h-[200px]"
           >
             {column.items.map((item) => (
@@ -181,8 +189,12 @@ export function KanbanBoard({ columns, onColumnUpdate, renderCard, className = "
                 key={item.id}
                 value={item}
                 className="bg-white rounded-lg p-3 shadow-sm border border-gray-200 cursor-grab active:cursor-grabbing"
-                onDragStart={() => { setDraggedItem(item); }}
-                onDragEnd={() => { setDraggedItem(null); }}
+                onDragStart={() => {
+                  setDraggedItem(item);
+                }}
+                onDragEnd={() => {
+                  setDraggedItem(null);
+                }}
                 whileDrag={{
                   scale: 1.05,
                   boxShadow: "0 10px 30px rgba(0, 0, 0, 0.15)",

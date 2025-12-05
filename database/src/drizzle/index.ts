@@ -2,6 +2,10 @@ export * from "./_common.js";
 
 export * from "./organizations.js";
 export * from "./organizationsRelations.js";
+export * from "./encryptionKeys.js";
+export * from "./userKeypairs.js";
+export * from "./auditorAccess.js";
+export * from "./fileEncryptionMetadata.js";
 export * from "./members.js";
 export * from "./membersRelations.js";
 export * from "./invitations.js";
