@@ -239,7 +239,9 @@ start-e2e service="" $DATABASE_URL=test_database_url $REDIS_URL="redis://localho
     set -euo pipefail
     echo "Starting e2e services..."
     COMPOSE_FILES="-f e2e/docker-compose.yml"
-    if [ "{{service}}" = "odoo" ] && [ -d "odoo" ] && [ -f "e2e/docker-compose.local.yml" ]; then
+    # Check if odoo submodule is actually populated (not just initialized)
+    # by verifying if the Dockerfile exists
+    if [ "{{service}}" = "odoo" ] && [ -f "odoo/Dockerfile" ] && [ -f "e2e/docker-compose.local.yml" ]; then
       echo "Using local Odoo build..."
       COMPOSE_FILES="$COMPOSE_FILES -f e2e/docker-compose.local.yml"
     fi
