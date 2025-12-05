@@ -100,9 +100,49 @@ jobs:
             exit 1
           fi
 
+  check-each:
+    runs-on: ubuntu-latest
+    needs: prepare
+    strategy:
+      matrix:
+        package: ${{ fromJson(needs.prepare.outputs.check) }}
+      fail-fast: false
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install just
+        uses: extractions/setup-just@v3
+        with:
+          just-version: 1.28.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Use Node.js 20.19.0
+        uses: actions/setup-node@v4
+        with:
+          cache: npm
+          node-version: 20.19.0
+      - name: Install node_modules
+        run: npm ci
+      - name: Run type check
+        run: just check ${{ matrix.package }}
+  check:
+    runs-on: ubuntu-latest
+    needs: check-each
+    if: ${{ always() }}
+    steps:
+      - name: Verify all check-each runs succeeded
+        run: |
+          if [ "${{ needs.check-each.result }}" != "success" ]; then
+            echo "Some check-each runs failed."
+            exit 1
+          fi
+
   test-each:
     runs-on: ubuntu-latest
     needs: prepare
+    permissions:
+      contents: read
+      packages: read
     strategy:
       matrix:
         package: ${{ fromJson(needs.prepare.outputs.test) }}

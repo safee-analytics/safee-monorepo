@@ -30,6 +30,7 @@
     "@tanstack/react-table": "^8.20.6",
     "axios": "^1.7.9",
     "better-auth": "^1.3.34",
+    "bip39": "^3.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",

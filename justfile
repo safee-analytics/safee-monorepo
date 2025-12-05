@@ -211,7 +211,7 @@ build-e2e: build-gateway
     npm -w e2e run build
 
 [group('e2e')]
-check-e2e: build-database build-jobs
+check-e2e: build-gateway
     npx -w e2e tsc --build
 
 
@@ -320,8 +320,8 @@ build-frontend: build-eslint-plugin-safee build-ui
     npm -w frontend run build
 
 [group('frontend')]
-check-frontend: build-eslint-plugin-safee
-    npx -w frontend tsc --build --emitDeclarationOnly
+check-frontend: build-eslint-plugin-safee build-ui
+    npx -w frontend tsc --noEmit
 
 [group('frontend')]
 lint-frontend: build-eslint-plugin-safee
@@ -351,7 +351,7 @@ build-landing: build-eslint-plugin-safee
 
 [group('landing')]
 check-landing: build-eslint-plugin-safee
-    npx -w landing tsc --build --emitDeclarationOnly
+    npx -w landing tsc --noEmit
 
 [group('landing')]
 lint-landing: build-eslint-plugin-safee
