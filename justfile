@@ -235,27 +235,27 @@ test-e2e: build-e2e (start-e2e "")
 
 [group('e2e')]
 start-e2e service="" $DATABASE_URL=test_database_url $REDIS_URL="redis://localhost:26379":
-    @echo "Starting e2e services..."
     #!/usr/bin/env bash
     set -euo pipefail
+    echo "Starting e2e services..."
     COMPOSE_FILES="-f e2e/docker-compose.yml"
     if [ "{{service}}" = "odoo" ] && [ -d "odoo" ] && [ -f "e2e/docker-compose.local.yml" ]; then
-    echo "Using local Odoo build..."
-    COMPOSE_FILES="$COMPOSE_FILES -f e2e/docker-compose.local.yml"
+      echo "Using local Odoo build..."
+      COMPOSE_FILES="$COMPOSE_FILES -f e2e/docker-compose.local.yml"
     fi
     if [ "{{service}}" = "odoo" ]; then
-    docker compose $COMPOSE_FILES --profile odoo up -d --wait postgres redis odoo
+      docker compose $COMPOSE_FILES --profile odoo up -d --wait postgres redis odoo
     else
-    docker compose $COMPOSE_FILES up -d --wait postgres redis
+      docker compose $COMPOSE_FILES up -d --wait postgres redis
     fi
     sleep 1
-    @echo "Resetting test database..."
+    echo "Resetting test database..."
     docker compose -f e2e/docker-compose.yml exec postgres psql -U safee -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'safee' AND pid <> pg_backend_pid();" || true
     docker compose -f e2e/docker-compose.yml exec postgres dropdb -U safee safee || true
     docker compose -f e2e/docker-compose.yml exec postgres createdb -U safee safee
-    @echo "Running migrations..."
+    echo "Running migrations..."
     DATABASE_URL={{DATABASE_URL}} REDIS_URL={{REDIS_URL}} npm run -w database migrate
-    @echo "✅ E2E environment ready!"
+    echo "✅ E2E environment ready!"
 
 [group('e2e')]
 stop-e2e:
