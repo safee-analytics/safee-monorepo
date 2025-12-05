@@ -11,12 +11,7 @@ export interface ExcelPreviewProps {
 /**
  * Component to preview Excel data in a table before exporting
  */
-export function ExcelPreview({
-  columns,
-  data,
-  maxRows = 10,
-  className = "",
-}: ExcelPreviewProps) {
+export function ExcelPreview({ columns, data, maxRows = 10, className = "" }: ExcelPreviewProps) {
   const displayData = maxRows ? data.slice(0, maxRows) : data;
   const hasMore = maxRows && data.length > maxRows;
 

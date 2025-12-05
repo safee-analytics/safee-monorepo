@@ -105,7 +105,13 @@ function ToastContainer() {
     <div className="fixed bottom-0 right-0 z-50 p-6 space-y-3 pointer-events-none">
       <AnimatePresence>
         {toasts.map((toast) => (
-          <ToastItem key={toast.id} toast={toast} onClose={() => { removeToast(toast.id); }} />
+          <ToastItem
+            key={toast.id}
+            toast={toast}
+            onClose={() => {
+              removeToast(toast.id);
+            }}
+          />
         ))}
       </AnimatePresence>
     </div>
