@@ -163,7 +163,7 @@ describe("Notification Templates", () => {
       });
 
       expect(notification).toEqual({
-        type: "approval",
+        type: "approval_requested",
         title: "Approval required",
         description: "Budget Request #123 requires your approval",
         actionLabel: "Review",
@@ -215,7 +215,7 @@ describe("Notification Templates", () => {
       expect(NOTIFICATION_TEMPLATES.REVIEW_REQUIRED.type).toBe("review");
       expect(NOTIFICATION_TEMPLATES.DOCUMENT_UPLOADED.type).toBe("document");
       expect(NOTIFICATION_TEMPLATES.TEAM_MEMBER_ADDED.type).toBe("team");
-      expect(NOTIFICATION_TEMPLATES.APPROVAL_PENDING.type).toBe("approval");
+      expect(NOTIFICATION_TEMPLATES.APPROVAL_PENDING.type).toBe("approval_requested");
     });
 
     it("should have action labels for all case-related templates", () => {

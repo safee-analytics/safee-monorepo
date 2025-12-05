@@ -278,7 +278,7 @@ export interface QuickAddButtonProps {
 
 export function QuickAddButton({ onClick, label = "New", shortcut = "N" }: QuickAddButtonProps) {
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
+    function handleKeyDown(e: globalThis.KeyboardEvent) {
       if (e.key === shortcut.toLowerCase() && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         onClick();
