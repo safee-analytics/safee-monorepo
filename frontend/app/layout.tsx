@@ -35,6 +35,30 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                function getTheme() {
+                  const stored = localStorage.getItem('safee-theme');
+                  // If explicitly set to light or dark, use that
+                  if (stored === 'light') return 'light';
+                  if (stored === 'dark') return 'dark';
+                  // If set to auto or not set at all, use system preference
+                  if (stored === 'auto' || !stored) {
+                    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+                  }
+                  return 'light';
+                }
+                const theme = getTheme();
+                document.documentElement.classList.remove('light', 'dark');
+                document.documentElement.classList.add(theme);
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className={`${inter.variable} ${cairo.variable} antialiased`} suppressHydrationWarning>
         <QueryProvider>
           <AuthProvider>

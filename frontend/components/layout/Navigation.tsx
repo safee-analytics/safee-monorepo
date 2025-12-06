@@ -85,7 +85,7 @@ export function Navigation() {
   const isActive = (path: string) => pathname?.startsWith(path);
 
   return (
-    <nav className="bg-white">
+    <nav className="bg-white dark:bg-gray-900">
       <div className="px-6 py-3">
         <div className="flex items-center justify-between gap-4">
           {/* Logo & Company Name */}

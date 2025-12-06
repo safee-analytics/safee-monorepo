@@ -17,14 +17,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <ProtectedRoute>
       <TranslationProvider>
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
           {/* Top Navigation with bottom rounded corners */}
-          <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
+          <div className="fixed top-0 left-0 right-0 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 z-50">
             <Navigation />
           </div>
 
           {/* Sidebar with right rounded corners */}
-          <div className="fixed top-[57px] ltr:left-0 rtl:right-0 h-[calc(100vh-57px)] bg-white ltr:rounded-br-3xl rtl:rounded-bl-3xl ltr:border-r rtl:border-l border-gray-200 z-40 overflow-hidden">
+          <div className="fixed top-[57px] ltr:left-0 rtl:right-0 h-[calc(100vh-57px)] bg-white dark:bg-gray-900 ltr:rounded-br-3xl rtl:rounded-bl-3xl ltr:border-r rtl:border-l border-gray-200 dark:border-gray-800 z-40 overflow-hidden">
             <Sidebar />
           </div>
 
