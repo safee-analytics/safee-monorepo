@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast, SafeeToastContainer } from "@/components/feedback";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, AlertCircle } from "lucide-react";
 import Link from "next/link";
@@ -9,6 +10,7 @@ import { useEmployee, useUpdateEmployee } from "@/lib/api/hooks/hrManagement";
 export default function EditEmployeePage() {
   const params = useParams();
   const router = useRouter();
+  const toast = useToast();
   const employeeId = params.id as string;
 
   const { data: employee, isLoading, error } = useEmployee(employeeId);
@@ -44,7 +46,7 @@ export default function EditEmployeePage() {
       router.push(`/hr/employees/${employeeId}`);
     } catch (error) {
       console.error("Failed to update employee:", error);
-      alert("Failed to update employee. Please try again.");
+      toast.error("Failed to update employee. Please try again.");
     }
   };
 
@@ -97,6 +99,7 @@ export default function EditEmployeePage() {
         isSubmitting={updateEmployee.isPending}
         submitLabel="Update Employee"
       />
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
     </div>
   );
 }

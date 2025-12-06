@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Shield } from "lucide-react";
 import OtpInput from "react-otp-input";
+import { useToast, SafeeToastContainer } from "@/components/feedback";
 import { useVerify2FACode } from "@/lib/api/hooks";
 
 interface TwoFactorVerificationProps {
@@ -13,6 +14,7 @@ interface TwoFactorVerificationProps {
 }
 
 export function TwoFactorVerification({ isOpen, onClose, onSuccess, email }: TwoFactorVerificationProps) {
+  const toast = useToast();
   const [otpCode, setOtpCode] = useState("");
   const [useBackupCode, setUseBackupCode] = useState(false);
   const [backupCode, setBackupCode] = useState("");
@@ -26,7 +28,7 @@ export function TwoFactorVerification({ isOpen, onClose, onSuccess, email }: Two
       onSuccess();
     } catch (error) {
       console.error("2FA verification failed:", error);
-      alert("Invalid code. Please try again.");
+      toast.error("Invalid code. Please try again.");
       if (useBackupCode) {
         setBackupCode("");
       } else {
@@ -140,6 +142,7 @@ export function TwoFactorVerification({ isOpen, onClose, onSuccess, email }: Two
           </p>
         </div>
       </div>
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { Lock, Shield, Smartphone, Key, Eye, EyeOff, AlertTriangle, Save, Refres
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
 import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
+import { useToast, SafeeToastContainer } from "@/components/feedback";
 import {
   useGetSecuritySettings,
   useUpdateSecuritySettings,
@@ -17,6 +18,7 @@ import {
 
 export default function SecuritySettings() {
   const { t } = useTranslation();
+  const toast = useToast();
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -57,23 +59,23 @@ export default function SecuritySettings() {
   const handleSave = async () => {
     try {
       await updateSettings.mutateAsync(security);
-      alert("Security settings updated successfully");
+      toast.success("Security settings updated successfully");
     } catch (_error) {
-      alert("Failed to update security settings");
+      toast.error("Failed to update security settings");
     }
   };
 
   const handlePasswordChange = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
     try {
       await changePassword.mutateAsync(passwordData);
       setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
-      alert("Password changed successfully");
+      toast.success("Password changed successfully");
     } catch (_error) {
-      alert("Failed to change password");
+      toast.error("Failed to change password");
     }
   };
 
@@ -81,7 +83,7 @@ export default function SecuritySettings() {
     try {
       await revokeSession.mutateAsync(sessionId);
     } catch (_error) {
-      alert("Failed to revoke session");
+      toast.error("Failed to revoke session");
     }
   };
 
@@ -99,11 +101,11 @@ export default function SecuritySettings() {
           <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Key className="w-5 h-5" />
-              Change Password
+              {t.settings.security.changePassword.title}
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.security.changePassword.currentPassword}</label>
                 <div className="relative">
                   <input
                     type={showCurrentPassword ? "text" : "password"}
@@ -121,7 +123,7 @@ export default function SecuritySettings() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.security.changePassword.newPassword}</label>
                 <div className="relative">
                   <input
                     type={showNewPassword ? "text" : "password"}
@@ -138,11 +140,11 @@ export default function SecuritySettings() {
                   </button>
                 </div>
                 <p className="mt-1 text-sm text-gray-500">
-                  Must be at least 8 characters with uppercase, lowercase, and numbers
+                  {t.settings.security.changePassword.requirements}
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.security.changePassword.confirmPassword}</label>
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
@@ -164,7 +166,7 @@ export default function SecuritySettings() {
                 disabled={changePassword.isPending}
                 className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
               >
-                {changePassword.isPending ? "Changing..." : "Change Password"}
+                {changePassword.isPending ? t.settings.security.changePassword.changing : t.settings.security.changePassword.changeButton}
               </button>
             </div>
           </div>
@@ -175,8 +177,8 @@ export default function SecuritySettings() {
               <div className="flex items-start gap-3">
                 <Smartphone className="w-5 h-5 text-gray-500 mt-1" />
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-1">Two-Factor Authentication</h2>
-                  <p className="text-sm text-gray-500">Add an extra layer of security to your account</p>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-1">{t.settings.security.twoFactor.title}</h2>
+                  <p className="text-sm text-gray-500">{t.settings.security.twoFactor.subtitle}</p>
                 </div>
               </div>
               {!security.twoFactorEnabled ? (
@@ -184,25 +186,24 @@ export default function SecuritySettings() {
                   onClick={() => setShow2FASetup(true)}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
                 >
-                  Enable
+                  {t.settings.security.twoFactor.enable}
                 </button>
               ) : (
                 <button
                   onClick={() => setSecurity({ ...security, twoFactorEnabled: false })}
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
                 >
-                  Disable
+                  {t.settings.security.twoFactor.disable}
                 </button>
               )}
             </div>
             {security.twoFactorEnabled && (
               <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
                 <p className="text-sm text-green-800 mb-2">
-                  Two-factor authentication is enabled. You&apos;ll need to enter a code from your
-                  authenticator app when signing in.
+                  {t.settings.security.twoFactor.enabled}
                 </p>
                 <button className="text-sm text-green-700 hover:text-green-800 font-medium">
-                  View Recovery Codes
+                  {t.settings.security.twoFactor.recoveryCodes}
                 </button>
               </div>
             )}
@@ -212,45 +213,45 @@ export default function SecuritySettings() {
           <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
             <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Lock className="w-5 h-5" />
-              Security Preferences
+              {t.settings.security.preferences.title}
             </h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Session Timeout (minutes)
+                  {t.settings.security.preferences.sessionTimeout}
                 </label>
                 <select
                   value={security.sessionTimeout}
                   onChange={(e) => setSecurity({ ...security, sessionTimeout: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="15">15 minutes</option>
-                  <option value="30">30 minutes</option>
-                  <option value="60">1 hour</option>
-                  <option value="120">2 hours</option>
-                  <option value="never">Never</option>
+                  <option value="15">{t.settings.security.preferences.sessionTimeoutOptions["15"]}</option>
+                  <option value="30">{t.settings.security.preferences.sessionTimeoutOptions["30"]}</option>
+                  <option value="60">{t.settings.security.preferences.sessionTimeoutOptions["60"]}</option>
+                  <option value="120">{t.settings.security.preferences.sessionTimeoutOptions["120"]}</option>
+                  <option value="never">{t.settings.security.preferences.sessionTimeoutOptions.never}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Password Expiry (days)</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.security.preferences.passwordExpiry}</label>
                 <select
                   value={security.passwordExpiry}
                   onChange={(e) => setSecurity({ ...security, passwordExpiry: e.target.value })}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  <option value="30">30 days</option>
-                  <option value="60">60 days</option>
-                  <option value="90">90 days</option>
-                  <option value="180">180 days</option>
-                  <option value="never">Never</option>
+                  <option value="30">{t.settings.security.preferences.passwordExpiryOptions["30"]}</option>
+                  <option value="60">{t.settings.security.preferences.passwordExpiryOptions["60"]}</option>
+                  <option value="90">{t.settings.security.preferences.passwordExpiryOptions["90"]}</option>
+                  <option value="180">{t.settings.security.preferences.passwordExpiryOptions["180"]}</option>
+                  <option value="never">{t.settings.security.preferences.passwordExpiryOptions.never}</option>
                 </select>
               </div>
 
               <div className="flex items-center justify-between py-3 border-t border-gray-100">
                 <div>
-                  <p className="font-medium text-gray-900">Require password change on next login</p>
-                  <p className="text-sm text-gray-500">Force password reset on next sign in</p>
+                  <p className="font-medium text-gray-900">{t.settings.security.preferences.requirePasswordChange}</p>
+                  <p className="text-sm text-gray-500">{t.settings.security.preferences.requirePasswordChangeDesc}</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -265,8 +266,8 @@ export default function SecuritySettings() {
 
               <div className="flex items-center justify-between py-3 border-t border-gray-100">
                 <div>
-                  <p className="font-medium text-gray-900">Allow multiple sessions</p>
-                  <p className="text-sm text-gray-500">Allow login from multiple devices simultaneously</p>
+                  <p className="font-medium text-gray-900">{t.settings.security.preferences.allowMultipleSessions}</p>
+                  <p className="text-sm text-gray-500">{t.settings.security.preferences.allowMultipleSessionsDesc}</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -281,8 +282,8 @@ export default function SecuritySettings() {
 
               <div className="flex items-center justify-between py-3 border-t border-gray-100">
                 <div>
-                  <p className="font-medium text-gray-900">Login notifications</p>
-                  <p className="text-sm text-gray-500">Get notified when your account is accessed</p>
+                  <p className="font-medium text-gray-900">{t.settings.security.preferences.loginNotifications}</p>
+                  <p className="text-sm text-gray-500">{t.settings.security.preferences.loginNotificationsDesc}</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -299,7 +300,7 @@ export default function SecuritySettings() {
 
           {/* Active Sessions */}
           <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Active Sessions</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.security.sessions.title}</h2>
             {sessionsLoading ? (
               <div className="flex items-center justify-center py-8">
                 <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
@@ -319,12 +320,12 @@ export default function SecuritySettings() {
                             {session.device}
                             {session.current && (
                               <span className="ml-2 text-xs px-2 py-1 bg-green-100 text-green-700 rounded">
-                                Current
+                                {t.settings.security.sessions.current}
                               </span>
                             )}
                           </p>
                           <p className="text-sm text-gray-500">{session.location}</p>
-                          <p className="text-xs text-gray-400">Last active: {session.lastActive}</p>
+                          <p className="text-xs text-gray-400">{t.settings.security.sessions.lastActive}: {session.lastActive}</p>
                         </div>
                       </div>
                       {!session.current && (
@@ -333,14 +334,14 @@ export default function SecuritySettings() {
                           disabled={revokeSession.isPending}
                           className="text-sm text-red-600 hover:text-red-700 font-medium disabled:opacity-50"
                         >
-                          {revokeSession.isPending ? "Revoking..." : "Revoke"}
+                          {revokeSession.isPending ? t.settings.security.sessions.revoking : t.settings.security.sessions.revoke}
                         </button>
                       )}
                     </div>
                   ))}
                 </div>
                 <button className="mt-4 text-sm text-red-600 hover:text-red-700 font-medium">
-                  Revoke All Other Sessions
+                  {t.settings.security.sessions.revokeAll}
                 </button>
               </>
             )}
@@ -351,13 +352,13 @@ export default function SecuritySettings() {
             <div className="flex items-start gap-3 mb-4">
               <AlertTriangle className="w-5 h-5 text-red-600 mt-1" />
               <div>
-                <h2 className="text-lg font-semibold text-red-900 mb-1">Danger Zone</h2>
-                <p className="text-sm text-red-700">Irreversible and destructive actions</p>
+                <h2 className="text-lg font-semibold text-red-900 mb-1">{t.settings.security.dangerZone.title}</h2>
+                <p className="text-sm text-red-700">{t.settings.security.dangerZone.subtitle}</p>
               </div>
             </div>
             <div className="space-y-3">
               <button className="px-4 py-2 bg-white border border-red-300 text-red-700 rounded-lg hover:bg-red-50 transition-colors">
-                Delete Account
+                {t.settings.security.dangerZone.deleteAccount}
               </button>
             </div>
           </div>
@@ -370,7 +371,7 @@ export default function SecuritySettings() {
               className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
               <Save className="w-4 h-4" />
-              {updateSettings.isPending ? "Saving..." : "Save Changes"}
+              {updateSettings.isPending ? t.settings.security.saving : t.settings.security.saveChanges}
             </button>
           </div>
         </motion.div>
@@ -384,6 +385,7 @@ export default function SecuritySettings() {
             handleSave();
           }}
         />
+        <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
       </div>
     </SettingsPermissionGate>
   );

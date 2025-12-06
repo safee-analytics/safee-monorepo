@@ -14,6 +14,7 @@ import {
   CheckCircle,
   AlertCircle,
 } from "lucide-react";
+import { useToast, useConfirm, SafeeToastContainer } from "@/components/feedback";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { ICVScopeEditor } from "@/components/audit/ICVScopeEditor";
 import { DEFAULT_ICV_SCOPE, ICVScope } from "@/types/icv";
@@ -21,6 +22,8 @@ import { DEFAULT_ICV_SCOPE, ICVScope } from "@/types/icv";
 export default function ICVScopePage() {
   const params = useParams();
   const { t, locale } = useTranslation();
+  const toast = useToast();
+  const { confirm, ConfirmModalComponent } = useConfirm();
   const [scope, setScope] = useState<ICVScope>(DEFAULT_ICV_SCOPE);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -48,7 +51,13 @@ export default function ICVScopePage() {
   };
 
   const handleCompleteFile = async () => {
-    if (window.confirm(t.audit.confirmComplete)) {
+        const confirmed = await confirm({
+      title: t.audit.confirmCompleteTitle,
+      message: t.audit.confirmComplete,
+      type: "warning",
+      confirmText: t.audit.complete,
+    });
+    if (confirmed) {
       setIsSaving(true);
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -60,12 +69,18 @@ export default function ICVScopePage() {
         updatedAt: new Date().toISOString(),
       }));
       setIsSaving(false);
-      alert(t.audit.fileCompletedSuccessfully);
+      toast.success(t.audit.fileCompletedSuccessfully);
     }
   };
 
   const handleArchiveFile = async () => {
-    if (window.confirm(t.audit.confirmArchive)) {
+        const confirmed = await confirm({
+      title: t.audit.confirmArchiveTitle,
+      message: t.audit.confirmArchive,
+      type: "danger",
+      confirmText: t.audit.archive,
+    });
+    if (confirmed) {
       setIsSaving(true);
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -77,7 +92,7 @@ export default function ICVScopePage() {
         updatedAt: new Date().toISOString(),
       }));
       setIsSaving(false);
-      alert(t.audit.fileArchivedSuccessfully);
+      toast.success(t.audit.fileArchivedSuccessfully);
     }
   };
 
@@ -357,6 +372,8 @@ export default function ICVScopePage() {
           </div>
         </motion.div>
       </div>
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
+      <ConfirmModalComponent />
     </div>
   );
 }

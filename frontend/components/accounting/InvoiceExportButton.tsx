@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Download } from "lucide-react";
+import { useToast, SafeeToastContainer } from "@/components/feedback";
 import { useInvoiceStyles } from "@/lib/api/hooks/invoiceStyles";
 import { downloadInvoicePDF, InvoiceData } from "@/lib/utils/generateInvoicePDF";
 import { useActiveOrganization } from "@/lib/api/hooks";
@@ -12,13 +13,14 @@ interface InvoiceExportButtonProps {
 }
 
 export function InvoiceExportButton({ invoice, className }: InvoiceExportButtonProps) {
+  const toast = useToast();
   const { data: organization } = useActiveOrganization();
   const { data: invoiceStyles } = useInvoiceStyles(organization?.id || "");
   const [isExporting, setIsExporting] = useState(false);
 
   const handleExport = async () => {
     if (!invoiceStyles) {
-      alert("Invoice styles not loaded");
+      toast.error("Invoice styles not loaded");
       return;
     }
 
@@ -27,13 +29,14 @@ export function InvoiceExportButton({ invoice, className }: InvoiceExportButtonP
       await downloadInvoicePDF(invoice, invoiceStyles);
     } catch (error) {
       console.error("Failed to export invoice:", error);
-      alert("Failed to export invoice");
+      toast.error("Failed to export invoice");
     } finally {
       setIsExporting(false);
     }
   };
 
   return (
+<>
     <button
       onClick={handleExport}
       disabled={isExporting || !invoiceStyles}
@@ -42,5 +45,7 @@ export function InvoiceExportButton({ invoice, className }: InvoiceExportButtonP
       <Download className="w-4 h-4" />
       {isExporting ? "Exporting..." : "Export PDF"}
     </button>
+    <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
+    </>
   );
 }

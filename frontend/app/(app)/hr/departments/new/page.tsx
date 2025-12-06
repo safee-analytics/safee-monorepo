@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast, SafeeToastContainer } from "@/components/feedback";
 import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { DepartmentForm, type DepartmentFormValues } from "@/components/hr/DepartmentForm";
@@ -7,6 +8,7 @@ import { useCreateDepartment } from "@/lib/api/hooks/hrManagement";
 
 export default function NewDepartmentPage() {
   const router = useRouter();
+  const toast = useToast();
   const createDepartment = useCreateDepartment();
 
   const handleSubmit = async (data: DepartmentFormValues) => {
@@ -22,7 +24,7 @@ export default function NewDepartmentPage() {
       router.push(`/hr/departments/${department.id}`);
     } catch (error) {
       console.error("Failed to create department:", error);
-      alert("Failed to create department. Please try again.");
+      toast.error("Failed to create department. Please try again.");
     }
   };
 
@@ -45,6 +47,7 @@ export default function NewDepartmentPage() {
         isSubmitting={createDepartment.isPending}
         submitLabel="Create Department"
       />
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
     </div>
   );
 }

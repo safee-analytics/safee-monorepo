@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Globe, Check, Settings, ExternalLink, Plus, Trash2, RefreshCw } from "lucide-react";
+import { useToast, SafeeToastContainer } from "@/components/feedback";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
 import {
@@ -13,6 +14,7 @@ import {
 
 export default function IntegrationsSettings() {
   const { t } = useTranslation();
+  const toast = useToast();
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   // Fetch data
@@ -23,11 +25,11 @@ export default function IntegrationsSettings() {
   const disconnectIntegration = useDisconnectIntegration();
 
   const categories = [
-    { id: "all", name: "All Integrations" },
-    { id: "accounting", name: "Accounting" },
-    { id: "communication", name: "Communication" },
-    { id: "storage", name: "Storage" },
-    { id: "productivity", name: "Productivity" },
+    { id: "all", name: t.settings.integrations.categories.all },
+    { id: "accounting", name: t.settings.integrations.categories.accounting },
+    { id: "communication", name: t.settings.integrations.categories.communication },
+    { id: "storage", name: t.settings.integrations.categories.storage },
+    { id: "productivity", name: t.settings.integrations.categories.productivity },
   ];
 
   const filteredIntegrations =
@@ -41,7 +43,7 @@ export default function IntegrationsSettings() {
         await connectIntegration.mutateAsync(id);
       }
     } catch (_error) {
-      alert(`Failed to ${connected ? "disconnect" : "connect"} integration`);
+      toast.error(`Failed to ${connected ? "disconnect" : "connect"} integration`);
     }
   };
 
@@ -84,7 +86,7 @@ export default function IntegrationsSettings() {
               {/* Connected Integrations */}
               {integrations.some((i) => i.connected) && (
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">Connected</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.integrations.sections.connected}</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {integrations
                       .filter((i) => i.connected)
@@ -100,7 +102,7 @@ export default function IntegrationsSettings() {
                                 <h3 className="font-semibold text-gray-900">{integration.name}</h3>
                                 <div className="flex items-center gap-1 mt-1">
                                   <Check className="w-3 h-3 text-green-600" />
-                                  <span className="text-xs text-green-600">Connected</span>
+                                  <span className="text-xs text-green-600">{t.settings.integrations.status.connected}</span>
                                 </div>
                               </div>
                             </div>
@@ -108,7 +110,7 @@ export default function IntegrationsSettings() {
                               onClick={() => handleToggleIntegration(integration.id, integration.connected)}
                               disabled={disconnectIntegration.isPending}
                               className="p-2 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
-                              title="Disconnect"
+                              title={t.settings.integrations.status.disconnect}
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -117,7 +119,7 @@ export default function IntegrationsSettings() {
                           {integration.configUrl && (
                             <button className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium">
                               <Settings className="w-4 h-4" />
-                              Configure
+                              {t.settings.integrations.actions.configure}
                             </button>
                           )}
                         </div>
@@ -129,7 +131,7 @@ export default function IntegrationsSettings() {
               {/* Available Integrations */}
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  {selectedCategory === "all" ? "Available Integrations" : "Available"}
+                  {selectedCategory === "all" ? t.settings.integrations.sections.availableIntegrations : t.settings.integrations.sections.available}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {filteredIntegrations
@@ -157,7 +159,7 @@ export default function IntegrationsSettings() {
                           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium disabled:opacity-50"
                         >
                           <Plus className="w-4 h-4" />
-                          {connectIntegration.isPending ? "Connecting..." : "Connect"}
+                          {connectIntegration.isPending ? t.settings.integrations.actions.connecting : t.settings.integrations.actions.connect}
                         </button>
                       </div>
                     ))}
@@ -166,7 +168,7 @@ export default function IntegrationsSettings() {
                 {filteredIntegrations.filter((i) => !i.connected).length === 0 && (
                   <div className="bg-gray-50 rounded-lg p-8 text-center">
                     <Globe className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-600">All integrations in this category are connected</p>
+                    <p className="text-gray-600">{t.settings.integrations.empty.allConnected}</p>
                   </div>
                 )}
               </div>
@@ -178,13 +180,12 @@ export default function IntegrationsSettings() {
                     <Plus className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">Need a custom integration?</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.settings.integrations.custom.title}</h3>
                     <p className="text-sm text-gray-600 mb-4">
-                      We can build custom integrations for your specific needs. Contact our team to discuss
-                      your requirements.
+                      {t.settings.integrations.custom.message}
                     </p>
                     <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
-                      Contact Sales
+                      {t.settings.integrations.custom.button}
                       <ExternalLink className="w-4 h-4" />
                     </button>
                   </div>
@@ -195,21 +196,22 @@ export default function IntegrationsSettings() {
               <div className="mt-8 bg-white rounded-lg border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">Webhooks</h2>
-                    <p className="text-sm text-gray-600 mt-1">Receive real-time data from Safee</p>
+                    <h2 className="text-lg font-semibold text-gray-900">{t.settings.integrations.webhooks.title}</h2>
+                    <p className="text-sm text-gray-600 mt-1">{t.settings.integrations.webhooks.subtitle}</p>
                   </div>
                   <button className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium">
-                    Add Webhook
+                    {t.settings.integrations.webhooks.addButton}
                   </button>
                 </div>
                 <div className="text-center py-8 text-gray-500">
                   <Globe className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                  <p>No webhooks configured yet</p>
+                  <p>{t.settings.integrations.webhooks.empty}</p>
                 </div>
               </div>
             </>
           )}
         </motion.div>
+        <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
       </div>
     </SettingsPermissionGate>
   );

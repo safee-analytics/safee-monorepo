@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
+import { useToast, useConfirm, SafeeToastContainer } from "@/components/feedback";
 import {
   useGetDatabaseStats,
   useGetBackupSettings,
@@ -32,6 +33,8 @@ import {
 
 export default function DatabaseSettings() {
   const { t } = useTranslation();
+  const toast = useToast();
+  const { confirm, ConfirmModalComponent } = useConfirm();
 
   // Fetch data
   const { data: dbStats, isLoading: statsLoading } = useGetDatabaseStats();
@@ -77,33 +80,36 @@ export default function DatabaseSettings() {
   const handleSave = async () => {
     try {
       await updateSettings.mutateAsync(settings);
-      alert("Database settings updated successfully");
+      toast.success(t.settings.database.alerts.settingsSaved);
     } catch (_error) {
-      alert("Failed to update settings");
+      toast.error(t.settings.database.alerts.settingsFailed);
     }
   };
 
   const handleBackup = async () => {
     try {
       await createBackup.mutateAsync();
-      alert("Backup completed successfully");
+      toast.success(t.settings.database.alerts.backupSuccess);
     } catch (_error) {
-      alert("Failed to create backup");
+      toast.error(t.settings.database.alerts.backupFailed);
     }
   };
 
   const handleRestore = async (backupId: string) => {
-    if (
-      confirm(
-        "Are you sure you want to restore this backup? This will replace your current database with the backup data.",
-      )
-    ) {
-      try {
-        await restoreBackup.mutateAsync(backupId);
-        alert("Database restored successfully");
-      } catch (_error) {
-        alert("Failed to restore backup");
-      }
+    const confirmed = await confirm({
+      title: t.settings.database.history.restore,
+      message: t.settings.database.alerts.restoreConfirm,
+      type: "warning",
+      confirmText: t.settings.database.history.restore,
+    });
+
+    if (!confirmed) return;
+
+    try {
+      await restoreBackup.mutateAsync(backupId);
+      toast.success(t.settings.database.alerts.restoreSuccess);
+    } catch (_error) {
+      toast.error(t.settings.database.alerts.restoreFailed);
     }
   };
 
@@ -111,25 +117,25 @@ export default function DatabaseSettings() {
     try {
       await downloadBackup.mutateAsync(backupId);
     } catch (_error) {
-      alert("Failed to download backup");
+      toast.error(t.settings.database.alerts.downloadFailed);
     }
   };
 
   const handleOptimize = async () => {
     try {
       await optimizeDb.mutateAsync();
-      alert("Database optimized successfully");
+      toast.success(t.settings.database.alerts.optimizeSuccess);
     } catch (_error) {
-      alert("Failed to optimize database");
+      toast.error(t.settings.database.alerts.optimizeFailed);
     }
   };
 
   const handleMaintenance = async () => {
     try {
       await runMaintenance.mutateAsync();
-      alert("Maintenance completed successfully");
+      toast.success(t.settings.database.alerts.maintenanceSuccess);
     } catch (_error) {
-      alert("Failed to run maintenance");
+      toast.error(t.settings.database.alerts.maintenanceFailed);
     }
   };
 
@@ -156,7 +162,7 @@ export default function DatabaseSettings() {
 
           {/* Database Mode Selection */}
           <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">Database Configuration</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.database.configuration.title}</h2>
             <div className="grid grid-cols-2 gap-4 mb-6">
               <button
                 onClick={() => setDbMode("managed")}
@@ -171,11 +177,11 @@ export default function DatabaseSettings() {
                     className={`w-5 h-5 ${dbMode === "managed" ? "text-blue-600" : "text-gray-500"}`}
                   />
                   <h3 className={`font-semibold ${dbMode === "managed" ? "text-blue-900" : "text-gray-900"}`}>
-                    Managed Database
+                    {t.settings.database.configuration.managed.title}
                   </h3>
                 </div>
                 <p className="text-sm text-gray-600">
-                  We handle all database management, backups, and maintenance
+                  {t.settings.database.configuration.managed.description}
                 </p>
               </button>
 
@@ -190,10 +196,10 @@ export default function DatabaseSettings() {
                     className={`w-5 h-5 ${dbMode === "custom" ? "text-blue-600" : "text-gray-500"}`}
                   />
                   <h3 className={`font-semibold ${dbMode === "custom" ? "text-blue-900" : "text-gray-900"}`}>
-                    Custom Database
+                    {t.settings.database.configuration.custom.title}
                   </h3>
                 </div>
-                <p className="text-sm text-gray-600">Connect to your own PostgreSQL database server</p>
+                <p className="text-sm text-gray-600">{t.settings.database.configuration.custom.description}</p>
               </button>
             </div>
 
@@ -202,56 +208,56 @@ export default function DatabaseSettings() {
               <div className="space-y-4 p-4 bg-gray-50 rounded-lg">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Host</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.database.configuration.custom.host}</label>
                     <input
                       type="text"
                       value={customDbConfig.host}
                       onChange={(e) => setCustomDbConfig({ ...customDbConfig, host: e.target.value })}
-                      placeholder="localhost or db.example.com"
+                      placeholder={t.settings.database.configuration.custom.hostPlaceholder}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Port</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.database.configuration.custom.port}</label>
                     <input
                       type="text"
                       value={customDbConfig.port}
                       onChange={(e) => setCustomDbConfig({ ...customDbConfig, port: e.target.value })}
-                      placeholder="5432"
+                      placeholder={t.settings.database.configuration.custom.portPlaceholder}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Database Name</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.database.configuration.custom.databaseName}</label>
                   <input
                     type="text"
                     value={customDbConfig.database}
                     onChange={(e) => setCustomDbConfig({ ...customDbConfig, database: e.target.value })}
-                    placeholder="safee_db"
+                    placeholder={t.settings.database.configuration.custom.databasePlaceholder}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.database.configuration.custom.username}</label>
                     <input
                       type="text"
                       value={customDbConfig.username}
                       onChange={(e) => setCustomDbConfig({ ...customDbConfig, username: e.target.value })}
-                      placeholder="postgres"
+                      placeholder={t.settings.database.configuration.custom.usernamePlaceholder}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.database.configuration.custom.password}</label>
                     <input
                       type="password"
                       value={customDbConfig.password}
                       onChange={(e) => setCustomDbConfig({ ...customDbConfig, password: e.target.value })}
-                      placeholder="••••••••"
+                      placeholder={t.settings.database.configuration.custom.passwordPlaceholder}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
@@ -266,12 +272,12 @@ export default function DatabaseSettings() {
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label htmlFor="ssl" className="text-sm font-medium text-gray-700">
-                    Use SSL connection
+                    {t.settings.database.configuration.custom.useSSL}
                   </label>
                 </div>
 
                 <button className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium">
-                  Test Connection
+                  {t.settings.database.configuration.custom.testConnection}
                 </button>
               </div>
             )}
@@ -282,7 +288,7 @@ export default function DatabaseSettings() {
             <>
               {/* Database Health */}
               <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Database Health</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.database.health.title}</h2>
                 {statsLoading ? (
                   <div className="flex items-center justify-center py-8">
                     <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
@@ -290,8 +296,8 @@ export default function DatabaseSettings() {
                 ) : !dbStats ? (
                   <div className="text-center py-8">
                     <Database className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                    <p className="text-gray-500 mb-2">Database statistics unavailable</p>
-                    <p className="text-sm text-gray-400">Backend endpoint not configured yet</p>
+                    <p className="text-gray-500 mb-2">{t.settings.database.health.unavailable}</p>
+                    <p className="text-sm text-gray-400">{t.settings.database.health.notConfigured}</p>
                   </div>
                 ) : (
                   <>
@@ -299,28 +305,28 @@ export default function DatabaseSettings() {
                       <div className="p-4 bg-gray-50 rounded-lg">
                         <div className="flex items-center gap-2 mb-2">
                           <HardDrive className="w-4 h-4 text-gray-500" />
-                          <span className="text-sm text-gray-600">Total Size</span>
+                          <span className="text-sm text-gray-600">{t.settings.database.health.stats.totalSize}</span>
                         </div>
                         <p className="text-2xl font-bold text-gray-900">{dbStats.totalSize}</p>
                       </div>
                       <div className="p-4 bg-gray-50 rounded-lg">
                         <div className="flex items-center gap-2 mb-2">
                           <Database className="w-4 h-4 text-gray-500" />
-                          <span className="text-sm text-gray-600">Tables</span>
+                          <span className="text-sm text-gray-600">{t.settings.database.health.stats.tables}</span>
                         </div>
                         <p className="text-2xl font-bold text-gray-900">{dbStats.tableCount}</p>
                       </div>
                       <div className="p-4 bg-gray-50 rounded-lg">
                         <div className="flex items-center gap-2 mb-2">
                           <Database className="w-4 h-4 text-gray-500" />
-                          <span className="text-sm text-gray-600">Total Rows</span>
+                          <span className="text-sm text-gray-600">{t.settings.database.health.stats.totalRows}</span>
                         </div>
                         <p className="text-2xl font-bold text-gray-900">{dbStats.rowCount}</p>
                       </div>
                       <div className="p-4 bg-gray-50 rounded-lg">
                         <div className="flex items-center gap-2 mb-2">
                           <CheckCircle className="w-4 h-4 text-green-500" />
-                          <span className="text-sm text-gray-600">Status</span>
+                          <span className="text-sm text-gray-600">{t.settings.database.health.stats.status}</span>
                         </div>
                         <p className="text-2xl font-bold text-green-600 capitalize">{dbStats.health}</p>
                       </div>
@@ -331,14 +337,14 @@ export default function DatabaseSettings() {
                         disabled={optimizeDb.isPending}
                         className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium disabled:opacity-50"
                       >
-                        {optimizeDb.isPending ? "Optimizing..." : "Optimize Database"}
+                        {optimizeDb.isPending ? t.settings.database.health.actions.optimizing : t.settings.database.health.actions.optimize}
                       </button>
                       <button
                         onClick={handleMaintenance}
                         disabled={runMaintenance.isPending}
                         className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium disabled:opacity-50"
                       >
-                        {runMaintenance.isPending ? "Running..." : "Run Maintenance"}
+                        {runMaintenance.isPending ? t.settings.database.health.actions.running : t.settings.database.health.actions.maintenance}
                       </button>
                     </div>
                   </>
@@ -347,7 +353,7 @@ export default function DatabaseSettings() {
 
               {/* Backup Settings */}
               <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Backup Settings</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.database.backup.title}</h2>
                 {settingsLoading ? (
                   <div className="flex items-center justify-center py-8">
                     <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
@@ -356,8 +362,8 @@ export default function DatabaseSettings() {
                   <div className="space-y-4">
                     <div className="flex items-center justify-between py-3 border-b border-gray-100">
                       <div>
-                        <p className="font-medium text-gray-900">Automatic Backups</p>
-                        <p className="text-sm text-gray-500">Schedule regular database backups</p>
+                        <p className="font-medium text-gray-900">{t.settings.database.backup.automatic.title}</p>
+                        <p className="text-sm text-gray-500">{t.settings.database.backup.automatic.description}</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
@@ -374,49 +380,49 @@ export default function DatabaseSettings() {
                       <>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Backup Frequency
+                            {t.settings.database.backup.frequency.label}
                           </label>
                           <select
                             value={settings.backupFrequency}
                             onChange={(e) => setSettings({ ...settings, backupFrequency: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           >
-                            <option value="hourly">Every Hour</option>
-                            <option value="daily">Daily at 3:00 AM</option>
-                            <option value="weekly">Weekly (Sundays at 3:00 AM)</option>
-                            <option value="monthly">Monthly (1st of month at 3:00 AM)</option>
+                            <option value="hourly">{t.settings.database.backup.frequency.hourly}</option>
+                            <option value="daily">{t.settings.database.backup.frequency.daily}</option>
+                            <option value="weekly">{t.settings.database.backup.frequency.weekly}</option>
+                            <option value="monthly">{t.settings.database.backup.frequency.monthly}</option>
                           </select>
                         </div>
 
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Backup Retention (days)
+                            {t.settings.database.backup.retention.label}
                           </label>
                           <select
                             value={settings.backupRetention}
                             onChange={(e) => setSettings({ ...settings, backupRetention: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           >
-                            <option value="7">7 days</option>
-                            <option value="14">14 days</option>
-                            <option value="30">30 days</option>
-                            <option value="90">90 days</option>
-                            <option value="365">1 year</option>
+                            <option value="7">{t.settings.database.backup.retention.sevenDays}</option>
+                            <option value="14">{t.settings.database.backup.retention.fourteenDays}</option>
+                            <option value="30">{t.settings.database.backup.retention.thirtyDays}</option>
+                            <option value="90">{t.settings.database.backup.retention.ninetyDays}</option>
+                            <option value="365">{t.settings.database.backup.retention.oneYear}</option>
                           </select>
                         </div>
 
                         <div>
                           <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Backup Location
+                            {t.settings.database.backup.location.label}
                           </label>
                           <select
                             value={settings.backupLocation}
                             onChange={(e) => setSettings({ ...settings, backupLocation: e.target.value })}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           >
-                            <option value="cloud">Cloud Storage (Recommended)</option>
-                            <option value="local">Local Storage</option>
-                            <option value="both">Both Cloud and Local</option>
+                            <option value="cloud">{t.settings.database.backup.location.cloud}</option>
+                            <option value="local">{t.settings.database.backup.location.local}</option>
+                            <option value="both">{t.settings.database.backup.location.both}</option>
                           </select>
                         </div>
                       </>
@@ -424,8 +430,8 @@ export default function DatabaseSettings() {
 
                     <div className="flex items-center justify-between py-3 border-t border-gray-100">
                       <div>
-                        <p className="font-medium text-gray-900">Compression</p>
-                        <p className="text-sm text-gray-500">Reduce backup file size</p>
+                        <p className="font-medium text-gray-900">{t.settings.database.backup.compression.title}</p>
+                        <p className="text-sm text-gray-500">{t.settings.database.backup.compression.description}</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
@@ -440,8 +446,8 @@ export default function DatabaseSettings() {
 
                     <div className="flex items-center justify-between py-3 border-t border-gray-100">
                       <div>
-                        <p className="font-medium text-gray-900">Encryption</p>
-                        <p className="text-sm text-gray-500">Encrypt backup files for security</p>
+                        <p className="font-medium text-gray-900">{t.settings.database.backup.encryption.title}</p>
+                        <p className="text-sm text-gray-500">{t.settings.database.backup.encryption.description}</p>
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input
@@ -461,7 +467,7 @@ export default function DatabaseSettings() {
                         className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
                       >
                         <Save className="w-4 h-4" />
-                        {updateSettings.isPending ? "Saving..." : "Save Settings"}
+                        {updateSettings.isPending ? t.settings.database.backup.saving : t.settings.database.backup.saveButton}
                       </button>
                     </div>
                   </div>
@@ -470,10 +476,9 @@ export default function DatabaseSettings() {
 
               {/* Manual Backup */}
               <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">Manual Backup</h2>
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.database.manual.title}</h2>
                 <p className="text-sm text-gray-600 mb-4">
-                  Create an immediate backup of your database. This backup will be stored alongside your
-                  automatic backups.
+                  {t.settings.database.manual.description}
                 </p>
                 <button
                   onClick={handleBackup}
@@ -483,12 +488,12 @@ export default function DatabaseSettings() {
                   {createBackup.isPending ? (
                     <>
                       <RefreshCw className="w-4 h-4 animate-spin" />
-                      Creating Backup...
+                      {t.settings.database.manual.creating}
                     </>
                   ) : (
                     <>
                       <Download className="w-4 h-4" />
-                      Create Backup Now
+                      {t.settings.database.manual.createButton}
                     </>
                   )}
                 </button>
@@ -497,11 +502,11 @@ export default function DatabaseSettings() {
               {/* Backup History */}
               <div className="bg-white rounded-lg border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-lg font-semibold text-gray-900">Backup History</h2>
+                  <h2 className="text-lg font-semibold text-gray-900">{t.settings.database.history.title}</h2>
                   {backups.length > 0 && backups[0] && (
                     <div className="flex items-center gap-2 text-sm text-gray-600">
                       <Clock className="w-4 h-4" />
-                      <span>Last backup: {backups[0].date}</span>
+                      <span>{t.settings.database.history.lastBackup} {backups[0].date}</span>
                     </div>
                   )}
                 </div>
@@ -511,7 +516,7 @@ export default function DatabaseSettings() {
                     <RefreshCw className="w-6 h-6 animate-spin text-gray-400" />
                   </div>
                 ) : backups.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">No backups found</div>
+                  <div className="text-center py-8 text-gray-500">{t.settings.database.history.noBackups}</div>
                 ) : (
                   <div className="space-y-3">
                     {backups.map((backup) => (
@@ -545,7 +550,7 @@ export default function DatabaseSettings() {
                             className="flex items-center gap-2 px-3 py-1.5 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
                           >
                             <Upload className="w-4 h-4" />
-                            Restore
+                            {t.settings.database.history.restore}
                           </button>
                           <button
                             onClick={() => handleDownload(backup.id)}
@@ -553,7 +558,7 @@ export default function DatabaseSettings() {
                             className="flex items-center gap-2 px-3 py-1.5 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
                           >
                             <Download className="w-4 h-4" />
-                            Download
+                            {t.settings.database.history.download}
                           </button>
                         </div>
                       </div>
@@ -566,10 +571,9 @@ export default function DatabaseSettings() {
               <div className="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-start gap-3">
                 <AlertTriangle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-sm font-medium text-yellow-900">Important</p>
+                  <p className="text-sm font-medium text-yellow-900">{t.settings.database.warning.title}</p>
                   <p className="text-sm text-yellow-700 mt-1">
-                    Always verify your backups after creation. Test restoring to a separate environment
-                    periodically to ensure data integrity.
+                    {t.settings.database.warning.message}
                   </p>
                 </div>
               </div>
@@ -577,6 +581,8 @@ export default function DatabaseSettings() {
           )}
         </motion.div>
       </div>
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
+      <ConfirmModalComponent />
     </SettingsPermissionGate>
   );
 }

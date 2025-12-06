@@ -18,7 +18,7 @@ import {
   X,
 } from "lucide-react";
 import { authClient } from "@/lib/auth/client";
-import { useCheckOrgSlug } from "@/lib/api/hooks/organization";
+import { apiClient } from "@/lib/api/client";
 import { twMerge } from "tailwind-merge";
 import { SafeeLogo as SafeeLogoComponent } from "@/components/common/SafeeLogo";
 
@@ -87,8 +87,6 @@ export default function OnboardingPage() {
   // Modules step
   const [selectedModules, setSelectedModules] = useState<string[]>(["accounting"]);
 
-  const checkSlugMutation = useCheckOrgSlug();
-
   // Just generate slug from organization name - no checking yet
   const handleNameChange = (value: string) => {
     setOrganizationName(value);
@@ -140,26 +138,19 @@ export default function OnboardingPage() {
     setIsLoading(true);
 
     try {
-      // Check slug availability and find available slug
-      let finalSlug = organizationSlug;
-      let counter = 1;
-      let isAvailable = false;
+      // Get the next available slug in one API call
+      const { data: slugData, error: slugError } = await apiClient.GET("/organizations/slugs/next", {
+        params: { query: { baseSlug: organizationSlug } },
+      });
 
-      while (!isAvailable && counter < 100) {
-        const result = await checkSlugMutation.mutateAsync(finalSlug);
-
-        if (result?.status === false) {
-          isAvailable = true;
-        } else {
-          counter++;
-          finalSlug = `${organizationSlug}-${counter}`;
-        }
+      if (slugError || !slugData) {
+        throw new Error("Failed to generate unique slug");
       }
 
       // Create organization with available slug
       const response = await authClient.organization.create({
         name: organizationName,
-        slug: finalSlug,
+        slug: slugData.nextSlug,
         metadata: {
           industry,
         },
@@ -170,7 +161,7 @@ export default function OnboardingPage() {
       }
 
       // Update slug state with the final used slug
-      setOrganizationSlug(finalSlug);
+      setOrganizationSlug(slugData.nextSlug);
 
       // Move to next step after organization is created
       setCurrentStep("team");

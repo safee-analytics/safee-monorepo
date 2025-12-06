@@ -92,6 +92,23 @@ export const Sidebar = () => {
   const [apps, setApps] = useState<AppItem[]>(defaultApps);
   const [tempApps, setTempApps] = useState<AppItem[]>(defaultApps);
 
+  // Update app names when locale changes
+  React.useEffect(() => {
+    const updatedModules = getAllModules();
+    setApps((currentApps) =>
+      currentApps.map((app) => {
+        const moduleData = updatedModules.find((m) => m.key === app.id);
+        return moduleData ? { ...app, name: moduleData.name[locale] } : app;
+      }),
+    );
+    setTempApps((currentApps) =>
+      currentApps.map((app) => {
+        const moduleData = updatedModules.find((m) => m.key === app.id);
+        return moduleData ? { ...app, name: moduleData.name[locale] } : app;
+      }),
+    );
+  }, [locale]);
+
   React.useEffect(() => {
     const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {

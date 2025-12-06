@@ -1,5 +1,5 @@
 import createClient, { type Middleware } from "openapi-fetch";
-import type { paths } from "./types";
+import type { paths } from "./types/paths";
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || "http://app.localhost:8080"}/api/v1`;
 

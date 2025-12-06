@@ -18,6 +18,7 @@ import {
   DollarSign,
   AlertCircle,
 } from "lucide-react";
+import { useConfirm } from "@/components/feedback";
 import {
   useEmployee,
   useDepartment,
@@ -30,6 +31,7 @@ import { useContracts, usePayslips } from "@/lib/api/hooks/hrData";
 export default function EmployeeDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { confirm, ConfirmModalComponent } = useConfirm();
   const employeeId = params.id as string;
   const [activeTab, setActiveTab] = useState<"overview" | "contracts" | "leave" | "payslips">("overview");
 
@@ -47,7 +49,13 @@ export default function EmployeeDetailPage() {
   const deactivateEmployee = useDeactivateEmployee();
 
   const handleDeactivate = async () => {
-    if (!confirm("Are you sure you want to deactivate this employee?")) return;
+        const confirmed = await confirm({
+      title: "Deactivate Employee",
+      message: "Are you sure you want to deactivate this employee?",
+      type: "danger",
+      confirmText: "Deactivate",
+    });
+    if (!confirmed) return;
 
     try {
       await deactivateEmployee.mutateAsync(employeeId);
@@ -481,6 +489,7 @@ export default function EmployeeDetailPage() {
           )}
         </div>
       </div>
+      <ConfirmModalComponent />
     </div>
   );
 }

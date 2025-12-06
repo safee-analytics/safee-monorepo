@@ -8,6 +8,8 @@ import {
   useIsOrganizationOwner,
 } from "@/lib/api/hooks";
 import { useAuth } from "@/lib/auth/hooks";
+import { useToast, SafeeToastContainer } from "@/components/feedback";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
 import {
   Building2,
   Trash2,
@@ -59,6 +61,8 @@ interface OrganizationSettings {
 }
 
 export default function OrganizationSettingsPage() {
+  const { t } = useTranslation();
+  const toast = useToast();
   const { data: organization } = useActiveOrganization();
   const { user } = useAuth();
   const updateOrganizationMutation = useUpdateOrganization();
@@ -134,7 +138,7 @@ export default function OrganizationSettingsPage() {
       setIsEditing(null);
     } catch (error) {
       console.error("Failed to update organization:", error);
-      alert("Failed to update organization settings");
+      toast.error("Failed to update organization settings");
     }
   };
 
@@ -146,7 +150,7 @@ export default function OrganizationSettingsPage() {
       window.location.href = "/";
     } catch (error) {
       console.error("Failed to delete organization:", error);
-      alert("Failed to delete organization");
+      toast.error("Failed to delete organization");
     }
   };
 
@@ -242,9 +246,9 @@ export default function OrganizationSettingsPage() {
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Organization Settings</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.settings.organization.title}</h1>
           <p className="text-gray-600">
-            Manage your organization information. Fields are auto-filled from your account where possible.
+            {t.settings.organization.subtitle}
           </p>
         </div>
 
@@ -265,16 +269,16 @@ export default function OrganizationSettingsPage() {
               </div>
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">Organization Logo</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.settings.organization.logo.title}</h3>
               <p className="text-sm text-gray-600 mb-4">
-                Upload your organization logo. This will appear on invoices, reports, and other documents.
+                {t.settings.organization.logo.subtitle}
               </p>
               <div className="flex gap-3">
                 <label className="cursor-pointer">
                   <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
                   <div className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 text-sm font-medium">
                     <Upload className="w-4 h-4" />
-                    Upload Logo
+                    {t.settings.organization.logo.uploadButton}
                   </div>
                 </label>
                 {(logoPreview || settings.logo) && (
@@ -285,12 +289,12 @@ export default function OrganizationSettingsPage() {
                     }}
                     className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
                   >
-                    Remove
+                    {t.common.delete}
                   </button>
                 )}
               </div>
               <p className="text-xs text-gray-500 mt-2">
-                Recommended: Square image, at least 256x256px, PNG or JPG format
+                {t.settings.organization.logo.recommended}
               </p>
             </div>
           </div>
@@ -301,36 +305,36 @@ export default function OrganizationSettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <Building2 className="w-6 h-6 text-blue-600" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">Company Info</h2>
+              <h2 className="text-xl font-semibold text-gray-900">{t.settings.organization.companyInfo.title}</h2>
               <p className="text-sm text-gray-600">
-                This info may be connected to the Business Network or used for billing purposes
+                {t.settings.organization.companyInfo.subtitle}
               </p>
             </div>
           </div>
           <div className="space-y-0">
             <EditableField
-              label="Name"
+              label={t.settings.organization.companyInfo.name}
               value={settings.name}
               field="name"
               icon={Building2}
               section="company"
             />
             <EditableField
-              label="Address"
+              label={t.settings.organization.companyInfo.address}
               value={settings.address || ""}
               field="address"
               icon={MapPin}
               section="company"
             />
             <EditableField
-              label="Email"
+              label={t.settings.organization.companyInfo.email}
               value={settings.email || ""}
               field="email"
               icon={Mail}
               section="company"
             />
             <EditableField
-              label="Phone"
+              label={t.settings.organization.companyInfo.phone}
               value={settings.phone || ""}
               field="phone"
               icon={Phone}
@@ -338,14 +342,14 @@ export default function OrganizationSettingsPage() {
               type="phone"
             />
             <EditableField
-              label="Website"
+              label={t.settings.organization.companyInfo.website}
               value={settings.website || ""}
               field="website"
               icon={Globe}
               section="company"
             />
             <EditableField
-              label="Industry"
+              label={t.settings.organization.companyInfo.industry}
               value={settings.industry || ""}
               field="industry"
               icon={FileText}
@@ -359,41 +363,41 @@ export default function OrganizationSettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <FileText className="w-6 h-6 text-blue-600" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">Legal Info</h2>
-              <p className="text-sm text-gray-600">This is the info your business uses for tax purposes</p>
+              <h2 className="text-xl font-semibold text-gray-900">{t.settings.organization.legalInfo.title}</h2>
+              <p className="text-sm text-gray-600">{t.settings.organization.legalInfo.subtitle}</p>
             </div>
           </div>
           <div className="space-y-0">
             <EditableField
-              label="Legal business name"
+              label={t.settings.organization.legalInfo.legalName}
               value={settings.legalName || ""}
               field="legalName"
               icon={Building2}
               section="legal"
             />
             <EditableField
-              label="Business number"
+              label={t.settings.organization.legalInfo.businessNumber}
               value={settings.businessNumber || ""}
               field="businessNumber"
               icon={FileText}
               section="legal"
             />
             <EditableField
-              label="GST number"
+              label={t.settings.organization.legalInfo.gstNumber}
               value={settings.gstNumber || ""}
               field="gstNumber"
               icon={FileText}
               section="legal"
             />
             <EditableField
-              label="Business type"
+              label={t.settings.organization.legalInfo.businessType}
               value={settings.businessType || ""}
               field="businessType"
               icon={Building2}
               section="legal"
             />
             <EditableField
-              label="Legal address"
+              label={t.settings.organization.legalInfo.legalAddress}
               value={settings.legalAddress || ""}
               field="legalAddress"
               icon={MapPin}
@@ -407,20 +411,20 @@ export default function OrganizationSettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <Users className="w-6 h-6 text-blue-600" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">Customer Contact Info</h2>
-              <p className="text-sm text-gray-600">This is how customers get in touch with you</p>
+              <h2 className="text-xl font-semibold text-gray-900">{t.settings.organization.customerContact.title}</h2>
+              <p className="text-sm text-gray-600">{t.settings.organization.customerContact.subtitle}</p>
             </div>
           </div>
           <div className="space-y-0">
             <EditableField
-              label="Customer email"
+              label={t.settings.organization.customerContact.email}
               value={settings.customerEmail || ""}
               field="customerEmail"
               icon={Mail}
               section="customer"
             />
             <EditableField
-              label="Customer address"
+              label={t.settings.organization.customerContact.address}
               value={settings.customerAddress || ""}
               field="customerAddress"
               icon={MapPin}
@@ -434,13 +438,13 @@ export default function OrganizationSettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <Settings className="w-6 h-6 text-blue-600" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">Preferences</h2>
-              <p className="text-sm text-gray-600">Customize your organization settings</p>
+              <h2 className="text-xl font-semibold text-gray-900">{t.settings.organization.preferences.title}</h2>
+              <p className="text-sm text-gray-600">{t.settings.organization.preferences.subtitle}</p>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Language</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.organization.preferences.language}</label>
               <select
                 value={settings.language}
                 onChange={(e) => setSettings({ ...settings, language: e.target.value })}
@@ -451,7 +455,7 @@ export default function OrganizationSettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Currency</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.organization.preferences.currency}</label>
               <select
                 value={settings.currency}
                 onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
@@ -479,7 +483,7 @@ export default function OrganizationSettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Date Format</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.organization.preferences.dateFormat}</label>
               <select
                 value={settings.dateFormat}
                 onChange={(e) => setSettings({ ...settings, dateFormat: e.target.value })}
@@ -491,28 +495,28 @@ export default function OrganizationSettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Fiscal Year Start</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.organization.preferences.fiscalYearStart}</label>
               <select
                 value={settings.fiscalYearStart}
                 onChange={(e) => setSettings({ ...settings, fiscalYearStart: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 {[
-                  "January",
-                  "February",
-                  "March",
-                  "April",
-                  "May",
-                  "June",
-                  "July",
-                  "August",
-                  "September",
-                  "October",
-                  "November",
-                  "December",
+                  { key: "January", label: t.settings.organization.months.january },
+                  { key: "February", label: t.settings.organization.months.february },
+                  { key: "March", label: t.settings.organization.months.march },
+                  { key: "April", label: t.settings.organization.months.april },
+                  { key: "May", label: t.settings.organization.months.may },
+                  { key: "June", label: t.settings.organization.months.june },
+                  { key: "July", label: t.settings.organization.months.july },
+                  { key: "August", label: t.settings.organization.months.august },
+                  { key: "September", label: t.settings.organization.months.september },
+                  { key: "October", label: t.settings.organization.months.october },
+                  { key: "November", label: t.settings.organization.months.november },
+                  { key: "December", label: t.settings.organization.months.december },
                 ].map((month) => (
-                  <option key={month} value={month}>
-                    {month}
+                  <option key={month.key} value={month.key}>
+                    {month.label}
                   </option>
                 ))}
               </select>
@@ -525,8 +529,8 @@ export default function OrganizationSettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <AlertTriangle className="w-6 h-6 text-red-600" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">Danger Zone</h2>
-              <p className="text-sm text-gray-600">Irreversible and destructive actions</p>
+              <h2 className="text-xl font-semibold text-gray-900">{t.settings.organization.dangerZone.title}</h2>
+              <p className="text-sm text-gray-600">{t.settings.organization.dangerZone.subtitle}</p>
             </div>
           </div>
           <div className="space-y-4">
@@ -537,8 +541,8 @@ export default function OrganizationSettingsPage() {
               <div className="flex items-center gap-3">
                 <ArrowRightLeft className="w-5 h-5 text-gray-600" />
                 <div className="text-left">
-                  <p className="font-medium text-gray-900">Transfer Ownership</p>
-                  <p className="text-sm text-gray-600">Transfer this organization to another user</p>
+                  <p className="font-medium text-gray-900">{t.settings.organization.dangerZone.transferOwnership}</p>
+                  <p className="text-sm text-gray-600">{t.settings.organization.dangerZone.transferOwnershipDesc}</p>
                 </div>
               </div>
             </button>
@@ -549,9 +553,9 @@ export default function OrganizationSettingsPage() {
               <div className="flex items-center gap-3">
                 <Trash2 className="w-5 h-5 text-red-600" />
                 <div className="text-left">
-                  <p className="font-medium text-red-900">Delete Organization</p>
+                  <p className="font-medium text-red-900">{t.settings.organization.dangerZone.deleteOrganization}</p>
                   <p className="text-sm text-red-600">
-                    Permanently delete this organization and all its data
+                    {t.settings.organization.dangerZone.deleteOrganizationDesc}
                   </p>
                 </div>
               </div>
@@ -571,16 +575,15 @@ export default function OrganizationSettingsPage() {
               >
                 <div className="flex items-center gap-3 mb-4">
                   <ArrowRightLeft className="w-6 h-6 text-blue-600" />
-                  <h3 className="text-xl font-semibold text-gray-900">Transfer Ownership</h3>
+                  <h3 className="text-xl font-semibold text-gray-900">{t.settings.organization.transferModal.title}</h3>
                 </div>
                 <p className="text-gray-600 mb-6">
-                  Transfer ownership of <span className="font-semibold">{organization?.name}</span> to another
-                  member. You will lose all administrative privileges.
+                  {t.settings.organization.transferModal.description.replace("{orgName}", organization?.name || "")}
                 </p>
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Select New Owner</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.organization.transferModal.selectLabel}</label>
                   <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
-                    <option value="">Select a member...</option>
+                    <option value="">{t.settings.organization.transferModal.selectPlaceholder}</option>
                     {/* Members would be populated here */}
                   </select>
                 </div>
@@ -589,10 +592,10 @@ export default function OrganizationSettingsPage() {
                     onClick={() => setShowTransferModal(false)}
                     className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
                   >
-                    Cancel
+                    {t.settings.organization.transferModal.cancel}
                   </button>
                   <button className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                    Transfer Ownership
+                    {t.settings.organization.transferModal.confirm}
                   </button>
                 </div>
               </motion.div>
@@ -612,22 +615,20 @@ export default function OrganizationSettingsPage() {
               >
                 <div className="flex items-center gap-3 mb-4">
                   <AlertTriangle className="w-6 h-6 text-red-600" />
-                  <h3 className="text-xl font-semibold text-gray-900">Delete Organization</h3>
+                  <h3 className="text-xl font-semibold text-gray-900">{t.settings.organization.deleteModal.title}</h3>
                 </div>
                 <div className="mb-6">
                   <p className="text-gray-600 mb-4">
-                    This action <span className="font-bold text-red-600">cannot be undone</span>. This will
-                    permanently delete:
+                    This action <span className="font-bold text-red-600">{t.settings.organization.deleteModal.cannotUndo}</span>. {t.settings.organization.deleteModal.willDelete}
                   </p>
                   <ul className="list-disc list-inside space-y-2 text-sm text-gray-700 mb-4">
-                    <li>All organization data and settings</li>
-                    <li>All cases, documents, and audit logs</li>
-                    <li>All member access and permissions</li>
-                    <li>All billing information and history</li>
+                    <li>{t.settings.organization.deleteModal.dataItem1}</li>
+                    <li>{t.settings.organization.deleteModal.dataItem2}</li>
+                    <li>{t.settings.organization.deleteModal.dataItem3}</li>
+                    <li>{t.settings.organization.deleteModal.dataItem4}</li>
                   </ul>
                   <p className="text-sm text-gray-600 mb-4">
-                    Please type <span className="font-mono font-semibold">{organization?.name}</span> to
-                    confirm:
+                    {t.settings.organization.deleteModal.confirmPrompt.replace("{orgName}", organization?.name || "")}
                   </p>
                   <input
                     type="text"
@@ -645,7 +646,7 @@ export default function OrganizationSettingsPage() {
                     }}
                     className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
                   >
-                    Cancel
+                    {t.settings.organization.deleteModal.cancel}
                   </button>
                   <button
                     onClick={handleDelete}
@@ -654,7 +655,7 @@ export default function OrganizationSettingsPage() {
                     }
                     className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {deleteOrganizationMutation.isPending ? "Deleting..." : "Delete Organization"}
+                    {deleteOrganizationMutation.isPending ? t.settings.organization.deleteModal.deleting : t.settings.organization.deleteModal.confirm}
                   </button>
                 </div>
               </motion.div>
@@ -662,6 +663,7 @@ export default function OrganizationSettingsPage() {
           )}
         </AnimatePresence>
       </div>
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
     </div>
   );
 }

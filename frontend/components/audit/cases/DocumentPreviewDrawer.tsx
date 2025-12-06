@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { X, Download, Trash2, Edit2, Eye, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useConfirm } from "@/components/feedback";
 import { formatDistanceToNow } from "date-fns";
 
 export interface Document {
@@ -54,6 +55,7 @@ export function DocumentPreviewDrawer({
   onStatusChange,
   onCategoryChange,
 }: DocumentPreviewDrawerProps) {
+  const { confirm, ConfirmModalComponent } = useConfirm();
   const [activeTab, setActiveTab] = useState<"preview" | "details" | "history" | "comments">("preview");
   const [newComment, setNewComment] = useState("");
   const [editingMetadata, setEditingMetadata] = useState(false);
@@ -456,8 +458,14 @@ export function DocumentPreviewDrawer({
                 <span>Download</span>
               </button>
               <button
-                onClick={() => {
-                  if (confirm("Are you sure you want to delete this document?")) {
+                onClick={async () => {
+                  const confirmed = await confirm({
+                    title: "Delete Document",
+                    message: "Are you sure you want to delete this document?",
+                    type: "danger",
+                    confirmText: "Delete",
+                  });
+                  if (confirmed) {
                     onDelete?.(document.id);
                     onClose();
                   }
@@ -469,6 +477,7 @@ export function DocumentPreviewDrawer({
               </button>
             </div>
           </motion.div>
+          <ConfirmModalComponent />
         </>
       )}
     </AnimatePresence>

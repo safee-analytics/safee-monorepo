@@ -38,7 +38,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
     // Personal Settings (1-10)
     {
       href: "/settings/profile",
-      label: "Profile",
+      label: t.settings.nav.profile,
       icon: User,
       pageKey: "profile",
       order: 1,
@@ -46,7 +46,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
     },
     {
       href: "/settings/notifications",
-      label: t.common.notifications || "Notifications",
+      label: t.settings.nav.notifications,
       icon: Bell,
       pageKey: "notifications",
       order: 2,
@@ -54,7 +54,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
     },
     {
       href: "/settings/appearance",
-      label: "Appearance",
+      label: t.settings.nav.appearance,
       icon: Palette,
       pageKey: "appearance",
       order: 3,
@@ -64,7 +64,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
     // Organization Settings (11-20)
     {
       href: "/settings/organization",
-      label: "Organization",
+      label: t.settings.nav.organization,
       icon: Building2,
       pageKey: "organization",
       order: 11,
@@ -72,33 +72,41 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
     },
     {
       href: "/settings/team",
-      label: "Team",
+      label: t.settings.nav.team,
       icon: Users,
       pageKey: "team",
       order: 12,
       category: "organization",
     },
     {
-      href: "/settings/invoice-styles",
-      label: "Invoice Styles",
+      href: "/settings/documents",
+      label: t.settings.nav.documents,
       icon: FileText,
-      pageKey: "invoice-styles",
+      pageKey: "documents",
       order: 13,
       category: "organization",
     },
     {
+      href: "/settings/invoice-styles",
+      label: t.settings.nav.invoiceStyles,
+      icon: FileText,
+      pageKey: "invoice-styles",
+      order: 14,
+      category: "organization",
+    },
+    {
       href: "/settings/audit-logs",
-      label: "Audit Logs",
+      label: t.settings.nav.auditLogs,
       icon: FileText,
       pageKey: "audit-logs",
-      order: 14,
+      order: 15,
       category: "organization",
     },
 
     // Advanced Settings (21-30)
     {
       href: "/settings/security",
-      label: "Security",
+      label: t.settings.nav.security,
       icon: Shield,
       pageKey: "security",
       order: 21,
@@ -106,7 +114,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
     },
     {
       href: "/settings/storage",
-      label: t.common.storage || "Storage",
+      label: t.settings.nav.storage,
       icon: HardDrive,
       pageKey: "storage",
       order: 22,
@@ -114,16 +122,16 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
     },
     {
       href: "/settings/integrations",
-      label: "Integrations",
+      label: t.settings.nav.integrations,
       icon: Globe,
       pageKey: "integrations",
       order: 23,
       category: "advanced",
     },
-    { href: "/settings/api", label: "API Keys", icon: Key, pageKey: "api", order: 24, category: "advanced" },
+    { href: "/settings/api", label: t.settings.nav.apiKeys, icon: Key, pageKey: "api", order: 24, category: "advanced" },
     {
       href: "/settings/database",
-      label: "Database",
+      label: t.settings.nav.database,
       icon: Database,
       pageKey: "database",
       order: 25,
@@ -149,9 +157,9 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
   };
 
   const categoryLabels = {
-    personal: "Personal",
-    organization: "Organization",
-    advanced: "Advanced",
+    personal: t.settings.nav.personal,
+    organization: t.settings.nav.organization,
+    advanced: t.settings.nav.advanced,
   };
 
   return (

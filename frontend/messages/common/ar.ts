@@ -47,28 +47,6 @@ export const commonAr = {
     nisbah: "نسبة",
     audit: "التدقيق",
   },
-  settings: {
-    api: {
-      title: "مفاتيح API",
-      subtitle: "إدارة مفاتيح API للتكامل مع الخدمات الخارجية",
-    },
-    database: {
-      title: "قاعدة البيانات والنسخ الاحتياطية",
-      subtitle: "إدارة النسخ الاحتياطية ونقاط الاستعادة",
-    },
-    integrations: {
-      title: "التكاملات",
-      subtitle: "ربط صفي بأدواتك وخدماتك المفضلة",
-    },
-    notifications: {
-      title: "الإشعارات",
-      subtitle: "إدارة كيفية تلقي الإشعارات والتنبيهات",
-    },
-    security: {
-      title: "إعدادات الأمان",
-      subtitle: "إدارة أمان حسابك وخصوصيتك",
-    },
-  },
   dashboard: {
     goodMorning: "صباح الخير",
     goodAfternoon: "مساء الخير",

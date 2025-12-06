@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast, SafeeToastContainer } from "@/components/feedback";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, AlertCircle } from "lucide-react";
 import Link from "next/link";
@@ -9,6 +10,7 @@ import { useDepartment, useUpdateDepartment } from "@/lib/api/hooks/hrManagement
 export default function EditDepartmentPage() {
   const params = useParams();
   const router = useRouter();
+  const toast = useToast();
   const departmentId = params.id as string;
 
   const { data: department, isLoading, error } = useDepartment(departmentId);
@@ -30,7 +32,7 @@ export default function EditDepartmentPage() {
       router.push(`/hr/departments/${departmentId}`);
     } catch (error) {
       console.error("Failed to update department:", error);
-      alert("Failed to update department. Please try again.");
+      toast.error("Failed to update department. Please try again.");
     }
   };
 
@@ -83,6 +85,7 @@ export default function EditDepartmentPage() {
         isSubmitting={updateDepartment.isPending}
         submitLabel="Update Department"
       />
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
     </div>
   );
 }

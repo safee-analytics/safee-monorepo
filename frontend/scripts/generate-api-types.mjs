@@ -24,7 +24,7 @@ const MODULE_GROUPS = {
   workflows: ["Workflows", "Approvals"],
   storage: ["Storage", "NAS Management"],
   integrations: ["Integrations", "Odoo", "Connectors"],
-  settings: ["Settings", "Security", "Database"],
+  settings: ["Settings", "Security", "Database", "Organizations"],
   users: ["Users"],
   dashboard: ["Dashboard"],
   ocr: ["OCR"],
