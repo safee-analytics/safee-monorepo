@@ -248,7 +248,7 @@ export const Sidebar = () => {
             setOpen(false);
           }
         }}
-        className="h-full bg-white pt-4 px-2 pb-2"
+        className="h-full bg-white dark:bg-gray-900 pt-4 px-2 pb-2"
         animate={{
           width: isExpanded ? "225px" : "56px",
         }}
@@ -347,7 +347,7 @@ export const Sidebar = () => {
 
         {/* Pinned Modules Section */}
         <div className={`px-2 mb-2 transition-opacity ${isExpanded ? "opacity-100" : "opacity-0"}`}>
-          <span className="text-[10px] font-semibold text-gray-400 uppercase">{t.common.pinned}</span>
+          <span className="text-[10px] font-semibold text-gray-400 dark:text-gray-500 uppercase">{t.common.pinned}</span>
         </div>
 
         {/* Pinned Modules */}
@@ -369,7 +369,7 @@ export const Sidebar = () => {
                 >
                   <div
                     className={`relative flex h-10 w-full items-center rounded-lg transition-all ${
-                      isSelected ? "bg-safee-50" : "hover:bg-gray-50"
+                      isSelected ? "bg-safee-50 dark:bg-safee-900/20" : "hover:bg-gray-50 dark:hover:bg-gray-800"
                     }`}
                   >
                     {/* Logo Circle - fixed position */}
@@ -385,7 +385,7 @@ export const Sidebar = () => {
                     <span
                       className={`text-xs font-medium transition-opacity overflow-hidden whitespace-nowrap ${
                         isExpanded ? "opacity-100" : "opacity-0 w-0"
-                      } ${isSelected ? "text-safee-700" : "text-gray-700"}`}
+                      } ${isSelected ? "text-safee-700 dark:text-safee-300" : "text-gray-700 dark:text-gray-300"}`}
                     >
                       {app.name}
                     </span>
@@ -411,7 +411,7 @@ export const Sidebar = () => {
         <motion.button
           layout
           onClick={handleOpenCustomize}
-          className="absolute bottom-12 left-0 right-0 border-t border-slate-300 transition-colors hover:bg-slate-100"
+          className="absolute bottom-12 left-0 right-0 border-t border-slate-300 dark:border-gray-700 transition-colors hover:bg-slate-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
         >
           <div className="flex items-center p-2">
             <motion.div layout className="grid size-10 place-content-center text-lg">
@@ -445,7 +445,7 @@ export const Sidebar = () => {
               setSidebarCollapsed(true);
             }
           }}
-          className="absolute bottom-0 left-0 right-0 border-t border-slate-300 transition-colors hover:bg-slate-100"
+          className="absolute bottom-0 left-0 right-0 border-t border-slate-300 dark:border-gray-700 transition-colors hover:bg-slate-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300"
         >
           <div className="flex items-center p-2">
             <motion.div layout className="grid size-10 place-content-center text-lg">
@@ -484,14 +484,14 @@ export const Sidebar = () => {
               initial={{ opacity: 0, scale: 0.95, x: -10 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.95, x: -10 }}
-              className={`fixed ${locale === "ar" ? "right-20" : "left-20"} top-28 z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-6 w-[500px]`}
+              className={`fixed ${locale === "ar" ? "right-20" : "left-20"} top-28 z-50 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-6 w-[500px]`}
             >
-              <h3 className="text-lg font-semibold text-gray-900 mb-6">{t.common.createNew}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-6">{t.common.createNew}</h3>
 
               <div className="grid grid-cols-2 gap-6">
                 {/* Hisabiq */}
                 <div>
-                  <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2 flex items-center gap-2">
+                  <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2 flex items-center gap-2">
                     <FiDollarSign className="w-3 h-3" />
                     {t.nav.hisabiq}
                   </h4>
@@ -502,7 +502,7 @@ export const Sidebar = () => {
                         <button
                           key={idx}
                           onClick={() => setShowCreateMenu(false)}
-                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />
                           {item.label}
@@ -514,7 +514,7 @@ export const Sidebar = () => {
 
                 {/* Kanz */}
                 <div>
-                  <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2 flex items-center gap-2">
+                  <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2 flex items-center gap-2">
                     <FiUsers className="w-3 h-3" />
                     {t.nav.kanz}
                   </h4>
@@ -525,7 +525,7 @@ export const Sidebar = () => {
                         <button
                           key={idx}
                           onClick={() => setShowCreateMenu(false)}
-                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />
                           {item.label}
@@ -537,7 +537,7 @@ export const Sidebar = () => {
 
                 {/* Nisbah */}
                 <div>
-                  <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2 flex items-center gap-2">
+                  <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2 flex items-center gap-2">
                     <FiUserPlus className="w-3 h-3" />
                     {t.nav.nisbah}
                   </h4>
@@ -548,7 +548,7 @@ export const Sidebar = () => {
                         <button
                           key={idx}
                           onClick={() => setShowCreateMenu(false)}
-                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />
                           {item.label}
@@ -560,7 +560,7 @@ export const Sidebar = () => {
 
                 {/* CRM */}
                 <div>
-                  <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2 flex items-center gap-2">
+                  <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2 flex items-center gap-2">
                     <FiTrendingUp className="w-3 h-3" />
                     CRM
                   </h4>
@@ -569,8 +569,8 @@ export const Sidebar = () => {
                       const Icon = item.icon;
                       return (
                         <Link key={idx} href={item.href || "#"} onClick={() => setShowCreateMenu(false)}>
-                          <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
-                            <Icon className="w-4 h-4 text-gray-400" />
+                          <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
+                            <Icon className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                             {item.label}
                           </button>
                         </Link>
@@ -581,7 +581,7 @@ export const Sidebar = () => {
 
                 {/* Audit */}
                 <div>
-                  <h4 className="text-xs font-semibold text-gray-500 uppercase mb-2 flex items-center gap-2">
+                  <h4 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase mb-2 flex items-center gap-2">
                     <FiClipboard className="w-3 h-3" />
                     {t.nav.audit}
                   </h4>
@@ -592,7 +592,7 @@ export const Sidebar = () => {
                         <button
                           key={idx}
                           onClick={() => setShowCreateMenu(false)}
-                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+                          className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />
                           {item.label}
@@ -625,9 +625,9 @@ export const Sidebar = () => {
               initial={{ opacity: 0, scale: 0.95, x: -10 }}
               animate={{ opacity: 1, scale: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.95, x: -10 }}
-              className={`fixed ${locale === "ar" ? "right-20" : "left-20"} top-[180px] z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-4 w-[280px]`}
+              className={`fixed ${locale === "ar" ? "right-20" : "left-20"} top-[180px] z-50 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 p-4 w-[280px]`}
             >
-              <h3 className="text-sm font-semibold text-gray-900 mb-3 px-2">{t.common.myApps}</h3>
+              <h3 className="text-sm font-semibold text-gray-900 dark:text-gray-100 mb-3 px-2">{t.common.myApps}</h3>
 
               <div className="space-y-1">
                 {apps.map((app) => {
@@ -644,7 +644,7 @@ export const Sidebar = () => {
                         setShowMyApps(false);
                       }}
                     >
-                      <button className="w-full flex items-center gap-3 px-2 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors">
+                      <button className="w-full flex items-center gap-3 px-2 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
                         <div
                           className={`w-8 h-8 rounded-full bg-gradient-to-br ${app.gradient} flex items-center justify-center shadow-sm flex-shrink-0`}
                         >
@@ -686,19 +686,19 @@ export const Sidebar = () => {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-2xl max-h-[80vh] overflow-hidden"
+              className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700 w-full max-w-2xl max-h-[80vh] overflow-hidden"
             >
               {/* Header */}
-              <div className="flex items-center justify-between px-8 py-6 border-b border-gray-200">
+              <div className="flex items-center justify-between px-8 py-6 border-b border-gray-200 dark:border-gray-700">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{t.common.customizeAppMenus}</h2>
-                  <p className="text-sm text-gray-600 mt-1">{t.common.dragDropReorder}</p>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">{t.common.customizeAppMenus}</h2>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{t.common.dragDropReorder}</p>
                 </div>
                 <button
                   onClick={handleCancelCustomize}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                 >
-                  <FiX className="w-6 h-6 text-gray-500" />
+                  <FiX className="w-6 h-6 text-gray-500 dark:text-gray-400" />
                 </button>
               </div>
 
@@ -711,7 +711,7 @@ export const Sidebar = () => {
                       <Reorder.Item
                         key={app.id}
                         value={app}
-                        className="flex items-center gap-4 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:border-gray-300 transition-colors cursor-grab active:cursor-grabbing"
+                        className="flex items-center gap-4 px-4 py-3 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg hover:border-gray-300 dark:hover:border-gray-500 transition-colors cursor-grab active:cursor-grabbing"
                       >
                         {/* Drag Handle - Grip Icon */}
                         <div className="flex flex-col gap-1 flex-shrink-0 cursor-grab active:cursor-grabbing">
@@ -735,7 +735,7 @@ export const Sidebar = () => {
                           className={`p-2 rounded-lg transition-colors ${
                             app.pinned
                               ? "text-yellow-500 hover:bg-yellow-50"
-                              : "text-gray-300 hover:bg-gray-50"
+                              : "text-gray-300 dark:text-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
                           }`}
                         >
                           <FiStar className={`w-5 h-5 ${app.pinned ? "fill-current" : ""}`} />
@@ -748,7 +748,7 @@ export const Sidebar = () => {
                         </div>
 
                         {/* App Name */}
-                        <span className="text-sm font-semibold text-gray-900 flex-1">{app.name}</span>
+                        <span className="text-sm font-semibold text-gray-900 dark:text-gray-100 flex-1">{app.name}</span>
                       </Reorder.Item>
                     );
                   })}
@@ -756,11 +756,11 @@ export const Sidebar = () => {
               </div>
 
               {/* Auto-close toggle */}
-              <div className="px-8 py-4 border-t border-gray-200">
-                <div className="flex items-center justify-between py-3 px-4 bg-gray-50 rounded-lg">
+              <div className="px-8 py-4 border-t border-gray-200 dark:border-gray-700">
+                <div className="flex items-center justify-between py-3 px-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
                   <div>
-                    <p className="text-sm font-medium text-gray-900">{t.common.autoCloseSidebar}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{t.common.autoCloseSidebarDesc}</p>
+                    <p className="text-sm font-medium text-gray-900 dark:text-gray-100">{t.common.autoCloseSidebar}</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">{t.common.autoCloseSidebarDesc}</p>
                   </div>
                   <button
                     onClick={() => setSidebarAutoClose(!sidebarAutoClose)}
@@ -778,17 +778,17 @@ export const Sidebar = () => {
               </div>
 
               {/* Footer Actions */}
-              <div className="flex items-center justify-between px-8 py-6 border-t border-gray-200 bg-gray-50">
+              <div className="flex items-center justify-between px-8 py-6 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-700">
                 <button
                   onClick={handleResetToDefault}
-                  className="px-4 py-2 text-sm font-medium text-safee-600 hover:bg-safee-50 rounded-lg transition-colors"
+                  className="px-4 py-2 text-sm font-medium text-safee-600 dark:text-safee-400 hover:bg-safee-50 dark:hover:bg-safee-900/20 rounded-lg transition-colors"
                 >
                   {t.common.resetToDefault}
                 </button>
                 <div className="flex items-center gap-3">
                   <button
                     onClick={handleCancelCustomize}
-                    className="px-6 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100 border border-gray-300 rounded-lg transition-colors"
+                    className="px-6 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600 rounded-lg transition-colors"
                   >
                     {t.common.cancel}
                   </button>

@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@variant dark (.dark &);
+
 @theme {
   /* Safee Brand Colors */
   --color-safee-50: #f0f9ff;
@@ -12,6 +14,35 @@
   --color-safee-700: #0369a1;
   --color-safee-800: #075985;
   --color-safee-900: #0c4a6e;
+}
+
+/* Semantic color tokens for light/dark mode */
+:root {
+  /* Light mode (default) */
+  --bg-primary: 255 255 255; /* white */
+  --bg-secondary: 249 250 251; /* gray-50 */
+  --bg-tertiary: 243 244 246; /* gray-100 */
+
+  --text-primary: 17 24 39; /* gray-900 */
+  --text-secondary: 75 85 99; /* gray-600 */
+  --text-tertiary: 156 163 175; /* gray-400 */
+
+  --border-primary: 229 231 235; /* gray-200 */
+  --border-secondary: 209 213 219; /* gray-300 */
+}
+
+.dark {
+  /* Dark mode overrides */
+  --bg-primary: 31 41 55; /* gray-800 */
+  --bg-secondary: 17 24 39; /* gray-900 */
+  --bg-tertiary: 55 65 81; /* gray-700 */
+
+  --text-primary: 243 244 246; /* gray-100 */
+  --text-secondary: 209 213 219; /* gray-300 */
+  --text-tertiary: 156 163 175; /* gray-400 */
+
+  --border-primary: 55 65 81; /* gray-700 */
+  --border-secondary: 75 85 99; /* gray-600 */
 }
 
 /* Base styles */

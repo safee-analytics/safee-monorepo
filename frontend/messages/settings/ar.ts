@@ -517,6 +517,8 @@ export const settingsAr = {
       reduceMotionDesc: "تقليل الرسوم المتحركة لتحسين إمكانية الوصول",
       saveChanges: "حفظ التغييرات",
       saving: "جارٍ الحفظ...",
+      saveSuccess: "تم حفظ إعدادات المظهر بنجاح!",
+      saveError: "فشل حفظ إعدادات المظهر. يرجى المحاولة مرة أخرى.",
     },
     organization: {
       title: "إعدادات المنظمة",

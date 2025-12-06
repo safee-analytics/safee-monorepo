@@ -1,32 +1,50 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Sun, Moon, Monitor, Type, Layout, Eye, Save } from "lucide-react";
+import { Sun, Moon, Monitor, Type, Layout, Eye } from "lucide-react";
 import { useToast, SafeeToastContainer } from "@/components/feedback";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useTheme } from "@/lib/providers/ThemeProvider";
 import { useUpdateUserLocale } from "@/lib/api/hooks/user";
 
 export default function AppearanceSettings() {
   const { t, locale } = useTranslation();
   const toast = useToast();
+  const { theme, setTheme, colorScheme, setColorScheme } = useTheme();
   const updateLocaleMutation = useUpdateUserLocale();
-  const [isSaving, setIsSaving] = useState(false);
   const [appearance, setAppearance] = useState({
-    theme: "light",
-    colorScheme: "blue",
     fontSize: "medium",
     density: "comfortable",
     animations: true,
     reducedMotion: false,
   });
 
-  const handleSave = async () => {
-    setIsSaving(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSaving(false);
-    toast.success("Appearance settings updated successfully");
-  };
+  // Load appearance settings from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem("safee-appearance");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        setAppearance(parsed);
+
+        // Apply font size immediately
+        const fontSizeMap = { small: "14px", medium: "16px", large: "18px" };
+        document.documentElement.style.fontSize = fontSizeMap[parsed.fontSize as keyof typeof fontSizeMap];
+      } catch (e) {
+        console.error("Failed to parse appearance settings", e);
+      }
+    }
+  }, []);
+
+  // Auto-save appearance settings whenever they change
+  useEffect(() => {
+    localStorage.setItem("safee-appearance", JSON.stringify(appearance));
+
+    // Apply font size immediately
+    const fontSizeMap = { small: "14px", medium: "16px", large: "18px" };
+    document.documentElement.style.fontSize = fontSizeMap[appearance.fontSize as keyof typeof fontSizeMap];
+  }, [appearance]);
 
   const colorSchemes = [
     { id: "blue", name: t.settings.appearance.colors.blue, color: "bg-blue-600" },
@@ -38,85 +56,85 @@ export default function AppearanceSettings() {
   ];
 
   return (
-    <div className="p-6">
+    <div className="p-6 min-h-screen bg-gray-50 dark:bg-gray-900">
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl">
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{t.settings.appearance.title}</h1>
-          <p className="text-gray-600">{t.settings.appearance.subtitle}</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2">{t.settings.appearance.title}</h1>
+          <p className="text-gray-600 dark:text-gray-400">{t.settings.appearance.subtitle}</p>
         </div>
 
         {/* Theme */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.appearance.theme}</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">{t.settings.appearance.theme}</h2>
           <div className="grid grid-cols-3 gap-4">
             <button
-              onClick={() => setAppearance({ ...appearance, theme: "light" })}
+              onClick={() => setTheme("light")}
               className={`p-4 border-2 rounded-lg transition-all ${
-                appearance.theme === "light"
-                  ? "border-blue-600 bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300"
+                theme === "light"
+                  ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
+                  : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
               }`}
             >
               <div className="flex flex-col items-center gap-2">
                 <div className="w-12 h-12 bg-white border border-gray-300 rounded-lg flex items-center justify-center">
                   <Sun className="w-6 h-6 text-gray-700" />
                 </div>
-                <span className="font-medium text-gray-900">{t.settings.appearance.themeLight}</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">{t.settings.appearance.themeLight}</span>
               </div>
             </button>
 
             <button
-              onClick={() => setAppearance({ ...appearance, theme: "dark" })}
+              onClick={() => setTheme("dark")}
               className={`p-4 border-2 rounded-lg transition-all ${
-                appearance.theme === "dark"
-                  ? "border-blue-600 bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300"
+                theme === "dark"
+                  ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
+                  : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
               }`}
             >
               <div className="flex flex-col items-center gap-2">
                 <div className="w-12 h-12 bg-gray-900 border border-gray-700 rounded-lg flex items-center justify-center">
                   <Moon className="w-6 h-6 text-white" />
                 </div>
-                <span className="font-medium text-gray-900">{t.settings.appearance.themeDark}</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">{t.settings.appearance.themeDark}</span>
               </div>
             </button>
 
             <button
-              onClick={() => setAppearance({ ...appearance, theme: "auto" })}
+              onClick={() => setTheme("auto")}
               className={`p-4 border-2 rounded-lg transition-all ${
-                appearance.theme === "auto"
-                  ? "border-blue-600 bg-blue-50"
-                  : "border-gray-200 hover:border-gray-300"
+                theme === "auto"
+                  ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
+                  : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
               }`}
             >
               <div className="flex flex-col items-center gap-2">
                 <div className="w-12 h-12 bg-gradient-to-br from-white to-gray-900 border border-gray-300 rounded-lg flex items-center justify-center">
                   <Monitor className="w-6 h-6 text-gray-700" />
                 </div>
-                <span className="font-medium text-gray-900">{t.settings.appearance.themeAuto}</span>
+                <span className="font-medium text-gray-900 dark:text-gray-100">{t.settings.appearance.themeAuto}</span>
               </div>
             </button>
           </div>
         </div>
 
         {/* Color Scheme */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.appearance.colorScheme}</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">{t.settings.appearance.colorScheme}</h2>
           <div className="grid grid-cols-6 gap-3">
             {colorSchemes.map((scheme) => (
               <button
                 key={scheme.id}
-                onClick={() => setAppearance({ ...appearance, colorScheme: scheme.id })}
+                onClick={() => setColorScheme(scheme.id as any)}
                 className={`p-3 border-2 rounded-lg transition-all ${
-                  appearance.colorScheme === scheme.id
-                    ? "border-gray-900"
-                    : "border-gray-200 hover:border-gray-300"
+                  colorScheme === scheme.id
+                    ? "border-gray-900 dark:border-gray-100"
+                    : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                 }`}
               >
                 <div className="flex flex-col items-center gap-2">
                   <div className={`w-8 h-8 ${scheme.color} rounded-full`}></div>
-                  <span className="text-xs font-medium text-gray-900">{scheme.name}</span>
+                  <span className="text-xs font-medium text-gray-900 dark:text-gray-100">{scheme.name}</span>
                 </div>
               </button>
             ))}
@@ -124,21 +142,21 @@ export default function AppearanceSettings() {
         </div>
 
         {/* Language */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.appearance.language}</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">{t.settings.appearance.language}</h2>
           <div className="grid grid-cols-2 gap-4">
             <button
               onClick={() => updateLocaleMutation.mutate("en")}
               disabled={updateLocaleMutation.isPending}
               className={`p-4 border-2 rounded-lg transition-all disabled:opacity-50 ${
-                locale === "en" ? "border-blue-600 bg-blue-50" : "border-gray-200 hover:border-gray-300"
+                locale === "en" ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
               }`}
             >
               <div className="flex items-center gap-3">
                 <div className="text-2xl">🇬🇧</div>
                 <div className="text-left">
-                  <p className="font-medium text-gray-900">{t.settings.appearance.languageEn}</p>
-                  <p className="text-sm text-gray-500">{t.settings.appearance.languageEnDesc}</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">{t.settings.appearance.languageEn}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{t.settings.appearance.languageEnDesc}</p>
                 </div>
               </div>
             </button>
@@ -147,14 +165,14 @@ export default function AppearanceSettings() {
               onClick={() => updateLocaleMutation.mutate("ar")}
               disabled={updateLocaleMutation.isPending}
               className={`p-4 border-2 rounded-lg transition-all disabled:opacity-50 ${
-                locale === "ar" ? "border-blue-600 bg-blue-50" : "border-gray-200 hover:border-gray-300"
+                locale === "ar" ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20" : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
               }`}
             >
               <div className="flex items-center gap-3">
                 <div className="text-2xl">🇸🇦</div>
                 <div className="text-left">
-                  <p className="font-medium text-gray-900">{t.settings.appearance.languageAr}</p>
-                  <p className="text-sm text-gray-500">{t.settings.appearance.languageArDesc}</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">{t.settings.appearance.languageAr}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{t.settings.appearance.languageArDesc}</p>
                 </div>
               </div>
             </button>
@@ -162,8 +180,8 @@ export default function AppearanceSettings() {
         </div>
 
         {/* Font Size */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.appearance.fontSize}</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">{t.settings.appearance.fontSize}</h2>
           <div className="grid grid-cols-3 gap-4">
             <button
               onClick={() => setAppearance({ ...appearance, fontSize: "small" })}
@@ -210,8 +228,8 @@ export default function AppearanceSettings() {
         </div>
 
         {/* Display Density */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.appearance.displayDensity}</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">{t.settings.appearance.displayDensity}</h2>
           <div className="grid grid-cols-3 gap-4">
             <button
               onClick={() => setAppearance({ ...appearance, density: "compact" })}
@@ -261,15 +279,15 @@ export default function AppearanceSettings() {
         </div>
 
         {/* Accessibility */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.appearance.accessibility}</h2>
+        <div className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">{t.settings.appearance.accessibility}</h2>
           <div className="space-y-4">
             <div className="flex items-center justify-between py-3 border-b border-gray-100">
               <div className="flex items-center gap-3">
                 <Eye className="w-5 h-5 text-gray-500" />
                 <div>
-                  <p className="font-medium text-gray-900">{t.settings.appearance.enableAnimations}</p>
-                  <p className="text-sm text-gray-500">{t.settings.appearance.enableAnimationsDesc}</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">{t.settings.appearance.enableAnimations}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{t.settings.appearance.enableAnimationsDesc}</p>
                 </div>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -287,8 +305,8 @@ export default function AppearanceSettings() {
               <div className="flex items-center gap-3">
                 <Eye className="w-5 h-5 text-gray-500" />
                 <div>
-                  <p className="font-medium text-gray-900">{t.settings.appearance.reduceMotion}</p>
-                  <p className="text-sm text-gray-500">{t.settings.appearance.reduceMotionDesc}</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100">{t.settings.appearance.reduceMotion}</p>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">{t.settings.appearance.reduceMotionDesc}</p>
                 </div>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
@@ -303,19 +321,8 @@ export default function AppearanceSettings() {
             </div>
           </div>
         </div>
-
-        {/* Save Button */}
-        <div className="flex justify-end">
-          <button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-          >
-            <Save className="w-4 h-4" />
-            {isSaving ? t.settings.appearance.saving : t.settings.appearance.saveChanges}
-          </button>
-        </div>
       </motion.div>
       <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
-      </div>  );
+    </div>
+  );
 }

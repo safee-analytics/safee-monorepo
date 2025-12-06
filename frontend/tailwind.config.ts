@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: 'class', // Enable dark mode with class strategy
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -40,6 +41,36 @@ const config: Config = {
           500: "#ef4444",
           600: "#dc2626",
         },
+        // Semantic color tokens for theming
+        background: {
+          DEFAULT: "rgb(255 255 255)", // white in light mode
+          secondary: "rgb(249 250 251)", // gray-50 in light mode
+          tertiary: "rgb(243 244 246)", // gray-100 in light mode
+        },
+        foreground: {
+          DEFAULT: "rgb(17 24 39)", // gray-900 in light mode
+          secondary: "rgb(75 85 99)", // gray-600 in light mode
+          tertiary: "rgb(156 163 175)", // gray-400 in light mode
+        },
+        border: {
+          DEFAULT: "rgb(229 231 235)", // gray-200 in light mode
+          secondary: "rgb(209 213 219)", // gray-300 in light mode
+        },
+      },
+      // Dark mode overrides using CSS variables
+      backgroundColor: {
+        'bg-primary': 'var(--bg-primary)',
+        'bg-secondary': 'var(--bg-secondary)',
+        'bg-tertiary': 'var(--bg-tertiary)',
+      },
+      textColor: {
+        'text-primary': 'var(--text-primary)',
+        'text-secondary': 'var(--text-secondary)',
+        'text-tertiary': 'var(--text-tertiary)',
+      },
+      borderColor: {
+        'border-primary': 'var(--border-primary)',
+        'border-secondary': 'var(--border-secondary)',
       },
     },
   },
