@@ -517,6 +517,8 @@ export const settingsEn = {
       reduceMotionDesc: "Minimize animations for better accessibility",
       saveChanges: "Save Changes",
       saving: "Saving...",
+      saveSuccess: "Appearance settings saved successfully!",
+      saveError: "Failed to save appearance settings. Please try again.",
     },
     organization: {
       title: "Organization Settings",

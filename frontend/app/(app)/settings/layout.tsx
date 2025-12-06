@@ -163,11 +163,11 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex">
       {/* Sidebar - Sticky */}
-      <aside className="w-64 bg-white border-r border-gray-200 h-screen sticky top-0 overflow-y-auto">
+      <aside className="w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 h-screen sticky top-0 overflow-y-auto">
         <div className="p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">{t.common.settings}</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">{t.common.settings}</h2>
           <nav className="space-y-6">
             {(Object.keys(groupedLinks) as Array<keyof typeof groupedLinks>).map((category) => {
               const links = groupedLinks[category];
@@ -175,7 +175,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
 
               return (
                 <div key={category}>
-                  <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2 px-4">
+                  <h3 className="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wide mb-2 px-4">
                     {categoryLabels[category]}
                   </h3>
                   <div className="space-y-1">
@@ -187,8 +187,8 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                             whileHover={{ x: 4 }}
                             className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                               isActive(link.href)
-                                ? "bg-blue-50 text-blue-700 font-medium"
-                                : "text-gray-700 hover:bg-gray-50"
+                                ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-medium"
+                                : "text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700"
                             }`}
                           >
                             <Icon className="w-5 h-5" />
