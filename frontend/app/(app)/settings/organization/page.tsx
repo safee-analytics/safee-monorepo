@@ -247,9 +247,7 @@ export default function OrganizationSettingsPage() {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.settings.organization.title}</h1>
-          <p className="text-gray-600">
-            {t.settings.organization.subtitle}
-          </p>
+          <p className="text-gray-600">{t.settings.organization.subtitle}</p>
         </div>
 
         {/* Logo Upload */}
@@ -269,10 +267,10 @@ export default function OrganizationSettingsPage() {
               </div>
             </div>
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.settings.organization.logo.title}</h3>
-              <p className="text-sm text-gray-600 mb-4">
-                {t.settings.organization.logo.subtitle}
-              </p>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                {t.settings.organization.logo.title}
+              </h3>
+              <p className="text-sm text-gray-600 mb-4">{t.settings.organization.logo.subtitle}</p>
               <div className="flex gap-3">
                 <label className="cursor-pointer">
                   <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
@@ -293,9 +291,7 @@ export default function OrganizationSettingsPage() {
                   </button>
                 )}
               </div>
-              <p className="text-xs text-gray-500 mt-2">
-                {t.settings.organization.logo.recommended}
-              </p>
+              <p className="text-xs text-gray-500 mt-2">{t.settings.organization.logo.recommended}</p>
             </div>
           </div>
         </div>
@@ -305,10 +301,10 @@ export default function OrganizationSettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <Building2 className="w-6 h-6 text-blue-600" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">{t.settings.organization.companyInfo.title}</h2>
-              <p className="text-sm text-gray-600">
-                {t.settings.organization.companyInfo.subtitle}
-              </p>
+              <h2 className="text-xl font-semibold text-gray-900">
+                {t.settings.organization.companyInfo.title}
+              </h2>
+              <p className="text-sm text-gray-600">{t.settings.organization.companyInfo.subtitle}</p>
             </div>
           </div>
           <div className="space-y-0">
@@ -363,7 +359,9 @@ export default function OrganizationSettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <FileText className="w-6 h-6 text-blue-600" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">{t.settings.organization.legalInfo.title}</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                {t.settings.organization.legalInfo.title}
+              </h2>
               <p className="text-sm text-gray-600">{t.settings.organization.legalInfo.subtitle}</p>
             </div>
           </div>
@@ -411,7 +409,9 @@ export default function OrganizationSettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <Users className="w-6 h-6 text-blue-600" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">{t.settings.organization.customerContact.title}</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                {t.settings.organization.customerContact.title}
+              </h2>
               <p className="text-sm text-gray-600">{t.settings.organization.customerContact.subtitle}</p>
             </div>
           </div>
@@ -438,13 +438,17 @@ export default function OrganizationSettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <Settings className="w-6 h-6 text-blue-600" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">{t.settings.organization.preferences.title}</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                {t.settings.organization.preferences.title}
+              </h2>
               <p className="text-sm text-gray-600">{t.settings.organization.preferences.subtitle}</p>
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.organization.preferences.language}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t.settings.organization.preferences.language}
+              </label>
               <select
                 value={settings.language}
                 onChange={(e) => setSettings({ ...settings, language: e.target.value })}
@@ -455,7 +459,9 @@ export default function OrganizationSettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.organization.preferences.currency}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t.settings.organization.preferences.currency}
+              </label>
               <select
                 value={settings.currency}
                 onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
@@ -483,7 +489,9 @@ export default function OrganizationSettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.organization.preferences.dateFormat}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t.settings.organization.preferences.dateFormat}
+              </label>
               <select
                 value={settings.dateFormat}
                 onChange={(e) => setSettings({ ...settings, dateFormat: e.target.value })}
@@ -495,7 +503,9 @@ export default function OrganizationSettingsPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.organization.preferences.fiscalYearStart}</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t.settings.organization.preferences.fiscalYearStart}
+              </label>
               <select
                 value={settings.fiscalYearStart}
                 onChange={(e) => setSettings({ ...settings, fiscalYearStart: e.target.value })}
@@ -529,7 +539,9 @@ export default function OrganizationSettingsPage() {
           <div className="flex items-center gap-3 mb-6">
             <AlertTriangle className="w-6 h-6 text-red-600" />
             <div>
-              <h2 className="text-xl font-semibold text-gray-900">{t.settings.organization.dangerZone.title}</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                {t.settings.organization.dangerZone.title}
+              </h2>
               <p className="text-sm text-gray-600">{t.settings.organization.dangerZone.subtitle}</p>
             </div>
           </div>
@@ -541,8 +553,12 @@ export default function OrganizationSettingsPage() {
               <div className="flex items-center gap-3">
                 <ArrowRightLeft className="w-5 h-5 text-gray-600" />
                 <div className="text-left">
-                  <p className="font-medium text-gray-900">{t.settings.organization.dangerZone.transferOwnership}</p>
-                  <p className="text-sm text-gray-600">{t.settings.organization.dangerZone.transferOwnershipDesc}</p>
+                  <p className="font-medium text-gray-900">
+                    {t.settings.organization.dangerZone.transferOwnership}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    {t.settings.organization.dangerZone.transferOwnershipDesc}
+                  </p>
                 </div>
               </div>
             </button>
@@ -553,7 +569,9 @@ export default function OrganizationSettingsPage() {
               <div className="flex items-center gap-3">
                 <Trash2 className="w-5 h-5 text-red-600" />
                 <div className="text-left">
-                  <p className="font-medium text-red-900">{t.settings.organization.dangerZone.deleteOrganization}</p>
+                  <p className="font-medium text-red-900">
+                    {t.settings.organization.dangerZone.deleteOrganization}
+                  </p>
                   <p className="text-sm text-red-600">
                     {t.settings.organization.dangerZone.deleteOrganizationDesc}
                   </p>
@@ -575,13 +593,20 @@ export default function OrganizationSettingsPage() {
               >
                 <div className="flex items-center gap-3 mb-4">
                   <ArrowRightLeft className="w-6 h-6 text-blue-600" />
-                  <h3 className="text-xl font-semibold text-gray-900">{t.settings.organization.transferModal.title}</h3>
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    {t.settings.organization.transferModal.title}
+                  </h3>
                 </div>
                 <p className="text-gray-600 mb-6">
-                  {t.settings.organization.transferModal.description.replace("{orgName}", organization?.name || "")}
+                  {t.settings.organization.transferModal.description.replace(
+                    "{orgName}",
+                    organization?.name || "",
+                  )}
                 </p>
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.organization.transferModal.selectLabel}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {t.settings.organization.transferModal.selectLabel}
+                  </label>
                   <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     <option value="">{t.settings.organization.transferModal.selectPlaceholder}</option>
                     {/* Members would be populated here */}
@@ -615,11 +640,17 @@ export default function OrganizationSettingsPage() {
               >
                 <div className="flex items-center gap-3 mb-4">
                   <AlertTriangle className="w-6 h-6 text-red-600" />
-                  <h3 className="text-xl font-semibold text-gray-900">{t.settings.organization.deleteModal.title}</h3>
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    {t.settings.organization.deleteModal.title}
+                  </h3>
                 </div>
                 <div className="mb-6">
                   <p className="text-gray-600 mb-4">
-                    This action <span className="font-bold text-red-600">{t.settings.organization.deleteModal.cannotUndo}</span>. {t.settings.organization.deleteModal.willDelete}
+                    This action{" "}
+                    <span className="font-bold text-red-600">
+                      {t.settings.organization.deleteModal.cannotUndo}
+                    </span>
+                    . {t.settings.organization.deleteModal.willDelete}
                   </p>
                   <ul className="list-disc list-inside space-y-2 text-sm text-gray-700 mb-4">
                     <li>{t.settings.organization.deleteModal.dataItem1}</li>
@@ -628,7 +659,10 @@ export default function OrganizationSettingsPage() {
                     <li>{t.settings.organization.deleteModal.dataItem4}</li>
                   </ul>
                   <p className="text-sm text-gray-600 mb-4">
-                    {t.settings.organization.deleteModal.confirmPrompt.replace("{orgName}", organization?.name || "")}
+                    {t.settings.organization.deleteModal.confirmPrompt.replace(
+                      "{orgName}",
+                      organization?.name || "",
+                    )}
                   </p>
                   <input
                     type="text"
@@ -655,7 +689,9 @@ export default function OrganizationSettingsPage() {
                     }
                     className="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {deleteOrganizationMutation.isPending ? t.settings.organization.deleteModal.deleting : t.settings.organization.deleteModal.confirm}
+                    {deleteOrganizationMutation.isPending
+                      ? t.settings.organization.deleteModal.deleting
+                      : t.settings.organization.deleteModal.confirm}
                   </button>
                 </div>
               </motion.div>

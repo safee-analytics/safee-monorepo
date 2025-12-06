@@ -138,7 +138,9 @@ export default function AuditLogsPage() {
                   className="px-4 py-2 bg-blue-600 text-white rounded-l-lg hover:bg-blue-700 flex items-center gap-2 disabled:opacity-50"
                 >
                   <Download className="w-4 h-4" />
-                  {exportAuditLogsMutation.isPending ? t.settings.auditLogs.buttons.exporting : t.settings.auditLogs.buttons.exportJSON}
+                  {exportAuditLogsMutation.isPending
+                    ? t.settings.auditLogs.buttons.exporting
+                    : t.settings.auditLogs.buttons.exportJSON}
                 </button>
                 <button
                   onClick={() => handleExport("csv")}
@@ -159,7 +161,9 @@ export default function AuditLogsPage() {
               className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
             >
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.auditLogs.filters.actionType}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t.settings.auditLogs.filters.actionType}
+                </label>
                 <select
                   value={filters.action || ""}
                   onChange={(e) => handleFilterChange("action", e.target.value || undefined)}
@@ -168,14 +172,20 @@ export default function AuditLogsPage() {
                   <option value="">{t.settings.auditLogs.filters.allActions}</option>
                   {actionTypes.map((type) => (
                     <option key={type} value={type}>
-                      {t.settings.auditLogs.actionTypes[type as keyof typeof t.settings.auditLogs.actionTypes]}
+                      {
+                        t.settings.auditLogs.actionTypes[
+                          type as keyof typeof t.settings.auditLogs.actionTypes
+                        ]
+                      }
                     </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.auditLogs.filters.entityType}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t.settings.auditLogs.filters.entityType}
+                </label>
                 <select
                   value={filters.entityType || ""}
                   onChange={(e) => handleFilterChange("entityType", e.target.value || undefined)}
@@ -184,14 +194,20 @@ export default function AuditLogsPage() {
                   <option value="">{t.settings.auditLogs.filters.allEntities}</option>
                   {entityTypes.map((type) => (
                     <option key={type} value={type}>
-                      {t.settings.auditLogs.entityTypes[type as keyof typeof t.settings.auditLogs.entityTypes]}
+                      {
+                        t.settings.auditLogs.entityTypes[
+                          type as keyof typeof t.settings.auditLogs.entityTypes
+                        ]
+                      }
                     </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.auditLogs.filters.startDate}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t.settings.auditLogs.filters.startDate}
+                </label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
@@ -203,7 +219,9 @@ export default function AuditLogsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.auditLogs.filters.endDate}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t.settings.auditLogs.filters.endDate}
+                </label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
@@ -256,8 +274,12 @@ export default function AuditLogsPage() {
                         {new Date(log.createdAt).toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{log.user?.name || t.settings.auditLogs.table.unknown}</div>
-                        <div className="text-xs text-gray-500">{log.userId || t.settings.auditLogs.table.empty}</div>
+                        <div className="text-sm font-medium text-gray-900">
+                          {log.user?.name || t.settings.auditLogs.table.unknown}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {log.userId || t.settings.auditLogs.table.empty}
+                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
@@ -273,7 +295,9 @@ export default function AuditLogsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{log.entityType || t.settings.auditLogs.table.empty}</div>
+                        <div className="text-sm text-gray-900">
+                          {log.entityType || t.settings.auditLogs.table.empty}
+                        </div>
                         <div className="text-xs text-gray-500">{log.entityId}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -295,7 +319,9 @@ export default function AuditLogsPage() {
           {filteredLogs && filteredLogs.length > 0 && (
             <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
               <div className="text-sm text-gray-700">
-                {t.settings.auditLogs.pagination.showing} <span className="font-medium">{(filters.offset || 0) + 1}</span> {t.settings.auditLogs.pagination.to}{" "}
+                {t.settings.auditLogs.pagination.showing}{" "}
+                <span className="font-medium">{(filters.offset || 0) + 1}</span>{" "}
+                {t.settings.auditLogs.pagination.to}{" "}
                 <span className="font-medium">
                   {Math.min(
                     (filters.offset || 0) + (filters.limit || 50),

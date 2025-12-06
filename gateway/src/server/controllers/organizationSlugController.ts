@@ -1,7 +1,6 @@
 import { Get, Query, Route, Security, Tags } from "tsoa";
 import { Controller } from "@tsoa/runtime";
 import { connect } from "@safee/database";
-import { like, or, eq } from "drizzle-orm";
 
 const { drizzle } = connect("slug-controller");
 
@@ -24,10 +23,7 @@ export class OrganizationSlugController extends Controller {
     // Query for all slugs that match the pattern: baseSlug or baseSlug-*
     const orgs = await drizzle.query.organizations.findMany({
       where: (organizations, { or, eq, like }) =>
-        or(
-          eq(organizations.slug, baseSlug),
-          like(organizations.slug, `${baseSlug}-%`)
-        ),
+        or(eq(organizations.slug, baseSlug), like(organizations.slug, `${baseSlug}-%`)),
       columns: {
         slug: true,
       },
@@ -44,7 +40,9 @@ export class OrganizationSlugController extends Controller {
       .map((org) => {
         if (org.slug === baseSlug) return 1;
 
-        const match = org.slug.match(new RegExp(`^${baseSlug.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}-(\\d+)$`));
+        const match = org.slug.match(
+          new RegExp(`^${baseSlug.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}-(\\d+)$`),
+        );
         return match ? parseInt(match[1], 10) : 0;
       })
       .filter((n) => n > 0);

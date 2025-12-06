@@ -7,11 +7,7 @@
 
 import type { FileMetadata, UploadProgress } from "./storageService";
 import { useEncryptionStore } from "@/stores/useEncryptionStore";
-import type {
-  ResponseMessage,
-  EncryptMessage,
-  DecryptMessage,
-} from "@/lib/crypto/encryptionWorker";
+import type { ResponseMessage, EncryptMessage, DecryptMessage } from "@/lib/crypto/encryptionWorker";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -217,9 +213,7 @@ class EncryptedStorageService {
 
     // Fetch encryption metadata
     onProgress?.({ stage: "fetching-metadata", percentage: 0 });
-    const metadataResponse = await fetch(
-      `${API_BASE}/api/v1/storage/files/${fileId}/encryption-metadata`,
-    );
+    const metadataResponse = await fetch(`${API_BASE}/api/v1/storage/files/${fileId}/encryption-metadata`);
 
     if (!metadataResponse.ok) {
       throw new Error("Failed to fetch encryption metadata");
@@ -257,7 +251,7 @@ class EncryptedStorageService {
         const response = event.data;
 
         if (response.type === "progress") {
-          const percentage = 50 + (response.progress / 2); // 50-100%
+          const percentage = 50 + response.progress / 2; // 50-100%
           onProgress?.({ stage: "decrypting", percentage });
         } else if (response.type === "complete") {
           resolve(response.result);
@@ -292,9 +286,7 @@ class EncryptedStorageService {
    */
   async isFileEncrypted(fileId: string): Promise<boolean> {
     try {
-      const response = await fetch(
-        `${API_BASE}/api/v1/storage/files/${fileId}/encryption-metadata`,
-      );
+      const response = await fetch(`${API_BASE}/api/v1/storage/files/${fileId}/encryption-metadata`);
       return response.ok;
     } catch {
       return false;

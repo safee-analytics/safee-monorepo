@@ -83,15 +83,15 @@ export default function StorageSettings() {
         >
           {/* Header */}
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              {t.settings.storage.title}
-            </h1>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">{t.settings.storage.title}</h1>
             <p className="text-gray-600">{t.settings.storage.subtitle}</p>
           </div>
 
           {/* Storage Mode Selection */}
           <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.storage.storageType.title}</h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">
+              {t.settings.storage.storageType.title}
+            </h2>
             <div className="grid grid-cols-2 gap-4">
               <button
                 onClick={() => setStorageMode("managed")}
@@ -111,9 +111,7 @@ export default function StorageSettings() {
                     {t.settings.storage.storageType.managed}
                   </h3>
                 </div>
-                <p className="text-sm text-gray-600">
-                  {t.settings.storage.storageType.managedDesc}
-                </p>
+                <p className="text-sm text-gray-600">{t.settings.storage.storageType.managedDesc}</p>
               </button>
 
               <button
@@ -194,7 +192,9 @@ export default function StorageSettings() {
               <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
                 <div className="flex items-center gap-3 mb-6">
                   <Server className="w-6 h-6 text-blue-600" />
-                  <h2 className="text-lg font-semibold text-gray-900">{t.settings.storage.connection.title}</h2>
+                  <h2 className="text-lg font-semibold text-gray-900">
+                    {t.settings.storage.connection.title}
+                  </h2>
                 </div>
 
                 {configLoading ? (
@@ -205,7 +205,9 @@ export default function StorageSettings() {
                   <>
                     {/* Connection Type */}
                     <div className="mb-6">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.storage.connection.typeLabel}</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {t.settings.storage.connection.typeLabel}
+                      </label>
                       <div className="grid grid-cols-4 gap-3">
                         {(["smb", "nfs", "webdav", "local"] as const).map((type) => (
                           <button
@@ -247,7 +249,9 @@ export default function StorageSettings() {
 
                         {/* Port */}
                         <div className="mb-4">
-                          <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.storage.connection.port}</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            {t.settings.storage.connection.port}
+                          </label>
                           <input
                             type="number"
                             value={config.port}
@@ -275,7 +279,9 @@ export default function StorageSettings() {
 
                         {/* Username */}
                         <div className="mb-4">
-                          <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.storage.connection.username}</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            {t.settings.storage.connection.username}
+                          </label>
                           <input
                             type="text"
                             value={config.username}
@@ -287,7 +293,9 @@ export default function StorageSettings() {
 
                         {/* Password */}
                         <div className="mb-4">
-                          <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.storage.connection.password}</label>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            {t.settings.storage.connection.password}
+                          </label>
                           <input
                             type="password"
                             value={config.password}
@@ -345,7 +353,9 @@ export default function StorageSettings() {
                             <>
                               <AlertCircle className="w-5 h-5 text-red-600" />
                               <div>
-                                <div className="text-red-800 font-medium">{t.settings.storage.status.failed}</div>
+                                <div className="text-red-800 font-medium">
+                                  {t.settings.storage.status.failed}
+                                </div>
                                 <div className="text-red-600 text-sm">{errorMessage}</div>
                               </div>
                             </>
@@ -362,7 +372,9 @@ export default function StorageSettings() {
                         className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
                       >
                         <TestTube className="w-4 h-4" />
-                        {testConnection.isPending ? t.settings.storage.actions.testing : t.settings.storage.actions.testConnection}
+                        {testConnection.isPending
+                          ? t.settings.storage.actions.testing
+                          : t.settings.storage.actions.testConnection}
                       </button>
                       <button
                         onClick={handleSave}
@@ -370,7 +382,9 @@ export default function StorageSettings() {
                         className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
                       >
                         <Save className="w-4 h-4" />
-                        {updateConfig.isPending ? t.settings.storage.actions.saving : t.settings.storage.actions.saveChanges}
+                        {updateConfig.isPending
+                          ? t.settings.storage.actions.saving
+                          : t.settings.storage.actions.saveChanges}
                       </button>
                     </div>
                   </>

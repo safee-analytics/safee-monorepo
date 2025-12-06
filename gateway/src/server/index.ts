@@ -8,14 +8,6 @@ import { pinoHttp } from "pino-http";
 import type { Logger } from "pino";
 import { ValidateError } from "tsoa";
 
-interface SwaggerRequest {
-  url: string;
-  method: string;
-  headers: Record<string, string>;
-  credentials?: RequestCredentials;
-  body?: unknown;
-}
-
 import type { RedisClient, DrizzleClient, Storage, PubSub, JobScheduler } from "@safee/database";
 import { SessionStore } from "./SessionStore.js";
 import { RegisterRoutes } from "./routes.js";
@@ -170,10 +162,6 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
     swaggerOptions: {
       persistAuthorization: true,
       withCredentials: true,
-      requestInterceptor: (req: SwaggerRequest): SwaggerRequest => {
-        req.credentials = "include";
-        return req;
-      },
     },
   };
 

@@ -24,7 +24,8 @@ export const settingsEn = {
       createButton: "Create API Key",
       warning: {
         title: "Keep your API keys secure",
-        message: "Never share your API keys publicly or commit them to version control. Anyone with your API key can access your data.",
+        message:
+          "Never share your API keys publicly or commit them to version control. Anyone with your API key can access your data.",
       },
       list: {
         active: "Active",
@@ -205,7 +206,8 @@ export const settingsEn = {
       },
       custom: {
         title: "Need a custom integration?",
-        message: "We can build custom integrations for your specific needs. Contact our team to discuss your requirements.",
+        message:
+          "We can build custom integrations for your specific needs. Contact our team to discuss your requirements.",
         button: "Contact Sales",
       },
       webhooks: {
@@ -288,7 +290,8 @@ export const settingsEn = {
         subtitle: "Add an extra layer of security to your account",
         enable: "Enable",
         disable: "Disable",
-        enabled: "Two-factor authentication is enabled. You'll need to enter a code from your authenticator app when signing in.",
+        enabled:
+          "Two-factor authentication is enabled. You'll need to enter a code from your authenticator app when signing in.",
         recoveryCodes: "View Recovery Codes",
       },
       preferences: {
@@ -399,12 +402,14 @@ export const settingsEn = {
         twoFactor: {
           title: "Two-Factor Authentication",
           enabled: "2FA is enabled on your account",
-          enabledNote: "Your account is protected with two-factor authentication. You can disable it below if needed.",
+          enabledNote:
+            "Your account is protected with two-factor authentication. You can disable it below if needed.",
           confirmPasswordLabel: "Confirm Password to Disable 2FA",
           confirmPasswordPlaceholder: "Enter your password",
           disableButton: "Disable 2FA",
           disabling: "Disabling...",
-          notEnabled: "Add an extra layer of security to your account by enabling two-factor authentication. You'll need to enter a code from your authenticator app when signing in.",
+          notEnabled:
+            "Add an extra layer of security to your account by enabling two-factor authentication. You'll need to enter a code from your authenticator app when signing in.",
           enableButton: "Enable Two-Factor Authentication",
         },
         phoneNumber: {
@@ -523,7 +528,8 @@ export const settingsEn = {
       subtitle: "Manage your organization's information and settings",
       logo: {
         title: "Organization Logo",
-        subtitle: "Upload your organization logo. This will appear on invoices, reports, and other documents.",
+        subtitle:
+          "Upload your organization logo. This will appear on invoices, reports, and other documents.",
         uploadButton: "Upload Logo",
         recommended: "Recommended: Square image, at least 256x256px, PNG or JPG format",
       },
@@ -574,7 +580,8 @@ export const settingsEn = {
       },
       transferModal: {
         title: "Transfer Ownership",
-        description: "Transfer ownership of {orgName} to another member. You will lose all administrative privileges.",
+        description:
+          "Transfer ownership of {orgName} to another member. You will lose all administrative privileges.",
         selectLabel: "Select New Owner",
         selectPlaceholder: "Select a member...",
         cancel: "Cancel",
@@ -760,7 +767,8 @@ export const settingsEn = {
       subtitle: "Configure document storage, encryption, and management options",
       encryption: {
         title: "Document Encryption",
-        subtitle: "Enable zero-knowledge end-to-end encryption for sensitive documents. This is a critical security feature with important trade-offs.",
+        subtitle:
+          "Enable zero-knowledge end-to-end encryption for sensitive documents. This is a critical security feature with important trade-offs.",
         setupButton: "Setup Encryption",
         enabled: "Encryption is enabled",
         warning: {
@@ -783,23 +791,31 @@ export const settingsEn = {
           cancel: "Cancel",
           terms: {
             critical: "Critical: Read Before Proceeding",
-            permanentDecision: "Enabling encryption is a permanent and irreversible decision that fundamentally changes how your documents are stored and accessed. If you lose your encryption password, your data cannot be recovered by anyone, including Safee Analytics support.",
+            permanentDecision:
+              "Enabling encryption is a permanent and irreversible decision that fundamentally changes how your documents are stored and accessed. If you lose your encryption password, your data cannot be recovered by anyone, including Safee Analytics support.",
             limitations: "Limitations of Encrypted Documents",
             noServerSearch: "No Server-Side Search",
-            noServerSearchDesc: "Encrypted documents cannot be searched from the server. Search will only work on documents you've decrypted locally.",
+            noServerSearchDesc:
+              "Encrypted documents cannot be searched from the server. Search will only work on documents you've decrypted locally.",
             noServerProcessing: "No Server-Side Processing",
-            noServerProcessingDesc: "Features like spell-check, OCR, automatic categorization, and content analysis cannot be performed on encrypted documents.",
+            noServerProcessingDesc:
+              "Features like spell-check, OCR, automatic categorization, and content analysis cannot be performed on encrypted documents.",
             passwordRequired: "Password Required on Every Login",
-            passwordRequiredDesc: "You must enter your encryption password every time you log in to access encrypted documents.",
+            passwordRequiredDesc:
+              "You must enter your encryption password every time you log in to access encrypted documents.",
             performanceImpact: "Performance Impact",
-            performanceImpactDesc: "Encryption/decryption happens in your browser, which may slow down uploads and downloads of large files.",
-            acceptLoseData: "I have read and understand that if I lose my encryption password and recovery phrase, my data cannot be recovered by anyone, including Safee Analytics support staff.",
-            acceptLimitations: "I understand the limitations listed above, including that encrypted documents cannot be searched or processed by the server.",
+            performanceImpactDesc:
+              "Encryption/decryption happens in your browser, which may slow down uploads and downloads of large files.",
+            acceptLoseData:
+              "I have read and understand that if I lose my encryption password and recovery phrase, my data cannot be recovered by anyone, including Safee Analytics support staff.",
+            acceptLimitations:
+              "I understand the limitations listed above, including that encrypted documents cannot be searched or processed by the server.",
             acceptButton: "I Accept - Continue",
           },
           auth: {
             title: "Verify Your Identity",
-            subtitle: "To proceed with this critical security change, please authenticate with your current account password.",
+            subtitle:
+              "To proceed with this critical security change, please authenticate with your current account password.",
             currentPassword: "Current Account Password",
             currentPasswordPlaceholder: "Enter your current password",
             confirmationType: "Type the following to confirm",
@@ -811,7 +827,8 @@ export const settingsEn = {
           },
           password: {
             title: "Create Encryption Password",
-            subtitle: "This password will encrypt all your organization's sensitive documents. Choose a strong password you'll remember. This is different from your account password.",
+            subtitle:
+              "This password will encrypt all your organization's sensitive documents. Choose a strong password you'll remember. This is different from your account password.",
             encryptionPassword: "Encryption Password",
             encryptionPasswordPlaceholder: "Enter a strong encryption password",
             confirmPassword: "Confirm Encryption Password",
@@ -822,16 +839,18 @@ export const settingsEn = {
           },
           recovery: {
             title: "Save Your Recovery Phrase",
-            subtitle: "This 12-word recovery phrase is the only way to recover your data if you forget your password. Write it down and store it securely.",
+            subtitle:
+              "This 12-word recovery phrase is the only way to recover your data if you forget your password. Write it down and store it securely.",
             important: "Important: Keep this safe!",
             copy: "Copy",
             copied: "Copied!",
             download: "Download",
-            confirmSaved: "I have saved my recovery phrase in a secure location and understand that it cannot be recovered if lost.",
+            confirmSaved:
+              "I have saved my recovery phrase in a secure location and understand that it cannot be recovered if lost.",
           },
           confirm: {
             title: "Ready to Enable Encryption",
-            subtitle: "Review the summary below and click \"Enable Encryption\" to finalize the setup.",
+            subtitle: 'Review the summary below and click "Enable Encryption" to finalize the setup.',
             whatHappens: "What will happen:",
             newFilesEncrypted: "All new file uploads will be automatically encrypted",
             unlockRequired: "You'll need to unlock encryption when you log in",
@@ -845,7 +864,8 @@ export const settingsEn = {
             subtitle: "Your organization's documents are now protected with zero-knowledge encryption.",
             reminders: "Important reminders:",
             sharePassword: "Share your encryption password securely with team members who need access",
-            keepRecovery: "Keep your recovery phrase in a safe place - you'll need it if you forget your password",
+            keepRecovery:
+              "Keep your recovery phrase in a safe place - you'll need it if you forget your password",
             unlockPrompt: "You'll be prompted to unlock encryption when you log in",
             doneButton: "Done",
           },
@@ -938,7 +958,8 @@ export const settingsEn = {
         subjectLine: "Subject Line",
         subjectPlaceholder: "Invoice #{{invoice_number}} from {{company_name}}",
         emailMessage: "Email Message",
-        messagePlaceholder: "Hi {{customer_name}},\n\nPlease find attached invoice #{{invoice_number}}.\n\nThank you!",
+        messagePlaceholder:
+          "Hi {{customer_name}},\n\nPlease find attached invoice #{{invoice_number}}.\n\nThank you!",
       },
       preview: {
         dateHeader: "DATE",

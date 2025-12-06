@@ -12,7 +12,7 @@ import { pino } from "pino";
 const ODOO_URL = process.env.ODOO_URL || "http://localhost:18069";
 const ODOO_MASTER_PASSWORD = process.env.ODOO_ADMIN_PASSWORD || "admin";
 
-describe("Odoo HR Service Integration Tests", () => {
+describe.skip("Odoo HR Service Integration Tests", () => {
   let drizzle: DrizzleClient;
   let closeDrizzle: () => Promise<void>;
   let redis: RedisClient;

@@ -43,7 +43,7 @@ export default function DepartmentDetailPage() {
       return;
     }
 
-        const confirmed = await confirm({
+    const confirmed = await confirm({
       title: "Delete Department",
       message: "Are you sure you want to delete this department?",
       type: "danger",

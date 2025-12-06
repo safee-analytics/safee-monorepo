@@ -69,7 +69,10 @@ export default function TeamManagement() {
     activeUsers,
     activityRate: `${activityRate}% ${t.settings.team.stats.active}`,
     pendingInvites: pendingInvitesCount,
-    pendingNote: pendingInvitesCount === 1 ? `1 ${t.settings.team.stats.pending}` : `${pendingInvitesCount} ${t.settings.team.stats.pending}`,
+    pendingNote:
+      pendingInvitesCount === 1
+        ? `1 ${t.settings.team.stats.pending}`
+        : `${pendingInvitesCount} ${t.settings.team.stats.pending}`,
     adminRoles: adminCount,
     adminNote: t.settings.team.stats.adminOwner,
   };
@@ -120,7 +123,7 @@ export default function TeamManagement() {
       toast.error(t.settings.team.alerts.noRemovePermission);
       return;
     }
-        const confirmed = await confirm({
+    const confirmed = await confirm({
       title: t.settings.team.alerts.confirmRemoveTitle,
       message: t.settings.team.alerts.confirmRemove,
       type: "danger",
@@ -166,7 +169,7 @@ export default function TeamManagement() {
 
   const handleCancelInvitation = async (invitationId: string) => {
     if (!orgId) return;
-        const confirmed = await confirm({
+    const confirmed = await confirm({
       title: t.settings.team.alerts.confirmCancelInvitationTitle,
       message: t.settings.team.alerts.confirmCancelInvitation,
       type: "warning",
@@ -335,7 +338,9 @@ export default function TeamManagement() {
                           className="w-10 h-10 rounded-full"
                         />
                         <div>
-                          <p className="font-medium text-gray-900">{member.user.name || t.settings.team.table.unknown}</p>
+                          <p className="font-medium text-gray-900">
+                            {member.user.name || t.settings.team.table.unknown}
+                          </p>
                           <p className="text-sm text-gray-600">{member.user.email}</p>
                         </div>
                       </div>
@@ -436,7 +441,9 @@ export default function TeamManagement() {
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">{invitation.email}</p>
-                          <p className="text-sm text-gray-600">{t.settings.team.invitations.pendingInvitation}</p>
+                          <p className="text-sm text-gray-600">
+                            {t.settings.team.invitations.pendingInvitation}
+                          </p>
                         </div>
                       </div>
                     </td>
@@ -502,7 +509,9 @@ export default function TeamManagement() {
             >
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.settings.team.inviteModal.email}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t.settings.team.inviteModal.email}
+                  </label>
                   <input
                     type="email"
                     name="email"
@@ -512,7 +521,9 @@ export default function TeamManagement() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.settings.team.inviteModal.name}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t.settings.team.inviteModal.name}
+                  </label>
                   <input
                     type="text"
                     name="name"
@@ -521,7 +532,9 @@ export default function TeamManagement() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.settings.team.inviteModal.role}</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    {t.settings.team.inviteModal.role}
+                  </label>
                   <select
                     name="role"
                     required
@@ -537,9 +550,7 @@ export default function TeamManagement() {
                       ))
                     )}
                   </select>
-                  <p className="text-xs text-gray-500 mt-1">
-                    {t.settings.team.inviteModal.roleNote}
-                  </p>
+                  <p className="text-xs text-gray-500 mt-1">{t.settings.team.inviteModal.roleNote}</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 mt-6">
@@ -555,7 +566,9 @@ export default function TeamManagement() {
                   className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                   disabled={inviteMemberMutation.isPending}
                 >
-                  {inviteMemberMutation.isPending ? t.settings.team.inviteModal.sending : t.settings.team.inviteModal.send}
+                  {inviteMemberMutation.isPending
+                    ? t.settings.team.inviteModal.sending
+                    : t.settings.team.inviteModal.send}
                 </button>
               </div>
             </form>

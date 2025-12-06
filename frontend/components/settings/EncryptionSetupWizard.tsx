@@ -2,7 +2,20 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Lock, Eye, EyeOff, Download, CheckCircle, AlertTriangle, Copy, Check, Shield, X, Search, FileText } from "lucide-react";
+import {
+  Lock,
+  Eye,
+  EyeOff,
+  Download,
+  CheckCircle,
+  AlertTriangle,
+  Copy,
+  Check,
+  Shield,
+  X,
+  Search,
+  FileText,
+} from "lucide-react";
 import {
   deriveKeyFromPassword,
   generateOrgKey,
@@ -70,9 +83,14 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
   };
 
   const handleDownloadPhrase = () => {
-    const blob = new Blob([`Safee Analytics Recovery Phrase\n\n${recoveryPhrase}\n\nKeep this safe - it's the only way to recover access if you forget your password.`], {
-      type: "text/plain",
-    });
+    const blob = new Blob(
+      [
+        `Safee Analytics Recovery Phrase\n\n${recoveryPhrase}\n\nKeep this safe - it's the only way to recover access if you forget your password.`,
+      ],
+      {
+        type: "text/plain",
+      },
+    );
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
@@ -166,10 +184,7 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
           </div>
         </div>
         {onCancel && (
-          <button
-            onClick={onCancel}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
+          <button onClick={onCancel} className="text-gray-400 hover:text-gray-600 transition-colors">
             <X className="w-6 h-6" />
           </button>
         )}
@@ -214,12 +229,16 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
 
               {/* Downsides */}
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.documents.encryption.wizard.terms.limitations}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  {t.settings.documents.encryption.wizard.terms.limitations}
+                </h3>
                 <div className="space-y-3">
                   <div className="flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
                     <Search className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-medium text-gray-900">{t.settings.documents.encryption.wizard.terms.noServerSearch}</p>
+                      <p className="font-medium text-gray-900">
+                        {t.settings.documents.encryption.wizard.terms.noServerSearch}
+                      </p>
                       <p className="text-sm text-gray-600">
                         {t.settings.documents.encryption.wizard.terms.noServerSearchDesc}
                       </p>
@@ -228,7 +247,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                   <div className="flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
                     <FileText className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-medium text-gray-900">{t.settings.documents.encryption.wizard.terms.noServerProcessing}</p>
+                      <p className="font-medium text-gray-900">
+                        {t.settings.documents.encryption.wizard.terms.noServerProcessing}
+                      </p>
                       <p className="text-sm text-gray-600">
                         {t.settings.documents.encryption.wizard.terms.noServerProcessingDesc}
                       </p>
@@ -237,7 +258,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                   <div className="flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
                     <Lock className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-medium text-gray-900">{t.settings.documents.encryption.wizard.terms.passwordRequired}</p>
+                      <p className="font-medium text-gray-900">
+                        {t.settings.documents.encryption.wizard.terms.passwordRequired}
+                      </p>
                       <p className="text-sm text-gray-600">
                         {t.settings.documents.encryption.wizard.terms.passwordRequiredDesc}
                       </p>
@@ -246,7 +269,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                   <div className="flex items-start gap-3 p-4 bg-gray-50 border border-gray-200 rounded-lg">
                     <AlertTriangle className="w-5 h-5 text-gray-600 flex-shrink-0 mt-0.5" />
                     <div>
-                      <p className="font-medium text-gray-900">{t.settings.documents.encryption.wizard.terms.performanceImpact}</p>
+                      <p className="font-medium text-gray-900">
+                        {t.settings.documents.encryption.wizard.terms.performanceImpact}
+                      </p>
                       <p className="text-sm text-gray-600">
                         {t.settings.documents.encryption.wizard.terms.performanceImpactDesc}
                       </p>
@@ -313,7 +338,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
           >
             <div className="space-y-6">
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.settings.documents.encryption.wizard.auth.title}</h3>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  {t.settings.documents.encryption.wizard.auth.title}
+                </h3>
                 <p className="text-sm text-gray-600">
                   {t.settings.documents.encryption.wizard.auth.subtitle}
                 </p>
@@ -348,7 +375,10 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                   {t.settings.documents.encryption.wizard.auth.confirmationType}
                 </label>
                 <p className="text-sm text-gray-600 mb-2">
-                  Please type: <code className="px-2 py-1 bg-gray-100 rounded font-mono text-sm">{REQUIRED_CONFIRMATION}</code>
+                  Please type:{" "}
+                  <code className="px-2 py-1 bg-gray-100 rounded font-mono text-sm">
+                    {REQUIRED_CONFIRMATION}
+                  </code>
                 </p>
                 <input
                   type="text"
@@ -421,17 +451,19 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                     value={encryptionPassword}
                     onChange={(e) => setEncryptionPassword(e.target.value)}
                     className="w-full rounded-md border border-gray-300 px-4 py-3 pr-10 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
-                    placeholder={t.settings.documents.encryption.wizard.password.encryptionPasswordPlaceholder}
+                    placeholder={
+                      t.settings.documents.encryption.wizard.password.encryptionPasswordPlaceholder
+                    }
                   />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                    >
-                      {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                    </button>
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  >
+                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                  </button>
                 </div>
+              </div>
 
               {/* Confirm Password */}
               <div>
@@ -450,60 +482,68 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
               {/* Password Strength Indicator */}
               {encryptionPassword && passwordStrength && (
                 <div className="rounded-md bg-gray-50 p-4">
-                    <div className="mb-2 flex items-center justify-between">
-                      <span className="text-sm font-medium text-gray-700">
-                        {t.settings.documents.encryption.wizard.password.strength}
-                      </span>
-                      <span className={`text-sm font-medium ${
-                        passwordStrength.score >= 75 ? "text-green-600" :
-                        passwordStrength.score >= 50 ? "text-yellow-600" :
-                        "text-red-600"
-                      }`}>
-                        {passwordStrength.score}%
-                      </span>
-                    </div>
-                    <div className="mb-2 h-2 w-full overflow-hidden rounded-full bg-gray-200">
-                      <div
-                        className={`h-full transition-all ${
-                          passwordStrength.score >= 75 ? "bg-green-500" :
-                          passwordStrength.score >= 50 ? "bg-yellow-500" :
-                          "bg-red-500"
-                        }`}
-                        style={{ width: `${passwordStrength.score}%` }}
-                      />
-                    </div>
-                    {passwordStrength.feedback.length > 0 && (
-                      <ul className="space-y-1">
-                        {passwordStrength.feedback.map((item, idx) => (
-                          <li key={idx} className="flex items-center gap-2 text-xs text-gray-600">
-                            <AlertTriangle className="h-3 w-3 flex-shrink-0" />
-                            {item}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                  <div className="mb-2 flex items-center justify-between">
+                    <span className="text-sm font-medium text-gray-700">
+                      {t.settings.documents.encryption.wizard.password.strength}
+                    </span>
+                    <span
+                      className={`text-sm font-medium ${
+                        passwordStrength.score >= 75
+                          ? "text-green-600"
+                          : passwordStrength.score >= 50
+                            ? "text-yellow-600"
+                            : "text-red-600"
+                      }`}
+                    >
+                      {passwordStrength.score}%
+                    </span>
                   </div>
-                )}
+                  <div className="mb-2 h-2 w-full overflow-hidden rounded-full bg-gray-200">
+                    <div
+                      className={`h-full transition-all ${
+                        passwordStrength.score >= 75
+                          ? "bg-green-500"
+                          : passwordStrength.score >= 50
+                            ? "bg-yellow-500"
+                            : "bg-red-500"
+                      }`}
+                      style={{ width: `${passwordStrength.score}%` }}
+                    />
+                  </div>
+                  {passwordStrength.feedback.length > 0 && (
+                    <ul className="space-y-1">
+                      {passwordStrength.feedback.map((item, idx) => (
+                        <li key={idx} className="flex items-center gap-2 text-xs text-gray-600">
+                          <AlertTriangle className="h-3 w-3 flex-shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              )}
 
-                {/* Password Match Indicator */}
-                {confirmPassword && (
-                  <div className={`flex items-center gap-2 text-sm ${
+              {/* Password Match Indicator */}
+              {confirmPassword && (
+                <div
+                  className={`flex items-center gap-2 text-sm ${
                     passwordsMatch ? "text-green-600" : "text-red-600"
-                  }`}>
-                    {passwordsMatch ? (
-                      <>
-                        <CheckCircle className="h-4 w-4" />
-                        {t.settings.documents.encryption.wizard.password.passwordsMatch}
-                      </>
-                    ) : (
-                      <>
-                        <AlertTriangle className="h-4 w-4" />
-                        {t.settings.documents.encryption.wizard.password.passwordsNoMatch}
-                      </>
-                    )}
-                  </div>
-                )}
-              </div>
+                  }`}
+                >
+                  {passwordsMatch ? (
+                    <>
+                      <CheckCircle className="h-4 w-4" />
+                      {t.settings.documents.encryption.wizard.password.passwordsMatch}
+                    </>
+                  ) : (
+                    <>
+                      <AlertTriangle className="h-4 w-4" />
+                      {t.settings.documents.encryption.wizard.password.passwordsNoMatch}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
 
             <div className="mt-6 flex justify-end gap-3">
               <button
@@ -530,63 +570,67 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
         {currentStep === "recovery" && (
           <motion.div
             key="recovery"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-            >
-              <h3 className="mb-4 text-lg font-medium text-gray-900">
-                {t.settings.documents.encryption.wizard.recovery.title}
-              </h3>
-              <p className="mb-6 text-sm text-gray-600">
-                {t.settings.documents.encryption.wizard.recovery.subtitle}
-              </p>
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+          >
+            <h3 className="mb-4 text-lg font-medium text-gray-900">
+              {t.settings.documents.encryption.wizard.recovery.title}
+            </h3>
+            <p className="mb-6 text-sm text-gray-600">
+              {t.settings.documents.encryption.wizard.recovery.subtitle}
+            </p>
 
-              {/* Recovery Phrase Display */}
-              <div className="mb-6 rounded-lg bg-amber-50 p-6">
-                <div className="mb-4 flex items-center gap-2 text-amber-800">
-                  <AlertTriangle className="h-5 w-5" />
-                  <span className="font-medium">{t.settings.documents.encryption.wizard.recovery.important}</span>
-                </div>
-
-                <div className="grid grid-cols-3 gap-3 rounded-md bg-white border border-amber-200 p-4 font-mono text-sm">
-                  {recoveryPhrase.split(" ").map((word, idx) => (
-                    <div key={idx} className="flex items-center gap-2">
-                      <span className="text-gray-400">{idx + 1}.</span>
-                      <span className="font-medium text-gray-900">{word}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <div className="mt-4 flex gap-2">
-                  <button
-                    onClick={handleCopyPhrase}
-                    className="flex items-center gap-2 rounded-md bg-white border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                  >
-                    {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                    {copied ? t.settings.documents.encryption.wizard.recovery.copied : t.settings.documents.encryption.wizard.recovery.copy}
-                  </button>
-                  <button
-                    onClick={handleDownloadPhrase}
-                    className="flex items-center gap-2 rounded-md bg-white border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
-                  >
-                    <Download className="h-4 w-4" />
-                    {t.settings.documents.encryption.wizard.recovery.download}
-                  </button>
-                </div>
+            {/* Recovery Phrase Display */}
+            <div className="mb-6 rounded-lg bg-amber-50 p-6">
+              <div className="mb-4 flex items-center gap-2 text-amber-800">
+                <AlertTriangle className="h-5 w-5" />
+                <span className="font-medium">
+                  {t.settings.documents.encryption.wizard.recovery.important}
+                </span>
               </div>
 
-              {/* Confirmation Checkbox */}
-              <label className="flex items-start gap-3 rounded-md border border-gray-300 p-4">
-                <input
-                  type="checkbox"
-                  checked={phraseConfirmed}
-                  onChange={(e) => setPhraseConfirmed(e.target.checked)}
-                  className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                />
-                <span className="text-sm text-gray-700">
-                  {t.settings.documents.encryption.wizard.recovery.confirmSaved}
-                </span>
-              </label>
+              <div className="grid grid-cols-3 gap-3 rounded-md bg-white border border-amber-200 p-4 font-mono text-sm">
+                {recoveryPhrase.split(" ").map((word, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <span className="text-gray-400">{idx + 1}.</span>
+                    <span className="font-medium text-gray-900">{word}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-4 flex gap-2">
+                <button
+                  onClick={handleCopyPhrase}
+                  className="flex items-center gap-2 rounded-md bg-white border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  {copied
+                    ? t.settings.documents.encryption.wizard.recovery.copied
+                    : t.settings.documents.encryption.wizard.recovery.copy}
+                </button>
+                <button
+                  onClick={handleDownloadPhrase}
+                  className="flex items-center gap-2 rounded-md bg-white border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
+                >
+                  <Download className="h-4 w-4" />
+                  {t.settings.documents.encryption.wizard.recovery.download}
+                </button>
+              </div>
+            </div>
+
+            {/* Confirmation Checkbox */}
+            <label className="flex items-start gap-3 rounded-md border border-gray-300 p-4">
+              <input
+                type="checkbox"
+                checked={phraseConfirmed}
+                onChange={(e) => setPhraseConfirmed(e.target.checked)}
+                className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-sm text-gray-700">
+                {t.settings.documents.encryption.wizard.recovery.confirmSaved}
+              </span>
+            </label>
 
             <div className="mt-6 flex justify-end gap-3">
               <button
@@ -661,7 +705,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                 {isEnabling && (
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
                 )}
-                {isEnabling ? t.settings.documents.encryption.wizard.confirm.enabling : t.settings.documents.encryption.wizard.confirm.enableButton}
+                {isEnabling
+                  ? t.settings.documents.encryption.wizard.confirm.enabling
+                  : t.settings.documents.encryption.wizard.confirm.enableButton}
               </button>
             </div>
           </motion.div>
@@ -669,41 +715,35 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
 
         {/* Step 6: Complete */}
         {currentStep === "complete" && (
-          <motion.div
-            key="complete"
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-          >
-              <div className="flex flex-col items-center text-center">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
-                  <CheckCircle className="h-8 w-8 text-green-600" />
-                </div>
-                <h3 className="mb-2 text-2xl font-semibold text-gray-900">
-                  {t.settings.documents.encryption.wizard.complete.title}
-                </h3>
-                <p className="mb-6 text-gray-600">
-                  {t.settings.documents.encryption.wizard.complete.subtitle}
-                </p>
+          <motion.div key="complete" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}>
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-green-100">
+                <CheckCircle className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="mb-2 text-2xl font-semibold text-gray-900">
+                {t.settings.documents.encryption.wizard.complete.title}
+              </h3>
+              <p className="mb-6 text-gray-600">{t.settings.documents.encryption.wizard.complete.subtitle}</p>
 
-                <div className="w-full max-w-md rounded-lg bg-gray-50 border border-gray-200 p-6 text-left">
-                  <h4 className="mb-3 font-medium text-gray-900">
-                    {t.settings.documents.encryption.wizard.complete.reminders}
-                  </h4>
-                  <ul className="space-y-2 text-sm text-gray-600">
-                    <li className="flex items-start gap-2">
-                      <span className="text-gray-400">•</span>
-                      {t.settings.documents.encryption.wizard.complete.sharePassword}
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-gray-400">•</span>
-                      {t.settings.documents.encryption.wizard.complete.keepRecovery}
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-gray-400">•</span>
-                      {t.settings.documents.encryption.wizard.complete.unlockPrompt}
-                    </li>
-                  </ul>
-                </div>
+              <div className="w-full max-w-md rounded-lg bg-gray-50 border border-gray-200 p-6 text-left">
+                <h4 className="mb-3 font-medium text-gray-900">
+                  {t.settings.documents.encryption.wizard.complete.reminders}
+                </h4>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li className="flex items-start gap-2">
+                    <span className="text-gray-400">•</span>
+                    {t.settings.documents.encryption.wizard.complete.sharePassword}
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-gray-400">•</span>
+                    {t.settings.documents.encryption.wizard.complete.keepRecovery}
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-gray-400">•</span>
+                    {t.settings.documents.encryption.wizard.complete.unlockPrompt}
+                  </li>
+                </ul>
+              </div>
 
               <button
                 onClick={handleComplete}

@@ -105,7 +105,9 @@ export default function SecuritySettings() {
             </h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.security.changePassword.currentPassword}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t.settings.security.changePassword.currentPassword}
+                </label>
                 <div className="relative">
                   <input
                     type={showCurrentPassword ? "text" : "password"}
@@ -123,7 +125,9 @@ export default function SecuritySettings() {
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.security.changePassword.newPassword}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t.settings.security.changePassword.newPassword}
+                </label>
                 <div className="relative">
                   <input
                     type={showNewPassword ? "text" : "password"}
@@ -144,7 +148,9 @@ export default function SecuritySettings() {
                 </p>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.security.changePassword.confirmPassword}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t.settings.security.changePassword.confirmPassword}
+                </label>
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
@@ -166,7 +172,9 @@ export default function SecuritySettings() {
                 disabled={changePassword.isPending}
                 className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
               >
-                {changePassword.isPending ? t.settings.security.changePassword.changing : t.settings.security.changePassword.changeButton}
+                {changePassword.isPending
+                  ? t.settings.security.changePassword.changing
+                  : t.settings.security.changePassword.changeButton}
               </button>
             </div>
           </div>
@@ -177,7 +185,9 @@ export default function SecuritySettings() {
               <div className="flex items-start gap-3">
                 <Smartphone className="w-5 h-5 text-gray-500 mt-1" />
                 <div>
-                  <h2 className="text-lg font-semibold text-gray-900 mb-1">{t.settings.security.twoFactor.title}</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-1">
+                    {t.settings.security.twoFactor.title}
+                  </h2>
                   <p className="text-sm text-gray-500">{t.settings.security.twoFactor.subtitle}</p>
                 </div>
               </div>
@@ -199,9 +209,7 @@ export default function SecuritySettings() {
             </div>
             {security.twoFactorEnabled && (
               <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <p className="text-sm text-green-800 mb-2">
-                  {t.settings.security.twoFactor.enabled}
-                </p>
+                <p className="text-sm text-green-800 mb-2">{t.settings.security.twoFactor.enabled}</p>
                 <button className="text-sm text-green-700 hover:text-green-800 font-medium">
                   {t.settings.security.twoFactor.recoveryCodes}
                 </button>
@@ -234,7 +242,9 @@ export default function SecuritySettings() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.security.preferences.passwordExpiry}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t.settings.security.preferences.passwordExpiry}
+                </label>
                 <select
                   value={security.passwordExpiry}
                   onChange={(e) => setSecurity({ ...security, passwordExpiry: e.target.value })}
@@ -250,8 +260,12 @@ export default function SecuritySettings() {
 
               <div className="flex items-center justify-between py-3 border-t border-gray-100">
                 <div>
-                  <p className="font-medium text-gray-900">{t.settings.security.preferences.requirePasswordChange}</p>
-                  <p className="text-sm text-gray-500">{t.settings.security.preferences.requirePasswordChangeDesc}</p>
+                  <p className="font-medium text-gray-900">
+                    {t.settings.security.preferences.requirePasswordChange}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {t.settings.security.preferences.requirePasswordChangeDesc}
+                  </p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -266,8 +280,12 @@ export default function SecuritySettings() {
 
               <div className="flex items-center justify-between py-3 border-t border-gray-100">
                 <div>
-                  <p className="font-medium text-gray-900">{t.settings.security.preferences.allowMultipleSessions}</p>
-                  <p className="text-sm text-gray-500">{t.settings.security.preferences.allowMultipleSessionsDesc}</p>
+                  <p className="font-medium text-gray-900">
+                    {t.settings.security.preferences.allowMultipleSessions}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {t.settings.security.preferences.allowMultipleSessionsDesc}
+                  </p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -282,8 +300,12 @@ export default function SecuritySettings() {
 
               <div className="flex items-center justify-between py-3 border-t border-gray-100">
                 <div>
-                  <p className="font-medium text-gray-900">{t.settings.security.preferences.loginNotifications}</p>
-                  <p className="text-sm text-gray-500">{t.settings.security.preferences.loginNotificationsDesc}</p>
+                  <p className="font-medium text-gray-900">
+                    {t.settings.security.preferences.loginNotifications}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    {t.settings.security.preferences.loginNotificationsDesc}
+                  </p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -325,7 +347,9 @@ export default function SecuritySettings() {
                             )}
                           </p>
                           <p className="text-sm text-gray-500">{session.location}</p>
-                          <p className="text-xs text-gray-400">{t.settings.security.sessions.lastActive}: {session.lastActive}</p>
+                          <p className="text-xs text-gray-400">
+                            {t.settings.security.sessions.lastActive}: {session.lastActive}
+                          </p>
                         </div>
                       </div>
                       {!session.current && (
@@ -334,7 +358,9 @@ export default function SecuritySettings() {
                           disabled={revokeSession.isPending}
                           className="text-sm text-red-600 hover:text-red-700 font-medium disabled:opacity-50"
                         >
-                          {revokeSession.isPending ? t.settings.security.sessions.revoking : t.settings.security.sessions.revoke}
+                          {revokeSession.isPending
+                            ? t.settings.security.sessions.revoking
+                            : t.settings.security.sessions.revoke}
                         </button>
                       )}
                     </div>
@@ -352,7 +378,9 @@ export default function SecuritySettings() {
             <div className="flex items-start gap-3 mb-4">
               <AlertTriangle className="w-5 h-5 text-red-600 mt-1" />
               <div>
-                <h2 className="text-lg font-semibold text-red-900 mb-1">{t.settings.security.dangerZone.title}</h2>
+                <h2 className="text-lg font-semibold text-red-900 mb-1">
+                  {t.settings.security.dangerZone.title}
+                </h2>
                 <p className="text-sm text-red-700">{t.settings.security.dangerZone.subtitle}</p>
               </div>
             </div>

@@ -51,7 +51,7 @@ export default function ICVScopePage() {
   };
 
   const handleCompleteFile = async () => {
-        const confirmed = await confirm({
+    const confirmed = await confirm({
       title: t.audit.confirmCompleteTitle,
       message: t.audit.confirmComplete,
       type: "warning",
@@ -74,7 +74,7 @@ export default function ICVScopePage() {
   };
 
   const handleArchiveFile = async () => {
-        const confirmed = await confirm({
+    const confirmed = await confirm({
       title: t.audit.confirmArchiveTitle,
       message: t.audit.confirmArchive,
       type: "danger",

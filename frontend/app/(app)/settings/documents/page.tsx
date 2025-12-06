@@ -2,7 +2,15 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { FileText, Shield, Lock, CheckCircle, Settings as SettingsIcon, Save, AlertTriangle } from "lucide-react";
+import {
+  FileText,
+  Shield,
+  Lock,
+  CheckCircle,
+  Settings as SettingsIcon,
+  Save,
+  AlertTriangle,
+} from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
 import { EncryptionSetupWizard } from "@/components/settings/EncryptionSetupWizard";
@@ -59,10 +67,10 @@ export default function DocumentSettingsPage() {
               <div className="flex items-start gap-3 mb-6">
                 <Shield className="w-6 h-6 text-red-600" />
                 <div className="flex-1">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-2">{t.settings.documents.encryption.title}</h2>
-                  <p className="text-sm text-gray-600 mb-4">
-                    {t.settings.documents.encryption.subtitle}
-                  </p>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                    {t.settings.documents.encryption.title}
+                  </h2>
+                  <p className="text-sm text-gray-600 mb-4">{t.settings.documents.encryption.subtitle}</p>
 
                   {!settings.encryptionEnabled ? (
                     <div className="space-y-4">
@@ -71,7 +79,9 @@ export default function DocumentSettingsPage() {
                         <div className="flex items-start gap-3">
                           <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                           <div className="text-sm text-amber-800">
-                            <p className="font-semibold mb-2">{t.settings.documents.encryption.warning.title}</p>
+                            <p className="font-semibold mb-2">
+                              {t.settings.documents.encryption.warning.title}
+                            </p>
                             <ul className="space-y-1 list-disc list-inside">
                               <li>{t.settings.documents.encryption.warning.losePassword}</li>
                               <li>{t.settings.documents.encryption.warning.noServerSearch}</li>
@@ -94,7 +104,9 @@ export default function DocumentSettingsPage() {
                     <div className="space-y-4">
                       <div className="flex items-center gap-2 p-4 bg-green-50 border border-green-200 rounded-lg">
                         <CheckCircle className="w-5 h-5 text-green-600" />
-                        <span className="text-green-800 font-medium">{t.settings.documents.encryption.enabled}</span>
+                        <span className="text-green-800 font-medium">
+                          {t.settings.documents.encryption.enabled}
+                        </span>
                       </div>
                       <div className="flex gap-3">
                         <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
@@ -129,7 +141,9 @@ export default function DocumentSettingsPage() {
             <div className="flex items-center gap-3 mb-6">
               <SettingsIcon className="w-6 h-6 text-blue-600" />
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">{t.settings.documents.management.title}</h2>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  {t.settings.documents.management.title}
+                </h2>
                 <p className="text-sm text-gray-600">{t.settings.documents.management.subtitle}</p>
               </div>
             </div>
@@ -139,9 +153,7 @@ export default function DocumentSettingsPage() {
               <div className="flex items-center justify-between py-3 border-b border-gray-100">
                 <div>
                   <p className="font-medium text-gray-900">{t.settings.documents.management.autoBackup}</p>
-                  <p className="text-sm text-gray-500">
-                    {t.settings.documents.management.autoBackupDesc}
-                  </p>
+                  <p className="text-sm text-gray-500">{t.settings.documents.management.autoBackupDesc}</p>
                 </div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input
@@ -189,9 +201,7 @@ export default function DocumentSettingsPage() {
                   />
                   <span className="text-gray-600">{t.settings.documents.management.days}</span>
                 </div>
-                <p className="text-sm text-gray-500 mt-2">
-                  {t.settings.documents.management.retentionDesc}
-                </p>
+                <p className="text-sm text-gray-500 mt-2">{t.settings.documents.management.retentionDesc}</p>
               </div>
 
               {/* Max File Size */}
@@ -203,16 +213,16 @@ export default function DocumentSettingsPage() {
                   <input
                     type="number"
                     value={settings.maxFileSize}
-                    onChange={(e) =>
-                      setSettings({ ...settings, maxFileSize: parseInt(e.target.value) })
-                    }
+                    onChange={(e) => setSettings({ ...settings, maxFileSize: parseInt(e.target.value) })}
                     min="1"
                     max="500"
                     className="w-32 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <span className="text-gray-600">{t.settings.documents.management.mb}</span>
                 </div>
-                <p className="text-sm text-gray-500 mt-2">{t.settings.documents.management.maxFileSizeDesc}</p>
+                <p className="text-sm text-gray-500 mt-2">
+                  {t.settings.documents.management.maxFileSizeDesc}
+                </p>
               </div>
             </div>
           </div>
@@ -222,7 +232,9 @@ export default function DocumentSettingsPage() {
             <div className="flex items-center gap-3 mb-6">
               <FileText className="w-6 h-6 text-blue-600" />
               <div>
-                <h2 className="text-xl font-semibold text-gray-900">{t.settings.documents.fileTypes.title}</h2>
+                <h2 className="text-xl font-semibold text-gray-900">
+                  {t.settings.documents.fileTypes.title}
+                </h2>
                 <p className="text-sm text-gray-600">{t.settings.documents.fileTypes.subtitle}</p>
               </div>
             </div>

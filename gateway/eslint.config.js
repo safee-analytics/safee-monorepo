@@ -17,7 +17,6 @@ export default [
       parserOptions: {
         ecmaVersion: "latest",
         sourceType: "module",
-        project: "./tsconfig.json",
       },
     },
     plugins: {
@@ -49,13 +48,22 @@ export default [
     },
   },
   {
+    files: ["**/*.d.ts"],
+    rules: {
+      "no-undef": "off",
+    },
+  },
+  {
     ignores: [
       "node_modules/",
       "dist/",
       "build/",
       "src/generated/",
+      "src/server/routes.ts",
+      "src/server/swagger.json",
       "*.js",
       "*.mjs",
+      "*.json",
       "vitest.config.ts",
       "dev.ts",
     ],

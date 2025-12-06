@@ -189,147 +189,163 @@ function ProfileTab() {
     <>
       <div className="space-y-6">
         {/* Profile Picture */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.profile.profileTab.profilePicture.title}</h3>
-        <div className="flex items-center gap-6">
-          <div className="relative">
-            {imageUrl || user?.image ? (
-              <img
-                src={imageUrl || user?.image || undefined}
-                alt="Profile"
-                className="w-24 h-24 rounded-full object-cover"
-              />
-            ) : (
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold">
-                {user?.name?.charAt(0).toUpperCase() || "U"}
-              </div>
-            )}
-          </div>
-          <div>
-            <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors mb-2">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageUpload}
-                className="hidden"
-                disabled={isUploadingImage}
-              />
-              {isUploadingImage ? t.settings.profile.profileTab.profilePicture.uploading : t.settings.profile.profileTab.profilePicture.uploadPhoto}
-            </label>
-            <p className="text-sm text-gray-500">{t.settings.profile.profileTab.profilePicture.formats}</p>
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            {t.settings.profile.profileTab.profilePicture.title}
+          </h3>
+          <div className="flex items-center gap-6">
+            <div className="relative">
+              {imageUrl || user?.image ? (
+                <img
+                  src={imageUrl || user?.image || undefined}
+                  alt="Profile"
+                  className="w-24 h-24 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold">
+                  {user?.name?.charAt(0).toUpperCase() || "U"}
+                </div>
+              )}
+            </div>
+            <div>
+              <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors mb-2">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  className="hidden"
+                  disabled={isUploadingImage}
+                />
+                {isUploadingImage
+                  ? t.settings.profile.profileTab.profilePicture.uploading
+                  : t.settings.profile.profileTab.profilePicture.uploadPhoto}
+              </label>
+              <p className="text-sm text-gray-500">{t.settings.profile.profileTab.profilePicture.formats}</p>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Basic Info */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.profile.profileTab.basicInformation.title}</h3>
-        <form onSubmit={handleUpdateProfile} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <User className="w-4 h-4 inline mr-2" />
-              {t.settings.profile.profileTab.basicInformation.fullName}
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder={t.settings.profile.profileTab.basicInformation.fullNamePlaceholder}
-            />
-          </div>
+        {/* Basic Info */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            {t.settings.profile.profileTab.basicInformation.title}
+          </h3>
+          <form onSubmit={handleUpdateProfile} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <User className="w-4 h-4 inline mr-2" />
+                {t.settings.profile.profileTab.basicInformation.fullName}
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder={t.settings.profile.profileTab.basicInformation.fullNamePlaceholder}
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <Mail className="w-4 h-4 inline mr-2" />
-              {t.settings.profile.profileTab.basicInformation.emailAddress}
-            </label>
-            <input
-              type="email"
-              value={user?.email || ""}
-              disabled
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
-            />
-            <p className="text-sm text-gray-500 mt-1">{t.settings.profile.profileTab.basicInformation.emailNote}</p>
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Mail className="w-4 h-4 inline mr-2" />
+                {t.settings.profile.profileTab.basicInformation.emailAddress}
+              </label>
+              <input
+                type="email"
+                value={user?.email || ""}
+                disabled
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
+              />
+              <p className="text-sm text-gray-500 mt-1">
+                {t.settings.profile.profileTab.basicInformation.emailNote}
+              </p>
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <Phone className="w-4 h-4 inline mr-2" />
-              {t.settings.profile.profileTab.basicInformation.phoneNumber}
-            </label>
-            <PhoneInput
-              international
-              defaultCountry="QA"
-              value={phone}
-              onChange={(value) => setPhone(value || "")}
-              className="phone-input-custom"
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Phone className="w-4 h-4 inline mr-2" />
+                {t.settings.profile.profileTab.basicInformation.phoneNumber}
+              </label>
+              <PhoneInput
+                international
+                defaultCountry="QA"
+                value={phone}
+                onChange={(value) => setPhone(value || "")}
+                className="phone-input-custom"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <Briefcase className="w-4 h-4 inline mr-2" />
-              {t.settings.profile.profileTab.basicInformation.jobTitle}
-            </label>
-            <input
-              type="text"
-              value={jobTitle}
-              onChange={(e) => setJobTitle(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder={t.settings.profile.profileTab.basicInformation.jobTitlePlaceholder}
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Briefcase className="w-4 h-4 inline mr-2" />
+                {t.settings.profile.profileTab.basicInformation.jobTitle}
+              </label>
+              <input
+                type="text"
+                value={jobTitle}
+                onChange={(e) => setJobTitle(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder={t.settings.profile.profileTab.basicInformation.jobTitlePlaceholder}
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              <Building className="w-4 h-4 inline mr-2" />
-              {t.settings.profile.profileTab.basicInformation.department}
-            </label>
-            <input
-              type="text"
-              value={department}
-              onChange={(e) => setDepartment(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder={t.settings.profile.profileTab.basicInformation.departmentPlaceholder}
-            />
-          </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Building className="w-4 h-4 inline mr-2" />
+                {t.settings.profile.profileTab.basicInformation.department}
+              </label>
+              <input
+                type="text"
+                value={department}
+                onChange={(e) => setDepartment(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder={t.settings.profile.profileTab.basicInformation.departmentPlaceholder}
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={updateUserMutation.isPending || updateProfileMutation.isPending}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-          >
-            {updateUserMutation.isPending || updateProfileMutation.isPending ? t.settings.profile.profileTab.basicInformation.saving : t.settings.profile.profileTab.basicInformation.saveChanges}
-          </button>
-        </form>
-      </div>
+            <button
+              type="submit"
+              disabled={updateUserMutation.isPending || updateProfileMutation.isPending}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            >
+              {updateUserMutation.isPending || updateProfileMutation.isPending
+                ? t.settings.profile.profileTab.basicInformation.saving
+                : t.settings.profile.profileTab.basicInformation.saveChanges}
+            </button>
+          </form>
+        </div>
 
-      {/* Username */}
-      <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.profile.profileTab.username.title}</h3>
-        <form onSubmit={handleUpdateUsername} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.profile.profileTab.username.label}</label>
-            <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder={t.settings.profile.profileTab.username.placeholder}
-            />
-            <p className="text-sm text-gray-500 mt-1">{t.settings.profile.profileTab.username.note}</p>
-          </div>
+        {/* Username */}
+        <div className="bg-white rounded-lg border border-gray-200 p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            {t.settings.profile.profileTab.username.title}
+          </h3>
+          <form onSubmit={handleUpdateUsername} className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                {t.settings.profile.profileTab.username.label}
+              </label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder={t.settings.profile.profileTab.username.placeholder}
+              />
+              <p className="text-sm text-gray-500 mt-1">{t.settings.profile.profileTab.username.note}</p>
+            </div>
 
-          <button
-            type="submit"
-            disabled={updateUsernameMutation.isPending}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-          >
-            {updateUsernameMutation.isPending ? t.settings.profile.profileTab.username.updating : t.settings.profile.profileTab.username.updateButton}
-          </button>
-        </form>
-      </div>
+            <button
+              type="submit"
+              disabled={updateUsernameMutation.isPending}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+            >
+              {updateUsernameMutation.isPending
+                ? t.settings.profile.profileTab.username.updating
+                : t.settings.profile.profileTab.username.updateButton}
+            </button>
+          </form>
+        </div>
       </div>
       <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
     </>
@@ -476,7 +492,9 @@ function SecurityTab() {
         </h3>
         <form onSubmit={handleChangePassword} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.profile.securityTab.changePassword.currentPassword}</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t.settings.profile.securityTab.changePassword.currentPassword}
+            </label>
             <input
               type="password"
               value={currentPassword}
@@ -486,7 +504,9 @@ function SecurityTab() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.profile.securityTab.changePassword.newPassword}</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t.settings.profile.securityTab.changePassword.newPassword}
+            </label>
             <input
               type="password"
               value={newPassword}
@@ -497,7 +517,9 @@ function SecurityTab() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.profile.securityTab.changePassword.confirmPassword}</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t.settings.profile.securityTab.changePassword.confirmPassword}
+            </label>
             <input
               type="password"
               value={confirmPassword}
@@ -511,7 +533,9 @@ function SecurityTab() {
             disabled={changePasswordMutation.isPending}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {changePasswordMutation.isPending ? t.settings.profile.securityTab.changePassword.changing : t.settings.profile.securityTab.changePassword.changeButton}
+            {changePasswordMutation.isPending
+              ? t.settings.profile.securityTab.changePassword.changing
+              : t.settings.profile.securityTab.changePassword.changeButton}
           </button>
         </form>
       </div>
@@ -524,7 +548,9 @@ function SecurityTab() {
         </h3>
         <form onSubmit={handleChangeEmail} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.profile.securityTab.changeEmail.newEmail}</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              {t.settings.profile.securityTab.changeEmail.newEmail}
+            </label>
             <input
               type="email"
               value={newEmail}
@@ -540,7 +566,9 @@ function SecurityTab() {
             disabled={changeEmailMutation.isPending}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {changeEmailMutation.isPending ? t.settings.profile.securityTab.changeEmail.updating : t.settings.profile.securityTab.changeEmail.updateButton}
+            {changeEmailMutation.isPending
+              ? t.settings.profile.securityTab.changeEmail.updating
+              : t.settings.profile.securityTab.changeEmail.updateButton}
           </button>
         </form>
       </div>
@@ -558,9 +586,7 @@ function SecurityTab() {
               <Check className="w-5 h-5" />
               <span className="font-medium">{t.settings.profile.securityTab.twoFactor.enabled}</span>
             </div>
-            <p className="text-sm text-gray-600">
-              {t.settings.profile.securityTab.twoFactor.enabledNote}
-            </p>
+            <p className="text-sm text-gray-600">{t.settings.profile.securityTab.twoFactor.enabledNote}</p>
 
             <form
               onSubmit={(e) => {
@@ -587,15 +613,15 @@ function SecurityTab() {
                 disabled={disable2FAMutation.isPending}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
               >
-                {disable2FAMutation.isPending ? t.settings.profile.securityTab.twoFactor.disabling : t.settings.profile.securityTab.twoFactor.disableButton}
+                {disable2FAMutation.isPending
+                  ? t.settings.profile.securityTab.twoFactor.disabling
+                  : t.settings.profile.securityTab.twoFactor.disableButton}
               </button>
             </form>
           </div>
         ) : (
           <div className="space-y-4">
-            <p className="text-gray-600">
-              {t.settings.profile.securityTab.twoFactor.notEnabled}
-            </p>
+            <p className="text-gray-600">{t.settings.profile.securityTab.twoFactor.notEnabled}</p>
             <button
               onClick={() => setShow2FASetup(true)}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
@@ -618,7 +644,9 @@ function SecurityTab() {
           <div className="space-y-4">
             <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
               <div>
-                <p className="text-sm font-medium text-green-800">{t.settings.profile.securityTab.phoneNumber.verified}</p>
+                <p className="text-sm font-medium text-green-800">
+                  {t.settings.profile.securityTab.phoneNumber.verified}
+                </p>
                 <p className="text-sm text-green-600">{session.user.phoneNumber}</p>
               </div>
               <button
@@ -631,9 +659,7 @@ function SecurityTab() {
           </div>
         ) : (
           <div className="space-y-4">
-            <p className="text-gray-600">
-              {t.settings.profile.securityTab.phoneNumber.note}
-            </p>
+            <p className="text-gray-600">{t.settings.profile.securityTab.phoneNumber.note}</p>
 
             {!showPhoneVerification ? (
               <button
@@ -648,7 +674,9 @@ function SecurityTab() {
                 {!phoneVerificationSent ? (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.profile.securityTab.phoneNumber.phoneNumberLabel}</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        {t.settings.profile.securityTab.phoneNumber.phoneNumberLabel}
+                      </label>
                       <PhoneInput
                         international
                         defaultCountry="EG"
@@ -676,7 +704,9 @@ function SecurityTab() {
                         disabled={!phoneNumber || sendPhoneVerificationMutation.isPending}
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                       >
-                        {sendPhoneVerificationMutation.isPending ? t.settings.profile.securityTab.phoneNumber.sending : t.settings.profile.securityTab.phoneNumber.sendCode}
+                        {sendPhoneVerificationMutation.isPending
+                          ? t.settings.profile.securityTab.phoneNumber.sending
+                          : t.settings.profile.securityTab.phoneNumber.sendCode}
                       </button>
                     </div>
                   </>
@@ -684,7 +714,8 @@ function SecurityTab() {
                   <>
                     <div className="p-3 bg-blue-50 rounded-lg">
                       <p className="text-sm text-blue-800">
-                        {t.settings.profile.securityTab.phoneNumber.codeSentTo} <span className="font-medium">{phoneNumber}</span>
+                        {t.settings.profile.securityTab.phoneNumber.codeSentTo}{" "}
+                        <span className="font-medium">{phoneNumber}</span>
                       </p>
                     </div>
 
@@ -723,7 +754,9 @@ function SecurityTab() {
                         disabled={phoneVerificationCode.length !== 6 || verifyPhoneNumberMutation.isPending}
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                       >
-                        {verifyPhoneNumberMutation.isPending ? t.settings.profile.securityTab.phoneNumber.verifying : t.settings.profile.securityTab.phoneNumber.verify}
+                        {verifyPhoneNumberMutation.isPending
+                          ? t.settings.profile.securityTab.phoneNumber.verifying
+                          : t.settings.profile.securityTab.phoneNumber.verify}
                       </button>
                     </div>
                   </>
@@ -788,7 +821,9 @@ function LinkedAccountsTab() {
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.profile.linkedAccountsTab.title}</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          {t.settings.profile.linkedAccountsTab.title}
+        </h3>
         <p className="text-gray-600 mb-6">{t.settings.profile.linkedAccountsTab.description}</p>
 
         {isLoading ? (
@@ -803,7 +838,9 @@ function LinkedAccountsTab() {
                 </div>
                 <div>
                   <div className="font-medium">{t.settings.profile.linkedAccountsTab.google.title}</div>
-                  <div className="text-sm text-gray-500">{t.settings.profile.linkedAccountsTab.google.description}</div>
+                  <div className="text-sm text-gray-500">
+                    {t.settings.profile.linkedAccountsTab.google.description}
+                  </div>
                 </div>
               </div>
               {accounts?.find((acc: LinkedAccount) => acc.providerId === "google") ? (
@@ -875,13 +912,13 @@ function DangerZoneTab() {
           <Trash2 className="w-5 h-5" />
           {t.settings.profile.dangerZoneTab.title}
         </h3>
-        <p className="text-red-700 mb-6">
-          {t.settings.profile.dangerZoneTab.warning}
-        </p>
+        <p className="text-red-700 mb-6">{t.settings.profile.dangerZoneTab.warning}</p>
 
         <form onSubmit={handleDeleteAccount} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-red-900 mb-2">{t.settings.profile.dangerZoneTab.confirmPassword}</label>
+            <label className="block text-sm font-medium text-red-900 mb-2">
+              {t.settings.profile.dangerZoneTab.confirmPassword}
+            </label>
             <input
               type="password"
               value={password}
@@ -892,7 +929,8 @@ function DangerZoneTab() {
           </div>
           <div>
             <label className="block text-sm font-medium text-red-900 mb-2">
-              {t.settings.profile.dangerZoneTab.confirmText} <strong>{t.settings.profile.dangerZoneTab.confirmTextStrong}</strong>
+              {t.settings.profile.dangerZoneTab.confirmText}{" "}
+              <strong>{t.settings.profile.dangerZoneTab.confirmTextStrong}</strong>
             </label>
             <input
               type="text"
@@ -908,7 +946,9 @@ function DangerZoneTab() {
             disabled={deleteUserMutation.isPending}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
           >
-            {deleteUserMutation.isPending ? t.settings.profile.dangerZoneTab.deleting : t.settings.profile.dangerZoneTab.deleteButton}
+            {deleteUserMutation.isPending
+              ? t.settings.profile.dangerZoneTab.deleting
+              : t.settings.profile.dangerZoneTab.deleteButton}
           </button>
         </form>
       </div>

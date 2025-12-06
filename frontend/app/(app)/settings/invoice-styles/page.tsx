@@ -217,7 +217,9 @@ export default function InvoiceStylesPage() {
               <div className="bg-white rounded-lg p-6 border border-gray-200">
                 <div className="flex items-center gap-3 mb-4">
                   <FileText className="w-5 h-5 text-green-600" />
-                  <h3 className="font-semibold text-gray-900">{t.settings.invoiceStyles.design.templates.title}</h3>
+                  <h3 className="font-semibold text-gray-900">
+                    {t.settings.invoiceStyles.design.templates.title}
+                  </h3>
                 </div>
                 <button className="w-full px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 text-left text-sm text-gray-700">
                   {t.settings.invoiceStyles.design.templates.browseButton}
@@ -234,7 +236,9 @@ export default function InvoiceStylesPage() {
                       <Upload className="w-5 h-5 text-green-600" />
                     )}
                   </div>
-                  <h3 className="font-semibold text-gray-900">{t.settings.invoiceStyles.design.logo.title}</h3>
+                  <h3 className="font-semibold text-gray-900">
+                    {t.settings.invoiceStyles.design.logo.title}
+                  </h3>
                 </div>
                 <div className="space-y-4">
                   <input
@@ -251,7 +255,9 @@ export default function InvoiceStylesPage() {
                     {logoFile ? logoFile.name : t.settings.invoiceStyles.design.logo.chooseFile}
                   </label>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.design.logo.position}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.design.logo.position}
+                    </label>
                     <div className="flex gap-2">
                       {(["left", "center", "right"] as const).map((pos) => (
                         <button
@@ -277,11 +283,15 @@ export default function InvoiceStylesPage() {
                   <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-orange-500 via-blue-500 to-purple-500 flex items-center justify-center">
                     <Palette className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="font-semibold text-gray-900">{t.settings.invoiceStyles.design.colors.title}</h3>
+                  <h3 className="font-semibold text-gray-900">
+                    {t.settings.invoiceStyles.design.colors.title}
+                  </h3>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.design.colors.primaryColor}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.design.colors.primaryColor}
+                    </label>
                     <input
                       type="color"
                       value={style.primaryColor}
@@ -290,7 +300,9 @@ export default function InvoiceStylesPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.design.colors.accentColor}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.design.colors.accentColor}
+                    </label>
                     <input
                       type="color"
                       value={style.accentColor}
@@ -299,7 +311,9 @@ export default function InvoiceStylesPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.design.colors.textColor}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.design.colors.textColor}
+                    </label>
                     <input
                       type="color"
                       value={style.textColor}
@@ -308,7 +322,9 @@ export default function InvoiceStylesPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.design.colors.background}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.design.colors.background}
+                    </label>
                     <input
                       type="color"
                       value={style.backgroundColor}
@@ -323,11 +339,15 @@ export default function InvoiceStylesPage() {
               <div className="bg-white rounded-lg p-6 border border-gray-200">
                 <div className="flex items-center gap-3 mb-4">
                   <Type className="w-5 h-5 text-gray-600" />
-                  <h3 className="font-semibold text-gray-900">{t.settings.invoiceStyles.design.fonts.title}</h3>
+                  <h3 className="font-semibold text-gray-900">
+                    {t.settings.invoiceStyles.design.fonts.title}
+                  </h3>
                 </div>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.design.fonts.headingFont}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.design.fonts.headingFont}
+                    </label>
                     <select
                       value={style.headingFont}
                       onChange={(e) => setStyle({ ...style, headingFont: e.target.value })}
@@ -341,7 +361,9 @@ export default function InvoiceStylesPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.design.fonts.bodyFont}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.design.fonts.bodyFont}
+                    </label>
                     <select
                       value={style.bodyFont}
                       onChange={(e) => setStyle({ ...style, bodyFont: e.target.value })}
@@ -355,7 +377,9 @@ export default function InvoiceStylesPage() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.design.fonts.fontSize}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.design.fonts.fontSize}
+                    </label>
                     <div className="flex gap-2">
                       {(["small", "medium", "large"] as const).map((size) => (
                         <button
@@ -379,7 +403,9 @@ export default function InvoiceStylesPage() {
               <div className="bg-white rounded-lg p-6 border border-gray-200">
                 <div className="flex items-center gap-3 mb-4">
                   <Printer className="w-5 h-5 text-gray-600" />
-                  <h3 className="font-semibold text-gray-900">{t.settings.invoiceStyles.design.print.title}</h3>
+                  <h3 className="font-semibold text-gray-900">
+                    {t.settings.invoiceStyles.design.print.title}
+                  </h3>
                 </div>
                 <div className="space-y-3">
                   <label className="flex items-center gap-3">
@@ -389,7 +415,9 @@ export default function InvoiceStylesPage() {
                       onChange={(e) => setStyle({ ...style, showLogo: e.target.checked })}
                       className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                     />
-                    <span className="text-sm text-gray-700">{t.settings.invoiceStyles.design.print.showLogo}</span>
+                    <span className="text-sm text-gray-700">
+                      {t.settings.invoiceStyles.design.print.showLogo}
+                    </span>
                   </label>
                   <label className="flex items-center gap-3">
                     <input
@@ -398,7 +426,9 @@ export default function InvoiceStylesPage() {
                       onChange={(e) => setStyle({ ...style, showCompanyDetails: e.target.checked })}
                       className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                     />
-                    <span className="text-sm text-gray-700">{t.settings.invoiceStyles.design.print.showCompanyDetails}</span>
+                    <span className="text-sm text-gray-700">
+                      {t.settings.invoiceStyles.design.print.showCompanyDetails}
+                    </span>
                   </label>
                   <label className="flex items-center gap-3">
                     <input
@@ -407,7 +437,9 @@ export default function InvoiceStylesPage() {
                       onChange={(e) => setStyle({ ...style, showFooter: e.target.checked })}
                       className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                     />
-                    <span className="text-sm text-gray-700">{t.settings.invoiceStyles.design.print.showFooter}</span>
+                    <span className="text-sm text-gray-700">
+                      {t.settings.invoiceStyles.design.print.showFooter}
+                    </span>
                   </label>
                 </div>
               </div>
@@ -421,7 +453,9 @@ export default function InvoiceStylesPage() {
                 <h3 className="font-semibold text-gray-900 mb-4">{t.settings.invoiceStyles.content.title}</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.content.invoiceTitle}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.content.invoiceTitle}
+                    </label>
                     <input
                       type="text"
                       value={style.invoiceLabel}
@@ -430,7 +464,9 @@ export default function InvoiceStylesPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.content.billToLabel}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.content.billToLabel}
+                    </label>
                     <input
                       type="text"
                       value={style.billToLabel}
@@ -439,7 +475,9 @@ export default function InvoiceStylesPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.content.totalLabel}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.content.totalLabel}
+                    </label>
                     <input
                       type="text"
                       value={style.totalLabel}
@@ -448,7 +486,9 @@ export default function InvoiceStylesPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.content.footerMessage}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.content.footerMessage}
+                    </label>
                     <textarea
                       value={style.footerText}
                       onChange={(e) => setStyle({ ...style, footerText: e.target.value })}
@@ -466,12 +506,12 @@ export default function InvoiceStylesPage() {
             <div className="space-y-6">
               <div className="bg-white rounded-lg p-6 border border-gray-200">
                 <h3 className="font-semibold text-gray-900 mb-4">{t.settings.invoiceStyles.emails.title}</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  {t.settings.invoiceStyles.emails.subtitle}
-                </p>
+                <p className="text-sm text-gray-600 mb-4">{t.settings.invoiceStyles.emails.subtitle}</p>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.emails.subjectLine}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.emails.subjectLine}
+                    </label>
                     <input
                       type="text"
                       placeholder={t.settings.invoiceStyles.emails.subjectPlaceholder}
@@ -479,7 +519,9 @@ export default function InvoiceStylesPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.invoiceStyles.emails.emailMessage}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.invoiceStyles.emails.emailMessage}
+                    </label>
                     <textarea
                       rows={6}
                       placeholder={t.settings.invoiceStyles.emails.messagePlaceholder}
@@ -587,9 +629,13 @@ export default function InvoiceStylesPage() {
                       backgroundColor: style.accentColor,
                     }}
                   >
-                    <th className="text-left py-3 px-2 text-sm font-semibold">{t.settings.invoiceStyles.preview.dateHeader}</th>
+                    <th className="text-left py-3 px-2 text-sm font-semibold">
+                      {t.settings.invoiceStyles.preview.dateHeader}
+                    </th>
                     <th className="text-left py-3 px-2 text-sm font-semibold">{style.itemLabel}</th>
-                    <th className="text-left py-3 px-2 text-sm font-semibold">{t.settings.invoiceStyles.preview.descriptionHeader}</th>
+                    <th className="text-left py-3 px-2 text-sm font-semibold">
+                      {t.settings.invoiceStyles.preview.descriptionHeader}
+                    </th>
                     <th className="text-center py-3 px-2 text-sm font-semibold">{style.quantityLabel}</th>
                     <th className="text-right py-3 px-2 text-sm font-semibold">{style.rateLabel}</th>
                     <th className="text-right py-3 px-2 text-sm font-semibold">{style.amountLabel}</th>
@@ -633,7 +679,9 @@ export default function InvoiceStylesPage() {
               )}
 
               {/* Page Number */}
-              <div className="text-center text-xs text-gray-400 mt-4">{t.settings.invoiceStyles.preview.pageNumber}</div>
+              <div className="text-center text-xs text-gray-400 mt-4">
+                {t.settings.invoiceStyles.preview.pageNumber}
+              </div>
             </div>
           </div>
         </div>
@@ -659,7 +707,6 @@ export default function InvoiceStylesPage() {
           <Save className="w-4 h-4" />
           {t.settings.invoiceStyles.actions.done}
         </button>
-
       </div>
       <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
     </div>

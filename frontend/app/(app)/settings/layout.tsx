@@ -128,7 +128,14 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
       order: 23,
       category: "advanced",
     },
-    { href: "/settings/api", label: t.settings.nav.apiKeys, icon: Key, pageKey: "api", order: 24, category: "advanced" },
+    {
+      href: "/settings/api",
+      label: t.settings.nav.apiKeys,
+      icon: Key,
+      pageKey: "api",
+      order: 24,
+      category: "advanced",
+    },
     {
       href: "/settings/database",
       label: t.settings.nav.database,

@@ -81,7 +81,7 @@ export default function APIKeysSettings() {
   };
 
   const handleRevokeKey = async (keyId: string) => {
-        const confirmed = await confirm({
+    const confirmed = await confirm({
       title: "Revoke API Key",
       message: "Are you sure you want to revoke this API key? This action cannot be undone.",
       type: "danger",
@@ -97,7 +97,7 @@ export default function APIKeysSettings() {
   };
 
   const handleDeleteKey = async (keyId: string) => {
-        const confirmed = await confirm({
+    const confirmed = await confirm({
       title: "Delete API Key",
       message: "Are you sure you want to permanently delete this API key?",
       type: "danger",
@@ -175,9 +175,7 @@ export default function APIKeysSettings() {
             <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
             <div>
               <p className="text-sm font-medium text-yellow-900">{t.settings.api.warning.title}</p>
-              <p className="text-sm text-yellow-700 mt-1">
-                {t.settings.api.warning.message}
-              </p>
+              <p className="text-sm text-yellow-700 mt-1">{t.settings.api.warning.message}</p>
             </div>
           </div>
 
@@ -204,12 +202,18 @@ export default function APIKeysSettings() {
                             {t.settings.api.list.active}
                           </span>
                         ) : (
-                          <span className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded">{t.settings.api.list.revoked}</span>
+                          <span className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded">
+                            {t.settings.api.list.revoked}
+                          </span>
                         )}
                       </div>
                       <div className="text-sm text-gray-500 space-y-1">
-                        <p>{t.settings.api.list.created}: {apiKey.created}</p>
-                        <p>{t.settings.api.list.lastUsed}: {apiKey.lastUsed}</p>
+                        <p>
+                          {t.settings.api.list.created}: {apiKey.created}
+                        </p>
+                        <p>
+                          {t.settings.api.list.lastUsed}: {apiKey.lastUsed}
+                        </p>
                         <div className="flex items-center gap-2">
                           <span>{t.settings.api.list.permissions}:</span>
                           {apiKey.permissions.map((permission: string) => (
@@ -253,7 +257,11 @@ export default function APIKeysSettings() {
                         <button
                           onClick={() => toggleKeyVisibility(apiKey.id)}
                           className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors"
-                          title={revealedKeys.has(apiKey.id) ? t.settings.api.list.hide : t.settings.api.list.reveal}
+                          title={
+                            revealedKeys.has(apiKey.id)
+                              ? t.settings.api.list.hide
+                              : t.settings.api.list.reveal
+                          }
                         >
                           {revealedKeys.has(apiKey.id) ? (
                             <EyeOff className="w-4 h-4" />
@@ -296,9 +304,7 @@ export default function APIKeysSettings() {
           {/* Documentation */}
           <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.settings.api.documentation.title}</h3>
-            <p className="text-sm text-gray-600 mb-4">
-              {t.settings.api.documentation.message}
-            </p>
+            <p className="text-sm text-gray-600 mb-4">{t.settings.api.documentation.message}</p>
             <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
               {t.settings.api.documentation.button}
             </button>
@@ -316,7 +322,9 @@ export default function APIKeysSettings() {
 
                 <div className="space-y-4 mb-6 flex-1 overflow-y-auto">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.api.createModal.keyName}</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {t.settings.api.createModal.keyName}
+                    </label>
                     <input
                       type="text"
                       value={newKeyName}
@@ -328,7 +336,8 @@ export default function APIKeysSettings() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                      {t.settings.api.createModal.permissionsLabel} ({newKeyPermissions.length} {t.settings.api.createModal.permissionsSelected})
+                      {t.settings.api.createModal.permissionsLabel} ({newKeyPermissions.length}{" "}
+                      {t.settings.api.createModal.permissionsSelected})
                     </label>
                     <div className="grid grid-cols-2 gap-4">
                       {Object.entries(permissionsByResource).map(
@@ -354,7 +363,9 @@ export default function APIKeysSettings() {
                                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                                   }`}
                                 >
-                                  {allSelected ? t.settings.api.createModal.deselectAll : t.settings.api.createModal.selectAll}
+                                  {allSelected
+                                    ? t.settings.api.createModal.deselectAll
+                                    : t.settings.api.createModal.selectAll}
                                 </button>
                               </div>
                               <div className="grid grid-cols-2 gap-2">
@@ -399,7 +410,9 @@ export default function APIKeysSettings() {
                     disabled={createKey.isPending}
                     className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
                   >
-                    {createKey.isPending ? t.settings.api.createModal.creating : t.settings.api.createModal.create}
+                    {createKey.isPending
+                      ? t.settings.api.createModal.creating
+                      : t.settings.api.createModal.create}
                   </button>
                 </div>
               </motion.div>

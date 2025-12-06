@@ -325,7 +325,7 @@ export const getSystemActions = (
   signOut: () => void,
   onExport?: () => void,
   onThemeToggle?: () => void,
-  theme?: "light" | "dark",
+  theme?: "light" | "dark" | "auto",
 ): SearchItem[] => {
   const actions: SearchItem[] = [];
 

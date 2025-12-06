@@ -49,7 +49,7 @@ export default function EmployeeDetailPage() {
   const deactivateEmployee = useDeactivateEmployee();
 
   const handleDeactivate = async () => {
-        const confirmed = await confirm({
+    const confirmed = await confirm({
       title: "Deactivate Employee",
       message: "Are you sure you want to deactivate this employee?",
       type: "danger",

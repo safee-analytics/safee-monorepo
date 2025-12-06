@@ -86,7 +86,9 @@ export default function IntegrationsSettings() {
               {/* Connected Integrations */}
               {integrations.some((i) => i.connected) && (
                 <div className="mb-6">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.integrations.sections.connected}</h2>
+                  <h2 className="text-lg font-semibold text-gray-900 mb-4">
+                    {t.settings.integrations.sections.connected}
+                  </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {integrations
                       .filter((i) => i.connected)
@@ -102,7 +104,9 @@ export default function IntegrationsSettings() {
                                 <h3 className="font-semibold text-gray-900">{integration.name}</h3>
                                 <div className="flex items-center gap-1 mt-1">
                                   <Check className="w-3 h-3 text-green-600" />
-                                  <span className="text-xs text-green-600">{t.settings.integrations.status.connected}</span>
+                                  <span className="text-xs text-green-600">
+                                    {t.settings.integrations.status.connected}
+                                  </span>
                                 </div>
                               </div>
                             </div>
@@ -131,7 +135,9 @@ export default function IntegrationsSettings() {
               {/* Available Integrations */}
               <div>
                 <h2 className="text-lg font-semibold text-gray-900 mb-4">
-                  {selectedCategory === "all" ? t.settings.integrations.sections.availableIntegrations : t.settings.integrations.sections.available}
+                  {selectedCategory === "all"
+                    ? t.settings.integrations.sections.availableIntegrations
+                    : t.settings.integrations.sections.available}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {filteredIntegrations
@@ -159,7 +165,9 @@ export default function IntegrationsSettings() {
                           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium disabled:opacity-50"
                         >
                           <Plus className="w-4 h-4" />
-                          {connectIntegration.isPending ? t.settings.integrations.actions.connecting : t.settings.integrations.actions.connect}
+                          {connectIntegration.isPending
+                            ? t.settings.integrations.actions.connecting
+                            : t.settings.integrations.actions.connect}
                         </button>
                       </div>
                     ))}
@@ -180,10 +188,10 @@ export default function IntegrationsSettings() {
                     <Plus className="w-6 h-6 text-white" />
                   </div>
                   <div className="flex-1">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.settings.integrations.custom.title}</h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      {t.settings.integrations.custom.message}
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      {t.settings.integrations.custom.title}
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4">{t.settings.integrations.custom.message}</p>
                     <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
                       {t.settings.integrations.custom.button}
                       <ExternalLink className="w-4 h-4" />
@@ -196,7 +204,9 @@ export default function IntegrationsSettings() {
               <div className="mt-8 bg-white rounded-lg border border-gray-200 p-6">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900">{t.settings.integrations.webhooks.title}</h2>
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      {t.settings.integrations.webhooks.title}
+                    </h2>
                     <p className="text-sm text-gray-600 mt-1">{t.settings.integrations.webhooks.subtitle}</p>
                   </div>
                   <button className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors text-sm font-medium">

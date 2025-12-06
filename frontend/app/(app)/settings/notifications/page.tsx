@@ -57,7 +57,9 @@ export default function NotificationsSettings() {
 
         {/* Notification Channels */}
         <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.notifications.channels.title}</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            {t.settings.notifications.channels.title}
+          </h2>
           <div className="space-y-4">
             <div className="flex items-center justify-between py-3 border-b border-gray-100">
               <div className="flex items-center gap-3">
@@ -204,7 +206,9 @@ export default function NotificationsSettings() {
 
         {/* Notification Frequency */}
         <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.notifications.frequency.title}</h2>
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">
+            {t.settings.notifications.frequency.title}
+          </h2>
           <div className="space-y-3">
             <label className="flex items-center gap-3 cursor-pointer">
               <input
@@ -216,7 +220,9 @@ export default function NotificationsSettings() {
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
               />
               <div>
-                <p className="font-medium text-gray-900">{t.settings.notifications.frequency.instant.title}</p>
+                <p className="font-medium text-gray-900">
+                  {t.settings.notifications.frequency.instant.title}
+                </p>
                 <p className="text-sm text-gray-500">{t.settings.notifications.frequency.instant.subtitle}</p>
               </div>
             </label>
@@ -255,7 +261,9 @@ export default function NotificationsSettings() {
         <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">{t.settings.notifications.quietHours.title}</h2>
+              <h2 className="text-lg font-semibold text-gray-900">
+                {t.settings.notifications.quietHours.title}
+              </h2>
               <p className="text-sm text-gray-500">{t.settings.notifications.quietHours.subtitle}</p>
             </div>
             <label className="relative inline-flex items-center cursor-pointer">
@@ -271,7 +279,9 @@ export default function NotificationsSettings() {
           {notifications.quietHoursEnabled && (
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.notifications.quietHours.startTime}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t.settings.notifications.quietHours.startTime}
+                </label>
                 <input
                   type="time"
                   value={notifications.quietHoursStart}
@@ -280,7 +290,9 @@ export default function NotificationsSettings() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.notifications.quietHours.endTime}</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {t.settings.notifications.quietHours.endTime}
+                </label>
                 <input
                   type="time"
                   value={notifications.quietHoursEnd}
@@ -305,5 +317,6 @@ export default function NotificationsSettings() {
         </div>
       </motion.div>
       <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
-      </div>  );
+    </div>
+  );
 }
