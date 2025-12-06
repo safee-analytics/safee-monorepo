@@ -37,6 +37,8 @@ import {
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import OtpInput from "react-otp-input";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { useToast, useConfirm, SafeeToastContainer } from "@/components/feedback";
 
 // Extended user type with custom profile fields
 interface ExtendedUser {
@@ -54,13 +56,14 @@ interface ExtendedUser {
 }
 
 export function ProfileTabs() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"profile" | "security" | "accounts" | "danger">("profile");
 
   const tabs = [
-    { id: "profile", label: "Profile", icon: User },
-    { id: "security", label: "Security", icon: Shield },
-    { id: "accounts", label: "Linked Accounts", icon: LinkIcon },
-    { id: "danger", label: "Danger Zone", icon: Trash2 },
+    { id: "profile", label: t.settings.profile.tabs.profile, icon: User },
+    { id: "security", label: t.settings.profile.tabs.security, icon: Shield },
+    { id: "accounts", label: t.settings.profile.tabs.linkedAccounts, icon: LinkIcon },
+    { id: "danger", label: t.settings.profile.tabs.dangerZone, icon: Trash2 },
   ] as const;
 
   return (
@@ -108,6 +111,8 @@ export function ProfileTabs() {
 }
 
 function ProfileTab() {
+  const { t } = useTranslation();
+  const toast = useToast();
   const { data: session } = useSession();
   const user = session?.user as ExtendedUser | undefined;
 
@@ -141,9 +146,9 @@ function ProfileTab() {
       //   department,
       // });
 
-      alert("Profile updated successfully!");
+      toast.success(t.settings.profile.profileTab.alerts.profileSuccess);
     } catch (_error) {
-      alert("Failed to update profile");
+      toast.error(t.settings.profile.profileTab.alerts.profileFailed);
     }
   };
 
@@ -162,9 +167,9 @@ function ProfileTab() {
       // For now, create a local object URL for preview
       const objectUrl = URL.createObjectURL(file);
       setImageUrl(objectUrl);
-      alert("Image ready. Click 'Save Changes' to update your profile.");
+      toast.info(t.settings.profile.profileTab.profilePicture.ready);
     } catch (_error) {
-      alert("Failed to upload image");
+      toast.error(t.settings.profile.profileTab.alerts.imageUploadFailed);
     } finally {
       setIsUploadingImage(false);
     }
@@ -174,17 +179,18 @@ function ProfileTab() {
     e.preventDefault();
     try {
       await updateUsernameMutation.mutateAsync(username);
-      alert("Username updated successfully!");
+      toast.success(t.settings.profile.profileTab.alerts.usernameSuccess);
     } catch (_error) {
-      alert("Failed to update username");
+      toast.error(t.settings.profile.profileTab.alerts.usernameFailed);
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Profile Picture */}
+    <>
+      <div className="space-y-6">
+        {/* Profile Picture */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Profile Picture</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.profile.profileTab.profilePicture.title}</h3>
         <div className="flex items-center gap-6">
           <div className="relative">
             {imageUrl || user?.image ? (
@@ -208,35 +214,35 @@ function ProfileTab() {
                 className="hidden"
                 disabled={isUploadingImage}
               />
-              {isUploadingImage ? "Uploading..." : "Upload Photo"}
+              {isUploadingImage ? t.settings.profile.profileTab.profilePicture.uploading : t.settings.profile.profileTab.profilePicture.uploadPhoto}
             </label>
-            <p className="text-sm text-gray-500">JPG, PNG or GIF. Max size 2MB.</p>
+            <p className="text-sm text-gray-500">{t.settings.profile.profileTab.profilePicture.formats}</p>
           </div>
         </div>
       </div>
 
       {/* Basic Info */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.profile.profileTab.basicInformation.title}</h3>
         <form onSubmit={handleUpdateProfile} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <User className="w-4 h-4 inline mr-2" />
-              Full Name
+              {t.settings.profile.profileTab.basicInformation.fullName}
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="John Doe"
+              placeholder={t.settings.profile.profileTab.basicInformation.fullNamePlaceholder}
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <Mail className="w-4 h-4 inline mr-2" />
-              Email Address
+              {t.settings.profile.profileTab.basicInformation.emailAddress}
             </label>
             <input
               type="email"
@@ -244,13 +250,13 @@ function ProfileTab() {
               disabled
               className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500"
             />
-            <p className="text-sm text-gray-500 mt-1">Email cannot be changed here. Use Security tab.</p>
+            <p className="text-sm text-gray-500 mt-1">{t.settings.profile.profileTab.basicInformation.emailNote}</p>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <Phone className="w-4 h-4 inline mr-2" />
-              Phone Number
+              {t.settings.profile.profileTab.basicInformation.phoneNumber}
             </label>
             <PhoneInput
               international
@@ -264,28 +270,28 @@ function ProfileTab() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <Briefcase className="w-4 h-4 inline mr-2" />
-              Job Title
+              {t.settings.profile.profileTab.basicInformation.jobTitle}
             </label>
             <input
               type="text"
               value={jobTitle}
               onChange={(e) => setJobTitle(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Senior Accountant"
+              placeholder={t.settings.profile.profileTab.basicInformation.jobTitlePlaceholder}
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               <Building className="w-4 h-4 inline mr-2" />
-              Department
+              {t.settings.profile.profileTab.basicInformation.department}
             </label>
             <input
               type="text"
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="Accounting"
+              placeholder={t.settings.profile.profileTab.basicInformation.departmentPlaceholder}
             />
           </div>
 
@@ -294,25 +300,25 @@ function ProfileTab() {
             disabled={updateUserMutation.isPending || updateProfileMutation.isPending}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {updateUserMutation.isPending || updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
+            {updateUserMutation.isPending || updateProfileMutation.isPending ? t.settings.profile.profileTab.basicInformation.saving : t.settings.profile.profileTab.basicInformation.saveChanges}
           </button>
         </form>
       </div>
 
       {/* Username */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Username</h3>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.profile.profileTab.username.title}</h3>
         <form onSubmit={handleUpdateUsername} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Username</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.profile.profileTab.username.label}</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              placeholder="johndoe"
+              placeholder={t.settings.profile.profileTab.username.placeholder}
             />
-            <p className="text-sm text-gray-500 mt-1">Your unique username for signing in</p>
+            <p className="text-sm text-gray-500 mt-1">{t.settings.profile.profileTab.username.note}</p>
           </div>
 
           <button
@@ -320,15 +326,20 @@ function ProfileTab() {
             disabled={updateUsernameMutation.isPending}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {updateUsernameMutation.isPending ? "Updating..." : "Update Username"}
+            {updateUsernameMutation.isPending ? t.settings.profile.profileTab.username.updating : t.settings.profile.profileTab.username.updateButton}
           </button>
         </form>
       </div>
-    </div>
+      </div>
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
+    </>
   );
 }
 
 function SecurityTab() {
+  const { t } = useTranslation();
+  const toast = useToast();
+  const { confirm, ConfirmModalComponent } = useConfirm();
   const changePasswordMutation = useChangePassword();
   const changeEmailMutation = useChangeEmail();
   const disable2FAMutation = useDisable2FA();
@@ -353,7 +364,7 @@ function SecurityTab() {
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (newPassword !== confirmPassword) {
-      alert("Passwords don't match!");
+      toast.error(t.settings.profile.securityTab.alerts.passwordMismatch);
       return;
     }
     try {
@@ -362,12 +373,12 @@ function SecurityTab() {
         newPassword,
         revokeOtherSessions: false,
       });
-      alert("Password changed successfully!");
+      toast.success(t.settings.profile.securityTab.alerts.passwordSuccess);
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
     } catch (_error) {
-      alert("Failed to change password");
+      toast.error(t.settings.profile.securityTab.alerts.passwordFailed);
     }
   };
 
@@ -375,52 +386,59 @@ function SecurityTab() {
     e.preventDefault();
     try {
       await changeEmailMutation.mutateAsync(newEmail);
-      alert("Email change initiated! Check your new email for verification.");
+      toast.success(t.settings.profile.securityTab.alerts.emailSuccess);
       setNewEmail("");
     } catch (_error) {
-      alert("Failed to change email");
+      toast.error(t.settings.profile.securityTab.alerts.emailFailed);
     }
   };
 
   const handleDisable2FA = async () => {
     if (!disable2FAPassword) {
-      alert("Please enter your password");
+      toast.error(t.settings.profile.securityTab.alerts.disable2FAPrompt);
       return;
     }
-    if (!confirm("Are you sure you want to disable two-factor authentication?")) return;
+    const confirmed = await confirm({
+      title: t.settings.profile.securityTab.twoFactor.disableButton,
+      message: t.settings.profile.securityTab.alerts.disable2FAConfirm,
+      type: "warning",
+      confirmText: t.settings.profile.securityTab.twoFactor.disableButton,
+    });
+
+    if (!confirmed) return;
 
     try {
       await disable2FAMutation.mutateAsync(disable2FAPassword);
-      alert("Two-factor authentication disabled successfully");
+      toast.success(t.settings.profile.securityTab.alerts.disable2FASuccess);
       setDisable2FAPassword("");
       twoFactorStatus.refetch();
     } catch (_error) {
-      alert("Failed to disable 2FA. Please check your password.");
+      toast.error(t.settings.profile.securityTab.alerts.disable2FAFailed);
     }
   };
 
   const handle2FASetupSuccess = () => {
     twoFactorStatus.refetch();
-    alert("Two-factor authentication enabled successfully!");
+    toast.success(t.settings.profile.securityTab.alerts.twoFactorSuccess);
   };
 
   const handleSendPhoneVerification = async () => {
     if (!phoneNumber) {
-      alert("Please enter a valid phone number");
+      toast.error(t.settings.profile.securityTab.alerts.phoneInvalid);
       return;
     }
     try {
       await sendPhoneVerificationMutation.mutateAsync(phoneNumber);
       setPhoneVerificationSent(true);
-      alert("Verification code sent to your phone!");
+      toast.success(t.settings.profile.securityTab.alerts.phoneCodeSent);
     } catch (_error) {
-      alert("Failed to send verification code");
+      toast.error(t.settings.profile.securityTab.alerts.phoneCodeFailed);
     }
   };
 
   const handleVerifyPhone = async () => {
     if (phoneVerificationCode.length !== 6) {
-      alert("Please enter the 6-digit verification code");
+      toast.error(t.settings.profile.securityTab.alerts.phoneCodeInvalid);
       return;
     }
     try {
@@ -430,20 +448,20 @@ function SecurityTab() {
           phoneNumber,
           code: phoneVerificationCode,
         });
-        alert("Phone number updated successfully!");
+        toast.success(t.settings.profile.securityTab.alerts.phoneUpdateSuccess);
       } else {
         await verifyPhoneNumberMutation.mutateAsync({
           phoneNumber,
           code: phoneVerificationCode,
         });
-        alert("Phone number verified successfully!");
+        toast.success(t.settings.profile.securityTab.alerts.phoneVerifySuccess);
       }
       setShowPhoneVerification(false);
       setPhoneNumber("");
       setPhoneVerificationCode("");
       setPhoneVerificationSent(false);
     } catch (_error) {
-      alert("Invalid verification code");
+      toast.error(t.settings.profile.securityTab.alerts.phoneVerifyFailed);
       setPhoneVerificationCode("");
     }
   };
@@ -454,11 +472,11 @@ function SecurityTab() {
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <Lock className="w-5 h-5" />
-          Change Password
+          {t.settings.profile.securityTab.changePassword.title}
         </h3>
         <form onSubmit={handleChangePassword} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.profile.securityTab.changePassword.currentPassword}</label>
             <input
               type="password"
               value={currentPassword}
@@ -468,7 +486,7 @@ function SecurityTab() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.profile.securityTab.changePassword.newPassword}</label>
             <input
               type="password"
               value={newPassword}
@@ -479,7 +497,7 @@ function SecurityTab() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.profile.securityTab.changePassword.confirmPassword}</label>
             <input
               type="password"
               value={confirmPassword}
@@ -493,7 +511,7 @@ function SecurityTab() {
             disabled={changePasswordMutation.isPending}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {changePasswordMutation.isPending ? "Changing..." : "Change Password"}
+            {changePasswordMutation.isPending ? t.settings.profile.securityTab.changePassword.changing : t.settings.profile.securityTab.changePassword.changeButton}
           </button>
         </form>
       </div>
@@ -502,27 +520,27 @@ function SecurityTab() {
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <Mail className="w-5 h-5" />
-          Change Email Address
+          {t.settings.profile.securityTab.changeEmail.title}
         </h3>
         <form onSubmit={handleChangeEmail} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">New Email Address</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.profile.securityTab.changeEmail.newEmail}</label>
             <input
               type="email"
               value={newEmail}
               onChange={(e) => setNewEmail(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-              placeholder="newemail@example.com"
+              placeholder={t.settings.profile.securityTab.changeEmail.newEmailPlaceholder}
               required
             />
-            <p className="text-sm text-gray-500 mt-1">You&apos;ll need to verify your new email address</p>
+            <p className="text-sm text-gray-500 mt-1">{t.settings.profile.securityTab.changeEmail.note}</p>
           </div>
           <button
             type="submit"
             disabled={changeEmailMutation.isPending}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
           >
-            {changeEmailMutation.isPending ? "Updating..." : "Update Email"}
+            {changeEmailMutation.isPending ? t.settings.profile.securityTab.changeEmail.updating : t.settings.profile.securityTab.changeEmail.updateButton}
           </button>
         </form>
       </div>
@@ -531,17 +549,17 @@ function SecurityTab() {
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <Shield className="w-5 h-5" />
-          Two-Factor Authentication
+          {t.settings.profile.securityTab.twoFactor.title}
         </h3>
 
         {twoFactorStatus?.data ? (
           <div className="space-y-4">
             <div className="flex items-center gap-2 text-green-600">
               <Check className="w-5 h-5" />
-              <span className="font-medium">2FA is enabled on your account</span>
+              <span className="font-medium">{t.settings.profile.securityTab.twoFactor.enabled}</span>
             </div>
             <p className="text-sm text-gray-600">
-              Your account is protected with two-factor authentication. You can disable it below if needed.
+              {t.settings.profile.securityTab.twoFactor.enabledNote}
             </p>
 
             <form
@@ -553,14 +571,14 @@ function SecurityTab() {
             >
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirm Password to Disable 2FA
+                  {t.settings.profile.securityTab.twoFactor.confirmPasswordLabel}
                 </label>
                 <input
                   type="password"
                   value={disable2FAPassword}
                   onChange={(e) => setDisable2FAPassword(e.target.value)}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg"
-                  placeholder="Enter your password"
+                  placeholder={t.settings.profile.securityTab.twoFactor.confirmPasswordPlaceholder}
                   required
                 />
               </div>
@@ -569,22 +587,21 @@ function SecurityTab() {
                 disabled={disable2FAMutation.isPending}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
               >
-                {disable2FAMutation.isPending ? "Disabling..." : "Disable 2FA"}
+                {disable2FAMutation.isPending ? t.settings.profile.securityTab.twoFactor.disabling : t.settings.profile.securityTab.twoFactor.disableButton}
               </button>
             </form>
           </div>
         ) : (
           <div className="space-y-4">
             <p className="text-gray-600">
-              Add an extra layer of security to your account by enabling two-factor authentication.
-              You&apos;ll need to enter a code from your authenticator app when signing in.
+              {t.settings.profile.securityTab.twoFactor.notEnabled}
             </p>
             <button
               onClick={() => setShow2FASetup(true)}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
             >
               <Shield className="w-4 h-4" />
-              Enable Two-Factor Authentication
+              {t.settings.profile.securityTab.twoFactor.enableButton}
             </button>
           </div>
         )}
@@ -594,28 +611,28 @@ function SecurityTab() {
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
           <Phone className="w-5 h-5" />
-          Phone Number
+          {t.settings.profile.securityTab.phoneNumber.title}
         </h3>
 
         {session?.user?.phoneNumber ? (
           <div className="space-y-4">
             <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
               <div>
-                <p className="text-sm font-medium text-green-800">Verified Phone Number</p>
+                <p className="text-sm font-medium text-green-800">{t.settings.profile.securityTab.phoneNumber.verified}</p>
                 <p className="text-sm text-green-600">{session.user.phoneNumber}</p>
               </div>
               <button
                 onClick={() => setShowPhoneVerification(true)}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
-                Change
+                {t.settings.profile.securityTab.phoneNumber.changeButton}
               </button>
             </div>
           </div>
         ) : (
           <div className="space-y-4">
             <p className="text-gray-600">
-              Add a phone number to your account for additional security and account recovery options.
+              {t.settings.profile.securityTab.phoneNumber.note}
             </p>
 
             {!showPhoneVerification ? (
@@ -624,14 +641,14 @@ function SecurityTab() {
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
               >
                 <Phone className="w-4 h-4" />
-                Add Phone Number
+                {t.settings.profile.securityTab.phoneNumber.addButton}
               </button>
             ) : (
               <div className="space-y-4">
                 {!phoneVerificationSent ? (
                   <>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.profile.securityTab.phoneNumber.phoneNumberLabel}</label>
                       <PhoneInput
                         international
                         defaultCountry="EG"
@@ -640,7 +657,7 @@ function SecurityTab() {
                         className="phone-input-custom"
                       />
                       <p className="text-xs text-gray-500 mt-1">
-                        We&apos;ll send you a verification code via SMS
+                        {t.settings.profile.securityTab.phoneNumber.verificationNote}
                       </p>
                     </div>
 
@@ -652,14 +669,14 @@ function SecurityTab() {
                         }}
                         className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
                       >
-                        Cancel
+                        {t.settings.profile.securityTab.phoneNumber.cancel}
                       </button>
                       <button
                         onClick={handleSendPhoneVerification}
                         disabled={!phoneNumber || sendPhoneVerificationMutation.isPending}
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                       >
-                        {sendPhoneVerificationMutation.isPending ? "Sending..." : "Send Code"}
+                        {sendPhoneVerificationMutation.isPending ? t.settings.profile.securityTab.phoneNumber.sending : t.settings.profile.securityTab.phoneNumber.sendCode}
                       </button>
                     </div>
                   </>
@@ -667,13 +684,13 @@ function SecurityTab() {
                   <>
                     <div className="p-3 bg-blue-50 rounded-lg">
                       <p className="text-sm text-blue-800">
-                        Code sent to: <span className="font-medium">{phoneNumber}</span>
+                        {t.settings.profile.securityTab.phoneNumber.codeSentTo} <span className="font-medium">{phoneNumber}</span>
                       </p>
                     </div>
 
                     <div>
                       <label className="block text-sm font-medium text-gray-700 mb-2">
-                        6-Digit Verification Code
+                        {t.settings.profile.securityTab.phoneNumber.verificationCode}
                       </label>
                       <div className="flex justify-center">
                         <OtpInput
@@ -699,14 +716,14 @@ function SecurityTab() {
                         }}
                         className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
                       >
-                        Back
+                        {t.settings.profile.securityTab.phoneNumber.back}
                       </button>
                       <button
                         onClick={handleVerifyPhone}
                         disabled={phoneVerificationCode.length !== 6 || verifyPhoneNumberMutation.isPending}
                         className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                       >
-                        {verifyPhoneNumberMutation.isPending ? "Verifying..." : "Verify"}
+                        {verifyPhoneNumberMutation.isPending ? t.settings.profile.securityTab.phoneNumber.verifying : t.settings.profile.securityTab.phoneNumber.verify}
                       </button>
                     </div>
                   </>
@@ -723,6 +740,8 @@ function SecurityTab() {
         onClose={() => setShow2FASetup(false)}
         onSuccess={handle2FASetupSuccess}
       />
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
+      <ConfirmModalComponent />
     </div>
   );
 }
@@ -734,6 +753,9 @@ interface LinkedAccount {
 }
 
 function LinkedAccountsTab() {
+  const { t } = useTranslation();
+  const toast = useToast();
+  const { confirm, ConfirmModalComponent } = useConfirm();
   const { data: accounts, isLoading } = useListLinkedAccounts();
   const linkAccountMutation = useLinkSocialAccount();
   const unlinkAccountMutation = useUnlinkSocialAccount();
@@ -742,28 +764,35 @@ function LinkedAccountsTab() {
     try {
       await linkAccountMutation.mutateAsync({ provider: "google" });
     } catch (_error) {
-      alert("Failed to link Google account");
+      toast.error(t.settings.profile.linkedAccountsTab.alerts.linkFailed);
     }
   };
 
   const handleUnlink = async (accountId: string, providerId: string) => {
-    if (!confirm("Are you sure you want to unlink this account?")) return;
+    const confirmed = await confirm({
+      title: t.settings.profile.linkedAccountsTab.unlinkButton,
+      message: t.settings.profile.linkedAccountsTab.unlinkConfirm,
+      type: "warning",
+      confirmText: t.settings.profile.linkedAccountsTab.unlinkButton,
+    });
+
+    if (!confirmed) return;
     try {
       await unlinkAccountMutation.mutateAsync({ accountId, providerId });
-      alert("Account unlinked successfully!");
+      toast.success(t.settings.profile.linkedAccountsTab.alerts.unlinkSuccess);
     } catch (_error) {
-      alert("Failed to unlink account");
+      toast.error(t.settings.profile.linkedAccountsTab.alerts.unlinkFailed);
     }
   };
 
   return (
     <div className="space-y-6">
       <div className="bg-white rounded-lg border border-gray-200 p-6">
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Social Accounts</h3>
-        <p className="text-gray-600 mb-6">Link your social accounts for quick sign-in</p>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">{t.settings.profile.linkedAccountsTab.title}</h3>
+        <p className="text-gray-600 mb-6">{t.settings.profile.linkedAccountsTab.description}</p>
 
         {isLoading ? (
-          <div className="text-gray-500">Loading...</div>
+          <div className="text-gray-500">{t.settings.profile.linkedAccountsTab.loading}</div>
         ) : (
           <div className="space-y-4">
             {/* Google */}
@@ -773,8 +802,8 @@ function LinkedAccountsTab() {
                   <span className="text-red-600 font-bold">G</span>
                 </div>
                 <div>
-                  <div className="font-medium">Google</div>
-                  <div className="text-sm text-gray-500">Sign in with your Google account</div>
+                  <div className="font-medium">{t.settings.profile.linkedAccountsTab.google.title}</div>
+                  <div className="text-sm text-gray-500">{t.settings.profile.linkedAccountsTab.google.description}</div>
                 </div>
               </div>
               {accounts?.find((acc: LinkedAccount) => acc.providerId === "google") ? (
@@ -785,7 +814,7 @@ function LinkedAccountsTab() {
                   }}
                   className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 >
-                  Unlink
+                  {t.settings.profile.linkedAccountsTab.unlinkButton}
                 </button>
               ) : (
                 <button
@@ -793,18 +822,23 @@ function LinkedAccountsTab() {
                   disabled={linkAccountMutation.isPending}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
                 >
-                  Link
+                  {t.settings.profile.linkedAccountsTab.linkButton}
                 </button>
               )}
             </div>
           </div>
         )}
       </div>
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
+      <ConfirmModalComponent />
     </div>
   );
 }
 
 function DangerZoneTab() {
+  const { t } = useTranslation();
+  const toast = useToast();
+  const { confirm, ConfirmModalComponent } = useConfirm();
   const deleteUserMutation = useDeleteUser();
   const [password, setPassword] = useState("");
   const [confirmText, setConfirmText] = useState("");
@@ -812,17 +846,25 @@ function DangerZoneTab() {
   const handleDeleteAccount = async (e: React.FormEvent) => {
     e.preventDefault();
     if (confirmText !== "DELETE") {
-      alert("Please type DELETE to confirm");
+      toast.error(t.settings.profile.dangerZoneTab.alerts.confirmTextMismatch);
       return;
     }
-    if (!confirm("This action cannot be undone. Are you absolutely sure?")) return;
+
+    const confirmed = await confirm({
+      title: t.settings.profile.dangerZoneTab.title,
+      message: t.settings.profile.dangerZoneTab.alerts.deleteConfirm,
+      type: "danger",
+      confirmText: t.settings.profile.dangerZoneTab.deleteButton,
+    });
+
+    if (!confirmed) return;
 
     try {
       await deleteUserMutation.mutateAsync(password);
-      alert("Account deleted successfully");
+      toast.success(t.settings.profile.dangerZoneTab.alerts.deleteSuccess);
       window.location.href = "/";
     } catch (_error) {
-      alert("Failed to delete account");
+      toast.error(t.settings.profile.dangerZoneTab.alerts.deleteFailed);
     }
   };
 
@@ -831,15 +873,15 @@ function DangerZoneTab() {
       <div className="bg-red-50 border border-red-200 rounded-lg p-6">
         <h3 className="text-lg font-semibold text-red-900 mb-2 flex items-center gap-2">
           <Trash2 className="w-5 h-5" />
-          Delete Account
+          {t.settings.profile.dangerZoneTab.title}
         </h3>
         <p className="text-red-700 mb-6">
-          Once you delete your account, there is no going back. Please be certain.
+          {t.settings.profile.dangerZoneTab.warning}
         </p>
 
         <form onSubmit={handleDeleteAccount} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-red-900 mb-2">Confirm Password</label>
+            <label className="block text-sm font-medium text-red-900 mb-2">{t.settings.profile.dangerZoneTab.confirmPassword}</label>
             <input
               type="password"
               value={password}
@@ -850,14 +892,14 @@ function DangerZoneTab() {
           </div>
           <div>
             <label className="block text-sm font-medium text-red-900 mb-2">
-              Type <strong>DELETE</strong> to confirm
+              {t.settings.profile.dangerZoneTab.confirmText} <strong>{t.settings.profile.dangerZoneTab.confirmTextStrong}</strong>
             </label>
             <input
               type="text"
               value={confirmText}
               onChange={(e) => setConfirmText(e.target.value)}
               className="w-full px-4 py-2 border border-red-300 rounded-lg"
-              placeholder="DELETE"
+              placeholder={t.settings.profile.dangerZoneTab.confirmTextPlaceholder}
               required
             />
           </div>
@@ -866,10 +908,12 @@ function DangerZoneTab() {
             disabled={deleteUserMutation.isPending}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
           >
-            {deleteUserMutation.isPending ? "Deleting..." : "Delete My Account"}
+            {deleteUserMutation.isPending ? t.settings.profile.dangerZoneTab.deleting : t.settings.profile.dangerZoneTab.deleteButton}
           </button>
         </form>
       </div>
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
+      <ConfirmModalComponent />
     </div>
   );
 }

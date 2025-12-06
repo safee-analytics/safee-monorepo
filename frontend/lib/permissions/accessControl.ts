@@ -46,6 +46,10 @@ export const ac = createAccessControl({
     "view", // View invoice styles
     "manage", // Manage invoice styles
   ],
+  documents: [
+    "view", // View document settings
+    "manage", // Manage document settings (encryption, retention, etc.)
+  ],
   audit: [
     "view", // View audit module
     "create", // Create audit cases
@@ -81,6 +85,7 @@ export const settingsPermissions = {
   appearance: [], // Always accessible
   organization: ["organization:view"],
   team: ["team:view"],
+  documents: ["documents:view"],
   "audit-logs": ["auditLogs:view"],
   security: ["security:view"],
   storage: ["storage:view"],

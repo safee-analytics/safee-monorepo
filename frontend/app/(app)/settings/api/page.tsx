@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Key, Copy, Eye, EyeOff, Plus, Trash2, AlertCircle, CheckCircle, RefreshCw } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
+import { useToast, useConfirm, SafeeToastContainer } from "@/components/feedback";
 import {
   useGetAPIKeys,
   useGetAvailablePermissions,
@@ -17,6 +18,8 @@ import {
 
 export default function APIKeysSettings() {
   const { t } = useTranslation();
+  const toast = useToast();
+  const { confirm, ConfirmModalComponent } = useConfirm();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [newKeyName, setNewKeyName] = useState("");
   const [newKeyPermissions, setNewKeyPermissions] = useState<string[]>([]);
@@ -56,11 +59,11 @@ export default function APIKeysSettings() {
 
   const createAPIKey = async () => {
     if (!newKeyName.trim()) {
-      alert("Please enter a name for the API key");
+      toast.error("Please enter a name for the API key");
       return;
     }
     if (newKeyPermissions.length === 0) {
-      alert("Please select at least one permission");
+      toast.error("Please select at least one permission");
       return;
     }
 
@@ -73,26 +76,38 @@ export default function APIKeysSettings() {
       setNewKeyName("");
       setNewKeyPermissions([]);
     } catch (_error) {
-      alert("Failed to create API key");
+      toast.error("Failed to create API key");
     }
   };
 
   const handleRevokeKey = async (keyId: string) => {
-    if (confirm("Are you sure you want to revoke this API key? This action cannot be undone.")) {
+        const confirmed = await confirm({
+      title: "Revoke API Key",
+      message: "Are you sure you want to revoke this API key? This action cannot be undone.",
+      type: "danger",
+      confirmText: "Revoke",
+    });
+    if (confirmed) {
       try {
         await revokeKey.mutateAsync(keyId);
       } catch (_error) {
-        alert("Failed to revoke API key");
+        toast.error("Failed to revoke API key");
       }
     }
   };
 
   const handleDeleteKey = async (keyId: string) => {
-    if (confirm("Are you sure you want to permanently delete this API key?")) {
+        const confirmed = await confirm({
+      title: "Delete API Key",
+      message: "Are you sure you want to permanently delete this API key?",
+      type: "danger",
+      confirmText: "Delete",
+    });
+    if (confirmed) {
       try {
         await deleteKey.mutateAsync(keyId);
       } catch (_error) {
-        alert("Failed to delete API key");
+        toast.error("Failed to delete API key");
       }
     }
   };
@@ -150,7 +165,7 @@ export default function APIKeysSettings() {
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Plus className="w-4 h-4" />
-                Create API Key
+                {t.settings.api.createButton}
               </button>
             </div>
           </div>
@@ -159,10 +174,9 @@ export default function APIKeysSettings() {
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-yellow-900">Keep your API keys secure</p>
+              <p className="text-sm font-medium text-yellow-900">{t.settings.api.warning.title}</p>
               <p className="text-sm text-yellow-700 mt-1">
-                Never share your API keys publicly or commit them to version control. Anyone with your API key
-                can access your data.
+                {t.settings.api.warning.message}
               </p>
             </div>
           </div>
@@ -187,17 +201,17 @@ export default function APIKeysSettings() {
                         <h3 className="font-semibold text-gray-900">{apiKey.name}</h3>
                         {apiKey.status === "active" ? (
                           <span className="px-2 py-1 text-xs bg-green-100 text-green-700 rounded">
-                            Active
+                            {t.settings.api.list.active}
                           </span>
                         ) : (
-                          <span className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded">Revoked</span>
+                          <span className="px-2 py-1 text-xs bg-red-100 text-red-700 rounded">{t.settings.api.list.revoked}</span>
                         )}
                       </div>
                       <div className="text-sm text-gray-500 space-y-1">
-                        <p>Created: {apiKey.created}</p>
-                        <p>Last used: {apiKey.lastUsed}</p>
+                        <p>{t.settings.api.list.created}: {apiKey.created}</p>
+                        <p>{t.settings.api.list.lastUsed}: {apiKey.lastUsed}</p>
                         <div className="flex items-center gap-2">
-                          <span>Permissions:</span>
+                          <span>{t.settings.api.list.permissions}:</span>
                           {apiKey.permissions.map((permission: string) => (
                             <span
                               key={permission}
@@ -216,7 +230,7 @@ export default function APIKeysSettings() {
                           disabled={revokeKey.isPending}
                           className="px-3 py-1 text-sm text-red-600 hover:bg-red-50 rounded transition-colors disabled:opacity-50"
                         >
-                          {revokeKey.isPending ? "Revoking..." : "Revoke"}
+                          {revokeKey.isPending ? t.settings.api.list.revoking : t.settings.api.list.revoke}
                         </button>
                       )}
                       <button
@@ -239,7 +253,7 @@ export default function APIKeysSettings() {
                         <button
                           onClick={() => toggleKeyVisibility(apiKey.id)}
                           className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors"
-                          title={revealedKeys.has(apiKey.id) ? "Hide" : "Reveal"}
+                          title={revealedKeys.has(apiKey.id) ? t.settings.api.list.hide : t.settings.api.list.reveal}
                         >
                           {revealedKeys.has(apiKey.id) ? (
                             <EyeOff className="w-4 h-4" />
@@ -250,7 +264,7 @@ export default function APIKeysSettings() {
                         <button
                           onClick={() => copyToClipboard(apiKey.key, apiKey.id)}
                           className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors"
-                          title="Copy to clipboard"
+                          title={t.settings.api.list.copy}
                         >
                           {copiedKey === apiKey.id ? (
                             <CheckCircle className="w-4 h-4 text-green-400" />
@@ -267,12 +281,12 @@ export default function APIKeysSettings() {
               {apiKeys.length === 0 && (
                 <div className="bg-gray-50 rounded-lg p-12 text-center">
                   <Key className="w-12 h-12 text-gray-400 mx-auto mb-3" />
-                  <p className="text-gray-600 mb-4">No API keys created yet</p>
+                  <p className="text-gray-600 mb-4">{t.settings.api.empty.title}</p>
                   <button
                     onClick={() => setShowCreateModal(true)}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                   >
-                    Create your first API key
+                    {t.settings.api.empty.button}
                   </button>
                 </div>
               )}
@@ -281,12 +295,12 @@ export default function APIKeysSettings() {
 
           {/* Documentation */}
           <div className="mt-8 bg-blue-50 border border-blue-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">API Documentation</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.settings.api.documentation.title}</h3>
             <p className="text-sm text-gray-600 mb-4">
-              Learn how to use the Safee API to integrate with your applications.
+              {t.settings.api.documentation.message}
             </p>
             <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
-              View API Documentation →
+              {t.settings.api.documentation.button}
             </button>
           </div>
 
@@ -298,23 +312,23 @@ export default function APIKeysSettings() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="bg-white rounded-lg p-6 w-full max-w-4xl max-h-[90vh] flex flex-col"
               >
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Create API Key</h2>
+                <h2 className="text-xl font-bold text-gray-900 mb-4">{t.settings.api.createModal.title}</h2>
 
                 <div className="space-y-4 mb-6 flex-1 overflow-y-auto">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">Key Name</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.api.createModal.keyName}</label>
                     <input
                       type="text"
                       value={newKeyName}
                       onChange={(e) => setNewKeyName(e.target.value)}
-                      placeholder="e.g., Production API"
+                      placeholder={t.settings.api.createModal.keyNamePlaceholder}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
                   </div>
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-3">
-                      Permissions ({newKeyPermissions.length} selected)
+                      {t.settings.api.createModal.permissionsLabel} ({newKeyPermissions.length} {t.settings.api.createModal.permissionsSelected})
                     </label>
                     <div className="grid grid-cols-2 gap-4">
                       {Object.entries(permissionsByResource).map(
@@ -340,7 +354,7 @@ export default function APIKeysSettings() {
                                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                                   }`}
                                 >
-                                  {allSelected ? "Deselect All" : "Select All"}
+                                  {allSelected ? t.settings.api.createModal.deselectAll : t.settings.api.createModal.selectAll}
                                 </button>
                               </div>
                               <div className="grid grid-cols-2 gap-2">
@@ -378,20 +392,22 @@ export default function APIKeysSettings() {
                     }}
                     className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                   >
-                    Cancel
+                    {t.settings.api.createModal.cancel}
                   </button>
                   <button
                     onClick={createAPIKey}
                     disabled={createKey.isPending}
                     className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
                   >
-                    {createKey.isPending ? "Creating..." : "Create Key"}
+                    {createKey.isPending ? t.settings.api.createModal.creating : t.settings.api.createModal.create}
                   </button>
                 </div>
               </motion.div>
             </div>
           )}
         </motion.div>
+        <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
+        <ConfirmModalComponent />
       </div>
     </SettingsPermissionGate>
   );

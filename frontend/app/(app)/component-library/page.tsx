@@ -172,6 +172,7 @@ const sampleInvoice: InvoiceData = {
 };
 
 function ComponentLibraryContent() {
+  const toast = useToast();
   const [activeSection, setActiveSection] = React.useState("overview");
   const [pdfUrl, setPdfUrl] = React.useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -202,7 +203,6 @@ function ComponentLibraryContent() {
     { id: "3", title: "Low Priority Task", priority: 3 },
     { id: "4", title: "Backlog Item", priority: 4 },
   ]);
-  const toast = useToast();
 
   // Simulate progress
   React.useEffect(() => {
@@ -653,28 +653,28 @@ function ComponentLibraryContent() {
                     subtitle="Manage team members"
                     icon={<Users />}
                     gradient="from-blue-600 to-cyan-600"
-                    onClick={() => alert("Users clicked")}
+                    onClick={() => toast.info("Users clicked")}
                   />
                   <HoverCard
                     title="Settings"
                     subtitle="Configure your app"
                     icon={<Settings />}
                     gradient="from-purple-600 to-pink-600"
-                    onClick={() => alert("Settings clicked")}
+                    onClick={() => toast.info("Settings clicked")}
                   />
                   <HoverCard
                     title="Documents"
                     subtitle="View all files"
                     icon={<FileText />}
                     gradient="from-green-600 to-emerald-600"
-                    onClick={() => alert("Documents clicked")}
+                    onClick={() => toast.info("Documents clicked")}
                   />
                   <HoverCard
                     title="Sign Out"
                     subtitle="End your session"
                     icon={<LogOut />}
                     gradient="from-red-600 to-orange-600"
-                    onClick={() => alert("Sign out clicked")}
+                    onClick={() => toast.info("Sign out clicked")}
                   />
                 </HoverCardGrid>
               </div>
@@ -892,7 +892,7 @@ function ComponentLibraryContent() {
                 events={calendarEvents}
                 height={600}
                 defaultView="week"
-                onSelectEvent={(event) => alert(`Event: ${event.title}`)}
+                onSelectEvent={(event) => toast.info(`Event: ${event.title}`)}
               />
               <div className="mt-6 grid grid-cols-2 gap-4">
                 <div className="p-4 bg-indigo-50 rounded-lg">

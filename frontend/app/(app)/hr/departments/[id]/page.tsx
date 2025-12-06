@@ -1,5 +1,6 @@
 "use client";
 
+import { useToast, useConfirm, SafeeToastContainer } from "@/components/feedback";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Edit, Building2, Users, AlertCircle, FolderTree } from "lucide-react";
@@ -13,6 +14,8 @@ import {
 export default function DepartmentDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const toast = useToast();
+  const { confirm, ConfirmModalComponent } = useConfirm();
   const departmentId = params.id as string;
 
   const { data: department, isLoading, error } = useDepartment(departmentId);
@@ -27,27 +30,33 @@ export default function DepartmentDetailPage() {
 
   const handleDelete = async () => {
     if (departmentEmployees && departmentEmployees.length > 0) {
-      alert(
+      toast.error(
         `Cannot delete department with ${departmentEmployees.length} employees. Please reassign or remove employees first.`,
       );
       return;
     }
 
     if (subDepartments && subDepartments.length > 0) {
-      alert(
+      toast.error(
         `Cannot delete department with ${subDepartments.length} sub-departments. Please delete or move sub-departments first.`,
       );
       return;
     }
 
-    if (!confirm("Are you sure you want to delete this department?")) return;
+        const confirmed = await confirm({
+      title: "Delete Department",
+      message: "Are you sure you want to delete this department?",
+      type: "danger",
+      confirmText: "Delete",
+    });
+    if (!confirmed) return;
 
     try {
       await deleteDepartment.mutateAsync(departmentId);
       router.push("/hr/departments");
     } catch (error) {
       console.error("Failed to delete department:", error);
-      alert("Failed to delete department. Please try again.");
+      toast.error("Failed to delete department. Please try again.");
     }
   };
 
@@ -287,6 +296,8 @@ export default function DepartmentDetailPage() {
           </div>
         </div>
       )}
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
+      <ConfirmModalComponent />
     </div>
   );
 }

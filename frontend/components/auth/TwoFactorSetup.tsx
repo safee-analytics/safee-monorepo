@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { X, Copy, Check, Shield, Key, Download } from "lucide-react";
 import QRCode from "qrcode";
 import OtpInput from "react-otp-input";
+import { useToast, SafeeToastContainer } from "@/components/feedback";
 import { useEnable2FA, useVerify2FACode, useGenerate2FABackupCodes } from "@/lib/api/hooks";
 
 interface TwoFactorSetupProps {
@@ -13,6 +14,7 @@ interface TwoFactorSetupProps {
 }
 
 export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupProps) {
+  const toast = useToast();
   const [step, setStep] = useState<"password" | "qr" | "verify" | "backup">("password");
   const [password, setPassword] = useState("");
   const [otpCode, setOtpCode] = useState("");
@@ -55,7 +57,7 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
       setStep("qr");
     } catch (error) {
       console.error("Failed to enable 2FA:", error);
-      alert("Failed to enable 2FA. Please check your password.");
+      toast.error("Failed to enable 2FA. Please check your password.");
     }
   };
 
@@ -69,7 +71,7 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
       setStep("backup");
     } catch (error) {
       console.error("Invalid 2FA code:", error);
-      alert("Invalid code. Please try again.");
+      toast.error("Invalid code. Please try again.");
       setOtpCode("");
     }
   };
@@ -262,6 +264,7 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
           </div>
         )}
       </div>
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
     </div>
   );
 }

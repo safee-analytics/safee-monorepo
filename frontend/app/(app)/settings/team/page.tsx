@@ -25,8 +25,13 @@ import {
   useCancelInvitation,
 } from "@/lib/api/hooks";
 import Link from "next/link";
+import { useToast, useConfirm, SafeeToastContainer } from "@/components/feedback";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
 
 export default function TeamManagement() {
+  const { t } = useTranslation();
+  const toast = useToast();
+  const { confirm, ConfirmModalComponent } = useConfirm();
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
   const [showInviteModal, setShowInviteModal] = useState(false);
@@ -60,13 +65,13 @@ export default function TeamManagement() {
 
   const stats = {
     totalUsers,
-    totalUsersChange: "No historical data", // TODO: Implement after adding member creation timestamps
+    totalUsersChange: t.settings.team.stats.noHistoricalData, // TODO: Implement after adding member creation timestamps
     activeUsers,
-    activityRate: `${activityRate}% active`,
+    activityRate: `${activityRate}% ${t.settings.team.stats.active}`,
     pendingInvites: pendingInvitesCount,
-    pendingNote: pendingInvitesCount === 1 ? "1 pending" : `${pendingInvitesCount} pending`,
+    pendingNote: pendingInvitesCount === 1 ? `1 ${t.settings.team.stats.pending}` : `${pendingInvitesCount} ${t.settings.team.stats.pending}`,
     adminRoles: adminCount,
-    adminNote: "Admin & Owner",
+    adminNote: t.settings.team.stats.adminOwner,
   };
 
   const getRoleBadgeColor = (role: string) => {
@@ -100,40 +105,85 @@ export default function TeamManagement() {
       {
         onSuccess: () => {
           setShowInviteModal(false);
-          // TODO: Show success toast
+          toast.success(t.settings.team.alerts.inviteSent);
+        },
+        onError: () => {
+          toast.error(t.settings.team.alerts.inviteError);
         },
       },
     );
   };
 
-  const handleRemoveMember = (userId: string) => {
+  const handleRemoveMember = async (userId: string) => {
     if (!orgId) return;
     if (!canManage(userId)) {
-      alert("You don't have permission to remove this user.");
+      toast.error(t.settings.team.alerts.noRemovePermission);
       return;
     }
-    if (confirm("Are you sure you want to remove this member?")) {
-      removeMemberMutation.mutate({ orgId, userId });
+        const confirmed = await confirm({
+      title: t.settings.team.alerts.confirmRemoveTitle,
+      message: t.settings.team.alerts.confirmRemove,
+      type: "danger",
+      confirmText: t.settings.team.alerts.remove,
+    });
+    if (confirmed) {
+      removeMemberMutation.mutate(
+        { orgId, userId },
+        {
+          onSuccess: () => {
+            toast.success(t.settings.team.alerts.memberRemoved);
+          },
+          onError: () => {
+            toast.error(t.settings.team.alerts.removeError);
+          },
+        },
+      );
     }
   };
 
   const handleUpdateRole = (userId: string, newRole: string) => {
     if (!orgId) return;
     if (!canManage(userId)) {
-      alert("You don't have permission to change this user's role.");
+      toast.error(t.settings.team.alerts.noChangeRolePermission);
       return;
     }
     if (!assignableRoles.includes(newRole)) {
-      alert("You don't have permission to assign this role.");
+      toast.error(t.settings.team.alerts.noAssignRolePermission);
       return;
     }
-    updateMemberRoleMutation.mutate({ orgId, userId, role: newRole });
+    updateMemberRoleMutation.mutate(
+      { orgId, userId, role: newRole },
+      {
+        onSuccess: () => {
+          toast.success(t.settings.team.alerts.roleUpdated);
+        },
+        onError: () => {
+          toast.error(t.settings.team.alerts.roleUpdateError);
+        },
+      },
+    );
   };
 
-  const handleCancelInvitation = (invitationId: string) => {
+  const handleCancelInvitation = async (invitationId: string) => {
     if (!orgId) return;
-    if (confirm("Are you sure you want to cancel this invitation?")) {
-      cancelInvitationMutation.mutate({ orgId, invitationId });
+        const confirmed = await confirm({
+      title: t.settings.team.alerts.confirmCancelInvitationTitle,
+      message: t.settings.team.alerts.confirmCancelInvitation,
+      type: "warning",
+      confirmText: t.settings.team.alerts.cancel,
+    });
+    if (confirmed) {
+      cancelInvitationMutation.mutate(
+        { orgId, invitationId },
+        {
+          onSuccess: () => {
+            toast.success(t.settings.team.alerts.invitationCancelled);
+          },
+          onError: () => {
+            toast.error(t.settings.team.alerts.invitationCancelError);
+          },
+        },
+      );
     }
   };
 
@@ -144,7 +194,10 @@ export default function TeamManagement() {
       { orgId, invitation: { email, role } },
       {
         onSuccess: () => {
-          // TODO: Show success toast
+          toast.success(t.settings.team.alerts.invitationResent);
+        },
+        onError: () => {
+          toast.error(t.settings.team.alerts.invitationResendError);
         },
       },
     );
@@ -154,8 +207,8 @@ export default function TeamManagement() {
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Team Management</h1>
-          <p className="text-gray-600 mt-1">Manage organization members, roles, and permissions</p>
+          <h1 className="text-2xl font-bold text-gray-900">{t.settings.team.title}</h1>
+          <p className="text-gray-600 mt-1">{t.settings.team.subtitle}</p>
         </div>
         <div className="flex items-center gap-3">
           <Link
@@ -163,14 +216,14 @@ export default function TeamManagement() {
             className="px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors flex items-center gap-2"
           >
             <Shield className="w-4 h-4" />
-            Manage Roles
+            {t.settings.team.manageRoles}
           </Link>
           <button
             onClick={() => setShowInviteModal(true)}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
           >
             <UserPlus className="w-4 h-4" />
-            Invite Member
+            {t.settings.team.inviteMember}
           </button>
         </div>
       </div>
@@ -178,7 +231,7 @@ export default function TeamManagement() {
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <div className="bg-white p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600">Total Members</p>
+            <p className="text-sm text-gray-600">{t.settings.team.stats.totalMembers}</p>
             <Users className="w-5 h-5 text-blue-600" />
           </div>
           <p className="text-3xl font-bold text-gray-900">{stats.totalUsers}</p>
@@ -187,7 +240,7 @@ export default function TeamManagement() {
 
         <div className="bg-white p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600">Active Members</p>
+            <p className="text-sm text-gray-600">{t.settings.team.stats.activeMembers}</p>
             <UserCheck className="w-5 h-5 text-green-600" />
           </div>
           <p className="text-3xl font-bold text-gray-900">{stats.activeUsers}</p>
@@ -196,7 +249,7 @@ export default function TeamManagement() {
 
         <div className="bg-white p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600">Pending Invites</p>
+            <p className="text-sm text-gray-600">{t.settings.team.stats.pendingInvites}</p>
             <Clock className="w-5 h-5 text-yellow-600" />
           </div>
           <p className="text-3xl font-bold text-gray-900">{stats.pendingInvites}</p>
@@ -205,7 +258,7 @@ export default function TeamManagement() {
 
         <div className="bg-white p-6 rounded-xl border border-gray-200">
           <div className="flex items-center justify-between mb-2">
-            <p className="text-sm text-gray-600">Admin Roles</p>
+            <p className="text-sm text-gray-600">{t.settings.team.stats.adminRoles}</p>
             <Shield className="w-5 h-5 text-red-600" />
           </div>
           <p className="text-3xl font-bold text-gray-900">{stats.adminRoles}</p>
@@ -219,7 +272,7 @@ export default function TeamManagement() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input
               type="text"
-              placeholder="Search members by name or email..."
+              placeholder={t.settings.team.search}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -230,11 +283,11 @@ export default function TeamManagement() {
             onChange={(e) => setRoleFilter(e.target.value)}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            <option value="all">All Roles</option>
-            <option value="owner">Owner</option>
-            <option value="admin">Admin</option>
-            <option value="manager">Manager</option>
-            <option value="member">Member</option>
+            <option value="all">{t.settings.team.filters.allRoles}</option>
+            <option value="owner">{t.settings.team.filters.owner}</option>
+            <option value="admin">{t.settings.team.filters.admin}</option>
+            <option value="manager">{t.settings.team.filters.manager}</option>
+            <option value="member">{t.settings.team.filters.member}</option>
           </select>
         </div>
       </div>
@@ -245,16 +298,16 @@ export default function TeamManagement() {
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Member
+                  {t.settings.team.table.member}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Role
+                  {t.settings.team.table.role}
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Joined
+                  {t.settings.team.table.joined}
                 </th>
                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">
-                  Actions
+                  {t.settings.team.table.actions}
                 </th>
               </tr>
             </thead>
@@ -262,13 +315,13 @@ export default function TeamManagement() {
               {isLoading ? (
                 <tr>
                   <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
-                    Loading members...
+                    {t.settings.team.table.loading}
                   </td>
                 </tr>
               ) : filteredMembers.length === 0 ? (
                 <tr>
                   <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
-                    No members found
+                    {t.settings.team.table.noMembers}
                   </td>
                 </tr>
               ) : (
@@ -282,7 +335,7 @@ export default function TeamManagement() {
                           className="w-10 h-10 rounded-full"
                         />
                         <div>
-                          <p className="font-medium text-gray-900">{member.user.name || "Unknown"}</p>
+                          <p className="font-medium text-gray-900">{member.user.name || t.settings.team.table.unknown}</p>
                           <p className="text-sm text-gray-600">{member.user.email}</p>
                         </div>
                       </div>
@@ -320,13 +373,13 @@ export default function TeamManagement() {
                             onClick={() => handleRemoveMember(member.userId)}
                             className="text-red-600 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                           >
-                            Remove
+                            {t.settings.team.table.remove}
                           </button>
                         </div>
                       ) : (
                         <div className="flex items-center justify-end gap-2 text-gray-400">
                           <AlertCircle className="w-4 h-4" />
-                          <span className="text-sm">No permission</span>
+                          <span className="text-sm">{t.settings.team.table.noPermission}</span>
                         </div>
                       )}
                     </td>
@@ -344,11 +397,11 @@ export default function TeamManagement() {
           <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-lg font-semibold text-gray-900">Pending Invitations</h2>
-                <p className="text-sm text-gray-600 mt-1">Manage pending team member invitations</p>
+                <h2 className="text-lg font-semibold text-gray-900">{t.settings.team.invitations.title}</h2>
+                <p className="text-sm text-gray-600 mt-1">{t.settings.team.invitations.subtitle}</p>
               </div>
               <span className="px-3 py-1 bg-yellow-100 text-yellow-700 rounded-full text-sm font-medium">
-                {invitations.length} pending
+                {invitations.length} {t.settings.team.invitations.pending}
               </span>
             </div>
           </div>
@@ -357,19 +410,19 @@ export default function TeamManagement() {
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Email
+                    {t.settings.team.invitations.email}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Role
+                    {t.settings.team.invitations.role}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Sent
+                    {t.settings.team.invitations.sent}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Status
+                    {t.settings.team.invitations.status}
                   </th>
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-600 uppercase tracking-wider">
-                    Actions
+                    {t.settings.team.invitations.actions}
                   </th>
                 </tr>
               </thead>
@@ -383,7 +436,7 @@ export default function TeamManagement() {
                         </div>
                         <div>
                           <p className="font-medium text-gray-900">{invitation.email}</p>
-                          <p className="text-sm text-gray-600">Pending invitation</p>
+                          <p className="text-sm text-gray-600">{t.settings.team.invitations.pendingInvitation}</p>
                         </div>
                       </div>
                     </td>
@@ -399,7 +452,7 @@ export default function TeamManagement() {
                     </td>
                     <td className="px-6 py-4">
                       <span className="px-2.5 py-1 rounded-md text-xs font-medium bg-yellow-100 text-yellow-700">
-                        {invitation.status || "pending"}
+                        {invitation.status || t.settings.team.invitations.pending}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">
@@ -408,19 +461,19 @@ export default function TeamManagement() {
                           onClick={() => handleResendInvitation(invitation.email, invitation.role)}
                           disabled={inviteMemberMutation.isPending}
                           className="text-blue-600 hover:text-blue-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-                          title="Resend invitation email"
+                          title={t.settings.team.invitations.resendTitle}
                         >
                           <RefreshCw className="w-4 h-4" />
-                          Resend
+                          {t.settings.team.invitations.resend}
                         </button>
                         <button
                           onClick={() => handleCancelInvitation(invitation.id)}
                           disabled={cancelInvitationMutation.isPending}
                           className="text-red-600 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
-                          title="Cancel invitation"
+                          title={t.settings.team.invitations.cancelTitle}
                         >
                           <X className="w-4 h-4" />
-                          Cancel
+                          {t.settings.team.invitations.cancel}
                         </button>
                       </div>
                     </td>
@@ -435,7 +488,7 @@ export default function TeamManagement() {
       {showInviteModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-xl p-6 max-w-md w-full">
-            <h3 className="text-lg font-semibold mb-4">Invite Team Member</h3>
+            <h3 className="text-lg font-semibold mb-4">{t.settings.team.inviteModal.title}</h3>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -449,33 +502,33 @@ export default function TeamManagement() {
             >
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.settings.team.inviteModal.email}</label>
                   <input
                     type="email"
                     name="email"
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="member@example.com"
+                    placeholder={t.settings.team.inviteModal.emailPlaceholder}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Name (Optional)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.settings.team.inviteModal.name}</label>
                   <input
                     type="text"
                     name="name"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                    placeholder="John Doe"
+                    placeholder={t.settings.team.inviteModal.namePlaceholder}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">{t.settings.team.inviteModal.role}</label>
                   <select
                     name="role"
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   >
                     {assignableRoles.length === 0 ? (
-                      <option value="">No roles available</option>
+                      <option value="">{t.settings.team.inviteModal.noRoles}</option>
                     ) : (
                       assignableRoles.map((role) => (
                         <option key={role} value={role}>
@@ -485,7 +538,7 @@ export default function TeamManagement() {
                     )}
                   </select>
                   <p className="text-xs text-gray-500 mt-1">
-                    You can only assign roles lower than your own in the hierarchy
+                    {t.settings.team.inviteModal.roleNote}
                   </p>
                 </div>
               </div>
@@ -495,20 +548,22 @@ export default function TeamManagement() {
                   onClick={() => setShowInviteModal(false)}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
-                  Cancel
+                  {t.settings.team.inviteModal.cancel}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                   disabled={inviteMemberMutation.isPending}
                 >
-                  {inviteMemberMutation.isPending ? "Sending..." : "Send Invite"}
+                  {inviteMemberMutation.isPending ? t.settings.team.inviteModal.sending : t.settings.team.inviteModal.send}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
+      <ConfirmModalComponent />
     </div>
   );
 }

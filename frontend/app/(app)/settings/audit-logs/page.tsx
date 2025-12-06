@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useOrganizationAuditLogs, useExportAuditLogs, useActiveOrganization } from "@/lib/api/hooks";
 import { Filter, Download, RefreshCw, Search, Calendar } from "lucide-react";
 import { motion } from "framer-motion";
+import { useToast, SafeeToastContainer } from "@/components/feedback";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
 
 interface AuditLogFilters {
   entityType?: string;
@@ -17,6 +19,8 @@ interface AuditLogFilters {
 }
 
 export default function AuditLogsPage() {
+  const { t } = useTranslation();
+  const toast = useToast();
   const { data: activeOrg } = useActiveOrganization();
   const exportAuditLogsMutation = useExportAuditLogs();
 
@@ -55,7 +59,7 @@ export default function AuditLogsPage() {
       URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Failed to export audit logs:", error);
-      alert("Failed to export audit logs");
+      toast.error(t.settings.auditLogs.alerts.exportFailed);
     }
   };
 
@@ -86,9 +90,9 @@ export default function AuditLogsPage() {
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Audit Logs</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{t.settings.auditLogs.title}</h1>
           <p className="text-gray-600">
-            View and filter all activity within {activeOrg?.name || "your organization"}
+            {t.settings.auditLogs.subtitle} {activeOrg?.name || t.settings.auditLogs.yourOrganization}
           </p>
         </div>
 
@@ -101,7 +105,7 @@ export default function AuditLogsPage() {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search logs by action, resource, or user..."
+                  placeholder={t.settings.auditLogs.search.placeholder}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
@@ -117,7 +121,7 @@ export default function AuditLogsPage() {
                 }`}
               >
                 <Filter className="w-4 h-4" />
-                Filters
+                {t.settings.auditLogs.buttons.filters}
               </button>
               <button
                 onClick={() => refetch()}
@@ -125,7 +129,7 @@ export default function AuditLogsPage() {
                 className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
               >
                 <RefreshCw className={`w-4 h-4 ${isLoading ? "animate-spin" : ""}`} />
-                Refresh
+                {t.settings.auditLogs.buttons.refresh}
               </button>
               <div className="flex gap-1">
                 <button
@@ -134,14 +138,14 @@ export default function AuditLogsPage() {
                   className="px-4 py-2 bg-blue-600 text-white rounded-l-lg hover:bg-blue-700 flex items-center gap-2 disabled:opacity-50"
                 >
                   <Download className="w-4 h-4" />
-                  {exportAuditLogsMutation.isPending ? "Exporting..." : "Export JSON"}
+                  {exportAuditLogsMutation.isPending ? t.settings.auditLogs.buttons.exporting : t.settings.auditLogs.buttons.exportJSON}
                 </button>
                 <button
                   onClick={() => handleExport("csv")}
                   disabled={exportAuditLogsMutation.isPending}
                   className="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 border-l border-blue-500 disabled:opacity-50"
                 >
-                  CSV
+                  {t.settings.auditLogs.buttons.csv}
                 </button>
               </div>
             </div>
@@ -155,39 +159,39 @@ export default function AuditLogsPage() {
               className="mt-4 pt-4 border-t border-gray-200 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
             >
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Action Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.auditLogs.filters.actionType}</label>
                 <select
                   value={filters.action || ""}
                   onChange={(e) => handleFilterChange("action", e.target.value || undefined)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">All Actions</option>
+                  <option value="">{t.settings.auditLogs.filters.allActions}</option>
                   {actionTypes.map((type) => (
                     <option key={type} value={type}>
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                      {t.settings.auditLogs.actionTypes[type as keyof typeof t.settings.auditLogs.actionTypes]}
                     </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Entity Type</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.auditLogs.filters.entityType}</label>
                 <select
                   value={filters.entityType || ""}
                   onChange={(e) => handleFilterChange("entityType", e.target.value || undefined)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
-                  <option value="">All Entities</option>
+                  <option value="">{t.settings.auditLogs.filters.allEntities}</option>
                   {entityTypes.map((type) => (
                     <option key={type} value={type}>
-                      {type.charAt(0).toUpperCase() + type.slice(1)}
+                      {t.settings.auditLogs.entityTypes[type as keyof typeof t.settings.auditLogs.entityTypes]}
                     </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Start Date</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.auditLogs.filters.startDate}</label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
@@ -199,7 +203,7 @@ export default function AuditLogsPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">End Date</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">{t.settings.auditLogs.filters.endDate}</label>
                 <div className="relative">
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
@@ -219,19 +223,19 @@ export default function AuditLogsPage() {
               <thead className="bg-gray-50 border-b border-gray-200">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Timestamp
+                    {t.settings.auditLogs.table.headers.timestamp}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    User
+                    {t.settings.auditLogs.table.headers.user}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Action
+                    {t.settings.auditLogs.table.headers.action}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Entity
+                    {t.settings.auditLogs.table.headers.entity}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    IP Address
+                    {t.settings.auditLogs.table.headers.ipAddress}
                   </th>
                 </tr>
               </thead>
@@ -241,7 +245,7 @@ export default function AuditLogsPage() {
                     <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
                       <div className="flex justify-center items-center">
                         <RefreshCw className="w-6 h-6 animate-spin text-blue-600" />
-                        <span className="ml-2">Loading audit logs...</span>
+                        <span className="ml-2">{t.settings.auditLogs.table.loading}</span>
                       </div>
                     </td>
                   </tr>
@@ -252,8 +256,8 @@ export default function AuditLogsPage() {
                         {new Date(log.createdAt).toLocaleString()}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{log.user?.name || "Unknown"}</div>
-                        <div className="text-xs text-gray-500">{log.userId || "-"}</div>
+                        <div className="text-sm font-medium text-gray-900">{log.user?.name || t.settings.auditLogs.table.unknown}</div>
+                        <div className="text-xs text-gray-500">{log.userId || t.settings.auditLogs.table.empty}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
@@ -269,18 +273,18 @@ export default function AuditLogsPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{log.entityType || "-"}</div>
+                        <div className="text-sm text-gray-900">{log.entityType || t.settings.auditLogs.table.empty}</div>
                         <div className="text-xs text-gray-500">{log.entityId}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {log.ipAddress || "-"}
+                        {log.ipAddress || t.settings.auditLogs.table.empty}
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
                     <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
-                      No audit logs found matching your criteria.
+                      {t.settings.auditLogs.table.noResults}
                     </td>
                   </tr>
                 )}
@@ -291,14 +295,14 @@ export default function AuditLogsPage() {
           {filteredLogs && filteredLogs.length > 0 && (
             <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
               <div className="text-sm text-gray-700">
-                Showing <span className="font-medium">{(filters.offset || 0) + 1}</span> to{" "}
+                {t.settings.auditLogs.pagination.showing} <span className="font-medium">{(filters.offset || 0) + 1}</span> {t.settings.auditLogs.pagination.to}{" "}
                 <span className="font-medium">
                   {Math.min(
                     (filters.offset || 0) + (filters.limit || 50),
                     (filters.offset || 0) + filteredLogs.length,
                   )}
                 </span>{" "}
-                results
+                {t.settings.auditLogs.pagination.results}
               </div>
               <div className="flex gap-2">
                 <button
@@ -308,20 +312,21 @@ export default function AuditLogsPage() {
                   disabled={!filters.offset || filters.offset === 0}
                   className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Previous
+                  {t.settings.auditLogs.pagination.previous}
                 </button>
                 <button
                   onClick={() => handleFilterChange("offset", (filters.offset || 0) + (filters.limit || 50))}
                   disabled={!filteredLogs || filteredLogs.length < (filters.limit || 50)}
                   className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Next
+                  {t.settings.auditLogs.pagination.next}
                 </button>
               </div>
             </div>
           )}
         </div>
       </div>
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
     </div>
   );
 }

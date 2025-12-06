@@ -1,6 +1,6 @@
 {
-  "id": "e606d759-ca60-4a18-9d0e-906559f2ff87",
-  "prevId": "3ebe07d4-0f09-49f5-9607-2912405e071c",
+  "id": "734acbfe-04c4-4e98-a778-adb337f2012c",
+  "prevId": "e606d759-ca60-4a18-9d0e-906559f2ff87",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -54,6 +54,25 @@
           "notNull": true,
           "default": true
         },
+        "encryption_enabled": {
+          "name": "encryption_enabled",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "encryption_enabled_at": {
+          "name": "encryption_enabled_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "encryption_enabled_by": {
+          "name": "encryption_enabled_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -77,6 +96,547 @@
           "name": "organizations_slug_unique",
           "nullsNotDistinct": false,
           "columns": ["slug"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "identity.encryption_keys": {
+      "name": "encryption_keys",
+      "schema": "identity",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "organization_id": {
+          "name": "organization_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wrapped_org_key": {
+          "name": "wrapped_org_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "salt": {
+          "name": "salt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "iv": {
+          "name": "iv",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "key_version": {
+          "name": "key_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
+        },
+        "algorithm": {
+          "name": "algorithm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'AES-256-GCM'"
+        },
+        "derivation_params": {
+          "name": "derivation_params",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{\"iterations\":600000,\"hash\":\"SHA-256\",\"keyLength\":32}'::jsonb"
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "rotated_at": {
+          "name": "rotated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "encryption_keys_org_idx": {
+          "name": "encryption_keys_org_idx",
+          "columns": [
+            {
+              "expression": "organization_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "encryption_keys_active_idx": {
+          "name": "encryption_keys_active_idx",
+          "columns": [
+            {
+              "expression": "is_active",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "encryption_keys_organization_id_organizations_id_fk": {
+          "name": "encryption_keys_organization_id_organizations_id_fk",
+          "tableFrom": "encryption_keys",
+          "tableTo": "organizations",
+          "schemaTo": "identity",
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "identity.user_keypairs": {
+      "name": "user_keypairs",
+      "schema": "identity",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "public_key": {
+          "name": "public_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "encrypted_private_key": {
+          "name": "encrypted_private_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "private_key_salt": {
+          "name": "private_key_salt",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "private_key_iv": {
+          "name": "private_key_iv",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "algorithm": {
+          "name": "algorithm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'RSA-OAEP-4096'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "last_used_at": {
+          "name": "last_used_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "user_keypairs_user_idx": {
+          "name": "user_keypairs_user_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "user_keypairs_user_id_users_id_fk": {
+          "name": "user_keypairs_user_id_users_id_fk",
+          "tableFrom": "user_keypairs",
+          "tableTo": "users",
+          "schemaTo": "identity",
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "user_keypairs_user_id_unique": {
+          "name": "user_keypairs_user_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["user_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "identity.auditor_access": {
+      "name": "auditor_access",
+      "schema": "identity",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "organization_id": {
+          "name": "organization_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "auditor_user_id": {
+          "name": "auditor_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "granted_by_user_id": {
+          "name": "granted_by_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "encryption_key_id": {
+          "name": "encryption_key_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "wrapped_org_key": {
+          "name": "wrapped_org_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "is_revoked": {
+          "name": "is_revoked",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "revoked_at": {
+          "name": "revoked_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "revoked_by_user_id": {
+          "name": "revoked_by_user_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "granted_at": {
+          "name": "granted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "auditor_access_org_idx": {
+          "name": "auditor_access_org_idx",
+          "columns": [
+            {
+              "expression": "organization_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "auditor_access_auditor_idx": {
+          "name": "auditor_access_auditor_idx",
+          "columns": [
+            {
+              "expression": "auditor_user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "auditor_access_revoked_idx": {
+          "name": "auditor_access_revoked_idx",
+          "columns": [
+            {
+              "expression": "is_revoked",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "auditor_access_organization_id_organizations_id_fk": {
+          "name": "auditor_access_organization_id_organizations_id_fk",
+          "tableFrom": "auditor_access",
+          "tableTo": "organizations",
+          "schemaTo": "identity",
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "auditor_access_auditor_user_id_users_id_fk": {
+          "name": "auditor_access_auditor_user_id_users_id_fk",
+          "tableFrom": "auditor_access",
+          "tableTo": "users",
+          "schemaTo": "identity",
+          "columnsFrom": ["auditor_user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "auditor_access_granted_by_user_id_users_id_fk": {
+          "name": "auditor_access_granted_by_user_id_users_id_fk",
+          "tableFrom": "auditor_access",
+          "tableTo": "users",
+          "schemaTo": "identity",
+          "columnsFrom": ["granted_by_user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "auditor_access_encryption_key_id_encryption_keys_id_fk": {
+          "name": "auditor_access_encryption_key_id_encryption_keys_id_fk",
+          "tableFrom": "auditor_access",
+          "tableTo": "encryption_keys",
+          "schemaTo": "identity",
+          "columnsFrom": ["encryption_key_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        },
+        "auditor_access_revoked_by_user_id_users_id_fk": {
+          "name": "auditor_access_revoked_by_user_id_users_id_fk",
+          "tableFrom": "auditor_access",
+          "tableTo": "users",
+          "schemaTo": "identity",
+          "columnsFrom": ["revoked_by_user_id"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "identity.file_encryption_metadata": {
+      "name": "file_encryption_metadata",
+      "schema": "identity",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "file_id": {
+          "name": "file_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "encryption_key_id": {
+          "name": "encryption_key_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "key_version": {
+          "name": "key_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "iv": {
+          "name": "iv",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "auth_tag": {
+          "name": "auth_tag",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "algorithm": {
+          "name": "algorithm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'AES-256-GCM'"
+        },
+        "chunk_size": {
+          "name": "chunk_size",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 131072
+        },
+        "is_encrypted": {
+          "name": "is_encrypted",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "encrypted_at": {
+          "name": "encrypted_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "encrypted_by": {
+          "name": "encrypted_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {
+        "file_enc_metadata_file_idx": {
+          "name": "file_enc_metadata_file_idx",
+          "columns": [
+            {
+              "expression": "file_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "file_enc_metadata_key_idx": {
+          "name": "file_enc_metadata_key_idx",
+          "columns": [
+            {
+              "expression": "encryption_key_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "file_encryption_metadata_encryption_key_id_encryption_keys_id_fk": {
+          "name": "file_encryption_metadata_encryption_key_id_encryption_keys_id_fk",
+          "tableFrom": "file_encryption_metadata",
+          "tableTo": "encryption_keys",
+          "schemaTo": "identity",
+          "columnsFrom": ["encryption_key_id"],
+          "columnsTo": ["id"],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "file_encryption_metadata_file_id_unique": {
+          "name": "file_encryption_metadata_file_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["file_id"]
         }
       },
       "policies": {},
@@ -10039,7 +10599,7 @@
     "identity.invitation_status": {
       "name": "invitation_status",
       "schema": "identity",
-      "values": ["pending", "accepted", "rejected", "expired", "cancelled"]
+      "values": ["pending", "accepted", "rejected", "expired", "canceled"]
     },
     "finance.invoice_type": {
       "name": "invoice_type",
@@ -10049,7 +10609,7 @@
     "jobs.job_name": {
       "name": "job_name",
       "schema": "jobs",
-      "values": ["send_email"]
+      "values": ["send_email", "encrypt_file", "rotate_encryption_key", "reencrypt_files"]
     },
     "jobs.job_status": {
       "name": "job_status",

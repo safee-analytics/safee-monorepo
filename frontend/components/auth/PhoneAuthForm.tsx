@@ -5,6 +5,7 @@ import { Phone, ArrowRight } from "lucide-react";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import OtpInput from "react-otp-input";
+import { useToast, SafeeToastContainer } from "@/components/feedback";
 import { useSendPhoneVerification, useVerifyPhoneNumber } from "@/lib/api/hooks";
 
 interface PhoneAuthFormProps {
@@ -13,6 +14,7 @@ interface PhoneAuthFormProps {
 }
 
 export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
+  const toast = useToast();
   const [step, setStep] = useState<"phone" | "verify">("phone");
   const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [verificationCode, setVerificationCode] = useState("");
@@ -22,7 +24,7 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
 
   const handleSendCode = async () => {
     if (!phoneNumber) {
-      alert("Please enter a valid phone number.");
+      toast.error("Please enter a valid phone number.");
       return;
     }
 
@@ -30,7 +32,7 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
       await sendVerificationMutation.mutateAsync(phoneNumber);
       setStep("verify");
     } catch (error) {
-      alert("Failed to send verification code. Please try again.");
+      toast.error("Failed to send verification code. Please try again.");
       console.error("Phone verification error:", error);
     }
   };
@@ -43,7 +45,7 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
       });
       onSuccess?.();
     } catch (error) {
-      alert("Invalid verification code. Please try again.");
+      toast.error("Invalid verification code. Please try again.");
       setVerificationCode("");
       console.error("Phone verification error:", error);
     }
@@ -166,6 +168,7 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
           margin-right: 0.5rem;
         }
       `}</style>
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
     </div>
   );
 }

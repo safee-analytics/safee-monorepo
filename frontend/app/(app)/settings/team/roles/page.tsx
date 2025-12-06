@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { Shield, Plus, Edit2, Trash2, ArrowLeft, Check, X } from "lucide-react";
+import { useConfirm, useToast, SafeeToastContainer } from "@/components/feedback";
 import Link from "next/link";
+import { useTranslation } from "@/lib/providers/TranslationProvider";
 import {
   useSession,
   useOrganizationRoles,
@@ -69,6 +71,9 @@ const AVAILABLE_PERMISSIONS = [
 ];
 
 export default function RoleManagement() {
+  const { t } = useTranslation();
+  const { confirm, ConfirmModalComponent } = useConfirm();
+  const toast = useToast();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingRole, setEditingRole] = useState<string | null>(null);
 
@@ -103,10 +108,14 @@ export default function RoleManagement() {
           permission,
         }),
       ),
-    ).then(() => {
-      setShowCreateModal(false);
-      // TODO: Show success toast
-    });
+    )
+      .then(() => {
+        setShowCreateModal(false);
+        toast.success(t.settings.team.roles.roleCreated);
+      })
+      .catch(() => {
+        toast.error(t.settings.team.roles.roleCreateError);
+      });
   };
 
   const handleUpdateRole = (roleName: string, permissions: string[]) => {
@@ -124,6 +133,7 @@ export default function RoleManagement() {
       })
       .then(() => {
         setEditingRole(null);
+        toast.success(t.settings.team.roles.roleUpdated);
       })
       .catch(() => {
         Promise.all(existingRoles.map((r) => deleteRoleMutation.mutateAsync({ orgId, roleName: r.role })))
@@ -140,16 +150,32 @@ export default function RoleManagement() {
           )
           .then(() => {
             setEditingRole(null);
+            toast.success(t.settings.team.roles.roleUpdated);
+          })
+          .catch(() => {
+            toast.error(t.settings.team.roles.roleUpdateError);
           });
       });
   };
 
-  const handleDeleteRole = (roleName: string) => {
+  const handleDeleteRole = async (roleName: string) => {
     if (!orgId) return;
-    if (!confirm(`Are you sure you want to delete the "${roleName}" role?`)) return;
+    const confirmed = await confirm({
+      title: t.settings.team.roles.confirmDeleteTitle,
+      message: t.settings.team.roles.confirmDelete.replace("{roleName}", roleName),
+      type: "danger",
+      confirmText: t.settings.team.roles.delete,
+    });
+    if (!confirmed) return;
 
     const rolesToDelete = groupedRoles[roleName] || [];
-    Promise.all(rolesToDelete.map((r) => deleteRoleMutation.mutateAsync({ orgId, roleName: r.role })));
+    Promise.all(rolesToDelete.map((r) => deleteRoleMutation.mutateAsync({ orgId, roleName: r.role })))
+      .then(() => {
+        toast.success(t.settings.team.roles.roleDeleted);
+      })
+      .catch(() => {
+        toast.error(t.settings.team.roles.roleDeleteError);
+      });
   };
 
   const getRolePermissions = (roleName: string): string[] => {
@@ -288,6 +314,8 @@ export default function RoleManagement() {
           isCreating={createRoleMutation.isPending}
         />
       )}
+      <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
+      <ConfirmModalComponent />
     </div>
   );
 }

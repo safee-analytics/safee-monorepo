@@ -241,9 +241,18 @@ export function useCreateOrganization() {
 
   return useMutation({
     mutationFn: async ({ name, slug, logo }: { name: string; slug: string; logo?: string }) => {
+      // Get the next available slug from the backend
+      const { data: slugData, error: slugError } = await apiClient.GET("/organizations/slugs/next", {
+        params: { query: { baseSlug: slug } },
+      });
+
+      if (slugError || !slugData) {
+        throw new Error("Failed to generate unique slug");
+      }
+
       const { data, error } = await authClient.organization.create({
         name,
-        slug,
+        slug: slugData.nextSlug,
         ...(logo && { logo }),
         keepCurrentActiveOrganization: false,
       });
