@@ -14,6 +14,9 @@ import {
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
 import { EncryptionSetupWizard } from "@/components/settings/EncryptionSetupWizard";
+import { AuditorAccessManager } from "@/components/settings/AuditorAccessManager";
+import { ReencryptionProgress } from "@/components/settings/ReencryptionProgress";
+import { KeyRotation } from "@/components/settings/KeyRotation";
 import { useToast, SafeeToastContainer } from "@/components/feedback/SafeeToast";
 
 interface DocumentSettings {
@@ -29,6 +32,9 @@ export default function DocumentSettingsPage() {
   const { t } = useTranslation();
   const { notifications, success, error, removeToast } = useToast();
   const [showEncryptionWizard, setShowEncryptionWizard] = useState(false);
+  const [showAuditorManager, setShowAuditorManager] = useState(false);
+  const [showReencryption, setShowReencryption] = useState(false);
+  const [showKeyRotation, setShowKeyRotation] = useState(false);
   const [settings, setSettings] = useState<DocumentSettings>({
     encryptionEnabled: false,
     autoBackup: true,
@@ -37,6 +43,19 @@ export default function DocumentSettingsPage() {
     allowedFileTypes: ["pdf", "doc", "docx", "xls", "xlsx", "jpg", "png"],
     maxFileSize: 50,
   });
+
+  // TODO: Fetch encryption data from API
+  // For now, using mock data when encryption is enabled
+  const [encryptionData, setEncryptionData] = useState<{
+    keyVersion: number;
+    enabledAt: string;
+    enabledBy: string;
+    organizationId: string;
+    encryptionKeyId: string;
+    wrappedOrgKey: string;
+    salt: string;
+    iv: string;
+  } | null>(null);
 
   const handleSave = async () => {
     try {
@@ -108,12 +127,49 @@ export default function DocumentSettingsPage() {
                           {t.settings.documents.encryption.enabled}
                         </span>
                       </div>
-                      <div className="flex gap-3">
-                        <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
-                          {t.settings.documents.encryption.actions.viewRecoveryKey}
+
+                      {/* Encryption Info */}
+                      {encryptionData && (
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-gray-50 rounded-lg">
+                          <div>
+                            <p className="text-xs text-gray-500 mb-1">Key Version</p>
+                            <p className="text-sm font-semibold text-gray-900">{encryptionData.keyVersion}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 mb-1">Enabled Date</p>
+                            <p className="text-sm font-semibold text-gray-900">
+                              {new Date(encryptionData.enabledAt).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 mb-1">Enabled By</p>
+                            <p className="text-sm font-semibold text-gray-900">{encryptionData.enabledBy}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Action Buttons */}
+                      <div className="flex flex-wrap gap-3">
+                        <button
+                          onClick={() => setShowAuditorManager(true)}
+                          className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                        >
+                          Manage Auditor Access
+                        </button>
+                        <button
+                          onClick={() => setShowReencryption(true)}
+                          className="px-4 py-2 border border-blue-300 text-blue-700 rounded-lg hover:bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-900/20"
+                        >
+                          Re-encrypt Existing Files
+                        </button>
+                        <button
+                          onClick={() => setShowKeyRotation(true)}
+                          className="px-4 py-2 border border-amber-300 text-amber-700 rounded-lg hover:bg-amber-50 dark:border-amber-700 dark:text-amber-400 dark:hover:bg-amber-900/20"
+                        >
+                          {t.settings.documents.encryption.actions.rotateKeys}
                         </button>
                         <button className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
-                          {t.settings.documents.encryption.actions.rotateKeys}
+                          {t.settings.documents.encryption.actions.viewRecoveryKey}
                         </button>
                         <button className="px-4 py-2 border border-red-300 text-red-700 rounded-lg hover:bg-red-50">
                           {t.settings.documents.encryption.actions.disableEncryption}
@@ -130,6 +186,17 @@ export default function DocumentSettingsPage() {
                 onComplete={() => {
                   setShowEncryptionWizard(false);
                   setSettings({ ...settings, encryptionEnabled: true });
+                  // Set mock encryption data after setup
+                  setEncryptionData({
+                    keyVersion: 1,
+                    enabledAt: new Date().toISOString(),
+                    enabledBy: "Current User",
+                    organizationId: "mock-org-id",
+                    encryptionKeyId: "mock-key-id",
+                    wrappedOrgKey: "mock-wrapped-key-base64",
+                    salt: "mock-salt-base64",
+                    iv: "mock-iv-base64",
+                  });
                 }}
                 onCancel={() => setShowEncryptionWizard(false)}
               />
@@ -279,6 +346,73 @@ export default function DocumentSettingsPage() {
             </button>
           </div>
         </motion.div>
+
+        {/* Auditor Access Manager Modal */}
+        {showAuditorManager && (encryptionData || settings.encryptionEnabled) && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-lg bg-white p-6 shadow-xl"
+            >
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">Auditor Access Management</h2>
+                <button
+                  onClick={() => setShowAuditorManager(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  ✕
+                </button>
+              </div>
+              <AuditorAccessManager
+                organizationId={encryptionData?.organizationId || "mock-org-id"}
+                encryptionKeyId={encryptionData?.encryptionKeyId || "mock-key-id"}
+                wrappedOrgKey={encryptionData?.wrappedOrgKey || "mock-wrapped-key-base64"}
+                salt={encryptionData?.salt || "mock-salt-base64"}
+                iv={encryptionData?.iv || "mock-iv-base64"}
+              />
+            </motion.div>
+          </div>
+        )}
+
+        {/* Re-encryption Progress Modal */}
+        {showReencryption && (encryptionData || settings.encryptionEnabled) && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-lg bg-white p-6 shadow-xl"
+            >
+              <div className="mb-4 flex items-center justify-between">
+                <h2 className="text-xl font-semibold text-gray-900">File Re-encryption Dashboard</h2>
+                <button onClick={() => setShowReencryption(false)} className="text-gray-500 hover:text-gray-700">
+                  ✕
+                </button>
+              </div>
+              <ReencryptionProgress
+                organizationId={encryptionData?.organizationId || "mock-org-id"}
+                wrappedOrgKey={encryptionData?.wrappedOrgKey || "mock-wrapped-key-base64"}
+                salt={encryptionData?.salt || "mock-salt-base64"}
+                iv={encryptionData?.iv || "mock-iv-base64"}
+              />
+            </motion.div>
+          </div>
+        )}
+
+        {/* Key Rotation Modal */}
+        {showKeyRotation && (encryptionData || settings.encryptionEnabled) && (
+          <KeyRotation
+            currentWrappedKey={encryptionData?.wrappedOrgKey || "mock-wrapped-key-base64"}
+            currentSalt={encryptionData?.salt || "mock-salt-base64"}
+            currentIv={encryptionData?.iv || "mock-iv-base64"}
+            organizationId={encryptionData?.organizationId || "mock-org-id"}
+            onComplete={() => {
+              setShowKeyRotation(false);
+              setShowReencryption(true);
+            }}
+            onCancel={() => setShowKeyRotation(false)}
+          />
+        )}
       </div>
       <SafeeToastContainer notifications={notifications} onRemove={removeToast} />
     </SettingsPermissionGate>

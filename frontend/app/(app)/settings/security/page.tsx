@@ -2,7 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Lock, Shield, Smartphone, Key, Eye, EyeOff, AlertTriangle, Save, RefreshCw } from "lucide-react";
+import {
+  Lock,
+  Shield,
+  Smartphone,
+  Key,
+  Eye,
+  EyeOff,
+  AlertTriangle,
+  Save,
+  RefreshCw,
+} from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
 import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
@@ -413,6 +423,7 @@ export default function SecuritySettings() {
             handleSave();
           }}
         />
+
         <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
       </div>
     </SettingsPermissionGate>
