@@ -3,6 +3,7 @@ import { Inter, Cairo } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/providers/AuthProvider";
 import { QueryProvider } from "@/lib/providers/QueryProvider";
+import { WebSocketProvider } from "@/lib/websocket/WebSocketProvider";
 import { ClientProviders } from "@/lib/providers/ClientProviders";
 
 // Arabic and English font support
@@ -62,7 +63,9 @@ export default function RootLayout({
       <body className={`${inter.variable} ${cairo.variable} antialiased`} suppressHydrationWarning>
         <QueryProvider>
           <AuthProvider>
-            <ClientProviders>{children}</ClientProviders>
+            <WebSocketProvider>
+              <ClientProviders>{children}</ClientProviders>
+            </WebSocketProvider>
           </AuthProvider>
         </QueryProvider>
       </body>

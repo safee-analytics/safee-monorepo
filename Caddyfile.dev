@@ -23,7 +23,27 @@ http://localhost:8080 {
 
 # Application frontend + API (same subdomain to avoid cookie issues)
 http://app.localhost:8080 {
-	# Order matters! API routes MUST be matched first
+	# Order matters! Socket.IO/WebSocket routes MUST be first
+
+	# Socket.IO WebSocket support (CRITICAL: Must be first!)
+	@websocket {
+		path /socket.io /socket.io/*
+	}
+	handle @websocket {
+		reverse_proxy localhost:3000 {
+			header_up Host {host}
+			header_up X-Real-IP {remote_host}
+			header_up X-Forwarded-For {remote_host}
+			header_up X-Forwarded-Proto {scheme}
+
+			# Critical for WebSocket/Socket.IO
+			header_up Connection {>Connection}
+			header_up Upgrade {>Upgrade}
+
+			# Disable buffering for real-time
+			flush_interval -1
+		}
+	}
 
 	# API documentation
 	@docs path /docs /docs/*
@@ -48,6 +68,10 @@ http://app.localhost:8080 {
 		reverse_proxy localhost:3001 {
 			header_up Host {host}
 			header_up X-Real-IP {remote_host}
+
+			# Support Next.js hot reload WebSocket
+			header_up Connection {>Connection}
+			header_up Upgrade {>Upgrade}
 		}
 	}
 

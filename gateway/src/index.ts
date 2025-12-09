@@ -47,10 +47,15 @@ async function main() {
     },
   });
 
-  const httpServer = await startServer({ logger, drizzle, redis, storage, pubsub, scheduler });
+  const { httpServer, wsService } = await startServer({ logger, drizzle, redis, storage, pubsub, scheduler });
 
   return async () => {
     logger.info("Cleaning up resources");
+
+    if (wsService) {
+      await wsService.shutdown();
+      logger.info("WebSocket server closed");
+    }
 
     if (httpServer) {
       await new Promise<void>((resolve) => {

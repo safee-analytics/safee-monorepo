@@ -23,6 +23,7 @@ import { toNodeHandler } from "better-auth/node";
 import { auth } from "../auth/index.js";
 import { mergeBetterAuthSpec } from "./mergeOpenApiSpecs.js";
 import type { OpenAPIV3 } from "openapi-types";
+import { WebSocketService } from "./services/websocket.service.js";
 
 dotenv.config();
 
@@ -247,7 +248,24 @@ export async function startServer(deps: Dependencies) {
     deps.logger.info("Server listening on %s:%s", HOST, PORT);
     deps.logger.info("API Documentation available at: http://%s:%s/docs", HOST, PORT);
     deps.logger.info("Health Check available at: http://%s:%s/api/v1/health", HOST, PORT);
+    deps.logger.info("WebSocket server available at: ws://%s:%s/ws", HOST, PORT);
   });
 
-  return httpServer;
+  // Initialize WebSocket server with Better Auth security
+  const wsService = new WebSocketService(httpServer);
+
+  // Graceful shutdown
+  const shutdown = async () => {
+    deps.logger.info("Starting graceful shutdown...");
+    await wsService.shutdown();
+    httpServer.close(() => {
+      deps.logger.info("HTTP server closed");
+      process.exit(0);
+    });
+  };
+
+  process.on("SIGTERM", shutdown);
+  process.on("SIGINT", shutdown);
+
+  return { httpServer, wsService };
 }

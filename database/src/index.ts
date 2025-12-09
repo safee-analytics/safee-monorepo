@@ -63,3 +63,5 @@ export * from "./llm/index.js";
 export * as generalUtils from "./general-utils/index.js";
 
 export * from "./test-helpers/integration-setup.js";
+
+export * from "./types/websocket.js";
