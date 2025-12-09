@@ -97,7 +97,7 @@ export const auth = betterAuth({
     cookieCache: sessionConfig.cookieCache,
     cookieOptions: {
       sameSite: "lax",
-      domain: process.env.COOKIE_DOMAIN || "app.localhost",
+      domain: process.env.COOKIE_DOMAIN || ".localhost",
       path: "/",
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

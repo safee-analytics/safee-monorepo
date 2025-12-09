@@ -65,8 +65,10 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
         process.env.FRONTEND_URL || "http://localhost:3001",
         process.env.LANDING_URL || "http://localhost:3002",
         "http://localhost:3000",
+        "http://localhost:3003", // Admin dashboard
         "http://localhost:8080",
         "http://app.localhost:8080",
+        "http://admin.localhost:8080", // Admin dashboard
         "http://api.localhost:8080",
       ],
       credentials: true,

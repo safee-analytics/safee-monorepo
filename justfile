@@ -537,3 +537,79 @@ dev-with-caddy:
     echo ""
 
     caddy run --config Caddyfile.dev
+
+# ============================================================================
+# Admin Dashboard Commands
+# ============================================================================
+
+[group('admin')]
+build-auth:
+    npm -w auth run build
+
+[group('admin')]
+build-admin: build-auth build-database
+    npm -w admin run build
+
+[group('admin')]
+run-admin:
+    npm -w admin run dev
+
+[group('admin')]
+check-admin:
+    npx -w admin tsc --noEmit
+
+[group('admin')]
+lint-admin:
+    npx -w admin eslint . --max-warnings 0 --cache
+
+[group('admin')]
+fmt-admin:
+    npx -w admin prettier . --write --cache
+
+[group('admin')]
+clean-admin:
+    npm -w admin run clean
+    rm -f admin/.eslintcache
+    rm -rf admin/node_modules/.cache/prettier/
+    rm -rf admin/.next
+
+# Run all apps including admin dashboard
+[group('admin')]
+dev-all:
+    #!/usr/bin/env bash
+    set -euo pipefail
+
+    trap 'echo ""; echo "🛑 Shutting down services..."; jobs -p | xargs -r kill 2>/dev/null; wait; echo "✅ All services stopped"' EXIT INT TERM
+
+    echo "🚀 Starting full stack with admin dashboard..."
+    echo ""
+
+    echo "▶ Starting Gateway (port 3000)..."
+    (cd gateway && npm run dev) &
+
+    echo "▶ Starting Frontend (port 3001)..."
+    (cd frontend && npm run dev) &
+
+    echo "▶ Starting Landing (port 3002)..."
+    (cd landing && npm run dev) &
+
+    echo "▶ Starting Admin Dashboard (port 3003)..."
+    (cd admin && npm run dev) &
+
+    echo ""
+    echo "⏳ Waiting for services to start..."
+    sleep 10
+
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "  🌐 Services running:"
+    echo "  📄 Landing: http://localhost:3002"
+    echo "  💻 Frontend: http://localhost:3001"
+    echo "  🔐 Admin: http://localhost:3003"
+    echo "  🔌 Gateway API: http://localhost:3000"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "Press Ctrl+C to stop all services"
+    echo ""
+
+    wait

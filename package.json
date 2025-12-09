@@ -12,7 +12,9 @@
     "e2e",
     "frontend",
     "landing",
-    "ui"
+    "ui",
+    "auth",
+    "admin"
   ],
   "scripts": {
     "build": "just build",
