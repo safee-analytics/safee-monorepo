@@ -1,14 +1,4 @@
-import {
-  Controller,
-  Put,
-  Route,
-  Tags,
-  Security,
-  Path,
-  Request,
-  UploadedFile,
-  SuccessResponse,
-} from "tsoa";
+import { Controller, Put, Route, Tags, Security, Path, Request, UploadedFile, SuccessResponse } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext, type ServerContext } from "../serverContext.js";
 import { updateOrganizationLogo } from "@safee/database";

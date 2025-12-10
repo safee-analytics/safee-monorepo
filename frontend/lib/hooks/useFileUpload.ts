@@ -186,12 +186,14 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
   /**
    * Upload all pending files
    */
-  const startAll = useCallback(() => {
-    const pending = files.filter((f) => f.status === "pending");
-    pending.forEach((uploadFile) => startUpload(uploadFile));
-  },
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  [files]); // startUpload is intentionally not included to avoid re-renders
+  const startAll = useCallback(
+    () => {
+      const pending = files.filter((f) => f.status === "pending");
+      pending.forEach((uploadFile) => startUpload(uploadFile));
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [files],
+  ); // startUpload is intentionally not included to avoid re-renders
 
   /**
    * Cancel upload for a specific file
