@@ -156,9 +156,8 @@ export function useCheckUsernameAvailability() {
 export function useForgetPassword() {
   return useMutation({
     mutationFn: async (data: { email: string }) => {
-      const { data: result, error } = await authClient.forgetPassword({
+      const { data: result, error } = await authClient.forgetPassword.emailOtp({
         email: data.email,
-        redirectTo: "/reset-password",
       });
       if (error) throw new Error(error.message);
       return result;

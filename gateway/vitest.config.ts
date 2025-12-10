@@ -6,11 +6,7 @@ export default defineConfig({
     globals: true,
     fileParallelism: false,
     pool: "forks",
-    poolOptions: {
-      forks: {
-        singleFork: true,
-      },
-    },
+    maxWorkers: 1,
     coverage: {
       provider: "v8",
       reporter: ["text", "json", "html"],
