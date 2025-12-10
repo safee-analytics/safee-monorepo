@@ -43,11 +43,11 @@ COPY database/package.json ./database/
 COPY database/drizzle.config.ts ./database/
 COPY gateway/package.json ./gateway/
 COPY --from=database /workspace/database/build ./database/build
-COPY --from=database /workspace/database/src/migrations ./database/src/migrations
+COPY --from=database /workspace/database/src ./database/src
 COPY --from=builder /workspace/gateway/build ./gateway/build
 
 # Expose port
 EXPOSE 3000
 
-# Start gateway
-CMD ["npm", "start", "-w", "gateway"]
+# Start gateway directly (bypass npm workspaces)
+CMD ["node", "gateway/build/src/index.js"]
