@@ -1,10 +1,25 @@
-FROM node:20.19.0-alpine AS frontend
+FROM node:20.19.0-alpine AS base
 WORKDIR /workspace
 RUN apk add --no-cache libc6-compat
+
+# Build database
+FROM base AS database
+COPY package.json package-lock.json tsconfig.json ./
+COPY database/package.json ./database/
+RUN npm ci
+COPY database ./database/
+RUN npm run build -w database
+
+# Build frontend
+FROM base AS frontend
 COPY package.json package-lock.json tsconfig.json ./
 COPY ui/package.json ./ui/
+COPY database/package.json ./database/
+COPY database/tsconfig.json ./database/
 COPY frontend/package.json ./frontend/
 RUN npm ci
+COPY --from=database /workspace/database/build ./database/build
+COPY --from=database /workspace/database/src ./database/src
 COPY ui ./ui/
 COPY frontend ./frontend/
 ARG NEXT_PUBLIC_API_URL

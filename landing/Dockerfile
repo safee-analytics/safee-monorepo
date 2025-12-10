@@ -1,4 +1,4 @@
-FROM node:20.14.0-alpine AS landing
+FROM node:20.19.0-alpine AS landing
 WORKDIR /workspace
 RUN apk add --no-cache libc6-compat
 COPY package.json package-lock.json tsconfig.json ./
@@ -10,7 +10,7 @@ ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
 RUN npm run build -w landing
 
 # Production image - standalone mode
-FROM node:20.14.0-alpine AS runner
+FROM node:20.19.0-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 

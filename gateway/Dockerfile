@@ -1,5 +1,5 @@
 # Multi-stage build for production gateway
-FROM node:20.14.0-alpine AS base
+FROM node:20.19.0-alpine AS base
 WORKDIR /workspace
 RUN apk add --no-cache libc6-compat
 
