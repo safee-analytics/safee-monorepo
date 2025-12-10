@@ -39,6 +39,8 @@ import "react-phone-number-input/style.css";
 import OtpInput from "react-otp-input";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useToast, useConfirm, SafeeToastContainer } from "@/components/feedback";
+import { AvatarUpload } from "@/components/common";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Extended user type with custom profile fields
 interface ExtendedUser {
@@ -113,6 +115,7 @@ export function ProfileTabs() {
 function ProfileTab() {
   const { t } = useTranslation();
   const toast = useToast();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const user = session?.user as ExtendedUser | undefined;
 
@@ -125,18 +128,12 @@ function ProfileTab() {
   const [phone, setPhone] = useState(user?.phone || "");
   const [jobTitle, setJobTitle] = useState(user?.jobTitle || "");
   const [department, setDepartment] = useState(user?.department || "");
-  const [imageUrl, setImageUrl] = useState("");
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // Update Better Auth fields (name, image)
-      const betterAuthUpdates: { name?: string; image?: string } = { name };
-      if (imageUrl) {
-        betterAuthUpdates.image = imageUrl;
-      }
-      await updateUserMutation.mutateAsync(betterAuthUpdates);
+      // Update Better Auth fields (name)
+      await updateUserMutation.mutateAsync({ name });
 
       // Update custom profile fields
       // Note: phone, jobTitle, department are not currently supported by the API
@@ -149,29 +146,6 @@ function ProfileTab() {
       toast.success(t.settings.profile.profileTab.alerts.profileSuccess);
     } catch (_error) {
       toast.error(t.settings.profile.profileTab.alerts.profileFailed);
-    }
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    // For now, we'll use a placeholder. In production, you'd upload to a storage service
-    // and get back a URL (e.g., AWS S3, Cloudinary, etc.)
-    setIsUploadingImage(true);
-    try {
-      // TODO: Implement actual file upload to storage service
-      // const uploadedUrl = await uploadToStorage(file);
-      // setImageUrl(uploadedUrl);
-
-      // For now, create a local object URL for preview
-      const objectUrl = URL.createObjectURL(file);
-      setImageUrl(objectUrl);
-      toast.info(t.settings.profile.profileTab.profilePicture.ready);
-    } catch (_error) {
-      toast.error(t.settings.profile.profileTab.alerts.imageUploadFailed);
-    } finally {
-      setIsUploadingImage(false);
     }
   };
 
@@ -194,33 +168,24 @@ function ProfileTab() {
             {t.settings.profile.profileTab.profilePicture.title}
           </h3>
           <div className="flex items-center gap-6">
-            <div className="relative">
-              {imageUrl || user?.image ? (
-                <img
-                  src={imageUrl || user?.image || undefined}
-                  alt="Profile"
-                  className="w-24 h-24 rounded-full object-cover"
-                />
-              ) : (
-                <div className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-3xl font-bold">
-                  {user?.name?.charAt(0).toUpperCase() || "U"}
-                </div>
-              )}
-            </div>
+            <AvatarUpload
+              currentAvatarUrl={user?.image || undefined}
+              endpoint="/api/v1/users/me/avatar"
+              method="PUT"
+              maxSize={5 * 1024 * 1024} // 5MB
+              onSuccess={(metadata) => {
+                queryClient.invalidateQueries({ queryKey: ['session'] });
+                toast.success(t.settings.profile.profileTab.alerts.profileSuccess);
+              }}
+              onError={(error) => {
+                toast.error(t.settings.profile.profileTab.alerts.imageUploadFailed);
+              }}
+            />
             <div>
-              <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors mb-2">
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="hidden"
-                  disabled={isUploadingImage}
-                />
-                {isUploadingImage
-                  ? t.settings.profile.profileTab.profilePicture.uploading
-                  : t.settings.profile.profileTab.profilePicture.uploadPhoto}
-              </label>
-              <p className="text-sm text-gray-500">{t.settings.profile.profileTab.profilePicture.formats}</p>
+              <p className="text-sm text-gray-600 mb-1">
+                {t.settings.profile.profileTab.profilePicture.uploadPhoto}
+              </p>
+              <p className="text-xs text-gray-500">{t.settings.profile.profileTab.profilePicture.formats}</p>
             </div>
           </div>
         </div>

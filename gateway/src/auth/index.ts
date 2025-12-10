@@ -158,7 +158,7 @@ export const auth = betterAuth({
     useSecureCookies: process.env.NODE_ENV === "production",
     cookiePrefix: "safee-auth",
     crossSubDomainCookies: {
-      enabled: false,
+      enabled: true,
     },
     database: {
       generateId: () => randomUUID(),

@@ -17,9 +17,11 @@ import {
 import { StorageServiceV2 } from "../services/storage.service.v2.js";
 import { StorageConnectorService } from "../services/storage/storage-connector.service.js";
 import { ClientEncryptionService } from "../services/clientEncryption.service.js";
+import { getChunkedUploadServiceInstance } from "../services/chunked-upload-instance.js";
 import type { Response } from "express";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext } from "../serverContext.js";
+import { getStorageConfig } from "../../config/index.js";
 
 export interface FileUploadRequest {
   folderId?: string;
@@ -357,5 +359,177 @@ export class StorageController extends Controller {
       chunkSize: metadata.chunkSize,
       keyVersion: metadata.keyVersion,
     };
+  }
+
+  // ============================================================================
+  // Chunked Upload Endpoints
+  // ============================================================================
+
+  /**
+   * Initialize a chunked upload session
+   */
+  @Post("upload/chunked/init")
+  @Security("jwt")
+  @SuccessResponse("201", "Chunked upload session initialized")
+  public async initChunkedUpload(
+    @Request() request: AuthenticatedRequest,
+    @Body()
+    body: {
+      fileName: string;
+      fileSize: number;
+      mimeType: string;
+      totalChunks: number;
+      chunkSize: number;
+      metadata?: Record<string, unknown>;
+    },
+  ): Promise<{ uploadId: string; expiresAt: Date }> {
+    if (!request.betterAuthSession?.user.id || !request.betterAuthSession?.session.activeOrganizationId) {
+      throw new Error("User not authenticated");
+    }
+
+    const { fileName, fileSize, mimeType, totalChunks, chunkSize, metadata } = body;
+
+    // Validate file size
+    const storageConfig = getStorageConfig();
+    if (fileSize > storageConfig.maxFileSize) {
+      throw new Error(`File size exceeds maximum allowed size of ${storageConfig.maxFileSize} bytes`);
+    }
+
+    // Validate chunk size
+    if (chunkSize > storageConfig.maxChunkSize) {
+      throw new Error(`Chunk size exceeds maximum allowed size of ${storageConfig.maxChunkSize} bytes`);
+    }
+
+    const chunkedUploadService = getChunkedUploadServiceInstance();
+    const result = await chunkedUploadService.initUpload({
+      fileName,
+      fileSize,
+      mimeType,
+      totalChunks,
+      chunkSize,
+      userId: request.betterAuthSession.user.id,
+      organizationId: request.betterAuthSession.session.activeOrganizationId,
+      metadata,
+    });
+
+    this.setStatus(201);
+    return result;
+  }
+
+  /**
+   * Upload a single chunk
+   */
+  @Post("upload/chunked/{uploadId}/chunk/{chunkNumber}")
+  @Security("jwt")
+  @SuccessResponse("200", "Chunk uploaded successfully")
+  public async uploadChunk(
+    @Path() uploadId: string,
+    @Path() chunkNumber: number,
+    @UploadedFile() chunk: globalThis.Express.Multer.File,
+  ): Promise<{
+    success: boolean;
+    receivedChunks: number[];
+    remainingChunks: number[];
+  }> {
+    if (!chunk) {
+      throw new Error("No chunk provided");
+    }
+
+    const chunkedUploadService = getChunkedUploadServiceInstance();
+    return await chunkedUploadService.uploadChunk(uploadId, chunkNumber, chunk.buffer);
+  }
+
+  /**
+   * Complete chunked upload and save file
+   */
+  @Post("upload/chunked/{uploadId}/complete")
+  @Security("jwt")
+  @SuccessResponse("201", "File uploaded successfully")
+  public async completeChunkedUpload(
+    @Path() uploadId: string,
+    @Request() request: AuthenticatedRequest,
+    @Body()
+    body?: {
+      folderId?: string;
+      tags?: string[];
+      metadata?: Record<string, unknown>;
+    },
+  ): Promise<FileMetadata> {
+    if (!request.betterAuthSession?.user.id || !request.betterAuthSession?.session.activeOrganizationId) {
+      throw new Error("User not authenticated");
+    }
+
+    const chunkedUploadService = getChunkedUploadServiceInstance();
+
+    // Get upload status to retrieve file info
+    const status = chunkedUploadService.getUploadStatus(uploadId);
+    if (status.status === "expired" || status.status === "failed") {
+      throw new Error(`Upload session ${status.status}`);
+    }
+
+    // Assemble chunks
+    const assembledFile = await chunkedUploadService.completeUpload(uploadId);
+
+    // Get storage service and save the assembled file
+    const storageService = await this.getStorageService(
+      request.betterAuthSession.session.activeOrganizationId,
+    );
+
+    // Create a mock Multer file object
+    const mockFile: globalThis.Express.Multer.File = {
+      fieldname: "file",
+      originalname: status.fileName,
+      encoding: "7bit",
+      mimetype: status.status === "uploading" || status.status === "completed" ? "application/octet-stream" : "",
+      size: status.fileSize,
+      buffer: assembledFile,
+      stream: null as any,
+      destination: "",
+      filename: status.fileName,
+      path: "",
+    };
+
+    const fileMetadata = await storageService.uploadFile(mockFile, {
+      folderId: body?.folderId,
+      tags: body?.tags,
+      metadata: body?.metadata,
+      userId: request.betterAuthSession.user.id,
+    });
+
+    this.setStatus(201);
+    return fileMetadata;
+  }
+
+  /**
+   * Cancel chunked upload
+   */
+  @Delete("upload/chunked/{uploadId}/cancel")
+  @Security("jwt")
+  @SuccessResponse("204", "Upload cancelled")
+  public async cancelChunkedUpload(@Path() uploadId: string): Promise<void> {
+    const chunkedUploadService = getChunkedUploadServiceInstance();
+    await chunkedUploadService.cancelUpload(uploadId);
+    this.setStatus(204);
+  }
+
+  /**
+   * Get chunked upload status
+   */
+  @Get("upload/chunked/{uploadId}/status")
+  @Security("jwt")
+  public async getChunkedUploadStatus(
+    @Path() uploadId: string,
+  ): Promise<{
+    uploadId: string;
+    fileName: string;
+    fileSize: number;
+    uploadedBytes: number;
+    uploadedChunks: number[];
+    totalChunks: number;
+    percentage: number;
+    status: "pending" | "uploading" | "completed" | "failed" | "expired";
+  }> {
+    const chunkedUploadService = getChunkedUploadServiceInstance();
+    return chunkedUploadService.getUploadStatus(uploadId);
   }
 }

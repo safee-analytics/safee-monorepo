@@ -10,6 +10,8 @@ import {
 import { useAuth } from "@/lib/auth/hooks";
 import { useToast, SafeeToastContainer } from "@/components/feedback";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { LogoUpload } from "@/components/common";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Building2,
   Trash2,
@@ -63,6 +65,7 @@ interface OrganizationSettings {
 export default function OrganizationSettingsPage() {
   const { t } = useTranslation();
   const toast = useToast();
+  const queryClient = useQueryClient();
   const { data: organization } = useActiveOrganization();
   const { user } = useAuth();
   const updateOrganizationMutation = useUpdateOrganization();
@@ -74,7 +77,6 @@ export default function OrganizationSettingsPage() {
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
-  const [logoPreview, setLogoPreview] = useState<string | null>(null);
 
   const [settings, setSettings] = useState<OrganizationSettings>({
     name: organization?.name || "",
@@ -151,19 +153,6 @@ export default function OrganizationSettingsPage() {
     } catch (error) {
       console.error("Failed to delete organization:", error);
       toast.error("Failed to delete organization");
-    }
-  };
-
-  const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setLogoPreview(result);
-        setSettings({ ...settings, logo: result });
-      };
-      reader.readAsDataURL(file);
     }
   };
 
@@ -252,46 +241,26 @@ export default function OrganizationSettingsPage() {
 
         {/* Logo Upload */}
         <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <div className="flex items-start gap-6">
-            <div className="flex-shrink-0">
-              <div className="w-32 h-32 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden bg-gray-50">
-                {logoPreview || settings.logo ? (
-                  <img
-                    src={logoPreview || settings.logo}
-                    alt="Organization logo"
-                    className="w-full h-full object-contain"
-                  />
-                ) : (
-                  <ImageIcon className="w-12 h-12 text-gray-400" />
-                )}
-              </div>
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {t.settings.organization.logo.title}
-              </h3>
-              <p className="text-sm text-gray-600 mb-4">{t.settings.organization.logo.subtitle}</p>
-              <div className="flex gap-3">
-                <label className="cursor-pointer">
-                  <input type="file" accept="image/*" onChange={handleLogoUpload} className="hidden" />
-                  <div className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2 text-sm font-medium">
-                    <Upload className="w-4 h-4" />
-                    {t.settings.organization.logo.uploadButton}
-                  </div>
-                </label>
-                {(logoPreview || settings.logo) && (
-                  <button
-                    onClick={() => {
-                      setLogoPreview(null);
-                      setSettings({ ...settings, logo: undefined });
-                    }}
-                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 text-sm font-medium"
-                  >
-                    {t.common.delete}
-                  </button>
-                )}
-              </div>
-              <p className="text-xs text-gray-500 mt-2">{t.settings.organization.logo.recommended}</p>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            {t.settings.organization.logo.title}
+          </h3>
+          <p className="text-sm text-gray-600 mb-4">{t.settings.organization.logo.subtitle}</p>
+          <div className="flex items-center gap-6">
+            <LogoUpload
+              currentLogoUrl={organization?.logo || undefined}
+              endpoint={`/api/v1/organizations/${organization?.id}/logo`}
+              method="PUT"
+              maxSize={2 * 1024 * 1024} // 2MB
+              onSuccess={(metadata) => {
+                queryClient.invalidateQueries({ queryKey: ['organization'] });
+                toast.success(t.settings.organization.logo.uploadSuccess || "Logo updated successfully");
+              }}
+              onError={(error) => {
+                toast.error(t.settings.organization.logo.uploadFailed || "Failed to upload logo");
+              }}
+            />
+            <div>
+              <p className="text-xs text-gray-500">{t.settings.organization.logo.recommended}</p>
             </div>
           </div>
         </div>

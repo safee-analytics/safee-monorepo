@@ -271,6 +271,72 @@ export async function updateUserLocale(deps: DbDeps, userId: string, locale: Loc
   }
 }
 
+export async function updateUserImage(
+  deps: DbDeps,
+  userId: string,
+  imagePath: string
+): Promise<UserWithOrganization> {
+  const { drizzle, logger } = deps;
+
+  try {
+    const existingUser = await getUserById(deps, userId);
+    if (!existingUser) {
+      throw new UserNotFoundError();
+    }
+
+    await drizzle
+      .update(users)
+      .set({
+        image: imagePath,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId));
+
+    logger.info({ userId, imagePath }, "User image updated successfully");
+
+    // Return updated user
+    const updatedUser = await getUserById(deps, userId);
+    if (!updatedUser) {
+      throw new UserNotFoundError("User not found after update");
+    }
+
+    return updatedUser;
+  } catch (err) {
+    logger.error({ error: err, userId }, "Failed to update user image");
+    throw err;
+  }
+}
+
+export async function updateOrganizationLogo(
+  deps: DbDeps,
+  organizationId: string,
+  logoPath: string
+): Promise<typeof organizations.$inferSelect> {
+  const { drizzle, logger } = deps;
+
+  try {
+    const [updatedOrg] = await drizzle
+      .update(organizations)
+      .set({
+        logo: logoPath,
+        updatedAt: new Date(),
+      })
+      .where(eq(organizations.id, organizationId))
+      .returning();
+
+    if (!updatedOrg) {
+      throw new Error("Organization not found");
+    }
+
+    logger.info({ organizationId, logoPath }, "Organization logo updated successfully");
+
+    return updatedOrg;
+  } catch (err) {
+    logger.error({ error: err, organizationId }, "Failed to update organization logo");
+    throw err;
+  }
+}
+
 function generateSlug(name: string): string {
   return name
     .toLowerCase()

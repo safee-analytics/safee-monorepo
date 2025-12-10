@@ -1,8 +1,10 @@
-import { Controller, Get, Put, Route, Tags, Security, Body, SuccessResponse, Request } from "tsoa";
+import { Controller, Get, Put, Route, Tags, Security, Body, SuccessResponse, Request, UploadedFile } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext, type ServerContext } from "../serverContext.js";
-import { getUserById, updateUserProfile, updateUserLocale, UserNotFoundError } from "@safee/database";
+import { getUserById, updateUserProfile, updateUserLocale, updateUserImage, UserNotFoundError } from "@safee/database";
 import { Unauthorized, UserNotFound } from "../errors.js";
+import { StorageServiceV2 } from "../services/storage.service.v2.js";
+import { StorageConnectorService } from "../services/storage/storage-connector.service.js";
 
 type Locale = "en" | "ar";
 
@@ -10,6 +12,7 @@ interface UserProfileResponse {
   id: string;
   email: string;
   name?: string | null;
+  image?: string | null;
   preferredLocale: Locale;
   activeOrganizationId?: string | null;
 }
@@ -55,6 +58,7 @@ export class UserController extends Controller {
         id: user.id,
         email: user.email,
         name: user.name,
+        image: user.image,
         preferredLocale: user.preferredLocale,
         activeOrganizationId: req.betterAuthSession?.session.activeOrganizationId,
       };
@@ -94,6 +98,7 @@ export class UserController extends Controller {
         id: updatedUser.id,
         email: updatedUser.email,
         name: updatedUser.name,
+        image: updatedUser.image,
         preferredLocale: updatedUser.preferredLocale,
         activeOrganizationId: req.betterAuthSession?.session.activeOrganizationId,
       };
@@ -132,6 +137,58 @@ export class UserController extends Controller {
         throw new UserNotFound();
       }
       this.context.logger.error({ error, userId, locale: request.locale }, "Failed to update user locale");
+      throw error;
+    }
+  }
+
+  @Put("me/avatar")
+  @Security("jwt")
+  @SuccessResponse("200", "User avatar updated")
+  public async updateAvatar(
+    @Request() req: AuthenticatedRequest,
+    @UploadedFile() file: globalThis.Express.Multer.File,
+  ): Promise<UserProfileResponse> {
+    const deps = { drizzle: this.context.drizzle, logger: this.context.logger };
+    const userId = req.betterAuthSession?.user.id;
+    const orgId = req.betterAuthSession?.session.activeOrganizationId;
+
+    if (!userId) {
+      throw new Unauthorized("User not authenticated");
+    }
+
+    if (!orgId) {
+      throw new Unauthorized("No active organization");
+    }
+
+    try {
+      // Get storage service for organization
+      const connectorService = new StorageConnectorService(this.context.drizzle);
+      const adapter = await connectorService.getAdapter(orgId);
+      const storageService = new StorageServiceV2(adapter);
+
+      // Upload file to storage
+      const metadata = await storageService.uploadFile(file, {
+        folderId: `users/${userId}/avatar`,
+        tags: ['avatar'],
+        userId,
+      });
+
+      // Update user record with file path
+      const updatedUser = await updateUserImage(deps, userId, metadata.path);
+
+      return {
+        id: updatedUser.id,
+        email: updatedUser.email,
+        name: updatedUser.name,
+        image: updatedUser.image,
+        preferredLocale: updatedUser.preferredLocale,
+        activeOrganizationId: orgId,
+      };
+    } catch (error) {
+      if (error instanceof UserNotFoundError) {
+        throw new UserNotFound();
+      }
+      this.context.logger.error({ error, userId }, "Failed to update user avatar");
       throw error;
     }
   }

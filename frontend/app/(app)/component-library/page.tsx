@@ -55,6 +55,12 @@ import {
   type DragDropItem,
 } from "@safee/ui";
 import {
+  FileUpload,
+  AvatarUpload,
+  LogoUpload,
+  DocumentUpload,
+} from "@/components/common";
+import {
   Settings,
   Users,
   FileText,
@@ -216,6 +222,7 @@ function ComponentLibraryContent() {
     { id: "overview", name: "Overview", icon: "🎯", color: "from-blue-500 to-cyan-500" },
     { id: "premium", name: "Premium UI", icon: "✨", color: "from-yellow-500 to-orange-500" },
     { id: "ui", name: "UI Components", icon: "🎨", color: "from-pink-500 to-rose-500" },
+    { id: "uploads", name: "File Uploads", icon: "📤", color: "from-violet-500 to-fuchsia-500" },
     { id: "datagrid", name: "Data Grid", icon: "📋", color: "from-purple-500 to-pink-500" },
     { id: "charts", name: "Charts", icon: "📈", color: "from-green-500 to-emerald-500" },
     { id: "exports", name: "Excel & PDF", icon: "📊", color: "from-orange-500 to-red-500" },
@@ -274,6 +281,7 @@ function ComponentLibraryContent() {
                     {section.id === "premium" &&
                       "Ultra-smooth components better than Monday.com & QuickBooks"}
                     {section.id === "ui" && "Modern UI components with animations and interactions"}
+                    {section.id === "uploads" && "Chunked uploads with WebSocket progress & encryption"}
                     {section.id === "datagrid" && "Advanced tables with sorting, filtering, pagination"}
                     {section.id === "charts" && "Beautiful visualizations with Recharts"}
                     {section.id === "exports" && "Excel & PDF generation with full control"}
@@ -738,6 +746,170 @@ function ComponentLibraryContent() {
                     />
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* File Upload Section */}
+        {activeSection === "uploads" && (
+          <div className="space-y-8">
+            {/* Basic Dropzone Upload */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden">
+              <div className="bg-gradient-to-r from-violet-500 to-fuchsia-500 p-6 text-white">
+                <h2 className="text-3xl font-bold mb-2">📤 File Upload System</h2>
+                <p className="text-violet-100">
+                  Chunked uploads • WebSocket progress • Encryption support • Drag & drop
+                </p>
+              </div>
+              <div className="p-6 space-y-6">
+                <div>
+                  <h3 className="text-xl font-semibold mb-3">Basic Dropzone Upload</h3>
+                  <FileUpload
+                    variant="dropzone"
+                    multiple
+                    maxSize={100 * 1024 * 1024}
+                    onSuccess={(file, metadata) => {
+                      toast.success("Upload Complete", `${file.name} uploaded successfully`);
+                    }}
+                    onError={(file, error) => {
+                      toast.error("Upload Failed", error.message);
+                    }}
+                  />
+                </div>
+
+                {/* Feature Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="p-4 bg-violet-50 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">🚀</span>
+                      <h4 className="font-semibold">Chunked Upload</h4>
+                    </div>
+                    <p className="text-sm text-gray-600">
+                      Files &gt; 10MB automatically use chunked upload with 5MB chunks for reliability
+                    </p>
+                  </div>
+                  <div className="p-4 bg-fuchsia-50 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">📡</span>
+                      <h4 className="font-semibold">WebSocket Progress</h4>
+                    </div>
+                    <p className="text-sm text-gray-600">
+                      Real-time progress updates via WebSocket - no polling needed
+                    </p>
+                  </div>
+                  <div className="p-4 bg-purple-50 rounded-lg">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className="text-2xl">🔐</span>
+                      <h4 className="font-semibold">Client Encryption</h4>
+                    </div>
+                    <p className="text-sm text-gray-600">
+                      AES-256-GCM encryption in Web Worker before upload
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Specialized Components */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Avatar Upload */}
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                <h3 className="text-xl font-semibold mb-4">👤 Avatar Upload</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Circular preview for profile pictures with hover overlay
+                </p>
+                <div className="flex justify-center">
+                  <AvatarUpload
+                    maxSize={5 * 1024 * 1024}
+                    onSuccess={(metadata) => {
+                      toast.success("Avatar Updated", "Your profile picture has been updated");
+                    }}
+                  />
+                </div>
+                <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                  <p className="text-xs text-gray-600">
+                    • Max 5MB
+                    <br />
+                    • Auto-resize support
+                    <br />
+                    • Circular preview
+                  </p>
+                </div>
+              </div>
+
+              {/* Logo Upload */}
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                <h3 className="text-xl font-semibold mb-4">🏢 Logo Upload</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Square preview for company logos with guidelines
+                </p>
+                <LogoUpload
+                  maxSize={2 * 1024 * 1024}
+                  onSuccess={(metadata) => {
+                    toast.success("Logo Updated", "Company logo has been updated");
+                  }}
+                />
+              </div>
+
+              {/* Document Upload */}
+              <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+                <h3 className="text-xl font-semibold mb-4">📄 Document Upload</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Batch document upload with file type icons
+                </p>
+                <DocumentUpload
+                  accept=".pdf,.doc,.docx,.xls,.xlsx"
+                  maxSize={100 * 1024 * 1024}
+                  maxFiles={5}
+                  onSuccess={(files) => {
+                    toast.success("Documents Uploaded", `${files.length} files uploaded successfully`);
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Button Variants */}
+            <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
+              <h3 className="text-xl font-semibold mb-4">🎨 Upload Variants</h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <h4 className="font-medium mb-3 text-sm text-gray-600">BUTTON STYLE</h4>
+                  <FileUpload variant="button" label="Choose File" accept="image/*" />
+                </div>
+                <div>
+                  <h4 className="font-medium mb-3 text-sm text-gray-600">MINIMAL STYLE</h4>
+                  <FileUpload variant="minimal" label="Upload photo" accept="image/*" />
+                </div>
+                <div>
+                  <h4 className="font-medium mb-3 text-sm text-gray-600">AVATAR STYLE</h4>
+                  <FileUpload variant="avatar" accept="image/*" />
+                </div>
+              </div>
+            </div>
+
+            {/* Technical Details */}
+            <div className="bg-gradient-to-r from-violet-600 to-fuchsia-600 rounded-2xl p-8 text-white">
+              <h3 className="text-2xl font-bold mb-4">⚙️ Technical Features</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { icon: "🔄", title: "Auto-Chunking", desc: "Files &gt; 10MB split into 5MB chunks" },
+                  { icon: "⚡", title: "WebSocket Progress", desc: "Real-time upload progress via Socket.IO" },
+                  { icon: "🔐", title: "AES-256-GCM", desc: "Client-side encryption before upload" },
+                  { icon: "🎯", title: "Resume Support", desc: "Resume failed uploads automatically" },
+                  { icon: "✅", title: "Validation", desc: "File size, type, and custom validators" },
+                  { icon: "📱", title: "Mobile Ready", desc: "Touch-friendly drag & drop interface" },
+                  { icon: "🌙", title: "Dark Mode", desc: "Full dark mode support" },
+                  { icon: "♿", title: "Accessible", desc: "WCAG 2.1 AA compliant" },
+                ].map((feature) => (
+                  <div key={feature.title} className="flex items-start gap-3 p-3 bg-white/10 rounded-lg">
+                    <span className="text-2xl">{feature.icon}</span>
+                    <div>
+                      <h4 className="font-semibold mb-1">{feature.title}</h4>
+                      <p className="text-sm text-violet-100">{feature.desc}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

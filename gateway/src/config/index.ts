@@ -16,6 +16,13 @@ export interface StorageConfig {
   uploadPath: string;
   maxFileSize: number;
   allowedMimeTypes: string[];
+  // Chunked upload configuration
+  chunkSize: number;
+  chunkThreshold: number;
+  chunkUploadExpiry: number; // in seconds
+  tempUploadPath: string;
+  maxChunkSize: number;
+  concurrentChunkUploads: number;
 }
 
 export interface DatabaseConfig {
@@ -62,7 +69,7 @@ export function getStorageConfig(): StorageConfig {
     provider: useCloud ? (process.env.STORAGE_PROVIDER as "azure" | "gcp") || "azure" : "local",
     bucket: process.env.FILE_UPLOAD_BUCKET || "dev-safee-storage",
     uploadPath: process.env.FILE_UPLOAD_PATH || "uploads",
-    maxFileSize: Number(process.env.MAX_FILE_SIZE) || 10 * 1024 * 1024, // 10MB default
+    maxFileSize: Number(process.env.MAX_FILE_SIZE) || 100 * 1024 * 1024, // 100MB default (increased from 10MB)
     allowedMimeTypes: process.env.ALLOWED_MIME_TYPES?.split(",") || [
       "image/jpeg",
       "image/png",
@@ -72,6 +79,13 @@ export function getStorageConfig(): StorageConfig {
       "application/vnd.ms-excel",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ],
+    // Chunked upload configuration
+    chunkSize: Number(process.env.CHUNK_SIZE) || 5 * 1024 * 1024, // 5MB chunks
+    chunkThreshold: Number(process.env.CHUNK_THRESHOLD) || 10 * 1024 * 1024, // Files > 10MB use chunking
+    chunkUploadExpiry: Number(process.env.CHUNK_UPLOAD_EXPIRY) || 86400, // 24 hours in seconds
+    tempUploadPath: process.env.TEMP_UPLOAD_PATH || "./storage/temp",
+    maxChunkSize: Number(process.env.MAX_CHUNK_SIZE) || 10 * 1024 * 1024, // 10MB max per chunk
+    concurrentChunkUploads: Number(process.env.CONCURRENT_CHUNK_UPLOADS) || 3, // 3 parallel uploads
   };
 }
 

@@ -24,6 +24,7 @@ import { auth } from "../auth/index.js";
 import { mergeBetterAuthSpec } from "./mergeOpenApiSpecs.js";
 import type { OpenAPIV3 } from "openapi-types";
 import { WebSocketService } from "./services/websocket.service.js";
+import { getChunkedUploadServiceInstance } from "./services/chunked-upload-instance.js";
 
 dotenv.config();
 
@@ -253,6 +254,11 @@ export async function startServer(deps: Dependencies) {
 
   // Initialize WebSocket server with Better Auth security
   const wsService = new WebSocketService(httpServer);
+
+  // Connect WebSocket service to ChunkedUploadService for progress tracking
+  const chunkedUploadService = getChunkedUploadServiceInstance();
+  chunkedUploadService.setWebSocketService(wsService);
+  deps.logger.info("WebSocket service connected to ChunkedUploadService");
 
   // Graceful shutdown
   const shutdown = async () => {
