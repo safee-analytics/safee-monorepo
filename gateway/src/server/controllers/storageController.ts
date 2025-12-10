@@ -14,6 +14,7 @@ import {
   Request,
   SuccessResponse,
 } from "tsoa";
+import { Readable } from "stream";
 import { StorageServiceV2 } from "../services/storage.service.v2.js";
 import { StorageConnectorService } from "../services/storage/storage-connector.service.js";
 import { ClientEncryptionService } from "../services/clientEncryption.service.js";
@@ -484,7 +485,7 @@ export class StorageController extends Controller {
         status.status === "uploading" || status.status === "completed" ? "application/octet-stream" : "",
       size: status.fileSize,
       buffer: assembledFile,
-      stream: null as unknown as NodeJS.ReadableStream,
+      stream: null as unknown as Readable,
       destination: "",
       filename: status.fileName,
       path: "",
