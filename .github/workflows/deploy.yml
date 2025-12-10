@@ -17,7 +17,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_PREFIX: ${{ github.repository }}
+  IMAGE_PREFIX: ${{ github.repository_owner }}
 
 jobs:
   build-and-push:
@@ -70,7 +70,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/${{ matrix.service }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}/safee-${{ matrix.service }}
           tags: |
             type=raw,value=dev,enable={{is_default_branch}}
             type=raw,value=latest,enable={{is_default_branch}}
