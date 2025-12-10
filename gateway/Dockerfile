@@ -1,37 +1,35 @@
-# Multi-stage build for production gateway
-FROM node:20.19.0-alpine AS base
+# Stage 1: Install production dependencies ONCE
+FROM node:20.19.0-alpine AS deps
 WORKDIR /workspace
 RUN apk add --no-cache libc6-compat
-
-# Install dependencies
-FROM base AS deps
 COPY package.json package-lock.json tsconfig.json ./
 COPY database/package.json ./database/
 COPY gateway/package.json ./gateway/
 RUN npm ci --omit=dev
 
-# Build database
-FROM base AS database
+# Stage 2: Install ALL dependencies ONCE (for building)
+FROM node:20.19.0-alpine AS build-deps
+WORKDIR /workspace
+RUN apk add --no-cache libc6-compat
 COPY package.json package-lock.json tsconfig.json ./
-COPY database/package.json ./database/
+COPY database/package.json database/tsconfig.json ./database/
+COPY gateway/package.json ./gateway/
 RUN npm ci
+
+# Stage 3: Build database (reuse build-deps)
+FROM build-deps AS database
 COPY database ./database/
 RUN npm run build -w database
 
-# Build gateway
-FROM base AS builder
-COPY package.json package-lock.json tsconfig.json ./
-COPY database/package.json ./database/
-COPY database/tsconfig.json ./database/
-COPY gateway/package.json ./gateway/
-RUN npm ci
+# Stage 4: Build gateway (reuse build-deps)
+FROM build-deps AS builder
 COPY --from=database /workspace/database/build ./database/build
 COPY --from=database /workspace/database/src ./database/src
 COPY gateway ./gateway/
 RUN npm run build -w gateway
 
 # Production image
-FROM base AS runner
+FROM node:20.19.0-alpine AS runner
 ENV NODE_ENV=production
 
 # Copy dependencies

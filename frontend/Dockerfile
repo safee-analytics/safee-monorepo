@@ -1,32 +1,25 @@
-FROM node:20.19.0-alpine AS base
+# Stage 1: Install ALL dependencies ONCE
+FROM node:20.19.0-alpine AS deps
 WORKDIR /workspace
 RUN apk add --no-cache libc6-compat
-
-# Build database
-FROM base AS database
 COPY package.json package-lock.json tsconfig.json ./
-COPY database/package.json ./database/
+COPY database/package.json database/tsconfig.json ./database/
+COPY ui/package.json ui/tsconfig.json ./ui/
+COPY frontend/package.json ./frontend/
 RUN npm ci
+
+# Stage 2: Build database (reuse node_modules)
+FROM deps AS database
 COPY database ./database/
 RUN npm run build -w database
 
-# Build UI
-FROM base AS ui
-COPY package.json package-lock.json tsconfig.json ./
-COPY ui/package.json ./ui/
-RUN npm ci
+# Stage 3: Build UI (reuse node_modules)
+FROM deps AS ui
 COPY ui ./ui/
 RUN npm run build -w ui
 
-# Build frontend
-FROM base AS frontend
-COPY package.json package-lock.json tsconfig.json ./
-COPY ui/package.json ./ui/
-COPY ui/tsconfig.json ./ui/
-COPY database/package.json ./database/
-COPY database/tsconfig.json ./database/
-COPY frontend/package.json ./frontend/
-RUN npm ci
+# Stage 4: Build frontend (reuse node_modules)
+FROM deps AS frontend
 COPY --from=database /workspace/database/build ./database/build
 COPY --from=database /workspace/database/src ./database/src
 COPY --from=ui /workspace/ui/dist ./ui/dist
