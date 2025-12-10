@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useDepartments } from "@/lib/api/hooks/hrManagement";
@@ -43,7 +43,7 @@ export function DepartmentForm({
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm({
     resolver: zodResolver(departmentFormSchema),
@@ -56,7 +56,8 @@ export function DepartmentForm({
     },
   });
 
-  const colorValue = watch("color");
+  // Use useWatch instead of watch for better React 19 compatibility
+  const colorValue = useWatch({ control, name: "color" });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">

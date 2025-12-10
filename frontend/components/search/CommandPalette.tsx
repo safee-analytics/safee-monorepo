@@ -34,15 +34,9 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     return () => document.removeEventListener("keydown", down);
   }, [open, onOpenChange]);
 
-  // Reset search when closing
-  useEffect(() => {
-    if (!open) {
-      setSearch("");
-    }
-  }, [open]);
-
   const handleSelect = (path: string, isAction?: boolean) => {
     onOpenChange(false);
+    setSearch(""); // Clear search when closing
 
     // Handle action-type items differently
     if (isAction) {
@@ -77,7 +71,13 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
       className="fixed top-0 left-0 right-0 bottom-0 z-[100]"
     >
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black/50 backdrop-blur-sm" onClick={() => onOpenChange(false)} />
+      <div
+        className="fixed inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={() => {
+          onOpenChange(false);
+          setSearch("");
+        }}
+      />
 
       {/* Command Palette */}
       <div className="fixed top-[20%] left-1/2 -translate-x-1/2 w-full max-w-2xl">

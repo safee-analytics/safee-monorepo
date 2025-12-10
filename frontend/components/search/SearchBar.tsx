@@ -51,21 +51,23 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Load recent searches from localStorage
-  useEffect(() => {
+  // Use lazy initialization to load recent searches from localStorage
+  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>(() => {
+    if (typeof window === "undefined") return [];
     const stored = localStorage.getItem(RECENT_SEARCHES_KEY);
     if (stored) {
       try {
-        setRecentSearches(JSON.parse(stored));
+        return JSON.parse(stored);
       } catch (e) {
         console.error("Failed to parse recent searches", e);
+        return [];
       }
     }
-  }, []);
+    return [];
+  });
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const previousQueryRef = useRef(query);
 
   // Save recent search
   const saveRecentSearch = useCallback(
@@ -255,11 +257,6 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Reset selection when results change
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [query]);
-
   const handleRecentSearch = (recent: RecentSearch) => {
     setQuery(recent.label);
     setIsOpen(true);
@@ -278,7 +275,13 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
           type="text"
           value={query}
           onChange={(e) => {
-            setQuery(e.target.value);
+            const newQuery = e.target.value;
+            // Reset selection when query changes
+            if (newQuery !== previousQueryRef.current) {
+              setSelectedIndex(0);
+              previousQueryRef.current = newQuery;
+            }
+            setQuery(newQuery);
             setIsOpen(true);
           }}
           onFocus={() => setIsOpen(true)}

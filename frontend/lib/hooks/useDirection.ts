@@ -7,12 +7,14 @@ export type Direction = "ltr" | "rtl";
  * Useful for RTL-aware component styling
  */
 export function useDirection(): Direction {
-  const [direction, setDirection] = useState<Direction>("rtl");
+  // Use lazy initialization to get initial direction from DOM
+  const [direction, setDirection] = useState<Direction>(() => {
+    if (typeof window === "undefined") return "ltr";
+    const dir = document.documentElement.dir as Direction;
+    return dir || "ltr";
+  });
 
   useEffect(() => {
-    const dir = document.documentElement.dir as Direction;
-    setDirection(dir || "rtl");
-
     // Watch for direction changes
     const observer = new MutationObserver((mutations) => {
       mutations.forEach((mutation) => {
