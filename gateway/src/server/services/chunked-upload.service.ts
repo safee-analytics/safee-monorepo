@@ -239,9 +239,7 @@ export class ChunkedUploadService {
 
     // Verify file size
     if (assembledFile.length !== session.fileSize) {
-      throw new Error(
-        `File size mismatch. Expected ${session.fileSize}, got ${assembledFile.length}`,
-      );
+      throw new Error(`File size mismatch. Expected ${session.fileSize}, got ${assembledFile.length}`);
     }
 
     logger.info(

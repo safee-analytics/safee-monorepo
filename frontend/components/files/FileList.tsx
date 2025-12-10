@@ -98,7 +98,9 @@ export function FileList({
 
   if (files.length === 0) {
     return (
-      <div className={`rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center dark:border-gray-600 dark:bg-gray-800 ${className}`}>
+      <div
+        className={`rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center dark:border-gray-600 dark:bg-gray-800 ${className}`}
+      >
         <File className="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-500" />
         <p className="text-sm text-gray-500 dark:text-gray-400">{emptyMessage}</p>
       </div>

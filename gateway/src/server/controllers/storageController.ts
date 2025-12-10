@@ -480,7 +480,8 @@ export class StorageController extends Controller {
       fieldname: "file",
       originalname: status.fileName,
       encoding: "7bit",
-      mimetype: status.status === "uploading" || status.status === "completed" ? "application/octet-stream" : "",
+      mimetype:
+        status.status === "uploading" || status.status === "completed" ? "application/octet-stream" : "",
       size: status.fileSize,
       buffer: assembledFile,
       stream: null as any,
@@ -517,9 +518,7 @@ export class StorageController extends Controller {
    */
   @Get("upload/chunked/{uploadId}/status")
   @Security("jwt")
-  public async getChunkedUploadStatus(
-    @Path() uploadId: string,
-  ): Promise<{
+  public async getChunkedUploadStatus(@Path() uploadId: string): Promise<{
     uploadId: string;
     fileName: string;
     fileSize: number;

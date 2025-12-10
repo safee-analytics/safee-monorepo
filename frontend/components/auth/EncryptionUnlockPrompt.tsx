@@ -199,9 +199,7 @@ export function EncryptionUnlockPrompt({
             <Lock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Unlock Encrypted Files
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Unlock Encrypted Files</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {isAuditor
                 ? "You have auditor access to decrypt files"
@@ -282,9 +280,7 @@ export function EncryptionUnlockPrompt({
                 rows={3}
                 autoFocus
               />
-              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-                Separate each word with a space
-              </p>
+              <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">Separate each word with a space</p>
             </>
           )}
         </div>
@@ -314,8 +310,8 @@ export function EncryptionUnlockPrompt({
           <div className="mt-4 rounded-md bg-blue-50 p-3 text-sm text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
             <p className="font-medium">Auditor Access</p>
             <p className="mt-1 text-xs">
-              You have been granted temporary access to decrypt organization files without the
-              organization password.
+              You have been granted temporary access to decrypt organization files without the organization
+              password.
             </p>
           </div>
         )}

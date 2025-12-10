@@ -56,7 +56,11 @@ export function KeyRotation({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [passwordStrength, setPasswordStrength] = useState({ isValid: false, score: 0, feedback: [] as string[] });
+  const [passwordStrength, setPasswordStrength] = useState({
+    isValid: false,
+    score: 0,
+    feedback: [] as string[],
+  });
 
   // Step 5: Confirmation
   const [rotationReason, setRotationReason] = useState("");
@@ -262,9 +266,14 @@ export function KeyRotation({
         {/* Progress Indicator */}
         <div className="mb-6 flex items-center justify-between">
           {["warning", "verify-admin", "mfa", "new-password", "confirm", "rotating"].map((step, idx) => {
-            const stepIndex = ["warning", "verify-admin", "mfa", "new-password", "confirm", "rotating"].indexOf(
-              currentStep,
-            );
+            const stepIndex = [
+              "warning",
+              "verify-admin",
+              "mfa",
+              "new-password",
+              "confirm",
+              "rotating",
+            ].indexOf(currentStep);
             const isActive = idx === stepIndex;
             const isCompleted = idx < stepIndex;
 
@@ -311,7 +320,8 @@ export function KeyRotation({
                     Critical Operation - Read Carefully
                   </p>
                   <p className="mt-1 text-sm text-red-800 dark:text-red-400">
-                    Key rotation will re-encrypt ALL organization files. This is expensive and cannot be undone.
+                    Key rotation will re-encrypt ALL organization files. This is expensive and cannot be
+                    undone.
                   </p>
                 </div>
               </div>
@@ -428,7 +438,9 @@ export function KeyRotation({
             </p>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">MFA Code</label>
+              <label className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                MFA Code
+              </label>
               <input
                 type="text"
                 value={mfaCode}

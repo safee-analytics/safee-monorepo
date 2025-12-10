@@ -27,7 +27,7 @@ export interface UploadOptions {
   encryptionKey?: ArrayBuffer; // Organization encryption key
   chunkSize?: number;
   endpoint?: string; // Custom upload endpoint (e.g., '/api/v1/users/me/avatar')
-  method?: 'POST' | 'PUT'; // HTTP method for custom endpoint (default: POST)
+  method?: "POST" | "PUT"; // HTTP method for custom endpoint (default: POST)
 }
 
 export interface UploadResult {
@@ -45,19 +45,14 @@ export class UploadService {
   private readonly chunkThreshold: number;
 
   constructor() {
-    this.chunkSize =
-      Number(process.env.NEXT_PUBLIC_CHUNK_SIZE) || DEFAULT_CHUNK_SIZE;
-    this.chunkThreshold =
-      Number(process.env.NEXT_PUBLIC_CHUNK_THRESHOLD) || CHUNK_THRESHOLD;
+    this.chunkSize = Number(process.env.NEXT_PUBLIC_CHUNK_SIZE) || DEFAULT_CHUNK_SIZE;
+    this.chunkThreshold = Number(process.env.NEXT_PUBLIC_CHUNK_THRESHOLD) || CHUNK_THRESHOLD;
   }
 
   /**
    * Auto-select upload method based on file size
    */
-  public async upload(
-    file: File,
-    options: UploadOptions = {},
-  ): Promise<FileMetadata> {
+  public async upload(file: File, options: UploadOptions = {}): Promise<FileMetadata> {
     if (this.shouldUseChunkedUpload(file.size)) {
       return this.uploadChunked(file, options);
     }
@@ -67,10 +62,7 @@ export class UploadService {
   /**
    * Direct upload for small files
    */
-  public async uploadDirect(
-    file: File,
-    options: UploadOptions = {},
-  ): Promise<FileMetadata> {
+  public async uploadDirect(file: File, options: UploadOptions = {}): Promise<FileMetadata> {
     const formData = new FormData();
     formData.append("file", file);
 
@@ -106,10 +98,7 @@ export class UploadService {
   /**
    * Chunked upload for large files
    */
-  public async uploadChunked(
-    file: File,
-    options: UploadOptions = {},
-  ): Promise<FileMetadata> {
+  public async uploadChunked(file: File, options: UploadOptions = {}): Promise<FileMetadata> {
     let processedFile = file;
     let encryptionMetadata: { iv: string; authTag?: string } | undefined;
 
@@ -227,27 +216,18 @@ export class UploadService {
   /**
    * Upload a single chunk
    */
-  private async uploadChunk(
-    uploadId: string,
-    chunkNumber: number,
-    chunk: Blob,
-  ): Promise<void> {
+  private async uploadChunk(uploadId: string, chunkNumber: number, chunk: Blob): Promise<void> {
     const formData = new FormData();
     formData.append("chunk", chunk);
 
-    const response = await fetch(
-      `/api/v1/storage/upload/chunked/${uploadId}/chunk/${chunkNumber}`,
-      {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      },
-    );
+    const response = await fetch(`/api/v1/storage/upload/chunked/${uploadId}/chunk/${chunkNumber}`, {
+      method: "POST",
+      body: formData,
+      credentials: "include",
+    });
 
     if (!response.ok) {
-      throw new Error(
-        `Failed to upload chunk ${chunkNumber}: ${response.statusText}`,
-      );
+      throw new Error(`Failed to upload chunk ${chunkNumber}: ${response.statusText}`);
     }
   }
 
@@ -262,17 +242,14 @@ export class UploadService {
       metadata?: Record<string, unknown>;
     },
   ): Promise<FileMetadata> {
-    const response = await fetch(
-      `/api/v1/storage/upload/chunked/${uploadId}/complete`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(options),
+    const response = await fetch(`/api/v1/storage/upload/chunked/${uploadId}/complete`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      credentials: "include",
+      body: JSON.stringify(options),
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to complete upload: ${response.statusText}`);
@@ -285,13 +262,10 @@ export class UploadService {
    * Cancel chunked upload
    */
   public async cancelChunkedUpload(uploadId: string): Promise<void> {
-    const response = await fetch(
-      `/api/v1/storage/upload/chunked/${uploadId}/cancel`,
-      {
-        method: "DELETE",
-        credentials: "include",
-      },
-    );
+    const response = await fetch(`/api/v1/storage/upload/chunked/${uploadId}/cancel`, {
+      method: "DELETE",
+      credentials: "include",
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to cancel upload: ${response.statusText}`);
@@ -311,13 +285,10 @@ export class UploadService {
     percentage: number;
     status: "pending" | "uploading" | "completed" | "failed" | "expired";
   }> {
-    const response = await fetch(
-      `/api/v1/storage/upload/chunked/${uploadId}/status`,
-      {
-        method: "GET",
-        credentials: "include",
-      },
-    );
+    const response = await fetch(`/api/v1/storage/upload/chunked/${uploadId}/status`, {
+      method: "GET",
+      credentials: "include",
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to get upload status: ${response.statusText}`);
@@ -346,9 +317,7 @@ export class UploadService {
     authTag?: string;
   }> {
     return new Promise((resolve, reject) => {
-      const worker = new Worker(
-        new URL("@/lib/crypto/encryptionWorker.ts", import.meta.url),
-      );
+      const worker = new Worker(new URL("@/lib/crypto/encryptionWorker.ts", import.meta.url));
 
       worker.onmessage = (event) => {
         const message = event.data;
@@ -394,10 +363,7 @@ export class UploadService {
   /**
    * Upload multiple files
    */
-  public async uploadMultiple(
-    files: File[],
-    options: UploadOptions = {},
-  ): Promise<UploadResult[]> {
+  public async uploadMultiple(files: File[], options: UploadOptions = {}): Promise<UploadResult[]> {
     const results: UploadResult[] = files.map((file) => ({
       file,
       status: "pending" as const,

@@ -1,7 +1,18 @@
 "use client";
 
 import { useState, useRef, useCallback } from "react";
-import { Upload, X, File, Image, FileText, Film, Music, Archive, CheckCircle, AlertCircle } from "lucide-react";
+import {
+  Upload,
+  X,
+  File,
+  Image,
+  FileText,
+  Film,
+  Music,
+  Archive,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface FileUploadOptions {
@@ -65,7 +76,7 @@ export function FileUpload({
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
   };
 
   const validateFile = (file: File): string | null => {
@@ -271,9 +282,7 @@ export function FileUpload({
 
         <div className="flex flex-col items-center justify-center py-12 px-6">
           <Upload
-            className={`mb-4 h-12 w-12 ${
-              isDragging ? "text-blue-500" : "text-gray-400 dark:text-gray-500"
-            }`}
+            className={`mb-4 h-12 w-12 ${isDragging ? "text-blue-500" : "text-gray-400 dark:text-gray-500"}`}
           />
           <p className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             {isDragging ? "Drop files here" : "Click to upload or drag and drop"}

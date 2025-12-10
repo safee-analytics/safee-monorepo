@@ -174,7 +174,7 @@ function ProfileTab() {
               method="PUT"
               maxSize={5 * 1024 * 1024} // 5MB
               onSuccess={(_metadata) => {
-                queryClient.invalidateQueries({ queryKey: ['session'] });
+                queryClient.invalidateQueries({ queryKey: ["session"] });
                 toast.success(t.settings.profile.profileTab.alerts.profileSuccess);
               }}
               onError={(_error) => {

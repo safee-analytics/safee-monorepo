@@ -184,7 +184,8 @@ export function ReencryptionProgress({
     }
   };
 
-  const completionPercentage = stats.total > 0 ? Math.round(((stats.encrypted + stats.failed) / stats.total) * 100) : 0;
+  const completionPercentage =
+    stats.total > 0 ? Math.round(((stats.encrypted + stats.failed) / stats.total) * 100) : 0;
 
   return (
     <div className="space-y-6">
@@ -195,7 +196,9 @@ export function ReencryptionProgress({
             <Lock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">File Re-encryption Progress</h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              File Re-encryption Progress
+            </h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Encrypt existing files with organization encryption key
             </p>
@@ -227,7 +230,9 @@ export function ReencryptionProgress({
           <div className="mb-4">
             <div className="mb-2 flex items-center justify-between">
               <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Overall Progress</span>
-              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{completionPercentage}%</span>
+              <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                {completionPercentage}%
+              </span>
             </div>
             <div className="h-3 w-full overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
               <div
@@ -287,12 +292,16 @@ export function ReencryptionProgress({
                 }`}
               >
                 <div className="flex flex-1 items-center gap-3">
-                  {file.status === "completed" && <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />}
+                  {file.status === "completed" && (
+                    <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                  )}
                   {file.status === "failed" && <XCircle className="h-5 w-5 text-red-600 dark:text-red-400" />}
                   {file.status === "encrypting" && (
                     <RefreshCw className="h-5 w-5 animate-spin text-blue-600 dark:text-blue-400" />
                   )}
-                  {file.status === "pending" && <AlertCircle className="h-5 w-5 text-gray-400 dark:text-gray-500" />}
+                  {file.status === "pending" && (
+                    <AlertCircle className="h-5 w-5 text-gray-400 dark:text-gray-500" />
+                  )}
                   <div className="flex-1">
                     <p className="text-sm font-medium text-gray-900 dark:text-white">{file.name}</p>
                     <p className="text-xs text-gray-500 dark:text-gray-400">

@@ -54,12 +54,7 @@ import {
   DragDropList,
   type DragDropItem,
 } from "@safee/ui";
-import {
-  FileUpload,
-  AvatarUpload,
-  LogoUpload,
-  DocumentUpload,
-} from "@/components/common";
+import { FileUpload, AvatarUpload, LogoUpload, DocumentUpload } from "@/components/common";
 import {
   Settings,
   Users,
@@ -832,8 +827,7 @@ function ComponentLibraryContent() {
                     • Max 5MB
                     <br />
                     • Auto-resize support
-                    <br />
-                    • Circular preview
+                    <br />• Circular preview
                   </p>
                 </div>
               </div>
@@ -841,9 +835,7 @@ function ComponentLibraryContent() {
               {/* Logo Upload */}
               <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
                 <h3 className="text-xl font-semibold mb-4">🏢 Logo Upload</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Square preview for company logos with guidelines
-                </p>
+                <p className="text-sm text-gray-600 mb-4">Square preview for company logos with guidelines</p>
                 <LogoUpload
                   maxSize={2 * 1024 * 1024}
                   onSuccess={(_metadata) => {
@@ -855,9 +847,7 @@ function ComponentLibraryContent() {
               {/* Document Upload */}
               <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-6">
                 <h3 className="text-xl font-semibold mb-4">📄 Document Upload</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Batch document upload with file type icons
-                </p>
+                <p className="text-sm text-gray-600 mb-4">Batch document upload with file type icons</p>
                 <DocumentUpload
                   accept=".pdf,.doc,.docx,.xls,.xlsx"
                   maxSize={100 * 1024 * 1024}
@@ -894,7 +884,11 @@ function ComponentLibraryContent() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {[
                   { icon: "🔄", title: "Auto-Chunking", desc: "Files &gt; 10MB split into 5MB chunks" },
-                  { icon: "⚡", title: "WebSocket Progress", desc: "Real-time upload progress via Socket.IO" },
+                  {
+                    icon: "⚡",
+                    title: "WebSocket Progress",
+                    desc: "Real-time upload progress via Socket.IO",
+                  },
                   { icon: "🔐", title: "AES-256-GCM", desc: "Client-side encryption before upload" },
                   { icon: "🎯", title: "Resume Support", desc: "Resume failed uploads automatically" },
                   { icon: "✅", title: "Validation", desc: "File size, type, and custom validators" },

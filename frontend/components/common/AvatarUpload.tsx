@@ -11,7 +11,7 @@ export interface AvatarUploadProps {
   onError?: (error: Error) => void;
   maxSize?: number; // Default: 5MB
   endpoint?: string; // Custom upload endpoint (e.g., '/api/v1/users/me/avatar')
-  method?: 'POST' | 'PUT'; // HTTP method for custom endpoint (default: PUT)
+  method?: "POST" | "PUT"; // HTTP method for custom endpoint (default: PUT)
   className?: string;
 }
 
@@ -21,7 +21,7 @@ export function AvatarUpload({
   onError,
   maxSize = 5 * 1024 * 1024, // 5MB
   endpoint,
-  method = 'PUT',
+  method = "PUT",
   className = "",
 }: AvatarUploadProps) {
   const [_previewUrl, setPreviewUrl] = useState<string | null>(currentAvatarUrl || null);

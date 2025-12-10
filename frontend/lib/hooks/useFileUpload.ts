@@ -57,30 +57,33 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
   /**
    * Add files to upload queue
    */
-  const addFiles = useCallback((newFiles: File[]) => {
-    const uploadFiles: UploadFile[] = newFiles.map((file) => ({
-      file,
-      id: `${file.name}-${Date.now()}-${Math.random()}`,
-      progress: 0,
-      status: "pending" as const,
-    }));
+  const addFiles = useCallback(
+    (newFiles: File[]) => {
+      const uploadFiles: UploadFile[] = newFiles.map((file) => ({
+        file,
+        id: `${file.name}-${Date.now()}-${Math.random()}`,
+        progress: 0,
+        status: "pending" as const,
+      }));
 
-    setFiles((prev) => [...prev, ...uploadFiles]);
+      setFiles((prev) => [...prev, ...uploadFiles]);
 
-    // Reset onComplete flag when adding new files
-    onCompleteCalledRef.current = false;
+      // Reset onComplete flag when adding new files
+      onCompleteCalledRef.current = false;
 
-    if (options.autoStart !== false) {
-      // Auto-start upload if not disabled
-      uploadFiles.forEach((uploadFile) => {
-        uploadFile.status = "uploading";
-        startUpload(uploadFile);
-      });
-    }
+      if (options.autoStart !== false) {
+        // Auto-start upload if not disabled
+        uploadFiles.forEach((uploadFile) => {
+          uploadFile.status = "uploading";
+          startUpload(uploadFile);
+        });
+      }
 
-    return uploadFiles;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [options.autoStart]); // startUpload is intentionally not included to avoid re-renders
+      return uploadFiles;
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    },
+    [options.autoStart],
+  ); // startUpload is intentionally not included to avoid re-renders
 
   /**
    * Start uploading a file
@@ -91,9 +94,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
 
       // Update status to uploading
       setFiles((prev) =>
-        prev.map((f) =>
-          f.id === uploadFile.id ? { ...f, status: "uploading" as const } : f,
-        ),
+        prev.map((f) => (f.id === uploadFile.id ? { ...f, status: "uploading" as const } : f)),
       );
 
       // Determine if this will be a chunked upload
@@ -128,11 +129,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         uploadId = initData.uploadId;
 
         // Store uploadId for WebSocket tracking
-        setFiles((prev) =>
-          prev.map((f) =>
-            f.id === uploadFile.id ? { ...f, uploadId } : f,
-          ),
-        );
+        setFiles((prev) => prev.map((f) => (f.id === uploadFile.id ? { ...f, uploadId } : f)));
 
         currentUploadIdRef.current = uploadId ?? null;
       }
@@ -143,11 +140,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         onProgress: (progress) => {
           // For direct uploads, update progress manually
           if (!isChunked) {
-            setFiles((prev) =>
-              prev.map((f) =>
-                f.id === uploadFile.id ? { ...f, progress } : f,
-              ),
-            );
+            setFiles((prev) => prev.map((f) => (f.id === uploadFile.id ? { ...f, progress } : f)));
           }
         },
       });
@@ -155,9 +148,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       // Mark as completed
       setFiles((prev) =>
         prev.map((f) =>
-          f.id === uploadFile.id
-            ? { ...f, status: "completed" as const, progress: 100, metadata }
-            : f,
+          f.id === uploadFile.id ? { ...f, status: "completed" as const, progress: 100, metadata } : f,
         ),
       );
 
@@ -171,9 +162,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
 
       setFiles((prev) =>
         prev.map((f) =>
-          f.id === uploadFile.id
-            ? { ...f, status: "failed" as const, error: errorMessage }
-            : f,
+          f.id === uploadFile.id ? { ...f, status: "failed" as const, error: errorMessage } : f,
         ),
       );
 

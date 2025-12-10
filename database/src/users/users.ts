@@ -274,7 +274,7 @@ export async function updateUserLocale(deps: DbDeps, userId: string, locale: Loc
 export async function updateUserImage(
   deps: DbDeps,
   userId: string,
-  imagePath: string
+  imagePath: string,
 ): Promise<UserWithOrganization> {
   const { drizzle, logger } = deps;
 
@@ -310,7 +310,7 @@ export async function updateUserImage(
 export async function updateOrganizationLogo(
   deps: DbDeps,
   organizationId: string,
-  logoPath: string
+  logoPath: string,
 ): Promise<typeof organizations.$inferSelect> {
   const { drizzle, logger } = deps;
 
@@ -324,6 +324,7 @@ export async function updateOrganizationLogo(
       .where(eq(organizations.id, organizationId))
       .returning();
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!updatedOrg) {
       throw new Error("Organization not found");
     }

@@ -269,12 +269,8 @@ export function FileUpload({
             <p className="text-lg font-medium text-gray-900 dark:text-gray-100">
               {label || "Drop files here or click to upload"}
             </p>
-            {description && (
-              <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{description}</p>
-            )}
-            <p className="text-xs text-gray-400 mt-2">
-              Maximum file size: {formatFileSize(maxSize)}
-            </p>
+            {description && <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{description}</p>}
+            <p className="text-xs text-gray-400 mt-2">Maximum file size: {formatFileSize(maxSize)}</p>
           </div>
         </div>
       </div>
@@ -372,9 +368,7 @@ function FilePreview({ file, onCancel, onRemove, onRetry, renderPreview }: FileP
 
       {/* Info */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-          {file.file.name}
-        </p>
+        <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">{file.file.name}</p>
         <p className="text-xs text-gray-500 dark:text-gray-400">{formatFileSize(file.file.size)}</p>
 
         {/* Progress Bar */}

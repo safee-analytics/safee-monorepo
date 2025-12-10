@@ -43,7 +43,10 @@ const uploadFileSchema = z.object({
   folderId: z.string().optional(),
   tags: z.array(z.string()).optional(),
   metadata: z.record(z.string(), z.unknown()).optional(),
-  onProgress: z.function().args(z.object({ percentage: z.number(), stage: z.string() })).optional(),
+  onProgress: z
+    .function()
+    .args(z.object({ percentage: z.number(), stage: z.string() }))
+    .optional(),
 });
 
 export function useUploadFile() {

@@ -1,15 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  FiFile,
-  FiFileText,
-  FiImage,
-  FiVideo,
-  FiMusic,
-  FiArchive,
-  FiCode,
-} from "react-icons/fi";
+import { FiFile, FiFileText, FiImage, FiVideo, FiMusic, FiArchive, FiCode } from "react-icons/fi";
 import { FileUpload } from "./FileUpload";
 import type { FileMetadata } from "@/lib/services/uploadService";
 
@@ -24,7 +16,7 @@ export interface DocumentUploadProps {
   folderId?: string;
   tags?: string[];
   endpoint?: string; // Custom upload endpoint (e.g., '/api/v1/cases/{caseId}/documents')
-  method?: 'POST' | 'PUT'; // HTTP method for custom endpoint (default: POST)
+  method?: "POST" | "PUT"; // HTTP method for custom endpoint (default: POST)
   className?: string;
 }
 
@@ -39,7 +31,7 @@ export function DocumentUpload({
   folderId,
   tags,
   endpoint,
-  method = 'POST',
+  method = "POST",
   className = "",
 }: DocumentUploadProps) {
   const [uploadedFiles, setUploadedFiles] = useState<FileMetadata[]>([]);
@@ -64,9 +56,7 @@ export function DocumentUpload({
           setUploadedFiles((prev) => [...prev, metadata]);
         }}
         onComplete={(results) => {
-          const successful = results
-            .filter((r) => r.metadata)
-            .map((r) => r.metadata!);
+          const successful = results.filter((r) => r.metadata).map((r) => r.metadata!);
           if (successful.length > 0) {
             onSuccess?.(successful);
           }
@@ -110,8 +100,7 @@ export function DocumentUpload({
             </p>
             {uploadedFiles.length > 0 && (
               <p className="text-xs text-safee-600 dark:text-safee-400 mt-2 font-medium">
-                {uploadedFiles.length} {uploadedFiles.length === 1 ? "file" : "files"} uploaded
-                successfully
+                {uploadedFiles.length} {uploadedFiles.length === 1 ? "file" : "files"} uploaded successfully
               </p>
             )}
           </div>
@@ -148,12 +137,7 @@ function FileTypeIcon({ file }: { file: File }) {
     }
 
     // Word Documents
-    if (
-      type.includes("word") ||
-      type.includes("document") ||
-      ext === "doc" ||
-      ext === "docx"
-    ) {
+    if (type.includes("word") || type.includes("document") || ext === "doc" || ext === "docx") {
       return <FiFileText className="w-6 h-6 text-blue-600" />;
     }
 
@@ -169,12 +153,7 @@ function FileTypeIcon({ file }: { file: File }) {
     }
 
     // PowerPoint
-    if (
-      type.includes("presentation") ||
-      type.includes("powerpoint") ||
-      ext === "ppt" ||
-      ext === "pptx"
-    ) {
+    if (type.includes("presentation") || type.includes("powerpoint") || ext === "ppt" || ext === "pptx") {
       return <FiFileText className="w-6 h-6 text-orange-600" />;
     }
 

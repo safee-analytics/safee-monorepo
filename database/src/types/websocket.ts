@@ -1,4 +1,4 @@
-export type SocketChannel = `user:${string}` | `org:${string}` | `upload:${string}` | 'admin:all';
+export type SocketChannel = `user:${string}` | `org:${string}` | `upload:${string}` | "admin:all";
 
 export interface ConnectedEvent {
   userId: string;
@@ -21,7 +21,7 @@ export interface ErrorEvent {
 
 export interface NotificationEvent {
   id?: string;
-  type: 'info' | 'success' | 'warning' | 'error';
+  type: "info" | "success" | "warning" | "error";
   title: string;
   message: string;
   timestamp: string;
@@ -41,7 +41,7 @@ export interface ActivityEvent {
 
 export interface UploadProgressEvent {
   fileId: string;
-  stage: 'encrypting' | 'uploading' | 'completed' | 'error';
+  stage: "encrypting" | "uploading" | "completed" | "error";
   percentage: number;
   error?: string;
   fileName?: string;
@@ -59,7 +59,7 @@ export interface ReEncryptionProgressEvent {
 export interface AdminBroadcastEvent {
   type: string;
   message: string;
-  severity: 'info' | 'warning' | 'critical';
+  severity: "info" | "warning" | "critical";
   timestamp: string;
   data?: Record<string, unknown>;
 }
@@ -67,7 +67,7 @@ export interface AdminBroadcastEvent {
 export interface PresenceEvent {
   userId: string;
   userName: string;
-  status: 'online' | 'away' | 'offline';
+  status: "online" | "away" | "offline";
   lastSeen: string;
 }
 
@@ -86,8 +86,8 @@ export interface ServerToClientEvents {
   notification: (data: NotificationEvent) => void;
   activity: (data: ActivityEvent) => void;
   progress: (data: UploadProgressEvent) => void;
-  're-encryption-progress': (data: ReEncryptionProgressEvent) => void;
-  'admin-broadcast': (data: AdminBroadcastEvent) => void;
+  "re-encryption-progress": (data: ReEncryptionProgressEvent) => void;
+  "admin-broadcast": (data: AdminBroadcastEvent) => void;
   presence: (data: PresenceEvent) => void;
   typing: (data: TypingEvent) => void;
 }
@@ -111,12 +111,18 @@ export interface BroadcastOptions {
   excludeUser?: string;
 }
 
-export const isUserChannel = (channel: string): channel is `user:${string}` =>
-  channel.startsWith('user:');
+export function isUserChannel(channel: string): channel is `user:${string}` {
+  return channel.startsWith("user:");
+}
 
-export const isOrgChannel = (channel: string): channel is `org:${string}` => channel.startsWith('org:');
+export function isOrgChannel(channel: string): channel is `org:${string}` {
+  return channel.startsWith("org:");
+}
 
-export const isUploadChannel = (channel: string): channel is `upload:${string}` =>
-  channel.startsWith('upload:');
+export function isUploadChannel(channel: string): channel is `upload:${string}` {
+  return channel.startsWith("upload:");
+}
 
-export const isAdminChannel = (channel: string): channel is 'admin:all' => channel === 'admin:all';
+export function isAdminChannel(channel: string): channel is "admin:all" {
+  return channel === "admin:all";
+}

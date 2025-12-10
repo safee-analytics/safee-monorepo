@@ -3,10 +3,10 @@
  * Subscribes to real-time user notifications
  */
 
-import { useEffect, useCallback } from 'react';
-import { useWebSocketContext } from './WebSocketProvider';
-import { authClient } from '@/lib/auth/client';
-import type { NotificationEvent } from '@safee/database';
+import { useEffect, useCallback } from "react";
+import { useWebSocketContext } from "./WebSocketProvider";
+import { authClient } from "@/lib/auth/client";
+import type { NotificationEvent } from "@safee/database";
 
 export function useNotifications(onNotification: (notification: NotificationEvent) => void) {
   const { subscribe } = useWebSocketContext();
@@ -24,7 +24,7 @@ export function useNotifications(onNotification: (notification: NotificationEven
       if (!session?.data?.user) return;
 
       const channel = `user:${session.data.user.id}`;
-      const unsubscribe = subscribe(channel, 'notification', handleNotification);
+      const unsubscribe = subscribe(channel, "notification", handleNotification);
 
       return () => {
         unsubscribe?.();

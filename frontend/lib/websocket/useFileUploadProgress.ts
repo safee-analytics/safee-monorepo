@@ -3,9 +3,9 @@
  * Subscribes to real-time file upload progress updates
  */
 
-import { useEffect } from 'react';
-import { useWebSocketContext } from './WebSocketProvider';
-import type { UploadProgressEvent } from '@safee/database';
+import { useEffect } from "react";
+import { useWebSocketContext } from "./WebSocketProvider";
+import type { UploadProgressEvent } from "@safee/database";
 
 export function useFileUploadProgress(
   fileId: string | null,
@@ -17,7 +17,7 @@ export function useFileUploadProgress(
     if (!fileId) return;
 
     const channel = `upload:${fileId}`;
-    const unsubscribe = subscribe(channel, 'progress', onProgress);
+    const unsubscribe = subscribe(channel, "progress", onProgress);
 
     return unsubscribe;
   }, [fileId, subscribe, onProgress]);

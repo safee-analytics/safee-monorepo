@@ -385,7 +385,10 @@ export default function DocumentSettingsPage() {
             >
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">File Re-encryption Dashboard</h2>
-                <button onClick={() => setShowReencryption(false)} className="text-gray-500 hover:text-gray-700">
+                <button
+                  onClick={() => setShowReencryption(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
                   ✕
                 </button>
               </div>

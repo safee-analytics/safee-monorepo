@@ -1,7 +1,24 @@
-import { Controller, Get, Put, Route, Tags, Security, Body, SuccessResponse, Request, UploadedFile } from "tsoa";
+import {
+  Controller,
+  Get,
+  Put,
+  Route,
+  Tags,
+  Security,
+  Body,
+  SuccessResponse,
+  Request,
+  UploadedFile,
+} from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext, type ServerContext } from "../serverContext.js";
-import { getUserById, updateUserProfile, updateUserLocale, updateUserImage, UserNotFoundError } from "@safee/database";
+import {
+  getUserById,
+  updateUserProfile,
+  updateUserLocale,
+  updateUserImage,
+  UserNotFoundError,
+} from "@safee/database";
 import { Unauthorized, UserNotFound } from "../errors.js";
 import { StorageServiceV2 } from "../services/storage.service.v2.js";
 import { StorageConnectorService } from "../services/storage/storage-connector.service.js";
@@ -169,7 +186,7 @@ export class UserController extends Controller {
       // Upload file to storage
       const metadata = await storageService.uploadFile(file, {
         folderId: `users/${userId}/avatar`,
-        tags: ['avatar'],
+        tags: ["avatar"],
         userId,
       });
 

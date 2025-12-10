@@ -239,9 +239,7 @@ export default function OrganizationSettingsPage() {
 
         {/* Logo Upload */}
         <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            {t.settings.organization.logo.title}
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-2">{t.settings.organization.logo.title}</h3>
           <p className="text-sm text-gray-600 mb-4">{t.settings.organization.logo.subtitle}</p>
           <div className="flex items-center gap-6">
             <LogoUpload
@@ -250,7 +248,7 @@ export default function OrganizationSettingsPage() {
               method="PUT"
               maxSize={2 * 1024 * 1024} // 2MB
               onSuccess={(_metadata) => {
-                queryClient.invalidateQueries({ queryKey: ['organization'] });
+                queryClient.invalidateQueries({ queryKey: ["organization"] });
                 toast.success(t.settings.organization.logo.uploadSuccess ?? "Logo updated successfully");
               }}
               onError={(_error) => {

@@ -3,9 +3,9 @@
  * Provides session-aware Socket.IO connection with automatic reconnection
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { io, Socket } from 'socket.io-client';
-import { authClient } from '@/lib/auth/client';
+import { useEffect, useRef, useState, useCallback } from "react";
+import { io, Socket } from "socket.io-client";
+import { authClient } from "@/lib/auth/client";
 
 interface UseWebSocketOptions {
   enabled?: boolean;
@@ -34,41 +34,41 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
       }
 
       // Get API URL from environment
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://app.localhost:8080';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://app.localhost:8080";
 
       // Create Socket.IO client with cookie-based auth
       const socket = io(apiUrl, {
-        path: '/socket.io',
+        path: "/socket.io",
         withCredentials: true,
         autoConnect: true,
         reconnection: true,
         reconnectionDelay: 1000,
         reconnectionDelayMax: 5000,
         reconnectionAttempts: 5,
-        transports: ['websocket', 'polling'],
+        transports: ["websocket", "polling"],
       });
 
       // Connection events
-      socket.on('connect', () => {
+      socket.on("connect", () => {
         setIsConnected(true);
         setReconnectCount(0);
         onConnect?.();
       });
 
-      socket.on('disconnect', () => {
+      socket.on("disconnect", () => {
         setIsConnected(false);
         onDisconnect?.();
       });
 
-      socket.on('connect_error', (error) => {
-        console.error('Socket.IO connection error:', error.message);
+      socket.on("connect_error", (error) => {
+        console.error("Socket.IO connection error:", error.message);
         setReconnectCount((prev) => prev + 1);
         onError?.(error);
       });
 
       // Handle server errors
-      socket.on('error', (error) => {
-        console.error('Socket.IO server error:', error);
+      socket.on("error", (error) => {
+        console.error("Socket.IO server error:", error);
       });
 
       // Register all existing event handlers
@@ -80,7 +80,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
 
       socketRef.current = socket;
     } catch (error) {
-      console.error('Socket.IO connection error:', error);
+      console.error("Socket.IO connection error:", error);
     }
   }, [enabled, onConnect, onDisconnect, onError]);
 
@@ -103,8 +103,8 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
         socketRef.current.on(eventKey, handler);
 
         // Only send subscribe message if it's a custom channel (not auto-joined)
-        if (!channel.startsWith('user:') && !channel.startsWith('org:')) {
-          socketRef.current.emit('subscribe', channel);
+        if (!channel.startsWith("user:") && !channel.startsWith("org:")) {
+          socketRef.current.emit("subscribe", channel);
         }
       }
 
@@ -118,8 +118,8 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
           // If no more handlers for this event, unsubscribe from channel
           if (eventHandlers.current.get(eventKey)?.size === 0) {
             eventHandlers.current.delete(eventKey);
-            if (!channel.startsWith('user:') && !channel.startsWith('org:')) {
-              socketRef.current.emit('unsubscribe', channel);
+            if (!channel.startsWith("user:") && !channel.startsWith("org:")) {
+              socketRef.current.emit("unsubscribe", channel);
             }
           }
         }

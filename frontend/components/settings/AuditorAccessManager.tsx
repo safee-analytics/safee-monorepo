@@ -137,9 +137,7 @@ export function AuditorAccessManager({
       // });
 
       setAuditorAccesses(
-        auditorAccesses.map((access) =>
-          access.id === accessId ? { ...access, isRevoked: true } : access,
-        ),
+        auditorAccesses.map((access) => (access.id === accessId ? { ...access, isRevoked: true } : access)),
       );
     } catch (_err) {
       alert("Failed to revoke access");
@@ -163,9 +161,7 @@ export function AuditorAccessManager({
             <UserCheck className="h-5 w-5 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Grant Auditor Access
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Grant Auditor Access</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Allow auditors to decrypt files without sharing your password
             </p>
@@ -224,9 +220,7 @@ export function AuditorAccessManager({
             <Shield className="h-5 w-5 text-green-600 dark:text-green-400" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-              Active Auditor Access
-            </h3>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Active Auditor Access</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               {auditorAccesses.filter((a) => !a.isRevoked).length} active grant
               {auditorAccesses.filter((a) => !a.isRevoked).length !== 1 ? "s" : ""}
@@ -252,23 +246,17 @@ export function AuditorAccessManager({
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h4 className="font-medium text-gray-900 dark:text-white">
-                        {access.auditorName}
-                      </h4>
+                      <h4 className="font-medium text-gray-900 dark:text-white">{access.auditorName}</h4>
                       {access.isRevoked && (
                         <span className="rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-700 dark:bg-red-900/30 dark:text-red-400">
                           Revoked
                         </span>
                       )}
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {access.auditorEmail}
-                    </p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">{access.auditorEmail}</p>
                     <div className="mt-2 flex flex-wrap gap-4 text-xs text-gray-500 dark:text-gray-400">
                       <span>Granted: {formatDate(access.grantedAt)}</span>
-                      {access.expiresAt && (
-                        <span>Expires: {formatDate(access.expiresAt)}</span>
-                      )}
+                      {access.expiresAt && <span>Expires: {formatDate(access.expiresAt)}</span>}
                       <span>By: {access.grantedBy}</span>
                     </div>
                   </div>
@@ -301,9 +289,7 @@ export function AuditorAccessManager({
                 <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
               </div>
               <div>
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Confirm Your Password
-                </h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Confirm Your Password</h3>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   Enter your encryption password to grant access
                 </p>
