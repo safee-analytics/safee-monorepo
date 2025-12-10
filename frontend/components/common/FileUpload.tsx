@@ -38,7 +38,7 @@ export function FileUpload({
   renderPreview,
   ...uploadOptions
 }: FileUploadProps) {
-  const { t } = useTranslation();
+  const { t: _t } = useTranslation();
   const [dragActive, setDragActive] = useState(false);
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const inputRef = useRef<HTMLInputElement>(null);

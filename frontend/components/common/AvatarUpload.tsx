@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { FiCamera, FiLoader, FiX } from "react-icons/fi";
+import { useState } from "react";
+import { FiLoader } from "react-icons/fi";
 import { FileUpload } from "./FileUpload";
 import type { FileMetadata } from "@/lib/services/uploadService";
 
@@ -24,7 +24,7 @@ export function AvatarUpload({
   method = 'PUT',
   className = "",
 }: AvatarUploadProps) {
-  const [previewUrl, setPreviewUrl] = useState<string | null>(currentAvatarUrl || null);
+  const [_previewUrl, setPreviewUrl] = useState<string | null>(currentAvatarUrl || null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
@@ -34,16 +34,10 @@ export function AvatarUpload({
         variant="avatar"
         accept="image/*"
         maxSize={maxSize}
-        uploadEndpoint={endpoint}
-        uploadMethod={method}
-        onUploadStart={(file) => {
-          setIsUploading(true);
-          setUploadProgress(0);
-          // Create preview
-          const url = URL.createObjectURL(file);
-          setPreviewUrl(url);
-        }}
-        onProgress={(file, progress) => {
+        endpoint={endpoint}
+        method={method}
+        onProgress={(progress: number) => {
+          setIsUploading(progress > 0 && progress < 100);
           setUploadProgress(progress);
         }}
         onSuccess={(file, metadata) => {

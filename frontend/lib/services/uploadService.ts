@@ -4,8 +4,6 @@
  * progress tracking via WebSocket, and encryption support
  */
 
-import { apiClient } from "@/lib/api/client";
-
 export interface FileMetadata {
   id: string;
   name: string;

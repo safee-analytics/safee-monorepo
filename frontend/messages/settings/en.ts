@@ -534,6 +534,8 @@ export const settingsEn = {
           "Upload your organization logo. This will appear on invoices, reports, and other documents.",
         uploadButton: "Upload Logo",
         recommended: "Recommended: Square image, at least 256x256px, PNG or JPG format",
+        uploadSuccess: "Logo updated successfully",
+        uploadFailed: "Failed to upload logo",
       },
       companyInfo: {
         title: "Company Info",

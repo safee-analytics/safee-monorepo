@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FiUpload, FiLoader, FiCheck } from "react-icons/fi";
+import { FiLoader } from "react-icons/fi";
 import { FileUpload } from "./FileUpload";
 import type { FileMetadata } from "@/lib/services/uploadService";
 
@@ -57,14 +57,8 @@ export function LogoUpload({
           method={method}
           label="Upload Company Logo"
           description="PNG, SVG, or JPG - Max 2MB"
-          onUploadStart={(file) => {
-            setIsUploading(true);
-            setUploadProgress(0);
-            // Create preview
-            const url = URL.createObjectURL(file);
-            setPreviewUrl(url);
-          }}
-          onProgress={(file, progress) => {
+          onProgress={(progress: number) => {
+            setIsUploading(progress > 0 && progress < 100);
             setUploadProgress(progress);
           }}
           onSuccess={(file, metadata) => {

@@ -27,8 +27,6 @@ import {
   Save,
   X,
   Shield,
-  Upload,
-  Image as ImageIcon,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import PhoneInput from "react-phone-number-input";
@@ -251,12 +249,12 @@ export default function OrganizationSettingsPage() {
               endpoint={`/api/v1/organizations/${organization?.id}/logo`}
               method="PUT"
               maxSize={2 * 1024 * 1024} // 2MB
-              onSuccess={(metadata) => {
+              onSuccess={(_metadata) => {
                 queryClient.invalidateQueries({ queryKey: ['organization'] });
-                toast.success(t.settings.organization.logo.uploadSuccess || "Logo updated successfully");
+                toast.success(t.settings.organization.logo.uploadSuccess ?? "Logo updated successfully");
               }}
-              onError={(error) => {
-                toast.error(t.settings.organization.logo.uploadFailed || "Failed to upload logo");
+              onError={(_error) => {
+                toast.error(t.settings.organization.logo.uploadFailed ?? "Failed to upload logo");
               }}
             />
             <div>

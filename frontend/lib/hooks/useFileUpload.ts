@@ -79,7 +79,8 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
     }
 
     return uploadFiles;
-  }, []); // Empty deps - uses closure over startUpload
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [options.autoStart]); // startUpload is intentionally not included to avoid re-renders
 
   /**
    * Start uploading a file
@@ -133,7 +134,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
           ),
         );
 
-        currentUploadIdRef.current = uploadId;
+        currentUploadIdRef.current = uploadId ?? null;
       }
 
       // Upload the file
@@ -199,7 +200,8 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
   const startAll = useCallback(() => {
     const pending = files.filter((f) => f.status === "pending");
     pending.forEach((uploadFile) => startUpload(uploadFile));
-  }, [files]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [files]); // startUpload is intentionally not included to avoid re-renders
 
   /**
    * Cancel upload for a specific file
@@ -250,7 +252,8 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         startUpload(uploadFile);
       }
     },
-    [files],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [files], // startUpload is intentionally not included to avoid re-renders
   );
 
   return {

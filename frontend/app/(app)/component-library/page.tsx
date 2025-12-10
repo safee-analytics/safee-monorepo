@@ -769,7 +769,7 @@ function ComponentLibraryContent() {
                     variant="dropzone"
                     multiple
                     maxSize={100 * 1024 * 1024}
-                    onSuccess={(file, metadata) => {
+                    onSuccess={(file, _metadata) => {
                       toast.success("Upload Complete", `${file.name} uploaded successfully`);
                     }}
                     onError={(file, error) => {
@@ -822,7 +822,7 @@ function ComponentLibraryContent() {
                 <div className="flex justify-center">
                   <AvatarUpload
                     maxSize={5 * 1024 * 1024}
-                    onSuccess={(metadata) => {
+                    onSuccess={(_metadata) => {
                       toast.success("Avatar Updated", "Your profile picture has been updated");
                     }}
                   />
@@ -846,7 +846,7 @@ function ComponentLibraryContent() {
                 </p>
                 <LogoUpload
                   maxSize={2 * 1024 * 1024}
-                  onSuccess={(metadata) => {
+                  onSuccess={(_metadata) => {
                     toast.success("Logo Updated", "Company logo has been updated");
                   }}
                 />

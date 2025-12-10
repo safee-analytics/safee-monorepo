@@ -71,8 +71,6 @@ export class OrganizationController extends Controller {
         slug: updatedOrg.slug,
         logo: updatedOrg.logo,
         industry: updatedOrg.industry,
-        size: updatedOrg.size,
-        country: updatedOrg.country,
         createdAt: updatedOrg.createdAt.toISOString(),
         updatedAt: updatedOrg.updatedAt.toISOString(),
       };

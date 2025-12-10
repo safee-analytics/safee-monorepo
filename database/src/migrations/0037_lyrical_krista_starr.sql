@@ -1,0 +1,15 @@
+ALTER TABLE "identity"."organizations" ADD COLUMN "address" text;
+ALTER TABLE "identity"."organizations" ADD COLUMN "email" varchar(255);
+ALTER TABLE "identity"."organizations" ADD COLUMN "phone" varchar(50);
+ALTER TABLE "identity"."organizations" ADD COLUMN "website" varchar(255);
+ALTER TABLE "identity"."organizations" ADD COLUMN "industry" varchar(255);
+ALTER TABLE "identity"."organizations" ADD COLUMN "legal_name" varchar(255);
+ALTER TABLE "identity"."organizations" ADD COLUMN "business_number" varchar(100);
+ALTER TABLE "identity"."organizations" ADD COLUMN "gst_number" varchar(100);
+ALTER TABLE "identity"."organizations" ADD COLUMN "business_type" varchar(100);
+ALTER TABLE "identity"."organizations" ADD COLUMN "legal_address" text;
+ALTER TABLE "identity"."organizations" ADD COLUMN "customer_email" varchar(255);
+ALTER TABLE "identity"."organizations" ADD COLUMN "customer_address" text;
+ALTER TABLE "identity"."organizations" ADD COLUMN "fiscal_year_start" varchar(20);
+ALTER TABLE "identity"."organizations" ADD COLUMN "currency" varchar(10) DEFAULT 'QAR';
+ALTER TABLE "identity"."organizations" ADD COLUMN "date_format" varchar(20) DEFAULT 'dd/mm/yyyy';

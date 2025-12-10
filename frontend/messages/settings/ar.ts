@@ -530,6 +530,8 @@ export const settingsAr = {
         subtitle: "قم بتحميل شعار منظمتك. سيظهر هذا على الفواتير والتقارير والمستندات الأخرى.",
         uploadButton: "تحميل الشعار",
         recommended: "موصى به: صورة مربعة، 256×256 بكسل على الأقل، بصيغة PNG أو JPG",
+        uploadSuccess: "تم تحديث الشعار بنجاح",
+        uploadFailed: "فشل تحميل الشعار",
       },
       companyInfo: {
         title: "معلومات الشركة",
