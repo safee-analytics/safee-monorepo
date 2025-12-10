@@ -1,4 +1,4 @@
-FROM node:20.14.0-alpine AS frontend
+FROM node:20.19.0-alpine AS frontend
 WORKDIR /workspace
 RUN apk add --no-cache libc6-compat
 COPY package.json package-lock.json tsconfig.json ./
@@ -12,7 +12,7 @@ ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 RUN npm run build -w frontend
 
 # Production image - standalone mode
-FROM node:20.14.0-alpine AS runner
+FROM node:20.19.0-alpine AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 

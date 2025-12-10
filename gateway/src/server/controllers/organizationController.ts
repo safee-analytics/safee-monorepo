@@ -1,6 +1,5 @@
 import {
   Controller,
-  Get,
   Put,
   Route,
   Tags,
@@ -13,7 +12,7 @@ import {
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext, type ServerContext } from "../serverContext.js";
 import { updateOrganizationLogo } from "@safee/database";
-import { Unauthorized, NotFound } from "../errors.js";
+import { Unauthorized } from "../errors.js";
 import { StorageServiceV2 } from "../services/storage.service.v2.js";
 import { StorageConnectorService } from "../services/storage/storage-connector.service.js";
 

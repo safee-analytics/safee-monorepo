@@ -4,13 +4,13 @@
  * resumability, and real-time WebSocket progress tracking
  */
 
+/// <reference types="node" />
+
 import { v4 as uuidv4 } from "uuid";
 import { promises as fs } from "fs";
 import path from "path";
-import crypto from "crypto";
 import { logger } from "../utils/logger.js";
 import type { WebSocketService } from "./websocket.service.js";
-import type { FileMetadata } from "../controllers/storageController.js";
 
 export interface UploadSession {
   id: string;

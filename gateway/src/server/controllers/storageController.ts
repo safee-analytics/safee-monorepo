@@ -484,7 +484,7 @@ export class StorageController extends Controller {
         status.status === "uploading" || status.status === "completed" ? "application/octet-stream" : "",
       size: status.fileSize,
       buffer: assembledFile,
-      stream: null as any,
+      stream: null as unknown as NodeJS.ReadableStream,
       destination: "",
       filename: status.fileName,
       path: "",

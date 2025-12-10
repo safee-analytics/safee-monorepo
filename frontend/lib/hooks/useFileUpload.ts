@@ -80,8 +80,8 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       }
 
       return uploadFiles;
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [options.autoStart],
   ); // startUpload is intentionally not included to avoid re-renders
 
@@ -189,8 +189,9 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
   const startAll = useCallback(() => {
     const pending = files.filter((f) => f.status === "pending");
     pending.forEach((uploadFile) => startUpload(uploadFile));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [files]); // startUpload is intentionally not included to avoid re-renders
+  },
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  [files]); // startUpload is intentionally not included to avoid re-renders
 
   /**
    * Cancel upload for a specific file
