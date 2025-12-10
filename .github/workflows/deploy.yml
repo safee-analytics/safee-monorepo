@@ -7,9 +7,9 @@ on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment to deploy'
+        description: "Environment to deploy"
         required: true
-        default: 'dev'
+        default: "dev"
         type: choice
         options:
           - dev
@@ -37,6 +37,7 @@ jobs:
             build-args: |
               NEXT_PUBLIC_API_URL=https://api-dev.safee.dev
               NEXT_PUBLIC_APP_URL=https://dev.safee.dev
+              NEXT_PUBLIC_LANDING_URL=https://landing.safee.dev
           - service: landing
             file: landing/Dockerfile
             build-args: |
@@ -50,7 +51,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive'
+          submodules: "recursive"
           token: ${{ secrets.PAT_TOKEN }}
 
       - name: Set up QEMU
