@@ -1,4 +1,4 @@
-import nextConfig from "eslint-config-next";
+import nextConfig from "eslint-config-next/index.js";
 import safeePlugin from "@safee/eslint-plugin";
 import tseslint from "typescript-eslint";
 
