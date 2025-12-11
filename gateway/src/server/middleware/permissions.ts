@@ -69,8 +69,8 @@ export async function hasPermission(
 
     // TODO: Implement fine-grained permission checking with Better-Auth dynamic access control
     return true;
-  } catch (error) {
-    ctx.logger.error({ error, userId, action, resource }, "Error checking permission");
+  } catch (err) {
+    ctx.logger.error({ error: err, userId, action, resource }, "Error checking permission");
     return false;
   }
 }
@@ -93,8 +93,8 @@ export async function isTeamMember(userId: string, teamId: string): Promise<bool
     // TODO: Query Better-Auth team_members table when schema is available
     // For now, return true if user is a member of the organization
     return teamMember.length > 0;
-  } catch (error) {
-    ctx.logger.error({ error, userId, teamId }, "Error checking team membership");
+  } catch (err) {
+    ctx.logger.error({ error: err, userId, teamId }, "Error checking team membership");
     return false;
   }
 }
@@ -111,8 +111,8 @@ export async function hasRole(userId: string, organizationId: string, role: stri
     });
 
     return member?.role === role;
-  } catch (error) {
-    ctx.logger.error({ error, userId, organizationId, role }, "Error checking role");
+  } catch (err) {
+    ctx.logger.error({ error: err, userId, organizationId, role }, "Error checking role");
     return false;
   }
 }
@@ -203,8 +203,8 @@ export async function isInApprovalWorkflow(
     }
 
     return false;
-  } catch (error) {
-    ctx.logger.error({ error, userId, workflowId, stepOrder }, "Error checking approval workflow membership");
+  } catch (err) {
+    ctx.logger.error({ error: err, userId, workflowId, stepOrder }, "Error checking approval workflow membership");
     return false;
   }
 }

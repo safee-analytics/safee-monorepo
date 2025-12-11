@@ -1,7 +1,7 @@
-import { exec } from "child_process";
-import { promisify } from "util";
-import path from "path";
-import fs from "fs/promises";
+import { exec } from "node:child_process";
+import { promisify } from "node:util";
+import path from "node:path";
+import fs from "node:fs/promises";
 
 const execAsync = promisify(exec);
 
@@ -32,7 +32,7 @@ export interface NASConnectionStatus {
 export class NASConnector {
   private config: NASConfig;
   private mountPoint: string;
-  private isConnected: boolean = false;
+  private isConnected = false;
 
   constructor(config: NASConfig) {
     this.config = config;
@@ -54,10 +54,10 @@ export class NASConnector {
         default:
           throw new Error(`Unsupported NAS type: ${this.config.type}`);
       }
-    } catch (error) {
+    } catch (err) {
       return {
         connected: false,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: err instanceof Error ? err.message : "Unknown error",
       };
     }
   }
@@ -95,9 +95,9 @@ export class NASConnector {
         mountPoint: this.mountPoint,
         ...spaceInfo,
       };
-    } catch (error) {
+    } catch (err) {
       throw new Error(
-        `Failed to connect to SMB share: ${error instanceof Error ? error.message : "Unknown error"}`,
+        `Failed to connect to SMB share: ${err instanceof Error ? err.message : "Unknown error"}`,
       );
     }
   }
@@ -128,9 +128,9 @@ export class NASConnector {
         mountPoint: this.mountPoint,
         ...spaceInfo,
       };
-    } catch (error) {
+    } catch (err) {
       throw new Error(
-        `Failed to connect to NFS share: ${error instanceof Error ? error.message : "Unknown error"}`,
+        `Failed to connect to NFS share: ${err instanceof Error ? err.message : "Unknown error"}`,
       );
     }
   }
@@ -168,9 +168,9 @@ export class NASConnector {
         mountPoint: this.mountPoint,
         ...spaceInfo,
       };
-    } catch (error) {
+    } catch (err) {
       throw new Error(
-        `Failed to connect to WebDAV share: ${error instanceof Error ? error.message : "Unknown error"}`,
+        `Failed to connect to WebDAV share: ${err instanceof Error ? err.message : "Unknown error"}`,
       );
     }
   }
@@ -186,8 +186,8 @@ export class NASConnector {
     try {
       await execAsync(`umount "${this.mountPoint}"`);
       this.isConnected = false;
-    } catch (error) {
-      throw new Error(`Failed to disconnect: ${error instanceof Error ? error.message : "Unknown error"}`);
+    } catch (err) {
+      throw new Error(`Failed to disconnect: ${err instanceof Error ? err.message : "Unknown error"}`);
     }
   }
 
@@ -206,15 +206,15 @@ export class NASConnector {
           mountPoint: this.mountPoint,
           ...spaceInfo,
         };
-      } else {
+      } 
         return {
           connected: false,
         };
-      }
-    } catch (error) {
+      
+    } catch (err) {
       return {
         connected: false,
-        error: error instanceof Error ? error.message : "Unknown error",
+        error: err instanceof Error ? err.message : "Unknown error",
       };
     }
   }
@@ -260,7 +260,7 @@ export class NASConnector {
  * NAS Manager - manages multiple NAS connections
  */
 export class NASManager {
-  private connectors: Map<string, NASConnector> = new Map();
+  private connectors = new Map<string, NASConnector>();
 
   /**
    * Add NAS configuration

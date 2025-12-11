@@ -48,14 +48,14 @@ export interface AuditReportTemplateResponse {
   description?: string;
   descriptionAr?: string;
   templateStructure: {
-    sections: Array<{
+    sections: {
       id: string;
       type: "cover_page" | "text" | "metrics_table" | "findings_list" | "chart" | "appendix";
       title?: string;
       titleAr?: string;
       dataSource?: string;
       config?: Record<string, unknown>;
-    }>;
+    }[];
     styles?: Record<string, unknown>;
     metadata?: Record<string, unknown>;
   };
@@ -73,14 +73,14 @@ export interface CreateAuditReportTemplateRequest {
   description?: string;
   descriptionAr?: string;
   templateStructure: {
-    sections: Array<{
+    sections: {
       id: string;
       type: "cover_page" | "text" | "metrics_table" | "findings_list" | "chart" | "appendix";
       title?: string;
       titleAr?: string;
       dataSource?: string;
       config?: Record<string, unknown>;
-    }>;
+    }[];
     styles?: Record<string, unknown>;
     metadata?: Record<string, unknown>;
   };

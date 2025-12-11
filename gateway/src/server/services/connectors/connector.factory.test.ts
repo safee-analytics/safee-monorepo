@@ -90,7 +90,7 @@ describe("ConnectorFactory", () => {
     it("should have proper field definitions for each type", () => {
       const types = ConnectorFactory.getAvailableTypes();
 
-      types.forEach((type) => {
+      for (const type of types) {
         expect(type).toHaveProperty("name");
         expect(type).toHaveProperty("description");
         expect(type).toHaveProperty("requiredFields");
@@ -100,7 +100,7 @@ describe("ConnectorFactory", () => {
         expect(type.requiredFields).toContain("database");
         expect(type.requiredFields).toContain("username");
         expect(type.requiredFields).toContain("password");
-      });
+      }
     });
   });
 
@@ -141,12 +141,12 @@ describe("ConnectorFactory", () => {
     it("should include help text for fields", () => {
       const fields = ConnectorFactory.getFieldDefinitions("postgresql");
 
-      fields.forEach((field) => {
+      for (const field of fields) {
         if (field.required) {
           expect(field.helpText).toBeDefined();
           expect(field.helpText!.length).toBeGreaterThan(0);
         }
-      });
+      }
     });
   });
 

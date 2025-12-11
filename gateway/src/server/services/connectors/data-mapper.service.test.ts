@@ -92,18 +92,18 @@ describe("DataMapperService", () => {
       const sourceColumns = ["created_at", "updated_at", "close_date"];
       const mappings = dataMapperService.suggestMappings(sourceColumns, "deal");
 
-      mappings.forEach((m) => {
+      for (const m of mappings) {
         expect(m.transform).toBe("date");
-      });
+      }
     });
 
     it("should add number transform for numeric fields", () => {
       const sourceColumns = ["amount", "value", "salary"];
       const mappings = dataMapperService.suggestMappings(sourceColumns, "invoice");
 
-      mappings.forEach((m) => {
+      for (const m of mappings) {
         expect(m.transform).toBe("number");
-      });
+      }
     });
 
     it("should handle columns with underscores and hyphens", () => {

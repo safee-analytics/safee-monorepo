@@ -13,22 +13,22 @@ export interface AuditPlanResponse {
   auditYear?: number;
   startDate?: string;
   targetCompletion?: string;
-  objectives?: Array<{ id: string; description: string; priority?: string }> | null;
+  objectives?: { id: string; description: string; priority?: string }[] | null;
   businessUnits?: Record<string, boolean> | null;
   financialAreas?: Record<string, boolean> | null;
-  teamMembers?: Array<{ userId: string; name: string; role: string; hours?: number }> | null;
-  phaseBreakdown?: Array<{
+  teamMembers?: { userId: string; name: string; role: string; hours?: number }[] | null;
+  phaseBreakdown?: {
     name: string;
     duration: number;
     description?: string;
     startDate?: string;
     endDate?: string;
-  }> | null;
+  }[] | null;
   totalBudget?: string;
   totalHours?: number;
   materialityThreshold?: string;
   riskAssessment?: {
-    risks?: Array<{ type: string; severity: string; message: string }>;
+    risks?: { type: string; severity: string; message: string }[];
     overallRisk?: string;
     score?: number;
   } | null;
@@ -48,22 +48,22 @@ export interface CreateAuditPlanRequest {
   auditYear?: number;
   startDate?: string;
   targetCompletion?: string;
-  objectives?: Array<{ id: string; description: string; priority?: string }>;
+  objectives?: { id: string; description: string; priority?: string }[];
   businessUnits?: Record<string, boolean>;
   financialAreas?: Record<string, boolean>;
-  teamMembers?: Array<{ userId: string; name: string; role: string; hours?: number }>;
-  phaseBreakdown?: Array<{
+  teamMembers?: { userId: string; name: string; role: string; hours?: number }[];
+  phaseBreakdown?: {
     name: string;
     duration: number;
     description?: string;
     startDate?: string;
     endDate?: string;
-  }>;
+  }[];
   totalBudget?: string;
   totalHours?: number;
   materialityThreshold?: string;
   riskAssessment?: {
-    risks?: Array<{ type: string; severity: string; message: string }>;
+    risks?: { type: string; severity: string; message: string }[];
     overallRisk?: string;
     score?: number;
   };
@@ -79,22 +79,22 @@ export interface UpdateAuditPlanRequest {
   auditYear?: number;
   startDate?: string;
   targetCompletion?: string;
-  objectives?: Array<{ id: string; description: string; priority?: string }>;
+  objectives?: { id: string; description: string; priority?: string }[];
   businessUnits?: Record<string, boolean>;
   financialAreas?: Record<string, boolean>;
-  teamMembers?: Array<{ userId: string; name: string; role: string; hours?: number }>;
-  phaseBreakdown?: Array<{
+  teamMembers?: { userId: string; name: string; role: string; hours?: number }[];
+  phaseBreakdown?: {
     name: string;
     duration: number;
     description?: string;
     startDate?: string;
     endDate?: string;
-  }>;
+  }[];
   totalBudget?: string;
   totalHours?: number;
   materialityThreshold?: string;
   riskAssessment?: {
-    risks?: Array<{ type: string; severity: string; message: string }>;
+    risks?: { type: string; severity: string; message: string }[];
     overallRisk?: string;
     score?: number;
   };
@@ -110,9 +110,9 @@ export interface AuditPlanTemplateResponse {
   name: string;
   auditType?: AuditType;
   description?: string;
-  defaultObjectives?: Array<{ id: string; description: string; priority?: string }> | null;
+  defaultObjectives?: { id: string; description: string; priority?: string }[] | null;
   defaultScope?: Record<string, unknown> | null;
-  defaultPhases?: Array<{ name: string; duration: number; description?: string }> | null;
+  defaultPhases?: { name: string; duration: number; description?: string }[] | null;
   defaultBusinessUnits?: Record<string, boolean> | null;
   defaultFinancialAreas?: Record<string, boolean> | null;
   estimatedDuration?: number;
@@ -129,9 +129,9 @@ export interface CreateAuditPlanTemplateRequest {
   name: string;
   auditType?: AuditType;
   description?: string;
-  defaultObjectives?: Array<{ id: string; description: string; priority?: string }>;
+  defaultObjectives?: { id: string; description: string; priority?: string }[];
   defaultScope?: Record<string, unknown>;
-  defaultPhases?: Array<{ name: string; duration: number; description?: string }>;
+  defaultPhases?: { name: string; duration: number; description?: string }[];
   defaultBusinessUnits?: Record<string, boolean>;
   defaultFinancialAreas?: Record<string, boolean>;
   estimatedDuration?: number;

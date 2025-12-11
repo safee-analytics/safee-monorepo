@@ -43,7 +43,7 @@ void describe("submitForApproval operation", async () => {
     await close();
   });
 
-  void it("should submit an entity for approval successfully", async () => {
+  it("should submit an entity for approval successfully", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
 
     const entityId = crypto.randomUUID();
@@ -51,8 +51,8 @@ void describe("submitForApproval operation", async () => {
     const ctx = getServerContext();
     const result = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
-      entityId: entityId,
-      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+      entityId,
+      entityData: { entityType: "invoice", entityId, amount: 1000, currency: "USD" },
     });
 
     expect(result.requestId).toBeDefined();
@@ -81,20 +81,20 @@ void describe("submitForApproval operation", async () => {
     expect(approvalSteps[0]?.stepOrder).toBe(1);
   });
 
-  void it("should throw InvalidInput when entity type is empty", async () => {
+  it("should throw InvalidInput when entity type is empty", async () => {
     const ctx = getServerContext();
     const entityId = crypto.randomUUID();
     await expect(
       submitForApproval(ctx, testOrg.id, testUser.id, {
         entityType: "",
-        entityId: entityId,
+        entityId,
         // @ts-expect-error - Testing invalid empty entity type
-        entityData: { entityType: "", entityId: entityId, amount: 1000 },
+        entityData: { entityType: "", entityId, amount: 1000 },
       }),
     ).rejects.toThrow(InvalidInput);
   });
 
-  void it("should throw InvalidInput when entity ID is empty", async () => {
+  it("should throw InvalidInput when entity ID is empty", async () => {
     const ctx = getServerContext();
     await expect(
       submitForApproval(ctx, testOrg.id, testUser.id, {
@@ -105,32 +105,32 @@ void describe("submitForApproval operation", async () => {
     ).rejects.toThrow(InvalidInput);
   });
 
-  void it("should throw NotFound when no workflow matches entity data", async () => {
+  it("should throw NotFound when no workflow matches entity data", async () => {
     const ctx = getServerContext();
     const entityId = crypto.randomUUID();
     await expect(
       submitForApproval(ctx, testOrg.id, testUser.id, {
         entityType: "invoice",
-        entityId: entityId,
-        entityData: { entityType: "invoice", entityId: entityId },
+        entityId,
+        entityData: { entityType: "invoice", entityId },
       }),
     ).rejects.toThrow(NotFound);
   });
 
-  void it("should throw NotFound when no matching workflow exists", async () => {
+  it("should throw NotFound when no matching workflow exists", async () => {
     const ctx = getServerContext();
     const entityId = crypto.randomUUID();
 
     await expect(
       submitForApproval(ctx, testOrg.id, testUser.id, {
         entityType: "invoice",
-        entityId: entityId,
-        entityData: { entityType: "invoice", entityId: entityId, amount: 1000 },
+        entityId,
+        entityData: { entityType: "invoice", entityId, amount: 1000 },
       }),
     ).rejects.toThrow(NotFound);
   });
 
-  void it("should throw InvalidInput when workflow has no steps", async () => {
+  it("should throw InvalidInput when workflow has no steps", async () => {
     const ctx = getServerContext();
     const [workflow] = await drizzle
       .insert(schema.approvalWorkflows)
@@ -159,13 +159,13 @@ void describe("submitForApproval operation", async () => {
     await expect(
       submitForApproval(ctx, testOrg.id, testUser.id, {
         entityType: "invoice",
-        entityId: entityId,
-        entityData: { entityType: "invoice", entityId: entityId, amount: 1000 },
+        entityId,
+        entityData: { entityType: "invoice", entityId, amount: 1000 },
       }),
     ).rejects.toThrow(InvalidInput);
   });
 
-  void it("should create workflow with parallel approval type", async () => {
+  it("should create workflow with parallel approval type", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id, {
       stepType: "parallel",
       minApprovals: 1,
@@ -175,8 +175,8 @@ void describe("submitForApproval operation", async () => {
     const ctx = getServerContext();
     const result = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
-      entityId: entityId,
-      entityData: { entityType: "invoice", entityId: entityId, amount: 1000 },
+      entityId,
+      entityData: { entityType: "invoice", entityId, amount: 1000 },
     });
 
     expect(result.requestId).toBeDefined();
@@ -190,15 +190,15 @@ void describe("submitForApproval operation", async () => {
     expect(approvalSteps.length).toBeGreaterThanOrEqual(1);
   });
 
-  void it("should handle workflow for different entity types", async () => {
+  it("should handle workflow for different entity types", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id, { entityType: "employee" });
 
     const entityId = crypto.randomUUID();
     const ctx = getServerContext();
     const result = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "employee",
-      entityId: entityId,
-      entityData: { entityType: "employee", entityId: entityId, salary: 5000 },
+      entityId,
+      entityData: { entityType: "employee", entityId, salary: 5000 },
     });
 
     expect(result.requestId).toBeDefined();

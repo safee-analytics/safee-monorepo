@@ -59,7 +59,7 @@ async function main() {
 
     if (httpServer) {
       await new Promise<void>((resolve) => {
-        httpServer.close(() => resolve());
+        httpServer.close(() => { resolve(); });
       });
       logger.info("HTTP server closed");
     }

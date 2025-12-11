@@ -36,32 +36,32 @@ export async function getOdooDatabaseInfo(
     exists: boolean;
     loginUrl: string;
   };
-  users: Array<{
+  users: {
     id: number;
     name: string;
     login: string;
     email: string;
     active: boolean;
-    groups: Array<{
+    groups: {
       id: number;
       name: string;
       fullName: string;
-    }>;
-  }>;
-  modules: Array<{
+    }[];
+  }[];
+  modules: {
     id: number;
     name: string;
     displayName: string;
     state: string;
     summary: string;
-  }>;
-  accessGroups: Array<{
+  }[];
+  accessGroups: {
     id: number;
     name: string;
     fullName: string;
     category: string;
     users: number[];
-  }>;
+  }[];
 }> {
   const logger = getServerContext().logger.child({ operation: "getOdooDatabaseInfo", organizationId });
 

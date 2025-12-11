@@ -104,7 +104,7 @@ export async function createScopeFromTemplate(
       name: scope.name,
       description: scope.description ?? undefined,
       status: scope.status,
-      metadata: scope.metadata as Record<string, unknown>,
+      metadata: scope.metadata!,
       createdBy: scope.createdBy,
       completedBy: scope.completedBy ?? undefined,
       archivedBy: scope.archivedBy ?? undefined,

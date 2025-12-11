@@ -20,7 +20,7 @@ void describe("getOdooAdminCredentials", async () => {
     await close();
   });
 
-  void it("should retrieve and decrypt admin credentials for an organization", async () => {
+  it("should retrieve and decrypt admin credentials for an organization", async () => {
     const [org] = await drizzle
       .insert(schema.organizations)
       .values({
@@ -53,7 +53,7 @@ void describe("getOdooAdminCredentials", async () => {
     expect(credentials?.odooUrl).toBe("http://localhost:8069");
   });
 
-  void it("should return null for non-existent organization", async () => {
+  it("should return null for non-existent organization", async () => {
     const fakeOrgId = "00000000-0000-0000-0000-000000000000";
     const credentials = await getOdooAdminCredentials(drizzle, fakeOrgId);
 

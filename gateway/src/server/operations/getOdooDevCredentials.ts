@@ -24,7 +24,7 @@ export async function getOdooDevCredentials(
     where: and(eq(schema.odooUsers.userId, userId), eq(schema.odooUsers.odooDatabaseId, odooDb.id)),
   });
 
-  if (!odooUser || !odooUser.password) {
+  if (!odooUser?.password) {
     return null;
   }
 

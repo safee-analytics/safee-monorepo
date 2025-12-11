@@ -266,12 +266,12 @@ export class DataMapperService {
   async previewMapping(
     organizationId: string,
     mapping: TableMapping,
-    limit: number = 10,
+    limit = 10,
   ): Promise<
-    Array<{
+    {
       source: Record<string, unknown>;
       target: Record<string, unknown>;
-    }>
+    }[]
   > {
     const result = await this.dataProxyService.executePaginatedQuery(organizationId, mapping.connectorId, {
       schema: mapping.sourceSchema,
@@ -345,8 +345,8 @@ export class DataMapperService {
           }`,
         );
       }
-    } catch (error) {
-      errors.push(`Failed to validate mapping: ${error instanceof Error ? error.message : String(error)}`);
+    } catch (err) {
+      errors.push(`Failed to validate mapping: ${err instanceof Error ? err.message : String(err)}`);
     }
 
     return {

@@ -4,11 +4,11 @@ export interface InvoiceCreateRequest {
   supplierId?: string;
   date: string;
   dueDate?: string;
-  items: Array<{
+  items: {
     description: string;
     quantity: number;
     unitPrice: number;
-  }>;
+  }[];
 }
 
 export interface Invoice {

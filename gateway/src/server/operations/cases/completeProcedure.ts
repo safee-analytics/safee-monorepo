@@ -101,7 +101,7 @@ export async function completeProcedure(
       completedBy: completed.completedBy ?? undefined,
       completedAt: completed.completedAt?.toISOString(),
       memo: completed.memo ?? undefined,
-      fieldData: completed.fieldData as Record<string, unknown>,
+      fieldData: completed.fieldData!,
       canEdit: completed.canEdit,
       createdAt: completed.createdAt.toISOString(),
       updatedAt: completed.updatedAt.toISOString(),

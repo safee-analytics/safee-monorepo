@@ -81,9 +81,9 @@ export class ApprovalRulesEngine {
 
       this.logger.debug({ organizationId, entityData }, "No matching approval rule found");
       return null;
-    } catch (error) {
-      this.logger.error({ error, organizationId, entityData }, "Error finding matching workflow");
-      throw error;
+    } catch (err) {
+      this.logger.error({ error: err, organizationId, entityData }, "Error finding matching workflow");
+      throw err;
     }
   }
 
@@ -91,9 +91,9 @@ export class ApprovalRulesEngine {
     try {
       const parsed = ruleSchema.parse(conditions);
       return parsed;
-    } catch (error) {
+    } catch (err) {
       this.logger.error(
-        { error, conditions, conditionsType: typeof conditions },
+        { error: err, conditions, conditionsType: typeof conditions },
         "Error parsing rule conditions",
       );
       return { conditions: [], logic: "AND" };
@@ -111,9 +111,9 @@ export class ApprovalRulesEngine {
 
     if (logic === "OR") {
       return results.some((result) => result);
-    } else {
+    } 
       return results.every((result) => result);
-    }
+    
   }
 
   private evaluateCondition(condition: RuleCondition, entityData: EntityData): boolean {

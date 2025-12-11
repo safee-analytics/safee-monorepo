@@ -46,21 +46,21 @@ export interface QueryResponse<T = unknown> {
 }
 
 export interface SchemaResponse {
-  tables: Array<{
+  tables: {
     schema: string;
     name: string;
     type: "table" | "view";
-  }>;
+  }[];
 }
 
 export interface TablePreviewResponse {
   schema: string;
   table: string;
-  columns: Array<{
+  columns: {
     name: string;
     type: string;
     nullable: boolean;
-  }>;
+  }[];
   sampleData: unknown[];
   totalRows: number;
 }

@@ -62,10 +62,10 @@ export class ResilientOdooClient implements OdooClient {
 
   // Circuit Breaker state
   private circuitState: CircuitState = CircuitState.CLOSED;
-  private failureCount: number = 0;
-  private successCount: number = 0;
-  private lastFailureTime: number = 0;
-  private circuitOpenTime: number = 0;
+  private failureCount = 0;
+  private successCount = 0;
+  private lastFailureTime = 0;
+  private circuitOpenTime = 0;
   private recentFailures: number[] = []; // Timestamps of recent failures
 
   // Configuration
@@ -427,10 +427,10 @@ export class ResilientOdooClient implements OdooClient {
         }
 
         return result;
-      } catch (error) {
+      } catch (err) {
         const duration = Date.now() - attemptStartTime;
         const endTime = new Date();
-        lastError = error instanceof Error ? error : new Error(String(error));
+        lastError = err instanceof Error ? err : new Error(String(err));
 
         const isRetryable = this.isRetryableError(lastError);
         const willRetry = isRetryable && attempt < this.retryConfig.maxRetries;

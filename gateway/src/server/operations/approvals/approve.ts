@@ -110,7 +110,7 @@ export async function approve(
           message: `Approval recorded. Moving to next step (${nextStep.stepOrder}).`,
           requestStatus: "pending",
         };
-      } else {
+      } 
         await ctx.drizzle
           .update(schema.approvalRequests)
           .set({
@@ -133,7 +133,7 @@ export async function approve(
           message: "Approval completed. All workflow steps approved.",
           requestStatus: "approved",
         };
-      }
+      
     }
 
     logger.info(
@@ -151,16 +151,16 @@ export async function approve(
       message: "Approval recorded. Awaiting additional approvals for this step.",
       requestStatus: "pending",
     };
-  } catch (error) {
+  } catch (err) {
     if (
-      error instanceof InvalidInput ||
-      error instanceof NotFound ||
-      error instanceof InsufficientPermissions
+      err instanceof InvalidInput ||
+      err instanceof NotFound ||
+      err instanceof InsufficientPermissions
     ) {
-      throw error;
+      throw err;
     }
 
-    logger.error({ error, organizationId, userId, requestId }, "Failed to approve request");
+    logger.error({ error: err, organizationId, userId, requestId }, "Failed to approve request");
     throw new OperationFailed("Failed to approve request");
   }
 }

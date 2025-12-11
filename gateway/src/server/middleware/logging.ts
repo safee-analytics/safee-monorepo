@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import type { Logger } from "pino";
 
 export function loggingMiddleware(logger: Logger) {

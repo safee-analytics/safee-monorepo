@@ -79,12 +79,12 @@ export class UserController extends Controller {
         preferredLocale: user.preferredLocale,
         activeOrganizationId: req.betterAuthSession?.session.activeOrganizationId,
       };
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
+    } catch (err) {
+      if (err instanceof UserNotFoundError) {
         throw new UserNotFound();
       }
-      this.context.logger.error({ error, userId }, "Failed to get current user");
-      throw error;
+      this.context.logger.error({ error: err, userId }, "Failed to get current user");
+      throw err;
     }
   }
 
@@ -119,12 +119,12 @@ export class UserController extends Controller {
         preferredLocale: updatedUser.preferredLocale,
         activeOrganizationId: req.betterAuthSession?.session.activeOrganizationId,
       };
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
+    } catch (err) {
+      if (err instanceof UserNotFoundError) {
         throw new UserNotFound();
       }
-      this.context.logger.error({ error, userId, request }, "Failed to update user profile");
-      throw error;
+      this.context.logger.error({ error: err, userId, request }, "Failed to update user profile");
+      throw err;
     }
   }
 
@@ -149,12 +149,12 @@ export class UserController extends Controller {
         message: "Locale updated successfully",
         locale: request.locale,
       };
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
+    } catch (err) {
+      if (err instanceof UserNotFoundError) {
         throw new UserNotFound();
       }
-      this.context.logger.error({ error, userId, locale: request.locale }, "Failed to update user locale");
-      throw error;
+      this.context.logger.error({ error: err, userId, locale: request.locale }, "Failed to update user locale");
+      throw err;
     }
   }
 
@@ -201,12 +201,12 @@ export class UserController extends Controller {
         preferredLocale: updatedUser.preferredLocale,
         activeOrganizationId: orgId,
       };
-    } catch (error) {
-      if (error instanceof UserNotFoundError) {
+    } catch (err) {
+      if (err instanceof UserNotFoundError) {
         throw new UserNotFound();
       }
-      this.context.logger.error({ error, userId }, "Failed to update user avatar");
-      throw error;
+      this.context.logger.error({ error: err, userId }, "Failed to update user avatar");
+      throw err;
     }
   }
 }

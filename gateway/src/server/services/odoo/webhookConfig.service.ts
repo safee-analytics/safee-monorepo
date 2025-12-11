@@ -57,9 +57,9 @@ export async function configureOdooWebhooks(
     }
 
     logger.info({ organizationId }, "Odoo webhooks configured successfully");
-  } catch (error) {
-    logger.error({ error, organizationId }, "Failed to configure Odoo webhooks");
-    throw error;
+  } catch (err) {
+    logger.error({ error: err, organizationId }, "Failed to configure Odoo webhooks");
+    throw err;
   }
 }
 
@@ -95,8 +95,8 @@ export async function getOdooWebhookConfig(
     };
 
     return config;
-  } catch (error) {
-    logger.error({ error, organizationId }, "Failed to get Odoo webhook config");
-    throw error;
+  } catch (err) {
+    logger.error({ error: err, organizationId }, "Failed to get Odoo webhook config");
+    throw err;
   }
 }

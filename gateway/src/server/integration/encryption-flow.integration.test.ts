@@ -27,7 +27,7 @@ void describe("Encryption Flow Integration Tests", async () => {
   });
 
   void describe("Complete Encryption Setup Flow", () => {
-    void it("should complete full encryption setup for organization", async () => {
+    it("should complete full encryption setup for organization", async () => {
       const org = await createTestOrg(drizzle);
       const admin = await createTestUser(drizzle, "admin", "Admin User");
 
@@ -72,7 +72,7 @@ void describe("Encryption Flow Integration Tests", async () => {
   });
 
   void describe("File Encryption Workflow", () => {
-    void it("should complete full file encryption and retrieval flow", async () => {
+    it("should complete full file encryption and retrieval flow", async () => {
       const org = await createTestOrg(drizzle);
       const user = await createTestUser(drizzle);
 
@@ -113,7 +113,7 @@ void describe("Encryption Flow Integration Tests", async () => {
       expect(orgKey?.id).toBe(encryptionKey.id);
     });
 
-    void it("should support multiple files with same encryption key", async () => {
+    it("should support multiple files with same encryption key", async () => {
       const org = await createTestOrg(drizzle);
       const user = await createTestUser(drizzle);
 
@@ -153,7 +153,7 @@ void describe("Encryption Flow Integration Tests", async () => {
   });
 
   void describe("Auditor Access Workflow", () => {
-    void it("should complete full auditor access grant and usage flow", async () => {
+    it("should complete full auditor access grant and usage flow", async () => {
       const org = await createTestOrg(drizzle);
       const admin = await createTestUser(drizzle, "admin", "Admin User");
       const auditor = await createTestUser(drizzle, "auditor", "Auditor User");
@@ -213,7 +213,7 @@ void describe("Encryption Flow Integration Tests", async () => {
       expect(revokedAccess).toBeNull();
     });
 
-    void it("should handle multiple auditors with different access levels", async () => {
+    it("should handle multiple auditors with different access levels", async () => {
       const org = await createTestOrg(drizzle);
       const admin = await createTestUser(drizzle, "admin", "Admin User");
       const auditor1 = await createTestUser(drizzle, "auditor1", "Auditor 1");
@@ -262,7 +262,7 @@ void describe("Encryption Flow Integration Tests", async () => {
   });
 
   void describe("Access Expiry and Revocation", () => {
-    void it("should prevent access after expiry date", async () => {
+    it("should prevent access after expiry date", async () => {
       const org = await createTestOrg(drizzle);
       const admin = await createTestUser(drizzle, "admin", "Admin User");
       const auditor = await createTestUser(drizzle, "auditor", "Auditor User");
@@ -291,7 +291,7 @@ void describe("Encryption Flow Integration Tests", async () => {
       expect(auditorAccess).toBeNull();
     });
 
-    void it("should track revocation details", async () => {
+    it("should track revocation details", async () => {
       const org = await createTestOrg(drizzle);
       const admin = await createTestUser(drizzle, "admin", "Admin User");
       const auditor = await createTestUser(drizzle, "auditor", "Auditor User");
@@ -328,7 +328,7 @@ void describe("Encryption Flow Integration Tests", async () => {
   });
 
   void describe("Key Version Management", () => {
-    void it("should track file encryption with key versions", async () => {
+    it("should track file encryption with key versions", async () => {
       const org = await createTestOrg(drizzle);
       const user = await createTestUser(drizzle);
 

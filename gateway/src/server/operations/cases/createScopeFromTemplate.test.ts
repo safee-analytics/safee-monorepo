@@ -35,7 +35,7 @@ void describe("createScopeFromTemplate operation", async () => {
     await close();
   });
 
-  void it("should create scope from template successfully", async () => {
+  it("should create scope from template successfully", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 
@@ -79,7 +79,7 @@ void describe("createScopeFromTemplate operation", async () => {
     expect(result.name).toBe("Test Template");
   });
 
-  void it("should create history entry", async () => {
+  it("should create history entry", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 
@@ -126,7 +126,7 @@ void describe("createScopeFromTemplate operation", async () => {
     expect(history[0].action).toBe("created");
   });
 
-  void it("should throw NotFound for non-existent case", async () => {
+  it("should throw NotFound for non-existent case", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 
@@ -149,7 +149,7 @@ void describe("createScopeFromTemplate operation", async () => {
     ).rejects.toThrow(NotFound);
   });
 
-  void it("should throw NotFound for non-existent template", async () => {
+  it("should throw NotFound for non-existent template", async () => {
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-003",
       clientName: "Test Client",
@@ -161,7 +161,7 @@ void describe("createScopeFromTemplate operation", async () => {
     ).rejects.toThrow(NotFound);
   });
 
-  void it("should throw InsufficientPermissions for different organization case", async () => {
+  it("should throw InsufficientPermissions for different organization case", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
     const testOrg2 = await createTestOrganization(drizzle);
@@ -191,7 +191,7 @@ void describe("createScopeFromTemplate operation", async () => {
     ).rejects.toThrow(InsufficientPermissions);
   });
 
-  void it("should throw InsufficientPermissions for private template from different org", async () => {
+  it("should throw InsufficientPermissions for private template from different org", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
     const testOrg2 = await createTestOrganization(drizzle);
@@ -222,7 +222,7 @@ void describe("createScopeFromTemplate operation", async () => {
     ).rejects.toThrow("You don't have permission to use this template");
   });
 
-  void it("should allow public template from different org", async () => {
+  it("should allow public template from different org", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
     const testOrg2 = await createTestOrganization(drizzle);
@@ -265,7 +265,7 @@ void describe("createScopeFromTemplate operation", async () => {
     expect(result.templateId).toBe(template.id);
   });
 
-  void it("should throw InvalidInput for inactive template", async () => {
+  it("should throw InvalidInput for inactive template", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 

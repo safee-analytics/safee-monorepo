@@ -120,8 +120,8 @@ export class ConnectorManager {
       type: record.type as ConnectorMetadata["type"],
       description: record.description || undefined,
       isActive: record.isActive,
-      tags: (record.tags as string[]) || [],
-      metadata: (record.metadata as Record<string, unknown>) || {},
+      tags: (record.tags!) || [],
+      metadata: (record.metadata!) || {},
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
     };
@@ -195,8 +195,8 @@ export class ConnectorManager {
       type: record.type as ConnectorMetadata["type"],
       description: record.description || undefined,
       isActive: record.isActive,
-      tags: (record.tags as string[]) || [],
-      metadata: (record.metadata as Record<string, unknown>) || {},
+      tags: (record.tags!) || [],
+      metadata: (record.metadata!) || {},
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
     };
@@ -245,7 +245,7 @@ export class ConnectorManager {
     // Filter by tags if provided
     if (filters?.tags && filters.tags.length > 0) {
       return results.filter((r: typeof connectors.$inferSelect) =>
-        filters.tags!.some((tag) => (r.tags as string[])?.includes(tag)),
+        filters.tags!.some((tag) => (r.tags)?.includes(tag)),
       );
     }
 
@@ -313,8 +313,8 @@ export class ConnectorManager {
         type: existing.type as ConnectorMetadata["type"],
         description: existing.description || undefined,
         isActive: existing.isActive,
-        tags: (existing.tags as string[]) || [],
-        metadata: (existing.metadata as Record<string, unknown>) || {},
+        tags: (existing.tags!) || [],
+        metadata: (existing.metadata!) || {},
         createdAt: existing.createdAt,
         updatedAt: existing.updatedAt,
       };

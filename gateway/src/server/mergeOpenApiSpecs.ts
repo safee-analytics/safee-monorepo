@@ -18,7 +18,7 @@ export function mergeBetterAuthSpec(
 
     for (const method of ["get", "post", "put", "delete", "patch", "options"] as const) {
       if (updatedPathItem[method]) {
-        const operation = updatedPathItem[method] as OpenAPIV3.OperationObject;
+        const operation = updatedPathItem[method];
         updatedPathItem[method] = {
           ...operation,
           tags: ["Authentication"],

@@ -7,13 +7,13 @@ export async function getOdooModelFields(
   simple?: boolean,
 ): Promise<
   | Record<string, unknown>
-  | Array<{
+  | {
       name: string;
       type: string;
       label: string;
       required?: boolean;
       readonly?: boolean;
-    }>
+    }[]
 > {
   const client = await getOdooClientManager().getClient(userId, organizationId);
   const fields = await client.fieldsGet(modelName);

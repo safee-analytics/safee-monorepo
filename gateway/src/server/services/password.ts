@@ -31,8 +31,8 @@ export class PasswordService {
       const hash = await bcrypt.hash(password, this.config.bcryptRounds);
       logger.debug("Password hashed successfully");
       return hash;
-    } catch (error) {
-      logger.error({ error }, "Failed to hash password");
+    } catch (err) {
+      logger.error({ error: err }, "Failed to hash password");
       throw new OperationFailed("Password hashing");
     }
   }
@@ -47,8 +47,8 @@ export class PasswordService {
       const isValid = await bcrypt.compare(password, hash);
       logger.debug({ isValid }, "Password verification completed");
       return isValid;
-    } catch (error) {
-      logger.error({ error }, "Failed to verify password");
+    } catch (err) {
+      logger.error({ error: err }, "Failed to verify password");
       throw new OperationFailed("Password verification");
     }
   }
@@ -114,9 +114,9 @@ export class PasswordService {
         .split("")
         .sort(() => Math.random() - 0.5)
         .join("");
-    } else {
+    } 
       return "dev-password";
-    }
+    
   }
 
   isAuthEnabled(): boolean {

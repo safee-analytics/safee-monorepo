@@ -190,9 +190,9 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
         logger.info({ organizationId: organization.id }, "Configuring Odoo webhooks");
         await configureOdooWebhooks(logger, user.id, organization.id);
         logger.info({ organizationId: organization.id }, "Odoo webhooks configured");
-      } catch (error) {
+      } catch (err) {
         logger.error(
-          { error, userId: user.id, organizationId: organization.id },
+          { error: err, userId: user.id, organizationId: organization.id },
           "Failed to provision Odoo resources",
         );
       }
@@ -237,9 +237,9 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
         } else {
           logger.info({ userId: user.id }, "Employee record already exists for user");
         }
-      } catch (error) {
+      } catch (err) {
         logger.error(
-          { error, userId: user.id },
+          { error: err, userId: user.id },
           "Failed to provision Odoo user or create employee for new member",
         );
       }
@@ -257,8 +257,8 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
         const { odooUserProvisioningService } = getServices();
         await odooUserProvisioningService.deactivateUser(user.id, organization.id);
         logger.info({ userId: user.id }, "Odoo user deactivated");
-      } catch (error) {
-        logger.error({ error, userId: user.id }, "Failed to deactivate Odoo user");
+      } catch (err) {
+        logger.error({ error: err, userId: user.id }, "Failed to deactivate Odoo user");
       }
     });
   },
@@ -271,8 +271,8 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
         const { odooDatabaseService } = getServices();
         await odooDatabaseService.deleteDatabase(organization.id);
         logger.info({ organizationId: organization.id }, "Odoo database deleted successfully");
-      } catch (error) {
-        logger.error({ error, organizationId: organization.id }, "Failed to delete Odoo database");
+      } catch (err) {
+        logger.error({ error: err, organizationId: organization.id }, "Failed to delete Odoo database");
       }
     });
   },

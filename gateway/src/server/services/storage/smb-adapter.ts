@@ -33,7 +33,7 @@ interface ISMB2 {
  */
 export class SMBAdapter implements StorageAdapter {
   private client: ISMB2;
-  private connected: boolean = false;
+  private connected = false;
 
   constructor(config: {
     host: string;

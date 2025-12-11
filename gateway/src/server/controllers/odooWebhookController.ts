@@ -231,9 +231,9 @@ export class OdooWebhookController extends Controller {
         success: true,
         message: `Employee ${event === "create" ? "created" : "updated"}`,
       };
-    } catch (error) {
-      logger.error({ error, payload }, "Failed to process employee webhook");
-      throw error;
+    } catch (err) {
+      logger.error({ error: err, payload }, "Failed to process employee webhook");
+      throw err;
     }
   }
 
@@ -309,9 +309,9 @@ export class OdooWebhookController extends Controller {
         success: true,
         message: `Department ${event === "create" ? "created" : "updated"}`,
       };
-    } catch (error) {
-      logger.error({ error, payload }, "Failed to process department webhook");
-      throw error;
+    } catch (err) {
+      logger.error({ error: err, payload }, "Failed to process department webhook");
+      throw err;
     }
   }
 
@@ -412,9 +412,9 @@ export class OdooWebhookController extends Controller {
         success: true,
         message: `Invoice ${event === "create" ? "created" : "updated"}`,
       };
-    } catch (error) {
-      logger.error({ error, payload }, "Failed to process invoice webhook");
-      throw error;
+    } catch (err) {
+      logger.error({ error: err, payload }, "Failed to process invoice webhook");
+      throw err;
     }
   }
 
@@ -542,9 +542,9 @@ export class OdooWebhookController extends Controller {
         success: true,
         message: `Payment ${event === "create" ? "created" : "updated"}`,
       };
-    } catch (error) {
-      logger.error({ error, payload }, "Failed to process payment webhook");
-      throw error;
+    } catch (err) {
+      logger.error({ error: err, payload }, "Failed to process payment webhook");
+      throw err;
     }
   }
 
@@ -663,9 +663,9 @@ export class OdooWebhookController extends Controller {
         success: true,
         message: `Lead ${event === "create" ? "created" : "updated"}`,
       };
-    } catch (error) {
-      logger.error({ error, payload }, "Failed to process lead webhook");
-      throw error;
+    } catch (err) {
+      logger.error({ error: err, payload }, "Failed to process lead webhook");
+      throw err;
     }
   }
 
@@ -787,9 +787,9 @@ export class OdooWebhookController extends Controller {
         success: true,
         message: `Contact ${event === "create" ? "created" : "updated"}`,
       };
-    } catch (error) {
-      logger.error({ error, payload }, "Failed to process contact webhook");
-      throw error;
+    } catch (err) {
+      logger.error({ error: err, payload }, "Failed to process contact webhook");
+      throw err;
     }
   }
 }

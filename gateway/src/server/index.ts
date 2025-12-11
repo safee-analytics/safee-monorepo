@@ -102,7 +102,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
       if (apiKey !== API_SECRET_KEY) {
         return res.status(401).json({ error: "Invalid API key" });
       }
-      return next();
+      next();
     });
   }
 

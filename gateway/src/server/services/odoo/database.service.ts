@@ -1,6 +1,6 @@
 import { schema } from "@safee/database";
 import { eq } from "@safee/database";
-import crypto from "crypto";
+import crypto from "node:crypto";
 import { odooClient } from "./client.js";
 import { type OdooConnectionConfig } from "./client.service.js";
 import { encryptionService } from "../encryption.js";
@@ -371,8 +371,8 @@ export class OdooDatabaseService {
 
     try {
       await this.installRequiredModules(databaseName, adminLogin, adminPassword, organizationId);
-    } catch (error) {
-      this.logger.error({ organizationId, databaseName, error }, "Failed to install required modules");
+    } catch (err) {
+      this.logger.error({ organizationId, databaseName, error: err }, "Failed to install required modules");
     }
 
     this.logger.info({ organizationId, databaseName }, "Odoo database provisioned successfully");

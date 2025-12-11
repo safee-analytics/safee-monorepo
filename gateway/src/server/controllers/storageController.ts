@@ -14,7 +14,7 @@ import {
   Request,
   SuccessResponse,
 } from "tsoa";
-import { Readable } from "stream";
+import { Readable } from "node:stream";
 import { StorageServiceV2 } from "../services/storage.service.v2.js";
 import { StorageConnectorService } from "../services/storage/storage-connector.service.js";
 import { ClientEncryptionService } from "../services/clientEncryption.service.js";
@@ -117,14 +117,14 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
 
     return await storageService.uploadFile(file, {
       folderId,
       tags: tags ? JSON.parse(tags) : undefined,
       metadata: metadata ? JSON.parse(metadata) : undefined,
-      userId: request.betterAuthSession!.user.id,
+      userId: request.betterAuthSession.user.id,
     });
   }
 
@@ -150,14 +150,14 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
 
     return await storageService.uploadFiles(files, {
       folderId,
       tags: tags ? JSON.parse(tags) : undefined,
       metadata: metadata ? JSON.parse(metadata) : undefined,
-      userId: request.betterAuthSession!.user.id,
+      userId: request.betterAuthSession.user.id,
     });
   }
 
@@ -175,7 +175,7 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
     return await storageService.getFileMetadata(fileId);
   }
@@ -191,7 +191,7 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = (request as any).res as Response;
@@ -210,7 +210,7 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
     await storageService.deleteFile(fileId);
   }
@@ -237,7 +237,7 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
 
     return await storageService.searchFiles({
@@ -268,10 +268,10 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
 
-    return await storageService.createFolder(body.name, body.parentId, request.betterAuthSession!.user.id);
+    return await storageService.createFolder(body.name, body.parentId, request.betterAuthSession.user.id);
   }
 
   /**
@@ -288,7 +288,7 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
     return await storageService.getFolderContents(folderId);
   }
@@ -308,7 +308,7 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
     await storageService.deleteFolder(folderId);
   }
@@ -326,10 +326,10 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
 
-    return await storageService.getQuota(request.betterAuthSession!.user.id);
+    return await storageService.getQuota(request.betterAuthSession.user.id);
   }
 
   /**

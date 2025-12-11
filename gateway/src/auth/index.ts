@@ -1,30 +1,31 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { connect, schema, EmailService, ResendEmailProvider } from "@safee/database";
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import { createSessionHooks } from "./session.hooks.js";
 import { createPluginsConfig } from "./plugins.config.js";
 import { createEmailConfig } from "./email.config.js";
 import { userAdditionalFields, userFields, sessionConfig } from "./schema.config.js";
-import pino from "pino";
+import { pino } from "pino";
 
 const logger = pino({ name: "auth" });
 
 const { drizzle } = connect("better-auth");
+const betterAuthBaseUrl = process.env.BETTER_AUTH_URL ?? "http://app.localhost:8080/api/v1";
 
 let emailService: EmailService | undefined;
 if (process.env.RESEND_API_KEY) {
   const resendProvider = new ResendEmailProvider({
     apiKey: process.env.RESEND_API_KEY,
-    senderAddress: process.env.EMAIL_FROM_ADDRESS || "noreply@safee.dev",
-    senderName: process.env.EMAIL_FROM_NAME || "Safee Analytics",
+    senderAddress: process.env.EMAIL_FROM_ADDRESS ?? "noreply@safee.dev",
+    senderName: process.env.EMAIL_FROM_NAME ?? "Safee Analytics",
   });
   emailService = new EmailService({ drizzle, logger, emailProvider: resendProvider });
 }
 
 export const auth = betterAuth({
   appName: "Safee Analytics",
-  baseURL: process.env.BETTER_AUTH_URL || "http://app.localhost:8080/api/v1",
+  baseURL: betterAuthBaseUrl,
   // Temporarily disable experimental joins due to Drizzle relation resolution error
   // experimental: { joins: true },
 
@@ -91,7 +92,7 @@ export const auth = betterAuth({
     cookieCache: sessionConfig.cookieCache,
     cookieOptions: {
       sameSite: "lax",
-      domain: process.env.COOKIE_DOMAIN || "app.localhost",
+      domain: process.env.COOKIE_DOMAIN ?? "app.localhost",
       path: "/",
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -115,9 +116,9 @@ export const auth = betterAuth({
   // Social providers
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID || "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-      redirectURI: `${process.env.BETTER_AUTH_URL}/callback/google`,
+      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+      redirectURI: `${betterAuthBaseUrl}/callback/google`,
       enabled: !!process.env.GOOGLE_CLIENT_ID,
     },
   },
@@ -140,8 +141,8 @@ export const auth = betterAuth({
                 name: user.name,
               });
               logger.info({ userId: user.id, email: user.email }, "Welcome email sent to new user");
-            } catch (error) {
-              logger.error({ error, userId: user.id }, "Failed to send welcome email");
+            } catch (err) {
+              logger.error({ error: err, userId: user.id }, "Failed to send welcome email");
             }
           }
         },
@@ -159,9 +160,9 @@ export const auth = betterAuth({
     },
   },
   trustedOrigins: [
-    process.env.CORS_ORIGIN || "http://app.localhost:8080",
-    process.env.FRONTEND_URL || "http://app.localhost:8080",
-    process.env.LANDING_URL || "http://localhost:8080",
+    process.env.CORS_ORIGIN ?? "http://app.localhost:8080",
+    process.env.FRONTEND_URL ?? "http://app.localhost:8080",
+    process.env.LANDING_URL ?? "http://localhost:8080",
     "http://localhost:3000",
     "http://localhost:8080",
     "http://app.localhost:8080",

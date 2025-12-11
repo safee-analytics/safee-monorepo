@@ -51,7 +51,7 @@ export class ServiceManagementService {
       ),
     });
 
-    if (existing && existing.isEnabled) {
+    if (existing?.isEnabled) {
       throw new ServiceAlreadyEnabled();
     }
 

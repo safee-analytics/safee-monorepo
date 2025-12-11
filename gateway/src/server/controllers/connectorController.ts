@@ -60,13 +60,13 @@ export class ConnectorController extends Controller {
   @Get("/types")
   @Security("jwt")
   public async getConnectorTypes(): Promise<
-    Array<{
+    {
       type: ConnectorType;
       name: string;
       description: string;
       requiredFields: string[];
       optionalFields: string[];
-    }>
+    }[]
   > {
     return ConnectorFactory.getAvailableTypes();
   }
@@ -74,7 +74,7 @@ export class ConnectorController extends Controller {
   @Get("/types/{type}/fields")
   @Security("jwt")
   public async getFieldDefinitions(@Path() type: ConnectorType): Promise<
-    Array<{
+    {
       name: string;
       type: "text" | "number" | "password" | "boolean";
       label: string;
@@ -82,7 +82,7 @@ export class ConnectorController extends Controller {
       required: boolean;
       defaultValue?: unknown;
       helpText?: string;
-    }>
+    }[]
   > {
     return ConnectorFactory.getFieldDefinitions(type);
   }
@@ -216,7 +216,7 @@ export class ConnectorController extends Controller {
     @Path() connectorId: string,
     @Path() schemaName: string,
     @Path() tableName: string,
-    @Query() limit: number = 100,
+    @Query() limit = 100,
   ): Promise<TablePreviewResponse> {
     const { ctx, organizationId } = this.getServices(req);
 
@@ -232,7 +232,7 @@ export class ConnectorController extends Controller {
     @Path() tableName: string,
     @Query() searchTerm: string,
     @Query() searchColumns: string,
-    @Query() limit: number = 50,
+    @Query() limit = 50,
   ): Promise<unknown[]> {
     const { ctx, organizationId } = this.getServices(req);
 

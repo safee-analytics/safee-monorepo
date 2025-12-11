@@ -132,7 +132,7 @@ export class TokenExpired extends Unauthorized {
 export class InvalidCredentials extends Unauthorized {
   override code = "InvalidCredentials";
 
-  constructor(message: string = "Invalid credentials", opts?: ErrorOptions) {
+  constructor(message = "Invalid credentials", opts?: ErrorOptions) {
     super(message, {}, opts);
   }
 }
@@ -140,7 +140,7 @@ export class InvalidCredentials extends Unauthorized {
 export class InsufficientPermissions extends Forbidden {
   override code = "InsufficientPermissions";
 
-  constructor(message: string = "Insufficient permissions", opts?: ErrorOptions) {
+  constructor(message = "Insufficient permissions", opts?: ErrorOptions) {
     super(message, {}, opts);
   }
 }

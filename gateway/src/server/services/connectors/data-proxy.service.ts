@@ -18,11 +18,11 @@ export interface QueryResult<T = unknown> {
 export interface TablePreview {
   schema: string;
   table: string;
-  columns: Array<{
+  columns: {
     name: string;
     type: string;
     nullable: boolean;
-  }>;
+  }[];
   sampleData: unknown[];
   totalRows: number;
 }
@@ -93,7 +93,7 @@ export class DataProxyService {
     connectorId: string,
     schema: string,
     table: string,
-    limit: number = 100,
+    limit = 100,
   ): Promise<TablePreview> {
     const connector = await this.connectorManager.getConnector(connectorId, organizationId);
 
@@ -264,7 +264,7 @@ export class DataProxyService {
       rows = await connector.query<T>(dataQuery, [...whereParams, limit, offset] as unknown[]);
       const [countRes] = await connector.query<{ count: number | string }>(
         countQuery,
-        whereParams as unknown[],
+        whereParams,
       );
       countResult = countRes;
     }
@@ -337,13 +337,13 @@ export class DataProxyService {
         LIMIT ?
       `;
       return await connector.query<T>(query, [searchPattern, limit]);
-    } else {
+    } 
       // MSSQL
       query = `
         SELECT TOP ${limit} * FROM [${schema}].[${table}]
         WHERE ${whereClause}
       `;
       return await connector.query<T>(query, { searchTerm: searchPattern });
-    }
+    
   }
 }

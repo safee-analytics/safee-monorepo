@@ -6,11 +6,11 @@ import { OperationFailed } from "../../errors.js";
 import { OdooUserProvisioningService } from "./user-provisioning.service.js";
 
 export class OdooClientManager {
-  private clients: Map<string, { client: OdooClient; expiresAt: Date }> = new Map();
+  private clients = new Map<string, { client: OdooClient; expiresAt: Date }>();
   private readonly cacheTTL: number = 60 * 60 * 1000; // 60 minutes
   private logger: Logger;
   private drizzle: DrizzleClient;
-  private creationPromises: Map<string, Promise<OdooClient>> = new Map();
+  private creationPromises = new Map<string, Promise<OdooClient>>();
   private userProvisioningService: OdooUserProvisioningService;
 
   constructor(drizzle: DrizzleClient, logger: Logger) {
@@ -18,7 +18,7 @@ export class OdooClientManager {
     this.logger = logger;
     this.userProvisioningService = new OdooUserProvisioningService(drizzle);
 
-    setInterval(() => this.cleanupExpiredClients(), 5 * 60 * 1000);
+    setInterval(() => { this.cleanupExpiredClients(); }, 5 * 60 * 1000);
   }
 
   async getClient(userId: string, organizationId: string): Promise<OdooClient> {

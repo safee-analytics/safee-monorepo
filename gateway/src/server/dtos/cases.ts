@@ -32,7 +32,7 @@ export interface CaseResponse {
   createdBy: string;
   createdAt: string;
   updatedAt: string;
-  assignments?: Array<{
+  assignments?: {
     userId: string;
     role: AssignmentRole;
     user?: {
@@ -40,7 +40,7 @@ export interface CaseResponse {
       name: string | null;
       email: string;
     };
-  }>;
+  }[];
 }
 
 export interface CreateCaseRequest {
@@ -64,19 +64,19 @@ export interface UpdateCaseRequest {
 
 // Template DTOs
 export type TemplateStructure = {
-  sections: Array<{
+  sections: {
     name: string;
     description?: string;
     sortOrder: number;
     settings?: Record<string, unknown>;
-    procedures: Array<{
+    procedures: {
       referenceNumber: string;
       title: string;
       description?: string;
       requirements?: Record<string, unknown>;
       sortOrder: number;
-    }>;
-  }>;
+    }[];
+  }[];
   settings?: Record<string, unknown>;
 };
 

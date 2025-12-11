@@ -34,13 +34,13 @@ export class ConnectorFactory {
   /**
    * Get available connector types
    */
-  static getAvailableTypes(): Array<{
+  static getAvailableTypes(): {
     type: ConnectorType;
     name: string;
     description: string;
     requiredFields: string[];
     optionalFields: string[];
-  }> {
+  }[] {
     return [
       {
         type: "postgresql",
@@ -75,7 +75,7 @@ export class ConnectorFactory {
   /**
    * Get field definitions for a specific connector type
    */
-  static getFieldDefinitions(type: ConnectorType): Array<{
+  static getFieldDefinitions(type: ConnectorType): {
     name: string;
     type: "text" | "number" | "password" | "boolean";
     label: string;
@@ -83,7 +83,7 @@ export class ConnectorFactory {
     required: boolean;
     defaultValue?: unknown;
     helpText?: string;
-  }> {
+  }[] {
     const commonDatabaseFields = [
       {
         name: "host",
@@ -225,10 +225,10 @@ export class ConnectorFactory {
     try {
       const connector = ConnectorFactory.create(tempMetadata, config);
       return await connector.validateConfig(config);
-    } catch (error) {
+    } catch (err) {
       return {
         valid: false,
-        errors: [error instanceof Error ? error.message : String(error)],
+        errors: [err instanceof Error ? err.message : String(err)],
       };
     }
   }

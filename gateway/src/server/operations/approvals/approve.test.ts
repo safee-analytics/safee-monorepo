@@ -51,14 +51,14 @@ void describe("approve operation", async () => {
     await close();
   });
 
-  void it("should approve a pending approval request successfully", async () => {
+  it("should approve a pending approval request successfully", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
     const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
-      entityId: entityId,
-      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+      entityId,
+      entityData: { entityType: "invoice", entityId, amount: 1000, currency: "USD" },
     });
 
     const result = await approve(ctx, testOrg.id, approverUser.id, submitResult.requestId, {
@@ -86,7 +86,7 @@ void describe("approve operation", async () => {
     expect(approvalRequest?.completedAt).toBeDefined();
   });
 
-  void it("should throw NotFound when approval request does not exist", async () => {
+  it("should throw NotFound when approval request does not exist", async () => {
     const nonExistentRequestId = crypto.randomUUID();
 
     await expect(
@@ -96,14 +96,14 @@ void describe("approve operation", async () => {
     ).rejects.toThrow(NotFound);
   });
 
-  void it("should throw InvalidInput when trying to approve non-pending request", async () => {
+  it("should throw InvalidInput when trying to approve non-pending request", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
     const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
-      entityId: entityId,
-      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+      entityId,
+      entityData: { entityType: "invoice", entityId, amount: 1000, currency: "USD" },
     });
 
     await approve(ctx, testOrg.id, approverUser.id, submitResult.requestId, {
@@ -117,14 +117,14 @@ void describe("approve operation", async () => {
     ).rejects.toThrow(InvalidInput);
   });
 
-  void it("should throw NotFound when user has no pending approval step", async () => {
+  it("should throw NotFound when user has no pending approval step", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
     const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
-      entityId: entityId,
-      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+      entityId,
+      entityData: { entityType: "invoice", entityId, amount: 1000, currency: "USD" },
     });
 
     const otherUser = await createTestUser(drizzle, { email: "other@test.com", name: "Other" });
@@ -137,14 +137,14 @@ void describe("approve operation", async () => {
     ).rejects.toThrow(NotFound);
   });
 
-  void it("should handle approval with no comments", async () => {
+  it("should handle approval with no comments", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
     const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
-      entityId: entityId,
-      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+      entityId,
+      entityData: { entityType: "invoice", entityId, amount: 1000, currency: "USD" },
     });
 
     const result = await approve(ctx, testOrg.id, approverUser.id, submitResult.requestId, {});
@@ -160,14 +160,14 @@ void describe("approve operation", async () => {
     expect(approvalStep?.comments).toBeNull();
   });
 
-  void it("should allow delegated user to approve", async () => {
+  it("should allow delegated user to approve", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
     const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
-      entityId: entityId,
-      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+      entityId,
+      entityData: { entityType: "invoice", entityId, amount: 1000, currency: "USD" },
     });
 
     const delegateUser = await createTestUser(drizzle, {

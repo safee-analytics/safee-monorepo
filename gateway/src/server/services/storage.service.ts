@@ -1,5 +1,5 @@
-import fs from "fs/promises";
-import path from "path";
+import fs from "node:fs/promises";
+import path from "node:path";
 import { v4 as uuidv4 } from "uuid";
 import type { Response } from "express";
 import type { FileMetadata, FolderMetadata, FileSearchParams } from "../controllers/storageController.js";
@@ -31,8 +31,8 @@ export class StorageService {
     try {
       await fs.mkdir(this.basePath, { recursive: true });
       await fs.mkdir(this.metadataPath, { recursive: true });
-    } catch (error) {
-      this.logger.error({ error }, "Failed to initialize storage");
+    } catch (err) {
+      this.logger.error({ error: err }, "Failed to initialize storage");
     }
   }
 
@@ -94,8 +94,8 @@ export class StorageService {
     try {
       const data = await fs.readFile(metadataFile, "utf-8");
       return JSON.parse(data);
-    } catch (error) {
-      this.logger.debug({ error, fileId }, "File not found");
+    } catch (err) {
+      this.logger.debug({ error: err, fileId }, "File not found");
       throw new Error(`File not found: ${fileId}`);
     }
   }
@@ -174,8 +174,8 @@ export class StorageService {
         }
 
         filesMetadata.push(metadata);
-      } catch (error) {
-        this.logger.error({ error, metaFile }, "Error reading metadata file");
+      } catch (err) {
+        this.logger.error({ error: err, metaFile }, "Error reading metadata file");
       }
     }
 
@@ -256,8 +256,8 @@ export class StorageService {
         if (folderMetadata.parentId === folderId) {
           subFolders.push(folderMetadata);
         }
-      } catch (error) {
-        this.logger.error({ error, metaFile }, "Error reading folder metadata");
+      } catch (err) {
+        this.logger.error({ error: err, metaFile }, "Error reading folder metadata");
       }
     }
 

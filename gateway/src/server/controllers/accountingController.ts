@@ -51,8 +51,8 @@ export class AccountingController extends Controller {
   @OperationId("GetAccountingInvoices")
   public async getInvoices(
     @Request() request: AuthenticatedRequest,
-    @Query() page: number = 1,
-    @Query() limit: number = 20,
+    @Query() page = 1,
+    @Query() limit = 20,
     @Query() type?: "SALES" | "PURCHASE",
     @Query() state?: "draft" | "posted" | "cancel",
     @Query() dateFrom?: string,
@@ -226,8 +226,8 @@ export class AccountingController extends Controller {
   @OperationId("GetAccountingBills")
   public async getBills(
     @Request() request: AuthenticatedRequest,
-    @Query() page: number = 1,
-    @Query() limit: number = 20,
+    @Query() page = 1,
+    @Query() limit = 20,
     @Query() state?: "draft" | "posted" | "cancel",
     @Query() dateFrom?: string,
     @Query() dateTo?: string,
@@ -388,13 +388,13 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Query() accountType?: string,
   ): Promise<
-    Array<{
+    {
       id: string;
       code: string;
       name: string;
       type: string;
       parentId?: string;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     const accounts = await service.getAccounts({
@@ -417,12 +417,12 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Query() q: string,
   ): Promise<
-    Array<{
+    {
       id: string;
       code: string;
       name: string;
       type: string;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     const accounts = await service.searchAccounts(q);
@@ -687,7 +687,7 @@ export class AccountingController extends Controller {
   @OperationId("GetAccountingPaymentTerms")
   public async getPaymentTerms(
     @Request() request: AuthenticatedRequest,
-  ): Promise<Array<{ id: number; name: string; note?: string }>> {
+  ): Promise<{ id: number; name: string; note?: string }[]> {
     const service = await this.getAccountingService(request);
     return service.getPaymentTerms();
   }
@@ -701,7 +701,7 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Query() asOfDate?: string,
   ): Promise<
-    Array<{
+    {
       partnerId: number;
       partnerName: string;
       current: number;
@@ -710,7 +710,7 @@ export class AccountingController extends Controller {
       days_61_90: number;
       days_over_90: number;
       total: number;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getAgedReceivables(asOfDate);
@@ -723,7 +723,7 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Query() asOfDate?: string,
   ): Promise<
-    Array<{
+    {
       partnerId: number;
       partnerName: string;
       current: number;
@@ -732,7 +732,7 @@ export class AccountingController extends Controller {
       days_61_90: number;
       days_over_90: number;
       total: number;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getAgedPayables(asOfDate);
@@ -750,7 +750,7 @@ export class AccountingController extends Controller {
     @Query() dateTo?: string,
     @Query() state?: "open" | "confirm",
   ): Promise<
-    Array<{
+    {
       id: number;
       name: string;
       journalId: number;
@@ -760,7 +760,7 @@ export class AccountingController extends Controller {
       balanceEndReal: number;
       balanceEnd: number;
       state: string;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getBankStatements({ journalId, dateFrom, dateTo, state });
@@ -773,14 +773,14 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Path() statementId: number,
   ): Promise<
-    Array<{
+    {
       id: number;
       date: string;
       paymentRef: string;
       partnerName?: string;
       amount: number;
       isReconciled: boolean;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getBankStatementLines(statementId);
@@ -793,13 +793,13 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Path() lineId: number,
   ): Promise<
-    Array<{
+    {
       moveId: number;
       moveName: string;
       partnerName: string;
       date: string;
       amount: number;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getReconciliationSuggestions(lineId);
@@ -824,16 +824,16 @@ export class AccountingController extends Controller {
   @OperationId("GetAccountingCurrencies")
   public async getCurrencies(
     @Request() request: AuthenticatedRequest,
-    @Query() onlyActive: boolean = true,
+    @Query() onlyActive = true,
   ): Promise<
-    Array<{
+    {
       id: number;
       name: string;
       symbol: string;
       position: "after" | "before";
       rounding: number;
       active: boolean;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getCurrencies(onlyActive);
@@ -848,14 +848,14 @@ export class AccountingController extends Controller {
     @Query() dateFrom?: string,
     @Query() dateTo?: string,
   ): Promise<
-    Array<{
+    {
       id: number;
       currencyId: number;
       currencyName: string;
       name: string;
       rate: number;
       companyId: number;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getCurrencyRates(currencyId, dateFrom, dateTo);
@@ -882,7 +882,7 @@ export class AccountingController extends Controller {
     @Body() body: { invoiceIds: number[] },
   ): Promise<{
     success: number[];
-    failed: Array<{ id: number; error: string }>;
+    failed: { id: number; error: string }[];
   }> {
     const service = await this.getAccountingService(request);
     return service.batchValidateInvoices(body.invoiceIds);
@@ -896,7 +896,7 @@ export class AccountingController extends Controller {
     @Body() body: { invoiceIds: number[] },
   ): Promise<{
     success: number[];
-    failed: Array<{ id: number; error: string }>;
+    failed: { id: number; error: string }[];
   }> {
     const service = await this.getAccountingService(request);
     return service.batchCancelInvoices(body.invoiceIds);
@@ -910,8 +910,8 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: { invoices: InvoiceCreateRequest[] },
   ): Promise<{
-    success: Array<{ index: number; id: number }>;
-    failed: Array<{ index: number; error: string }>;
+    success: { index: number; id: number }[];
+    failed: { index: number; error: string }[];
   }> {
     const service = await this.getAccountingService(request);
 
@@ -940,7 +940,7 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body()
     body: {
-      payments: Array<{
+      payments: {
         type: "inbound" | "outbound";
         partnerId: number;
         partnerType: "customer" | "supplier";
@@ -948,11 +948,11 @@ export class AccountingController extends Controller {
         date: string;
         journalId: number;
         reference?: string;
-      }>;
+      }[];
     },
   ): Promise<{
-    success: Array<{ index: number; id: number }>;
-    failed: Array<{ index: number; error: string }>;
+    success: { index: number; id: number }[];
+    failed: { index: number; error: string }[];
   }> {
     const service = await this.getAccountingService(request);
     this.setStatus(201);
@@ -967,7 +967,7 @@ export class AccountingController extends Controller {
     @Body() body: { paymentIds: number[] },
   ): Promise<{
     success: number[];
-    failed: Array<{ id: number; error: string }>;
+    failed: { id: number; error: string }[];
   }> {
     const service = await this.getAccountingService(request);
     return service.batchConfirmPayments(body.paymentIds);

@@ -9,7 +9,7 @@ void describe("HealthController", () => {
   });
 
   void describe("getHealth", () => {
-    void it("should return health status with ok", async () => {
+    it("should return health status with ok", async () => {
       const result = await controller.getHealth();
 
       expect(result.status).toBe("ok");
@@ -18,7 +18,7 @@ void describe("HealthController", () => {
       expect(result.version).toBeDefined();
     });
 
-    void it("should return valid ISO timestamp", async () => {
+    it("should return valid ISO timestamp", async () => {
       const result = await controller.getHealth();
       const timestamp = new Date(result.timestamp);
 
@@ -26,13 +26,13 @@ void describe("HealthController", () => {
       expect(timestamp.getTime()).toBeGreaterThan(0);
     });
 
-    void it("should return positive uptime", async () => {
+    it("should return positive uptime", async () => {
       const result = await controller.getHealth();
 
       expect(result.uptime).toBeGreaterThanOrEqual(0);
     });
 
-    void it("should return version from env or default", async () => {
+    it("should return version from env or default", async () => {
       const result = await controller.getHealth();
 
       expect(result.version).toBeDefined();
@@ -40,7 +40,7 @@ void describe("HealthController", () => {
       expect(result.version.length).toBeGreaterThan(0);
     });
 
-    void it("should have consistent structure", async () => {
+    it("should have consistent structure", async () => {
       const result = await controller.getHealth();
 
       expect(result).toHaveProperty("status");
@@ -49,7 +49,7 @@ void describe("HealthController", () => {
       expect(result).toHaveProperty("version");
     });
 
-    void it("should return fresh timestamp on each call", async () => {
+    it("should return fresh timestamp on each call", async () => {
       const result1 = await controller.getHealth();
 
       await new Promise((resolve) => setTimeout(resolve, 10));
@@ -62,7 +62,7 @@ void describe("HealthController", () => {
       );
     });
 
-    void it("should return increasing uptime on subsequent calls", async () => {
+    it("should return increasing uptime on subsequent calls", async () => {
       const result1 = await controller.getHealth();
 
       await new Promise((resolve) => setTimeout(resolve, 100));

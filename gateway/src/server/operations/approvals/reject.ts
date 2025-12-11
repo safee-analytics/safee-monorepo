@@ -88,16 +88,16 @@ export async function reject(
       message: "Approval request rejected.",
       requestStatus: "rejected",
     };
-  } catch (error) {
+  } catch (err) {
     if (
-      error instanceof InvalidInput ||
-      error instanceof NotFound ||
-      error instanceof InsufficientPermissions
+      err instanceof InvalidInput ||
+      err instanceof NotFound ||
+      err instanceof InsufficientPermissions
     ) {
-      throw error;
+      throw err;
     }
 
-    logger.error({ error, organizationId, userId, requestId }, "Failed to reject request");
+    logger.error({ error: err, organizationId, userId, requestId }, "Failed to reject request");
     throw new OperationFailed("Failed to reject request");
   }
 }

@@ -38,8 +38,8 @@ export class StorageServiceV2 {
       await this.adapter.mkdir("/");
       await this.metadataAdapter.mkdir("/");
       logger.info("Storage initialized successfully");
-    } catch (error) {
-      logger.error({ error }, "Failed to initialize storage");
+    } catch (err) {
+      logger.error({ error: err }, "Failed to initialize storage");
     }
   }
 
@@ -97,8 +97,8 @@ export class StorageServiceV2 {
     try {
       const metadataBuffer = await this.metadataAdapter.download(`${fileId}.json`);
       return JSON.parse(metadataBuffer.toString("utf-8"));
-    } catch (error) {
-      logger.debug({ error, fileId }, "File not found");
+    } catch (err) {
+      logger.debug({ error: err, fileId }, "File not found");
       throw new Error(`File not found: ${fileId}`);
     }
   }
@@ -177,8 +177,8 @@ export class StorageServiceV2 {
         }
 
         filesMetadata.push(metadata);
-      } catch (error) {
-        logger.error({ error, metaFile }, "Error reading metadata file");
+      } catch (err) {
+        logger.error({ error: err, metaFile }, "Error reading metadata file");
       }
     }
 
@@ -258,8 +258,8 @@ export class StorageServiceV2 {
         if (folderMetadata.parentId === folderId) {
           subFolders.push(folderMetadata);
         }
-      } catch (error) {
-        logger.error({ error, metaFile }, "Error reading folder metadata");
+      } catch (err) {
+        logger.error({ error: err, metaFile }, "Error reading folder metadata");
       }
     }
 

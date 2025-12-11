@@ -26,7 +26,7 @@ void describe("updateConnector", async () => {
     await close();
   });
 
-  void it("should update connector name", async () => {
+  it("should update connector name", async () => {
     const timestamp = Date.now();
     const [org] = await drizzle
       .insert(schema.organizations)
@@ -77,7 +77,7 @@ void describe("updateConnector", async () => {
     expect(updated?.name).toBe("Updated Name");
   });
 
-  void it("should update connector config", async () => {
+  it("should update connector config", async () => {
     const timestamp = Date.now();
     const [org] = await drizzle
       .insert(schema.organizations)
@@ -129,7 +129,7 @@ void describe("updateConnector", async () => {
     expect(updated?.config).toBeDefined();
   });
 
-  void it("should update isActive status", async () => {
+  it("should update isActive status", async () => {
     const timestamp = Date.now();
     const [org] = await drizzle
       .insert(schema.organizations)
@@ -181,7 +181,7 @@ void describe("updateConnector", async () => {
     expect(updated?.isActive).toBe(false);
   });
 
-  void it("should throw error for non-existent connector", async () => {
+  it("should throw error for non-existent connector", async () => {
     const timestamp = Date.now();
     const [org] = await drizzle
       .insert(schema.organizations)

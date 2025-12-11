@@ -167,7 +167,7 @@ export class OdooHRService {
   constructor(private readonly client: OdooClient) {}
 
   async getEmployees(filters?: { departmentId?: number; active?: boolean }): Promise<OdooEmployee[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.departmentId) {
       domain.push(["department_id", "=", filters.departmentId]);
@@ -248,7 +248,7 @@ export class OdooHRService {
   }
 
   async getDepartments(filters?: { parentId?: number; active?: boolean }): Promise<OdooDepartment[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.parentId !== undefined) {
       domain.push(["parent_id", "=", filters.parentId]);
@@ -291,7 +291,7 @@ export class OdooHRService {
   }
 
   async getContracts(filters?: { employeeId?: number; state?: string }): Promise<OdooContract[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.employeeId) {
       domain.push(["employee_id", "=", filters.employeeId]);
@@ -340,7 +340,7 @@ export class OdooHRService {
   }
 
   async getLeaveTypes(filters?: { active?: boolean }): Promise<OdooLeaveType[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.active !== false) {
       domain.push(["active", "=", true]);
@@ -392,7 +392,7 @@ export class OdooHRService {
     dateFrom?: string;
     dateTo?: string;
   }): Promise<OdooLeaveRequest[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.employeeId) {
       domain.push(["employee_id", "=", filters.employeeId]);
@@ -458,7 +458,7 @@ export class OdooHRService {
     leaveTypeId?: number;
     state?: string;
   }): Promise<OdooLeaveAllocation[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.employeeId) {
       domain.push(["employee_id", "=", filters.employeeId]);
@@ -509,7 +509,7 @@ export class OdooHRService {
     dateFrom?: string;
     dateTo?: string;
   }): Promise<OdooPayslip[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.employeeId) {
       domain.push(["employee_id", "=", filters.employeeId]);
@@ -628,21 +628,21 @@ export class OdooHRService {
     }
 
     // Remove undefined values
-    Object.keys(odooData).forEach((key) => {
+    for (const key of Object.keys(odooData)) {
       if (odooData[key] === undefined) {
         delete odooData[key];
       }
-    });
+    }
 
     if (data.odooEmployeeId) {
       // Update existing employee
       await this.client.write("hr.employee", [data.odooEmployeeId], odooData);
       return data.odooEmployeeId;
-    } else {
+    } 
       // Create new employee
       const newId = await this.client.create("hr.employee", odooData);
       return newId;
-    }
+    
   }
 
   /**
@@ -680,21 +680,21 @@ export class OdooHRService {
     }
 
     // Remove undefined values
-    Object.keys(odooData).forEach((key) => {
+    for (const key of Object.keys(odooData)) {
       if (odooData[key] === undefined) {
         delete odooData[key];
       }
-    });
+    }
 
     if (data.odooDepartmentId) {
       // Update existing department
       await this.client.write("hr.department", [data.odooDepartmentId], odooData);
       return data.odooDepartmentId;
-    } else {
+    } 
       // Create new department
       const newId = await this.client.create("hr.department", odooData);
       return newId;
-    }
+    
   }
 
   /**

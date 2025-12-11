@@ -69,8 +69,8 @@ export class OdooAuditLogService {
       }
 
       return result || null;
-    } catch (error) {
-      this.logger.error({ error, idempotencyKey }, "Failed to check idempotency key");
+    } catch (err) {
+      this.logger.error({ error: err, idempotencyKey }, "Failed to check idempotency key");
       return null;
     }
   }
@@ -91,8 +91,8 @@ export class OdooAuditLogService {
         },
         "Created idempotency key",
       );
-    } catch (error) {
-      this.logger.error({ error, data }, "Failed to create idempotency key");
+    } catch (err) {
+      this.logger.error({ error: err, data }, "Failed to create idempotency key");
     }
   }
 
@@ -124,8 +124,8 @@ export class OdooAuditLogService {
         },
         "Updated idempotency key",
       );
-    } catch (error) {
-      this.logger.error({ error, idempotencyKey }, "Failed to update idempotency key");
+    } catch (err) {
+      this.logger.error({ error: err, idempotencyKey }, "Failed to update idempotency key");
     }
   }
 
@@ -144,8 +144,8 @@ export class OdooAuditLogService {
         },
         "Logged operation start",
       );
-    } catch (error) {
-      this.logger.error({ error, data }, "Failed to log operation start");
+    } catch (err) {
+      this.logger.error({ error: err, data }, "Failed to log operation start");
     }
   }
 
@@ -173,8 +173,8 @@ export class OdooAuditLogService {
         },
         "Updated operation",
       );
-    } catch (error) {
-      this.logger.error({ error, operationId }, "Failed to update operation");
+    } catch (err) {
+      this.logger.error({ error: err, operationId }, "Failed to update operation");
     }
   }
 
@@ -190,8 +190,8 @@ export class OdooAuditLogService {
         .limit(1);
 
       return result || null;
-    } catch (error) {
-      this.logger.error({ error, operationId }, "Failed to get operation");
+    } catch (err) {
+      this.logger.error({ error: err, operationId }, "Failed to get operation");
       return null;
     }
   }
@@ -212,8 +212,8 @@ export class OdooAuditLogService {
       this.logger.info({ deletedCount }, "Cleaned up expired idempotency keys");
 
       return deletedCount;
-    } catch (error) {
-      this.logger.error({ error }, "Failed to cleanup expired idempotency keys");
+    } catch (err) {
+      this.logger.error({ error: err }, "Failed to cleanup expired idempotency keys");
       return 0;
     }
   }

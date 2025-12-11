@@ -97,15 +97,15 @@ export async function expressAuthentication(
       context.logger.debug({ userId: user.id }, "Authentication successful");
 
       return user;
-    } catch (error) {
-      context.logger.warn({ error: error instanceof Error ? error.message : error }, "Authentication failed");
+    } catch (err) {
+      context.logger.warn({ error: err instanceof Error ? err.message : err }, "Authentication failed");
 
       if (
-        error instanceof NoTokenProvided ||
-        error instanceof InvalidToken ||
-        error instanceof InsufficientPermissions
+        err instanceof NoTokenProvided ||
+        err instanceof InvalidToken ||
+        err instanceof InsufficientPermissions
       ) {
-        throw error;
+        throw err;
       }
 
       throw new InvalidToken();

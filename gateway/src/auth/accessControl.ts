@@ -108,8 +108,9 @@ export function canManageRole(roleA: string, roleB: string): boolean {
 
   if (roleB === "owner") return false;
 
-  const levelA = roleHierarchy[roleA as keyof typeof roleHierarchy] ?? 4;
-  const levelB = roleHierarchy[roleB as keyof typeof roleHierarchy] ?? 4;
+  const hierarchy = roleHierarchy as Partial<typeof roleHierarchy>;
+  const levelA = hierarchy[roleA as keyof typeof roleHierarchy] ?? 4;
+  const levelB = hierarchy[roleB as keyof typeof roleHierarchy] ?? 4;
 
   return levelA < levelB;
 }
