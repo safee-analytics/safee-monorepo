@@ -62,7 +62,9 @@ export function DataSourceSelector({ caseId, value, onChange }: DataSourceSelect
           ) : (
             <select
               value={selectedCase}
-              onChange={(e) => setSelectedCase(e.target.value)}
+              onChange={(e) => {
+                setSelectedCase(e.target.value);
+              }}
               className="w-full border border-gray-300 rounded-lg px-3 py-2"
             >
               <option value="">Select a case...</option>
@@ -87,7 +89,9 @@ export function DataSourceSelector({ caseId, value, onChange }: DataSourceSelect
               <input
                 type="date"
                 value={dateRange.start}
-                onChange={(e) => setDateRange({ ...dateRange, start: e.target.value })}
+                onChange={(e) => {
+                  setDateRange({ ...dateRange, start: e.target.value });
+                }}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               />
             </div>
@@ -96,7 +100,9 @@ export function DataSourceSelector({ caseId, value, onChange }: DataSourceSelect
               <input
                 type="date"
                 value={dateRange.end}
-                onChange={(e) => setDateRange({ ...dateRange, end: e.target.value })}
+                onChange={(e) => {
+                  setDateRange({ ...dateRange, end: e.target.value });
+                }}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2"
               />
             </div>
@@ -115,7 +121,9 @@ export function DataSourceSelector({ caseId, value, onChange }: DataSourceSelect
               <input
                 type="checkbox"
                 checked={includeDrafts}
-                onChange={(e) => setIncludeDrafts(e.target.checked)}
+                onChange={(e) => {
+                  setIncludeDrafts(e.target.checked);
+                }}
                 className="rounded border-gray-300"
               />
               <span className="text-sm text-gray-700">Include draft documents and findings</span>

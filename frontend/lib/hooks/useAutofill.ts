@@ -7,9 +7,9 @@ interface AutofillSuggestions {
   suggestDueDate: (auditType: string) => Date;
   suggestPriority: (clientName: string, dueDate: Date) => string;
   suggestStatus: (dueDate: Date) => string;
-  suggestTeam: (auditType: string, clientName?: string) => Array<{ userId: string; role: string }>;
+  suggestTeam: (auditType: string, clientName?: string) => { userId: string; role: string }[];
   getClientHistory: (clientName: string) => AutofillClientHistory;
-  getRecentClients: () => Array<{ name: string; lastCase: CaseData; count: number }>;
+  getRecentClients: () => { name: string; lastCase: CaseData; count: number }[];
   getAuditTypeStats: () => Record<string, number>;
 }
 
@@ -46,14 +46,11 @@ export function useAutofill(): AutofillSuggestions {
         if (clientCases.length === 0) return undefined;
 
         // Count audit type frequency
-        const typeCounts = clientCases.reduce(
-          (acc, c) => {
-            const type = c.auditType || "general_audit";
-            acc[type] = (acc[type] || 0) + 1;
-            return acc;
-          },
-          {} as Record<string, number>,
-        );
+        const typeCounts = clientCases.reduce<Record<string, number>>((acc, c) => {
+          const type = c.auditType || "general_audit";
+          acc[type] = (acc[type] || 0) + 1;
+          return acc;
+        }, {});
 
         // Return most common audit type
         const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
@@ -137,7 +134,7 @@ export function useAutofill(): AutofillSuggestions {
       /**
        * Suggests team members based on audit type and client history
        */
-      suggestTeam: (auditType: string, clientName?: string): Array<{ userId: string; role: string }> => {
+      suggestTeam: (auditType: string, clientName?: string): { userId: string; role: string }[] => {
         // Find similar cases
         const similarCases = cases.filter(
           (c) =>
@@ -150,20 +147,21 @@ export function useAutofill(): AutofillSuggestions {
         // Extract team patterns from assignments
         const teamPatterns: Record<string, { count: number; roles: Record<string, number> }> = {};
 
-        similarCases.forEach((c) => {
-          c.assignments?.forEach((assignment) => {
-            if (!assignment.userId) return;
+        for (const c of similarCases) {
+          if (c.assignments)
+            for (const assignment of c.assignments) {
+              if (!assignment.userId) continue;
 
-            if (!teamPatterns[assignment.userId]) {
-              teamPatterns[assignment.userId] = { count: 0, roles: {} };
+              if (!teamPatterns[assignment.userId]) {
+                teamPatterns[assignment.userId] = { count: 0, roles: {} };
+              }
+
+              teamPatterns[assignment.userId].count++;
+              const role = assignment.role || "staff";
+              teamPatterns[assignment.userId].roles[role] =
+                (teamPatterns[assignment.userId].roles[role] || 0) + 1;
             }
-
-            teamPatterns[assignment.userId].count++;
-            const role = assignment.role || "staff";
-            teamPatterns[assignment.userId].roles[role] =
-              (teamPatterns[assignment.userId].roles[role] || 0) + 1;
-          });
-        });
+        }
 
         // Get top 3 most common team members
         const topMembers = Object.entries(teamPatterns)
@@ -207,14 +205,11 @@ export function useAutofill(): AutofillSuggestions {
         }
 
         // Most common audit type
-        const typeCounts = clientCases.reduce(
-          (acc, c) => {
-            const type = c.auditType || "general_audit";
-            acc[type] = (acc[type] || 0) + 1;
-            return acc;
-          },
-          {} as Record<string, number>,
-        );
+        const typeCounts = clientCases.reduce<Record<string, number>>((acc, c) => {
+          const type = c.auditType || "general_audit";
+          acc[type] = (acc[type] || 0) + 1;
+          return acc;
+        }, {});
         const mostCommonAuditType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
 
         // Average duration
@@ -228,14 +223,11 @@ export function useAutofill(): AutofillSuggestions {
           durations.length > 0 ? durations.reduce((a, b) => a + b, 0) / durations.length : 30;
 
         // Most common priority
-        const priorityCounts = clientCases.reduce(
-          (acc, c) => {
-            const priority = c.priority || "medium";
-            acc[priority] = (acc[priority] || 0) + 1;
-            return acc;
-          },
-          {} as Record<string, number>,
-        );
+        const priorityCounts = clientCases.reduce<Record<string, number>>((acc, c) => {
+          const priority = c.priority || "medium";
+          acc[priority] = (acc[priority] || 0) + 1;
+          return acc;
+        }, {});
         const commonPriority = Object.entries(priorityCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
 
         // Last case
@@ -259,8 +251,8 @@ export function useAutofill(): AutofillSuggestions {
       getRecentClients: () => {
         const clientMap = new Map<string, { lastCase: CaseData; count: number }>();
 
-        cases.forEach((c) => {
-          if (!c.clientName) return;
+        for (const c of cases) {
+          if (!c.clientName) continue;
 
           const normalized = c.clientName.toLowerCase();
           if (!clientMap.has(normalized)) {
@@ -274,7 +266,7 @@ export function useAutofill(): AutofillSuggestions {
           if (new Date(c.createdAt) > new Date(entry.lastCase.createdAt)) {
             entry.lastCase = c;
           }
-        });
+        }
 
         return Array.from(clientMap.entries())
           .map(([_name, data]) => ({
@@ -290,14 +282,11 @@ export function useAutofill(): AutofillSuggestions {
        * Gets audit type statistics for insights
        */
       getAuditTypeStats: () => {
-        return cases.reduce(
-          (acc, c) => {
-            const type = c.auditType || "general_audit";
-            acc[type] = (acc[type] || 0) + 1;
-            return acc;
-          },
-          {} as Record<string, number>,
-        );
+        return cases.reduce<Record<string, number>>((acc, c) => {
+          const type = c.auditType || "general_audit";
+          acc[type] = (acc[type] || 0) + 1;
+          return acc;
+        }, {});
       },
     };
   }, [recentCases]);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { X, Copy, Check, Shield, Key, Download } from "lucide-react";
 import QRCode from "qrcode";
 import OtpInput from "react-otp-input";
@@ -27,16 +27,28 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
   const verify2FAMutation = useVerify2FACode();
   const generateBackupCodesMutation = useGenerate2FABackupCodes();
 
+  const handleClose = () => {
+    onClose();
+    setStep("password");
+    setPassword("");
+    setOtpCode("");
+    setQrCodeDataUrl("");
+    setSecret("");
+    setBackupCodes([]);
+    setCopied(false);
+  };
   // Reset state when modal closes
   useEffect(() => {
     if (!isOpen) {
-      setStep("password");
-      setPassword("");
-      setOtpCode("");
-      setQrCodeDataUrl("");
-      setSecret("");
-      setBackupCodes([]);
-      setCopied(false);
+      startTransition(() => {
+        setStep("password");
+        setPassword("");
+        setOtpCode("");
+        setQrCodeDataUrl("");
+        setSecret("");
+        setBackupCodes([]);
+        setCopied(false);
+      });
     }
   }, [isOpen]);
 
@@ -49,14 +61,14 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
       setQrCodeDataUrl(qrUrl);
 
       // Extract secret from the TOTP URI (format: otpauth://totp/...?secret=SECRET&...)
-      const secretMatch = result.totpURI.match(/secret=([^&]+)/);
+      const secretMatch = /secret=([^&]+)/.exec(result.totpURI);
       if (secretMatch) {
         setSecret(secretMatch[1]);
       }
 
       setStep("qr");
-    } catch (error) {
-      console.error("Failed to enable 2FA:", error);
+    } catch (err) {
+      console.error("Failed to enable 2FA:", err);
       toast.error("Failed to enable 2FA. Please check your password.");
     }
   };
@@ -69,17 +81,19 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
       const codes = await generateBackupCodesMutation.mutateAsync(password);
       setBackupCodes(codes.backupCodes || []);
       setStep("backup");
-    } catch (error) {
-      console.error("Invalid 2FA code:", error);
+    } catch (err) {
+      console.error("Invalid 2FA code:", err);
       toast.error("Invalid code. Please try again.");
       setOtpCode("");
     }
   };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
+    void navigator.clipboard.writeText(text);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
   const downloadBackupCodes = () => {
@@ -96,7 +110,7 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
 
   const handleFinish = () => {
     onSuccess();
-    onClose();
+    handleClose();
   };
 
   if (!isOpen) return null;
@@ -110,7 +124,7 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
             <Shield className="w-6 h-6 text-blue-600" />
             <h2 className="text-xl font-semibold text-gray-900">Enable Two-Factor Authentication</h2>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <button onClick={handleClose} className="text-gray-400 hover:text-gray-600">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -124,14 +138,18 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
               <input
                 type="password"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter your password"
                 autoFocus
               />
             </div>
             <button
-              onClick={handleEnableTwoFactor}
+              onClick={() => {
+                void handleEnableTwoFactor();
+              }}
               disabled={!password || enable2FAMutation.isPending}
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
@@ -161,7 +179,9 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
               <div className="flex items-center gap-2">
                 <code className="flex-1 px-3 py-2 bg-gray-100 rounded text-sm font-mono">{secret}</code>
                 <button
-                  onClick={() => copyToClipboard(secret)}
+                  onClick={() => {
+                    copyToClipboard(secret);
+                  }}
                   className="px-3 py-2 text-gray-600 hover:bg-gray-100 rounded transition-colors"
                 >
                   {copied ? <Check className="w-4 h-4 text-green-600" /> : <Copy className="w-4 h-4" />}
@@ -170,7 +190,9 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
             </div>
 
             <button
-              onClick={() => setStep("verify")}
+              onClick={() => {
+                setStep("verify");
+              }}
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
             >
               I&apos;ve Scanned the Code
@@ -201,7 +223,9 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
             </div>
 
             <button
-              onClick={handleVerifyCode}
+              onClick={() => {
+                void handleVerifyCode();
+              }}
               disabled={otpCode.length !== 6 || verify2FAMutation.isPending}
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
@@ -209,7 +233,9 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
             </button>
 
             <button
-              onClick={() => setStep("qr")}
+              onClick={() => {
+                setStep("qr");
+              }}
               className="w-full px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg"
             >
               Back to QR Code
@@ -240,14 +266,18 @@ export function TwoFactorSetup({ isOpen, onClose, onSuccess }: TwoFactorSetupPro
 
             <div className="flex gap-2">
               <button
-                onClick={() => copyToClipboard(backupCodes.join("\n"))}
+                onClick={() => {
+                  copyToClipboard(backupCodes.join("\n"));
+                }}
                 className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2"
               >
                 <Copy className="w-4 h-4" />
                 Copy
               </button>
               <button
-                onClick={downloadBackupCodes}
+                onClick={() => {
+                  downloadBackupCodes();
+                }}
                 className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-center gap-2"
               >
                 <Download className="w-4 h-4" />

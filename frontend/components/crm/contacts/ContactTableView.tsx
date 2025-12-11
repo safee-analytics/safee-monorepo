@@ -15,6 +15,30 @@ interface ContactTableViewProps {
 type SortField = "name" | "email" | "city" | "isCompany";
 type SortDirection = "asc" | "desc";
 
+function SortButton({
+  field,
+  sortField,
+  handleSort,
+  children,
+}: {
+  field: SortField;
+  sortField: SortField;
+  handleSort: (field: SortField) => void;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      onClick={() => {
+        handleSort(field);
+      }}
+      className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
+    >
+      <span>{children}</span>
+      <ArrowUpDown className={`h-4 w-4 ${sortField === field ? "text-blue-600" : "text-gray-400"}`} />
+    </button>
+  );
+}
+
 export function ContactTableView({ contacts }: ContactTableViewProps) {
   const [sortField, setSortField] = useState<SortField>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
@@ -59,16 +83,6 @@ export function ContactTableView({ contacts }: ContactTableViewProps) {
     return 0;
   });
 
-  const SortButton = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
-    <button
-      onClick={() => handleSort(field)}
-      className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
-    >
-      <span>{children}</span>
-      <ArrowUpDown className={`h-4 w-4 ${sortField === field ? "text-blue-600" : "text-gray-400"}`} />
-    </button>
-  );
-
   return (
     <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
       <div className="overflow-x-auto">
@@ -76,16 +90,24 @@ export function ContactTableView({ contacts }: ContactTableViewProps) {
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="name">Name</SortButton>
+                <SortButton field="name" sortField={sortField} handleSort={handleSort}>
+                  Name
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="isCompany">Type</SortButton>
+                <SortButton field="isCompany" sortField={sortField} handleSort={handleSort}>
+                  Type
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="email">Contact Info</SortButton>
+                <SortButton field="email" sortField={sortField} handleSort={handleSort}>
+                  Contact Info
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="city">Location</SortButton>
+                <SortButton field="city" sortField={sortField} handleSort={handleSort}>
+                  Location
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Role

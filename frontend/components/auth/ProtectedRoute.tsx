@@ -62,14 +62,14 @@ export function ProtectedRoute({
         }
 
         setCheckingOrganization(false);
-      } catch (error) {
-        console.error("Error checking organization:", error);
+      } catch (err) {
+        console.error("Error checking organization:", err);
         // If error, redirect to onboarding to be safe
         router.push("/onboarding");
       }
     }
 
-    checkOrganization();
+    void checkOrganization();
   }, [isAuthenticated, isLoading, pathname, router]);
 
   // Show loading state during SSR, initial mount, auth check, or organization check
@@ -86,7 +86,7 @@ export function ProtectedRoute({
   return <>{children}</>;
 }
 
-export function withAuth<P extends object>(Component: React.ComponentType<P>, redirectTo: string = "/login") {
+export function withAuth<P extends object>(Component: React.ComponentType<P>, redirectTo = "/login") {
   return function WithAuthComponent(props: P) {
     return (
       <ProtectedRoute redirectTo={redirectTo}>

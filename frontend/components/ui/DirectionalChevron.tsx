@@ -18,25 +18,33 @@ export function DirectionalChevron({ direction, className = "", size }: Directio
   const { locale } = useTranslation();
   const isRTL = locale === "ar";
 
-  // Get the appropriate icon based on direction and RTL
-  const getIcon = () => {
-    switch (direction) {
-      case "right":
-        return isRTL ? ChevronLeft : ChevronRight;
-      case "left":
-        return isRTL ? ChevronRight : ChevronLeft;
-      case "down":
-        return ChevronDown;
-      case "up":
-        return ChevronUp;
-      default:
-        return ChevronRight;
-    }
-  };
+  // Directly render the appropriate icon based on direction and RTL
+  if (direction === "right") {
+    return isRTL ? (
+      <ChevronLeft className={className} size={size} />
+    ) : (
+      <ChevronRight className={className} size={size} />
+    );
+  }
 
-  const Icon = getIcon();
+  if (direction === "left") {
+    return isRTL ? (
+      <ChevronRight className={className} size={size} />
+    ) : (
+      <ChevronLeft className={className} size={size} />
+    );
+  }
 
-  return <Icon className={className} size={size} />;
+  if (direction === "down") {
+    return <ChevronDown className={className} size={size} />;
+  }
+
+  if (direction === "up") {
+    return <ChevronUp className={className} size={size} />;
+  }
+
+  // Default fallback
+  return <ChevronRight className={className} size={size} />;
 }
 
 /**
@@ -55,7 +63,13 @@ export function CollapsibleChevron({ isExpanded, className = "", size }: Collaps
 
   // When collapsed, show right chevron (or left in RTL)
   // When expanded, show down chevron
-  const Icon = isExpanded ? ChevronDown : isRTL ? ChevronLeft : ChevronRight;
+  if (isExpanded) {
+    return <ChevronDown className={className} size={size} />;
+  }
 
-  return <Icon className={className} size={size} />;
+  return isRTL ? (
+    <ChevronLeft className={className} size={size} />
+  ) : (
+    <ChevronRight className={className} size={size} />
+  );
 }

@@ -54,8 +54,8 @@ export default function DepartmentDetailPage() {
     try {
       await deleteDepartment.mutateAsync(departmentId);
       router.push("/hr/departments");
-    } catch (error) {
-      console.error("Failed to delete department:", error);
+    } catch (err) {
+      console.error("Failed to delete department:", err);
       toast.error("Failed to delete department. Please try again.");
     }
   };
@@ -95,7 +95,9 @@ export default function DepartmentDetailPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => router.back()}
+            onClick={() => {
+              router.back();
+            }}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-gray-600" />
@@ -122,7 +124,9 @@ export default function DepartmentDetailPage() {
             Edit
           </Link>
           <button
-            onClick={handleDelete}
+            onClick={() => {
+              void handleDelete();
+            }}
             disabled={deleteDepartment.isPending}
             className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
           >

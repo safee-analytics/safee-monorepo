@@ -98,9 +98,8 @@ export default function HomePage() {
       return t.dashboard.goodMorning;
     } else if (currentHour < 18) {
       return t.dashboard.goodAfternoon;
-    } else {
-      return t.dashboard.goodEvening;
     }
+    return t.dashboard.goodEvening;
   };
 
   const modules = [
@@ -166,27 +165,37 @@ export default function HomePage() {
     {
       id: "payroll",
       label: t.dashboard.runPayroll,
-      onClick: () => router.push("/hr/payroll"),
+      onClick: () => {
+        router.push("/hr/payroll");
+      },
     },
     {
       id: "get-paid",
       label: t.dashboard.getPaidOnline,
-      onClick: () => router.push("/accounting/payments"),
+      onClick: () => {
+        router.push("/accounting/payments");
+      },
     },
     {
       id: "invoice",
       label: t.dashboard.createInvoice,
-      onClick: () => router.push("/accounting/invoices/new"),
+      onClick: () => {
+        router.push("/accounting/invoices/new");
+      },
     },
     {
       id: "expense",
       label: t.dashboard.recordExpense,
-      onClick: () => router.push("/accounting/expenses/new"),
+      onClick: () => {
+        router.push("/accounting/expenses/new");
+      },
     },
     {
       id: "bank",
       label: t.dashboard.addBankDeposit,
-      onClick: () => router.push("/accounting/banking/deposit"),
+      onClick: () => {
+        router.push("/accounting/banking/deposit");
+      },
     },
     {
       id: "show-all",
@@ -216,9 +225,15 @@ export default function HomePage() {
               return (
                 <button
                   key={module.id}
-                  onClick={() => router.push(module.href)}
-                  onMouseEnter={() => setHoveredModule(module.id)}
-                  onMouseLeave={() => setHoveredModule(null)}
+                  onClick={() => {
+                    router.push(module.href);
+                  }}
+                  onMouseEnter={() => {
+                    setHoveredModule(module.id);
+                  }}
+                  onMouseLeave={() => {
+                    setHoveredModule(null);
+                  }}
                   className={`
                     group flex items-center gap-3 px-4 py-3 rounded-xl border-2 transition-all duration-200 flex-shrink-0
                     ${

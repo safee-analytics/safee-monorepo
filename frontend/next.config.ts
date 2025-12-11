@@ -1,5 +1,5 @@
 import type { NextConfig } from "next";
-import path from "path";
+import path from "node:path";
 
 const monorepoRoot = path.join(__dirname, "..");
 const nextConfig: NextConfig = {

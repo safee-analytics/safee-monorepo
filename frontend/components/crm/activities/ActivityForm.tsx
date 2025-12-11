@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { useLeads, useCrmTeams } from "@/lib/api/hooks";
@@ -37,7 +37,7 @@ export function ActivityForm({ activity, onSubmit, isSubmitting, defaultLeadId }
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
+    control,
   } = useForm<ActivityFormData>({
     resolver: zodResolver(activityFormSchema),
     defaultValues: activity
@@ -59,23 +59,24 @@ export function ActivityForm({ activity, onSubmit, isSubmitting, defaultLeadId }
   const { data: leads } = useLeads({ active: true });
   const { data: teams } = useCrmTeams({ active: true });
 
-  const selectedLeadId = watch("leadId");
-  const selectedActivityTypeId = watch("activityTypeId");
-
+  const selectedLeadId = useWatch({ control, name: "leadId" });
+  const selectedActivityTypeId = useWatch({ control, name: "activityTypeId" });
+  const currentSummary = useWatch({ control, name: "summary" });
+  const currentDeadline = useWatch({ control, name: "dateDeadline" });
   // Get all users from teams
   const users = useMemo(() => {
     if (!teams) return [];
-    const allUsers: Array<{ id: number; name: string }> = [];
-    teams.forEach((team) => {
+    const allUsers: { id: number; name: string }[] = [];
+    for (const team of teams) {
       if (team.memberIds) {
-        team.memberIds.forEach((memberId) => {
+        for (const memberId of team.memberIds) {
           if (!allUsers.find((u) => u.id === memberId)) {
             // TODO: Fetch user details from memberId
             allUsers.push({ id: memberId, name: `User ${memberId}` });
           }
-        });
+        }
       }
-    });
+    }
     return allUsers;
   }, [teams]);
 
@@ -85,7 +86,6 @@ export function ActivityForm({ activity, onSubmit, isSubmitting, defaultLeadId }
       const selectedLead = leads.find((l) => l.id === selectedLeadId);
       if (selectedLead) {
         // Auto-fill summary with lead name
-        const currentSummary = watch("summary");
         if (!currentSummary) {
           setValue("summary", `Follow up: ${selectedLead.name}`);
         }
@@ -96,14 +96,13 @@ export function ActivityForm({ activity, onSubmit, isSubmitting, defaultLeadId }
         }
       }
     }
-  }, [selectedLeadId, leads, setValue, activity, watch]);
+  }, [selectedLeadId, leads, setValue, activity, currentSummary]);
 
   // Auto-fill due date based on activity type
   useEffect(() => {
     if (selectedActivityTypeId && !activity) {
       const selectedType = ACTIVITY_TYPES.find((t) => t.id === selectedActivityTypeId);
       if (selectedType) {
-        const currentDeadline = watch("dateDeadline");
         if (!currentDeadline) {
           // Default suggestions based on activity type name
           const now = new Date();
@@ -124,10 +123,17 @@ export function ActivityForm({ activity, onSubmit, isSubmitting, defaultLeadId }
         }
       }
     }
-  }, [selectedActivityTypeId, setValue, activity, watch]);
+  }, [selectedActivityTypeId, setValue, activity, currentDeadline]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form
+      onSubmit={(event) => {
+        void handleSubmit((data) => {
+          void onSubmit(data);
+        })(event);
+      }}
+      className="space-y-6"
+    >
       {/* Lead Selection */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Activity Details</h2>

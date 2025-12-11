@@ -77,8 +77,8 @@ export function useGetAPIKeys() {
           } else if (key.permissions) {
             permissions = typeof key.permissions === "string" ? JSON.parse(key.permissions) : key.permissions;
           }
-        } catch (e) {
-          console.error("Failed to parse permissions:", e);
+        } catch (err) {
+          console.error("Failed to parse permissions:", err);
         }
 
         return {
@@ -146,7 +146,7 @@ export function useCreateAPIKey() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all });
     },
   });
 }
@@ -164,7 +164,7 @@ export function useRevokeAPIKey() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all });
     },
   });
 }
@@ -182,7 +182,7 @@ export function useDeleteAPIKey() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.apiKeys.all });
     },
   });
 }

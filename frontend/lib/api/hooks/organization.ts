@@ -42,7 +42,7 @@ export function useSetActiveOrganization() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries();
+      void queryClient.invalidateQueries();
     },
   });
 }
@@ -100,8 +100,8 @@ export function useInviteMember() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.members(variables.orgId) });
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.invitations(variables.orgId) });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.members(variables.orgId) });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.invitations(variables.orgId) });
     },
   });
 }
@@ -120,10 +120,10 @@ export function useUpdateMemberRole() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: organizationQueryKeys.member(variables.orgId, variables.userId),
       });
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.members(variables.orgId) });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.members(variables.orgId) });
     },
   });
 }
@@ -141,7 +141,7 @@ export function useRemoveMember() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.members(variables.orgId) });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.members(variables.orgId) });
     },
   });
 }
@@ -177,7 +177,7 @@ export function useCancelInvitation() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.invitations(variables.orgId) });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.invitations(variables.orgId) });
     },
   });
 }
@@ -194,7 +194,7 @@ export function useAcceptInvitation() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.all });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.all });
     },
   });
 }
@@ -260,7 +260,7 @@ export function useCreateOrganization() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.all });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.all });
     },
   });
 }
@@ -292,8 +292,8 @@ export function useUpdateOrganization() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.organization(variables.orgId) });
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.all });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.organization(variables.orgId) });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.all });
     },
   });
 }
@@ -310,7 +310,7 @@ export function useDeleteOrganization() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.all });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.all });
     },
   });
 }
@@ -327,7 +327,7 @@ export function useLeaveOrganization() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.all });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.all });
     },
   });
 }
@@ -383,7 +383,7 @@ export function useCreateRole() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.roles(variables.orgId) });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.roles(variables.orgId) });
     },
   });
 }
@@ -403,7 +403,7 @@ export function useUpdateRolePermissions() {
     }) => {
       // Convert array of permissions to object format
       const permissionObj: Record<string, string[]> = {};
-      permissions.forEach((perm) => {
+      for (const perm of permissions) {
         const [resource, action] = perm.split(":");
         if (!permissionObj[resource]) {
           permissionObj[resource] = [];
@@ -411,7 +411,7 @@ export function useUpdateRolePermissions() {
         if (action) {
           permissionObj[resource].push(action);
         }
-      });
+      }
 
       const { data, error } = await authClient.organization.updateRole({
         roleName,
@@ -425,8 +425,8 @@ export function useUpdateRolePermissions() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.roles(variables.orgId) });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.roles(variables.orgId) });
+      void queryClient.invalidateQueries({
         queryKey: organizationQueryKeys.role(variables.orgId, variables.roleName),
       });
     },
@@ -446,7 +446,7 @@ export function useDeleteRole() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: organizationQueryKeys.roles(variables.orgId) });
+      void queryClient.invalidateQueries({ queryKey: organizationQueryKeys.roles(variables.orgId) });
     },
   });
 }

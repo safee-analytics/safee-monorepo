@@ -79,7 +79,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
   const handleCopyPhrase = async () => {
     await navigator.clipboard.writeText(recoveryPhrase);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => {
+      setCopied(false);
+    }, 2000);
   };
 
   const handleDownloadPhrase = () => {
@@ -136,8 +138,8 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
 
       // Move to completion step
       setCurrentStep("complete");
-    } catch (_error) {
-      console.error("Failed to enable encryption:", _error);
+    } catch (err) {
+      console.error("Failed to enable encryption:", err);
       toastError("Failed to enable encryption. Please try again.");
     } finally {
       setIsEnabling(false);
@@ -286,7 +288,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                   <input
                     type="checkbox"
                     checked={termsAccepted}
-                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    onChange={(e) => {
+                      setTermsAccepted(e.target.checked);
+                    }}
                     className="mt-1 h-5 w-5 rounded border-gray-300 text-red-600 focus:ring-red-500"
                   />
                   <span className="text-sm text-gray-700">
@@ -297,7 +301,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                   <input
                     type="checkbox"
                     checked={downsideAccepted}
-                    onChange={(e) => setDownsideAccepted(e.target.checked)}
+                    onChange={(e) => {
+                      setDownsideAccepted(e.target.checked);
+                    }}
                     className="mt-1 h-5 w-5 rounded border-gray-300 text-red-600 focus:ring-red-500"
                   />
                   <span className="text-sm text-gray-700">
@@ -317,7 +323,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                   </button>
                 )}
                 <button
-                  onClick={() => setCurrentStep("auth")}
+                  onClick={() => {
+                    setCurrentStep("auth");
+                  }}
                   disabled={!termsAccepted || !downsideAccepted}
                   className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -355,13 +363,17 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                   <input
                     type={showCurrentPassword ? "text" : "password"}
                     value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
+                    onChange={(e) => {
+                      setCurrentPassword(e.target.value);
+                    }}
                     className="w-full px-4 py-3 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                     placeholder={t.settings.documents.encryption.wizard.auth.currentPasswordPlaceholder}
                   />
                   <button
                     type="button"
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                    onClick={() => {
+                      setShowCurrentPassword(!showCurrentPassword);
+                    }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     {showCurrentPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -383,7 +395,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                 <input
                   type="text"
                   value={confirmationText}
-                  onChange={(e) => setConfirmationText(e.target.value)}
+                  onChange={(e) => {
+                    setConfirmationText(e.target.value);
+                  }}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent font-mono"
                   placeholder={t.settings.documents.encryption.wizard.auth.confirmationPlaceholder}
                 />
@@ -404,7 +418,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
               {/* Actions */}
               <div className="flex justify-end gap-3">
                 <button
-                  onClick={() => setCurrentStep("terms")}
+                  onClick={() => {
+                    setCurrentStep("terms");
+                  }}
                   className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                 >
                   {t.settings.documents.encryption.wizard.back}
@@ -449,7 +465,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                   <input
                     type={showPassword ? "text" : "password"}
                     value={encryptionPassword}
-                    onChange={(e) => setEncryptionPassword(e.target.value)}
+                    onChange={(e) => {
+                      setEncryptionPassword(e.target.value);
+                    }}
                     className="w-full rounded-md border border-gray-300 px-4 py-3 pr-10 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
                     placeholder={
                       t.settings.documents.encryption.wizard.password.encryptionPasswordPlaceholder
@@ -457,7 +475,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() => {
+                      setShowPassword(!showPassword);
+                    }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   >
                     {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -473,7 +493,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                 <input
                   type={showPassword ? "text" : "password"}
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                  }}
                   className="w-full rounded-md border border-gray-300 px-4 py-3 focus:border-red-500 focus:outline-none focus:ring-2 focus:ring-red-500"
                   placeholder={t.settings.documents.encryption.wizard.password.confirmPasswordPlaceholder}
                 />
@@ -547,7 +569,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
 
             <div className="mt-6 flex justify-end gap-3">
               <button
-                onClick={() => setCurrentStep("auth")}
+                onClick={() => {
+                  setCurrentStep("auth");
+                }}
                 className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 {t.settings.documents.encryption.wizard.back}
@@ -601,7 +625,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
 
               <div className="mt-4 flex gap-2">
                 <button
-                  onClick={handleCopyPhrase}
+                  onClick={() => {
+                    void handleCopyPhrase();
+                  }}
                   className="flex items-center gap-2 rounded-md bg-white border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
                 >
                   {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
@@ -624,7 +650,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
               <input
                 type="checkbox"
                 checked={phraseConfirmed}
-                onChange={(e) => setPhraseConfirmed(e.target.checked)}
+                onChange={(e) => {
+                  setPhraseConfirmed(e.target.checked);
+                }}
                 className="mt-1 h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <span className="text-sm text-gray-700">
@@ -634,13 +662,17 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
 
             <div className="mt-6 flex justify-end gap-3">
               <button
-                onClick={() => setCurrentStep("password")}
+                onClick={() => {
+                  setCurrentStep("password");
+                }}
                 className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 {t.settings.documents.encryption.wizard.back}
               </button>
               <button
-                onClick={() => setCurrentStep("confirm")}
+                onClick={() => {
+                  setCurrentStep("confirm");
+                }}
                 disabled={!phraseConfirmed}
                 className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -691,14 +723,18 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
 
             <div className="mt-6 flex justify-end gap-3">
               <button
-                onClick={() => setCurrentStep("recovery")}
+                onClick={() => {
+                  setCurrentStep("recovery");
+                }}
                 className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                 disabled={isEnabling}
               >
                 {t.settings.documents.encryption.wizard.back}
               </button>
               <button
-                onClick={handleEnableEncryption}
+                onClick={() => {
+                  void handleEnableEncryption();
+                }}
                 disabled={isEnabling}
                 className="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >

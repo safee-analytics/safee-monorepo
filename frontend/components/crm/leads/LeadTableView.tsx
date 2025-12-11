@@ -14,6 +14,28 @@ interface LeadTableViewProps {
 type SortField = "name" | "expectedRevenue" | "probability" | "dateDeadline" | "stage";
 type SortDirection = "asc" | "desc";
 
+// Move SortButton outside to prevent recreation on every render
+interface SortButtonProps {
+  field: SortField;
+  children: React.ReactNode;
+  sortField: SortField;
+  onSort: (field: SortField) => void;
+}
+
+function SortButton({ field, children, sortField, onSort }: SortButtonProps) {
+  return (
+    <button
+      onClick={() => {
+        onSort(field);
+      }}
+      className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
+    >
+      <span>{children}</span>
+      <ArrowUpDown className={`h-4 w-4 ${sortField === field ? "text-blue-600" : "text-gray-400"}`} />
+    </button>
+  );
+}
+
 export function LeadTableView({ leads }: LeadTableViewProps) {
   const [sortField, setSortField] = useState<SortField>("name");
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc");
@@ -62,16 +84,6 @@ export function LeadTableView({ leads }: LeadTableViewProps) {
     return 0;
   });
 
-  const SortButton = ({ field, children }: { field: SortField; children: React.ReactNode }) => (
-    <button
-      onClick={() => handleSort(field)}
-      className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
-    >
-      <span>{children}</span>
-      <ArrowUpDown className={`h-4 w-4 ${sortField === field ? "text-blue-600" : "text-gray-400"}`} />
-    </button>
-  );
-
   const priorityColors = {
     "0": "bg-gray-100 text-gray-600",
     "1": "bg-blue-100 text-blue-600",
@@ -93,7 +105,9 @@ export function LeadTableView({ leads }: LeadTableViewProps) {
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="name">Lead Name</SortButton>
+                <SortButton field="name" sortField={sortField} onSort={handleSort}>
+                  Lead Name
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Type
@@ -102,16 +116,24 @@ export function LeadTableView({ leads }: LeadTableViewProps) {
                 Contact
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="stage">Stage</SortButton>
+                <SortButton field="stage" sortField={sortField} onSort={handleSort}>
+                  Stage
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="expectedRevenue">Expected Revenue</SortButton>
+                <SortButton field="expectedRevenue" sortField={sortField} onSort={handleSort}>
+                  Expected Revenue
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="probability">Probability</SortButton>
+                <SortButton field="probability" sortField={sortField} onSort={handleSort}>
+                  Probability
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="dateDeadline">Deadline</SortButton>
+                <SortButton field="dateDeadline" sortField={sortField} onSort={handleSort}>
+                  Deadline
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Assignee

@@ -72,15 +72,15 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
       });
 
       // Register all existing event handlers
-      eventHandlers.current.forEach((handlers, event) => {
+      for (const [event, handlers] of eventHandlers.current.entries()) {
         socket.on(event, (data) => {
-          handlers.forEach((handler) => handler(data));
+          for (const handler of handlers) handler(data);
         });
-      });
+      }
 
       socketRef.current = socket;
-    } catch (error) {
-      console.error("Socket.IO connection error:", error);
+    } catch (err) {
+      console.error("Socket.IO connection error:", err);
     }
   }, [enabled, onConnect, onDisconnect, onError]);
 
@@ -137,7 +137,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   useEffect(() => {
     if (!enabled) return;
 
-    connect();
+    void connect();
 
     return () => {
       disconnect();

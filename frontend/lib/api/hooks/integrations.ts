@@ -41,7 +41,7 @@ export function useConnectIntegration() {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.integrations.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.integrations.all });
     },
   });
 }
@@ -62,7 +62,7 @@ export function useDisconnectIntegration() {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.integrations.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.integrations.all });
     },
   });
 }

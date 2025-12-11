@@ -60,7 +60,7 @@ export function useCreateEmployee() {
       return data as EmployeeDbResponse;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.hr.employees() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hr.employees() });
     },
   });
 }
@@ -84,8 +84,8 @@ export function useUpdateEmployee() {
       return data as EmployeeDbResponse;
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.hr.employee(variables.employeeId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.hr.employees() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hr.employee(variables.employeeId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hr.employees() });
     },
   });
 }
@@ -102,8 +102,8 @@ export function useDeactivateEmployee() {
       return data as { success: boolean };
     },
     onSuccess: (_, employeeId) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.hr.employee(employeeId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.hr.employees() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hr.employee(employeeId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hr.employees() });
     },
   });
 }
@@ -149,7 +149,7 @@ export function useCreateDepartment() {
       return data as DepartmentDbResponse;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.hr.departments() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hr.departments() });
     },
   });
 }
@@ -173,8 +173,8 @@ export function useUpdateDepartment() {
       return data as DepartmentDbResponse;
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.hr.department(variables.departmentId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.hr.departments() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hr.department(variables.departmentId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hr.departments() });
     },
   });
 }
@@ -191,8 +191,8 @@ export function useDeleteDepartment() {
       return data as { success: boolean };
     },
     onSuccess: (_, departmentId) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.hr.department(departmentId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.hr.departments() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hr.department(departmentId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hr.departments() });
     },
   });
 }

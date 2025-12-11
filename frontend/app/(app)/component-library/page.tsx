@@ -185,11 +185,11 @@ function ComponentLibraryContent() {
         const blob = await generatePDFBlob(<InvoicePDF invoice={sampleInvoice} />);
         const url = URL.createObjectURL(blob);
         setPdfUrl(url);
-      } catch (error) {
-        console.error("Error generating PDF:", error);
+      } catch (err) {
+        console.error("Error generating PDF:", err);
       }
     };
-    generatePDF();
+    void generatePDF();
 
     return () => {
       if (pdfUrl) URL.revokeObjectURL(pdfUrl);
@@ -210,7 +210,9 @@ function ComponentLibraryContent() {
     const interval = setInterval(() => {
       setProgress((prev) => (prev >= 100 ? 0 : prev + 10));
     }, 1000);
-    return () => clearInterval(interval);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const sections = [
@@ -243,7 +245,9 @@ function ComponentLibraryContent() {
             {sections.map((section) => (
               <button
                 key={section.id}
-                onClick={() => setActiveSection(section.id)}
+                onClick={() => {
+                  setActiveSection(section.id);
+                }}
                 className={`px-4 py-2 rounded-lg font-medium transition whitespace-nowrap ${
                   activeSection === section.id
                     ? `bg-gradient-to-r ${section.color} text-white shadow-lg`
@@ -267,7 +271,9 @@ function ComponentLibraryContent() {
               {sections.slice(1).map((section) => (
                 <button
                   key={section.id}
-                  onClick={() => setActiveSection(section.id)}
+                  onClick={() => {
+                    setActiveSection(section.id);
+                  }}
                   className="bg-white rounded-2xl p-8 shadow-lg border border-gray-200 hover:shadow-xl transition text-left group"
                 >
                   <div className={`text-5xl mb-4 group-hover:scale-110 transition`}>{section.icon}</div>
@@ -306,7 +312,9 @@ function ComponentLibraryContent() {
                       glow
                       ripple
                       icon={<Save />}
-                      onClick={() => toast.success("Saved!", "Changes saved successfully")}
+                      onClick={() => {
+                        toast.success("Saved!", "Changes saved successfully");
+                      }}
                     >
                       Save Changes
                     </PremiumButton>
@@ -315,7 +323,9 @@ function ComponentLibraryContent() {
                       glow
                       ripple
                       icon={<Download />}
-                      onClick={() => toast.info("Downloading...", "Your file will download shortly")}
+                      onClick={() => {
+                        toast.info("Downloading...", "Your file will download shortly");
+                      }}
                     >
                       Download
                     </PremiumButton>
@@ -324,7 +334,9 @@ function ComponentLibraryContent() {
                       glow
                       ripple
                       icon={<Trash2 />}
-                      onClick={() => toast.warning("Are you sure?", "This action cannot be undone")}
+                      onClick={() => {
+                        toast.warning("Are you sure?", "This action cannot be undone");
+                      }}
                     >
                       Delete
                     </PremiumButton>
@@ -520,9 +532,15 @@ function ComponentLibraryContent() {
               label="Quick Action"
               position="bottom-right"
               extended={fabExtended}
-              onClick={() => toast.info("FAB Clicked!", "Floating Action Button")}
-              onMouseEnter={() => setFabExtended(true)}
-              onMouseLeave={() => setFabExtended(false)}
+              onClick={() => {
+                toast.info("FAB Clicked!", "Floating Action Button");
+              }}
+              onMouseEnter={() => {
+                setFabExtended(true);
+              }}
+              onMouseLeave={() => {
+                setFabExtended(false);
+              }}
             />
           </div>
         )}
@@ -538,20 +556,37 @@ function ComponentLibraryContent() {
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <AnimatedButton variant="primary" onClick={() => setIsModalOpen(true)}>
+                  <AnimatedButton
+                    variant="primary"
+                    onClick={() => {
+                      setIsModalOpen(true);
+                    }}
+                  >
                     Open Modal
                   </AnimatedButton>
-                  <AnimatedButton variant="secondary" onClick={() => setIsModalOpen(true)}>
+                  <AnimatedButton
+                    variant="secondary"
+                    onClick={() => {
+                      setIsModalOpen(true);
+                    }}
+                  >
                     Secondary Style
                   </AnimatedButton>
-                  <AnimatedButton variant="ghost" onClick={() => setIsModalOpen(true)}>
+                  <AnimatedButton
+                    variant="ghost"
+                    onClick={() => {
+                      setIsModalOpen(true);
+                    }}
+                  >
                     Ghost Style
                   </AnimatedButton>
                 </div>
 
                 <Modal
                   isOpen={isModalOpen}
-                  onClose={() => setIsModalOpen(false)}
+                  onClose={() => {
+                    setIsModalOpen(false);
+                  }}
                   title="Example Modal"
                   size="md"
                 >
@@ -566,13 +601,17 @@ function ComponentLibraryContent() {
                   </ul>
                   <ModalFooter>
                     <button
-                      onClick={() => setIsModalOpen(false)}
+                      onClick={() => {
+                        setIsModalOpen(false);
+                      }}
                       className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition"
                     >
                       Cancel
                     </button>
                     <button
-                      onClick={() => setIsModalOpen(false)}
+                      onClick={() => {
+                        setIsModalOpen(false);
+                      }}
                       className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
                     >
                       Confirm
@@ -633,7 +672,9 @@ function ComponentLibraryContent() {
                     { label: "Settings", value: "settings", icon: <Settings size={16} /> },
                     { label: "Disabled", value: "disabled", disabled: true },
                   ]}
-                  onSelect={(item) => setSelectedItem(item.label)}
+                  onSelect={(item) => {
+                    setSelectedItem(item.label);
+                  }}
                 />
                 {selectedItem && (
                   <p className="mt-4 p-3 bg-blue-50 rounded-lg text-sm">
@@ -656,28 +697,36 @@ function ComponentLibraryContent() {
                     subtitle="Manage team members"
                     icon={<Users />}
                     gradient="from-blue-600 to-cyan-600"
-                    onClick={() => toast.info("Users clicked")}
+                    onClick={() => {
+                      toast.info("Users clicked");
+                    }}
                   />
                   <HoverCard
                     title="Settings"
                     subtitle="Configure your app"
                     icon={<Settings />}
                     gradient="from-purple-600 to-pink-600"
-                    onClick={() => toast.info("Settings clicked")}
+                    onClick={() => {
+                      toast.info("Settings clicked");
+                    }}
                   />
                   <HoverCard
                     title="Documents"
                     subtitle="View all files"
                     icon={<FileText />}
                     gradient="from-green-600 to-emerald-600"
-                    onClick={() => toast.info("Documents clicked")}
+                    onClick={() => {
+                      toast.info("Documents clicked");
+                    }}
                   />
                   <HoverCard
                     title="Sign Out"
                     subtitle="End your session"
                     icon={<LogOut />}
                     gradient="from-red-600 to-orange-600"
-                    onClick={() => toast.info("Sign out clicked")}
+                    onClick={() => {
+                      toast.info("Sign out clicked");
+                    }}
                   />
                 </HoverCardGrid>
               </div>
@@ -996,15 +1045,15 @@ function ComponentLibraryContent() {
               <div className="p-6">
                 <ExcelPreview columns={excelColumns} data={invoiceData} maxRows={4} />
                 <button
-                  onClick={() =>
-                    exportToExcel({
+                  onClick={() => {
+                    void exportToExcel({
                       filename: "invoices",
                       columns: excelColumns,
                       data: invoiceData,
                       autoFilter: true,
                       freezeHeader: true,
-                    })
-                  }
+                    });
+                  }}
                   className="mt-4 w-full px-4 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition font-medium"
                 >
                   Download Excel File
@@ -1058,7 +1107,9 @@ function ComponentLibraryContent() {
                 events={calendarEvents}
                 height={600}
                 defaultView="week"
-                onSelectEvent={(event) => toast.info(`Event: ${event.title}`)}
+                onSelectEvent={(event) => {
+                  toast.info(`Event: ${event.title}`);
+                }}
               />
               <div className="mt-6 grid grid-cols-2 gap-4">
                 <div className="p-4 bg-indigo-50 rounded-lg">

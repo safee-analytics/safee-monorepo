@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useState, startTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth/hooks";
 
@@ -26,8 +26,10 @@ function VerifyMagicLinkContent() {
       }, 1500);
     } else {
       // If not authenticated after loading, there might be an error
-      setIsVerifying(false);
-      setError("Failed to verify magic link. The link may have expired or is invalid.");
+      startTransition(() => {
+        setIsVerifying(false);
+        setError("Failed to verify magic link. The link may have expired or is invalid.");
+      });
     }
   }, [isAuthenticated, isLoading, router, searchParams]);
 
@@ -70,7 +72,9 @@ function VerifyMagicLinkContent() {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Verification Failed</h2>
         <p className="text-gray-600 mb-6">{error}</p>
         <button
-          onClick={() => router.push("/login")}
+          onClick={() => {
+            router.push("/login");
+          }}
           className="w-full bg-safee-600 hover:bg-safee-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
         >
           Back to Login

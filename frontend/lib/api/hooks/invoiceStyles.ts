@@ -154,7 +154,7 @@ export function useSaveInvoiceStyles() {
               templateDescription: "Default invoice template with custom styling",
               isActive: true,
               customizations: {
-                styles: styles,
+                styles,
               },
             },
           },
@@ -181,7 +181,7 @@ export function useSaveInvoiceStyles() {
           body: {
             customizations: {
               ...activeTemplateDetails.customizations,
-              styles: styles,
+              styles,
             },
           },
         },
@@ -191,9 +191,9 @@ export function useSaveInvoiceStyles() {
       return updatedTemplate;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: ["invoice-styles", variables.organizationId] });
-      queryClient.invalidateQueries({ queryKey: queryKeys.settings.documentTemplates() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.settings.activeTemplate("invoice") });
+      void queryClient.invalidateQueries({ queryKey: ["invoice-styles", variables.organizationId] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings.documentTemplates() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings.activeTemplate("invoice") });
     },
   });
 }

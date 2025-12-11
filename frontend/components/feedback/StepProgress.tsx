@@ -23,11 +23,18 @@ const SteppedProgress = () => {
         <div className="flex items-center justify-end gap-2">
           <button
             className="px-4 py-1 rounded hover:bg-gray-100 text-black"
-            onClick={() => handleSetStep(-1)}
+            onClick={() => {
+              handleSetStep(-1);
+            }}
           >
             Prev
           </button>
-          <button className="px-4 py-1 rounded bg-black text-white" onClick={() => handleSetStep(1)}>
+          <button
+            className="px-4 py-1 rounded bg-black text-white"
+            onClick={() => {
+              handleSetStep(1);
+            }}
+          >
             Next
           </button>
         </div>

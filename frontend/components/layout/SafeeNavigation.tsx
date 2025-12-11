@@ -36,7 +36,9 @@ export function SafeeNavigation() {
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                }}
                 placeholder={
                   t.common?.searchPlaceholder ||
                   (locale === "ar"

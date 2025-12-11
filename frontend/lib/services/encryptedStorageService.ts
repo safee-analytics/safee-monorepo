@@ -179,7 +179,9 @@ class EncryptedStorageService {
         }
       };
 
-      xhr.onerror = () => reject(new Error("Upload failed"));
+      xhr.onerror = () => {
+        reject(new Error("Upload failed"));
+      };
 
       xhr.open("POST", `${API_BASE}/api/v1/storage/files`);
       // Add auth header if available

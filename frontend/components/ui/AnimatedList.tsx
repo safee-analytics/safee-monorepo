@@ -1,9 +1,8 @@
 "use client";
 
-import { AnimatePresence, useAnimate, usePresence } from "framer-motion";
+import { AnimatePresence, useAnimate, usePresence, motion } from "framer-motion";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FiClock, FiPlus, FiTrash2 } from "react-icons/fi";
-import { motion } from "framer-motion";
 
 export const VanishList = () => {
   const [todos, setTodos] = useState<TODO[]>([
@@ -109,7 +108,9 @@ const Form = ({ setTodos }: { setTodos: Dispatch<SetStateAction<TODO[]>> }) => {
           >
             <textarea
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => {
+                setText(e.target.value);
+              }}
               placeholder="What do you need to do?"
               className="h-24 w-full resize-none rounded bg-zinc-900 p-3 text-sm text-zinc-50 placeholder-zinc-500 caret-zinc-50 focus:outline-0"
             />
@@ -119,18 +120,24 @@ const Form = ({ setTodos }: { setTodos: Dispatch<SetStateAction<TODO[]>> }) => {
                   type="number"
                   className="w-24 rounded bg-zinc-700 px-1.5 py-1 text-sm text-zinc-50 focus:outline-0"
                   value={time}
-                  onChange={(e) => setTime(parseInt(e.target.value))}
+                  onChange={(e) => {
+                    setTime(parseInt(e.target.value));
+                  }}
                 />
                 <button
                   type="button"
-                  onClick={() => setUnit("mins")}
+                  onClick={() => {
+                    setUnit("mins");
+                  }}
                   className={`rounded px-1.5 py-1 text-xs ${unit === "mins" ? "bg-white text-zinc-950" : "bg-zinc-300/20 text-zinc-300 transition-colors hover:bg-zinc-600 hover:text-zinc-200"}`}
                 >
                   mins
                 </button>
                 <button
                   type="button"
-                  onClick={() => setUnit("hrs")}
+                  onClick={() => {
+                    setUnit("hrs");
+                  }}
                   className={`rounded px-1.5 py-1 text-xs ${unit === "hrs" ? "bg-white text-zinc-950" : "bg-zinc-300/20 text-zinc-300 transition-colors hover:bg-zinc-600 hover:text-zinc-200"}`}
                 >
                   hrs
@@ -147,7 +154,9 @@ const Form = ({ setTodos }: { setTodos: Dispatch<SetStateAction<TODO[]>> }) => {
         )}
       </AnimatePresence>
       <button
-        onClick={() => setVisible((pv) => !pv)}
+        onClick={() => {
+          setVisible((pv) => !pv);
+        }}
         className="grid w-full place-content-center rounded-full border border-zinc-700 bg-zinc-900 py-3 text-lg text-white transition-colors hover:bg-zinc-800 active:bg-zinc-900"
       >
         <FiPlus className={`transition-transform ${visible ? "rotate-45" : "rotate-0"}`} />
@@ -247,7 +256,7 @@ const Todo = ({
         safeToRemove();
       };
 
-      exitAnimation();
+      void exitAnimation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPresent]);
@@ -261,7 +270,9 @@ const Todo = ({
       <input
         type="checkbox"
         checked={checked}
-        onChange={() => handleCheck(id)}
+        onChange={() => {
+          handleCheck(id);
+        }}
         className="size-4 accent-indigo-400"
       />
 
@@ -272,7 +283,9 @@ const Todo = ({
           <span>{time}</span>
         </div>
         <button
-          onClick={() => removeElement(id)}
+          onClick={() => {
+            removeElement(id);
+          }}
           className="rounded bg-red-300/20 px-1.5 py-1 text-xs text-red-300 transition-colors hover:bg-red-600 hover:text-red-200"
         >
           <FiTrash2 />

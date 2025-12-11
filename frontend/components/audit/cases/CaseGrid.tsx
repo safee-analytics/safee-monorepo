@@ -25,7 +25,9 @@ export function CaseGrid({ cases, onCaseClick, availableUsers = [], onUpdate }: 
       {cases.map((caseItem) => (
         <div
           key={caseItem.id}
-          onClick={() => handleCardClick(caseItem.id)}
+          onClick={() => {
+            handleCardClick(caseItem.id);
+          }}
           className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-md transition-shadow cursor-pointer"
         >
           {/* Header */}
@@ -47,7 +49,12 @@ export function CaseGrid({ cases, onCaseClick, availableUsers = [], onUpdate }: 
           <p className="text-sm font-medium text-gray-900 mb-3">{caseItem.companyName}</p>
 
           {/* Status & Priority */}
-          <div className="flex items-center gap-2 mb-3" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="flex items-center gap-2 mb-3"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
             <InlineStatus caseId={caseItem.id} currentStatus={caseItem.status} onUpdate={onUpdate} />
             <InlinePriority caseId={caseItem.id} currentPriority={caseItem.priority} onUpdate={onUpdate} />
           </div>
@@ -69,7 +76,9 @@ export function CaseGrid({ cases, onCaseClick, availableUsers = [], onUpdate }: 
           {/* Footer */}
           <div
             className="flex items-center justify-between pt-3 border-t border-gray-100"
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
           >
             <InlineAssignee
               caseId={caseItem.id}

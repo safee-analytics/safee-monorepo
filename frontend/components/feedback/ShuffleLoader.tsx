@@ -27,7 +27,7 @@ const ShuffleLoader = () => {
   const [scope, animate] = useAnimate();
 
   useEffect(() => {
-    shuffle();
+    void shuffle();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -86,7 +86,7 @@ const ShuffleLoader = () => {
             layout
             data-block-id={b.id}
             key={b.id}
-            transition={TRANSITION as Transition}
+            transition={TRANSITION}
             style={{
               width: BLOCK_SIZE,
               height: BLOCK_SIZE,

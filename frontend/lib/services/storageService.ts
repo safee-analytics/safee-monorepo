@@ -66,7 +66,7 @@ export interface StorageQuota {
 }
 
 class StorageService {
-  private uploadProgressCallbacks: Map<string, (progress: UploadProgress) => void> = new Map();
+  private uploadProgressCallbacks = new Map<string, (progress: UploadProgress) => void>();
 
   /**
    * Upload single file
@@ -174,7 +174,11 @@ class StorageService {
     const uploadPromises = files.map((file) =>
       this.uploadFile(file, {
         ...options,
-        onProgress: options?.onProgress ? (progress) => options.onProgress!(file.name, progress) : undefined,
+        onProgress: options?.onProgress
+          ? (progress) => {
+              options.onProgress!(file.name, progress);
+            }
+          : undefined,
       }),
     );
 
@@ -246,8 +250,8 @@ class StorageService {
     const queryParams = new URLSearchParams();
     if (params.query) queryParams.append("query", params.query);
     if (params.folderId) queryParams.append("folderId", params.folderId);
-    if (params.mimeTypes) params.mimeTypes.forEach((type) => queryParams.append("mimeTypes", type));
-    if (params.tags) params.tags.forEach((tag) => queryParams.append("tags", tag));
+    if (params.mimeTypes) for (const type of params.mimeTypes) queryParams.append("mimeTypes", type);
+    if (params.tags) for (const tag of params.tags) queryParams.append("tags", tag);
     if (params.dateFrom) queryParams.append("dateFrom", params.dateFrom);
     if (params.dateTo) queryParams.append("dateTo", params.dateTo);
     if (params.createdBy) queryParams.append("createdBy", params.createdBy);
@@ -349,7 +353,7 @@ class StorageService {
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB", "TB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+    return `${Math.round((bytes / Math.pow(k, i)) * 100) / 100} ${sizes[i]}`;
   }
 
   /**

@@ -29,7 +29,9 @@ export function DetailsStep({ data, onChange }: WizardStepProps) {
             return (
               <button
                 key={status.value}
-                onClick={() => onChange({ status: status.value })}
+                onClick={() => {
+                  onChange({ status: status.value });
+                }}
                 className={`p-3 rounded-lg border-2 transition-all ${
                   isSelected
                     ? `${status.color} border-current ring-2 ring-offset-2 ring-current/30`
@@ -53,7 +55,9 @@ export function DetailsStep({ data, onChange }: WizardStepProps) {
         </label>
         <textarea
           value={data.description || ""}
-          onChange={(e) => onChange({ description: e.target.value })}
+          onChange={(e) => {
+            onChange({ description: e.target.value });
+          }}
           placeholder="Add any additional context, scope details, or special requirements..."
           rows={4}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
@@ -74,9 +78,9 @@ export function DetailsStep({ data, onChange }: WizardStepProps) {
         <input
           type="number"
           value={data.estimatedHours || ""}
-          onChange={(e) =>
-            onChange({ estimatedHours: e.target.value ? parseInt(e.target.value) : undefined })
-          }
+          onChange={(e) => {
+            onChange({ estimatedHours: e.target.value ? parseInt(e.target.value) : undefined });
+          }}
           placeholder="e.g., 40"
           min="1"
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -97,7 +101,9 @@ export function DetailsStep({ data, onChange }: WizardStepProps) {
         <input
           type="number"
           value={data.budget || ""}
-          onChange={(e) => onChange({ budget: e.target.value ? parseFloat(e.target.value) : undefined })}
+          onChange={(e) => {
+            onChange({ budget: e.target.value ? parseFloat(e.target.value) : undefined });
+          }}
           placeholder="e.g., 50000"
           min="0"
           step="1000"

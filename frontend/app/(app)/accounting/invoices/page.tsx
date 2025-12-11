@@ -121,7 +121,9 @@ export default function InvoicesPage() {
                 type="text"
                 placeholder="Search by invoice number or customer..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                }}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -132,7 +134,9 @@ export default function InvoicesPage() {
             <Filter className="w-5 h-5 text-gray-400" />
             <select
               value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value as typeof typeFilter)}
+              onChange={(e) => {
+                setTypeFilter(e.target.value as typeof typeFilter);
+              }}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="all">All Types</option>
@@ -144,7 +148,9 @@ export default function InvoicesPage() {
           {/* Status Filter */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setStatusFilter("all")}
+              onClick={() => {
+                setStatusFilter("all");
+              }}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 statusFilter === "all"
                   ? "bg-blue-600 text-white"
@@ -154,7 +160,9 @@ export default function InvoicesPage() {
               All
             </button>
             <button
-              onClick={() => setStatusFilter("draft")}
+              onClick={() => {
+                setStatusFilter("draft");
+              }}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 statusFilter === "draft"
                   ? "bg-yellow-600 text-white"
@@ -164,7 +172,9 @@ export default function InvoicesPage() {
               Draft
             </button>
             <button
-              onClick={() => setStatusFilter("posted")}
+              onClick={() => {
+                setStatusFilter("posted");
+              }}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 statusFilter === "posted"
                   ? "bg-green-600 text-white"
@@ -174,7 +184,9 @@ export default function InvoicesPage() {
               Posted
             </button>
             <button
-              onClick={() => setStatusFilter("cancel")}
+              onClick={() => {
+                setStatusFilter("cancel");
+              }}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 statusFilter === "cancel"
                   ? "bg-red-600 text-white"
@@ -224,7 +236,9 @@ export default function InvoicesPage() {
                   <tr
                     key={invoice.id}
                     className="hover:bg-gray-50 transition-colors cursor-pointer"
-                    onClick={() => router.push(`/accounting/invoices/${invoice.id}`)}
+                    onClick={() => {
+                      router.push(`/accounting/invoices/${invoice.id}`);
+                    }}
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">

@@ -70,7 +70,7 @@ export function useCreateLead() {
       return data as { id: number };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.leads() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.leads() });
     },
   });
 }
@@ -88,8 +88,8 @@ export function useUpdateLead() {
       return data as { success: boolean };
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.lead(variables.leadId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.leads() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.lead(variables.leadId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.leads() });
     },
   });
 }
@@ -107,8 +107,8 @@ export function useConvertLead() {
       return data as { success: boolean };
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.lead(variables.leadId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.leads() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.lead(variables.leadId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.leads() });
     },
   });
 }
@@ -125,8 +125,8 @@ export function useWinLead() {
       return data as { success: boolean };
     },
     onSuccess: (data, leadId) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.lead(leadId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.leads() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.lead(leadId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.leads() });
     },
   });
 }
@@ -144,8 +144,8 @@ export function useLoseLead() {
       return data as { success: boolean };
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.lead(variables.leadId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.leads() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.lead(variables.leadId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.leads() });
     },
   });
 }
@@ -216,7 +216,7 @@ export function useCreateContact() {
       return data as { id: number };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.contacts() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.contacts() });
     },
   });
 }
@@ -240,8 +240,8 @@ export function useUpdateContact() {
       return data as { success: boolean };
     },
     onSuccess: (data, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.contact(variables.contactId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.contacts() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.contact(variables.contactId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.contacts() });
     },
   });
 }
@@ -285,7 +285,7 @@ export function useCreateCrmActivity() {
       return data as { id: number };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.activities() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.activities() });
     },
   });
 }
@@ -302,8 +302,8 @@ export function useMarkCrmActivityDone() {
       return data as { success: boolean };
     },
     onSuccess: (data, activityId) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.activity(activityId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.activities() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.activity(activityId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.activities() });
     },
   });
 }
@@ -382,11 +382,11 @@ export function useSyncCRM() {
       };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.leads() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.contacts() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.stages() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.teams() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.crm.lostReasons() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.leads() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.contacts() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.stages() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.teams() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.crm.lostReasons() });
     },
   });
 }

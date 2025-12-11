@@ -1,35 +1,25 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 import safeePlugin from "@safee/eslint-plugin";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
   safeePlugin.configs.recommended,
 
   {
-    ignores: [
-      "node_modules/**",
-      ".next/**",
-      "out/**",
-      "build/**",
-      "dist/**",
-      "next-env.d.ts",
-      "*.config.js",
-      "*.config.mjs",
-    ],
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
   },
 
   {
     rules: {
+      // TypeScript - Balanced strictness for frontend
       "@typescript-eslint/no-unused-vars": [
         "error",
         {
@@ -40,17 +30,28 @@ const eslintConfig = [
       ],
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/explicit-module-boundary-types": "off",
+      "@typescript-eslint/no-floating-promises": "error", // Important for async safety
+      "@typescript-eslint/no-misused-promises": "error", // Prevent promise mistakes
 
+      // React patterns
       "react/react-in-jsx-scope": "off",
       "react/prop-types": "off",
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
-      "@next/next/no-img-element": "off", // Use next/image
+      "@next/next/no-img-element": "off",
 
+      // Code quality without being pedantic
       "no-console": ["warn", { allow: ["warn", "error"] }],
       "prefer-const": "error",
       "no-var": "error",
+      eqeqeq: ["error", "always"], // Require === and !==
+      "no-else-return": "error", // Cleaner conditionals
 
+      // Disable only the React-specific pedantic rules
+      "func-style": "off", // Arrow functions are idiomatic in React
+      "no-nested-ternary": "off", // Sometimes useful in JSX
+
+      // Accessibility
       "jsx-a11y/alt-text": "warn",
       "jsx-a11y/anchor-is-valid": "warn",
     },
@@ -62,6 +63,24 @@ const eslintConfig = [
       "@typescript-eslint/no-explicit-any": "error",
     },
   },
-];
+  {
+    files: ["components/**/*.{ts,tsx}"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "error",
+    },
+  },
+  // Override default ignores of eslint-config-next
+  globalIgnores([
+    "node_modules/**",
+    ".next/**",
+    "out/**",
+    "build/**",
+    "dist/**",
+    "next-env.d.ts",
+    "*.config.js",
+    "*.config.mjs",
+    "scripts/**/*.mjs",
+  ]),
+]);
 
 export default eslintConfig;

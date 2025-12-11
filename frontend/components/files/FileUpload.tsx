@@ -76,7 +76,7 @@ export function FileUpload({
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+    return `${Math.round((bytes / Math.pow(k, i)) * 100) / 100} ${sizes[i]}`;
   };
 
   const validateFile = (file: File): string | null => {
@@ -116,7 +116,9 @@ export function FileUpload({
 
     return new Promise((resolve) => {
       const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result as string);
+      reader.onloadend = () => {
+        resolve(reader.result as string);
+      };
       reader.readAsDataURL(file);
     });
   };
@@ -165,9 +167,9 @@ export function FileUpload({
 
     // Auto-upload if enabled
     if (mergedOptions.autoUpload && onUpload) {
-      validatedFiles.forEach((uploadedFile) => {
-        handleUpload(uploadedFile.id);
-      });
+      for (const uploadedFile of validatedFiles) {
+        void handleUpload(uploadedFile.id);
+      }
     }
   };
 
@@ -234,14 +236,14 @@ export function FileUpload({
 
     const droppedFiles = e.dataTransfer.files;
     if (droppedFiles.length > 0) {
-      handleFiles(droppedFiles);
+      void handleFiles(droppedFiles);
     }
   };
 
   const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = e.target.files;
     if (selectedFiles && selectedFiles.length > 0) {
-      handleFiles(selectedFiles);
+      void handleFiles(selectedFiles);
     }
     // Reset input value to allow selecting the same file again
     if (fileInputRef.current) {
@@ -392,7 +394,9 @@ export function FileUpload({
                   <div className="flex items-center gap-2">
                     {!mergedOptions.autoUpload && uploadedFile.status === "pending" && onUpload && (
                       <button
-                        onClick={() => handleUpload(uploadedFile.id)}
+                        onClick={() => {
+                          void handleUpload(uploadedFile.id);
+                        }}
                         className="rounded px-3 py-1 text-xs font-medium text-blue-600 hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900/20"
                       >
                         Upload
@@ -400,7 +404,9 @@ export function FileUpload({
                     )}
                     {uploadedFile.status !== "uploading" && (
                       <button
-                        onClick={() => handleRemove(uploadedFile.id)}
+                        onClick={() => {
+                          handleRemove(uploadedFile.id);
+                        }}
                         className="rounded p-1 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                       >
                         <X className="h-4 w-4" />
@@ -418,7 +424,9 @@ export function FileUpload({
       {!mergedOptions.autoUpload && files.some((f) => f.status === "pending") && onUpload && (
         <button
           onClick={() => {
-            files.filter((f) => f.status === "pending").forEach((f) => handleUpload(f.id));
+            for (const f of files.filter((f) => f.status === "pending")) {
+              void handleUpload(f.id);
+            }
           }}
           className="mt-4 w-full rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
         >

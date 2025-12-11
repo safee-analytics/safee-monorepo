@@ -140,9 +140,9 @@ export default function LoginPage() {
           setError(result.error || "Login failed. Please check your credentials.");
         }
       }
-    } catch (error) {
-      console.error("Login failed:", error);
-      const errorMessage = error instanceof Error ? error.message : "An unexpected error occurred";
+    } catch (err) {
+      console.error("Login failed:", err);
+      const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
 
       // Check if error is related to 2FA requirement
       if (
@@ -159,9 +159,9 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     try {
-      signInWithGoogle("/");
-    } catch (error) {
-      console.error("Google login failed:", error);
+      await signInWithGoogle("/");
+    } catch (err) {
+      console.error("Google login failed:", err);
       setError("Google login failed. Please try again.");
     }
   };
@@ -170,8 +170,8 @@ export default function LoginPage() {
     try {
       // TODO: Implement SSO (SAML/OIDC) for enterprise customers
       setError("SSO is not yet available. Coming soon!");
-    } catch (error) {
-      console.error("SSO login failed:", error);
+    } catch (err) {
+      console.error("SSO login failed:", err);
       setError("SSO login failed. Please try again.");
     }
   };
@@ -198,8 +198,8 @@ export default function LoginPage() {
       });
       setMagicLinkSent(true);
       setLoginEmail(email);
-    } catch (error) {
-      console.error("Failed to send magic link:", error);
+    } catch (err) {
+      console.error("Failed to send magic link:", err);
       setError("Failed to send magic link. Please try again.");
     }
   };
@@ -267,20 +267,32 @@ export default function LoginPage() {
       ) : (
         <SafeeLoginForm
           t={t}
-          onSubmit={handleSubmit}
-          onGoogleLogin={handleGoogleLogin}
-          onSSOLogin={handleSSOLogin}
+          onSubmit={(email, password) => {
+            void handleSubmit(email, password);
+          }}
+          onGoogleLogin={() => {
+            void handleGoogleLogin();
+          }}
+          onSSOLogin={() => {
+            void handleSSOLogin();
+          }}
           onGoBack={handleGoBack}
-          onSendMagicLink={handleSendMagicLink}
+          onSendMagicLink={(email) => {
+            void handleSendMagicLink(email);
+          }}
           useMagicLinkMode={useMagicLinkMode}
-          onToggleMagicLink={() => setUseMagicLinkMode(!useMagicLinkMode)}
+          onToggleMagicLink={() => {
+            setUseMagicLinkMode(!useMagicLinkMode);
+          }}
         />
       )}
 
       {/* 2FA Verification Modal */}
       <TwoFactorVerification
         isOpen={show2FAVerification}
-        onClose={() => setShow2FAVerification(false)}
+        onClose={() => {
+          setShow2FAVerification(false);
+        }}
         onSuccess={handle2FASuccess}
         email={loginEmail}
       />

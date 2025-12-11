@@ -55,7 +55,9 @@ export default function AppearanceSettings() {
           </h2>
           <div className="grid grid-cols-3 gap-4">
             <button
-              onClick={() => setTheme("light")}
+              onClick={() => {
+                setTheme("light");
+              }}
               className={`p-4 border-2 rounded-lg transition-all ${
                 theme === "light"
                   ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
@@ -73,7 +75,9 @@ export default function AppearanceSettings() {
             </button>
 
             <button
-              onClick={() => setTheme("dark")}
+              onClick={() => {
+                setTheme("dark");
+              }}
               className={`p-4 border-2 rounded-lg transition-all ${
                 theme === "dark"
                   ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
@@ -91,7 +95,9 @@ export default function AppearanceSettings() {
             </button>
 
             <button
-              onClick={() => setTheme("auto")}
+              onClick={() => {
+                setTheme("auto");
+              }}
               className={`p-4 border-2 rounded-lg transition-all ${
                 theme === "auto"
                   ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
@@ -119,7 +125,9 @@ export default function AppearanceSettings() {
             {colorSchemes.map((scheme) => (
               <button
                 key={scheme.id}
-                onClick={() => setColorScheme(scheme.id)}
+                onClick={() => {
+                  setColorScheme(scheme.id);
+                }}
                 className={`p-3 border-2 rounded-lg transition-all ${
                   colorScheme === scheme.id
                     ? "border-gray-900 dark:border-gray-100"
@@ -142,7 +150,9 @@ export default function AppearanceSettings() {
           </h2>
           <div className="grid grid-cols-2 gap-4">
             <button
-              onClick={() => updateLocaleMutation.mutate("en")}
+              onClick={() => {
+                updateLocaleMutation.mutate("en");
+              }}
               disabled={updateLocaleMutation.isPending}
               className={`p-4 border-2 rounded-lg transition-all disabled:opacity-50 ${
                 locale === "en"
@@ -164,7 +174,9 @@ export default function AppearanceSettings() {
             </button>
 
             <button
-              onClick={() => updateLocaleMutation.mutate("ar")}
+              onClick={() => {
+                updateLocaleMutation.mutate("ar");
+              }}
               disabled={updateLocaleMutation.isPending}
               className={`p-4 border-2 rounded-lg transition-all disabled:opacity-50 ${
                 locale === "ar"
@@ -194,7 +206,9 @@ export default function AppearanceSettings() {
           </h2>
           <div className="grid grid-cols-3 gap-4">
             <button
-              onClick={() => setAppearance({ ...appearance, fontSize: "small" })}
+              onClick={() => {
+                setAppearance({ ...appearance, fontSize: "small" });
+              }}
               className={`p-4 border-2 rounded-lg transition-all ${
                 appearance.fontSize === "small"
                   ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
@@ -210,7 +224,9 @@ export default function AppearanceSettings() {
             </button>
 
             <button
-              onClick={() => setAppearance({ ...appearance, fontSize: "medium" })}
+              onClick={() => {
+                setAppearance({ ...appearance, fontSize: "medium" });
+              }}
               className={`p-4 border-2 rounded-lg transition-all ${
                 appearance.fontSize === "medium"
                   ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
@@ -226,7 +242,9 @@ export default function AppearanceSettings() {
             </button>
 
             <button
-              onClick={() => setAppearance({ ...appearance, fontSize: "large" })}
+              onClick={() => {
+                setAppearance({ ...appearance, fontSize: "large" });
+              }}
               className={`p-4 border-2 rounded-lg transition-all ${
                 appearance.fontSize === "large"
                   ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
@@ -250,7 +268,9 @@ export default function AppearanceSettings() {
           </h2>
           <div className="grid grid-cols-3 gap-4">
             <button
-              onClick={() => setAppearance({ ...appearance, density: "compact" })}
+              onClick={() => {
+                setAppearance({ ...appearance, density: "compact" });
+              }}
               className={`p-4 border-2 rounded-lg transition-all ${
                 appearance.density === "compact"
                   ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
@@ -269,7 +289,9 @@ export default function AppearanceSettings() {
             </button>
 
             <button
-              onClick={() => setAppearance({ ...appearance, density: "comfortable" })}
+              onClick={() => {
+                setAppearance({ ...appearance, density: "comfortable" });
+              }}
               className={`p-4 border-2 rounded-lg transition-all ${
                 appearance.density === "comfortable"
                   ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
@@ -288,7 +310,9 @@ export default function AppearanceSettings() {
             </button>
 
             <button
-              onClick={() => setAppearance({ ...appearance, density: "spacious" })}
+              onClick={() => {
+                setAppearance({ ...appearance, density: "spacious" });
+              }}
               className={`p-4 border-2 rounded-lg transition-all ${
                 appearance.density === "spacious"
                   ? "border-blue-600 bg-blue-50 dark:bg-blue-900/20"
@@ -330,7 +354,9 @@ export default function AppearanceSettings() {
                 <input
                   type="checkbox"
                   checked={appearance.animations}
-                  onChange={(e) => setAppearance({ ...appearance, animations: e.target.checked })}
+                  onChange={(e) => {
+                    setAppearance({ ...appearance, animations: e.target.checked });
+                  }}
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -353,7 +379,9 @@ export default function AppearanceSettings() {
                 <input
                   type="checkbox"
                   checked={appearance.reducedMotion}
-                  onChange={(e) => setAppearance({ ...appearance, reducedMotion: e.target.checked })}
+                  onChange={(e) => {
+                    setAppearance({ ...appearance, reducedMotion: e.target.checked });
+                  }}
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -365,7 +393,9 @@ export default function AppearanceSettings() {
         {/* Save Button */}
         <div className="flex justify-end">
           <button
-            onClick={handleSave}
+            onClick={() => {
+              void handleSave();
+            }}
             disabled={isSaving}
             className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >

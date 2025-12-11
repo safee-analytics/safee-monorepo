@@ -90,7 +90,9 @@ export function AuditSidebar() {
       >
         {/* Create Button */}
         <button
-          onClick={() => setShowCreateMenu(!showCreateMenu)}
+          onClick={() => {
+            setShowCreateMenu(!showCreateMenu);
+          }}
           className="w-12 h-12 rounded-full bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center shadow-lg transition-all hover:scale-105"
         >
           <Plus className={`w-6 h-6 transition-transform ${showCreateMenu ? "rotate-45" : "rotate-0"}`} />
@@ -193,7 +195,9 @@ export function AuditSidebar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setShowCreateMenu(false)}
+              onClick={() => {
+                setShowCreateMenu(false);
+              }}
               className="fixed inset-0 bg-black/20 z-40"
             />
 
@@ -220,7 +224,9 @@ export function AuditSidebar() {
                       return (
                         <button
                           key={idx}
-                          onClick={() => setShowCreateMenu(false)}
+                          onClick={() => {
+                            setShowCreateMenu(false);
+                          }}
                           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />
@@ -242,7 +248,9 @@ export function AuditSidebar() {
                       return (
                         <button
                           key={idx}
-                          onClick={() => setShowCreateMenu(false)}
+                          onClick={() => {
+                            setShowCreateMenu(false);
+                          }}
                           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />

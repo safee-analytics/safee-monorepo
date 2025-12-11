@@ -16,13 +16,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setSession(sessionData.data);
         }
         setLoading(false);
-      } catch (error) {
-        console.error("Failed to check session:", error);
+      } catch (err) {
+        console.error("Failed to check session:", err);
         setLoading(false);
       }
     };
 
-    checkSession();
+    void checkSession();
   }, [setSession, setLoading]);
 
   return <>{children}</>;

@@ -216,7 +216,7 @@ check-e2e: build-gateway
 
 
 [group('e2e')]
-lint-e2e: build-eslint-plugin-safee build-database build-jobs
+lint-e2e: build-eslint-plugin-safee build-database build-jobs build-gateway
     npx -w e2e eslint . --max-warnings 0 --cache
 
 [group('e2e')]

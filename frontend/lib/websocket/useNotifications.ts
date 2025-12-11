@@ -19,16 +19,23 @@ export function useNotifications(onNotification: (notification: NotificationEven
   );
 
   useEffect(() => {
-    // Get current user from session
-    authClient.getSession().then((session) => {
-      if (!session?.data?.user) return;
+    let isMounted = true;
+    let unsubscribe: (() => void) | undefined;
+
+    const init = async () => {
+      // Get current user from session
+      const session = await authClient.getSession();
+      if (!isMounted || !session?.data?.user) return;
 
       const channel = `user:${session.data.user.id}`;
-      const unsubscribe = subscribe(channel, "notification", handleNotification);
+      unsubscribe = subscribe(channel, "notification", handleNotification);
+    };
 
-      return () => {
-        unsubscribe?.();
-      };
-    });
+    void init();
+
+    return () => {
+      isMounted = false;
+      unsubscribe?.();
+    };
   }, [subscribe, handleNotification]);
 }

@@ -5,11 +5,7 @@ export default defineConfig({
     environment: "node",
     globals: true,
     pool: "forks",
-    poolOptions: {
-      forks: {
-        singleFork: true,
-      },
-    },
+    maxWorkers: 1,
     setupFiles: ["./setup/test-setup.ts"],
     coverage: {
       provider: "v8",
