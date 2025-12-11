@@ -36,10 +36,6 @@ http://app.localhost:8080 {
 			header_up X-Forwarded-For {remote_host}
 			header_up X-Forwarded-Proto {scheme}
 
-			# Critical for WebSocket/Socket.IO
-			header_up Connection {>Connection}
-			header_up Upgrade {>Upgrade}
-
 			# Disable buffering for real-time
 			flush_interval -1
 		}
@@ -68,10 +64,6 @@ http://app.localhost:8080 {
 		reverse_proxy localhost:3001 {
 			header_up Host {host}
 			header_up X-Real-IP {remote_host}
-
-			# Support Next.js hot reload WebSocket
-			header_up Connection {>Connection}
-			header_up Upgrade {>Upgrade}
 		}
 	}
 

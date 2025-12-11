@@ -1,8 +1,3 @@
-/**
- * Better Auth Configuration for Safee Analytics
- * Main authentication setup with all plugins and configurations
- */
-
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { connect, schema, EmailService, ResendEmailProvider } from "@safee/database";
@@ -17,7 +12,6 @@ const logger = pino({ name: "auth" });
 
 const { drizzle } = connect("better-auth");
 
-// Initialize email service if API key is available
 let emailService: EmailService | undefined;
 if (process.env.RESEND_API_KEY) {
   const resendProvider = new ResendEmailProvider({
@@ -31,7 +25,8 @@ if (process.env.RESEND_API_KEY) {
 export const auth = betterAuth({
   appName: "Safee Analytics",
   baseURL: process.env.BETTER_AUTH_URL || "http://app.localhost:8080/api/v1",
-  experimental: { joins: true },
+  // Temporarily disable experimental joins due to Drizzle relation resolution error
+  // experimental: { joins: true },
 
   database: drizzleAdapter(drizzle, {
     provider: "pg",
@@ -42,7 +37,6 @@ export const auth = betterAuth({
     },
   }),
 
-  // User schema configuration
   user: {
     modelName: "user",
     fields: userFields,
