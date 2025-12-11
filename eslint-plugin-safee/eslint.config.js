@@ -1,7 +1,7 @@
 import eslintPluginEslintPlugin from "eslint-plugin-eslint-plugin";
-import safeeEslintConfig from "../eslint.config.js";
+import { config } from "../eslint.config.js";
 
-export default safeeEslintConfig.config(eslintPluginEslintPlugin.configs["flat/recommended"], {
+export default config(eslintPluginEslintPlugin.configs["flat/recommended"], {
   languageOptions: {
     parserOptions: {
       projectService: true,

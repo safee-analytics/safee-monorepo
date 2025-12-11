@@ -50,7 +50,7 @@ export function useSignUp() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
     },
   });
 }
@@ -71,7 +71,7 @@ export function useSignIn() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
     },
   });
 }
@@ -126,7 +126,7 @@ export function useSignInWithUsername() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
     },
   });
 }
@@ -156,9 +156,8 @@ export function useCheckUsernameAvailability() {
 export function useForgetPassword() {
   return useMutation({
     mutationFn: async (data: { email: string }) => {
-      const { data: result, error } = await authClient.forgetPassword({
+      const { data: result, error } = await authClient.forgetPassword.emailOtp({
         email: data.email,
-        redirectTo: "/reset-password",
       });
       if (error) throw new Error(error.message);
       return result;
@@ -184,7 +183,7 @@ export function useResetPassword() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
     },
   });
 }
@@ -245,7 +244,7 @@ export function useVerifyEmail() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
     },
   });
 }
@@ -265,7 +264,7 @@ export function useChangeEmail() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
     },
   });
 }
@@ -287,7 +286,7 @@ export function useUpdateUser() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
     },
   });
 }
@@ -307,7 +306,7 @@ export function useUpdateUsername() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
     },
   });
 }
@@ -365,7 +364,7 @@ export function useRevokeSession() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.sessions });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.sessions });
     },
   });
 }
@@ -383,7 +382,7 @@ export function useRevokeOtherSessions() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.sessions });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.sessions });
     },
   });
 }
@@ -426,7 +425,7 @@ export function useLinkSocialAccount() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
     },
   });
 }
@@ -461,7 +460,7 @@ export function useUnlinkSocialAccount() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [...authQueryKeys.user, "accounts"] });
+      void queryClient.invalidateQueries({ queryKey: [...authQueryKeys.user, "accounts"] });
     },
   });
 }
@@ -517,7 +516,7 @@ export function useEnable2FA() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
     },
   });
 }
@@ -535,7 +534,7 @@ export function useDisable2FA() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
     },
   });
 }
@@ -614,8 +613,8 @@ export function useVerifyMagicLink() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
     },
   });
 }
@@ -655,7 +654,7 @@ export function useVerifyPhoneNumber() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
     },
   });
 }
@@ -676,8 +675,8 @@ export function useSignInWithPhone() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.session });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
     },
   });
 }
@@ -699,7 +698,7 @@ export function useUpdatePhoneNumber() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
+      void queryClient.invalidateQueries({ queryKey: authQueryKeys.user });
     },
   });
 }

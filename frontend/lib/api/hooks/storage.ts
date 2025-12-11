@@ -82,7 +82,7 @@ export function useUploadFile() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.storage.files(variables.folderId),
       });
     },
@@ -103,7 +103,7 @@ export function useDeleteFile() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["storage", "files"] });
+      void queryClient.invalidateQueries({ queryKey: ["storage", "files"] });
     },
   });
 }

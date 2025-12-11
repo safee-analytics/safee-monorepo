@@ -30,8 +30,8 @@ export default function ActivitiesPage() {
   const handleSync = async () => {
     try {
       await syncMutation.mutateAsync("all");
-    } catch (error) {
-      console.error("Failed to sync activities:", error);
+    } catch (err) {
+      console.error("Failed to sync activities:", err);
     }
   };
 
@@ -77,7 +77,9 @@ export default function ActivitiesPage() {
             </div>
             <div className="flex items-center space-x-3">
               <AnimatedButton
-                onClick={handleSync}
+                onClick={() => {
+                  void handleSync();
+                }}
                 variant="outline"
                 size="md"
                 disabled={syncMutation.isPending}
@@ -102,7 +104,9 @@ export default function ActivitiesPage() {
           {/* Quick Stats */}
           <div className="grid grid-cols-4 gap-4 mb-4">
             <button
-              onClick={() => handleStateFilter()}
+              onClick={() => {
+                handleStateFilter();
+              }}
               className={`p-4 rounded-lg border-2 transition-all hover:shadow-md ${
                 !activeFilter
                   ? "bg-gray-50 border-gray-300"
@@ -124,7 +128,9 @@ export default function ActivitiesPage() {
             </button>
 
             <button
-              onClick={() => handleStateFilter("overdue")}
+              onClick={() => {
+                handleStateFilter("overdue");
+              }}
               className={`p-4 rounded-lg border-2 transition-all hover:shadow-md ${
                 activeFilter === "overdue"
                   ? "bg-red-50 border-red-300"
@@ -141,7 +147,9 @@ export default function ActivitiesPage() {
             </button>
 
             <button
-              onClick={() => handleStateFilter("today")}
+              onClick={() => {
+                handleStateFilter("today");
+              }}
               className={`p-4 rounded-lg border-2 transition-all hover:shadow-md ${
                 activeFilter === "today"
                   ? "bg-yellow-50 border-yellow-300"
@@ -158,7 +166,9 @@ export default function ActivitiesPage() {
             </button>
 
             <button
-              onClick={() => handleStateFilter("done")}
+              onClick={() => {
+                handleStateFilter("done");
+              }}
               className={`p-4 rounded-lg border-2 transition-all hover:shadow-md ${
                 activeFilter === "done"
                   ? "bg-green-50 border-green-300"
@@ -178,7 +188,9 @@ export default function ActivitiesPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => handleStateFilter()}
+                onClick={() => {
+                  handleStateFilter();
+                }}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   !activeFilter ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                 }`}
@@ -186,7 +198,9 @@ export default function ActivitiesPage() {
                 All
               </button>
               <button
-                onClick={() => handleStateFilter("overdue")}
+                onClick={() => {
+                  handleStateFilter("overdue");
+                }}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   activeFilter === "overdue" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                 }`}
@@ -194,7 +208,9 @@ export default function ActivitiesPage() {
                 Overdue
               </button>
               <button
-                onClick={() => handleStateFilter("today")}
+                onClick={() => {
+                  handleStateFilter("today");
+                }}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   activeFilter === "today" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                 }`}
@@ -202,7 +218,9 @@ export default function ActivitiesPage() {
                 Today
               </button>
               <button
-                onClick={() => handleStateFilter("planned")}
+                onClick={() => {
+                  handleStateFilter("planned");
+                }}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   activeFilter === "planned" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                 }`}
@@ -210,7 +228,9 @@ export default function ActivitiesPage() {
                 Upcoming
               </button>
               <button
-                onClick={() => handleStateFilter("done")}
+                onClick={() => {
+                  handleStateFilter("done");
+                }}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   activeFilter === "done" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                 }`}
@@ -223,7 +243,9 @@ export default function ActivitiesPage() {
               {/* View Toggle */}
               <div className="flex items-center bg-gray-100 rounded-lg p-1">
                 <button
-                  onClick={() => setViewMode("calendar")}
+                  onClick={() => {
+                    setViewMode("calendar");
+                  }}
                   className={`p-1.5 rounded transition-colors ${
                     viewMode === "calendar"
                       ? "bg-white text-blue-600 shadow-sm"
@@ -234,7 +256,9 @@ export default function ActivitiesPage() {
                   <CalendarDays className="h-4 w-4" />
                 </button>
                 <button
-                  onClick={() => setViewMode("timeline")}
+                  onClick={() => {
+                    setViewMode("timeline");
+                  }}
                   className={`p-1.5 rounded transition-colors ${
                     viewMode === "timeline"
                       ? "bg-white text-blue-600 shadow-sm"
@@ -247,7 +271,9 @@ export default function ActivitiesPage() {
               </div>
 
               <button
-                onClick={() => setShowFilters(!showFilters)}
+                onClick={() => {
+                  setShowFilters(!showFilters);
+                }}
                 className="flex items-center space-x-2 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <Filter className="h-4 w-4" />

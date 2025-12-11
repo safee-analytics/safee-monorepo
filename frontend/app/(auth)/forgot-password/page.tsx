@@ -42,17 +42,19 @@ export default function ForgotPasswordPage() {
 
   const t = translations[locale];
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    try {
-      await forgotPasswordMutation.mutateAsync({ email });
-      setEmailSent(true);
-    } catch (err) {
-      console.error("Failed to send reset email:", err);
-      setError(err instanceof Error ? err.message : "Failed to send reset email. Please try again.");
-    }
+    void (async () => {
+      try {
+        await forgotPasswordMutation.mutateAsync({ email });
+        setEmailSent(true);
+      } catch (err) {
+        console.error("Failed to send reset email:", err);
+        setError(err instanceof Error ? err.message : "Failed to send reset email. Please try again.");
+      }
+    })();
   };
 
   const toggleLanguage = () => {
@@ -91,7 +93,9 @@ export default function ForgotPasswordPage() {
             {t.sentTo} <span className="font-medium">{email}</span>
           </p>
           <button
-            onClick={() => router.push("/login")}
+            onClick={() => {
+              router.push("/login");
+            }}
             className="text-safee-600 hover:text-safee-700 text-sm font-medium"
           >
             {t.backToLogin}
@@ -144,7 +148,9 @@ export default function ForgotPasswordPage() {
               id="email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => {
+                setEmail(e.target.value);
+              }}
               placeholder={t.emailPlaceholder}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-safee-500 focus:border-transparent transition-colors"
@@ -161,7 +167,9 @@ export default function ForgotPasswordPage() {
 
           <button
             type="button"
-            onClick={() => router.push("/login")}
+            onClick={() => {
+              router.push("/login");
+            }}
             className="w-full text-gray-600 hover:text-gray-800 text-sm font-medium"
           >
             {t.backToLogin}

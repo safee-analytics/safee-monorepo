@@ -49,31 +49,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   // Initialize from localStorage immediately to prevent flash
   const [theme, setThemeState] = useState<Theme>(() => getStoredTheme());
   const [colorScheme, setColorSchemeState] = useState<ColorScheme>(() => getStoredColorScheme());
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">(() => {
-    const stored = getStoredTheme();
-    return stored === "auto" ? getSystemTheme() : stored;
-  });
+  // Track system theme separately
+  const [systemTheme, setSystemTheme] = useState<"light" | "dark">(() => getSystemTheme());
 
-  // Apply theme immediately on mount (before first render completes)
-  useEffect(() => {
-    const root = document.documentElement;
-    root.classList.remove("light", "dark");
-    root.classList.add(resolvedTheme);
-  }, [resolvedTheme]);
-
-  // Update resolvedTheme when theme changes AND apply to document
-  useEffect(() => {
-    const resolved = theme === "auto" ? getSystemTheme() : theme;
-    setResolvedTheme(resolved);
-
-    // Apply theme to document immediately
-    const root = document.documentElement;
-    root.classList.remove("light", "dark");
-    root.classList.add(resolved);
-
-    // Apply color scheme as CSS variable
-    root.style.setProperty("--color-primary", `var(--color-${colorScheme})`);
-  }, [theme, colorScheme]);
+  // Derive resolved theme without storing in state (avoids setState in useEffect)
+  const resolvedTheme = theme === "auto" ? systemTheme : theme;
 
   // Listen to system theme changes when in auto mode
   useEffect(() => {
@@ -81,28 +61,34 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
     const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
     const handleChange = (e: MediaQueryListEvent) => {
-      const newResolved = e.matches ? "dark" : "light";
-      setResolvedTheme(newResolved);
-
-      // Apply to document immediately
-      const root = document.documentElement;
-      root.classList.remove("light", "dark");
-      root.classList.add(newResolved);
+      setSystemTheme(e.matches ? "dark" : "light");
     };
 
     mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
   }, [theme]);
+
+  // Apply resolved theme and color scheme to DOM (no setState calls)
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.remove("light", "dark");
+    root.classList.add(resolvedTheme);
+    root.style.setProperty("--color-primary", `var(--color-${colorScheme})`);
+  }, [resolvedTheme, colorScheme]);
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
     localStorage.setItem("safee-theme", newTheme);
 
-    // Update resolved theme immediately
-    const resolved = newTheme === "auto" ? getSystemTheme() : newTheme;
-    setResolvedTheme(resolved);
+    // Update system theme if switching to auto mode
+    if (newTheme === "auto") {
+      setSystemTheme(getSystemTheme());
+    }
 
-    // CRITICAL: Apply to DOM immediately - don't wait for useEffect
+    // Apply to DOM immediately - don't wait for useEffect
+    const resolved = newTheme === "auto" ? getSystemTheme() : newTheme;
     const root = document.documentElement;
     root.classList.remove("light", "dark");
     root.classList.add(resolved);

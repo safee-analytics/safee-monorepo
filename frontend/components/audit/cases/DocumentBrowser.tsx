@@ -62,10 +62,10 @@ export function DocumentBrowser({
   // Group documents by category (folders)
   const folders = useMemo(() => {
     const folderMap = new Map<string, number>();
-    documents.forEach((doc) => {
+    for (const doc of documents) {
       const category = doc.category || "Uncategorized";
       folderMap.set(category, (folderMap.get(category) || 0) + 1);
-    });
+    }
     return Array.from(folderMap.entries()).map(([name, count]) => ({ name, count }));
   }, [documents]);
 
@@ -129,9 +129,9 @@ export function DocumentBrowser({
   };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   const getStatusBadge = (status: string) => {
@@ -172,7 +172,9 @@ export function DocumentBrowser({
 
             <nav className="space-y-1">
               <button
-                onClick={() => setSelectedFolder("all")}
+                onClick={() => {
+                  setSelectedFolder("all");
+                }}
                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
                   selectedFolder === "all"
                     ? "bg-blue-100 text-blue-700 font-medium"
@@ -186,7 +188,9 @@ export function DocumentBrowser({
               {folders.map((folder) => (
                 <button
                   key={folder.name}
-                  onClick={() => setSelectedFolder(folder.name)}
+                  onClick={() => {
+                    setSelectedFolder(folder.name);
+                  }}
                   className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
                     selectedFolder === folder.name
                       ? "bg-blue-100 text-blue-700 font-medium"
@@ -212,7 +216,9 @@ export function DocumentBrowser({
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                  }}
                   placeholder="Search documents..."
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -220,7 +226,9 @@ export function DocumentBrowser({
 
               {/* Upload Button */}
               <button
-                onClick={() => _setShowUploadModal(true)}
+                onClick={() => {
+                  _setShowUploadModal(true);
+                }}
                 className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
               >
                 <Upload className="h-4 w-4" />
@@ -231,7 +239,9 @@ export function DocumentBrowser({
             {/* View Toggle */}
             <div className="flex items-center bg-gray-100 rounded-lg p-1 ml-3">
               <button
-                onClick={() => setViewMode("list")}
+                onClick={() => {
+                  setViewMode("list");
+                }}
                 className={`p-1.5 rounded transition-colors ${
                   viewMode === "list"
                     ? "bg-white text-blue-600 shadow-sm"
@@ -242,7 +252,9 @@ export function DocumentBrowser({
                 <List className="h-4 w-4" />
               </button>
               <button
-                onClick={() => setViewMode("grid")}
+                onClick={() => {
+                  setViewMode("grid");
+                }}
                 className={`p-1.5 rounded transition-colors ${
                   viewMode === "grid"
                     ? "bg-white text-blue-600 shadow-sm"
@@ -283,7 +295,9 @@ export function DocumentBrowser({
                     <span>Delete</span>
                   </button>
                   <button
-                    onClick={() => setSelectedDocs(new Set())}
+                    onClick={() => {
+                      setSelectedDocs(new Set());
+                    }}
                     className="p-1.5 hover:bg-white rounded-lg transition-colors"
                     title="Clear selection"
                   >
@@ -339,7 +353,9 @@ export function DocumentBrowser({
       {/* Document Preview Drawer */}
       <DocumentPreviewDrawer
         isOpen={previewDocument !== null}
-        onClose={() => setPreviewDocument(null)}
+        onClose={() => {
+          setPreviewDocument(null);
+        }}
         document={previewDocument}
         onDownload={(docId) => onDownload?.([docId])}
         onDelete={(docId) => {
@@ -407,7 +423,12 @@ function DocumentListView({
             }`}
           >
             <div className="col-span-1 flex items-center">
-              <button onClick={() => onToggleSelect(doc.id)} className="p-1 hover:bg-gray-200 rounded">
+              <button
+                onClick={() => {
+                  onToggleSelect(doc.id);
+                }}
+                className="p-1 hover:bg-gray-200 rounded"
+              >
                 {selectedDocs.has(doc.id) ? (
                   <CheckSquare className="h-4 w-4 text-blue-600" />
                 ) : (
@@ -417,7 +438,9 @@ function DocumentListView({
             </div>
             <div
               className="col-span-5 flex items-center space-x-3 cursor-pointer"
-              onClick={() => onDocumentClick?.(doc)}
+              onClick={() => {
+                onDocumentClick?.(doc);
+              }}
             >
               {getFileIcon(doc.type)}
               <span className="font-medium text-gray-900 truncate hover:text-blue-600 transition-colors">
@@ -486,7 +509,12 @@ function DocumentGridView({
           }}
         >
           {/* Selection Checkbox */}
-          <div className="absolute top-2 left-2 checkbox-area" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="absolute top-2 left-2 checkbox-area"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
             {selectedDocs.has(doc.id) ? (
               <CheckSquare className="h-5 w-5 text-blue-600" />
             ) : (

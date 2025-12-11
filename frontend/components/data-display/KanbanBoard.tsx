@@ -109,9 +109,9 @@ const Column = ({ title, headingColor, cards, column, setCards }: ColumnProps) =
   const clearHighlights = (els?: HTMLElement[]) => {
     const indicators = els || getIndicators();
 
-    indicators.forEach((i) => {
+    for (const i of indicators) {
       i.style.opacity = "0";
-    });
+    }
   };
 
   const highlightIndicator = (e: DragEvent) => {
@@ -134,10 +134,9 @@ const Column = ({ title, headingColor, cards, column, setCards }: ColumnProps) =
         const offset = e.clientY - (box.top + DISTANCE_OFFSET);
 
         if (offset < 0 && offset > closest.offset) {
-          return { offset: offset, element: child };
-        } else {
-          return closest;
+          return { offset, element: child };
         }
+        return closest;
       },
       {
         offset: Number.NEGATIVE_INFINITY,
@@ -196,7 +195,9 @@ const Card = ({ title, id, column, handleDragStart }: CardProps) => {
         layout
         layoutId={id}
         draggable="true"
-        onDragStart={(e) => handleDragStart(e, { title, id, column })}
+        onDragStart={(e) => {
+          handleDragStart(e, { title, id, column });
+        }}
         className="cursor-grab rounded border border-neutral-700 bg-neutral-800 p-3 active:cursor-grabbing"
       >
         <p className="text-sm text-neutral-100">{title}</p>
@@ -286,14 +287,18 @@ const AddCard = ({ column, setCards }: AddCardProps) => {
       {adding ? (
         <motion.form layout onSubmit={handleSubmit}>
           <textarea
-            onChange={(e) => setText(e.target.value)}
+            onChange={(e) => {
+              setText(e.target.value);
+            }}
             autoFocus
             placeholder="Add new task..."
             className="w-full rounded border border-violet-400 bg-violet-400/20 p-3 text-sm text-neutral-50 placeholder-violet-300 focus:outline-0"
           />
           <div className="mt-1.5 flex items-center justify-end gap-1.5">
             <button
-              onClick={() => setAdding(false)}
+              onClick={() => {
+                setAdding(false);
+              }}
               className="px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:text-neutral-50"
             >
               Close
@@ -310,7 +315,9 @@ const AddCard = ({ column, setCards }: AddCardProps) => {
       ) : (
         <motion.button
           layout
-          onClick={() => setAdding(true)}
+          onClick={() => {
+            setAdding(true);
+          }}
           className="flex w-full items-center gap-1.5 px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:text-neutral-50"
         >
           <span>Add card</span>

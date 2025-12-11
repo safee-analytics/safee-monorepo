@@ -98,7 +98,7 @@ export function useCreateDocumentTemplate() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.settings.documentTemplates() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings.documentTemplates() });
     },
   });
 }
@@ -124,7 +124,7 @@ export function useUpdateDocumentTemplate() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.settings.documentTemplates() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings.documentTemplates() });
     },
   });
 }
@@ -141,8 +141,8 @@ export function useActivateTemplate() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.settings.documentTemplates() });
-      queryClient.invalidateQueries({ queryKey: queryKeys.settings.activeTemplate() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings.documentTemplates() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings.activeTemplate() });
     },
   });
 }
@@ -159,7 +159,7 @@ export function useDeleteDocumentTemplate() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.settings.documentTemplates() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings.documentTemplates() });
     },
   });
 }
@@ -184,7 +184,7 @@ export function useCreateCustomTemplate() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.settings.documentTemplates() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.settings.documentTemplates() });
     },
   });
 }

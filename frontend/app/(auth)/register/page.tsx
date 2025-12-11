@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth/hooks";
 import { useOrgStore } from "@/stores/useOrgStore";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
+import { logError } from "@/lib/utils/logger";
 
 const translations = {
   ar: {
@@ -107,17 +108,17 @@ export default function RegisterPage() {
       } else {
         setError(result.error || "Registration failed. Please try again.");
       }
-    } catch (error) {
-      console.error("Registration failed:", error);
+    } catch (err) {
+      logError("Registration failed", err, { email });
       setError("An unexpected error occurred. Please try again.");
     }
   };
 
   const handleGoogleSignUp = async () => {
     try {
-      signInWithGoogle("/");
-    } catch (error) {
-      console.error("Google signup failed:", error);
+      await signInWithGoogle("/");
+    } catch (err) {
+      logError("Google signup failed", err);
       setError("Google signup failed. Please try again.");
     }
   };
@@ -152,8 +153,12 @@ export default function RegisterPage() {
 
       <SafeeSignupForm
         t={t}
-        onSubmit={handleSubmit}
-        onGoogleSignup={handleGoogleSignUp}
+        onSubmit={(name, email, password, confirmPassword) => {
+          void handleSubmit(name, email, password, confirmPassword);
+        }}
+        onGoogleSignup={() => {
+          void handleGoogleSignUp();
+        }}
         onGoBack={handleGoBack}
       />
     </div>

@@ -70,8 +70,8 @@ export async function generateInvoicePDF(invoice: InvoiceData, style: InvoiceSty
             : 20;
       doc.addImage(style.logoUrl, "PNG", logoX, yPosition, 40, 20);
       yPosition += 30;
-    } catch (e) {
-      console.error("Failed to add logo:", e);
+    } catch (err) {
+      console.error("Failed to add logo:", err);
     }
   }
 

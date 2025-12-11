@@ -39,7 +39,7 @@ export default function LeadDetailPage() {
     try {
       await winLeadMutation.mutateAsync(leadId);
       toast.success("Lead marked as won!");
-    } catch (_error) {
+    } catch (_err) {
       toast.error("Failed to mark lead as won");
     }
   };
@@ -48,7 +48,7 @@ export default function LeadDetailPage() {
     try {
       await loseLeadMutation.mutateAsync({ leadId });
       toast.success("Lead marked as lost");
-    } catch (_error) {
+    } catch (_err) {
       toast.error("Failed to mark lead as lost");
     }
   };
@@ -57,7 +57,7 @@ export default function LeadDetailPage() {
     try {
       await convertLeadMutation.mutateAsync({ leadId });
       toast.success("Lead converted to opportunity!");
-    } catch (_error) {
+    } catch (_err) {
       toast.error("Failed to convert lead");
     }
   };
@@ -103,7 +103,9 @@ export default function LeadDetailPage() {
       <div className="sticky top-[57px] z-30 bg-white border-b border-gray-200">
         <div className="whitespace-nowrap py-4">
           <button
-            onClick={() => router.back()}
+            onClick={() => {
+              router.back();
+            }}
             className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -154,7 +156,9 @@ export default function LeadDetailPage() {
                 <AnimatedButton
                   variant="outline"
                   size="md"
-                  onClick={handleConvert}
+                  onClick={() => {
+                    void handleConvert();
+                  }}
                   disabled={convertLeadMutation.isPending}
                   className="flex items-center space-x-2 whitespace-nowrap"
                 >
@@ -165,7 +169,9 @@ export default function LeadDetailPage() {
               <AnimatedButton
                 variant="outline"
                 size="md"
-                onClick={handleWin}
+                onClick={() => {
+                  void handleWin();
+                }}
                 disabled={winLeadMutation.isPending}
                 className="flex items-center space-x-2 text-green-600 hover:bg-green-50"
               >
@@ -175,7 +181,9 @@ export default function LeadDetailPage() {
               <AnimatedButton
                 variant="outline"
                 size="md"
-                onClick={handleLose}
+                onClick={() => {
+                  void handleLose();
+                }}
                 disabled={loseLeadMutation.isPending}
                 className="flex items-center space-x-2 text-red-600 hover:bg-red-50"
               >
@@ -201,7 +209,9 @@ export default function LeadDetailPage() {
           {/* Tabs */}
           <div className="flex items-center space-x-6 mt-6 border-b border-gray-200">
             <button
-              onClick={() => setActiveTab("overview")}
+              onClick={() => {
+                setActiveTab("overview");
+              }}
               className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === "overview"
                   ? "border-blue-600 text-blue-600"
@@ -211,7 +221,9 @@ export default function LeadDetailPage() {
               Overview
             </button>
             <button
-              onClick={() => setActiveTab("activities")}
+              onClick={() => {
+                setActiveTab("activities");
+              }}
               className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === "activities"
                   ? "border-blue-600 text-blue-600"
@@ -221,7 +233,9 @@ export default function LeadDetailPage() {
               Activities
             </button>
             <button
-              onClick={() => setActiveTab("history")}
+              onClick={() => {
+                setActiveTab("history");
+              }}
               className={`pb-3 px-1 border-b-2 font-medium text-sm transition-colors ${
                 activeTab === "history"
                   ? "border-blue-600 text-blue-600"

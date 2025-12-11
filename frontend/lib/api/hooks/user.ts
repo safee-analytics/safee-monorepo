@@ -35,7 +35,7 @@ export function useUpdateUserProfile() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.user.profile });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.user.profile });
     },
   });
 }
@@ -58,8 +58,8 @@ export function useUpdateUserLocale() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.user.profile });
-      queryClient.invalidateQueries({ queryKey: ["session"] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.user.profile });
+      void queryClient.invalidateQueries({ queryKey: ["session"] });
     },
   });
 }
@@ -103,8 +103,8 @@ export function useMarkNotificationAsRead() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
-      queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount });
     },
   });
 }

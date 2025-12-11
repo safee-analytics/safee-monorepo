@@ -15,7 +15,7 @@
     "test": "npm run test:unit && npm run test:integration",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "test:integration": "vitest run --no-file-parallelism --pool=forks --poolOptions.forks.singleFork=true --passWithNoTests src/**/*.integration.test.ts",
+    "test:integration": "vitest run --no-file-parallelism --pool=forks --maxWorkers=1 --passWithNoTests src/**/*.integration.test.ts",
     "test:unit": "vitest run --passWithNoTests --exclude '**/*.integration.test.ts'",
     "test:services:up": "docker-compose -f docker-compose.test.yml up -d",
     "test:services:down": "docker-compose -f docker-compose.test.yml down",
@@ -44,10 +44,11 @@
     "@google-cloud/pubsub": "^4.9.0",
     "@google-cloud/storage": "^7.17.1",
     "@types/redis": "^4.0.11",
+    "@vitest/ui": "4.0.15",
     "cron": "^3.1.7",
     "date-fns": "4.1.0",
     "dotenv": "^16.6.1",
-    "drizzle-kit": "0.31.4",
+    "drizzle-kit": "^0.31.8",
     "drizzle-orm": "0.44.2",
     "pg": "^8.13.0",
     "pino": "^9.3.2",
@@ -59,14 +60,14 @@
   "devDependencies": {
     "@types/node": "^24.3.0",
     "@types/pg": "^8.11.10",
-    "@vitest/coverage-v8": "^2.1.8",
+    "@vitest/coverage-v8": "^4.0.15",
     "eslint": "^9.12.0",
     "globstar": "^1.0.0",
     "postgrator": "^7.2.0",
     "prettier": "^3.3.3",
     "tsx": "^4.19.0",
     "typescript": "5.8.3",
-    "vitest": "^2.1.8"
+    "vitest": "^4.0.15"
   },
   "exports": {
     ".": "./build/src/index.js",

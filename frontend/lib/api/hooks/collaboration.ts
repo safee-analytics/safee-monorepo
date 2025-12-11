@@ -123,7 +123,7 @@ export function useCreateActivity() {
     },
     onSuccess: (_, variables) => {
       // Invalidate activities for the affected case
-      queryClient.invalidateQueries({ queryKey: queryKeys.collaboration.activities(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.collaboration.activities(variables.caseId) });
     },
   });
 }
@@ -144,7 +144,7 @@ export function useMarkActivitiesAsRead() {
     },
     onSuccess: () => {
       // Invalidate all activity queries
-      queryClient.invalidateQueries({ queryKey: ["collaboration", "activities"] });
+      void queryClient.invalidateQueries({ queryKey: ["collaboration", "activities"] });
     },
   });
 }
@@ -165,7 +165,7 @@ export function useUpdatePresence() {
     },
     onSuccess: (_, variables) => {
       // Invalidate presence data for the case
-      queryClient.invalidateQueries({ queryKey: queryKeys.collaboration.presence(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.collaboration.presence(variables.caseId) });
     },
   });
 }
@@ -194,7 +194,7 @@ export function useActiveViewers(caseId: string, options?: { refetchInterval?: n
  * Custom hook to automatically update presence while viewing a case
  * Call this in your case detail page component
  */
-export function usePresenceTracking(caseId: string, enabled: boolean = true) {
+export function usePresenceTracking(caseId: string, enabled = true) {
   const updatePresence = useUpdatePresence();
 
   useQuery({

@@ -20,8 +20,8 @@ export default function ContactsPage() {
   const handleSync = async () => {
     try {
       await syncMutation.mutateAsync("contacts");
-    } catch (error) {
-      console.error("Failed to sync contacts:", error);
+    } catch (err) {
+      console.error("Failed to sync contacts:", err);
     }
   };
 
@@ -67,7 +67,9 @@ export default function ContactsPage() {
             </div>
             <div className="flex items-center space-x-3">
               <AnimatedButton
-                onClick={handleSync}
+                onClick={() => {
+                  void handleSync();
+                }}
                 variant="outline"
                 size="md"
                 disabled={syncMutation.isPending}
@@ -92,7 +94,9 @@ export default function ContactsPage() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <button
-                onClick={() => handleTypeFilter("all")}
+                onClick={() => {
+                  handleTypeFilter("all");
+                }}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   activeFilterType === "all" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                 }`}
@@ -100,7 +104,9 @@ export default function ContactsPage() {
                 All
               </button>
               <button
-                onClick={() => handleTypeFilter("companies")}
+                onClick={() => {
+                  handleTypeFilter("companies");
+                }}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   activeFilterType === "companies"
                     ? "bg-blue-100 text-blue-700"
@@ -110,7 +116,9 @@ export default function ContactsPage() {
                 Companies
               </button>
               <button
-                onClick={() => handleTypeFilter("individuals")}
+                onClick={() => {
+                  handleTypeFilter("individuals");
+                }}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   activeFilterType === "individuals"
                     ? "bg-blue-100 text-blue-700"
@@ -120,7 +128,9 @@ export default function ContactsPage() {
                 Individuals
               </button>
               <button
-                onClick={() => handleTypeFilter("customers")}
+                onClick={() => {
+                  handleTypeFilter("customers");
+                }}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   activeFilterType === "customers"
                     ? "bg-blue-100 text-blue-700"
@@ -130,7 +140,9 @@ export default function ContactsPage() {
                 Customers
               </button>
               <button
-                onClick={() => handleTypeFilter("suppliers")}
+                onClick={() => {
+                  handleTypeFilter("suppliers");
+                }}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   activeFilterType === "suppliers"
                     ? "bg-blue-100 text-blue-700"
@@ -145,7 +157,9 @@ export default function ContactsPage() {
               {/* View Toggle */}
               <div className="flex items-center bg-gray-100 rounded-lg p-1">
                 <button
-                  onClick={() => setViewMode("card")}
+                  onClick={() => {
+                    setViewMode("card");
+                  }}
                   className={`p-1.5 rounded transition-colors ${
                     viewMode === "card"
                       ? "bg-white text-blue-600 shadow-sm"
@@ -156,7 +170,9 @@ export default function ContactsPage() {
                   <Grid3x3 className="h-4 w-4" />
                 </button>
                 <button
-                  onClick={() => setViewMode("table")}
+                  onClick={() => {
+                    setViewMode("table");
+                  }}
                   className={`p-1.5 rounded transition-colors ${
                     viewMode === "table"
                       ? "bg-white text-blue-600 shadow-sm"
@@ -169,7 +185,9 @@ export default function ContactsPage() {
               </div>
 
               <button
-                onClick={() => setShowFilters(!showFilters)}
+                onClick={() => {
+                  setShowFilters(!showFilters);
+                }}
                 className="flex items-center space-x-2 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <Filter className="h-4 w-4" />

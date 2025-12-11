@@ -3573,9 +3573,7 @@ export interface components {
       usagePercentage: number;
     };
     /** @description Construct a type with a set of properties K of type T */
-    "Record_string.unknown_": {
-      [key: string]: unknown;
-    };
+    "Record_string.unknown_": Record<string, unknown>;
     FileMetadata: {
       id: string;
       name: string;
@@ -3851,9 +3849,7 @@ export interface components {
       /** Format: double */
       port?: number;
     };
-    NASStatusResponse: {
-      [key: string]: components["schemas"]["NASConnectionStatus"];
-    };
+    NASStatusResponse: Record<string, components["schemas"]["NASConnectionStatus"]>;
     Integration: {
       id: string;
       name: string;
@@ -4563,9 +4559,7 @@ export interface components {
       url?: string;
       apiKey?: string;
       authToken?: string;
-    } & {
-      [key: string]: unknown;
-    };
+    } & Record<string, unknown>;
     CreateConnectorRequest: {
       name: string;
       description?: string;
@@ -4643,9 +4637,7 @@ export interface components {
       | "plan_created"
       | "report_generated";
     /** @description Construct a type with a set of properties K of type T */
-    "Record_string.boolean_": {
-      [key: string]: boolean;
-    };
+    "Record_string.boolean_": Record<string, boolean>;
     CaseActivityResponse: {
       id: string;
       caseId: string;
@@ -4670,9 +4662,7 @@ export interface components {
             newValue?: string;
             oldValue?: string;
             caseName?: string;
-          } & {
-            [key: string]: unknown;
-          })
+          } & Record<string, unknown>)
         | null;
       isRead?: components["schemas"]["Record_string.boolean_"] | null;
       /** Format: date-time */
@@ -4694,9 +4684,7 @@ export interface components {
         newValue?: string;
         oldValue?: string;
         caseName?: string;
-      } & {
-        [key: string]: unknown;
-      };
+      } & Record<string, unknown>;
     };
     MarkAsReadRequest: {
       activityIds: string[];
@@ -5238,9 +5226,7 @@ export interface components {
       amount?: number;
       status?: string;
       createdBy?: string;
-    } & {
-      [key: string]: unknown;
-    };
+    } & Record<string, unknown>;
     SubmitForApprovalRequest: {
       entityType: string;
       entityId: string;
@@ -5511,9 +5497,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["WorkflowResponse"][];
         };
@@ -5535,9 +5519,7 @@ export interface operations {
     responses: {
       /** @description Workflow created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["WorkflowResponse"];
         };
@@ -5557,9 +5539,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["WorkflowResponse"];
         };
@@ -5583,9 +5563,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["WorkflowResponse"];
         };
@@ -5605,9 +5583,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -5629,9 +5605,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -5653,9 +5627,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -5677,9 +5649,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["RuleResponse"][];
         };
@@ -5701,9 +5671,7 @@ export interface operations {
     responses: {
       /** @description Rule created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["RuleResponse"];
         };
@@ -5723,9 +5691,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -5745,9 +5711,7 @@ export interface operations {
     responses: {
       /** @description User profile retrieved */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["UserProfileResponse"];
         };
@@ -5769,9 +5733,7 @@ export interface operations {
     responses: {
       /** @description User profile updated */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["UserProfileResponse"];
         };
@@ -5793,9 +5755,7 @@ export interface operations {
     responses: {
       /** @description User locale updated */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             locale: components["schemas"]["Locale"];
@@ -5816,9 +5776,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["NASConfig"];
         };
@@ -5840,9 +5798,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["NASConfig"];
         };
@@ -5864,9 +5820,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             message: string;
@@ -5887,9 +5841,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["StorageInfo"];
         };
@@ -5917,9 +5869,7 @@ export interface operations {
     responses: {
       /** @description File uploaded successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["FileMetadata"];
         };
@@ -5947,9 +5897,7 @@ export interface operations {
     responses: {
       /** @description Files uploaded successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["FileMetadata"][];
         };
@@ -5969,9 +5917,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["FileMetadata"];
         };
@@ -5991,9 +5937,7 @@ export interface operations {
     responses: {
       /** @description File deleted successfully */
       204: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content?: never;
       };
     };
@@ -6011,9 +5955,7 @@ export interface operations {
     responses: {
       /** @description No content */
       204: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content?: never;
       };
     };
@@ -6039,9 +5981,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             hasMore: boolean;
@@ -6068,9 +6008,7 @@ export interface operations {
     responses: {
       /** @description Folder created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["FolderMetadata"];
         };
@@ -6090,9 +6028,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             subFolders: components["schemas"]["FolderMetadata"][];
@@ -6116,9 +6052,7 @@ export interface operations {
     responses: {
       /** @description Folder deleted successfully */
       204: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content?: never;
       };
     };
@@ -6134,9 +6068,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             unit: string;
@@ -6162,9 +6094,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["SecuritySettings"];
         };
@@ -6184,9 +6114,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditReportResponse"][];
         };
@@ -6206,9 +6134,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditReportResponse"];
         };
@@ -6232,9 +6158,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditReportResponse"];
         };
@@ -6254,9 +6178,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -6280,9 +6202,7 @@ export interface operations {
     responses: {
       /** @description Report generation started */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditReportResponse"];
         };
@@ -6300,9 +6220,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditReportTemplateResponse"][];
         };
@@ -6324,9 +6242,7 @@ export interface operations {
     responses: {
       /** @description Template created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditReportTemplateResponse"];
         };
@@ -6346,9 +6262,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditReportTemplateResponse"];
         };
@@ -6366,9 +6280,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["OdooProvisionResponse"];
         };
@@ -6386,9 +6298,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             hasApiKey: boolean;
@@ -6412,9 +6322,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["OdooInfoResponse"];
         };
@@ -6432,9 +6340,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["OdooDeleteResponse"];
         };
@@ -6456,9 +6362,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["OdooDuplicateResponse"];
         };
@@ -6476,9 +6380,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             data: string;
@@ -6499,9 +6401,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["OdooListResponse"];
         };
@@ -6521,9 +6421,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["OdooInfoResponse"];
         };
@@ -6545,9 +6443,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": number[];
         };
@@ -6569,9 +6465,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["Record_string.unknown_"][];
         };
@@ -6593,9 +6487,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["Record_string.unknown_"][];
         };
@@ -6617,9 +6509,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -6644,9 +6534,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -6670,9 +6558,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -6696,9 +6582,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": unknown;
         };
@@ -6716,9 +6600,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             webUrl: string;
@@ -6740,9 +6622,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             webUrl: string;
@@ -6764,9 +6644,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             webUrl: string;
@@ -6789,9 +6667,7 @@ export interface operations {
     responses: {
       /** @description Modules installed successfully */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             message: string;
@@ -6816,9 +6692,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json":
             | components["schemas"]["Record_string.unknown_"]
@@ -6844,9 +6718,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             accessGroups: {
@@ -6904,9 +6776,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["OcrResponse"];
         };
@@ -6926,9 +6796,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             text: string | null;
@@ -6953,9 +6821,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DocumentSearchResult"][];
         };
@@ -6977,9 +6843,7 @@ export interface operations {
     responses: {
       /** @description NAS connected successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["NASConnectionStatus"];
         };
@@ -6999,9 +6863,7 @@ export interface operations {
     responses: {
       /** @description NAS disconnected successfully */
       204: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content?: never;
       };
     };
@@ -7017,9 +6879,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["NASStatusResponse"];
         };
@@ -7037,9 +6897,7 @@ export interface operations {
     responses: {
       /** @description All NAS drives disconnected */
       204: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             message: string;
@@ -7059,9 +6917,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["Integration"][];
         };
@@ -7081,9 +6937,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -7105,9 +6959,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -7130,9 +6982,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["EmployeeDbResponse"][];
         };
@@ -7154,9 +7004,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["EmployeeDbResponse"];
         };
@@ -7176,9 +7024,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["EmployeeDbResponse"];
         };
@@ -7202,9 +7048,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["EmployeeDbResponse"];
         };
@@ -7224,9 +7068,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -7250,9 +7092,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["EmployeeDbResponse"];
         };
@@ -7270,9 +7110,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["SyncAllEmployeesResponse"];
         };
@@ -7292,9 +7130,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DepartmentDbResponse"][];
         };
@@ -7316,9 +7152,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DepartmentDbResponse"];
         };
@@ -7338,9 +7172,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DepartmentDbResponse"];
         };
@@ -7364,9 +7196,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DepartmentDbResponse"];
         };
@@ -7386,9 +7216,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -7412,9 +7240,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DepartmentDbResponse"];
         };
@@ -7432,9 +7258,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["SyncAllDepartmentsResponse"];
         };
@@ -7454,9 +7278,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["LeaveBalanceResponse"][];
         };
@@ -7477,9 +7299,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["LeaveBalanceResponse"];
         };
@@ -7500,9 +7320,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["EmployeeResponse"][];
         };
@@ -7522,9 +7340,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["EmployeeResponse"];
         };
@@ -7545,9 +7361,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DepartmentResponse"][];
         };
@@ -7567,9 +7381,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DepartmentResponse"];
         };
@@ -7590,9 +7402,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ContractResponse"][];
         };
@@ -7612,9 +7422,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ContractResponse"];
         };
@@ -7634,9 +7442,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["LeaveTypeResponse"][];
         };
@@ -7656,9 +7462,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["LeaveTypeResponse"];
         };
@@ -7682,9 +7486,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["LeaveRequestResponse"][];
         };
@@ -7704,9 +7506,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["LeaveRequestResponse"];
         };
@@ -7728,9 +7528,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["LeaveAllocationResponse"][];
         };
@@ -7750,9 +7548,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["LeaveAllocationResponse"];
         };
@@ -7775,9 +7571,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["PayslipResponse"][];
         };
@@ -7797,9 +7591,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["PayslipResponse"];
         };
@@ -7819,9 +7611,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["PayslipLineResponse"][];
         };
@@ -7839,9 +7629,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["HealthCheck"];
         };
@@ -7859,9 +7647,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DocumentTemplateResponse"][];
         };
@@ -7883,9 +7669,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DocumentTemplateResponse"];
         };
@@ -7905,9 +7689,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DocumentTemplateResponse"][];
         };
@@ -7927,9 +7709,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             templateId: string;
@@ -7951,9 +7731,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["OdooReportTemplate"][];
         };
@@ -7977,9 +7755,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DocumentTemplateResponse"];
         };
@@ -7999,9 +7775,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -8023,9 +7797,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DocumentTemplateResponse"];
         };
@@ -8047,9 +7819,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DocumentTemplateResponse"];
         };
@@ -8067,9 +7837,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DatabaseStats"];
         };
@@ -8087,9 +7855,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["BackupSettings"];
         };
@@ -8111,9 +7877,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["BackupSettings"];
         };
@@ -8131,9 +7895,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["Backup"][];
         };
@@ -8151,9 +7913,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["Backup"];
         };
@@ -8173,9 +7933,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -8197,9 +7955,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": string;
         };
@@ -8217,9 +7973,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -8239,9 +7993,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -8261,9 +8013,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DashboardStatsResponse"];
         };
@@ -8283,9 +8033,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["RecentCaseUpdateResponse"][];
         };
@@ -8305,9 +8053,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["NotificationResponse"][];
         };
@@ -8325,9 +8071,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["UnreadNotificationsCountResponse"];
         };
@@ -8347,9 +8091,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -8376,9 +8118,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["LeadResponse"][];
         };
@@ -8400,9 +8140,7 @@ export interface operations {
     responses: {
       /** @description Lead created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -8425,9 +8163,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["LeadResponse"];
         };
@@ -8451,9 +8187,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -8482,9 +8216,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -8506,9 +8238,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -8537,9 +8267,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -8562,9 +8290,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["StageResponse"][];
         };
@@ -8584,9 +8310,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["StageResponse"];
         };
@@ -8608,9 +8332,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ContactResponse"][];
         };
@@ -8632,9 +8354,7 @@ export interface operations {
     responses: {
       /** @description Contact created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -8657,9 +8377,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ContactResponse"];
         };
@@ -8683,9 +8401,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -8709,9 +8425,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ActivityResponse"][];
         };
@@ -8733,9 +8447,7 @@ export interface operations {
     responses: {
       /** @description Activity created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -8758,9 +8470,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ActivityResponse"];
         };
@@ -8780,9 +8490,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -8804,9 +8512,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["TeamResponse"][];
         };
@@ -8826,9 +8532,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["TeamResponse"];
         };
@@ -8848,9 +8552,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["LostReasonResponse"][];
         };
@@ -8870,9 +8572,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["LostReasonResponse"];
         };
@@ -8897,9 +8597,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             errors?: string[];
@@ -8930,9 +8628,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             optionalFields: string[];
@@ -8958,9 +8654,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             helpText?: string;
@@ -8991,9 +8685,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ConnectorResponse"][];
         };
@@ -9015,9 +8707,7 @@ export interface operations {
     responses: {
       /** @description Connector created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ConnectorResponse"];
         };
@@ -9037,9 +8727,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ConnectorResponse"];
         };
@@ -9063,9 +8751,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -9087,9 +8773,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -9111,9 +8795,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             error?: string;
@@ -9140,9 +8822,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             details?: components["schemas"]["Record_string.unknown_"];
@@ -9170,9 +8850,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["QueryResponse"];
         };
@@ -9192,9 +8870,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["SchemaResponse"];
         };
@@ -9218,9 +8894,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["TablePreviewResponse"];
         };
@@ -9246,9 +8920,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": unknown[];
         };
@@ -9270,9 +8942,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["FieldMapping"][];
         };
@@ -9294,9 +8964,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["CaseActivityResponse"][];
         };
@@ -9318,9 +8986,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["CaseActivityResponse"];
         };
@@ -9342,9 +9008,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -9368,9 +9032,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["PresenceResponse"];
         };
@@ -9390,9 +9052,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["PresenceResponse"][];
         };
@@ -9410,9 +9070,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["CaseResponse"][];
         };
@@ -9434,9 +9092,7 @@ export interface operations {
     responses: {
       /** @description Case created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["CaseResponse"];
         };
@@ -9454,9 +9110,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["TemplateResponse"][];
         };
@@ -9478,9 +9132,7 @@ export interface operations {
     responses: {
       /** @description Template created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["TemplateResponse"];
         };
@@ -9500,9 +9152,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["TemplateResponse"];
         };
@@ -9522,9 +9172,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["CaseResponse"];
         };
@@ -9548,9 +9196,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["CaseResponse"];
         };
@@ -9570,9 +9216,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -9594,9 +9238,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ScopeResponse"][];
         };
@@ -9620,9 +9262,7 @@ export interface operations {
     responses: {
       /** @description Scope created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ScopeResponse"];
         };
@@ -9646,9 +9286,7 @@ export interface operations {
     responses: {
       /** @description Scope created from template successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ScopeResponse"];
         };
@@ -9673,9 +9311,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ScopeResponse"];
         };
@@ -9696,9 +9332,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["SectionResponse"][];
         };
@@ -9720,9 +9354,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ProcedureResponse"][];
         };
@@ -9749,9 +9381,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ProcedureResponse"];
         };
@@ -9771,9 +9401,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DocumentResponse"][];
         };
@@ -9797,9 +9425,7 @@ export interface operations {
     responses: {
       /** @description Document created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DocumentResponse"];
         };
@@ -9820,9 +9446,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -9844,9 +9468,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["NoteResponse"][];
         };
@@ -9870,9 +9492,7 @@ export interface operations {
     responses: {
       /** @description Note created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["NoteResponse"];
         };
@@ -9897,9 +9517,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["NoteResponse"];
         };
@@ -9919,9 +9537,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AssignmentResponse"][];
         };
@@ -9945,9 +9561,7 @@ export interface operations {
     responses: {
       /** @description Assignment created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AssignmentResponse"];
         };
@@ -9968,9 +9582,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -9992,9 +9604,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["HistoryResponse"][];
         };
@@ -10012,9 +9622,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditPlanResponse"][];
         };
@@ -10036,9 +9644,7 @@ export interface operations {
     responses: {
       /** @description Audit plan created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditPlanResponse"];
         };
@@ -10058,9 +9664,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditPlanResponse"];
         };
@@ -10084,9 +9688,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditPlanResponse"];
         };
@@ -10106,9 +9708,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -10130,9 +9730,7 @@ export interface operations {
     responses: {
       /** @description Plan converted to case successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             message: string;
@@ -10153,9 +9751,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditPlanTemplateResponse"][];
         };
@@ -10177,9 +9773,7 @@ export interface operations {
     responses: {
       /** @description Template created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditPlanTemplateResponse"];
         };
@@ -10199,9 +9793,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditPlanTemplateResponse"];
         };
@@ -10223,9 +9815,7 @@ export interface operations {
     responses: {
       /** @description Plan created from template successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AuditPlanResponse"];
         };
@@ -10254,9 +9844,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -10284,9 +9872,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             contentType: string;
@@ -10317,9 +9903,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -10345,9 +9929,7 @@ export interface operations {
     responses: {
       /** @description Entity submitted for approval */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["SubmitForApprovalResponse"];
         };
@@ -10367,9 +9949,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ApprovalRequestResponse"][];
         };
@@ -10389,9 +9969,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ApprovalRequestResponse"];
         };
@@ -10415,9 +9993,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ApprovalActionResponse"];
         };
@@ -10441,9 +10017,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ApprovalActionResponse"];
         };
@@ -10467,9 +10041,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ApprovalActionResponse"];
         };
@@ -10490,9 +10062,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ApprovalRequestResponse"][];
         };
@@ -10517,9 +10087,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -10549,9 +10117,7 @@ export interface operations {
     responses: {
       /** @description Invoice created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["Invoice"];
         };
@@ -10571,9 +10137,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["Invoice"];
         };
@@ -10593,9 +10157,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -10617,9 +10179,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -10650,9 +10210,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -10675,9 +10233,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": string;
         };
@@ -10701,9 +10257,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -10733,9 +10287,7 @@ export interface operations {
     responses: {
       /** @description Bill created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["Invoice"];
         };
@@ -10755,9 +10307,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["Invoice"];
         };
@@ -10777,9 +10327,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -10801,9 +10349,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -10834,9 +10380,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -10859,9 +10403,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": string;
         };
@@ -10881,9 +10423,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             parentId?: string;
@@ -10909,9 +10449,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             type: string;
@@ -10939,9 +10477,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["PaymentResponse"][];
         };
@@ -10963,9 +10499,7 @@ export interface operations {
     responses: {
       /** @description Payment created successfully */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -10988,9 +10522,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;
@@ -11013,9 +10545,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["PartnerResponse"][];
         };
@@ -11035,9 +10565,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["JournalResponse"][];
         };
@@ -11057,9 +10585,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["TaxResponse"][];
         };
@@ -11081,9 +10607,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["AccountBalanceReportResponse"][];
         };
@@ -11105,9 +10629,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["PartnerLedgerReportResponse"] | null;
         };
@@ -11128,9 +10650,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["ProfitLossResponse"];
         };
@@ -11153,9 +10673,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["GLEntryResponse"][];
         };
@@ -11173,9 +10691,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             note?: string;
@@ -11200,9 +10716,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -11238,9 +10752,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -11279,9 +10791,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             state: string;
@@ -11316,9 +10826,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             isReconciled: boolean;
@@ -11347,9 +10855,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -11383,9 +10889,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             message?: string;
@@ -11408,9 +10912,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             active: boolean;
@@ -11442,9 +10944,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -11485,9 +10985,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             /** Format: double */
@@ -11516,9 +11014,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             failed: {
@@ -11549,9 +11045,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             failed: {
@@ -11582,9 +11076,7 @@ export interface operations {
     responses: {
       /** @description Invoices created */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             failed: {
@@ -11633,9 +11125,7 @@ export interface operations {
     responses: {
       /** @description Payments created */
       201: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             failed: {
@@ -11671,9 +11161,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             failed: {

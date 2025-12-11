@@ -125,14 +125,18 @@ export default function AccountingPage() {
             <input
               type="date"
               value={dateRange.from}
-              onChange={(e) => setDateRange((prev) => ({ ...prev, from: e.target.value }))}
+              onChange={(e) => {
+                setDateRange((prev) => ({ ...prev, from: e.target.value }));
+              }}
               className="text-sm border-0 focus:ring-0 p-0"
             />
             <span className="text-gray-400">→</span>
             <input
               type="date"
               value={dateRange.to}
-              onChange={(e) => setDateRange((prev) => ({ ...prev, to: e.target.value }))}
+              onChange={(e) => {
+                setDateRange((prev) => ({ ...prev, to: e.target.value }));
+              }}
               className="text-sm border-0 focus:ring-0 p-0"
             />
           </div>

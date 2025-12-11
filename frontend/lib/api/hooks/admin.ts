@@ -42,9 +42,9 @@ export function useBanUser() {
       return result;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(variables.userId) });
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.users });
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.bannedUsers });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(variables.userId) });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.users });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.bannedUsers });
     },
   });
 }
@@ -64,9 +64,9 @@ export function useUnbanUser() {
       return data;
     },
     onSuccess: (_, userId) => {
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(userId) });
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.users });
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.bannedUsers });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(userId) });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.users });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.bannedUsers });
     },
   });
 }
@@ -92,7 +92,7 @@ export function useImpersonateUser() {
     },
     onSuccess: () => {
       // Refresh session to reflect impersonated user
-      queryClient.invalidateQueries({ queryKey: ["auth", "session"] });
+      void queryClient.invalidateQueries({ queryKey: ["auth", "session"] });
     },
   });
 }
@@ -111,7 +111,7 @@ export function useStopImpersonation() {
     },
     onSuccess: () => {
       // Refresh session to reflect original admin user
-      queryClient.invalidateQueries({ queryKey: ["auth", "session"] });
+      void queryClient.invalidateQueries({ queryKey: ["auth", "session"] });
     },
   });
 }
@@ -185,8 +185,8 @@ export function useAdminDeleteUser() {
       return data;
     },
     onSuccess: (_, userId) => {
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(userId) });
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.users });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(userId) });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.users });
     },
   });
 }
@@ -218,8 +218,8 @@ export function useAdminUpdateUser() {
       return result;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(variables.userId) });
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.users });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(variables.userId) });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.users });
     },
   });
 }
@@ -271,7 +271,7 @@ export function useAdminCreateUser() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.users });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.users });
     },
   });
 }
@@ -295,7 +295,7 @@ export function useAdminVerifyEmail() {
       return data;
     },
     onSuccess: (_, userId) => {
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(userId) });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(userId) });
     },
   });
 }
@@ -336,7 +336,7 @@ export function useAdminSetRole() {
       return result;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(variables.userId) });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(variables.userId) });
     },
   });
 }
@@ -349,7 +349,7 @@ export function useAdminHasPermission() {
     mutationFn: async (data: {
       userId: string;
       permission: {
-        user?: Array<
+        user?: (
           | "list"
           | "update"
           | "delete"
@@ -359,8 +359,8 @@ export function useAdminHasPermission() {
           | "impersonate"
           | "set-password"
           | "get"
-        >;
-        session?: Array<"list" | "delete" | "revoke">;
+        )[];
+        session?: ("list" | "delete" | "revoke")[];
       };
     }) => {
       const { data: result, error } = await authClient.admin.hasPermission({
@@ -409,7 +409,7 @@ export function useAdminRevokeUserSession() {
       return result;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: [...adminQueryKeys.user(variables.userId), "sessions"],
       });
     },
@@ -431,7 +431,7 @@ export function useAdminRevokeUserSessions() {
       return data;
     },
     onSuccess: (_, userId) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: [...adminQueryKeys.user(userId), "sessions"],
       });
     },
@@ -453,8 +453,8 @@ export function useAdminRemoveUser() {
       return data;
     },
     onSuccess: (_, userId) => {
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(userId) });
-      queryClient.invalidateQueries({ queryKey: adminQueryKeys.users });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.user(userId) });
+      void queryClient.invalidateQueries({ queryKey: adminQueryKeys.users });
     },
   });
 }

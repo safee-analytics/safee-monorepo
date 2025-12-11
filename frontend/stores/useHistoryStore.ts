@@ -58,9 +58,9 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
         undoStack: undoStack.slice(0, -1),
         redoStack: [...redoStack, action],
       });
-    } catch (error) {
-      console.error("Failed to undo action:", error);
-      throw error;
+    } catch (err) {
+      console.error("Failed to undo action:", err);
+      throw err;
     }
   },
 
@@ -77,9 +77,9 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
         undoStack: [...undoStack, action],
         redoStack: redoStack.slice(0, -1),
       });
-    } catch (error) {
-      console.error("Failed to redo action:", error);
-      throw error;
+    } catch (err) {
+      console.error("Failed to redo action:", err);
+      throw err;
     }
   },
 

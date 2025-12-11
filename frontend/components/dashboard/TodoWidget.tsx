@@ -1,9 +1,8 @@
 "use client";
 
-import { AnimatePresence, useAnimate, usePresence } from "framer-motion";
+import { AnimatePresence, useAnimate, usePresence, motion } from "framer-motion";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FiClock, FiPlus, FiTrash2, FiCheck } from "react-icons/fi";
-import { motion } from "framer-motion";
 
 type TODO = {
   id: number;
@@ -113,7 +112,9 @@ const Form = ({ setTodos }: { setTodos: Dispatch<SetStateAction<TODO[]>> }) => {
           >
             <input
               value={text}
-              onChange={(e) => setText(e.target.value)}
+              onChange={(e) => {
+                setText(e.target.value);
+              }}
               placeholder="What needs to be done?"
               className="w-full resize-none rounded bg-white p-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none"
               autoFocus
@@ -122,21 +123,27 @@ const Form = ({ setTodos }: { setTodos: Dispatch<SetStateAction<TODO[]>> }) => {
               <div className="flex items-center gap-1.5">
                 <button
                   type="button"
-                  onClick={() => setPriority("low")}
+                  onClick={() => {
+                    setPriority("low");
+                  }}
                   className={`rounded px-2 py-1 text-xs ${priority === "low" ? "bg-green-100 text-green-700 font-medium" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
                 >
                   Low
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPriority("medium")}
+                  onClick={() => {
+                    setPriority("medium");
+                  }}
                   className={`rounded px-2 py-1 text-xs ${priority === "medium" ? "bg-yellow-100 text-yellow-700 font-medium" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
                 >
                   Medium
                 </button>
                 <button
                   type="button"
-                  onClick={() => setPriority("high")}
+                  onClick={() => {
+                    setPriority("high");
+                  }}
                   className={`rounded px-2 py-1 text-xs ${priority === "high" ? "bg-red-100 text-red-700 font-medium" : "bg-gray-100 text-gray-600 hover:bg-gray-200"}`}
                 >
                   High
@@ -166,7 +173,9 @@ const Form = ({ setTodos }: { setTodos: Dispatch<SetStateAction<TODO[]>> }) => {
       </AnimatePresence>
       {!visible && (
         <button
-          onClick={() => setVisible(true)}
+          onClick={() => {
+            setVisible(true);
+          }}
           className="w-full flex items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 py-3 text-sm font-medium text-gray-600 hover:border-safee-400 hover:bg-safee-50 hover:text-safee-700 transition-all"
         >
           <FiPlus className="w-4 h-4" />
@@ -246,7 +255,7 @@ const Todo = ({
         safeToRemove();
       };
 
-      exitAnimation();
+      void exitAnimation();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPresent]);
@@ -268,7 +277,9 @@ const Todo = ({
       }`}
     >
       <button
-        onClick={() => handleCheck(id)}
+        onClick={() => {
+          handleCheck(id);
+        }}
         className={`flex-shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${
           checked
             ? "bg-safee-600 border-safee-600"
@@ -293,7 +304,9 @@ const Todo = ({
           </span>
         )}
         <button
-          onClick={() => removeElement(id)}
+          onClick={() => {
+            removeElement(id);
+          }}
           className="flex-shrink-0 p-1.5 rounded hover:bg-red-50 text-gray-400 hover:text-red-600 transition-colors"
         >
           <FiTrash2 className="w-3.5 h-3.5" />

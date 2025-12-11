@@ -83,7 +83,7 @@ export function useCreateTeam() {
       return result;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: teamQueryKeys.all(variables.organizationId) });
+      void queryClient.invalidateQueries({ queryKey: teamQueryKeys.all(variables.organizationId) });
     },
   });
 }
@@ -104,10 +104,10 @@ export function useUpdateTeam() {
       return result;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: teamQueryKeys.team(variables.organizationId, variables.teamId),
       });
-      queryClient.invalidateQueries({ queryKey: teamQueryKeys.all(variables.organizationId) });
+      void queryClient.invalidateQueries({ queryKey: teamQueryKeys.all(variables.organizationId) });
     },
   });
 }
@@ -125,7 +125,7 @@ export function useDeleteTeam() {
       return result;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: teamQueryKeys.all(variables.organizationId) });
+      void queryClient.invalidateQueries({ queryKey: teamQueryKeys.all(variables.organizationId) });
     },
   });
 }
@@ -159,7 +159,7 @@ export function useAddMemberToTeam() {
       return result;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: teamQueryKeys.members(variables.organizationId, variables.teamId),
       });
     },
@@ -179,7 +179,7 @@ export function useRemoveMemberFromTeam() {
       return result;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: teamQueryKeys.members(variables.organizationId, variables.teamId),
       });
     },
@@ -200,7 +200,7 @@ export function useUpdateTeamMemberRole() {
       return result;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: teamQueryKeys.members(variables.organizationId, variables.teamId),
       });
     },
@@ -233,8 +233,8 @@ export function useSetActiveTeam() {
       return result;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: teamQueryKeys.activeTeam(variables.organizationId) });
-      queryClient.invalidateQueries({ queryKey: ["auth", "session"] });
+      void queryClient.invalidateQueries({ queryKey: teamQueryKeys.activeTeam(variables.organizationId) });
+      void queryClient.invalidateQueries({ queryKey: ["auth", "session"] });
     },
   });
 }

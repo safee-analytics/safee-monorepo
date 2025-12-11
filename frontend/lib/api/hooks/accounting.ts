@@ -48,11 +48,11 @@ export function useCreateInvoice() {
       supplierId?: string;
       date: string;
       dueDate?: string;
-      items: Array<{
+      items: {
         description: string;
         quantity: number;
         unitPrice: number;
-      }>;
+      }[];
     }) => {
       const { data, error } = await apiClient.POST("/accounting/invoices", {
         body: invoice,
@@ -61,7 +61,7 @@ export function useCreateInvoice() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
     },
   });
 }
@@ -78,8 +78,8 @@ export function useValidateInvoice() {
       return data;
     },
     onSuccess: (_, invoiceId) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoice(invoiceId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoice(invoiceId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
     },
   });
 }
@@ -96,8 +96,8 @@ export function useCancelInvoice() {
       return data;
     },
     onSuccess: (_, invoiceId) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoice(invoiceId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoice(invoiceId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
     },
   });
 }
@@ -123,7 +123,7 @@ export function useRefundInvoice() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
     },
   });
 }
@@ -195,11 +195,11 @@ export function useCreateBill() {
       supplierId: string;
       date: string;
       dueDate?: string;
-      items: Array<{
+      items: {
         description: string;
         quantity: number;
         unitPrice: number;
-      }>;
+      }[];
     }) => {
       const { data, error } = await apiClient.POST("/accounting/bills", {
         body: bill,
@@ -208,7 +208,7 @@ export function useCreateBill() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.bills() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.bills() });
     },
   });
 }
@@ -225,8 +225,8 @@ export function useValidateBill() {
       return data;
     },
     onSuccess: (_, billId) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.bill(billId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.bills() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.bill(billId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.bills() });
     },
   });
 }
@@ -243,8 +243,8 @@ export function useCancelBill() {
       return data;
     },
     onSuccess: (_, billId) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.bill(billId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.bills() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.bill(billId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.bills() });
     },
   });
 }
@@ -290,7 +290,7 @@ export function useCreatePayment() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.payments() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.payments() });
     },
   });
 }
@@ -307,7 +307,7 @@ export function useConfirmPayment() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.payments() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.payments() });
     },
   });
 }
@@ -524,14 +524,14 @@ export function useReconcileBankLine() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.bankStatements() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.bankStatements() });
     },
   });
 }
 
 // ==================== Multi-Currency ====================
 
-export function useCurrencies(onlyActive: boolean = true) {
+export function useCurrencies(onlyActive = true) {
   return useQuery({
     queryKey: queryKeys.accounting.currencies(onlyActive),
     queryFn: async () => {
@@ -588,7 +588,7 @@ export function useBatchValidateInvoices() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
     },
   });
 }
@@ -605,7 +605,7 @@ export function useBatchCancelInvoices() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
     },
   });
 }
@@ -615,18 +615,18 @@ export function useBatchCreateInvoices() {
 
   return useMutation({
     mutationFn: async (
-      invoices: Array<{
+      invoices: {
         type: "SALES" | "PURCHASE";
         customerId?: string;
         supplierId?: string;
         date: string;
         dueDate?: string;
-        items: Array<{
+        items: {
           description: string;
           quantity: number;
           unitPrice: number;
-        }>;
-      }>,
+        }[];
+      }[],
     ) => {
       const { data, error } = await apiClient.POST("/accounting/invoices/batch-create", {
         body: { invoices },
@@ -635,7 +635,7 @@ export function useBatchCreateInvoices() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.invoices() });
     },
   });
 }
@@ -652,7 +652,7 @@ export function useBatchConfirmPayments() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.accounting.payments() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.accounting.payments() });
     },
   });
 }

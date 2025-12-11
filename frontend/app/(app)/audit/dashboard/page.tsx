@@ -95,7 +95,7 @@ export default function AuditDashboard() {
   }, [notifications]);
 
   const recentCases = useMemo<
-    Array<{
+    {
       id: string;
       companyName: string;
       auditType: string;
@@ -104,7 +104,7 @@ export default function AuditDashboard() {
       completedDate?: string;
       icon: string;
       iconBg: string;
-    }>
+    }[]
   >(() => {
     if (!apiCases) return [];
 
@@ -158,7 +158,7 @@ export default function AuditDashboard() {
     return months.map((month, index) => {
       const casesInMonth = apiCases.filter((c: CaseData) => {
         if (!(c as CaseData & { createdAt?: string }).createdAt) return false;
-        const caseDate = new Date((c as CaseData & { createdAt?: string }).createdAt!);
+        const caseDate = new Date((c as CaseData & { createdAt?: string }).createdAt);
         return caseDate.getMonth() === index && caseDate.getFullYear() === currentYear;
       });
 
@@ -218,9 +218,9 @@ export default function AuditDashboard() {
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
             <Link
               href="/audit/cases?status=in-progress"
-              onClick={() =>
-                trackNavigation("stat_card_clicked", { cardName: "Active Cases", status: "in-progress" })
-              }
+              onClick={() => {
+                trackNavigation("stat_card_clicked", { cardName: "Active Cases", status: "in-progress" });
+              }}
               className="block cursor-pointer transition-transform hover:scale-105"
             >
               <StatCard
@@ -237,9 +237,9 @@ export default function AuditDashboard() {
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
             <Link
               href="/audit/cases?status=under-review"
-              onClick={() =>
-                trackNavigation("stat_card_clicked", { cardName: "Pending Reviews", status: "under-review" })
-              }
+              onClick={() => {
+                trackNavigation("stat_card_clicked", { cardName: "Pending Reviews", status: "under-review" });
+              }}
               className="block cursor-pointer transition-transform hover:scale-105"
             >
               <StatCard
@@ -255,9 +255,9 @@ export default function AuditDashboard() {
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
             <Link
               href="/audit/cases?status=completed"
-              onClick={() =>
-                trackNavigation("stat_card_clicked", { cardName: "Completed Audits", status: "completed" })
-              }
+              onClick={() => {
+                trackNavigation("stat_card_clicked", { cardName: "Completed Audits", status: "completed" });
+              }}
               className="block cursor-pointer transition-transform hover:scale-105"
             >
               <StatCard
@@ -273,7 +273,9 @@ export default function AuditDashboard() {
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
             <Link
               href="/audit/team"
-              onClick={(e) => handleConditionalNavigation(e, "/audit/team", "view_team")}
+              onClick={(e) => {
+                handleConditionalNavigation(e, "/audit/team", "view_team");
+              }}
               className="block cursor-pointer transition-transform hover:scale-105"
             >
               <StatCard

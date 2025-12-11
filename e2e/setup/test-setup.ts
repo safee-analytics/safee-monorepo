@@ -31,9 +31,9 @@ async function waitForServices() {
       await pool.end();
       console.log("✅ PostgreSQL is ready");
       break;
-    } catch (error) {
+    } catch (err) {
       if (i === maxRetries - 1) {
-        throw new Error(`PostgreSQL not ready after ${maxRetries} attempts: ${error}`);
+        throw new Error(`PostgreSQL not ready after ${maxRetries} attempts: ${String(err)}`);
       }
       await new Promise((resolve) => setTimeout(resolve, retryDelay));
     }
@@ -51,9 +51,9 @@ async function waitForServices() {
       await client.quit();
       console.log("✅ Redis is ready");
       break;
-    } catch (error) {
+    } catch (err) {
       if (i === maxRetries - 1) {
-        throw new Error(`Redis not ready after ${maxRetries} attempts: ${error}`);
+        throw new Error(`Redis not ready after ${maxRetries} attempts: ${String(err)}`);
       }
       await new Promise((resolve) => setTimeout(resolve, retryDelay));
     }
@@ -62,7 +62,7 @@ async function waitForServices() {
   // Wait for Odoo (only required for e2e tests, not integration tests)
   // Skip Odoo check unless explicitly required via REQUIRE_ODOO env var
   if (process.env.REQUIRE_ODOO === "true") {
-    const odooHealthUrl = new URL("/web/health", process.env.ODOO_URL || "http://localhost:8069").toString();
+    const odooHealthUrl = new URL("/web/health", process.env.ODOO_URL ?? "http://localhost:8069").toString();
 
     for (let i = 0; i < maxRetries; i++) {
       try {
@@ -72,9 +72,9 @@ async function waitForServices() {
           break;
         }
         throw new Error(`Unexpected status ${response.status}`);
-      } catch (error) {
+      } catch (err) {
         if (i === maxRetries - 1) {
-          throw new Error(`Odoo not ready after ${maxRetries} attempts: ${error}`);
+          throw new Error(`Odoo not ready after ${maxRetries} attempts: ${String(err)}`);
         }
         await new Promise((resolve) => setTimeout(resolve, retryDelay));
       }

@@ -49,8 +49,8 @@ self.onmessage = async (event: MessageEvent<WorkerMessage>) => {
     } else if (message.type === "decrypt") {
       await handleDecrypt(message);
     }
-  } catch (error) {
-    postErrorMessage(error instanceof Error ? error.message : String(error));
+  } catch (err) {
+    postErrorMessage(err instanceof Error ? err.message : String(err));
   }
 };
 

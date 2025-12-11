@@ -66,7 +66,7 @@ export function useCreateCase() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.all });
     },
   });
 }
@@ -92,8 +92,8 @@ export function useUpdateCase() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.all });
     },
   });
 }
@@ -112,7 +112,7 @@ export function useDeleteCase() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.all });
     },
   });
 }
@@ -159,7 +159,7 @@ export function useCreateCaseTemplate() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.templates });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.templates });
     },
   });
 }
@@ -202,8 +202,8 @@ export function useCreateScope() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.scopes(variables.caseId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.scopes(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
     },
   });
 }
@@ -229,8 +229,8 @@ export function useCreateScopeFromTemplate() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.scopes(variables.caseId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.scopes(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
     },
   });
 }
@@ -258,8 +258,8 @@ export function useUpdateScopeStatus() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.scopes(variables.caseId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.scopes(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
     },
   });
 }
@@ -331,14 +331,14 @@ export function useCompleteProcedure() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.cases.procedures(variables.caseId, variables.scopeId, variables.sectionId),
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: queryKeys.cases.sections(variables.caseId, variables.scopeId),
       });
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.scopes(variables.caseId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.scopes(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
     },
   });
 }
@@ -381,7 +381,7 @@ export function useUploadCaseDocument() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.documents(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.documents(variables.caseId) });
     },
   });
 }
@@ -400,7 +400,7 @@ export function useDeleteCaseDocument() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.documents(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.documents(variables.caseId) });
     },
   });
 }
@@ -443,7 +443,7 @@ export function useAddCaseNote() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.notes(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.notes(variables.caseId) });
     },
   });
 }
@@ -471,7 +471,7 @@ export function useUpdateCaseNote() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.notes(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.notes(variables.caseId) });
     },
   });
 }
@@ -514,8 +514,8 @@ export function useAssignCase() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.assignments(variables.caseId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.assignments(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
     },
   });
 }
@@ -534,8 +534,8 @@ export function useRemoveCaseAssignment() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.assignments(variables.caseId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.assignments(variables.caseId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.cases.detail(variables.caseId) });
     },
   });
 }

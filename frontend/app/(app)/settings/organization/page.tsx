@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import {
   useActiveOrganization,
   useUpdateOrganization,
@@ -12,6 +12,7 @@ import { useToast, SafeeToastContainer } from "@/components/feedback";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { LogoUpload } from "@/components/common";
 import { useQueryClient } from "@tanstack/react-query";
+import { logError } from "@/lib/utils/logger";
 import {
   Building2,
   Trash2,
@@ -60,6 +61,102 @@ interface OrganizationSettings {
   language?: string;
 }
 
+interface EditableFieldProps {
+  label: string;
+  value: string;
+  field: keyof OrganizationSettings;
+  icon: React.ComponentType<{ className?: string }>;
+  section: string;
+  type?: "text" | "phone";
+  isEditing: string | null;
+  settings: OrganizationSettings;
+  setSettings: React.Dispatch<React.SetStateAction<OrganizationSettings>>;
+  setIsEditing: React.Dispatch<React.SetStateAction<string | null>>;
+  handleSave: (section: string) => Promise<void>;
+}
+
+function EditableFieldComponent({
+  label,
+  value,
+  field,
+  icon: Icon,
+  section,
+  type = "text",
+  isEditing,
+  settings,
+  setSettings,
+  setIsEditing,
+  handleSave,
+}: EditableFieldProps) {
+  const isEditingField = isEditing === `${section}-${field}`;
+
+  return (
+    <div className="flex items-center justify-between py-4 border-b border-gray-200 last:border-0">
+      <div className="flex items-center gap-3 flex-1">
+        <Icon className="w-5 h-5 text-gray-400" />
+        <div className="flex-1">
+          <p className="text-sm font-medium text-gray-700">{label}</p>
+          {isEditingField ? (
+            type === "phone" ? (
+              <PhoneInput
+                international
+                defaultCountry="QA"
+                value={settings[field]}
+                onChange={(value) => {
+                  setSettings({ ...settings, [field]: value || "" });
+                }}
+                className="mt-1 phone-input-custom"
+              />
+            ) : (
+              <input
+                type="text"
+                value={settings[field]}
+                onChange={(e) => {
+                  setSettings({ ...settings, [field]: e.target.value });
+                }}
+                className="mt-1 w-full px-3 py-2 border border-blue-500 rounded-lg focus:ring-2 focus:ring-blue-500"
+                autoFocus
+              />
+            )
+          ) : (
+            <p className="text-sm text-gray-900 mt-1">{value || "None listed"}</p>
+          )}
+        </div>
+      </div>
+      {isEditingField ? (
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              void handleSave(section);
+            }}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          >
+            <Save className="w-4 h-4" />
+            Save
+          </button>
+          <button
+            onClick={() => {
+              setIsEditing(null);
+            }}
+            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      ) : (
+        <button
+          onClick={() => {
+            setIsEditing(`${section}-${field}`);
+          }}
+          className="px-4 py-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
+        >
+          Edit
+        </button>
+      )}
+    </div>
+  );
+}
+
 export default function OrganizationSettingsPage() {
   const { t } = useTranslation();
   const toast = useToast();
@@ -100,13 +197,15 @@ export default function OrganizationSettingsPage() {
   // Auto-fill from user data when available
   useEffect(() => {
     if (user && organization) {
-      setSettings((prev) => ({
-        ...prev,
-        name: organization.name || prev.name,
-        email: prev.email || user.email || "",
-        customerEmail: prev.customerEmail || user.email || "",
-        legalName: prev.legalName || organization.name || "",
-      }));
+      startTransition(() => {
+        setSettings((prev) => ({
+          ...prev,
+          name: organization.name || prev.name,
+          email: prev.email || user.email || "",
+          customerEmail: prev.customerEmail || user.email || "",
+          legalName: prev.legalName || organization.name || "",
+        }));
+      });
     }
   }, [user, organization]);
 
@@ -136,9 +235,9 @@ export default function OrganizationSettingsPage() {
         slug: organization.slug,
       });
       setIsEditing(null);
-    } catch (error) {
-      console.error("Failed to update organization:", error);
+    } catch (err) {
       toast.error("Failed to update organization settings");
+      logError("Failed to update organization", err, { orgId: organization.id });
     }
   };
 
@@ -148,84 +247,10 @@ export default function OrganizationSettingsPage() {
     try {
       await deleteOrganizationMutation.mutateAsync({ orgId: organization.id });
       window.location.href = "/";
-    } catch (error) {
-      console.error("Failed to delete organization:", error);
+    } catch (err) {
       toast.error("Failed to delete organization");
+      logError("Failed to delete organization", err, { orgId: organization.id });
     }
-  };
-
-  const EditableField = ({
-    label,
-    value,
-    field,
-    icon: Icon,
-    section,
-    type = "text",
-  }: {
-    label: string;
-    value: string;
-    field: keyof OrganizationSettings;
-    icon: React.ComponentType<{ className?: string }>;
-    section: string;
-    type?: "text" | "phone";
-  }) => {
-    const isEditingField = isEditing === `${section}-${field}`;
-
-    return (
-      <div className="flex items-center justify-between py-4 border-b border-gray-200 last:border-0">
-        <div className="flex items-center gap-3 flex-1">
-          <Icon className="w-5 h-5 text-gray-400" />
-          <div className="flex-1">
-            <p className="text-sm font-medium text-gray-700">{label}</p>
-            {isEditingField ? (
-              type === "phone" ? (
-                <PhoneInput
-                  international
-                  defaultCountry="QA"
-                  value={settings[field] as string}
-                  onChange={(value) => setSettings({ ...settings, [field]: value || "" })}
-                  className="mt-1 phone-input-custom"
-                />
-              ) : (
-                <input
-                  type="text"
-                  value={settings[field] as string}
-                  onChange={(e) => setSettings({ ...settings, [field]: e.target.value })}
-                  className="mt-1 w-full px-3 py-2 border border-blue-500 rounded-lg focus:ring-2 focus:ring-blue-500"
-                  autoFocus
-                />
-              )
-            ) : (
-              <p className="text-sm text-gray-900 mt-1">{value || "None listed"}</p>
-            )}
-          </div>
-        </div>
-        {isEditingField ? (
-          <div className="flex gap-2">
-            <button
-              onClick={() => handleSave(section)}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-            >
-              <Save className="w-4 h-4" />
-              Save
-            </button>
-            <button
-              onClick={() => setIsEditing(null)}
-              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={() => setIsEditing(`${section}-${field}`)}
-            className="px-4 py-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
-          >
-            Edit
-          </button>
-        )}
-      </div>
-    );
   };
 
   return (
@@ -248,7 +273,7 @@ export default function OrganizationSettingsPage() {
               method="PUT"
               maxSize={2 * 1024 * 1024} // 2MB
               onSuccess={(_metadata) => {
-                queryClient.invalidateQueries({ queryKey: ["organization"] });
+                void queryClient.invalidateQueries({ queryKey: ["organization"] });
                 toast.success(t.settings.organization.logo.uploadSuccess ?? "Logo updated successfully");
               }}
               onError={(_error) => {
@@ -273,48 +298,78 @@ export default function OrganizationSettingsPage() {
             </div>
           </div>
           <div className="space-y-0">
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.companyInfo.name}
               value={settings.name}
               field="name"
               icon={Building2}
               section="company"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.companyInfo.address}
               value={settings.address || ""}
               field="address"
               icon={MapPin}
               section="company"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.companyInfo.email}
               value={settings.email || ""}
               field="email"
               icon={Mail}
               section="company"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.companyInfo.phone}
               value={settings.phone || ""}
               field="phone"
               icon={Phone}
               section="company"
               type="phone"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.companyInfo.website}
               value={settings.website || ""}
               field="website"
               icon={Globe}
               section="company"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.companyInfo.industry}
               value={settings.industry || ""}
               field="industry"
               icon={FileText}
               section="company"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
           </div>
         </div>
@@ -331,40 +386,65 @@ export default function OrganizationSettingsPage() {
             </div>
           </div>
           <div className="space-y-0">
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.legalInfo.legalName}
               value={settings.legalName || ""}
               field="legalName"
               icon={Building2}
               section="legal"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.legalInfo.businessNumber}
               value={settings.businessNumber || ""}
               field="businessNumber"
               icon={FileText}
               section="legal"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.legalInfo.gstNumber}
               value={settings.gstNumber || ""}
               field="gstNumber"
               icon={FileText}
               section="legal"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.legalInfo.businessType}
               value={settings.businessType || ""}
               field="businessType"
               icon={Building2}
               section="legal"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.legalInfo.legalAddress}
               value={settings.legalAddress || ""}
               field="legalAddress"
               icon={MapPin}
               section="legal"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
           </div>
         </div>
@@ -381,19 +461,29 @@ export default function OrganizationSettingsPage() {
             </div>
           </div>
           <div className="space-y-0">
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.customerContact.email}
               value={settings.customerEmail || ""}
               field="customerEmail"
               icon={Mail}
               section="customer"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
-            <EditableField
+            <EditableFieldComponent
               label={t.settings.organization.customerContact.address}
               value={settings.customerAddress || ""}
               field="customerAddress"
               icon={MapPin}
               section="customer"
+              isEditing={isEditing}
+              settings={settings}
+              setSettings={setSettings}
+              setIsEditing={setIsEditing}
+              handleSave={handleSave}
             />
           </div>
         </div>
@@ -416,7 +506,9 @@ export default function OrganizationSettingsPage() {
               </label>
               <select
                 value={settings.language}
-                onChange={(e) => setSettings({ ...settings, language: e.target.value })}
+                onChange={(e) => {
+                  setSettings({ ...settings, language: e.target.value });
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="en">English</option>
@@ -429,7 +521,9 @@ export default function OrganizationSettingsPage() {
               </label>
               <select
                 value={settings.currency}
-                onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
+                onChange={(e) => {
+                  setSettings({ ...settings, currency: e.target.value });
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <optgroup label="GCC Currencies">
@@ -459,7 +553,9 @@ export default function OrganizationSettingsPage() {
               </label>
               <select
                 value={settings.dateFormat}
-                onChange={(e) => setSettings({ ...settings, dateFormat: e.target.value })}
+                onChange={(e) => {
+                  setSettings({ ...settings, dateFormat: e.target.value });
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="dd/mm/yyyy">dd/mm/yyyy</option>
@@ -473,7 +569,9 @@ export default function OrganizationSettingsPage() {
               </label>
               <select
                 value={settings.fiscalYearStart}
-                onChange={(e) => setSettings({ ...settings, fiscalYearStart: e.target.value })}
+                onChange={(e) => {
+                  setSettings({ ...settings, fiscalYearStart: e.target.value });
+                }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 {[
@@ -512,7 +610,9 @@ export default function OrganizationSettingsPage() {
           </div>
           <div className="space-y-4">
             <button
-              onClick={() => setShowTransferModal(true)}
+              onClick={() => {
+                setShowTransferModal(true);
+              }}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
@@ -528,7 +628,9 @@ export default function OrganizationSettingsPage() {
               </div>
             </button>
             <button
-              onClick={() => setShowDeleteModal(true)}
+              onClick={() => {
+                setShowDeleteModal(true);
+              }}
               className="w-full px-4 py-3 border border-red-300 rounded-lg hover:bg-red-50 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
@@ -579,7 +681,9 @@ export default function OrganizationSettingsPage() {
                 </div>
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setShowTransferModal(false)}
+                    onClick={() => {
+                      setShowTransferModal(false);
+                    }}
                     className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
                   >
                     {t.settings.organization.transferModal.cancel}
@@ -632,7 +736,9 @@ export default function OrganizationSettingsPage() {
                   <input
                     type="text"
                     value={deleteConfirmation}
-                    onChange={(e) => setDeleteConfirmation(e.target.value)}
+                    onChange={(e) => {
+                      setDeleteConfirmation(e.target.value);
+                    }}
                     placeholder={organization?.name}
                     className="w-full px-3 py-2 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500"
                   />
@@ -648,7 +754,9 @@ export default function OrganizationSettingsPage() {
                     {t.settings.organization.deleteModal.cancel}
                   </button>
                   <button
-                    onClick={handleDelete}
+                    onClick={() => {
+                      void handleDelete();
+                    }}
                     disabled={
                       deleteConfirmation !== organization?.name || deleteOrganizationMutation.isPending
                     }

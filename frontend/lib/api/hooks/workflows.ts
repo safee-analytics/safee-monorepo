@@ -50,7 +50,7 @@ export function useCreateWorkflow() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.workflows.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.workflows.all });
     },
   });
 }
@@ -76,8 +76,8 @@ export function useUpdateWorkflow() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.workflows.detail(variables.id) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.workflows.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.workflows.detail(variables.id) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.workflows.all });
     },
   });
 }
@@ -96,7 +96,7 @@ export function useDeleteWorkflow() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.workflows.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.workflows.all });
     },
   });
 }
@@ -131,7 +131,7 @@ export function useCreateApprovalRule() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.approvalRules.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.approvalRules.all });
     },
   });
 }
@@ -150,7 +150,7 @@ export function useDeleteApprovalRule() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.approvalRules.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.approvalRules.all });
     },
   });
 }
@@ -201,7 +201,7 @@ export function useSubmitForApproval() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.approvals.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.approvals.all });
     },
   });
 }
@@ -221,8 +221,8 @@ export function useApproveRequest() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.approvals.request(variables.requestId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.approvals.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.approvals.request(variables.requestId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.approvals.all });
     },
   });
 }
@@ -242,8 +242,8 @@ export function useRejectRequest() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.approvals.request(variables.requestId) });
-      queryClient.invalidateQueries({ queryKey: queryKeys.approvals.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.approvals.request(variables.requestId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.approvals.all });
     },
   });
 }
@@ -271,7 +271,7 @@ export function useDelegateApproval() {
       return data;
     },
     onSuccess: (_, variables) => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.approvals.request(variables.requestId) });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.approvals.request(variables.requestId) });
     },
   });
 }

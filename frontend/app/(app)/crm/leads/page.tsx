@@ -21,8 +21,8 @@ export default function LeadsPage() {
   const handleSync = async () => {
     try {
       await syncMutation.mutateAsync("leads");
-    } catch (error) {
-      console.error("Failed to sync leads:", error);
+    } catch (err) {
+      console.error("Failed to sync leads:", err);
     }
   };
 
@@ -43,7 +43,9 @@ export default function LeadsPage() {
             </div>
             <div className="flex items-center space-x-3">
               <AnimatedButton
-                onClick={handleSync}
+                onClick={() => {
+                  void handleSync();
+                }}
                 variant="outline"
                 size="md"
                 disabled={syncMutation.isPending}
@@ -71,7 +73,9 @@ export default function LeadsPage() {
 
               <div className="flex items-center space-x-2">
                 <button
-                  onClick={() => handleTypeFilter(undefined)}
+                  onClick={() => {
+                    handleTypeFilter(undefined);
+                  }}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     !leadFilters.type ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
                   }`}
@@ -79,7 +83,9 @@ export default function LeadsPage() {
                   All
                 </button>
                 <button
-                  onClick={() => handleTypeFilter("lead")}
+                  onClick={() => {
+                    handleTypeFilter("lead");
+                  }}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     leadFilters.type === "lead"
                       ? "bg-blue-100 text-blue-700"
@@ -89,7 +95,9 @@ export default function LeadsPage() {
                   Leads
                 </button>
                 <button
-                  onClick={() => handleTypeFilter("opportunity")}
+                  onClick={() => {
+                    handleTypeFilter("opportunity");
+                  }}
                   className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                     leadFilters.type === "opportunity"
                       ? "bg-blue-100 text-blue-700"
@@ -103,7 +111,9 @@ export default function LeadsPage() {
 
             <div className="flex items-center space-x-3">
               <button
-                onClick={() => setShowFilters(!showFilters)}
+                onClick={() => {
+                  setShowFilters(!showFilters);
+                }}
                 className="flex items-center space-x-2 px-3 py-1.5 text-sm font-medium text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 <Filter className="h-4 w-4" />
@@ -123,12 +133,12 @@ export default function LeadsPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Stage</label>
                   <select
                     value={leadFilters.stageId || ""}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setLeadFilters({
                         ...leadFilters,
                         stageId: e.target.value ? parseInt(e.target.value) : undefined,
-                      })
-                    }
+                      });
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="">All Stages</option>
@@ -143,12 +153,12 @@ export default function LeadsPage() {
                   <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
                   <select
                     value={leadFilters.active === undefined ? "" : leadFilters.active.toString()}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setLeadFilters({
                         ...leadFilters,
                         active: e.target.value === "" ? undefined : e.target.value === "true",
-                      })
-                    }
+                      });
+                    }}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
                     <option value="">All</option>
@@ -158,7 +168,9 @@ export default function LeadsPage() {
                 </div>
                 <div className="col-span-2 flex items-end">
                   <button
-                    onClick={() => setLeadFilters({})}
+                    onClick={() => {
+                      setLeadFilters({});
+                    }}
                     className="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 rounded-lg transition-colors"
                   >
                     Clear Filters

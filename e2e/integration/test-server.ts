@@ -28,29 +28,27 @@ export async function startTestServer() {
 
     console.log(`✅ Test server starting on port ${port}`);
     return { port, result };
-  } catch (error) {
-    console.error("❌ Failed to start test server:", error);
-    throw error;
+  } catch (err) {
+    console.error("❌ Failed to start test server:", err);
+    throw err;
   }
 }
 
 export async function stopTestServer(result: ConcurrentlyResult) {
   try {
     console.log("🛑 Stopping test server...");
-    result.commands.forEach((command) => {
-      if (command.kill) {
-        command.kill();
-      }
-    });
+    for (const command of result.commands) {
+      command.kill();
+    }
     console.log("🛑 Test server stopped");
-  } catch (error) {
-    console.error("❌ Failed to stop test server:", error);
+  } catch (err) {
+    console.error("❌ Failed to stop test server:", err);
   }
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {
-  startTestServer().catch((error) => {
-    console.error("Failed to start test server:", error);
+  startTestServer().catch((err: unknown) => {
+    console.error("Failed to start test server:", err);
     process.exit(1);
   });
 }

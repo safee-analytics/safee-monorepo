@@ -262,9 +262,7 @@ export interface components {
       usagePercentage: number;
     };
     /** @description Construct a type with a set of properties K of type T */
-    "Record_string.unknown_": {
-      [key: string]: unknown;
-    };
+    "Record_string.unknown_": Record<string, unknown>;
     FileMetadata: {
       id: string;
       name: string;
@@ -553,9 +551,7 @@ export interface components {
       /** Format: double */
       port?: number;
     };
-    NASStatusResponse: {
-      [key: string]: components["schemas"]["NASConnectionStatus"];
-    };
+    NASStatusResponse: Record<string, components["schemas"]["NASConnectionStatus"]>;
     Integration: {
       id: string;
       name: string;
@@ -1290,9 +1286,7 @@ export interface components {
       url?: string;
       apiKey?: string;
       authToken?: string;
-    } & {
-      [key: string]: unknown;
-    };
+    } & Record<string, unknown>;
     CreateConnectorRequest: {
       name: string;
       description?: string;
@@ -1370,9 +1364,7 @@ export interface components {
       | "plan_created"
       | "report_generated";
     /** @description Construct a type with a set of properties K of type T */
-    "Record_string.boolean_": {
-      [key: string]: boolean;
-    };
+    "Record_string.boolean_": Record<string, boolean>;
     CaseActivityResponse: {
       id: string;
       caseId: string;
@@ -1397,9 +1389,7 @@ export interface components {
             newValue?: string;
             oldValue?: string;
             caseName?: string;
-          } & {
-            [key: string]: unknown;
-          })
+          } & Record<string, unknown>)
         | null;
       isRead?: components["schemas"]["Record_string.boolean_"] | null;
       /** Format: date-time */
@@ -1421,9 +1411,7 @@ export interface components {
         newValue?: string;
         oldValue?: string;
         caseName?: string;
-      } & {
-        [key: string]: unknown;
-      };
+      } & Record<string, unknown>;
     };
     MarkAsReadRequest: {
       activityIds: string[];
@@ -1965,9 +1953,7 @@ export interface components {
       amount?: number;
       status?: string;
       createdBy?: string;
-    } & {
-      [key: string]: unknown;
-    };
+    } & Record<string, unknown>;
     SubmitForApprovalRequest: {
       entityType: string;
       entityId: string;
@@ -2235,9 +2221,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["DashboardStatsResponse"];
         };
@@ -2257,9 +2241,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["RecentCaseUpdateResponse"][];
         };
@@ -2279,9 +2261,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["NotificationResponse"][];
         };
@@ -2299,9 +2279,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": components["schemas"]["UnreadNotificationsCountResponse"];
         };
@@ -2321,9 +2299,7 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: {
-          [name: string]: unknown;
-        };
+        headers: Record<string, unknown>;
         content: {
           "application/json": {
             success: boolean;

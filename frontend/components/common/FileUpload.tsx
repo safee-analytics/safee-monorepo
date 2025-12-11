@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, useMemo } from "react";
 import { FiUpload, FiFile, FiX, FiCheck, FiAlertCircle, FiLoader } from "react-icons/fi";
 import { useFileUpload, type UseFileUploadOptions } from "@/lib/hooks/useFileUpload";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
@@ -123,7 +123,7 @@ export function FileUpload({
       setDragActive(false);
 
       if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        handleFiles(e.dataTransfer.files);
+        void handleFiles(e.dataTransfer.files);
       }
     },
     [handleFiles],
@@ -134,7 +134,7 @@ export function FileUpload({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       e.preventDefault();
       if (e.target.files && e.target.files.length > 0) {
-        handleFiles(e.target.files);
+        void handleFiles(e.target.files);
       }
     },
     [handleFiles],
@@ -166,9 +166,15 @@ export function FileUpload({
               <FilePreview
                 key={file.id}
                 file={file}
-                onCancel={() => cancelUpload(file.id)}
-                onRemove={() => removeFile(file.id)}
-                onRetry={() => retryUpload(file.id)}
+                onCancel={() => {
+                  void cancelUpload(file.id);
+                }}
+                onRemove={() => {
+                  removeFile(file.id);
+                }}
+                onRetry={() => {
+                  retryUpload(file.id);
+                }}
               />
             ))}
           </div>
@@ -300,9 +306,15 @@ export function FileUpload({
             <FilePreview
               key={file.id}
               file={file}
-              onCancel={() => cancelUpload(file.id)}
-              onRemove={() => removeFile(file.id)}
-              onRetry={() => retryUpload(file.id)}
+              onCancel={() => {
+                void cancelUpload(file.id);
+              }}
+              onRemove={() => {
+                removeFile(file.id);
+              }}
+              onRetry={() => {
+                retryUpload(file.id);
+              }}
               renderPreview={renderPreview}
             />
           ))}
@@ -329,22 +341,25 @@ interface FilePreviewProps {
 
 function FilePreview({ file, onCancel, onRemove, onRetry, renderPreview }: FilePreviewProps) {
   const isImage = file.file.type.startsWith("image/");
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewError, setPreviewError] = useState(false);
 
-  // Try to create preview for images
-  useEffect(() => {
-    if (isImage && !renderPreview) {
-      try {
-        const url = URL.createObjectURL(file.file);
-        setPreviewUrl(url);
-        return () => URL.revokeObjectURL(url);
-      } catch (error) {
-        console.warn("Failed to create preview:", error);
-        setPreviewError(true);
-      }
+  // Derive preview URL without setting state inside effect
+  const previewUrl = useMemo(() => {
+    if (!isImage || renderPreview) return null;
+    try {
+      return URL.createObjectURL(file.file);
+    } catch (err) {
+      console.warn("Failed to create preview:", err);
+      return null;
     }
   }, [file.file, isImage, renderPreview]);
+
+  useEffect(() => {
+    if (!previewUrl) return undefined;
+    return () => {
+      URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   return (
     <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
@@ -357,7 +372,9 @@ function FilePreview({ file, onCancel, onRemove, onRetry, renderPreview }: FileP
             src={previewUrl}
             alt={file.file.name}
             className="w-full h-full object-cover"
-            onError={() => setPreviewError(true)}
+            onError={() => {
+              setPreviewError(true);
+            }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -458,5 +475,5 @@ function formatFileSize(bytes: number): string {
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+  return `${Math.round((bytes / Math.pow(k, i)) * 100) / 100} ${sizes[i]}`;
 }

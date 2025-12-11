@@ -15,7 +15,7 @@ export function useGenerateReport() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["reports"] });
+      void queryClient.invalidateQueries({ queryKey: ["reports"] });
     },
   });
 }

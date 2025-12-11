@@ -20,9 +20,9 @@ export default function EditLeadPage() {
       await updateLeadMutation.mutateAsync({ leadId, data });
       toast.success("Lead updated successfully!");
       router.push(`/crm/leads/${leadId}`);
-    } catch (error) {
+    } catch (err) {
       toast.error("Failed to update lead. Please try again.");
-      console.error("Failed to update lead:", error);
+      console.error("Failed to update lead:", err);
     }
   };
 
@@ -48,7 +48,9 @@ export default function EditLeadPage() {
       <div className="sticky top-[57px] z-30 bg-white border-b border-gray-200">
         <div className="whitespace-nowrap py-4">
           <button
-            onClick={() => router.back()}
+            onClick={() => {
+              router.back();
+            }}
             className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -62,7 +64,13 @@ export default function EditLeadPage() {
       </div>
 
       <div className="max-w-5xl mx-auto whitespace-nowrap py-8">
-        <LeadForm lead={lead} onSubmit={handleSubmit} isSubmitting={updateLeadMutation.isPending} />
+        <LeadForm
+          lead={lead}
+          onSubmit={(values) => {
+            void handleSubmit(values);
+          }}
+          isSubmitting={updateLeadMutation.isPending}
+        />
       </div>
     </div>
   );

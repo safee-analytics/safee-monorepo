@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, startTransition } from "react";
 import { useAcceptInvitation, useInvitation } from "@/lib/api/hooks/organization";
 import { useAuth } from "@/lib/auth/hooks";
 
@@ -39,7 +39,9 @@ export default function AcceptInvitationPage() {
   useEffect(() => {
     // If user is authenticated and invitation is loaded, auto-accept
     if (isAuthenticated && invitation && !isAccepting && !acceptInvitation.isPending) {
-      handleAcceptInvitation();
+      startTransition(() => {
+        void handleAcceptInvitation();
+      });
     }
   }, [isAuthenticated, invitation, isAccepting, acceptInvitation.isPending, handleAcceptInvitation]);
 
@@ -88,7 +90,9 @@ export default function AcceptInvitationPage() {
             {error || invitationError?.message || "This invitation link is invalid or has expired."}
           </p>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => {
+              router.push("/");
+            }}
             className="w-full bg-safee-600 hover:bg-safee-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
           >
             Go to Home

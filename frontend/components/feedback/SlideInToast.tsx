@@ -42,7 +42,9 @@ const Notification = ({
       removeNotif(id);
     }, NOTIFICATION_TTL);
 
-    return () => clearTimeout(timeoutRef);
+    return () => {
+      clearTimeout(timeoutRef);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -57,7 +59,12 @@ const Notification = ({
     >
       <FiCheckSquare className=" mt-0.5" />
       <span>{text}</span>
-      <button onClick={() => removeNotif(id)} className="ml-auto mt-0.5">
+      <button
+        onClick={() => {
+          removeNotif(id);
+        }}
+        className="ml-auto mt-0.5"
+      >
         <FiX />
       </button>
     </motion.div>

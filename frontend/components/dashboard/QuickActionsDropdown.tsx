@@ -51,7 +51,9 @@ export const QuickActionsDropdown = () => {
   return (
     <div className="relative">
       <motion.button
-        onClick={() => setOpen((pv) => !pv)}
+        onClick={() => {
+          setOpen((pv) => !pv);
+        }}
         className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border-2 border-safee-500 text-safee-700 hover:bg-safee-50 transition-colors shadow-sm font-medium"
       >
         <FiPlus className="w-4 h-4" />
@@ -120,7 +122,14 @@ export const QuickActionsDropdown = () => {
       </motion.ul>
 
       {/* Backdrop to close dropdown */}
-      {open && <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />}
+      {open && (
+        <div
+          className="fixed inset-0 z-40"
+          onClick={() => {
+            setOpen(false);
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -140,7 +140,9 @@ export default function ExpensesPage() {
                 type="text"
                 placeholder="Search by bill number or vendor..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                }}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -152,14 +154,18 @@ export default function ExpensesPage() {
             <input
               type="date"
               value={dateRange.from}
-              onChange={(e) => setDateRange((prev) => ({ ...prev, from: e.target.value }))}
+              onChange={(e) => {
+                setDateRange((prev) => ({ ...prev, from: e.target.value }));
+              }}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <span className="text-gray-400">→</span>
             <input
               type="date"
               value={dateRange.to}
-              onChange={(e) => setDateRange((prev) => ({ ...prev, to: e.target.value }))}
+              onChange={(e) => {
+                setDateRange((prev) => ({ ...prev, to: e.target.value }));
+              }}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -168,7 +174,9 @@ export default function ExpensesPage() {
           <div className="flex items-center gap-2">
             <Filter className="w-5 h-5 text-gray-400" />
             <button
-              onClick={() => setStatusFilter("all")}
+              onClick={() => {
+                setStatusFilter("all");
+              }}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 statusFilter === "all"
                   ? "bg-blue-600 text-white"
@@ -178,7 +186,9 @@ export default function ExpensesPage() {
               All
             </button>
             <button
-              onClick={() => setStatusFilter("draft")}
+              onClick={() => {
+                setStatusFilter("draft");
+              }}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 statusFilter === "draft"
                   ? "bg-yellow-600 text-white"
@@ -188,7 +198,9 @@ export default function ExpensesPage() {
               Draft
             </button>
             <button
-              onClick={() => setStatusFilter("posted")}
+              onClick={() => {
+                setStatusFilter("posted");
+              }}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 statusFilter === "posted"
                   ? "bg-green-600 text-white"
@@ -235,7 +247,9 @@ export default function ExpensesPage() {
                   <tr
                     key={bill.id}
                     className="hover:bg-gray-50 transition-colors cursor-pointer"
-                    onClick={() => router.push(`/accounting/bills/${bill.id}`)}
+                    onClick={() => {
+                      router.push(`/accounting/bills/${bill.id}`);
+                    }}
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">

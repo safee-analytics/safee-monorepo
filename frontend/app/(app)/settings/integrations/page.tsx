@@ -42,7 +42,7 @@ export default function IntegrationsSettings() {
       } else {
         await connectIntegration.mutateAsync(id);
       }
-    } catch (_error) {
+    } catch (_err) {
       toast.error(`Failed to ${connected ? "disconnect" : "connect"} integration`);
     }
   };
@@ -63,7 +63,9 @@ export default function IntegrationsSettings() {
               {categories.map((category) => (
                 <button
                   key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
+                  onClick={() => {
+                    setSelectedCategory(category.id);
+                  }}
                   className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
                     selectedCategory === category.id
                       ? "bg-blue-600 text-white"
@@ -111,7 +113,9 @@ export default function IntegrationsSettings() {
                               </div>
                             </div>
                             <button
-                              onClick={() => handleToggleIntegration(integration.id, integration.connected)}
+                              onClick={() => {
+                                void handleToggleIntegration(integration.id, integration.connected);
+                              }}
                               disabled={disconnectIntegration.isPending}
                               className="p-2 text-gray-400 hover:text-red-600 transition-colors disabled:opacity-50"
                               title={t.settings.integrations.status.disconnect}
@@ -160,7 +164,9 @@ export default function IntegrationsSettings() {
                         </div>
                         <p className="text-sm text-gray-600 mb-4">{integration.description}</p>
                         <button
-                          onClick={() => handleToggleIntegration(integration.id, integration.connected)}
+                          onClick={() => {
+                            void handleToggleIntegration(integration.id, integration.connected);
+                          }}
                           disabled={connectIntegration.isPending}
                           className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium disabled:opacity-50"
                         >

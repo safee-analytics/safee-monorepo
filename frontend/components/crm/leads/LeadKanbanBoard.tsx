@@ -36,17 +36,6 @@ export function LeadKanbanBoard({ leads, stages }: LeadKanbanBoardProps) {
 
   const [cards, setCards] = useState<CardType[]>(initialCards);
 
-  // Update cards when leads change
-  useMemo(() => {
-    setCards(
-      leads.map((lead) => ({
-        id: lead.id.toString(),
-        lead,
-        stageId: lead.stage?.id || 0,
-      })),
-    );
-  }, [leads]);
-
   const sortedStages = useMemo(
     () => [...stages].sort((a, b) => (a.sequence || 0) - (b.sequence || 0)),
     [stages],
@@ -73,8 +62,8 @@ export function LeadKanbanBoard({ leads, stages }: LeadKanbanBoardProps) {
           stageId: newStageId,
         },
       });
-    } catch (error) {
-      console.error("Failed to update lead stage:", error);
+    } catch (err) {
+      console.error("Failed to update lead stage:", err);
     }
   };
 
@@ -88,7 +77,9 @@ export function LeadKanbanBoard({ leads, stages }: LeadKanbanBoardProps) {
             cards={cards}
             setCards={setCards}
             color={getStageColor(stage)}
-            onCardMove={handleCardMove}
+            onCardMove={(cardId, newStageId) => {
+              void handleCardMove(cardId, newStageId);
+            }}
           />
         ))}
       </div>
@@ -161,9 +152,9 @@ const Column = ({ stage, cards, setCards, color, onCardMove }: ColumnProps) => {
 
   const clearHighlights = (els?: HTMLElement[]) => {
     const indicators = els || getIndicators();
-    indicators.forEach((i) => {
+    for (const i of indicators) {
       i.style.opacity = "0";
-    });
+    }
   };
 
   const highlightIndicator = (e: DragEvent) => {
@@ -182,10 +173,9 @@ const Column = ({ stage, cards, setCards, color, onCardMove }: ColumnProps) => {
         const offset = e.clientY - (box.top + DISTANCE_OFFSET);
 
         if (offset < 0 && offset > closest.offset) {
-          return { offset: offset, element: child };
-        } else {
-          return closest;
+          return { offset, element: child };
         }
+        return closest;
       },
       {
         offset: Number.NEGATIVE_INFINITY,

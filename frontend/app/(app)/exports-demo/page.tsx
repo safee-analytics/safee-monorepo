@@ -119,7 +119,7 @@ const salesReportData: TablePDFData = {
       key: "amount",
       width: 1.2,
       align: "right",
-      format: (value: unknown) => `${(value as number).toLocaleString()}`,
+      format: (value: unknown) => (value as number).toLocaleString(),
     },
     { header: "Status", key: "status", width: 1, align: "center" },
   ],
@@ -155,12 +155,12 @@ export default function ExportsDemo() {
         const reportBlob = await generatePDFBlob(<TablePDF data={salesReportData} />);
         const reportUrl = URL.createObjectURL(reportBlob);
         setReportPdfUrl(reportUrl);
-      } catch (error) {
-        console.error("Error generating PDF previews:", error);
+      } catch (err) {
+        console.error("Error generating PDF previews:", err);
       }
     };
 
-    generatePreviews();
+    void generatePreviews();
 
     // Cleanup URLs on unmount
     return () => {
@@ -281,7 +281,9 @@ export default function ExportsDemo() {
                 </h3>
 
                 <button
-                  onClick={handleSimpleExcelExport}
+                  onClick={() => {
+                    void handleSimpleExcelExport();
+                  }}
                   disabled={loading === "simple-excel"}
                   className="w-full flex items-center justify-between px-4 py-3 bg-green-50 border-2 border-green-200 rounded-lg hover:bg-green-100 hover:border-green-300 transition disabled:opacity-50 group"
                 >
@@ -310,7 +312,9 @@ export default function ExportsDemo() {
                 </button>
 
                 <button
-                  onClick={handleAdvancedExcelExport}
+                  onClick={() => {
+                    void handleAdvancedExcelExport();
+                  }}
                   disabled={loading === "advanced-excel"}
                   className="w-full flex items-center justify-between px-4 py-3 bg-blue-50 border-2 border-blue-200 rounded-lg hover:bg-blue-100 hover:border-blue-300 transition disabled:opacity-50 group"
                 >
@@ -339,7 +343,9 @@ export default function ExportsDemo() {
                 </button>
 
                 <button
-                  onClick={handleConditionalExcelExport}
+                  onClick={() => {
+                    void handleConditionalExcelExport();
+                  }}
                   disabled={loading === "conditional-excel"}
                   className="w-full flex items-center justify-between px-4 py-3 bg-purple-50 border-2 border-purple-200 rounded-lg hover:bg-purple-100 hover:border-purple-300 transition disabled:opacity-50 group"
                 >

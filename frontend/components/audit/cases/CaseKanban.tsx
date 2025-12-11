@@ -50,7 +50,9 @@ export function CaseKanban({ cases, onCaseClick, availableUsers = [], onUpdate }
               {columnCases.map((caseItem) => (
                 <div
                   key={caseItem.id}
-                  onClick={() => handleCardClick(caseItem.id)}
+                  onClick={() => {
+                    handleCardClick(caseItem.id);
+                  }}
                   className="bg-white rounded-lg border border-gray-200 p-3 hover:shadow-md transition-shadow cursor-pointer"
                 >
                   {/* Card Header */}
@@ -63,7 +65,12 @@ export function CaseKanban({ cases, onCaseClick, availableUsers = [], onUpdate }
                       </div>
                       <span className="font-semibold text-sm text-gray-900">{caseItem.caseId}</span>
                     </div>
-                    <div className="flex items-center gap-1" onClick={(e) => e.stopPropagation()}>
+                    <div
+                      className="flex items-center gap-1"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                    >
                       <InlineStatus
                         caseId={caseItem.id}
                         currentStatus={caseItem.status}
@@ -98,7 +105,9 @@ export function CaseKanban({ cases, onCaseClick, availableUsers = [], onUpdate }
                   {/* Footer */}
                   <div
                     className="flex items-center justify-between pt-2 border-t border-gray-100"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
                   >
                     <InlineAssignee
                       caseId={caseItem.id}

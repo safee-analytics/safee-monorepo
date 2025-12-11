@@ -154,7 +154,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
     })
     .sort((a, b) => a.order - b.order);
 
-  const isActive = (href: string) => pathname === href || pathname?.startsWith(href + "/");
+  const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
 
   // Group links by category
   const groupedLinks = {
@@ -176,7 +176,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
         <div className="p-6">
           <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-6">{t.common.settings}</h2>
           <nav className="space-y-6">
-            {(Object.keys(groupedLinks) as Array<keyof typeof groupedLinks>).map((category) => {
+            {(Object.keys(groupedLinks) as (keyof typeof groupedLinks)[]).map((category) => {
               const links = groupedLinks[category];
               if (links.length === 0) return null;
 

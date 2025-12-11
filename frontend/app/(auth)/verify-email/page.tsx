@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState, useCallback } from "react";
+import { Suspense, useEffect, useState, useCallback, startTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useVerifyEmail } from "@/lib/api/hooks/auth";
 import { useOrgStore } from "@/stores/useOrgStore";
@@ -56,7 +56,9 @@ function VerifyEmailContent() {
   }, [token, t.invalidToken, verifyEmailMutation]);
 
   useEffect(() => {
-    verifyEmail();
+    startTransition(() => {
+      void verifyEmail();
+    });
   }, [verifyEmail]);
 
   const toggleLanguage = () => {
@@ -111,7 +113,9 @@ function VerifyEmailContent() {
           <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.error}</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
-            onClick={() => router.push("/login")}
+            onClick={() => {
+              router.push("/login");
+            }}
             className="w-full bg-safee-600 hover:bg-safee-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
           >
             {t.backToLogin}
@@ -143,7 +147,9 @@ function VerifyEmailContent() {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.success}</h2>
         <p className="text-gray-600 mb-6">{t.successDescription}</p>
         <button
-          onClick={() => router.push("/")}
+          onClick={() => {
+            router.push("/");
+          }}
           className="w-full bg-safee-600 hover:bg-safee-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
         >
           {t.continueToApp}

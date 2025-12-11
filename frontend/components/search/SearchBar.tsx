@@ -49,23 +49,28 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   const { signOut } = useAuth();
   const { theme, setTheme } = useTheme();
   const [query, setQuery] = useState("");
+  const handleSignOut = useCallback(() => {
+    void signOut();
+  }, [signOut]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
-  const inputRef = useRef<HTMLInputElement>(null);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Load recent searches from localStorage
-  useEffect(() => {
+  // Use lazy initialization to load recent searches from localStorage
+  const [recentSearches, setRecentSearches] = useState<RecentSearch[]>(() => {
+    if (typeof window === "undefined") return [];
     const stored = localStorage.getItem(RECENT_SEARCHES_KEY);
     if (stored) {
       try {
-        setRecentSearches(JSON.parse(stored));
-      } catch (e) {
-        console.error("Failed to parse recent searches", e);
+        return JSON.parse(stored);
+      } catch (err) {
+        console.error("Failed to parse recent searches", err);
+        return [];
       }
     }
-  }, []);
+    return [];
+  });
+  const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const previousQueryRef = useRef(query);
 
   // Save recent search
   const saveRecentSearch = useCallback(
@@ -113,7 +118,9 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
             icon: pattern.icon,
             label: `${pattern.type} ${query.toUpperCase()}`,
             description: `Open ${pattern.type.toLowerCase()} details`,
-            action: () => router.push(`${pattern.path}${id}`),
+            action: () => {
+              router.push(`${pattern.path}${id}`);
+            },
             keywords: [query],
           };
         }
@@ -135,25 +142,29 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   }, [theme, setTheme]);
 
   const navigationItems = getNavigationItems(t);
-  const quickActions = getQuickActions(t, signOut);
-  const systemActions = getSystemActions(t, signOut, handleExport, handleThemeToggle, theme);
+  const quickActions = getQuickActions(t, handleSignOut);
+  const systemActions = getSystemActions(t, handleSignOut, handleExport, handleThemeToggle, theme);
 
   // Combine all items for search
   const allItems: SearchResult[] = useMemo(
     () => [
       ...navigationItems.map((item) => ({
         ...item,
-        action: () => router.push(item.path),
+        action: () => {
+          router.push(item.path);
+        },
       })),
       ...quickActions.map((item) => ({
         ...item,
-        action: () => router.push(item.path),
+        action: () => {
+          router.push(item.path);
+        },
       })),
       ...systemActions.map((item) => ({
         ...item,
         action: () => {
           if (item.path === "#logout") {
-            signOut();
+            handleSignOut();
           } else if (item.path === "#export") {
             handleExport();
           } else if (item.path === "#theme") {
@@ -164,7 +175,7 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
         },
       })),
     ],
-    [navigationItems, quickActions, systemActions, router, signOut, handleExport, handleThemeToggle],
+    [navigationItems, quickActions, systemActions, router, handleExport, handleThemeToggle, handleSignOut],
   );
 
   // Filter results based on query
@@ -236,7 +247,9 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
     };
 
     document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, [isOpen, filteredResults, selectedIndex, handleSelect]);
 
   // Close dropdown when clicking outside
@@ -252,13 +265,10 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
-
-  // Reset selection when results change
-  useEffect(() => {
-    setSelectedIndex(0);
-  }, [query]);
 
   const handleRecentSearch = (recent: RecentSearch) => {
     setQuery(recent.label);
@@ -278,10 +288,18 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
           type="text"
           value={query}
           onChange={(e) => {
-            setQuery(e.target.value);
+            const newQuery = e.target.value;
+            // Reset selection when query changes
+            if (newQuery !== previousQueryRef.current) {
+              setSelectedIndex(0);
+              previousQueryRef.current = newQuery;
+            }
+            setQuery(newQuery);
             setIsOpen(true);
           }}
-          onFocus={() => setIsOpen(true)}
+          onFocus={() => {
+            setIsOpen(true);
+          }}
           placeholder={t.common.searchPlaceholder}
           className={`w-full ${locale === "ar" ? "pr-12 pl-24" : "pl-12 pr-24"} py-2.5 bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-safee-500 focus:bg-white dark:focus:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder:text-gray-500 dark:placeholder:text-gray-400 transition-all`}
         />
@@ -317,7 +335,9 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
               {recentSearches.map((recent) => (
                 <button
                   key={recent.id}
-                  onClick={() => handleRecentSearch(recent)}
+                  onClick={() => {
+                    handleRecentSearch(recent);
+                  }}
                   className="w-full flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
                 >
                   <div className="w-9 h-9 rounded-lg bg-gray-100 dark:bg-gray-700 flex items-center justify-center">
@@ -341,8 +361,12 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
                   return (
                     <button
                       key={result.id}
-                      onClick={() => handleSelect(result)}
-                      onMouseEnter={() => setSelectedIndex(index)}
+                      onClick={() => {
+                        handleSelect(result);
+                      }}
+                      onMouseEnter={() => {
+                        setSelectedIndex(index);
+                      }}
                       className={`w-full flex items-center gap-3 px-4 py-3 transition-colors ${
                         isSelected
                           ? "bg-safee-50 dark:bg-safee-900/20"

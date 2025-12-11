@@ -36,30 +36,37 @@ export const useEncryptionStore = create<EncryptionState>((set) => ({
   masterKey: null,
   isUnlocked: false,
 
-  setOrgKey: (key) => set({ orgKey: key }),
+  setOrgKey: (key) => {
+    set({ orgKey: key });
+  },
 
-  setMasterKey: (key) => set({ masterKey: key }),
+  setMasterKey: (key) => {
+    set({ masterKey: key });
+  },
 
-  lock: () =>
+  lock: () => {
     set({
       orgKey: null,
       masterKey: null,
       isUnlocked: false,
-    }),
+    });
+  },
 
-  clearKeys: () =>
+  clearKeys: () => {
     set({
       orgKey: null,
       masterKey: null,
       isUnlocked: false,
-    }),
+    });
+  },
 
-  unlock: (orgKey, masterKey) =>
+  unlock: (orgKey, masterKey) => {
     set({
       orgKey,
       masterKey,
       isUnlocked: true,
-    }),
+    });
+  },
 }));
 
 /**

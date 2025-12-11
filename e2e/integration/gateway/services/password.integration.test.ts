@@ -90,7 +90,7 @@ describe("Password Service Integration Tests", () => {
       const password = "SecureP@ssw0rd123";
       const hash = await passwordService.hashPassword(password);
 
-      const isValid = await passwordService.verifyPassword(password + " ", hash);
+      const isValid = await passwordService.verifyPassword(`${password} `, hash);
 
       expect(isValid).toBe(false);
     });
@@ -99,7 +99,7 @@ describe("Password Service Integration Tests", () => {
       const password = "SecureP@ssw0rd123";
       const hash = await passwordService.hashPassword(password);
 
-      const isValid = await passwordService.verifyPassword(" " + password, hash);
+      const isValid = await passwordService.verifyPassword(` ${password}`, hash);
 
       expect(isValid).toBe(false);
     });

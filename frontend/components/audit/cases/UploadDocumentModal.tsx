@@ -84,9 +84,9 @@ export function UploadDocumentModal({ isOpen, onClose, onUpload }: UploadDocumen
   };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return bytes + " B";
-    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
-    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   return (
@@ -128,7 +128,9 @@ export function UploadDocumentModal({ isOpen, onClose, onUpload }: UploadDocumen
                     <p className="text-xs text-gray-500">{formatFileSize(selectedFile.size)}</p>
                   </div>
                   <button
-                    onClick={() => setSelectedFile(null)}
+                    onClick={() => {
+                      setSelectedFile(null);
+                    }}
                     className="ml-4 p-1 hover:bg-gray-100 rounded transition-colors"
                   >
                     <X className="w-4 h-4 text-gray-600" />
@@ -157,7 +159,9 @@ export function UploadDocumentModal({ isOpen, onClose, onUpload }: UploadDocumen
             <label className="block text-sm font-medium text-gray-700 mb-2">Document Category</label>
             <select
               value={category}
-              onChange={(e) => setCategory(e.target.value)}
+              onChange={(e) => {
+                setCategory(e.target.value);
+              }}
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               {documentCategories.map((cat) => (
@@ -174,7 +178,9 @@ export function UploadDocumentModal({ isOpen, onClose, onUpload }: UploadDocumen
               type="checkbox"
               id="required"
               checked={isRequired}
-              onChange={(e) => setIsRequired(e.target.checked)}
+              onChange={(e) => {
+                setIsRequired(e.target.checked);
+              }}
               className="mt-1 rounded border-gray-300 cursor-pointer"
             />
             <div>

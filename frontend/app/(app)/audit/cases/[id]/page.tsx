@@ -68,7 +68,7 @@ export default function CaseDetailPage() {
     },
   ];
 
-  const handleUpload = async (_files: Array<{ file: File; category: string }>) => {
+  const handleUpload = async (_files: { file: File; category: string }[]) => {
     // Implement actual upload logic here
     console.warn("Uploading files:", _files);
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -109,7 +109,12 @@ export default function CaseDetailPage() {
         <div className="text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Case Not Found</h2>
           <p className="text-gray-600 mb-4">The case you&apos;re looking for doesn&apos;t exist.</p>
-          <AnimatedButton onClick={() => router.push("/audit/cases")} variant="primary">
+          <AnimatedButton
+            onClick={() => {
+              router.push("/audit/cases");
+            }}
+            variant="primary"
+          >
             Back to Cases
           </AnimatedButton>
         </div>
@@ -128,7 +133,9 @@ export default function CaseDetailPage() {
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center space-x-4 mb-4">
             <button
-              onClick={() => router.push("/audit/cases")}
+              onClick={() => {
+                router.push("/audit/cases");
+              }}
               className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <ArrowLeft className="h-5 w-5 text-gray-600" />
@@ -175,7 +182,9 @@ export default function CaseDetailPage() {
           {/* Tabs */}
           <div className="flex items-center space-x-1 border-b border-gray-200 -mb-px">
             <button
-              onClick={() => setActiveTab("overview")}
+              onClick={() => {
+                setActiveTab("overview");
+              }}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === "overview"
                   ? "border-blue-600 text-blue-600"
@@ -185,7 +194,9 @@ export default function CaseDetailPage() {
               Overview
             </button>
             <button
-              onClick={() => setActiveTab("documents")}
+              onClick={() => {
+                setActiveTab("documents");
+              }}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === "documents"
                   ? "border-blue-600 text-blue-600"
@@ -198,7 +209,9 @@ export default function CaseDetailPage() {
               </span>
             </button>
             <button
-              onClick={() => setActiveTab("activity")}
+              onClick={() => {
+                setActiveTab("activity");
+              }}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === "activity"
                   ? "border-blue-600 text-blue-600"
@@ -208,7 +221,9 @@ export default function CaseDetailPage() {
               Activity
             </button>
             <button
-              onClick={() => setActiveTab("team")}
+              onClick={() => {
+                setActiveTab("team");
+              }}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === "team"
                   ? "border-blue-600 text-blue-600"
@@ -310,7 +325,9 @@ export default function CaseDetailPage() {
             onUpload={(_files) => {
               setShowUploadModal(true);
             }}
-            onDocumentClick={(doc) => setPreviewDocument(doc)}
+            onDocumentClick={(doc) => {
+              setPreviewDocument(doc);
+            }}
             onDownload={(docIds) => {
               console.warn("Download documents:", docIds);
             }}
@@ -348,13 +365,17 @@ export default function CaseDetailPage() {
       {/* Modals */}
       <BulkUploadModal
         isOpen={showUploadModal}
-        onClose={() => setShowUploadModal(false)}
+        onClose={() => {
+          setShowUploadModal(false);
+        }}
         onUpload={handleUpload}
       />
 
       <DocumentPreviewDrawer
         isOpen={!!previewDocument}
-        onClose={() => setPreviewDocument(null)}
+        onClose={() => {
+          setPreviewDocument(null);
+        }}
         document={previewDocument}
       />
     </div>

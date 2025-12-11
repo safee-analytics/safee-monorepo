@@ -18,11 +18,9 @@ interface AISuggestionsProps {
   auditYear?: number;
   totalBudget?: string;
   totalHours?: number;
-  onApplyTeamSuggestion?: (
-    members: Array<{ userId: string; name: string; role: string; hours?: number }>,
-  ) => void;
+  onApplyTeamSuggestion?: (members: { userId: string; name: string; role: string; hours?: number }[]) => void;
   onApplyBudgetSuggestion?: (budget: string, hours: number) => void;
-  onApplyRiskSuggestion?: (risks: Array<{ type: string; severity: string; message: string }>) => void;
+  onApplyRiskSuggestion?: (risks: { type: string; severity: string; message: string }[]) => void;
 }
 
 export function AISuggestions({
@@ -105,7 +103,9 @@ export function AISuggestions({
       {/* Header */}
       <div
         className="px-6 py-4 bg-white/80 backdrop-blur-sm border-b border-purple-200 cursor-pointer"
-        onClick={() => setIsExpanded(!isExpanded)}
+        onClick={() => {
+          setIsExpanded(!isExpanded);
+        }}
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -133,7 +133,9 @@ export function AISuggestions({
           {/* Generate Button */}
           {!isGenerating && (
             <button
-              onClick={handleGenerateSuggestions}
+              onClick={() => {
+                void handleGenerateSuggestions();
+              }}
               className="w-full py-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white rounded-lg flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
             >
               <Sparkles className="w-4 h-4" />
@@ -155,7 +157,9 @@ export function AISuggestions({
               {/* Tabs */}
               <div className="flex items-center gap-2 p-1 bg-white/80 backdrop-blur-sm rounded-lg">
                 <button
-                  onClick={() => setActiveTab("team")}
+                  onClick={() => {
+                    setActiveTab("team");
+                  }}
                   className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeTab === "team"
                       ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md"
@@ -166,7 +170,9 @@ export function AISuggestions({
                   Team
                 </button>
                 <button
-                  onClick={() => setActiveTab("budget")}
+                  onClick={() => {
+                    setActiveTab("budget");
+                  }}
                   className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeTab === "budget"
                       ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md"
@@ -177,7 +183,9 @@ export function AISuggestions({
                   Budget
                 </button>
                 <button
-                  onClick={() => setActiveTab("risks")}
+                  onClick={() => {
+                    setActiveTab("risks");
+                  }}
                   className={`flex-1 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                     activeTab === "risks"
                       ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md"

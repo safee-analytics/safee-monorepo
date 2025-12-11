@@ -5,10 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatCurrency(amount: number, locale: "ar" | "en" = "ar", currency: string = "SAR") {
+export function formatCurrency(amount: number, locale: "ar" | "en" = "ar", currency = "SAR") {
   return new Intl.NumberFormat(locale === "ar" ? "ar-SA" : "en-US", {
     style: "currency",
-    currency: currency,
+    currency,
   }).format(amount);
 }
 
