@@ -197,9 +197,13 @@ export default function OnboardingPage() {
 
   // Navigate between steps
   const goToNextStep = () => {
-    if (currentStep === "organization") handleCreateOrganization();
-    else if (currentStep === "team") setCurrentStep("modules");
-    else if (currentStep === "modules") handleCompleteOnboarding();
+    if (currentStep === "organization") {
+      void handleCreateOrganization();
+    } else if (currentStep === "team") {
+      setCurrentStep("modules");
+    } else if (currentStep === "modules") {
+      void handleCompleteOnboarding();
+    }
   };
 
   const goToPreviousStep = () => {
@@ -383,7 +387,9 @@ function OrganizationStep({
             id="org-name"
             type="text"
             value={organizationName}
-            onChange={(e) => { onNameChange(e.target.value); }}
+            onChange={(e) => {
+              onNameChange(e.target.value);
+            }}
             placeholder="Acme Inc."
             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 ring-1 ring-transparent transition-all focus:outline-0 focus:ring-2 focus:ring-safee-500 focus:border-safee-500"
             required
@@ -397,7 +403,9 @@ function OrganizationStep({
           <select
             id="industry"
             value={industry}
-            onChange={(e) => { onIndustryChange(e.target.value); }}
+            onChange={(e) => {
+              onIndustryChange(e.target.value);
+            }}
             className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 ring-1 ring-transparent transition-all focus:outline-0 focus:ring-2 focus:ring-safee-500 focus:border-safee-500"
           >
             <option value="">Select an industry</option>
@@ -469,7 +477,9 @@ function TeamStep({
               id="member-email"
               type="email"
               value={newMemberEmail}
-              onChange={(e) => { onNewMemberEmailChange(e.target.value); }}
+              onChange={(e) => {
+                onNewMemberEmailChange(e.target.value);
+              }}
               onKeyPress={(e) => e.key === "Enter" && onAddMember()}
               placeholder="colleague@company.com"
               className="flex-1 rounded-lg border border-gray-300 bg-white px-4 py-3 text-gray-900 placeholder-gray-400 ring-1 ring-transparent transition-all focus:outline-0 focus:ring-2 focus:ring-safee-500 focus:border-safee-500"
@@ -503,7 +513,9 @@ function TeamStep({
                     </div>
                   </div>
                   <button
-                    onClick={() => { onRemoveMember(member.email); }}
+                    onClick={() => {
+                      onRemoveMember(member.email);
+                    }}
                     className="p-2 rounded-lg hover:bg-gray-200 transition-colors"
                   >
                     <X className="w-4 h-4 text-gray-600" />
@@ -574,7 +586,9 @@ function ModulesStep({
           return (
             <button
               key={module.id}
-              onClick={() => { onToggleModule(module.id); }}
+              onClick={() => {
+                onToggleModule(module.id);
+              }}
               className={twMerge(
                 "relative p-6 rounded-xl border-2 text-left transition-all hover:scale-105 active:scale-95",
                 isSelected

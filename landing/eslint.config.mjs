@@ -36,7 +36,7 @@ const eslintConfig = defineConfig([
       // Code quality
       "prefer-const": "error",
       "no-var": "error",
-      "eqeqeq": ["error", "always"],
+      eqeqeq: ["error", "always"],
       "no-console": ["warn", { allow: ["warn", "error"] }],
 
       // Landing page specific - allow img tags for marketing assets

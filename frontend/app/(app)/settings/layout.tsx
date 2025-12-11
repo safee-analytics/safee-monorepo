@@ -154,7 +154,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
     })
     .sort((a, b) => a.order - b.order);
 
-  const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href  }/`);
+  const isActive = (href: string) => pathname === href || pathname?.startsWith(`${href}/`);
 
   // Group links by category
   const groupedLinks = {

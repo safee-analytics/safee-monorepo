@@ -159,7 +159,7 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     try {
-      signInWithGoogle("/");
+      await signInWithGoogle("/");
     } catch (err) {
       console.error("Google login failed:", err);
       setError("Google login failed. Please try again.");
@@ -267,20 +267,32 @@ export default function LoginPage() {
       ) : (
         <SafeeLoginForm
           t={t}
-          onSubmit={handleSubmit}
-          onGoogleLogin={handleGoogleLogin}
-          onSSOLogin={handleSSOLogin}
+          onSubmit={(email, password) => {
+            void handleSubmit(email, password);
+          }}
+          onGoogleLogin={() => {
+            void handleGoogleLogin();
+          }}
+          onSSOLogin={() => {
+            void handleSSOLogin();
+          }}
           onGoBack={handleGoBack}
-          onSendMagicLink={handleSendMagicLink}
+          onSendMagicLink={(email) => {
+            void handleSendMagicLink(email);
+          }}
           useMagicLinkMode={useMagicLinkMode}
-          onToggleMagicLink={() => { setUseMagicLinkMode(!useMagicLinkMode); }}
+          onToggleMagicLink={() => {
+            setUseMagicLinkMode(!useMagicLinkMode);
+          }}
         />
       )}
 
       {/* 2FA Verification Modal */}
       <TwoFactorVerification
         isOpen={show2FAVerification}
-        onClose={() => { setShow2FAVerification(false); }}
+        onClose={() => {
+          setShow2FAVerification(false);
+        }}
         onSuccess={handle2FASuccess}
         email={loginEmail}
       />

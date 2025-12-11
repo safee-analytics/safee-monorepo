@@ -118,7 +118,9 @@ function ResetPasswordContent() {
           <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.invalidToken}</h2>
           <p className="text-gray-600 mb-6">{t.invalidTokenDescription}</p>
           <button
-            onClick={() => { router.push("/forgot-password"); }}
+            onClick={() => {
+              router.push("/forgot-password");
+            }}
             className="w-full bg-safee-600 hover:bg-safee-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
           >
             Request New Link
@@ -200,7 +202,9 @@ function ResetPasswordContent() {
               id="password"
               type="password"
               value={password}
-              onChange={(e) => { setPassword(e.target.value); }}
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
               placeholder={t.passwordPlaceholder}
               required
               minLength={8}
@@ -217,7 +221,9 @@ function ResetPasswordContent() {
               id="confirmPassword"
               type="password"
               value={confirmPassword}
-              onChange={(e) => { setConfirmPassword(e.target.value); }}
+              onChange={(e) => {
+                setConfirmPassword(e.target.value);
+              }}
               placeholder={t.confirmPasswordPlaceholder}
               required
               minLength={8}
@@ -235,7 +241,9 @@ function ResetPasswordContent() {
 
           <button
             type="button"
-            onClick={() => { router.push("/login"); }}
+            onClick={() => {
+              router.push("/login");
+            }}
             className="w-full text-gray-600 hover:text-gray-800 text-sm font-medium"
           >
             {t.backToLogin}

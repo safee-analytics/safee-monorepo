@@ -23,7 +23,9 @@ export const LanguageSwitcher = () => {
 
   return (
     <button
-      onClick={toggleLanguage}
+      onClick={() => {
+        void toggleLanguage();
+      }}
       className="flex items-center gap-2 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
       title={isArabic ? "Switch to English" : "Switch to Arabic"}
     >

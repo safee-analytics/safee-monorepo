@@ -167,7 +167,9 @@ const EmailForm = ({
           id="email-input"
           type="email"
           value={email}
-          onChange={(e) => { setEmail(e.target.value); }}
+          onChange={(e) => {
+            setEmail(e.target.value);
+          }}
           placeholder={t.emailPlaceholder}
           className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 placeholder-gray-400 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
           required
@@ -191,7 +193,9 @@ const EmailForm = ({
             id="password-input"
             type="password"
             value={password}
-            onChange={(e) => { setPassword(e.target.value); }}
+            onChange={(e) => {
+              setPassword(e.target.value);
+            }}
             placeholder={t.passwordPlaceholder}
             className="w-full rounded-md border border-gray-300 bg-white px-3 py-2 placeholder-gray-400 ring-1 ring-transparent transition-shadow focus:outline-0 focus:ring-safee-500"
             required

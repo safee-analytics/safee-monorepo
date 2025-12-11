@@ -58,7 +58,7 @@ const eslintConfig = [
       "no-console": ["warn", { allow: ["warn", "error"] }],
       "prefer-const": "error",
       "no-var": "error",
-      "eqeqeq": ["error", "always"], // Require === and !==
+      eqeqeq: ["error", "always"], // Require === and !==
       "no-else-return": "error", // Cleaner conditionals
 
       // Disable only the React-specific pedantic rules

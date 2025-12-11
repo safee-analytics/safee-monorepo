@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, ArrowLeft, ArrowRight, Save } from "lucide-react";
 import { useAuditStore } from "@/stores/useAuditStore";
@@ -136,7 +136,9 @@ export function CreateCaseWizard({ isOpen, onClose, onSuccess }: CreateCaseWizar
   // Load draft on mount
   useEffect(() => {
     if (wizardDraft && isOpen) {
-      setWizardData(wizardDraft);
+      startTransition(() => {
+        setWizardData(wizardDraft);
+      });
     }
   }, [wizardDraft, isOpen]);
 
@@ -150,7 +152,9 @@ export function CreateCaseWizard({ isOpen, onClose, onSuccess }: CreateCaseWizar
       }
     }, 30000); // 30 seconds
 
-    return () => { clearInterval(interval); };
+    return () => {
+      clearInterval(interval);
+    };
   }, [wizardData, isOpen, saveWizardDraft]);
 
   const handleDataChange = (updates: Partial<WizardData>) => {
@@ -180,7 +184,7 @@ export function CreateCaseWizard({ isOpen, onClose, onSuccess }: CreateCaseWizar
     }
 
     if (isLastStep) {
-      handleSubmit();
+      void handleSubmit();
     } else {
       setCurrentStepIndex((prev) => prev + 1);
     }
@@ -195,7 +199,7 @@ export function CreateCaseWizard({ isOpen, onClose, onSuccess }: CreateCaseWizar
   const handleSkip = () => {
     if (currentStep.canSkip) {
       if (isLastStep) {
-        handleSubmit();
+        void handleSubmit();
       } else {
         setCurrentStepIndex((prev) => prev + 1);
       }
@@ -269,7 +273,9 @@ export function CreateCaseWizard({ isOpen, onClose, onSuccess }: CreateCaseWizar
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            onClick={(e) => { e.stopPropagation(); }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             className="bg-white rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
           >
             {/* Header */}

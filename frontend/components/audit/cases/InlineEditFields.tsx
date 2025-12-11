@@ -58,7 +58,9 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
     }
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => { document.removeEventListener("mousedown", handleClickOutside); };
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
     }
   }, [isOpen]);
 
@@ -84,7 +86,9 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => { setIsOpen(!isOpen); }}
+        onClick={() => {
+          setIsOpen(!isOpen);
+        }}
         className="hover:opacity-80 transition-opacity cursor-pointer"
       >
         <StatusBadge status={badgeStatus} />
@@ -105,7 +109,9 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
               return (
                 <button
                   key={s.value}
-                  onClick={() => handleStatusChange(s.value)}
+                  onClick={() => {
+                    void handleStatusChange(s.value);
+                  }}
                   className="px-2 py-1.5 text-left text-sm hover:bg-gray-50 transition-colors whitespace-nowrap"
                 >
                   {validatedStatus.success ? (
@@ -163,7 +169,9 @@ export function InlinePriority({ caseId, currentPriority, onUpdate }: InlinePrio
     }
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => { document.removeEventListener("mousedown", handleClickOutside); };
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
     }
   }, [isOpen]);
 
@@ -185,7 +193,9 @@ export function InlinePriority({ caseId, currentPriority, onUpdate }: InlinePrio
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => { setIsOpen(!isOpen); }}
+        onClick={() => {
+          setIsOpen(!isOpen);
+        }}
         className="hover:opacity-80 transition-opacity cursor-pointer"
       >
         <PriorityBadge priority={badgePriority} />
@@ -206,7 +216,9 @@ export function InlinePriority({ caseId, currentPriority, onUpdate }: InlinePrio
               return (
                 <button
                   key={p.value}
-                  onClick={() => handlePriorityChange(p.value)}
+                  onClick={() => {
+                    void handlePriorityChange(p.value);
+                  }}
                   className="px-2 py-1.5 text-left text-sm hover:bg-gray-50 transition-colors whitespace-nowrap"
                 >
                   {validatedPriority.success ? (
@@ -271,7 +283,9 @@ export function InlineAssignee({ caseId, currentAssignee, availableUsers, onUpda
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       searchInputRef.current?.focus();
-      return () => { document.removeEventListener("mousedown", handleClickOutside); };
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
     }
   }, [isOpen]);
 
@@ -306,9 +320,9 @@ export function InlineAssignee({ caseId, currentAssignee, availableUsers, onUpda
     } else if (e.key === "Enter") {
       e.preventDefault();
       if (selectedUserId) {
-        handleAssigneeChange(selectedUserId);
+        void handleAssigneeChange(selectedUserId);
       } else if (filteredUsers[highlightedIndex]) {
-        handleAssigneeChange(filteredUsers[highlightedIndex].id);
+        void handleAssigneeChange(filteredUsers[highlightedIndex].id);
       }
     } else if (e.key === "Escape") {
       setIsOpen(false);
@@ -321,7 +335,9 @@ export function InlineAssignee({ caseId, currentAssignee, availableUsers, onUpda
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => { setIsOpen(!isOpen); }}
+        onClick={() => {
+          setIsOpen(!isOpen);
+        }}
         className="flex items-center gap-2 hover:bg-gray-50 rounded px-2 py-1 transition-colors cursor-pointer"
       >
         <img src={currentAssignee.avatar} alt={currentAssignee.name} className="w-6 h-6 rounded-full" />
@@ -341,7 +357,9 @@ export function InlineAssignee({ caseId, currentAssignee, availableUsers, onUpda
               ref={searchInputRef}
               type="text"
               value={searchTerm}
-              onChange={(e) => { setSearchTerm(e.target.value); }}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+              }}
               onKeyDown={handleKeyDown}
               placeholder="Search users... (Press Enter to save)"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -358,7 +376,9 @@ export function InlineAssignee({ caseId, currentAssignee, availableUsers, onUpda
               filteredUsers.map((user, index) => (
                 <button
                   key={user.id}
-                  onClick={() => { setSelectedUserId(user.id); }}
+                  onClick={() => {
+                    setSelectedUserId(user.id);
+                  }}
                   className={`w-full px-3 py-2 text-left text-sm transition-colors flex items-center gap-2 ${
                     user.id === selectedUserId
                       ? "bg-blue-100 text-blue-900"
@@ -417,7 +437,9 @@ export function InlineDueDate({ caseId, currentDueDate, onUpdate }: InlineDueDat
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       inputRef.current?.focus();
-      return () => { document.removeEventListener("mousedown", handleClickOutside); };
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
     }
   }, [isOpen]);
 
@@ -448,7 +470,9 @@ export function InlineDueDate({ caseId, currentDueDate, onUpdate }: InlineDueDat
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => { setIsOpen(!isOpen); }}
+        onClick={() => {
+          setIsOpen(!isOpen);
+        }}
         className="text-sm text-gray-700 hover:bg-gray-50 rounded px-2 py-1 transition-colors cursor-pointer"
       >
         {currentDueDate}
@@ -466,7 +490,9 @@ export function InlineDueDate({ caseId, currentDueDate, onUpdate }: InlineDueDat
             ref={inputRef}
             type="date"
             defaultValue={getInputValue()}
-            onChange={(e) => handleDateChange(e.target.value)}
+            onChange={(e) => {
+              void handleDateChange(e.target.value);
+            }}
             className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>

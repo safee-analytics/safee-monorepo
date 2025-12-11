@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }
     };
 
-    checkSession();
+    void checkSession();
   }, [setSession, setLoading]);
 
   return <>{children}</>;

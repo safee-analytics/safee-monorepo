@@ -75,7 +75,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         // Auto-start upload if not disabled
         for (const uploadFile of uploadFiles) {
           uploadFile.status = "uploading";
-          startUpload(uploadFile);
+          void startUpload(uploadFile);
         }
       }
 
@@ -189,7 +189,9 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
   const startAll = useCallback(
     () => {
       const pending = files.filter((f) => f.status === "pending");
-      for (const uploadFile of pending) startUpload(uploadFile);
+      for (const uploadFile of pending) {
+        void startUpload(uploadFile);
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [files],
@@ -241,7 +243,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
     (fileId: string) => {
       const uploadFile = files.find((f) => f.id === fileId);
       if (uploadFile) {
-        startUpload(uploadFile);
+        void startUpload(uploadFile);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps

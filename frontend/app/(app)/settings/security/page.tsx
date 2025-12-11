@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { motion } from "framer-motion";
 import { Lock, Shield, Smartphone, Key, Eye, EyeOff, AlertTriangle, Save, RefreshCw } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
 import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
 import { useToast, SafeeToastContainer } from "@/components/feedback";
+import { logError } from "@/lib/utils/logger";
 import {
   useGetSecuritySettings,
   useUpdateSecuritySettings,
@@ -52,7 +53,9 @@ export default function SecuritySettings() {
   // Update local state when data is fetched
   useEffect(() => {
     if (securitySettings) {
-      setSecurity(securitySettings);
+      startTransition(() => {
+        setSecurity(securitySettings);
+      });
     }
   }, [securitySettings]);
 
@@ -60,8 +63,9 @@ export default function SecuritySettings() {
     try {
       await updateSettings.mutateAsync(security);
       toast.success("Security settings updated successfully");
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to update security settings");
+      logError("Security settings update failed", _err, { security });
     }
   };
 
@@ -74,16 +78,18 @@ export default function SecuritySettings() {
       await changePassword.mutateAsync(passwordData);
       setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" });
       toast.success("Password changed successfully");
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to change password");
+      logError("Password change failed", _err);
     }
   };
 
   const handleRevokeSession = async (sessionId: string) => {
     try {
       await revokeSession.mutateAsync(sessionId);
-    } catch (err) {
+    } catch (_err) {
       toast.error("Failed to revoke session");
+      logError("Revoke session failed", _err, { sessionId });
     }
   };
 
@@ -112,12 +118,16 @@ export default function SecuritySettings() {
                   <input
                     type={showCurrentPassword ? "text" : "password"}
                     value={passwordData.currentPassword}
-                    onChange={(e) => { setPasswordData({ ...passwordData, currentPassword: e.target.value }); }}
+                    onChange={(e) => {
+                      setPasswordData({ ...passwordData, currentPassword: e.target.value });
+                    }}
                     className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <button
                     type="button"
-                    onClick={() => { setShowCurrentPassword(!showCurrentPassword); }}
+                    onClick={() => {
+                      setShowCurrentPassword(!showCurrentPassword);
+                    }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   >
                     {showCurrentPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -132,12 +142,16 @@ export default function SecuritySettings() {
                   <input
                     type={showNewPassword ? "text" : "password"}
                     value={passwordData.newPassword}
-                    onChange={(e) => { setPasswordData({ ...passwordData, newPassword: e.target.value }); }}
+                    onChange={(e) => {
+                      setPasswordData({ ...passwordData, newPassword: e.target.value });
+                    }}
                     className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <button
                     type="button"
-                    onClick={() => { setShowNewPassword(!showNewPassword); }}
+                    onClick={() => {
+                      setShowNewPassword(!showNewPassword);
+                    }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   >
                     {showNewPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -155,12 +169,16 @@ export default function SecuritySettings() {
                   <input
                     type={showConfirmPassword ? "text" : "password"}
                     value={passwordData.confirmPassword}
-                    onChange={(e) => { setPasswordData({ ...passwordData, confirmPassword: e.target.value }); }}
+                    onChange={(e) => {
+                      setPasswordData({ ...passwordData, confirmPassword: e.target.value });
+                    }}
                     className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
                   <button
                     type="button"
-                    onClick={() => { setShowConfirmPassword(!showConfirmPassword); }}
+                    onClick={() => {
+                      setShowConfirmPassword(!showConfirmPassword);
+                    }}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700"
                   >
                     {showConfirmPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -168,7 +186,9 @@ export default function SecuritySettings() {
                 </div>
               </div>
               <button
-                onClick={handlePasswordChange}
+                onClick={() => {
+                  void handlePasswordChange();
+                }}
                 disabled={changePassword.isPending}
                 className="px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors disabled:opacity-50"
               >
@@ -193,14 +213,18 @@ export default function SecuritySettings() {
               </div>
               {!security.twoFactorEnabled ? (
                 <button
-                  onClick={() => { setShow2FASetup(true); }}
+                  onClick={() => {
+                    setShow2FASetup(true);
+                  }}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
                 >
                   {t.settings.security.twoFactor.enable}
                 </button>
               ) : (
                 <button
-                  onClick={() => { setSecurity({ ...security, twoFactorEnabled: false }); }}
+                  onClick={() => {
+                    setSecurity({ ...security, twoFactorEnabled: false });
+                  }}
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
                 >
                   {t.settings.security.twoFactor.disable}
@@ -230,7 +254,9 @@ export default function SecuritySettings() {
                 </label>
                 <select
                   value={security.sessionTimeout}
-                  onChange={(e) => { setSecurity({ ...security, sessionTimeout: e.target.value }); }}
+                  onChange={(e) => {
+                    setSecurity({ ...security, sessionTimeout: e.target.value });
+                  }}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="15">{t.settings.security.preferences.sessionTimeoutOptions["15"]}</option>
@@ -247,7 +273,9 @@ export default function SecuritySettings() {
                 </label>
                 <select
                   value={security.passwordExpiry}
-                  onChange={(e) => { setSecurity({ ...security, passwordExpiry: e.target.value }); }}
+                  onChange={(e) => {
+                    setSecurity({ ...security, passwordExpiry: e.target.value });
+                  }}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value="30">{t.settings.security.preferences.passwordExpiryOptions["30"]}</option>
@@ -271,7 +299,9 @@ export default function SecuritySettings() {
                   <input
                     type="checkbox"
                     checked={security.requirePasswordChange}
-                    onChange={(e) => { setSecurity({ ...security, requirePasswordChange: e.target.checked }); }}
+                    onChange={(e) => {
+                      setSecurity({ ...security, requirePasswordChange: e.target.checked });
+                    }}
                     className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -291,7 +321,9 @@ export default function SecuritySettings() {
                   <input
                     type="checkbox"
                     checked={security.allowMultipleSessions}
-                    onChange={(e) => { setSecurity({ ...security, allowMultipleSessions: e.target.checked }); }}
+                    onChange={(e) => {
+                      setSecurity({ ...security, allowMultipleSessions: e.target.checked });
+                    }}
                     className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -311,7 +343,9 @@ export default function SecuritySettings() {
                   <input
                     type="checkbox"
                     checked={security.loginNotifications}
-                    onChange={(e) => { setSecurity({ ...security, loginNotifications: e.target.checked }); }}
+                    onChange={(e) => {
+                      setSecurity({ ...security, loginNotifications: e.target.checked });
+                    }}
                     className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -354,7 +388,9 @@ export default function SecuritySettings() {
                       </div>
                       {!session.current && (
                         <button
-                          onClick={() => handleRevokeSession(session.id)}
+                          onClick={() => {
+                            void handleRevokeSession(session.id);
+                          }}
                           disabled={revokeSession.isPending}
                           className="text-sm text-red-600 hover:text-red-700 font-medium disabled:opacity-50"
                         >
@@ -394,7 +430,9 @@ export default function SecuritySettings() {
           {/* Save Button */}
           <div className="flex justify-end">
             <button
-              onClick={handleSave}
+              onClick={() => {
+                void handleSave();
+              }}
               disabled={updateSettings.isPending}
               className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
             >
@@ -407,10 +445,12 @@ export default function SecuritySettings() {
         {/* Two-Factor Setup Modal */}
         <TwoFactorSetup
           isOpen={show2FASetup}
-          onClose={() => { setShow2FASetup(false); }}
+          onClose={() => {
+            setShow2FASetup(false);
+          }}
           onSuccess={() => {
             setSecurity({ ...security, twoFactorEnabled: true });
-            handleSave();
+            void handleSave();
           }}
         />
 

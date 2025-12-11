@@ -112,7 +112,7 @@ export function ReencryptionProgress({
       setCurrentFileIndex(0);
 
       // Start processing files
-      processNextFile(mockFiles, 0);
+      await processNextFile(mockFiles, 0);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to start migration");
     }
@@ -154,7 +154,9 @@ export function ReencryptionProgress({
       }));
 
       // Process next file
-      setTimeout(() => processNextFile(fileList, index + 1), 500);
+      setTimeout(() => {
+        void processNextFile(fileList, index + 1);
+      }, 500);
     } catch (err) {
       // Update file status to failed
       const errorMessage = err instanceof Error ? err.message : "Encryption failed";
@@ -169,7 +171,9 @@ export function ReencryptionProgress({
       }));
 
       // Continue with next file
-      setTimeout(() => processNextFile(fileList, index + 1), 500);
+      setTimeout(() => {
+        void processNextFile(fileList, index + 1);
+      }, 500);
     }
   };
 
@@ -180,7 +184,7 @@ export function ReencryptionProgress({
     } else {
       setIsPaused(false);
       setIsRunning(true);
-      processNextFile(files, currentFileIndex);
+      void processNextFile(files, currentFileIndex);
     }
   };
 
@@ -247,7 +251,9 @@ export function ReencryptionProgress({
         <div className="flex gap-3">
           {!isRunning && !isPaused && stats.pending > 0 && (
             <button
-              onClick={() => { setShowPasswordPrompt(true); }}
+              onClick={() => {
+                setShowPasswordPrompt(true);
+              }}
               className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
             >
               Start Re-encryption
@@ -255,7 +261,9 @@ export function ReencryptionProgress({
           )}
           {(isRunning || isPaused) && (
             <button
-              onClick={handlePauseResume}
+              onClick={() => {
+                handlePauseResume();
+              }}
               className="rounded-md bg-gray-600 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
             >
               {isRunning ? "Pause" : "Resume"}
@@ -369,15 +377,23 @@ export function ReencryptionProgress({
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => { setPassword(e.target.value); }}
-                  onKeyDown={(e) => e.key === "Enter" && handleStartMigration()}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      void handleStartMigration();
+                    }
+                  }}
                   className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   placeholder="Enter your password"
                   autoFocus
                 />
                 <button
                   type="button"
-                  onClick={() => { setShowPassword(!showPassword); }}
+                  onClick={() => {
+                    setShowPassword(!showPassword);
+                  }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -397,7 +413,9 @@ export function ReencryptionProgress({
                 Cancel
               </button>
               <button
-                onClick={handleStartMigration}
+                onClick={() => {
+                  void handleStartMigration();
+                }}
                 disabled={!password}
                 className="flex-1 rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >

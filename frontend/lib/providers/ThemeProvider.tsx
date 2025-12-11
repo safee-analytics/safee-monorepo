@@ -65,7 +65,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     };
 
     mediaQuery.addEventListener("change", handleChange);
-    return () => { mediaQuery.removeEventListener("change", handleChange); };
+    return () => {
+      mediaQuery.removeEventListener("change", handleChange);
+    };
   }, [theme]);
 
   // Apply resolved theme and color scheme to DOM (no setState calls)

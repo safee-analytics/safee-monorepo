@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { motion } from "framer-motion";
 import { Server, HardDrive, Wifi, AlertCircle, CheckCircle, Save, TestTube, RefreshCw } from "lucide-react";
 import { useToast, SafeeToastContainer } from "@/components/feedback";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { SettingsPermissionGate } from "@/components/settings/SettingsPermissionGate";
+import { logError } from "@/lib/utils/logger";
 import {
   useGetStorageConfig,
   useUpdateStorageConfig,
@@ -47,7 +48,9 @@ export default function StorageSettings() {
   // Update local state when data is fetched
   useEffect(() => {
     if (storageConfig) {
-      setConfig(storageConfig);
+      startTransition(() => {
+        setConfig(storageConfig);
+      });
     }
   }, [storageConfig]);
 
@@ -61,6 +64,7 @@ export default function StorageSettings() {
     } catch (err) {
       setConnectionStatus("error");
       setErrorMessage(err instanceof Error ? err.message : "Connection failed");
+      logError("Storage connection test failed", err, { config });
     }
   };
 
@@ -70,6 +74,7 @@ export default function StorageSettings() {
       toast.success("Storage configuration saved successfully");
     } catch (err) {
       toast.error("Failed to save configuration");
+      logError("Storage configuration save failed", err, { config });
     }
   };
 
@@ -94,7 +99,9 @@ export default function StorageSettings() {
             </h2>
             <div className="grid grid-cols-2 gap-4">
               <button
-                onClick={() => { setStorageMode("managed"); }}
+                onClick={() => {
+                  setStorageMode("managed");
+                }}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   storageMode === "managed"
                     ? "border-blue-600 bg-blue-50"
@@ -115,7 +122,9 @@ export default function StorageSettings() {
               </button>
 
               <button
-                onClick={() => { setStorageMode("custom"); }}
+                onClick={() => {
+                  setStorageMode("custom");
+                }}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   storageMode === "custom"
                     ? "border-blue-600 bg-blue-50"
@@ -212,7 +221,9 @@ export default function StorageSettings() {
                         {(["smb", "nfs", "webdav", "local"] as const).map((type) => (
                           <button
                             key={type}
-                            onClick={() => { setConfig({ ...config, type }); }}
+                            onClick={() => {
+                              setConfig({ ...config, type });
+                            }}
                             className={`px-4 py-3 rounded-lg border-2 transition-all ${
                               config.type === type
                                 ? "border-blue-600 bg-blue-50 text-blue-700"
@@ -241,7 +252,9 @@ export default function StorageSettings() {
                           <input
                             type="text"
                             value={config.host}
-                            onChange={(e) => { setConfig({ ...config, host: e.target.value }); }}
+                            onChange={(e) => {
+                              setConfig({ ...config, host: e.target.value });
+                            }}
                             placeholder={t.settings.storage.connection.hostPlaceholder}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           />
@@ -255,7 +268,9 @@ export default function StorageSettings() {
                           <input
                             type="number"
                             value={config.port}
-                            onChange={(e) => { setConfig({ ...config, port: parseInt(e.target.value) }); }}
+                            onChange={(e) => {
+                              setConfig({ ...config, port: parseInt(e.target.value) });
+                            }}
                             placeholder={
                               config.type === "smb" ? "445" : config.type === "nfs" ? "2049" : "443"
                             }
@@ -271,7 +286,9 @@ export default function StorageSettings() {
                           <input
                             type="text"
                             value={config.shareName}
-                            onChange={(e) => { setConfig({ ...config, shareName: e.target.value }); }}
+                            onChange={(e) => {
+                              setConfig({ ...config, shareName: e.target.value });
+                            }}
                             placeholder={t.settings.storage.connection.shareNamePlaceholder}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           />
@@ -285,7 +302,9 @@ export default function StorageSettings() {
                           <input
                             type="text"
                             value={config.username}
-                            onChange={(e) => { setConfig({ ...config, username: e.target.value }); }}
+                            onChange={(e) => {
+                              setConfig({ ...config, username: e.target.value });
+                            }}
                             placeholder={t.settings.storage.connection.usernamePlaceholder}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           />
@@ -299,7 +318,9 @@ export default function StorageSettings() {
                           <input
                             type="password"
                             value={config.password}
-                            onChange={(e) => { setConfig({ ...config, password: e.target.value }); }}
+                            onChange={(e) => {
+                              setConfig({ ...config, password: e.target.value });
+                            }}
                             placeholder={t.settings.storage.connection.passwordPlaceholder}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           />
@@ -314,7 +335,9 @@ export default function StorageSettings() {
                             <input
                               type="text"
                               value={config.domain}
-                              onChange={(e) => { setConfig({ ...config, domain: e.target.value }); }}
+                              onChange={(e) => {
+                                setConfig({ ...config, domain: e.target.value });
+                              }}
                               placeholder={t.settings.storage.connection.domainPlaceholder}
                               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
@@ -367,7 +390,9 @@ export default function StorageSettings() {
                     {/* Actions */}
                     <div className="flex gap-3">
                       <button
-                        onClick={handleTestConnection}
+                        onClick={() => {
+                          void handleTestConnection();
+                        }}
                         disabled={testConnection.isPending}
                         className="flex items-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors disabled:opacity-50"
                       >
@@ -377,7 +402,9 @@ export default function StorageSettings() {
                           : t.settings.storage.actions.testConnection}
                       </button>
                       <button
-                        onClick={handleSave}
+                        onClick={() => {
+                          void handleSave();
+                        }}
                         disabled={updateConfig.isPending || (config.type !== "local" && !config.host)}
                         className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
                       >

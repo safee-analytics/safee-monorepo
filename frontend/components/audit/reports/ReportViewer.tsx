@@ -43,14 +43,18 @@ export function ReportViewer({ report, onClose, onExport }: ReportViewerProps) {
         <div className="px-6 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
           <div className="flex items-center gap-2">
             <button
-              onClick={() => { setZoom(Math.max(50, zoom - 10)); }}
+              onClick={() => {
+                setZoom(Math.max(50, zoom - 10));
+              }}
               className="p-2 hover:bg-white rounded-lg border border-gray-300 transition-colors"
             >
               <ZoomOut className="w-4 h-4 text-gray-600" />
             </button>
             <span className="text-sm text-gray-700 font-medium px-3">{zoom}%</span>
             <button
-              onClick={() => { setZoom(Math.min(200, zoom + 10)); }}
+              onClick={() => {
+                setZoom(Math.min(200, zoom + 10));
+              }}
               className="p-2 hover:bg-white rounded-lg border border-gray-300 transition-colors"
             >
               <ZoomIn className="w-4 h-4 text-gray-600" />
@@ -59,7 +63,9 @@ export function ReportViewer({ report, onClose, onExport }: ReportViewerProps) {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => handleExport("pdf")}
+              onClick={() => {
+                void handleExport("pdf");
+              }}
               disabled={isExporting}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
             >
@@ -67,7 +73,9 @@ export function ReportViewer({ report, onClose, onExport }: ReportViewerProps) {
               Export PDF
             </button>
             <button
-              onClick={() => handleExport("excel")}
+              onClick={() => {
+                void handleExport("excel");
+              }}
               disabled={isExporting}
               className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 flex items-center gap-2"
             >

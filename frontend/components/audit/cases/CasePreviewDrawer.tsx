@@ -38,7 +38,9 @@ export function CasePreviewDrawer({ isOpen, onClose, caseData }: CasePreviewDraw
     };
     if (isOpen) {
       document.addEventListener("keydown", handleEscape);
-      return () => { document.removeEventListener("keydown", handleEscape); };
+      return () => {
+        document.removeEventListener("keydown", handleEscape);
+      };
     }
   }, [isOpen, onClose]);
 

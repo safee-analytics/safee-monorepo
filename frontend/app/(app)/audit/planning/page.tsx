@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, startTransition } from "react";
 import { Plus, Save, CheckCircle, X, Loader2 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import {
@@ -98,32 +98,34 @@ export default function AuditPlanning() {
   // Load existing plan data when it's available
   useEffect(() => {
     if (existingPlan) {
-      setTitle(existingPlan.title);
-      setClientName(existingPlan.clientName || "");
-      setAuditType(existingPlan.auditType || "financial_audit");
-      setAuditYear(existingPlan.auditYear || new Date().getFullYear());
-      setStartDate(existingPlan.startDate || "");
-      setTargetCompletion(existingPlan.targetCompletion || "");
-      setMaterialityThreshold(existingPlan.materialityThreshold || "");
-      setTotalBudget(existingPlan.totalBudget || "");
-      setTotalHours(existingPlan.totalHours || 480);
-      setStatus(existingPlan.status as "draft" | "in_review" | "approved");
+      startTransition(() => {
+        setTitle(existingPlan.title);
+        setClientName(existingPlan.clientName || "");
+        setAuditType(existingPlan.auditType || "financial_audit");
+        setAuditYear(existingPlan.auditYear || new Date().getFullYear());
+        setStartDate(existingPlan.startDate || "");
+        setTargetCompletion(existingPlan.targetCompletion || "");
+        setMaterialityThreshold(existingPlan.materialityThreshold || "");
+        setTotalBudget(existingPlan.totalBudget || "");
+        setTotalHours(existingPlan.totalHours || 480);
+        setStatus(existingPlan.status as "draft" | "in_review" | "approved");
 
-      if (existingPlan.objectives) {
-        setObjectives(existingPlan.objectives);
-      }
-      if (existingPlan.businessUnits) {
-        setBusinessUnits(existingPlan.businessUnits as typeof businessUnits);
-      }
-      if (existingPlan.financialAreas) {
-        setFinancialAreas(existingPlan.financialAreas as typeof financialAreas);
-      }
-      if (existingPlan.teamMembers) {
-        setTeamMembers(existingPlan.teamMembers);
-      }
-      if (existingPlan.phaseBreakdown) {
-        setPhaseBreakdown(existingPlan.phaseBreakdown);
-      }
+        if (existingPlan.objectives) {
+          setObjectives(existingPlan.objectives);
+        }
+        if (existingPlan.businessUnits) {
+          setBusinessUnits(existingPlan.businessUnits as typeof businessUnits);
+        }
+        if (existingPlan.financialAreas) {
+          setFinancialAreas(existingPlan.financialAreas as typeof financialAreas);
+        }
+        if (existingPlan.teamMembers) {
+          setTeamMembers(existingPlan.teamMembers);
+        }
+        if (existingPlan.phaseBreakdown) {
+          setPhaseBreakdown(existingPlan.phaseBreakdown);
+        }
+      });
     }
   }, [existingPlan]);
 
@@ -246,7 +248,9 @@ export default function AuditPlanning() {
           </div>
           <div className="flex items-center gap-3">
             <button
-              onClick={handleSaveDraft}
+              onClick={() => {
+                void handleSaveDraft();
+              }}
               disabled={isSaving}
               className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -254,7 +258,9 @@ export default function AuditPlanning() {
               Save Draft
             </button>
             <button
-              onClick={handleFinalizePlan}
+              onClick={() => {
+                void handleFinalizePlan();
+              }}
               disabled={isSaving}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
@@ -297,7 +303,9 @@ export default function AuditPlanning() {
                   <input
                     type="text"
                     value={title}
-                    onChange={(e) => { setTitle(e.target.value); }}
+                    onChange={(e) => {
+                      setTitle(e.target.value);
+                    }}
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -307,7 +315,9 @@ export default function AuditPlanning() {
                   <input
                     type="text"
                     value={clientName}
-                    onChange={(e) => { setClientName(e.target.value); }}
+                    onChange={(e) => {
+                      setClientName(e.target.value);
+                    }}
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -317,7 +327,9 @@ export default function AuditPlanning() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Audit Type</label>
                     <select
                       value={auditType}
-                      onChange={(e) => { setAuditType(e.target.value); }}
+                      onChange={(e) => {
+                        setAuditType(e.target.value);
+                      }}
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="financial_audit">Financial Audit</option>
@@ -333,7 +345,9 @@ export default function AuditPlanning() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">Audit Year</label>
                     <select
                       value={auditYear}
-                      onChange={(e) => { setAuditYear(parseInt(e.target.value)); }}
+                      onChange={(e) => {
+                        setAuditYear(parseInt(e.target.value));
+                      }}
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="2024">2024</option>
@@ -349,7 +363,9 @@ export default function AuditPlanning() {
                     <input
                       type="date"
                       value={startDate}
-                      onChange={(e) => { setStartDate(e.target.value); }}
+                      onChange={(e) => {
+                        setStartDate(e.target.value);
+                      }}
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -359,7 +375,9 @@ export default function AuditPlanning() {
                     <input
                       type="date"
                       value={targetCompletion}
-                      onChange={(e) => { setTargetCompletion(e.target.value); }}
+                      onChange={(e) => {
+                        setTargetCompletion(e.target.value);
+                      }}
                       className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -415,7 +433,9 @@ export default function AuditPlanning() {
                       </select>
                     </div>
                     <button
-                      onClick={() => { removeObjective(objective.id); }}
+                      onClick={() => {
+                        removeObjective(objective.id);
+                      }}
                       className="p-1.5 hover:bg-gray-100 rounded transition-colors"
                     >
                       <X className="w-4 h-4 text-gray-600" />
@@ -437,9 +457,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={businessUnits.headquarters}
-                        onChange={(e) =>
-                          { setBusinessUnits({ ...businessUnits, headquarters: e.target.checked }); }
-                        }
+                        onChange={(e) => {
+                          setBusinessUnits({ ...businessUnits, headquarters: e.target.checked });
+                        }}
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Corporate Headquarters</span>
@@ -448,9 +468,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={businessUnits.manufacturing}
-                        onChange={(e) =>
-                          { setBusinessUnits({ ...businessUnits, manufacturing: e.target.checked }); }
-                        }
+                        onChange={(e) => {
+                          setBusinessUnits({ ...businessUnits, manufacturing: e.target.checked });
+                        }}
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Manufacturing Division</span>
@@ -459,9 +479,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={businessUnits.salesMarketing}
-                        onChange={(e) =>
-                          { setBusinessUnits({ ...businessUnits, salesMarketing: e.target.checked }); }
-                        }
+                        onChange={(e) => {
+                          setBusinessUnits({ ...businessUnits, salesMarketing: e.target.checked });
+                        }}
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Sales & Marketing</span>
@@ -470,9 +490,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={businessUnits.itDepartment}
-                        onChange={(e) =>
-                          { setBusinessUnits({ ...businessUnits, itDepartment: e.target.checked }); }
-                        }
+                        onChange={(e) => {
+                          setBusinessUnits({ ...businessUnits, itDepartment: e.target.checked });
+                        }}
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">IT Department</span>
@@ -487,7 +507,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={financialAreas.revenue}
-                        onChange={(e) => { setFinancialAreas({ ...financialAreas, revenue: e.target.checked }); }}
+                        onChange={(e) => {
+                          setFinancialAreas({ ...financialAreas, revenue: e.target.checked });
+                        }}
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Revenue</span>
@@ -496,7 +518,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={financialAreas.assets}
-                        onChange={(e) => { setFinancialAreas({ ...financialAreas, assets: e.target.checked }); }}
+                        onChange={(e) => {
+                          setFinancialAreas({ ...financialAreas, assets: e.target.checked });
+                        }}
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Assets</span>
@@ -505,7 +529,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={financialAreas.cashFlow}
-                        onChange={(e) => { setFinancialAreas({ ...financialAreas, cashFlow: e.target.checked }); }}
+                        onChange={(e) => {
+                          setFinancialAreas({ ...financialAreas, cashFlow: e.target.checked });
+                        }}
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Cash Flow</span>
@@ -514,7 +540,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={financialAreas.expenses}
-                        onChange={(e) => { setFinancialAreas({ ...financialAreas, expenses: e.target.checked }); }}
+                        onChange={(e) => {
+                          setFinancialAreas({ ...financialAreas, expenses: e.target.checked });
+                        }}
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Expenses</span>
@@ -523,9 +551,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={financialAreas.liabilities}
-                        onChange={(e) =>
-                          { setFinancialAreas({ ...financialAreas, liabilities: e.target.checked }); }
-                        }
+                        onChange={(e) => {
+                          setFinancialAreas({ ...financialAreas, liabilities: e.target.checked });
+                        }}
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Liabilities</span>
@@ -534,7 +562,9 @@ export default function AuditPlanning() {
                       <input
                         type="checkbox"
                         checked={financialAreas.equity}
-                        onChange={(e) => { setFinancialAreas({ ...financialAreas, equity: e.target.checked }); }}
+                        onChange={(e) => {
+                          setFinancialAreas({ ...financialAreas, equity: e.target.checked });
+                        }}
                         className="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500"
                       />
                       <span className="text-sm text-gray-700">Equity</span>
@@ -549,7 +579,9 @@ export default function AuditPlanning() {
                     <input
                       type="number"
                       value={materialityThreshold}
-                      onChange={(e) => { setMaterialityThreshold(e.target.value); }}
+                      onChange={(e) => {
+                        setMaterialityThreshold(e.target.value);
+                      }}
                       className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <span className="text-gray-600">USD</span>
@@ -605,7 +637,9 @@ export default function AuditPlanning() {
                           <input
                             type="number"
                             value={totalBudget}
-                            onChange={(e) => { setTotalBudget(e.target.value); }}
+                            onChange={(e) => {
+                              setTotalBudget(e.target.value);
+                            }}
                             className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                           />
                         </div>
@@ -616,7 +650,9 @@ export default function AuditPlanning() {
                         <input
                           type="number"
                           value={totalHours}
-                          onChange={(e) => { setTotalHours(parseInt(e.target.value) || 0); }}
+                          onChange={(e) => {
+                            setTotalHours(parseInt(e.target.value) || 0);
+                          }}
                           className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>

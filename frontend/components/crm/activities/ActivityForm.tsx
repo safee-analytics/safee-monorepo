@@ -126,7 +126,14 @@ export function ActivityForm({ activity, onSubmit, isSubmitting, defaultLeadId }
   }, [selectedActivityTypeId, setValue, activity, currentDeadline]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form
+      onSubmit={(event) => {
+        void handleSubmit((data) => {
+          void onSubmit(data);
+        })(event);
+      }}
+      className="space-y-6"
+    >
       {/* Lead Selection */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Activity Details</h2>

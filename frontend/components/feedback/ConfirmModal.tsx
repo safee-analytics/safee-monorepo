@@ -73,7 +73,9 @@ export const ConfirmModal = ({ isOpen, options, onClose }: ConfirmModalProps) =>
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            onClick={(e) => { e.stopPropagation(); }}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
             className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md p-6 cursor-default relative"
           >
             {/* Icon */}
@@ -97,7 +99,9 @@ export const ConfirmModal = ({ isOpen, options, onClose }: ConfirmModalProps) =>
                 {cancelText}
               </button>
               <button
-                onClick={handleConfirm}
+                onClick={() => {
+                  void handleConfirm();
+                }}
                 disabled={isLoading}
                 className={`flex-1 px-4 py-2.5 ${config.buttonBg} ${config.buttonHover} text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed`}
               >
@@ -173,7 +177,9 @@ export function useConfirm() {
   const closeModal = useCallback(() => {
     setIsOpen(false);
     // Clear options after animation completes
-    setTimeout(() => { setOptions(null); }, 300);
+    setTimeout(() => {
+      setOptions(null);
+    }, 300);
   }, []);
 
   return {

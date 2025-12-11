@@ -26,13 +26,15 @@ export interface AuditPlanResponse {
   businessUnits?: Record<string, boolean> | null;
   financialAreas?: Record<string, boolean> | null;
   teamMembers?: { userId: string; name: string; role: string; hours?: number }[] | null;
-  phaseBreakdown?: {
-    name: string;
-    duration: number;
-    description?: string;
-    startDate?: string;
-    endDate?: string;
-  }[] | null;
+  phaseBreakdown?:
+    | {
+        name: string;
+        duration: number;
+        description?: string;
+        startDate?: string;
+        endDate?: string;
+      }[]
+    | null;
   totalBudget?: string;
   totalHours?: number;
   materialityThreshold?: string;

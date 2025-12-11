@@ -166,9 +166,15 @@ export function FileUpload({
               <FilePreview
                 key={file.id}
                 file={file}
-                onCancel={() => { void cancelUpload(file.id); }}
-                onRemove={() => { removeFile(file.id); }}
-                onRetry={() => { retryUpload(file.id); }}
+                onCancel={() => {
+                  void cancelUpload(file.id);
+                }}
+                onRemove={() => {
+                  removeFile(file.id);
+                }}
+                onRetry={() => {
+                  retryUpload(file.id);
+                }}
               />
             ))}
           </div>
@@ -297,14 +303,20 @@ export function FileUpload({
       {files.length > 0 && (
         <div className="mt-4 space-y-2">
           {files.map((file) => (
-              <FilePreview
-                key={file.id}
-                file={file}
-                onCancel={() => { void cancelUpload(file.id); }}
-                onRemove={() => { removeFile(file.id); }}
-                onRetry={() => { retryUpload(file.id); }}
-                renderPreview={renderPreview}
-              />
+            <FilePreview
+              key={file.id}
+              file={file}
+              onCancel={() => {
+                void cancelUpload(file.id);
+              }}
+              onRemove={() => {
+                removeFile(file.id);
+              }}
+              onRetry={() => {
+                retryUpload(file.id);
+              }}
+              renderPreview={renderPreview}
+            />
           ))}
         </div>
       )}
@@ -329,27 +341,25 @@ interface FilePreviewProps {
 
 function FilePreview({ file, onCancel, onRemove, onRetry, renderPreview }: FilePreviewProps) {
   const isImage = file.file.type.startsWith("image/");
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [previewError, setPreviewError] = useState(false);
 
-  // Try to create preview for images
-  useEffect(() => {
-    let url: string | undefined;
-    if (isImage && !renderPreview) {
-      try {
-        url = URL.createObjectURL(file.file);
-        setPreviewUrl(url);
-      } catch (err) {
-        console.warn("Failed to create preview:", err);
-        setPreviewError(true);
-      }
+  // Derive preview URL without setting state inside effect
+  const previewUrl = useMemo(() => {
+    if (!isImage || renderPreview) return null;
+    try {
+      return URL.createObjectURL(file.file);
+    } catch (err) {
+      console.warn("Failed to create preview:", err);
+      return null;
     }
-    return () => {
-      if (url) {
-        URL.revokeObjectURL(url);
-      }
-    };
   }, [file.file, isImage, renderPreview]);
+
+  useEffect(() => {
+    if (!previewUrl) return undefined;
+    return () => {
+      URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   return (
     <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
@@ -362,7 +372,9 @@ function FilePreview({ file, onCancel, onRemove, onRetry, renderPreview }: FileP
             src={previewUrl}
             alt={file.file.name}
             className="w-full h-full object-cover"
-            onError={() => { setPreviewError(true); }}
+            onError={() => {
+              setPreviewError(true);
+            }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -463,5 +475,5 @@ function formatFileSize(bytes: number): string {
   const k = 1024;
   const sizes = ["Bytes", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${Math.round((bytes / Math.pow(k, i)) * 100) / 100  } ${  sizes[i]}`;
+  return `${Math.round((bytes / Math.pow(k, i)) * 100) / 100} ${sizes[i]}`;
 }

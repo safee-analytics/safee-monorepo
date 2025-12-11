@@ -54,7 +54,9 @@ export function Navigation() {
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => { document.removeEventListener("mousedown", handleClickOutside); };
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   // Close menus with ESC key
@@ -66,13 +68,16 @@ export function Navigation() {
       }
     }
     document.addEventListener("keydown", handleEscKey);
-    return () => { document.removeEventListener("keydown", handleEscKey); };
+    return () => {
+      document.removeEventListener("keydown", handleEscKey);
+    };
   }, []);
 
   const handleLogout = async () => {
     await signOut();
     clearSession();
     setUserMenuOpen(false);
+    setMobileMenuOpen(false);
   };
 
   const modules = getAllModules().map((m) => ({
@@ -110,14 +115,20 @@ export function Navigation() {
 
           {/* Search Bar with Dropdown - Hidden on mobile */}
           <div className="hidden md:block flex-1 max-w-2xl">
-            <SearchBar onOpenCommandPalette={() => { setCommandPaletteOpen(true); }} />
+            <SearchBar
+              onOpenCommandPalette={() => {
+                setCommandPaletteOpen(true);
+              }}
+            />
           </div>
 
           {/* Right Actions */}
           <div className="flex items-center gap-3">
             {/* Mobile Search Toggle */}
             <button
-              onClick={() => { setMobileSearchOpen(!mobileSearchOpen); }}
+              onClick={() => {
+                setMobileSearchOpen(!mobileSearchOpen);
+              }}
               className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
             >
               <FiSearch className="w-5 h-5" />
@@ -144,7 +155,9 @@ export function Navigation() {
             {(currentUser || user) && (
               <div className="relative hidden md:block" ref={userMenuRef}>
                 <button
-                  onClick={() => { setUserMenuOpen(!userMenuOpen); }}
+                  onClick={() => {
+                    setUserMenuOpen(!userMenuOpen);
+                  }}
                   className="flex items-center gap-2 p-1.5 rounded-lg hover:bg-gray-100 transition-colors"
                 >
                   {user?.image ? (
@@ -177,7 +190,9 @@ export function Navigation() {
                     <Link
                       href="/settings/profile"
                       className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      onClick={() => { setUserMenuOpen(false); }}
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                      }}
                     >
                       <FiUser className="w-4 h-4" />
                       Profile Settings
@@ -186,7 +201,9 @@ export function Navigation() {
                     <Link
                       href="/settings"
                       className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
-                      onClick={() => { setUserMenuOpen(false); }}
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                      }}
                     >
                       <FiSettings className="w-4 h-4" />
                       Settings
@@ -195,7 +212,9 @@ export function Navigation() {
                     <div className="border-t border-gray-100 my-1" />
 
                     <button
-                      onClick={handleLogout}
+                      onClick={() => {
+                        void handleLogout();
+                      }}
                       className="flex items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 transition-colors w-full"
                     >
                       <FiLogOut className="w-4 h-4" />
@@ -208,7 +227,9 @@ export function Navigation() {
 
             {/* Mobile Menu Button */}
             <button
-              onClick={() => { setMobileMenuOpen(!mobileMenuOpen); }}
+              onClick={() => {
+                setMobileMenuOpen(!mobileMenuOpen);
+              }}
               className="md:hidden p-2 rounded-lg hover:bg-zinc-50"
             >
               {mobileMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
@@ -219,7 +240,11 @@ export function Navigation() {
         {/* Mobile Search Bar */}
         {mobileSearchOpen && (
           <div className="md:hidden py-3 border-t border-gray-200">
-            <SearchBar onOpenCommandPalette={() => { setCommandPaletteOpen(true); }} />
+            <SearchBar
+              onOpenCommandPalette={() => {
+                setCommandPaletteOpen(true);
+              }}
+            />
           </div>
         )}
 
@@ -253,10 +278,8 @@ export function Navigation() {
                     <span className="font-medium">{currentUser.name}</span>
                   </div>
                   <button
-                    onClick={async () => {
-                      await signOut();
-                      clearSession();
-                      setMobileMenuOpen(false);
+                    onClick={() => {
+                      void handleLogout();
                     }}
                     className="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg"
                   >

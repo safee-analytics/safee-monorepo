@@ -73,7 +73,9 @@ export function TemplateSelector({ selected, onSelect }: TemplateSelectorProps) 
         {templates.map((template) => (
           <button
             key={template.id}
-            onClick={() => { onSelect(template.id); }}
+            onClick={() => {
+              onSelect(template.id);
+            }}
             className={`text-left p-4 rounded-lg border-2 transition-all ${
               selected === template.id
                 ? "border-blue-500 bg-blue-50"

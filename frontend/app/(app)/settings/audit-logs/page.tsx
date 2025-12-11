@@ -104,7 +104,9 @@ export default function AuditLogsPage() {
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => { setSearchQuery(e.target.value); }}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                  }}
                   placeholder={t.settings.auditLogs.search.placeholder}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -113,7 +115,9 @@ export default function AuditLogsPage() {
 
             <div className="flex gap-2">
               <button
-                onClick={() => { setShowFilters(!showFilters); }}
+                onClick={() => {
+                  setShowFilters(!showFilters);
+                }}
                 className={`px-4 py-2 border rounded-lg flex items-center gap-2 transition-colors ${
                   showFilters
                     ? "bg-blue-50 border-blue-300 text-blue-700"
@@ -124,7 +128,9 @@ export default function AuditLogsPage() {
                 {t.settings.auditLogs.buttons.filters}
               </button>
               <button
-                onClick={() => refetch()}
+                onClick={() => {
+                  void refetch();
+                }}
                 disabled={isLoading}
                 className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 flex items-center gap-2"
               >
@@ -133,7 +139,9 @@ export default function AuditLogsPage() {
               </button>
               <div className="flex gap-1">
                 <button
-                  onClick={() => handleExport("json")}
+                  onClick={() => {
+                    void handleExport("json");
+                  }}
                   disabled={exportAuditLogsMutation.isPending}
                   className="px-4 py-2 bg-blue-600 text-white rounded-l-lg hover:bg-blue-700 flex items-center gap-2 disabled:opacity-50"
                 >
@@ -143,7 +151,9 @@ export default function AuditLogsPage() {
                     : t.settings.auditLogs.buttons.exportJSON}
                 </button>
                 <button
-                  onClick={() => handleExport("csv")}
+                  onClick={() => {
+                    void handleExport("csv");
+                  }}
                   disabled={exportAuditLogsMutation.isPending}
                   className="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 border-l border-blue-500 disabled:opacity-50"
                 >
@@ -166,7 +176,9 @@ export default function AuditLogsPage() {
                 </label>
                 <select
                   value={filters.action || ""}
-                  onChange={(e) => { handleFilterChange("action", e.target.value || undefined); }}
+                  onChange={(e) => {
+                    handleFilterChange("action", e.target.value || undefined);
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">{t.settings.auditLogs.filters.allActions}</option>
@@ -188,7 +200,9 @@ export default function AuditLogsPage() {
                 </label>
                 <select
                   value={filters.entityType || ""}
-                  onChange={(e) => { handleFilterChange("entityType", e.target.value || undefined); }}
+                  onChange={(e) => {
+                    handleFilterChange("entityType", e.target.value || undefined);
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">{t.settings.auditLogs.filters.allEntities}</option>
@@ -212,7 +226,9 @@ export default function AuditLogsPage() {
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="date"
-                    onChange={(e) => { handleFilterChange("startDate", e.target.value || undefined); }}
+                    onChange={(e) => {
+                      handleFilterChange("startDate", e.target.value || undefined);
+                    }}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -226,7 +242,9 @@ export default function AuditLogsPage() {
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="date"
-                    onChange={(e) => { handleFilterChange("endDate", e.target.value || undefined); }}
+                    onChange={(e) => {
+                      handleFilterChange("endDate", e.target.value || undefined);
+                    }}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -332,16 +350,18 @@ export default function AuditLogsPage() {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() =>
-                    { handleFilterChange("offset", Math.max(0, (filters.offset || 0) - (filters.limit || 50))); }
-                  }
+                  onClick={() => {
+                    handleFilterChange("offset", Math.max(0, (filters.offset || 0) - (filters.limit || 50)));
+                  }}
                   disabled={!filters.offset || filters.offset === 0}
                   className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {t.settings.auditLogs.pagination.previous}
                 </button>
                 <button
-                  onClick={() => { handleFilterChange("offset", (filters.offset || 0) + (filters.limit || 50)); }}
+                  onClick={() => {
+                    handleFilterChange("offset", (filters.offset || 0) + (filters.limit || 50));
+                  }}
                   disabled={!filteredLogs || filteredLogs.length < (filters.limit || 50)}
                   className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >

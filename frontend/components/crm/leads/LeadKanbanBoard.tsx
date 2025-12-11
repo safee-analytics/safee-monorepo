@@ -77,7 +77,9 @@ export function LeadKanbanBoard({ leads, stages }: LeadKanbanBoardProps) {
             cards={cards}
             setCards={setCards}
             color={getStageColor(stage)}
-            onCardMove={handleCardMove}
+            onCardMove={(cardId, newStageId) => {
+              void handleCardMove(cardId, newStageId);
+            }}
           />
         ))}
       </div>
@@ -172,9 +174,8 @@ const Column = ({ stage, cards, setCards, color, onCardMove }: ColumnProps) => {
 
         if (offset < 0 && offset > closest.offset) {
           return { offset, element: child };
-        } 
-          return closest;
-        
+        }
+        return closest;
       },
       {
         offset: Number.NEGATIVE_INFINITY,

@@ -106,9 +106,9 @@ export function DocumentPreviewDrawer({
   if (!document) return null;
 
   const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return `${bytes  } B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)  } KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)  } MB`;
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   const getStatusColor = (status: string) => {
@@ -145,21 +145,20 @@ export function DocumentPreviewDrawer({
           />
         </div>
       );
-    } 
-      return (
-        <div className="flex flex-col items-center justify-center h-full text-gray-500">
-          <Eye className="h-16 w-16 mb-4 opacity-30" />
-          <p className="text-lg font-medium">Preview not available</p>
-          <p className="text-sm mt-2">This file type doesn&apos;t support preview</p>
-          <button
-            onClick={() => onDownload?.(document.id)}
-            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-          >
-            Download to View
-          </button>
-        </div>
-      );
-    
+    }
+    return (
+      <div className="flex flex-col items-center justify-center h-full text-gray-500">
+        <Eye className="h-16 w-16 mb-4 opacity-30" />
+        <p className="text-lg font-medium">Preview not available</p>
+        <p className="text-sm mt-2">This file type doesn&apos;t support preview</p>
+        <button
+          onClick={() => onDownload?.(document.id)}
+          className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+        >
+          Download to View
+        </button>
+      </div>
+    );
   };
 
   return (
@@ -199,7 +198,9 @@ export function DocumentPreviewDrawer({
             {/* Tabs */}
             <div className="flex items-center border-b border-gray-200 px-6">
               <button
-                onClick={() => { setActiveTab("preview"); }}
+                onClick={() => {
+                  setActiveTab("preview");
+                }}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === "preview"
                     ? "border-blue-600 text-blue-600"
@@ -209,7 +210,9 @@ export function DocumentPreviewDrawer({
                 Preview
               </button>
               <button
-                onClick={() => { setActiveTab("details"); }}
+                onClick={() => {
+                  setActiveTab("details");
+                }}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === "details"
                     ? "border-blue-600 text-blue-600"
@@ -219,7 +222,9 @@ export function DocumentPreviewDrawer({
                 Details
               </button>
               <button
-                onClick={() => { setActiveTab("history"); }}
+                onClick={() => {
+                  setActiveTab("history");
+                }}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === "history"
                     ? "border-blue-600 text-blue-600"
@@ -229,7 +234,9 @@ export function DocumentPreviewDrawer({
                 History
               </button>
               <button
-                onClick={() => { setActiveTab("comments"); }}
+                onClick={() => {
+                  setActiveTab("comments");
+                }}
                 className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                   activeTab === "comments"
                     ? "border-blue-600 text-blue-600"
@@ -347,7 +354,9 @@ export function DocumentPreviewDrawer({
                   <div className="flex items-center space-x-2">
                     {!editingMetadata ? (
                       <button
-                        onClick={() => { setEditingMetadata(true); }}
+                        onClick={() => {
+                          setEditingMetadata(true);
+                        }}
                         className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                       >
                         <Edit2 className="h-4 w-4" />
@@ -356,13 +365,17 @@ export function DocumentPreviewDrawer({
                     ) : (
                       <>
                         <button
-                          onClick={() => { setEditingMetadata(false); }}
+                          onClick={() => {
+                            setEditingMetadata(false);
+                          }}
                           className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                         >
                           Save Changes
                         </button>
                         <button
-                          onClick={() => { setEditingMetadata(false); }}
+                          onClick={() => {
+                            setEditingMetadata(false);
+                          }}
                           className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors"
                         >
                           Cancel
@@ -435,7 +448,9 @@ export function DocumentPreviewDrawer({
                   <div className="border-t border-gray-200 pt-4">
                     <textarea
                       value={newComment}
-                      onChange={(e) => { setNewComment(e.target.value); }}
+                      onChange={(e) => {
+                        setNewComment(e.target.value);
+                      }}
                       placeholder="Add a comment..."
                       rows={3}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none mb-3"
@@ -451,24 +466,28 @@ export function DocumentPreviewDrawer({
             {/* Footer Actions */}
             <div className="flex items-center justify-between px-6 py-4 border-t border-gray-200 bg-gray-50">
               <button
-                onClick={() => onDownload?.(document.id)}
+                onClick={() => {
+                  onDownload?.(document.id);
+                }}
                 className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg transition-colors"
               >
                 <Download className="h-4 w-4" />
                 <span>Download</span>
               </button>
               <button
-                onClick={async () => {
-                  const confirmed = await confirm({
-                    title: "Delete Document",
-                    message: "Are you sure you want to delete this document?",
-                    type: "danger",
-                    confirmText: "Delete",
-                  });
-                  if (confirmed) {
-                    onDelete?.(document.id);
-                    onClose();
-                  }
+                onClick={() => {
+                  void (async () => {
+                    const confirmed = await confirm({
+                      title: "Delete Document",
+                      message: "Are you sure you want to delete this document?",
+                      type: "danger",
+                      confirmText: "Delete",
+                    });
+                    if (confirmed) {
+                      onDelete?.(document.id);
+                      onClose();
+                    }
+                  })();
                 }}
                 className="flex items-center space-x-2 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
               >

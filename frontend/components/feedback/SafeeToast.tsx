@@ -50,7 +50,9 @@ const Toast = ({
       onRemove(id);
     }, duration);
 
-    return () => { clearTimeout(timer); };
+    return () => {
+      clearTimeout(timer);
+    };
   }, [id, duration, onRemove]);
 
   const config = getToastConfig(type);
@@ -86,7 +88,9 @@ const Toast = ({
       <p className="flex-1 text-sm font-medium leading-relaxed">{message}</p>
 
       <button
-        onClick={() => { onRemove(id); }}
+        onClick={() => {
+          onRemove(id);
+        }}
         className={twMerge("flex-shrink-0 rounded p-1 transition-colors", config.closeButtonHover)}
       >
         <FiX className="w-4 h-4" />
@@ -171,10 +175,18 @@ export function useToast() {
     notifications,
     addToast,
     removeToast,
-    success: (message: string, duration?: number) => { addToast(message, "success", duration); },
-    error: (message: string, duration?: number) => { addToast(message, "error", duration); },
-    warning: (message: string, duration?: number) => { addToast(message, "warning", duration); },
-    info: (message: string, duration?: number) => { addToast(message, "info", duration); },
+    success: (message: string, duration?: number) => {
+      addToast(message, "success", duration);
+    },
+    error: (message: string, duration?: number) => {
+      addToast(message, "error", duration);
+    },
+    warning: (message: string, duration?: number) => {
+      addToast(message, "warning", duration);
+    },
+    info: (message: string, duration?: number) => {
+      addToast(message, "info", duration);
+    },
   };
 }
 

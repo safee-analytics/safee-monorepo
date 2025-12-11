@@ -61,7 +61,7 @@ export default function DocumentSettingsPage() {
     try {
       // TODO: Implement API call to save settings
       success(t.settings.documents.saveChanges || "Document settings saved successfully");
-    } catch (err) {
+    } catch (_err) {
       error(t.common.error || "Failed to save document settings");
     }
   };
@@ -112,7 +112,9 @@ export default function DocumentSettingsPage() {
                       </div>
 
                       <button
-                        onClick={() => { setShowEncryptionWizard(true); }}
+                        onClick={() => {
+                          setShowEncryptionWizard(true);
+                        }}
                         className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 font-medium"
                       >
                         <Lock className="w-5 h-5" />
@@ -151,19 +153,25 @@ export default function DocumentSettingsPage() {
                       {/* Action Buttons */}
                       <div className="flex flex-wrap gap-3">
                         <button
-                          onClick={() => { setShowAuditorManager(true); }}
+                          onClick={() => {
+                            setShowAuditorManager(true);
+                          }}
                           className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
                         >
                           Manage Auditor Access
                         </button>
                         <button
-                          onClick={() => { setShowReencryption(true); }}
+                          onClick={() => {
+                            setShowReencryption(true);
+                          }}
                           className="px-4 py-2 border border-blue-300 text-blue-700 rounded-lg hover:bg-blue-50 dark:border-blue-700 dark:text-blue-400 dark:hover:bg-blue-900/20"
                         >
                           Re-encrypt Existing Files
                         </button>
                         <button
-                          onClick={() => { setShowKeyRotation(true); }}
+                          onClick={() => {
+                            setShowKeyRotation(true);
+                          }}
                           className="px-4 py-2 border border-amber-300 text-amber-700 rounded-lg hover:bg-amber-50 dark:border-amber-700 dark:text-amber-400 dark:hover:bg-amber-900/20"
                         >
                           {t.settings.documents.encryption.actions.rotateKeys}
@@ -198,7 +206,9 @@ export default function DocumentSettingsPage() {
                     iv: "mock-iv-base64",
                   });
                 }}
-                onCancel={() => { setShowEncryptionWizard(false); }}
+                onCancel={() => {
+                  setShowEncryptionWizard(false);
+                }}
               />
             </div>
           )}
@@ -226,7 +236,9 @@ export default function DocumentSettingsPage() {
                   <input
                     type="checkbox"
                     checked={settings.autoBackup}
-                    onChange={(e) => { setSettings({ ...settings, autoBackup: e.target.checked }); }}
+                    onChange={(e) => {
+                      setSettings({ ...settings, autoBackup: e.target.checked });
+                    }}
                     className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -243,7 +255,9 @@ export default function DocumentSettingsPage() {
                   <input
                     type="checkbox"
                     checked={settings.compressionEnabled}
-                    onChange={(e) => { setSettings({ ...settings, compressionEnabled: e.target.checked }); }}
+                    onChange={(e) => {
+                      setSettings({ ...settings, compressionEnabled: e.target.checked });
+                    }}
                     className="sr-only peer"
                   />
                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -259,9 +273,9 @@ export default function DocumentSettingsPage() {
                   <input
                     type="number"
                     value={settings.retentionPeriodDays}
-                    onChange={(e) =>
-                      { setSettings({ ...settings, retentionPeriodDays: parseInt(e.target.value) }); }
-                    }
+                    onChange={(e) => {
+                      setSettings({ ...settings, retentionPeriodDays: parseInt(e.target.value) });
+                    }}
                     min="30"
                     max="3650"
                     className="w-32 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -280,7 +294,9 @@ export default function DocumentSettingsPage() {
                   <input
                     type="number"
                     value={settings.maxFileSize}
-                    onChange={(e) => { setSettings({ ...settings, maxFileSize: parseInt(e.target.value) }); }}
+                    onChange={(e) => {
+                      setSettings({ ...settings, maxFileSize: parseInt(e.target.value) });
+                    }}
                     min="1"
                     max="500"
                     className="w-32 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -338,7 +354,9 @@ export default function DocumentSettingsPage() {
           {/* Save Button */}
           <div className="flex justify-end">
             <button
-              onClick={handleSave}
+              onClick={() => {
+                void handleSave();
+              }}
               className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
             >
               <Save className="w-4 h-4" />
@@ -358,7 +376,9 @@ export default function DocumentSettingsPage() {
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">Auditor Access Management</h2>
                 <button
-                  onClick={() => { setShowAuditorManager(false); }}
+                  onClick={() => {
+                    setShowAuditorManager(false);
+                  }}
                   className="text-gray-500 hover:text-gray-700"
                 >
                   ✕
@@ -386,7 +406,9 @@ export default function DocumentSettingsPage() {
               <div className="mb-4 flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">File Re-encryption Dashboard</h2>
                 <button
-                  onClick={() => { setShowReencryption(false); }}
+                  onClick={() => {
+                    setShowReencryption(false);
+                  }}
                   className="text-gray-500 hover:text-gray-700"
                 >
                   ✕
@@ -413,7 +435,9 @@ export default function DocumentSettingsPage() {
               setShowKeyRotation(false);
               setShowReencryption(true);
             }}
-            onCancel={() => { setShowKeyRotation(false); }}
+            onCancel={() => {
+              setShowKeyRotation(false);
+            }}
           />
         )}
       </div>

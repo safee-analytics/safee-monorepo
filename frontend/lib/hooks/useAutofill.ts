@@ -46,14 +46,11 @@ export function useAutofill(): AutofillSuggestions {
         if (clientCases.length === 0) return undefined;
 
         // Count audit type frequency
-        const typeCounts = clientCases.reduce<Record<string, number>>(
-          (acc, c) => {
-            const type = c.auditType || "general_audit";
-            acc[type] = (acc[type] || 0) + 1;
-            return acc;
-          },
-          {},
-        );
+        const typeCounts = clientCases.reduce<Record<string, number>>((acc, c) => {
+          const type = c.auditType || "general_audit";
+          acc[type] = (acc[type] || 0) + 1;
+          return acc;
+        }, {});
 
         // Return most common audit type
         const sorted = Object.entries(typeCounts).sort((a, b) => b[1] - a[1]);
@@ -151,18 +148,19 @@ export function useAutofill(): AutofillSuggestions {
         const teamPatterns: Record<string, { count: number; roles: Record<string, number> }> = {};
 
         for (const c of similarCases) {
-          if (c.assignments) for (const assignment of c.assignments) {
-            if (!assignment.userId) continue;
+          if (c.assignments)
+            for (const assignment of c.assignments) {
+              if (!assignment.userId) continue;
 
-            if (!teamPatterns[assignment.userId]) {
-              teamPatterns[assignment.userId] = { count: 0, roles: {} };
+              if (!teamPatterns[assignment.userId]) {
+                teamPatterns[assignment.userId] = { count: 0, roles: {} };
+              }
+
+              teamPatterns[assignment.userId].count++;
+              const role = assignment.role || "staff";
+              teamPatterns[assignment.userId].roles[role] =
+                (teamPatterns[assignment.userId].roles[role] || 0) + 1;
             }
-
-            teamPatterns[assignment.userId].count++;
-            const role = assignment.role || "staff";
-            teamPatterns[assignment.userId].roles[role] =
-              (teamPatterns[assignment.userId].roles[role] || 0) + 1;
-          }
         }
 
         // Get top 3 most common team members
@@ -207,14 +205,11 @@ export function useAutofill(): AutofillSuggestions {
         }
 
         // Most common audit type
-        const typeCounts = clientCases.reduce<Record<string, number>>(
-          (acc, c) => {
-            const type = c.auditType || "general_audit";
-            acc[type] = (acc[type] || 0) + 1;
-            return acc;
-          },
-          {},
-        );
+        const typeCounts = clientCases.reduce<Record<string, number>>((acc, c) => {
+          const type = c.auditType || "general_audit";
+          acc[type] = (acc[type] || 0) + 1;
+          return acc;
+        }, {});
         const mostCommonAuditType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
 
         // Average duration
@@ -228,14 +223,11 @@ export function useAutofill(): AutofillSuggestions {
           durations.length > 0 ? durations.reduce((a, b) => a + b, 0) / durations.length : 30;
 
         // Most common priority
-        const priorityCounts = clientCases.reduce<Record<string, number>>(
-          (acc, c) => {
-            const priority = c.priority || "medium";
-            acc[priority] = (acc[priority] || 0) + 1;
-            return acc;
-          },
-          {},
-        );
+        const priorityCounts = clientCases.reduce<Record<string, number>>((acc, c) => {
+          const priority = c.priority || "medium";
+          acc[priority] = (acc[priority] || 0) + 1;
+          return acc;
+        }, {});
         const commonPriority = Object.entries(priorityCounts).sort((a, b) => b[1] - a[1])[0]?.[0];
 
         // Last case
@@ -290,14 +282,11 @@ export function useAutofill(): AutofillSuggestions {
        * Gets audit type statistics for insights
        */
       getAuditTypeStats: () => {
-        return cases.reduce<Record<string, number>>(
-          (acc, c) => {
-            const type = c.auditType || "general_audit";
-            acc[type] = (acc[type] || 0) + 1;
-            return acc;
-          },
-          {},
-        );
+        return cases.reduce<Record<string, number>>((acc, c) => {
+          const type = c.auditType || "general_audit";
+          acc[type] = (acc[type] || 0) + 1;
+          return acc;
+        }, {});
       },
     };
   }, [recentCases]);

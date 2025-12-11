@@ -155,7 +155,9 @@ export function ReportWizard({ onClose, caseId }: ReportWizardProps) {
           {currentStep === "generate" && (
             <GenerationProgress
               isGenerating={isGenerating}
-              onGenerate={handleGenerate}
+              onGenerate={() => {
+                void handleGenerate();
+              }}
               templateId={selectedTemplate!}
               dataSource={dataSource!}
               sections={sections}
@@ -186,7 +188,9 @@ export function ReportWizard({ onClose, caseId }: ReportWizardProps) {
               </button>
             ) : (
               <button
-                onClick={handleGenerate}
+                onClick={() => {
+                  void handleGenerate();
+                }}
                 disabled={isGenerating}
                 className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >

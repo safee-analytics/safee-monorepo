@@ -25,7 +25,9 @@ interface SortButtonProps {
 function SortButton({ field, children, sortField, onSort }: SortButtonProps) {
   return (
     <button
-      onClick={() => { onSort(field); }}
+      onClick={() => {
+        onSort(field);
+      }}
       className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
     >
       <span>{children}</span>
@@ -103,7 +105,9 @@ export function LeadTableView({ leads }: LeadTableViewProps) {
           <thead className="bg-gray-50 border-b border-gray-200">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="name" sortField={sortField} onSort={handleSort}>Lead Name</SortButton>
+                <SortButton field="name" sortField={sortField} onSort={handleSort}>
+                  Lead Name
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Type
@@ -112,16 +116,24 @@ export function LeadTableView({ leads }: LeadTableViewProps) {
                 Contact
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="stage" sortField={sortField} onSort={handleSort}>Stage</SortButton>
+                <SortButton field="stage" sortField={sortField} onSort={handleSort}>
+                  Stage
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="expectedRevenue" sortField={sortField} onSort={handleSort}>Expected Revenue</SortButton>
+                <SortButton field="expectedRevenue" sortField={sortField} onSort={handleSort}>
+                  Expected Revenue
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="probability" sortField={sortField} onSort={handleSort}>Probability</SortButton>
+                <SortButton field="probability" sortField={sortField} onSort={handleSort}>
+                  Probability
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <SortButton field="dateDeadline" sortField={sortField} onSort={handleSort}>Deadline</SortButton>
+                <SortButton field="dateDeadline" sortField={sortField} onSort={handleSort}>
+                  Deadline
+                </SortButton>
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Assignee

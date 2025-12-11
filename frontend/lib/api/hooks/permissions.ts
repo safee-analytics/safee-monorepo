@@ -40,7 +40,7 @@ export function useOrganizationRole(): "owner" | "admin" | "member" | null {
   if (!session?.user || !members) return null;
 
   const currentMember = members.find((m) => m.userId === session.user.id);
-  return (currentMember?.role!) ?? null;
+  return currentMember?.role ?? null;
 }
 
 /**
@@ -83,7 +83,7 @@ export function useHasPermission(permission: string): boolean {
     return true;
   }
 
-  return (result) ?? false;
+  return result ?? false;
 }
 
 /**

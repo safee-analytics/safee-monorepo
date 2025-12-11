@@ -102,7 +102,14 @@ export function LeadForm({ lead, onSubmit, isSubmitting = false }: LeadFormProps
   }, [lead, stages, setValue, stageId]);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+    <form
+      onSubmit={(event) => {
+        void handleSubmit((data) => {
+          onSubmit(data);
+        })(event);
+      }}
+      className="space-y-8"
+    >
       {/* Basic Information */}
       <div className="bg-white rounded-lg border border-gray-200 p-6">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Basic Information</h2>
@@ -383,7 +390,13 @@ export function LeadForm({ lead, onSubmit, isSubmitting = false }: LeadFormProps
 
       {/* Form Actions */}
       <div className="flex items-center justify-end space-x-4">
-        <AnimatedButton type="button" variant="secondary" onClick={() => { window.history.back(); }}>
+        <AnimatedButton
+          type="button"
+          variant="secondary"
+          onClick={() => {
+            window.history.back();
+          }}
+        >
           Cancel
         </AnimatedButton>
         <AnimatedButton type="submit" variant="primary" disabled={isSubmitting}>

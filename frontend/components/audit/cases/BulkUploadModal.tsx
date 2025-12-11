@@ -148,9 +148,9 @@ export function BulkUploadModal({
   };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return `${bytes  } B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)  } KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)  } MB`;
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   const getStatusIcon = (status: string) => {
@@ -185,7 +185,9 @@ export function BulkUploadModal({
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              onClick={(e) => { e.stopPropagation(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
               className="bg-white rounded-xl shadow-xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col"
             >
               {/* Header */}
@@ -307,7 +309,9 @@ export function BulkUploadModal({
                         {fileItem.status === "pending" && (
                           <select
                             value={fileItem.category}
-                            onChange={(e) => { updateFileCategory(index, e.target.value); }}
+                            onChange={(e) => {
+                              updateFileCategory(index, e.target.value);
+                            }}
                             disabled={isUploading}
                             className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-gray-100 disabled:cursor-not-allowed"
                           >
@@ -322,7 +326,9 @@ export function BulkUploadModal({
                         {/* Remove Button */}
                         {fileItem.status === "pending" && (
                           <button
-                            onClick={() => { removeFile(index); }}
+                            onClick={() => {
+                              removeFile(index);
+                            }}
                             disabled={isUploading}
                             className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                           >
@@ -357,7 +363,9 @@ export function BulkUploadModal({
                     {isUploading ? "Uploading..." : "Cancel"}
                   </button>
                   <button
-                    onClick={handleUpload}
+                    onClick={() => {
+                      void handleUpload();
+                    }}
                     disabled={isUploading || files.length === 0}
                     className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
                   >

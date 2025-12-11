@@ -30,7 +30,9 @@ export function useDirection(): Direction {
       attributeFilter: ["dir"],
     });
 
-    return () => { observer.disconnect(); };
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   return direction;

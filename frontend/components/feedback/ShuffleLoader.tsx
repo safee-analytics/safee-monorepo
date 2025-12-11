@@ -27,7 +27,7 @@ const ShuffleLoader = () => {
   const [scope, animate] = useAnimate();
 
   useEffect(() => {
-    shuffle();
+    void shuffle();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

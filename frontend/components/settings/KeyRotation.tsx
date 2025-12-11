@@ -216,9 +216,9 @@ export function KeyRotation({
 
       // Key rotation data prepared (will be sent to backend)
       const _rotationData = {
-        newWrappedKey: `${newWrappedKey.substring(0, 20)  }...`,
-        newSalt: `${newSaltBase64.substring(0, 10)  }...`,
-        newIv: `${newIv.substring(0, 10)  }...`,
+        newWrappedKey: `${newWrappedKey.substring(0, 20)}...`,
+        newSalt: `${newSaltBase64.substring(0, 10)}...`,
+        newIv: `${newIv.substring(0, 10)}...`,
         reason: rotationReason,
       };
 
@@ -354,7 +354,9 @@ export function KeyRotation({
                   <input
                     type="checkbox"
                     checked={acknowledgedRisks[key]}
-                    onChange={(e) => { setAcknowledgedRisks({ ...acknowledgedRisks, [key]: e.target.checked }); }}
+                    onChange={(e) => {
+                      setAcknowledgedRisks({ ...acknowledgedRisks, [key]: e.target.checked });
+                    }}
                     className="mt-1 h-4 w-4 rounded border-gray-300 text-red-600 focus:ring-red-500"
                   />
                   <span className="text-sm text-gray-700 dark:text-gray-300">{label}</span>
@@ -370,7 +372,9 @@ export function KeyRotation({
                 Cancel
               </button>
               <button
-                onClick={() => { setCurrentStep("verify-admin"); }}
+                onClick={() => {
+                  setCurrentStep("verify-admin");
+                }}
                 disabled={!allRisksAcknowledged}
                 className="flex-1 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
@@ -395,15 +399,23 @@ export function KeyRotation({
                 <input
                   type={showCurrentPassword ? "text" : "password"}
                   value={currentPassword}
-                  onChange={(e) => { setCurrentPassword(e.target.value); }}
-                  onKeyDown={(e) => e.key === "Enter" && handleVerifyAdmin()}
+                  onChange={(e) => {
+                    setCurrentPassword(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      void handleVerifyAdmin();
+                    }
+                  }}
                   className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   placeholder="Enter current password"
                   autoFocus
                 />
                 <button
                   type="button"
-                  onClick={() => { setShowCurrentPassword(!showCurrentPassword); }}
+                  onClick={() => {
+                    setShowCurrentPassword(!showCurrentPassword);
+                  }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showCurrentPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -413,14 +425,18 @@ export function KeyRotation({
 
             <div className="flex gap-3">
               <button
-                onClick={() => { setCurrentStep("warning"); }}
+                onClick={() => {
+                  setCurrentStep("warning");
+                }}
                 disabled={isProcessing}
                 className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 Back
               </button>
               <button
-                onClick={handleVerifyAdmin}
+                onClick={() => {
+                  void handleVerifyAdmin();
+                }}
                 disabled={isProcessing || !currentPassword}
                 className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
@@ -444,8 +460,14 @@ export function KeyRotation({
               <input
                 type="text"
                 value={mfaCode}
-                onChange={(e) => { setMfaCode(e.target.value.replace(/\D/g, "").substring(0, 6)); }}
-                onKeyDown={(e) => e.key === "Enter" && handleVerifyMFA()}
+                onChange={(e) => {
+                  setMfaCode(e.target.value.replace(/\D/g, "").substring(0, 6));
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    void handleVerifyMFA();
+                  }
+                }}
                 className="w-full rounded-md border border-gray-300 px-3 py-2 text-center text-2xl font-mono tracking-widest focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 placeholder="000000"
                 maxLength={6}
@@ -455,14 +477,18 @@ export function KeyRotation({
 
             <div className="flex gap-3">
               <button
-                onClick={() => { setCurrentStep("verify-admin"); }}
+                onClick={() => {
+                  setCurrentStep("verify-admin");
+                }}
                 disabled={isProcessing}
                 className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 Back
               </button>
               <button
-                onClick={handleVerifyMFA}
+                onClick={() => {
+                  void handleVerifyMFA();
+                }}
                 disabled={isProcessing || mfaCode.length !== 6}
                 className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
@@ -487,14 +513,18 @@ export function KeyRotation({
                 <input
                   type={showNewPassword ? "text" : "password"}
                   value={newPassword}
-                  onChange={(e) => { handlePasswordChange(e.target.value); }}
+                  onChange={(e) => {
+                    handlePasswordChange(e.target.value);
+                  }}
                   className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   placeholder="Enter new password (16+ characters)"
                   autoFocus
                 />
                 <button
                   type="button"
-                  onClick={() => { setShowNewPassword(!showNewPassword); }}
+                  onClick={() => {
+                    setShowNewPassword(!showNewPassword);
+                  }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showNewPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -547,14 +577,22 @@ export function KeyRotation({
                 <input
                   type={showConfirmPassword ? "text" : "password"}
                   value={confirmPassword}
-                  onChange={(e) => { setConfirmPassword(e.target.value); }}
-                  onKeyDown={(e) => e.key === "Enter" && handleSetNewPassword()}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      void handleSetNewPassword();
+                    }
+                  }}
                   className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   placeholder="Confirm new password"
                 />
                 <button
                   type="button"
-                  onClick={() => { setShowConfirmPassword(!showConfirmPassword); }}
+                  onClick={() => {
+                    setShowConfirmPassword(!showConfirmPassword);
+                  }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -564,14 +602,18 @@ export function KeyRotation({
 
             <div className="flex gap-3">
               <button
-                onClick={() => { setCurrentStep("verify-admin"); }}
+                onClick={() => {
+                  setCurrentStep("verify-admin");
+                }}
                 disabled={isProcessing}
                 className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 Back
               </button>
               <button
-                onClick={handleSetNewPassword}
+                onClick={() => {
+                  void handleSetNewPassword();
+                }}
                 disabled={isProcessing || !passwordStrength.isValid || !confirmPassword}
                 className="flex-1 rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
               >
@@ -600,7 +642,9 @@ export function KeyRotation({
               </label>
               <textarea
                 value={rotationReason}
-                onChange={(e) => { setRotationReason(e.target.value); }}
+                onChange={(e) => {
+                  setRotationReason(e.target.value);
+                }}
                 className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 placeholder="e.g., Suspected key compromise, regular security maintenance, employee departure..."
                 rows={3}
@@ -635,14 +679,18 @@ export function KeyRotation({
 
             <div className="flex gap-3">
               <button
-                onClick={() => { setCurrentStep("new-password"); }}
+                onClick={() => {
+                  setCurrentStep("new-password");
+                }}
                 disabled={isProcessing}
                 className="flex-1 rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 Back
               </button>
               <button
-                onClick={handleRotateKey}
+                onClick={() => {
+                  void handleRotateKey();
+                }}
                 disabled={isProcessing || !rotationReason.trim()}
                 className="flex-1 rounded-lg bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
               >

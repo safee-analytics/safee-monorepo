@@ -69,7 +69,7 @@ export function ProtectedRoute({
       }
     }
 
-    checkOrganization();
+    void checkOrganization();
   }, [isAuthenticated, isLoading, pathname, router]);
 
   // Show loading state during SSR, initial mount, auth check, or organization check

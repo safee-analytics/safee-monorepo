@@ -179,11 +179,11 @@ export function EncryptionUnlockPrompt({
 
   const handleUnlock = () => {
     if (isAuditor && auditorAccess) {
-      handleAuditorUnlock();
+      void handleAuditorUnlock();
     } else if (unlockMethod === "password") {
-      handlePasswordUnlock();
+      void handlePasswordUnlock();
     } else {
-      handleRecoveryPhraseUnlock();
+      void handleRecoveryPhraseUnlock();
     }
   };
 
@@ -218,7 +218,9 @@ export function EncryptionUnlockPrompt({
         {!isAuditor && (
           <div className="mb-4 flex gap-2">
             <button
-              onClick={() => { setUnlockMethod("password"); }}
+              onClick={() => {
+                setUnlockMethod("password");
+              }}
               className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                 unlockMethod === "password"
                   ? "bg-blue-600 text-white"
@@ -229,7 +231,9 @@ export function EncryptionUnlockPrompt({
               Password
             </button>
             <button
-              onClick={() => { setUnlockMethod("recovery"); }}
+              onClick={() => {
+                setUnlockMethod("recovery");
+              }}
               className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                 unlockMethod === "recovery"
                   ? "bg-blue-600 text-white"
@@ -252,7 +256,9 @@ export function EncryptionUnlockPrompt({
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => { setPassword(e.target.value); }}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
                   onKeyDown={(e) => e.key === "Enter" && handleUnlock()}
                   className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   placeholder="Enter your password"
@@ -260,7 +266,9 @@ export function EncryptionUnlockPrompt({
                 />
                 <button
                   type="button"
-                  onClick={() => { setShowPassword(!showPassword); }}
+                  onClick={() => {
+                    setShowPassword(!showPassword);
+                  }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
@@ -274,7 +282,9 @@ export function EncryptionUnlockPrompt({
               </label>
               <textarea
                 value={recoveryPhrase}
-                onChange={(e) => { setRecoveryPhrase(e.target.value); }}
+                onChange={(e) => {
+                  setRecoveryPhrase(e.target.value);
+                }}
                 className="w-full rounded-md border border-gray-300 px-3 py-2 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                 placeholder="Enter your 12-word recovery phrase"
                 rows={3}

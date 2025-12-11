@@ -28,7 +28,9 @@ function SortButton({
 }) {
   return (
     <button
-      onClick={() => { handleSort(field); }}
+      onClick={() => {
+        handleSort(field);
+      }}
       className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
     >
       <span>{children}</span>

@@ -124,7 +124,9 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
         >
           {/* Section Header */}
           <button
-            onClick={() => { toggleSection(section.id); }}
+            onClick={() => {
+              toggleSection(section.id);
+            }}
             className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
           >
             <div className="flex items-center gap-3">
@@ -183,11 +185,15 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
                                   <input
                                     type="text"
                                     value={editText}
-                                    onChange={(e) => { setEditText(e.target.value); }}
+                                    onChange={(e) => {
+                                      setEditText(e.target.value);
+                                    }}
                                     className="flex-1 px-2 py-1 text-sm border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
                                   />
                                   <button
-                                    onClick={() => { saveProcedureEdit(section.id, procedure.id); }}
+                                    onClick={() => {
+                                      saveProcedureEdit(section.id, procedure.id);
+                                    }}
                                     className="p-1 text-green-600 hover:bg-green-50 rounded"
                                   >
                                     <Save className="w-4 h-4" />
@@ -204,7 +210,9 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
                                   <span className="text-sm text-gray-900">{procedure.description}</span>
                                   {procedure.canEdit && !readOnly && (
                                     <button
-                                      onClick={() => { startEditProcedure(procedure); }}
+                                      onClick={() => {
+                                        startEditProcedure(procedure);
+                                      }}
                                       className="p-1 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded"
                                     >
                                       <Edit2 className="w-3 h-3" />
@@ -236,7 +244,9 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
                                 className={`flex items-center justify-center gap-2 ${isRTL ? "flex-row-reverse" : ""}`}
                               >
                                 <button
-                                  onClick={() => { toggleProcedureComplete(section.id, procedure.id); }}
+                                  onClick={() => {
+                                    toggleProcedureComplete(section.id, procedure.id);
+                                  }}
                                   disabled={readOnly}
                                   className="flex items-center gap-1 px-3 py-1 text-xs bg-gray-100 hover:bg-gray-200 rounded transition-colors disabled:opacity-50"
                                 >
@@ -258,7 +268,9 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
                                 {!readOnly && (
                                   <>
                                     <button
-                                      onClick={() => { toggleProcedureComplete(section.id, procedure.id); }}
+                                      onClick={() => {
+                                        toggleProcedureComplete(section.id, procedure.id);
+                                      }}
                                       className={`px-3 py-1 text-xs rounded transition-colors ${
                                         procedure.isCompleted
                                           ? "bg-yellow-100 text-yellow-800 hover:bg-yellow-200"
@@ -269,7 +281,9 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
                                     </button>
                                     {section.canRemoveProcedures && (
                                       <button
-                                        onClick={() => { removeProcedure(section.id, procedure.id); }}
+                                        onClick={() => {
+                                          removeProcedure(section.id, procedure.id);
+                                        }}
                                         className="p-1 text-red-600 hover:bg-red-50 rounded"
                                       >
                                         <Trash2 className="w-4 h-4" />
@@ -294,7 +308,9 @@ export function ICVScopeEditor({ sections, onSectionsChange, readOnly = false }:
                 {section.canAddProcedures && !readOnly && (
                   <div className="p-4 border-t border-gray-200">
                     <button
-                      onClick={() => { addProcedure(section.id); }}
+                      onClick={() => {
+                        addProcedure(section.id);
+                      }}
                       className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700"
                     >
                       <Plus className="w-4 h-4" />

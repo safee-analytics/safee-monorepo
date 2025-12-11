@@ -222,7 +222,9 @@ export default function TeamManagement() {
             {t.settings.team.manageRoles}
           </Link>
           <button
-            onClick={() => { setShowInviteModal(true); }}
+            onClick={() => {
+              setShowInviteModal(true);
+            }}
             className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
           >
             <UserPlus className="w-4 h-4" />
@@ -277,13 +279,17 @@ export default function TeamManagement() {
               type="text"
               placeholder={t.settings.team.search}
               value={searchQuery}
-              onChange={(e) => { setSearchQuery(e.target.value); }}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+              }}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
           <select
             value={roleFilter}
-            onChange={(e) => { setRoleFilter(e.target.value); }}
+            onChange={(e) => {
+              setRoleFilter(e.target.value);
+            }}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="all">{t.settings.team.filters.allRoles}</option>
@@ -360,7 +366,9 @@ export default function TeamManagement() {
                         <div className="flex items-center justify-end gap-2">
                           <select
                             value={member.role}
-                            onChange={(e) => { handleUpdateRole(member.userId, e.target.value); }}
+                            onChange={(e) => {
+                              handleUpdateRole(member.userId, e.target.value);
+                            }}
                             className="text-sm border border-gray-300 rounded px-2 py-1"
                           >
                             {/* Show current role even if not assignable */}
@@ -375,7 +383,9 @@ export default function TeamManagement() {
                             ))}
                           </select>
                           <button
-                            onClick={() => handleRemoveMember(member.userId)}
+                            onClick={() => {
+                              void handleRemoveMember(member.userId);
+                            }}
                             className="text-red-600 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
                           >
                             {t.settings.team.table.remove}
@@ -465,7 +475,9 @@ export default function TeamManagement() {
                     <td className="px-6 py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
-                          onClick={() => { handleResendInvitation(invitation.email, invitation.role); }}
+                          onClick={() => {
+                            void handleResendInvitation(invitation.email, invitation.role);
+                          }}
                           disabled={inviteMemberMutation.isPending}
                           className="text-blue-600 hover:text-blue-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
                           title={t.settings.team.invitations.resendTitle}
@@ -474,7 +486,9 @@ export default function TeamManagement() {
                           {t.settings.team.invitations.resend}
                         </button>
                         <button
-                          onClick={() => handleCancelInvitation(invitation.id)}
+                          onClick={() => {
+                            void handleCancelInvitation(invitation.id);
+                          }}
                           disabled={cancelInvitationMutation.isPending}
                           className="text-red-600 hover:text-red-700 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1"
                           title={t.settings.team.invitations.cancelTitle}
@@ -556,7 +570,9 @@ export default function TeamManagement() {
               <div className="flex items-center gap-3 mt-6">
                 <button
                   type="button"
-                  onClick={() => { setShowInviteModal(false); }}
+                  onClick={() => {
+                    setShowInviteModal(false);
+                  }}
                   className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
                 >
                   {t.settings.team.inviteModal.cancel}

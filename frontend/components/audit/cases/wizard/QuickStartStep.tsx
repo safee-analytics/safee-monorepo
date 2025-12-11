@@ -117,7 +117,9 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
         </label>
         <ClientAutocomplete
           value={data.clientName || ""}
-          onChange={(value) => { onChange({ clientName: value }); }}
+          onChange={(value) => {
+            onChange({ clientName: value });
+          }}
           onClientSelect={handleClientSelect}
           placeholder="Enter client or company name"
         />
@@ -137,7 +139,9 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
             return (
               <button
                 key={type.value}
-                onClick={() => { onChange({ auditType: type.value }); }}
+                onClick={() => {
+                  onChange({ auditType: type.value });
+                }}
                 disabled={isFromTemplate}
                 className={`p-4 rounded-lg border-2 text-left transition-all ${
                   isSelected
@@ -188,7 +192,9 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
             return (
               <button
                 key={priority.value}
-                onClick={() => { onChange({ priority: priority.value }); }}
+                onClick={() => {
+                  onChange({ priority: priority.value });
+                }}
                 className={`p-4 rounded-lg border-2 text-left transition-all ${
                   isSelected
                     ? `${priority.color} ring-2 ring-offset-2`
@@ -231,7 +237,9 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
         <input
           type="date"
           value={data.dueDate || ""}
-          onChange={(e) => { onChange({ dueDate: e.target.value }); }}
+          onChange={(e) => {
+            onChange({ dueDate: e.target.value });
+          }}
           min={new Date().toISOString().split("T")[0]}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         />

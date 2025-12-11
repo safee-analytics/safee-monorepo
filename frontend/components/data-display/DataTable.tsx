@@ -66,10 +66,20 @@ const TableRows = ({ user, index, shift }: TableRowsProps) => {
   return (
     <motion.tr layoutId={`row-${user.id}`} className={`text-sm ${user.id % 2 ? "bg-slate-100" : "bg-white"}`}>
       <td className="pl-4 w-8 text-lg">
-        <button className="hover:text-violet-600" onClick={() => { shift(user.id, "up"); }}>
+        <button
+          className="hover:text-violet-600"
+          onClick={() => {
+            shift(user.id, "up");
+          }}
+        >
           <FiChevronUp />
         </button>
-        <button className="hover:text-violet-600" onClick={() => { shift(user.id, "down"); }}>
+        <button
+          className="hover:text-violet-600"
+          onClick={() => {
+            shift(user.id, "down");
+          }}
+        >
           <FiChevronDown />
         </button>
       </td>
@@ -97,12 +107,13 @@ const TableRows = ({ user, index, shift }: TableRowsProps) => {
 
       <td className="p-4">
         <span
-          className={`px-2 py-1 text-xs font-medium rounded ${user.status === "online"
-            ? "bg-green-200 text-green-800"
-            : user.status === "offline"
-              ? "bg-yellow-200 text-yellow-800"
-              : "bg-slate-200 text-slate-800"
-            }`}
+          className={`px-2 py-1 text-xs font-medium rounded ${
+            user.status === "online"
+              ? "bg-green-200 text-green-800"
+              : user.status === "offline"
+                ? "bg-yellow-200 text-yellow-800"
+                : "bg-slate-200 text-slate-800"
+          }`}
         >
           {user.status}
         </span>

@@ -83,7 +83,9 @@ export function TwoFactorVerification({ isOpen, onClose, onSuccess, email }: Two
             </div>
 
             <button
-              onClick={() => { void handleVerifyCode(); }}
+              onClick={() => {
+                void handleVerifyCode();
+              }}
               disabled={otpCode.length !== 6 || verify2FAMutation.isPending}
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
@@ -91,7 +93,9 @@ export function TwoFactorVerification({ isOpen, onClose, onSuccess, email }: Two
             </button>
 
             <button
-              onClick={() => { setUseBackupCode(true); }}
+              onClick={() => {
+                setUseBackupCode(true);
+              }}
               className="w-full px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg text-sm"
             >
               Use a backup code instead
@@ -106,7 +110,9 @@ export function TwoFactorVerification({ isOpen, onClose, onSuccess, email }: Two
               <input
                 type="text"
                 value={backupCode}
-                onChange={(e) => { setBackupCode(e.target.value); }}
+                onChange={(e) => {
+                  setBackupCode(e.target.value);
+                }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="Enter backup code"
                 autoFocus
@@ -114,7 +120,9 @@ export function TwoFactorVerification({ isOpen, onClose, onSuccess, email }: Two
             </div>
 
             <button
-              onClick={() => { void handleVerifyCode(); }}
+              onClick={() => {
+                void handleVerifyCode();
+              }}
               disabled={!backupCode || verify2FAMutation.isPending}
               className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >

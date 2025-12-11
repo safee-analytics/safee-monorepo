@@ -66,7 +66,9 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
               international
               defaultCountry="EG"
               value={phoneNumber}
-              onChange={(value) => { setPhoneNumber(value || ""); }}
+              onChange={(value) => {
+                setPhoneNumber(value || "");
+              }}
               className="phone-input-custom"
               numberInputProps={{
                 className:
@@ -86,7 +88,9 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
               </button>
             )}
             <button
-              onClick={handleSendCode}
+              onClick={() => {
+                void handleSendCode();
+              }}
               disabled={!phoneNumber || sendVerificationMutation.isPending}
               className="flex-1 px-4 py-2 bg-safee-600 text-white rounded-lg hover:bg-safee-700 disabled:opacity-50 flex items-center justify-center gap-2"
             >
@@ -127,7 +131,9 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
           </div>
 
           <button
-            onClick={handleVerifyAndSignIn}
+            onClick={() => {
+              void handleVerifyAndSignIn();
+            }}
             disabled={verificationCode.length !== 6 || verifyPhoneMutation.isPending}
             className="w-full px-4 py-2 bg-safee-600 text-white rounded-lg hover:bg-safee-700 disabled:opacity-50"
           >

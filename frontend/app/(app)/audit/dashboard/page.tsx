@@ -218,9 +218,9 @@ export default function AuditDashboard() {
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
             <Link
               href="/audit/cases?status=in-progress"
-              onClick={() =>
-                { trackNavigation("stat_card_clicked", { cardName: "Active Cases", status: "in-progress" }); }
-              }
+              onClick={() => {
+                trackNavigation("stat_card_clicked", { cardName: "Active Cases", status: "in-progress" });
+              }}
               className="block cursor-pointer transition-transform hover:scale-105"
             >
               <StatCard
@@ -237,9 +237,9 @@ export default function AuditDashboard() {
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
             <Link
               href="/audit/cases?status=under-review"
-              onClick={() =>
-                { trackNavigation("stat_card_clicked", { cardName: "Pending Reviews", status: "under-review" }); }
-              }
+              onClick={() => {
+                trackNavigation("stat_card_clicked", { cardName: "Pending Reviews", status: "under-review" });
+              }}
               className="block cursor-pointer transition-transform hover:scale-105"
             >
               <StatCard
@@ -255,9 +255,9 @@ export default function AuditDashboard() {
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
             <Link
               href="/audit/cases?status=completed"
-              onClick={() =>
-                { trackNavigation("stat_card_clicked", { cardName: "Completed Audits", status: "completed" }); }
-              }
+              onClick={() => {
+                trackNavigation("stat_card_clicked", { cardName: "Completed Audits", status: "completed" });
+              }}
               className="block cursor-pointer transition-transform hover:scale-105"
             >
               <StatCard
@@ -273,7 +273,9 @@ export default function AuditDashboard() {
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
             <Link
               href="/audit/team"
-              onClick={(e) => { handleConditionalNavigation(e, "/audit/team", "view_team"); }}
+              onClick={(e) => {
+                handleConditionalNavigation(e, "/audit/team", "view_team");
+              }}
               className="block cursor-pointer transition-transform hover:scale-105"
             >
               <StatCard

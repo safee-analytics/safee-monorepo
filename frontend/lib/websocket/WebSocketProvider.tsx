@@ -23,7 +23,9 @@ interface WebSocketProviderProps {
 
 export function WebSocketProvider({ children }: WebSocketProviderProps) {
   const ws = useWebSocket({
-    onError: (error) => { console.error("WebSocket error:", error); },
+    onError: (error) => {
+      console.error("WebSocket error:", error);
+    },
   });
 
   return <WebSocketContext.Provider value={ws}>{children}</WebSocketContext.Provider>;

@@ -137,7 +137,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   useEffect(() => {
     if (!enabled) return;
 
-    connect();
+    void connect();
 
     return () => {
       disconnect();

@@ -33,7 +33,9 @@ const Notification = ({ text, removeNotif }: Omit<NotificationType, "id"> & { re
       removeNotif();
     }, NOTIFICATION_TTL);
 
-    return () => { clearTimeout(timeoutRef); };
+    return () => {
+      clearTimeout(timeoutRef);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -48,7 +50,12 @@ const Notification = ({ text, removeNotif }: Omit<NotificationType, "id"> & { re
     >
       <FiAlertCircle className="text-3xl absolute -top-4 -left-4 p-2 rounded-full bg-white text-violet-600 shadow" />
       <span>{text}</span>
-      <button onClick={() => { removeNotif(); }} className="ml-auto mt-0.5">
+      <button
+        onClick={() => {
+          removeNotif();
+        }}
+        className="ml-auto mt-0.5"
+      >
         <FiX />
       </button>
     </motion.div>

@@ -202,7 +202,9 @@ export default function ICVScopePage() {
             {/* Actions Bar */}
             <div className="flex items-center gap-3 mb-6">
               <button
-                onClick={handleSaveScope}
+                onClick={() => {
+                  void handleSaveScope();
+                }}
                 disabled={isSaving || isReadOnly}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
               >
@@ -210,7 +212,9 @@ export default function ICVScopePage() {
                 {isSaving ? t.audit.saving : t.audit.saveChanges}
               </button>
               <button
-                onClick={handleExportScope}
+                onClick={() => {
+                  void handleExportScope();
+                }}
                 className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
               >
                 <Download className="w-4 h-4" />
@@ -267,7 +271,9 @@ export default function ICVScopePage() {
             {/* Scope Editor */}
             <ICVScopeEditor
               sections={scope.sections}
-              onSectionsChange={(sections) => { setScope({ ...scope, sections }); }}
+              onSectionsChange={(sections) => {
+                setScope({ ...scope, sections });
+              }}
               readOnly={isReadOnly}
             />
           </motion.div>
@@ -314,7 +320,9 @@ export default function ICVScopePage() {
 
             {scope.status !== "Completed" && scope.status !== "Archived" && (
               <button
-                onClick={handleCompleteFile}
+                onClick={() => {
+                  void handleCompleteFile();
+                }}
                 disabled={isSaving}
                 className="w-full flex items-center gap-3 px-4 py-3 text-left text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors border border-blue-200 disabled:opacity-50"
               >
@@ -325,7 +333,9 @@ export default function ICVScopePage() {
 
             {scope.status === "Completed" && (
               <button
-                onClick={handleArchiveFile}
+                onClick={() => {
+                  void handleArchiveFile();
+                }}
                 disabled={isSaving}
                 className="w-full flex items-center gap-3 px-4 py-3 text-left text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors border border-gray-200 disabled:opacity-50"
               >

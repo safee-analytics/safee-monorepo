@@ -22,6 +22,7 @@ export function InlineDocumentStatus({ documentId, currentStatus, onUpdate }: In
   const [status, setStatus] = useState(currentStatus);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -39,6 +40,12 @@ export function InlineDocumentStatus({ documentId, currentStatus, onUpdate }: In
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    if (!isOpen || !dropdownRef.current) return;
+    const rect = dropdownRef.current.getBoundingClientRect();
+    setMenuPosition({ top: rect.bottom, left: rect.left });
+  }, [isOpen]);
+
   const handleStatusChange = async (newStatus: DocumentStatus) => {
     setStatus(newStatus);
     setIsOpen(false);
@@ -53,7 +60,9 @@ export function InlineDocumentStatus({ documentId, currentStatus, onUpdate }: In
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => { setIsOpen(!isOpen); }}
+        onClick={() => {
+          setIsOpen((prev) => !prev);
+        }}
         className="group flex items-center gap-1 hover:opacity-80 transition-opacity"
       >
         <span className={`px-2 py-1 rounded-full text-xs font-medium ${currentStatusObj?.color}`}>
@@ -66,8 +75,8 @@ export function InlineDocumentStatus({ documentId, currentStatus, onUpdate }: In
         <div
           className="fixed z-[9999] mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 w-fit"
           style={{
-            top: dropdownRef.current?.getBoundingClientRect().bottom ?? 0,
-            left: dropdownRef.current?.getBoundingClientRect().left ?? 0,
+            top: menuPosition.top,
+            left: menuPosition.left,
           }}
         >
           {statuses
@@ -75,7 +84,9 @@ export function InlineDocumentStatus({ documentId, currentStatus, onUpdate }: In
             .map((s) => (
               <button
                 key={s.value}
-                onClick={() => handleStatusChange(s.value)}
+                onClick={() => {
+                  void handleStatusChange(s.value);
+                }}
                 className="px-2 py-1.5 text-left text-sm hover:bg-gray-50 transition-colors whitespace-nowrap w-full"
               >
                 <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${s.color}`}>{s.label}</span>

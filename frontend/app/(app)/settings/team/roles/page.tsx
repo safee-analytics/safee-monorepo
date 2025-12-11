@@ -86,16 +86,13 @@ export default function RoleManagement() {
   const updateRoleMutation = useUpdateRolePermissions();
   const deleteRoleMutation = useDeleteRole();
 
-  const groupedRoles = (roles || []).reduce<Record<string, NonNullable<typeof roles>>>(
-    (acc, role) => {
-      if (!acc[role.role]) {
-        acc[role.role] = [];
-      }
-      acc[role.role].push(role);
-      return acc;
-    },
-    {},
-  );
+  const groupedRoles = (roles || []).reduce<Record<string, NonNullable<typeof roles>>>((acc, role) => {
+    if (!acc[role.role]) {
+      acc[role.role] = [];
+    }
+    acc[role.role].push(role);
+    return acc;
+  }, {});
 
   const handleCreateRole = (roleName: string, permissions: string[]) => {
     if (!orgId) return;
@@ -217,7 +214,9 @@ export default function RoleManagement() {
           </div>
         </div>
         <button
-          onClick={() => { setShowCreateModal(true); }}
+          onClick={() => {
+            setShowCreateModal(true);
+          }}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
@@ -253,7 +252,9 @@ export default function RoleManagement() {
                   </div>
                   <div className="flex items-center gap-1">
                     <button
-                      onClick={() => { setEditingRole(isEditing ? null : roleName); }}
+                      onClick={() => {
+                        setEditingRole(isEditing ? null : roleName);
+                      }}
                       className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                     >
                       {isEditing ? (
@@ -263,7 +264,9 @@ export default function RoleManagement() {
                       )}
                     </button>
                     <button
-                      onClick={() => handleDeleteRole(roleName)}
+                      onClick={() => {
+                        void handleDeleteRole(roleName);
+                      }}
                       className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                     >
                       <Trash2 className="w-4 h-4 text-red-600" />
@@ -276,8 +279,12 @@ export default function RoleManagement() {
                   {isEditing ? (
                     <RolePermissionEditor
                       initialPermissions={permissions}
-                      onSave={(newPermissions) => { handleUpdateRole(roleName, newPermissions); }}
-                      onCancel={() => { setEditingRole(null); }}
+                      onSave={(newPermissions) => {
+                        void handleUpdateRole(roleName, newPermissions);
+                      }}
+                      onCancel={() => {
+                        setEditingRole(null);
+                      }}
                     />
                   ) : (
                     <div className="space-y-1">
@@ -309,8 +316,12 @@ export default function RoleManagement() {
       {/* Create Role Modal */}
       {showCreateModal && (
         <CreateRoleModal
-          onClose={() => { setShowCreateModal(false); }}
-          onCreate={handleCreateRole}
+          onClose={() => {
+            setShowCreateModal(false);
+          }}
+          onCreate={(roleName, permissions) => {
+            void handleCreateRole(roleName, permissions);
+          }}
           isCreating={createRoleMutation.isPending}
         />
       )}
@@ -358,7 +369,9 @@ function RolePermissionEditor({
               <input
                 type="checkbox"
                 checked={selectedPermissions.includes(perm.id)}
-                onChange={() => { togglePermission(perm.id); }}
+                onChange={() => {
+                  togglePermission(perm.id);
+                }}
                 className="rounded border-gray-300"
               />
               {perm.label}
@@ -368,7 +381,9 @@ function RolePermissionEditor({
       ))}
       <div className="flex gap-2 pt-2">
         <button
-          onClick={() => { onSave(selectedPermissions); }}
+          onClick={() => {
+            onSave(selectedPermissions);
+          }}
           className="flex-1 px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
         >
           Save
@@ -430,7 +445,9 @@ function CreateRoleModal({
               <input
                 type="text"
                 value={roleName}
-                onChange={(e) => { setRoleName(e.target.value); }}
+                onChange={(e) => {
+                  setRoleName(e.target.value);
+                }}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="e.g. Audit Manager"
@@ -449,7 +466,9 @@ function CreateRoleModal({
                           <input
                             type="checkbox"
                             checked={selectedPermissions.includes(perm.id)}
-                            onChange={() => { togglePermission(perm.id); }}
+                            onChange={() => {
+                              togglePermission(perm.id);
+                            }}
                             className="rounded border-gray-300"
                           />
                           {perm.label}

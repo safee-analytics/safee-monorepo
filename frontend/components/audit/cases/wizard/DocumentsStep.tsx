@@ -58,9 +58,9 @@ export function DocumentsStep({ data, onChange }: WizardStepProps) {
   };
 
   const formatFileSize = (bytes: number) => {
-    if (bytes < 1024) return `${bytes  } B`;
-    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)  } KB`;
-    return `${(bytes / (1024 * 1024)).toFixed(1)  } MB`;
+    if (bytes < 1024) return `${bytes} B`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   };
 
   return (
@@ -137,7 +137,9 @@ export function DocumentsStep({ data, onChange }: WizardStepProps) {
                 </div>
 
                 <button
-                  onClick={() => { handleRemoveFile(index); }}
+                  onClick={() => {
+                    handleRemoveFile(index);
+                  }}
                   className="ml-4 p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   title="Remove file"
                 >

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, startTransition } from "react";
 import { CaseStatus, CasePriority } from "@/types/audit";
 
 export interface FilterToken {
@@ -45,14 +45,16 @@ export function CaseFilters({
 
   // Sync internal state with external filters prop
   useEffect(() => {
-    setFilters(externalFilters);
-    // Update search text if there's a text filter
-    const textFilter = externalFilters.find((f) => f.type === "text");
-    if (textFilter) {
-      setSearchText(textFilter.value);
-    } else {
-      setSearchText("");
-    }
+    startTransition(() => {
+      setFilters(externalFilters);
+      // Update search text if there's a text filter
+      const textFilter = externalFilters.find((f) => f.type === "text");
+      if (textFilter) {
+        setSearchText(textFilter.value);
+      } else {
+        setSearchText("");
+      }
+    });
   }, [externalFilters]);
 
   // Close menus when clicking outside
@@ -263,7 +265,9 @@ export function CaseFilters({
               {statusOptions.map((option, index) => (
                 <button
                   key={option.value}
-                  onClick={() => { addFilter("status", option.value, option.label); }}
+                  onClick={() => {
+                    addFilter("status", option.value, option.label);
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
@@ -325,7 +329,9 @@ export function CaseFilters({
               {priorityOptions.map((option, index) => (
                 <button
                   key={option.value}
-                  onClick={() => { addFilter("priority", option.value, option.label); }}
+                  onClick={() => {
+                    addFilter("priority", option.value, option.label);
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
@@ -444,10 +450,14 @@ export function CaseFilters({
                     ref={assigneeSearchRef}
                     type="text"
                     value={assigneeSearchText}
-                    onChange={(e) => { setAssigneeSearchText(e.target.value); }}
+                    onChange={(e) => {
+                      setAssigneeSearchText(e.target.value);
+                    }}
                     placeholder="Search people..."
                     className="flex-1 outline-none text-sm"
-                    onClick={(e) => { e.stopPropagation(); }}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                    }}
                   />
                 </div>
               </div>
@@ -555,7 +565,9 @@ export function CaseFilters({
 
         {/* Quick Filters */}
         <button
-          onClick={() => { addFilter("status", "unassigned", "Unassigned"); }}
+          onClick={() => {
+            addFilter("status", "unassigned", "Unassigned");
+          }}
           className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
         >
           Unassigned
@@ -582,7 +594,12 @@ export function CaseFilters({
                 <span className="text-xs opacity-60">{filter.type}:</span>
               )}
               <span>{filter.display}</span>
-              <button onClick={() => { removeFilter(index); }} className="hover:bg-black/10 rounded p-0.5 ml-0.5">
+              <button
+                onClick={() => {
+                  removeFilter(index);
+                }}
+                className="hover:bg-black/10 rounded p-0.5 ml-0.5"
+              >
                 <svg
                   className="w-3 h-3"
                   fill="none"

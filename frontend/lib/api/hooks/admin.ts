@@ -349,7 +349,8 @@ export function useAdminHasPermission() {
     mutationFn: async (data: {
       userId: string;
       permission: {
-        user?: (| "list"
+        user?: (
+          | "list"
           | "update"
           | "delete"
           | "create"
@@ -357,7 +358,8 @@ export function useAdminHasPermission() {
           | "ban"
           | "impersonate"
           | "set-password"
-          | "get")[];
+          | "get"
+        )[];
         session?: ("list" | "delete" | "revoke")[];
       };
     }) => {

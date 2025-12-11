@@ -31,7 +31,9 @@ const ToggleButton = ({
   return (
     <div className={`rounded-lg transition-colors ${selected === id ? "bg-indigo-600" : "bg-zinc-900"}`}>
       <button
-        onClick={() => { setSelected(id); }}
+        onClick={() => {
+          setSelected(id);
+        }}
         className={`w-full origin-top-left rounded-lg border py-3 text-xs font-medium transition-all md:text-base ${
           selected === id
             ? "-translate-y-1 border-indigo-600 bg-white text-indigo-600"

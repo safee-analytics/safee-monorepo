@@ -94,14 +94,23 @@ export function CaseTable({
             {cases.map((caseRow) => (
               <tr
                 key={caseRow.id}
-                onClick={() => { handleRowClick(caseRow.id); }}
+                onClick={() => {
+                  handleRowClick(caseRow.id);
+                }}
                 className="hover:bg-gray-50 transition-colors cursor-pointer"
               >
-                <td className="px-6 py-4" onClick={(e) => { e.stopPropagation(); }}>
+                <td
+                  className="px-6 py-4"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   <input
                     type="checkbox"
                     checked={selectedCases.includes(caseRow.id)}
-                    onChange={() => { onToggleCaseSelection(caseRow.id); }}
+                    onChange={() => {
+                      onToggleCaseSelection(caseRow.id);
+                    }}
                     className="rounded border-gray-300 cursor-pointer"
                   />
                 </td>
@@ -124,7 +133,12 @@ export function CaseTable({
                     <p className="text-xs text-gray-600">{caseRow.industry}</p>
                   </div>
                 </td>
-                <td className="px-6 py-4" onClick={(e) => { e.stopPropagation(); }}>
+                <td
+                  className="px-6 py-4"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   <InlineAssignee
                     caseId={caseRow.id}
                     currentAssignee={caseRow.assignee}
@@ -132,17 +146,32 @@ export function CaseTable({
                     onUpdate={onUpdate}
                   />
                 </td>
-                <td className="px-6 py-4" onClick={(e) => { e.stopPropagation(); }}>
+                <td
+                  className="px-6 py-4"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   <InlineStatus caseId={caseRow.id} currentStatus={caseRow.status} onUpdate={onUpdate} />
                 </td>
-                <td className="px-6 py-4" onClick={(e) => { e.stopPropagation(); }}>
+                <td
+                  className="px-6 py-4"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   <InlinePriority
                     caseId={caseRow.id}
                     currentPriority={caseRow.priority}
                     onUpdate={onUpdate}
                   />
                 </td>
-                <td className="px-6 py-4" onClick={(e) => { e.stopPropagation(); }}>
+                <td
+                  className="px-6 py-4"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
                   <InlineDueDate caseId={caseRow.id} currentDueDate={caseRow.dueDate} onUpdate={onUpdate} />
                 </td>
                 <td className="px-6 py-4">
