@@ -11,15 +11,17 @@ export default function NewLeadPage() {
   const router = useRouter();
   const createLeadMutation = useCreateLead();
 
-  const handleSubmit = async (data: LeadFormData) => {
-    try {
-      await createLeadMutation.mutateAsync(data);
-      toast.success("Lead created successfully!");
-      router.push("/crm/leads");
-    } catch (error) {
-      toast.error("Failed to create lead. Please try again.");
-      console.error("Failed to create lead:", error);
-    }
+  const handleSubmit = (data: LeadFormData) => {
+    void (async () => {
+      try {
+        await createLeadMutation.mutateAsync(data);
+        toast.success("Lead created successfully!");
+        router.push("/crm/leads");
+      } catch (err) {
+        toast.error("Failed to create lead. Please try again.");
+        console.error("Failed to create lead:", err);
+      }
+    })();
   };
 
   return (
@@ -27,7 +29,7 @@ export default function NewLeadPage() {
       <div className="sticky top-[57px] z-30 bg-white border-b border-gray-200">
         <div className="whitespace-nowrap py-4">
           <button
-            onClick={() => router.back()}
+            onClick={() => { router.back(); }}
             className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4"
           >
             <ArrowLeft className="h-4 w-4" />

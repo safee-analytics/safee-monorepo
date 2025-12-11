@@ -20,9 +20,9 @@ export default function EditContactPage() {
       await updateContactMutation.mutateAsync({ contactId, data });
       toast.success("Contact updated successfully!");
       router.push(`/crm/contacts/${contactId}`);
-    } catch (error) {
+    } catch (err) {
       toast.error("Failed to update contact. Please try again.");
-      console.error("Failed to update contact:", error);
+      console.error("Failed to update contact:", err);
     }
   };
 
@@ -48,7 +48,7 @@ export default function EditContactPage() {
       <div className="sticky top-[57px] z-30 bg-white border-b border-gray-200">
         <div className="whitespace-nowrap py-4">
           <button
-            onClick={() => router.back()}
+            onClick={() => { router.back(); }}
             className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4"
           >
             <ArrowLeft className="h-4 w-4" />

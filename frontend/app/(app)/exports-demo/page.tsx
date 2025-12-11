@@ -119,7 +119,7 @@ const salesReportData: TablePDFData = {
       key: "amount",
       width: 1.2,
       align: "right",
-      format: (value: unknown) => `${(value as number).toLocaleString()}`,
+      format: (value: unknown) => (value as number).toLocaleString(),
     },
     { header: "Status", key: "status", width: 1, align: "center" },
   ],
@@ -155,8 +155,8 @@ export default function ExportsDemo() {
         const reportBlob = await generatePDFBlob(<TablePDF data={salesReportData} />);
         const reportUrl = URL.createObjectURL(reportBlob);
         setReportPdfUrl(reportUrl);
-      } catch (error) {
-        console.error("Error generating PDF previews:", error);
+      } catch (err) {
+        console.error("Error generating PDF previews:", err);
       }
     };
 

@@ -42,7 +42,7 @@ export default function IntegrationsSettings() {
       } else {
         await connectIntegration.mutateAsync(id);
       }
-    } catch (_error) {
+    } catch (err) {
       toast.error(`Failed to ${connected ? "disconnect" : "connect"} integration`);
     }
   };
@@ -63,7 +63,7 @@ export default function IntegrationsSettings() {
               {categories.map((category) => (
                 <button
                   key={category.id}
-                  onClick={() => setSelectedCategory(category.id)}
+                  onClick={() => { setSelectedCategory(category.id); }}
                   className={`px-4 py-2 rounded-lg whitespace-nowrap transition-colors ${
                     selectedCategory === category.id
                       ? "bg-blue-600 text-white"

@@ -60,8 +60,8 @@ export default function EmployeeDetailPage() {
     try {
       await deactivateEmployee.mutateAsync(employeeId);
       router.push("/hr/employees");
-    } catch (error) {
-      console.error("Failed to deactivate employee:", error);
+    } catch (err) {
+      console.error("Failed to deactivate employee:", err);
     }
   };
 
@@ -108,7 +108,7 @@ export default function EmployeeDetailPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => router.back()}
+            onClick={() => { router.back(); }}
             className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-gray-600" />
@@ -278,7 +278,7 @@ export default function EmployeeDetailPage() {
             {tabs.map((tab) => (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => { setActiveTab(tab.id); }}
                 className={`flex items-center gap-2 py-4 border-b-2 transition-colors ${
                   activeTab === tab.id
                     ? "border-blue-600 text-blue-600"

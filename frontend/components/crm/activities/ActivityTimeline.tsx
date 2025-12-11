@@ -21,7 +21,7 @@ export function ActivityTimeline({ activities }: ActivityTimelineProps) {
     try {
       await markDoneMutation.mutateAsync(activityId);
       toast.success("Activity marked as done!");
-    } catch (_error) {
+    } catch (err) {
       toast.error("Failed to mark activity as done");
     }
   };
@@ -65,9 +65,9 @@ export function ActivityTimeline({ activities }: ActivityTimelineProps) {
       return <XCircle className="h-5 w-5 text-red-600" />;
     } else if (state === "today") {
       return <AlertCircle className="h-5 w-5 text-yellow-600" />;
-    } else {
+    } 
       return <Clock className="h-5 w-5 text-blue-600" />;
-    }
+    
   };
 
   const getStateColor = (state: string, dateDeadline: string) => {
@@ -80,9 +80,9 @@ export function ActivityTimeline({ activities }: ActivityTimelineProps) {
       return "bg-red-50 border-red-200";
     } else if (state === "today") {
       return "bg-yellow-50 border-yellow-200";
-    } else {
+    } 
       return "bg-blue-50 border-blue-200";
-    }
+    
   };
 
   const ActivityCard = ({ activity }: { activity: ActivityResponse }) => (

@@ -114,8 +114,8 @@ export default function InvoiceStylesPage() {
         organizationId: organization.id,
       });
       toast.success(t.settings.invoiceStyles.alerts.saveSuccess);
-    } catch (error) {
-      console.error("Failed to save invoice style:", error);
+    } catch (err) {
+      console.error("Failed to save invoice style:", err);
       toast.error(t.settings.invoiceStyles.alerts.saveFailed);
     }
   };
@@ -178,7 +178,7 @@ export default function InvoiceStylesPage() {
           {/* Tabs */}
           <div className="flex gap-2 mb-6">
             <button
-              onClick={() => setActiveTab("design")}
+              onClick={() => { setActiveTab("design"); }}
               className={`px-6 py-3 font-medium rounded-t-lg transition-colors ${
                 activeTab === "design" ? "bg-gray-700 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
               }`}
@@ -186,7 +186,7 @@ export default function InvoiceStylesPage() {
               {t.settings.invoiceStyles.tabs.design}
             </button>
             <button
-              onClick={() => setActiveTab("content")}
+              onClick={() => { setActiveTab("content"); }}
               className={`px-6 py-3 font-medium rounded-t-lg transition-colors ${
                 activeTab === "content"
                   ? "bg-gray-700 text-white"
@@ -196,7 +196,7 @@ export default function InvoiceStylesPage() {
               {t.settings.invoiceStyles.tabs.content}
             </button>
             <button
-              onClick={() => setActiveTab("emails")}
+              onClick={() => { setActiveTab("emails"); }}
               className={`px-6 py-3 font-medium rounded-t-lg transition-colors ${
                 activeTab === "emails" ? "bg-gray-700 text-white" : "bg-white text-gray-700 hover:bg-gray-100"
               }`}
@@ -262,7 +262,7 @@ export default function InvoiceStylesPage() {
                       {(["left", "center", "right"] as const).map((pos) => (
                         <button
                           key={pos}
-                          onClick={() => setStyle({ ...style, logoPosition: pos })}
+                          onClick={() => { setStyle({ ...style, logoPosition: pos }); }}
                           className={`flex-1 px-4 py-2 border rounded-lg text-sm ${
                             style.logoPosition === pos
                               ? "border-blue-500 bg-blue-50 text-blue-700"
@@ -295,7 +295,7 @@ export default function InvoiceStylesPage() {
                     <input
                       type="color"
                       value={style.primaryColor}
-                      onChange={(e) => setStyle({ ...style, primaryColor: e.target.value })}
+                      onChange={(e) => { setStyle({ ...style, primaryColor: e.target.value }); }}
                       className="w-full h-10 rounded-lg border border-gray-300 cursor-pointer"
                     />
                   </div>
@@ -306,7 +306,7 @@ export default function InvoiceStylesPage() {
                     <input
                       type="color"
                       value={style.accentColor}
-                      onChange={(e) => setStyle({ ...style, accentColor: e.target.value })}
+                      onChange={(e) => { setStyle({ ...style, accentColor: e.target.value }); }}
                       className="w-full h-10 rounded-lg border border-gray-300 cursor-pointer"
                     />
                   </div>
@@ -317,7 +317,7 @@ export default function InvoiceStylesPage() {
                     <input
                       type="color"
                       value={style.textColor}
-                      onChange={(e) => setStyle({ ...style, textColor: e.target.value })}
+                      onChange={(e) => { setStyle({ ...style, textColor: e.target.value }); }}
                       className="w-full h-10 rounded-lg border border-gray-300 cursor-pointer"
                     />
                   </div>
@@ -328,7 +328,7 @@ export default function InvoiceStylesPage() {
                     <input
                       type="color"
                       value={style.backgroundColor}
-                      onChange={(e) => setStyle({ ...style, backgroundColor: e.target.value })}
+                      onChange={(e) => { setStyle({ ...style, backgroundColor: e.target.value }); }}
                       className="w-full h-10 rounded-lg border border-gray-300 cursor-pointer"
                     />
                   </div>
@@ -350,7 +350,7 @@ export default function InvoiceStylesPage() {
                     </label>
                     <select
                       value={style.headingFont}
-                      onChange={(e) => setStyle({ ...style, headingFont: e.target.value })}
+                      onChange={(e) => { setStyle({ ...style, headingFont: e.target.value }); }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       {fontOptions.map((font) => (
@@ -366,7 +366,7 @@ export default function InvoiceStylesPage() {
                     </label>
                     <select
                       value={style.bodyFont}
-                      onChange={(e) => setStyle({ ...style, bodyFont: e.target.value })}
+                      onChange={(e) => { setStyle({ ...style, bodyFont: e.target.value }); }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     >
                       {fontOptions.map((font) => (
@@ -384,7 +384,7 @@ export default function InvoiceStylesPage() {
                       {(["small", "medium", "large"] as const).map((size) => (
                         <button
                           key={size}
-                          onClick={() => setStyle({ ...style, fontSize: size })}
+                          onClick={() => { setStyle({ ...style, fontSize: size }); }}
                           className={`flex-1 px-4 py-2 border rounded-lg text-sm ${
                             style.fontSize === size
                               ? "border-blue-500 bg-blue-50 text-blue-700"
@@ -412,7 +412,7 @@ export default function InvoiceStylesPage() {
                     <input
                       type="checkbox"
                       checked={style.showLogo}
-                      onChange={(e) => setStyle({ ...style, showLogo: e.target.checked })}
+                      onChange={(e) => { setStyle({ ...style, showLogo: e.target.checked }); }}
                       className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">
@@ -423,7 +423,7 @@ export default function InvoiceStylesPage() {
                     <input
                       type="checkbox"
                       checked={style.showCompanyDetails}
-                      onChange={(e) => setStyle({ ...style, showCompanyDetails: e.target.checked })}
+                      onChange={(e) => { setStyle({ ...style, showCompanyDetails: e.target.checked }); }}
                       className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">
@@ -434,7 +434,7 @@ export default function InvoiceStylesPage() {
                     <input
                       type="checkbox"
                       checked={style.showFooter}
-                      onChange={(e) => setStyle({ ...style, showFooter: e.target.checked })}
+                      onChange={(e) => { setStyle({ ...style, showFooter: e.target.checked }); }}
                       className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                     />
                     <span className="text-sm text-gray-700">
@@ -459,7 +459,7 @@ export default function InvoiceStylesPage() {
                     <input
                       type="text"
                       value={style.invoiceLabel}
-                      onChange={(e) => setStyle({ ...style, invoiceLabel: e.target.value })}
+                      onChange={(e) => { setStyle({ ...style, invoiceLabel: e.target.value }); }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -470,7 +470,7 @@ export default function InvoiceStylesPage() {
                     <input
                       type="text"
                       value={style.billToLabel}
-                      onChange={(e) => setStyle({ ...style, billToLabel: e.target.value })}
+                      onChange={(e) => { setStyle({ ...style, billToLabel: e.target.value }); }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -481,7 +481,7 @@ export default function InvoiceStylesPage() {
                     <input
                       type="text"
                       value={style.totalLabel}
-                      onChange={(e) => setStyle({ ...style, totalLabel: e.target.value })}
+                      onChange={(e) => { setStyle({ ...style, totalLabel: e.target.value }); }}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
@@ -491,7 +491,7 @@ export default function InvoiceStylesPage() {
                     </label>
                     <textarea
                       value={style.footerText}
-                      onChange={(e) => setStyle({ ...style, footerText: e.target.value })}
+                      onChange={(e) => { setStyle({ ...style, footerText: e.target.value }); }}
                       rows={3}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                     />

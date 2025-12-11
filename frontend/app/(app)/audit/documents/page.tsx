@@ -93,7 +93,7 @@ export default function DocumentRepository() {
     if (!query) return { nodes, matchedIds: new Set() };
 
     const matchedIds = new Set<string>();
-    const filtered = nodes.reduce((acc, node) => {
+    const filtered = nodes.reduce<FolderNode[]>((acc, node) => {
       const matchesSearch = node.name.toLowerCase().includes(query.toLowerCase());
       const childResult = node.children
         ? filterFolders(node.children, query)
@@ -101,7 +101,7 @@ export default function DocumentRepository() {
 
       if (matchesSearch || childResult.nodes.length > 0) {
         if (matchesSearch) matchedIds.add(node.id);
-        childResult.matchedIds.forEach((id) => matchedIds.add(id));
+        for (const id of childResult.matchedIds) matchedIds.add(id);
 
         acc.push({
           ...node,
@@ -110,7 +110,7 @@ export default function DocumentRepository() {
       }
 
       return acc;
-    }, [] as FolderNode[]);
+    }, []);
 
     return { nodes: filtered, matchedIds };
   };
@@ -312,7 +312,7 @@ export default function DocumentRepository() {
                 type="text"
                 placeholder={t.common.search}
                 value={folderSearchQuery}
-                onChange={(e) => setFolderSearchQuery(e.target.value)}
+                onChange={(e) => { setFolderSearchQuery(e.target.value); }}
                 className={`w-full ${locale === "ar" ? "pr-9 pl-3" : "pl-9 pr-3"} py-1.5 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
               />
             </div>
@@ -383,19 +383,19 @@ export default function DocumentRepository() {
                     type="text"
                     placeholder={t.audit.searchDocuments}
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => { setSearchQuery(e.target.value); }}
                     className={`w-full ${locale === "ar" ? "pr-10 pl-4" : "pl-10 pr-4"} py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
                   />
                 </div>
                 <div className="flex items-center gap-2 bg-white border border-gray-300 rounded-lg p-1">
                   <button
-                    onClick={() => setViewMode("list")}
+                    onClick={() => { setViewMode("list"); }}
                     className={`p-2 rounded ${viewMode === "list" ? "bg-gray-100" : "hover:bg-gray-50"}`}
                   >
                     <List className="w-5 h-5 text-gray-600" />
                   </button>
                   <button
-                    onClick={() => setViewMode("grid")}
+                    onClick={() => { setViewMode("grid"); }}
                     className={`p-2 rounded ${viewMode === "grid" ? "bg-gray-100" : "hover:bg-gray-50"}`}
                   >
                     <LayoutGrid className="w-5 h-5 text-gray-600" />

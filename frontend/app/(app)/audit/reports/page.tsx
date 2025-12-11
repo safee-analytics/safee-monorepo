@@ -122,7 +122,7 @@ export default function AuditReports() {
               Export
             </button>
             <button
-              onClick={() => setShowWizard(true)}
+              onClick={() => { setShowWizard(true); }}
               className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
             >
               + Generate Report
@@ -131,14 +131,14 @@ export default function AuditReports() {
         </div>
 
         {/* Report Wizard Modal */}
-        {showWizard && <ReportWizard onClose={() => setShowWizard(false)} />}
+        {showWizard && <ReportWizard onClose={() => { setShowWizard(false); }} />}
 
         {/* Report Viewer Modal */}
         {viewingReport && (
           <ReportViewer
             report={viewingReport}
-            onClose={() => setViewingReport(null)}
-            onExport={(format) => exportMutation.mutate({ reportId: viewingReport.id, format })}
+            onClose={() => { setViewingReport(null); }}
+            onExport={(format) => { exportMutation.mutate({ reportId: viewingReport.id, format }); }}
           />
         )}
 
@@ -325,7 +325,7 @@ export default function AuditReports() {
               <h2 className="text-lg font-semibold text-gray-900">Audit Trends</h2>
               <div className="flex items-center gap-2 bg-blue-100 rounded-lg p-1">
                 <button
-                  onClick={() => setTrendView("monthly")}
+                  onClick={() => { setTrendView("monthly"); }}
                   className={`px-3 py-1 rounded text-sm font-medium ${
                     trendView === "monthly" ? "bg-blue-600 text-white" : "text-gray-700"
                   }`}
@@ -333,7 +333,7 @@ export default function AuditReports() {
                   Monthly
                 </button>
                 <button
-                  onClick={() => setTrendView("quarterly")}
+                  onClick={() => { setTrendView("quarterly"); }}
                   className={`px-3 py-1 rounded text-sm font-medium ${
                     trendView === "quarterly" ? "bg-blue-600 text-white" : "text-gray-700"
                   }`}
@@ -341,7 +341,7 @@ export default function AuditReports() {
                   Quarterly
                 </button>
                 <button
-                  onClick={() => setTrendView("yearly")}
+                  onClick={() => { setTrendView("yearly"); }}
                   className={`px-3 py-1 rounded text-sm font-medium ${
                     trendView === "yearly" ? "bg-blue-600 text-white" : "text-gray-700"
                   }`}
@@ -478,7 +478,7 @@ export default function AuditReports() {
               reports.map((report) => (
                 <button
                   key={report.id}
-                  onClick={() => setViewingReport(report)}
+                  onClick={() => { setViewingReport(report); }}
                   className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow text-left"
                 >
                   <div className="flex items-start gap-3 mb-3">

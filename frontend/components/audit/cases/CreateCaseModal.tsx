@@ -72,8 +72,8 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
       // Call success callback and close
       onSuccess?.();
       onClose();
-    } catch (error) {
-      console.error("Failed to create case:", error);
+    } catch (err) {
+      console.error("Failed to create case:", err);
       setErrors({ submit: "Failed to create case. Please try again." });
     }
   };
@@ -106,7 +106,7 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
     >
       <div
         className="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => { e.stopPropagation(); }}
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200">
@@ -134,7 +134,7 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
               type="text"
               id="clientName"
               value={formData.clientName}
-              onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+              onChange={(e) => { setFormData({ ...formData, clientName: e.target.value }); }}
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 errors.clientName ? "border-red-500" : "border-gray-300"
               }`}
@@ -153,7 +153,7 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
               type="text"
               id="auditType"
               value={formData.auditType}
-              onChange={(e) => setFormData({ ...formData, auditType: e.target.value as AuditType | "" })}
+              onChange={(e) => { setFormData({ ...formData, auditType: e.target.value as AuditType | "" }); }}
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                 errors.auditType ? "border-red-500" : "border-gray-300"
               }`}
@@ -172,7 +172,7 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
               <select
                 id="status"
                 value={formData.status}
-                onChange={(e) => setFormData({ ...formData, status: e.target.value as CaseStatus })}
+                onChange={(e) => { setFormData({ ...formData, status: e.target.value as CaseStatus }); }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="pending">Pending</option>
@@ -190,7 +190,7 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
               <select
                 id="priority"
                 value={formData.priority}
-                onChange={(e) => setFormData({ ...formData, priority: e.target.value as CasePriority })}
+                onChange={(e) => { setFormData({ ...formData, priority: e.target.value as CasePriority }); }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 <option value="low">Low</option>
@@ -209,7 +209,7 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
                 type="date"
                 id="dueDate"
                 value={formData.dueDate}
-                onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+                onChange={(e) => { setFormData({ ...formData, dueDate: e.target.value }); }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>

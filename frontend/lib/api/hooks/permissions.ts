@@ -40,7 +40,7 @@ export function useOrganizationRole(): "owner" | "admin" | "member" | null {
   if (!session?.user || !members) return null;
 
   const currentMember = members.find((m) => m.userId === session.user.id);
-  return (currentMember?.role as "owner" | "admin" | "member") ?? null;
+  return (currentMember?.role!) ?? null;
 }
 
 /**
@@ -69,8 +69,8 @@ export function useHasPermission(permission: string): boolean {
           permission: permissionObj as Record<string, string[]>,
         });
         return response.data?.success ?? false;
-      } catch (error) {
-        console.error("Error checking permission:", error);
+      } catch (err) {
+        console.error("Error checking permission:", err);
         return false;
       }
     },
@@ -83,7 +83,7 @@ export function useHasPermission(permission: string): boolean {
     return true;
   }
 
-  return (result as boolean | undefined) ?? false;
+  return (result) ?? false;
 }
 
 /**
@@ -113,16 +113,16 @@ export function useHasAnyPermission(permissions: string[]): boolean {
                 permission: permissionObj as Record<string, string[]>,
               });
               return response.data?.success ?? false;
-            } catch (error) {
-              console.error(`Error checking permission ${permission}:`, error);
+            } catch (err) {
+              console.error(`Error checking permission ${permission}:`, err);
               return false;
             }
           }),
         );
         // Return true if ANY permission is true
-        return checks.some((result) => (result as boolean) === true);
-      } catch (error) {
-        console.error("Error checking permissions:", error);
+        return checks.some((result) => result);
+      } catch (err) {
+        console.error("Error checking permissions:", err);
         return false;
       }
     },
@@ -174,16 +174,16 @@ export function useHasAllPermissions(permissions: string[]): boolean {
                 permission: permissionObj as Record<string, string[]>,
               });
               return response.data?.success ?? false;
-            } catch (error) {
-              console.error(`Error checking permission ${permission}:`, error);
+            } catch (err) {
+              console.error(`Error checking permission ${permission}:`, err);
               return false;
             }
           }),
         );
         // Return true only if ALL permissions are true
-        return checks.every((result) => (result as boolean) === true);
-      } catch (error) {
-        console.error("Error checking permissions:", error);
+        return checks.every((result) => result);
+      } catch (err) {
+        console.error("Error checking permissions:", err);
         return false;
       }
     },
@@ -244,8 +244,8 @@ export function useCurrentUserRole(): string | null {
           (m) => m.userId === session?.user?.id && m.organizationId === organization.id,
         );
         return currentMember?.role || null;
-      } catch (error) {
-        console.error("Error fetching user role:", error);
+      } catch (err) {
+        console.error("Error fetching user role:", err);
         return null;
       }
     },

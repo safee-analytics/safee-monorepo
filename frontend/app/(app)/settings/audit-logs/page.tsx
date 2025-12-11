@@ -57,8 +57,8 @@ export default function AuditLogsPage() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Failed to export audit logs:", error);
+    } catch (err) {
+      console.error("Failed to export audit logs:", err);
       toast.error(t.settings.auditLogs.alerts.exportFailed);
     }
   };
@@ -104,7 +104,7 @@ export default function AuditLogsPage() {
                 <input
                   type="text"
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => { setSearchQuery(e.target.value); }}
                   placeholder={t.settings.auditLogs.search.placeholder}
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
@@ -113,7 +113,7 @@ export default function AuditLogsPage() {
 
             <div className="flex gap-2">
               <button
-                onClick={() => setShowFilters(!showFilters)}
+                onClick={() => { setShowFilters(!showFilters); }}
                 className={`px-4 py-2 border rounded-lg flex items-center gap-2 transition-colors ${
                   showFilters
                     ? "bg-blue-50 border-blue-300 text-blue-700"
@@ -166,7 +166,7 @@ export default function AuditLogsPage() {
                 </label>
                 <select
                   value={filters.action || ""}
-                  onChange={(e) => handleFilterChange("action", e.target.value || undefined)}
+                  onChange={(e) => { handleFilterChange("action", e.target.value || undefined); }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">{t.settings.auditLogs.filters.allActions}</option>
@@ -188,7 +188,7 @@ export default function AuditLogsPage() {
                 </label>
                 <select
                   value={filters.entityType || ""}
-                  onChange={(e) => handleFilterChange("entityType", e.target.value || undefined)}
+                  onChange={(e) => { handleFilterChange("entityType", e.target.value || undefined); }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">{t.settings.auditLogs.filters.allEntities}</option>
@@ -212,7 +212,7 @@ export default function AuditLogsPage() {
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="date"
-                    onChange={(e) => handleFilterChange("startDate", e.target.value || undefined)}
+                    onChange={(e) => { handleFilterChange("startDate", e.target.value || undefined); }}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -226,7 +226,7 @@ export default function AuditLogsPage() {
                   <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
                   <input
                     type="date"
-                    onChange={(e) => handleFilterChange("endDate", e.target.value || undefined)}
+                    onChange={(e) => { handleFilterChange("endDate", e.target.value || undefined); }}
                     className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
@@ -333,7 +333,7 @@ export default function AuditLogsPage() {
               <div className="flex gap-2">
                 <button
                   onClick={() =>
-                    handleFilterChange("offset", Math.max(0, (filters.offset || 0) - (filters.limit || 50)))
+                    { handleFilterChange("offset", Math.max(0, (filters.offset || 0) - (filters.limit || 50))); }
                   }
                   disabled={!filters.offset || filters.offset === 0}
                   className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -341,7 +341,7 @@ export default function AuditLogsPage() {
                   {t.settings.auditLogs.pagination.previous}
                 </button>
                 <button
-                  onClick={() => handleFilterChange("offset", (filters.offset || 0) + (filters.limit || 50))}
+                  onClick={() => { handleFilterChange("offset", (filters.offset || 0) + (filters.limit || 50)); }}
                   disabled={!filteredLogs || filteredLogs.length < (filters.limit || 50)}
                   className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >

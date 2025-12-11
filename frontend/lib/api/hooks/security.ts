@@ -51,7 +51,7 @@ export function useUpdateSecuritySettings() {
       throw new Error("Not yet implemented");
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.security.settings });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.security.settings });
     },
   });
 }

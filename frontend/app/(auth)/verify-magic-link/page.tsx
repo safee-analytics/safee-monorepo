@@ -70,7 +70,7 @@ function VerifyMagicLinkContent() {
         <h2 className="text-2xl font-bold text-gray-900 mb-2">Verification Failed</h2>
         <p className="text-gray-600 mb-6">{error}</p>
         <button
-          onClick={() => router.push("/login")}
+          onClick={() => { router.push("/login"); }}
           className="w-full bg-safee-600 hover:bg-safee-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
         >
           Back to Login

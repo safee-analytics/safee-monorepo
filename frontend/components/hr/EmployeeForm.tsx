@@ -369,7 +369,7 @@ export function EmployeeForm({
       <div className="flex items-center justify-end gap-3">
         <button
           type="button"
-          onClick={() => window.history.back()}
+          onClick={() => { window.history.back(); }}
           className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
         >
           Cancel

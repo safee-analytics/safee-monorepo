@@ -58,9 +58,9 @@ export default function StorageSettings() {
     try {
       await testConnection.mutateAsync(config);
       setConnectionStatus("connected");
-    } catch (error) {
+    } catch (err) {
       setConnectionStatus("error");
-      setErrorMessage(error instanceof Error ? error.message : "Connection failed");
+      setErrorMessage(err instanceof Error ? err.message : "Connection failed");
     }
   };
 
@@ -68,7 +68,7 @@ export default function StorageSettings() {
     try {
       await updateConfig.mutateAsync(config);
       toast.success("Storage configuration saved successfully");
-    } catch (_error) {
+    } catch (err) {
       toast.error("Failed to save configuration");
     }
   };
@@ -94,7 +94,7 @@ export default function StorageSettings() {
             </h2>
             <div className="grid grid-cols-2 gap-4">
               <button
-                onClick={() => setStorageMode("managed")}
+                onClick={() => { setStorageMode("managed"); }}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   storageMode === "managed"
                     ? "border-blue-600 bg-blue-50"
@@ -115,7 +115,7 @@ export default function StorageSettings() {
               </button>
 
               <button
-                onClick={() => setStorageMode("custom")}
+                onClick={() => { setStorageMode("custom"); }}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   storageMode === "custom"
                     ? "border-blue-600 bg-blue-50"
@@ -212,7 +212,7 @@ export default function StorageSettings() {
                         {(["smb", "nfs", "webdav", "local"] as const).map((type) => (
                           <button
                             key={type}
-                            onClick={() => setConfig({ ...config, type })}
+                            onClick={() => { setConfig({ ...config, type }); }}
                             className={`px-4 py-3 rounded-lg border-2 transition-all ${
                               config.type === type
                                 ? "border-blue-600 bg-blue-50 text-blue-700"
@@ -241,7 +241,7 @@ export default function StorageSettings() {
                           <input
                             type="text"
                             value={config.host}
-                            onChange={(e) => setConfig({ ...config, host: e.target.value })}
+                            onChange={(e) => { setConfig({ ...config, host: e.target.value }); }}
                             placeholder={t.settings.storage.connection.hostPlaceholder}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           />
@@ -255,7 +255,7 @@ export default function StorageSettings() {
                           <input
                             type="number"
                             value={config.port}
-                            onChange={(e) => setConfig({ ...config, port: parseInt(e.target.value) })}
+                            onChange={(e) => { setConfig({ ...config, port: parseInt(e.target.value) }); }}
                             placeholder={
                               config.type === "smb" ? "445" : config.type === "nfs" ? "2049" : "443"
                             }
@@ -271,7 +271,7 @@ export default function StorageSettings() {
                           <input
                             type="text"
                             value={config.shareName}
-                            onChange={(e) => setConfig({ ...config, shareName: e.target.value })}
+                            onChange={(e) => { setConfig({ ...config, shareName: e.target.value }); }}
                             placeholder={t.settings.storage.connection.shareNamePlaceholder}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           />
@@ -285,7 +285,7 @@ export default function StorageSettings() {
                           <input
                             type="text"
                             value={config.username}
-                            onChange={(e) => setConfig({ ...config, username: e.target.value })}
+                            onChange={(e) => { setConfig({ ...config, username: e.target.value }); }}
                             placeholder={t.settings.storage.connection.usernamePlaceholder}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           />
@@ -299,7 +299,7 @@ export default function StorageSettings() {
                           <input
                             type="password"
                             value={config.password}
-                            onChange={(e) => setConfig({ ...config, password: e.target.value })}
+                            onChange={(e) => { setConfig({ ...config, password: e.target.value }); }}
                             placeholder={t.settings.storage.connection.passwordPlaceholder}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           />
@@ -314,7 +314,7 @@ export default function StorageSettings() {
                             <input
                               type="text"
                               value={config.domain}
-                              onChange={(e) => setConfig({ ...config, domain: e.target.value })}
+                              onChange={(e) => { setConfig({ ...config, domain: e.target.value }); }}
                               placeholder={t.settings.storage.connection.domainPlaceholder}
                               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />

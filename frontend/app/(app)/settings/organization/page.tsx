@@ -136,8 +136,8 @@ export default function OrganizationSettingsPage() {
         slug: organization.slug,
       });
       setIsEditing(null);
-    } catch (error) {
-      console.error("Failed to update organization:", error);
+    } catch (err) {
+      console.error("Failed to update organization:", err);
       toast.error("Failed to update organization settings");
     }
   };
@@ -148,8 +148,8 @@ export default function OrganizationSettingsPage() {
     try {
       await deleteOrganizationMutation.mutateAsync({ orgId: organization.id });
       window.location.href = "/";
-    } catch (error) {
-      console.error("Failed to delete organization:", error);
+    } catch (err) {
+      console.error("Failed to delete organization:", err);
       toast.error("Failed to delete organization");
     }
   };
@@ -182,15 +182,15 @@ export default function OrganizationSettingsPage() {
                 <PhoneInput
                   international
                   defaultCountry="QA"
-                  value={settings[field] as string}
-                  onChange={(value) => setSettings({ ...settings, [field]: value || "" })}
+                  value={settings[field]}
+                  onChange={(value) => { setSettings({ ...settings, [field]: value || "" }); }}
                   className="mt-1 phone-input-custom"
                 />
               ) : (
                 <input
                   type="text"
-                  value={settings[field] as string}
-                  onChange={(e) => setSettings({ ...settings, [field]: e.target.value })}
+                  value={settings[field]}
+                  onChange={(e) => { setSettings({ ...settings, [field]: e.target.value }); }}
                   className="mt-1 w-full px-3 py-2 border border-blue-500 rounded-lg focus:ring-2 focus:ring-blue-500"
                   autoFocus
                 />
@@ -210,7 +210,7 @@ export default function OrganizationSettingsPage() {
               Save
             </button>
             <button
-              onClick={() => setIsEditing(null)}
+              onClick={() => { setIsEditing(null); }}
               className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
             >
               <X className="w-4 h-4" />
@@ -218,7 +218,7 @@ export default function OrganizationSettingsPage() {
           </div>
         ) : (
           <button
-            onClick={() => setIsEditing(`${section}-${field}`)}
+            onClick={() => { setIsEditing(`${section}-${field}`); }}
             className="px-4 py-2 text-sm text-blue-600 hover:text-blue-700 font-medium"
           >
             Edit
@@ -416,7 +416,7 @@ export default function OrganizationSettingsPage() {
               </label>
               <select
                 value={settings.language}
-                onChange={(e) => setSettings({ ...settings, language: e.target.value })}
+                onChange={(e) => { setSettings({ ...settings, language: e.target.value }); }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="en">English</option>
@@ -429,7 +429,7 @@ export default function OrganizationSettingsPage() {
               </label>
               <select
                 value={settings.currency}
-                onChange={(e) => setSettings({ ...settings, currency: e.target.value })}
+                onChange={(e) => { setSettings({ ...settings, currency: e.target.value }); }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <optgroup label="GCC Currencies">
@@ -459,7 +459,7 @@ export default function OrganizationSettingsPage() {
               </label>
               <select
                 value={settings.dateFormat}
-                onChange={(e) => setSettings({ ...settings, dateFormat: e.target.value })}
+                onChange={(e) => { setSettings({ ...settings, dateFormat: e.target.value }); }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 <option value="dd/mm/yyyy">dd/mm/yyyy</option>
@@ -473,7 +473,7 @@ export default function OrganizationSettingsPage() {
               </label>
               <select
                 value={settings.fiscalYearStart}
-                onChange={(e) => setSettings({ ...settings, fiscalYearStart: e.target.value })}
+                onChange={(e) => { setSettings({ ...settings, fiscalYearStart: e.target.value }); }}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
               >
                 {[
@@ -512,7 +512,7 @@ export default function OrganizationSettingsPage() {
           </div>
           <div className="space-y-4">
             <button
-              onClick={() => setShowTransferModal(true)}
+              onClick={() => { setShowTransferModal(true); }}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
@@ -528,7 +528,7 @@ export default function OrganizationSettingsPage() {
               </div>
             </button>
             <button
-              onClick={() => setShowDeleteModal(true)}
+              onClick={() => { setShowDeleteModal(true); }}
               className="w-full px-4 py-3 border border-red-300 rounded-lg hover:bg-red-50 flex items-center justify-between"
             >
               <div className="flex items-center gap-3">
@@ -579,7 +579,7 @@ export default function OrganizationSettingsPage() {
                 </div>
                 <div className="flex gap-3">
                   <button
-                    onClick={() => setShowTransferModal(false)}
+                    onClick={() => { setShowTransferModal(false); }}
                     className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
                   >
                     {t.settings.organization.transferModal.cancel}
@@ -632,7 +632,7 @@ export default function OrganizationSettingsPage() {
                   <input
                     type="text"
                     value={deleteConfirmation}
-                    onChange={(e) => setDeleteConfirmation(e.target.value)}
+                    onChange={(e) => { setDeleteConfirmation(e.target.value); }}
                     placeholder={organization?.name}
                     className="w-full px-3 py-2 border border-red-300 rounded-lg focus:ring-2 focus:ring-red-500"
                   />

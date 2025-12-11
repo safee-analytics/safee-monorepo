@@ -23,7 +23,7 @@ function isAssigneeFilter(filter: FilterToken): filter is AssigneeFilterToken {
 interface CaseFiltersProps {
   filters?: FilterToken[];
   onFiltersChange: (filters: FilterToken[]) => void;
-  availableAssignees?: Array<{ id: string; name: string }>;
+  availableAssignees?: { id: string; name: string }[];
 }
 
 export function CaseFilters({
@@ -97,7 +97,7 @@ export function CaseFilters({
     };
   }, []);
 
-  const statusOptions: Array<{ value: CaseStatus; label: string; color: string }> = [
+  const statusOptions: { value: CaseStatus; label: string; color: string }[] = [
     { value: "pending", label: "Pending", color: "bg-gray-100 text-gray-700" },
     { value: "in-progress", label: "In Progress", color: "bg-blue-100 text-blue-700" },
     { value: "under-review", label: "Under Review", color: "bg-yellow-100 text-yellow-700" },
@@ -106,7 +106,7 @@ export function CaseFilters({
     { value: "archived", label: "Archived", color: "bg-gray-100 text-gray-500" },
   ];
 
-  const priorityOptions: Array<{ value: CasePriority; label: string; icon: string }> = [
+  const priorityOptions: { value: CasePriority; label: string; icon: string }[] = [
     { value: "critical", label: "Critical", icon: "🔴" },
     { value: "high", label: "High", icon: "🟠" },
     { value: "medium", label: "Medium", icon: "🟡" },
@@ -263,7 +263,7 @@ export function CaseFilters({
               {statusOptions.map((option, index) => (
                 <button
                   key={option.value}
-                  onClick={() => addFilter("status", option.value, option.label)}
+                  onClick={() => { addFilter("status", option.value, option.label); }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
@@ -325,7 +325,7 @@ export function CaseFilters({
               {priorityOptions.map((option, index) => (
                 <button
                   key={option.value}
-                  onClick={() => addFilter("priority", option.value, option.label)}
+                  onClick={() => { addFilter("priority", option.value, option.label); }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
@@ -444,10 +444,10 @@ export function CaseFilters({
                     ref={assigneeSearchRef}
                     type="text"
                     value={assigneeSearchText}
-                    onChange={(e) => setAssigneeSearchText(e.target.value)}
+                    onChange={(e) => { setAssigneeSearchText(e.target.value); }}
                     placeholder="Search people..."
                     className="flex-1 outline-none text-sm"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.stopPropagation(); }}
                   />
                 </div>
               </div>
@@ -555,7 +555,7 @@ export function CaseFilters({
 
         {/* Quick Filters */}
         <button
-          onClick={() => addFilter("status", "unassigned", "Unassigned")}
+          onClick={() => { addFilter("status", "unassigned", "Unassigned"); }}
           className="inline-flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
         >
           Unassigned
@@ -582,7 +582,7 @@ export function CaseFilters({
                 <span className="text-xs opacity-60">{filter.type}:</span>
               )}
               <span>{filter.display}</span>
-              <button onClick={() => removeFilter(index)} className="hover:bg-black/10 rounded p-0.5 ml-0.5">
+              <button onClick={() => { removeFilter(index); }} className="hover:bg-black/10 rounded p-0.5 ml-0.5">
                 <svg
                   className="w-3 h-3"
                   fill="none"

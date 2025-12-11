@@ -47,7 +47,7 @@ export default function EmployeesPage() {
           <p className="text-red-800 font-medium">Failed to load employees</p>
           <p className="text-red-600 text-sm mt-1">{error.message}</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => { window.location.reload(); }}
             className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
           >
             Retry
@@ -140,7 +140,7 @@ export default function EmployeesPage() {
                 type="text"
                 placeholder="Search by name, email, or job title..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => { setSearchQuery(e.target.value); }}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -151,7 +151,7 @@ export default function EmployeesPage() {
             <Filter className="w-5 h-5 text-gray-400" />
             <select
               value={selectedDepartment}
-              onChange={(e) => setSelectedDepartment(e.target.value)}
+              onChange={(e) => { setSelectedDepartment(e.target.value); }}
               className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">All Departments</option>
@@ -166,7 +166,7 @@ export default function EmployeesPage() {
           {/* Status Filter */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setStatusFilter("all")}
+              onClick={() => { setStatusFilter("all"); }}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 statusFilter === "all"
                   ? "bg-blue-600 text-white"
@@ -176,7 +176,7 @@ export default function EmployeesPage() {
               All
             </button>
             <button
-              onClick={() => setStatusFilter("active")}
+              onClick={() => { setStatusFilter("active"); }}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 statusFilter === "active"
                   ? "bg-green-600 text-white"
@@ -186,7 +186,7 @@ export default function EmployeesPage() {
               Active
             </button>
             <button
-              onClick={() => setStatusFilter("inactive")}
+              onClick={() => { setStatusFilter("inactive"); }}
               className={`px-4 py-2 rounded-lg transition-colors ${
                 statusFilter === "inactive"
                   ? "bg-red-600 text-white"
@@ -232,7 +232,7 @@ export default function EmployeesPage() {
                 {filteredEmployees.map((employee) => (
                   <tr
                     key={employee.id}
-                    onClick={() => handleRowClick(employee.id)}
+                    onClick={() => { handleRowClick(employee.id); }}
                     className="hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <td className="px-6 py-4">

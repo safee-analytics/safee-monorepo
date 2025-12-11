@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { leadFormSchema, type LeadFormData } from "@/lib/api/schemas";
 import { useStages, useCrmTeams, useContacts } from "@/lib/api/hooks";
@@ -25,7 +25,7 @@ export function LeadForm({ lead, onSubmit, isSubmitting = false }: LeadFormProps
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     setValue,
     formState: { errors },
   } = useForm<LeadFormData>({
@@ -60,9 +60,9 @@ export function LeadForm({ lead, onSubmit, isSubmitting = false }: LeadFormProps
         },
   });
 
-  const selectedPartnerId = watch("partnerId");
-  const _selectedType = watch("type");
-  const selectedStageId = watch("stageId");
+  const selectedPartnerId = useWatch({ control, name: "partnerId" });
+  const selectedStageId = useWatch({ control, name: "stageId" });
+  const stageId = useWatch({ control, name: "stageId" });
 
   // Auto-fill from selected contact
   useEffect(() => {
@@ -85,7 +85,7 @@ export function LeadForm({ lead, onSubmit, isSubmitting = false }: LeadFormProps
   useEffect(() => {
     if (selectedStageId && stages) {
       const selectedStage = stages.find((s) => s.id === selectedStageId);
-      if (selectedStage && selectedStage.isWon) {
+      if (selectedStage?.isWon) {
         setValue("probability", 100);
       }
     }
@@ -93,13 +93,13 @@ export function LeadForm({ lead, onSubmit, isSubmitting = false }: LeadFormProps
 
   // Default stage for new leads
   useEffect(() => {
-    if (!lead && stages && stages.length > 0 && !watch("stageId")) {
+    if (!lead && stages && stages.length > 0 && !stageId) {
       const firstStage = [...stages].sort((a, b) => (a.sequence || 0) - (b.sequence || 0))[0];
       if (firstStage) {
         setValue("stageId", firstStage.id);
       }
     }
-  }, [lead, stages, setValue, watch]);
+  }, [lead, stages, setValue, stageId]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
@@ -383,7 +383,7 @@ export function LeadForm({ lead, onSubmit, isSubmitting = false }: LeadFormProps
 
       {/* Form Actions */}
       <div className="flex items-center justify-end space-x-4">
-        <AnimatedButton type="button" variant="secondary" onClick={() => window.history.back()}>
+        <AnimatedButton type="button" variant="secondary" onClick={() => { window.history.back(); }}>
           Cancel
         </AnimatedButton>
         <AnimatedButton type="submit" variant="primary" disabled={isSubmitting}>

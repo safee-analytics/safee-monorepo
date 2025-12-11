@@ -1,6 +1,6 @@
-import safeeEslintConfig from "../eslint.config.js";
+import { config } from "../eslint.config.js";
 
-export default safeeEslintConfig.config(
+export default config(
   {
     languageOptions: {
       parserOptions: {

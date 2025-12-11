@@ -51,10 +51,10 @@ export interface WizardData {
   budget?: number;
 
   // Step 4: Team Assignment (Optional)
-  assignments?: Array<{
+  assignments?: {
     userId: string;
     role: string;
-  }>;
+  }[];
 
   // Step 5: Documents (Optional)
   documentPreviews?: File[];
@@ -150,7 +150,7 @@ export function CreateCaseWizard({ isOpen, onClose, onSuccess }: CreateCaseWizar
       }
     }, 30000); // 30 seconds
 
-    return () => clearInterval(interval);
+    return () => { clearInterval(interval); };
   }, [wizardData, isOpen, saveWizardDraft]);
 
   const handleDataChange = (updates: Partial<WizardData>) => {
@@ -158,7 +158,7 @@ export function CreateCaseWizard({ isOpen, onClose, onSuccess }: CreateCaseWizar
     // Clear validation errors for updated fields
     setValidationErrors((prev) => {
       const newErrors = { ...prev };
-      Object.keys(updates).forEach((key) => delete newErrors[key]);
+      for (const key of Object.keys(updates)) delete newErrors[key];
       return newErrors;
     });
   };
@@ -238,8 +238,8 @@ export function CreateCaseWizard({ isOpen, onClose, onSuccess }: CreateCaseWizar
       setCurrentStepIndex(0);
       onSuccess?.();
       onClose();
-    } catch (error) {
-      console.error("Failed to create case:", error);
+    } catch (err) {
+      console.error("Failed to create case:", err);
       toast.error("Failed to create case. Please try again.");
     }
   };
@@ -269,7 +269,7 @@ export function CreateCaseWizard({ isOpen, onClose, onSuccess }: CreateCaseWizar
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); }}
             className="bg-white rounded-xl shadow-xl w-full max-w-5xl max-h-[90vh] overflow-hidden flex flex-col"
           >
             {/* Header */}

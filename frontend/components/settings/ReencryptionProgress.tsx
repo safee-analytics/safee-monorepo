@@ -247,7 +247,7 @@ export function ReencryptionProgress({
         <div className="flex gap-3">
           {!isRunning && !isPaused && stats.pending > 0 && (
             <button
-              onClick={() => setShowPasswordPrompt(true)}
+              onClick={() => { setShowPasswordPrompt(true); }}
               className="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700"
             >
               Start Re-encryption
@@ -369,7 +369,7 @@ export function ReencryptionProgress({
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => { setPassword(e.target.value); }}
                   onKeyDown={(e) => e.key === "Enter" && handleStartMigration()}
                   className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white"
                   placeholder="Enter your password"
@@ -377,7 +377,7 @@ export function ReencryptionProgress({
                 />
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => { setShowPassword(!showPassword); }}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
                   {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}

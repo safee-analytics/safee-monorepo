@@ -107,8 +107,8 @@ export default function RegisterPage() {
       } else {
         setError(result.error || "Registration failed. Please try again.");
       }
-    } catch (error) {
-      console.error("Registration failed:", error);
+    } catch (err) {
+      console.error("Registration failed:", err);
       setError("An unexpected error occurred. Please try again.");
     }
   };
@@ -116,8 +116,8 @@ export default function RegisterPage() {
   const handleGoogleSignUp = async () => {
     try {
       signInWithGoogle("/");
-    } catch (error) {
-      console.error("Google signup failed:", error);
+    } catch (err) {
+      console.error("Google signup failed:", err);
       setError("Google signup failed. Please try again.");
     }
   };

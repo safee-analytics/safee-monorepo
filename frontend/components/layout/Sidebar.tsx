@@ -118,7 +118,7 @@ export const Sidebar = () => {
       }
     };
     document.addEventListener("keydown", handleEscKey);
-    return () => document.removeEventListener("keydown", handleEscKey);
+    return () => { document.removeEventListener("keydown", handleEscKey); };
   }, []);
 
   const handleOpenCustomize = () => {
@@ -156,7 +156,7 @@ export const Sidebar = () => {
 
   const currentModule = getCurrentModule();
 
-  const moduleNavItems: Record<string, Array<{ icon: IconType; title: string; href: string }>> = {
+  const moduleNavItems: Record<string, { icon: IconType; title: string; href: string }[]> = {
     audit: [
       { icon: FiActivity, title: t.nav.dashboard, href: "/audit/dashboard" },
       { icon: FiClipboard, title: t.audit.caseManagement, href: "/audit/cases" },
@@ -258,7 +258,7 @@ export const Sidebar = () => {
 
         <motion.button
           layout
-          onClick={() => setShowCreateMenu(!showCreateMenu)}
+          onClick={() => { setShowCreateMenu(!showCreateMenu); }}
           className="relative flex h-12 w-full items-center justify-center rounded-full bg-safee-600 hover:bg-safee-700 text-white transition-colors mb-3"
         >
           {isExpanded ? (
@@ -324,7 +324,7 @@ export const Sidebar = () => {
         {/* My Apps Button */}
         <motion.button
           layout
-          onClick={() => setShowMyApps(!showMyApps)}
+          onClick={() => { setShowMyApps(!showMyApps); }}
           className="relative flex h-10 w-full items-center rounded-md transition-colors text-slate-500 hover:bg-slate-100"
         >
           <motion.div layout className="grid h-full w-10 place-content-center text-lg">
@@ -367,7 +367,7 @@ export const Sidebar = () => {
                 <Link
                   key={app.id}
                   href={moduleData.path}
-                  onClick={() => setModule(app.id as "hisabiq" | "kanz" | "nisbah" | "audit")}
+                  onClick={() => { setModule(app.id as "hisabiq" | "kanz" | "nisbah" | "audit"); }}
                 >
                   <div
                     className={`relative flex h-10 w-full items-center rounded-lg transition-all ${
@@ -479,7 +479,7 @@ export const Sidebar = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setShowCreateMenu(false)}
+              onClick={() => { setShowCreateMenu(false); }}
               className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
             />
 
@@ -507,7 +507,7 @@ export const Sidebar = () => {
                       return (
                         <button
                           key={idx}
-                          onClick={() => setShowCreateMenu(false)}
+                          onClick={() => { setShowCreateMenu(false); }}
                           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />
@@ -530,7 +530,7 @@ export const Sidebar = () => {
                       return (
                         <button
                           key={idx}
-                          onClick={() => setShowCreateMenu(false)}
+                          onClick={() => { setShowCreateMenu(false); }}
                           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />
@@ -553,7 +553,7 @@ export const Sidebar = () => {
                       return (
                         <button
                           key={idx}
-                          onClick={() => setShowCreateMenu(false)}
+                          onClick={() => { setShowCreateMenu(false); }}
                           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />
@@ -574,7 +574,7 @@ export const Sidebar = () => {
                     {createMenuItems.crm.map((item, idx) => {
                       const Icon = item.icon;
                       return (
-                        <Link key={idx} href={item.href || "#"} onClick={() => setShowCreateMenu(false)}>
+                        <Link key={idx} href={item.href || "#"} onClick={() => { setShowCreateMenu(false); }}>
                           <button className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors">
                             <Icon className="w-4 h-4 text-gray-400 dark:text-gray-500" />
                             {item.label}
@@ -597,7 +597,7 @@ export const Sidebar = () => {
                       return (
                         <button
                           key={idx}
-                          onClick={() => setShowCreateMenu(false)}
+                          onClick={() => { setShowCreateMenu(false); }}
                           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />
@@ -622,7 +622,7 @@ export const Sidebar = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setShowMyApps(false)}
+              onClick={() => { setShowMyApps(false); }}
               className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
             />
 
@@ -741,7 +741,7 @@ export const Sidebar = () => {
 
                         {/* Pin Button */}
                         <button
-                          onClick={() => handleTogglePin(app.id)}
+                          onClick={() => { handleTogglePin(app.id); }}
                           className={`p-2 rounded-lg transition-colors ${
                             app.pinned
                               ? "text-yellow-500 hover:bg-yellow-50"
@@ -779,7 +779,7 @@ export const Sidebar = () => {
                     </p>
                   </div>
                   <button
-                    onClick={() => setSidebarAutoClose(!sidebarAutoClose)}
+                    onClick={() => { setSidebarAutoClose(!sidebarAutoClose); }}
                     className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                       sidebarAutoClose ? "bg-safee-600" : "bg-gray-300"
                     }`}

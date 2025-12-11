@@ -31,9 +31,9 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
     try {
       await sendVerificationMutation.mutateAsync(phoneNumber);
       setStep("verify");
-    } catch (error) {
+    } catch (err) {
       toast.error("Failed to send verification code. Please try again.");
-      console.error("Phone verification error:", error);
+      console.error("Phone verification error:", err);
     }
   };
 
@@ -44,10 +44,10 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
         code: verificationCode,
       });
       onSuccess?.();
-    } catch (error) {
+    } catch (err) {
       toast.error("Invalid verification code. Please try again.");
       setVerificationCode("");
-      console.error("Phone verification error:", error);
+      console.error("Phone verification error:", err);
     }
   };
 
@@ -66,7 +66,7 @@ export function PhoneAuthForm({ onSuccess, onCancel }: PhoneAuthFormProps) {
               international
               defaultCountry="EG"
               value={phoneNumber}
-              onChange={(value) => setPhoneNumber(value || "")}
+              onChange={(value) => { setPhoneNumber(value || ""); }}
               className="phone-input-custom"
               numberInputProps={{
                 className:

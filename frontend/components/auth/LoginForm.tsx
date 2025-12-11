@@ -83,7 +83,7 @@ const Or = () => {
 
 const Email = () => {
   return (
-    <form onSubmit={(e) => e.preventDefault()}>
+    <form onSubmit={(e) => { e.preventDefault(); }}>
       <div className="mb-3">
         <label htmlFor="email-input" className="mb-1.5 block text-zinc-400">
           Email

@@ -24,16 +24,14 @@ import {
   useUnlinkSocialAccount,
   useDeleteUser,
   useUpdateUsername,
-} from "@/lib/api/hooks";
-import { useUpdateUserProfile } from "@/lib/api/hooks/user";
-import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
-import {
   useGet2FAStatus,
   useDisable2FA,
   useSendPhoneVerification,
   useVerifyPhoneNumber,
-  useUpdatePhoneNumber,
+  useUpdatePhoneNumber
 } from "@/lib/api/hooks";
+import { useUpdateUserProfile } from "@/lib/api/hooks/user";
+import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import OtpInput from "react-otp-input";
@@ -78,7 +76,7 @@ export function ProfileTabs() {
             return (
               <button
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => { setActiveTab(tab.id); }}
                 className={`
                   flex items-center gap-2 py-4 px-1 border-b-2 font-medium text-sm transition-colors
                   ${
@@ -144,7 +142,7 @@ function ProfileTab() {
       // });
 
       toast.success(t.settings.profile.profileTab.alerts.profileSuccess);
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.profile.profileTab.alerts.profileFailed);
     }
   };
@@ -154,7 +152,7 @@ function ProfileTab() {
     try {
       await updateUsernameMutation.mutateAsync(username);
       toast.success(t.settings.profile.profileTab.alerts.usernameSuccess);
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.profile.profileTab.alerts.usernameFailed);
     }
   };
@@ -204,7 +202,7 @@ function ProfileTab() {
               <input
                 type="text"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => { setName(e.target.value); }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder={t.settings.profile.profileTab.basicInformation.fullNamePlaceholder}
               />
@@ -235,7 +233,7 @@ function ProfileTab() {
                 international
                 defaultCountry="QA"
                 value={phone}
-                onChange={(value) => setPhone(value || "")}
+                onChange={(value) => { setPhone(value || ""); }}
                 className="phone-input-custom"
               />
             </div>
@@ -248,7 +246,7 @@ function ProfileTab() {
               <input
                 type="text"
                 value={jobTitle}
-                onChange={(e) => setJobTitle(e.target.value)}
+                onChange={(e) => { setJobTitle(e.target.value); }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder={t.settings.profile.profileTab.basicInformation.jobTitlePlaceholder}
               />
@@ -262,7 +260,7 @@ function ProfileTab() {
               <input
                 type="text"
                 value={department}
-                onChange={(e) => setDepartment(e.target.value)}
+                onChange={(e) => { setDepartment(e.target.value); }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder={t.settings.profile.profileTab.basicInformation.departmentPlaceholder}
               />
@@ -293,7 +291,7 @@ function ProfileTab() {
               <input
                 type="text"
                 value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                onChange={(e) => { setUsername(e.target.value); }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder={t.settings.profile.profileTab.username.placeholder}
               />
@@ -358,7 +356,7 @@ function SecurityTab() {
       setCurrentPassword("");
       setNewPassword("");
       setConfirmPassword("");
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.profile.securityTab.alerts.passwordFailed);
     }
   };
@@ -369,7 +367,7 @@ function SecurityTab() {
       await changeEmailMutation.mutateAsync(newEmail);
       toast.success(t.settings.profile.securityTab.alerts.emailSuccess);
       setNewEmail("");
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.profile.securityTab.alerts.emailFailed);
     }
   };
@@ -393,7 +391,7 @@ function SecurityTab() {
       toast.success(t.settings.profile.securityTab.alerts.disable2FASuccess);
       setDisable2FAPassword("");
       twoFactorStatus.refetch();
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.profile.securityTab.alerts.disable2FAFailed);
     }
   };
@@ -412,7 +410,7 @@ function SecurityTab() {
       await sendPhoneVerificationMutation.mutateAsync(phoneNumber);
       setPhoneVerificationSent(true);
       toast.success(t.settings.profile.securityTab.alerts.phoneCodeSent);
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.profile.securityTab.alerts.phoneCodeFailed);
     }
   };
@@ -441,7 +439,7 @@ function SecurityTab() {
       setPhoneNumber("");
       setPhoneVerificationCode("");
       setPhoneVerificationSent(false);
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.profile.securityTab.alerts.phoneVerifyFailed);
       setPhoneVerificationCode("");
     }
@@ -463,7 +461,7 @@ function SecurityTab() {
             <input
               type="password"
               value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
+              onChange={(e) => { setCurrentPassword(e.target.value); }}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               required
             />
@@ -475,7 +473,7 @@ function SecurityTab() {
             <input
               type="password"
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
+              onChange={(e) => { setNewPassword(e.target.value); }}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               required
               minLength={8}
@@ -488,7 +486,7 @@ function SecurityTab() {
             <input
               type="password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => { setConfirmPassword(e.target.value); }}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               required
             />
@@ -519,7 +517,7 @@ function SecurityTab() {
             <input
               type="email"
               value={newEmail}
-              onChange={(e) => setNewEmail(e.target.value)}
+              onChange={(e) => { setNewEmail(e.target.value); }}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg"
               placeholder={t.settings.profile.securityTab.changeEmail.newEmailPlaceholder}
               required
@@ -567,7 +565,7 @@ function SecurityTab() {
                 <input
                   type="password"
                   value={disable2FAPassword}
-                  onChange={(e) => setDisable2FAPassword(e.target.value)}
+                  onChange={(e) => { setDisable2FAPassword(e.target.value); }}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg"
                   placeholder={t.settings.profile.securityTab.twoFactor.confirmPasswordPlaceholder}
                   required
@@ -588,7 +586,7 @@ function SecurityTab() {
           <div className="space-y-4">
             <p className="text-gray-600">{t.settings.profile.securityTab.twoFactor.notEnabled}</p>
             <button
-              onClick={() => setShow2FASetup(true)}
+              onClick={() => { setShow2FASetup(true); }}
               className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
             >
               <Shield className="w-4 h-4" />
@@ -615,7 +613,7 @@ function SecurityTab() {
                 <p className="text-sm text-green-600">{session.user.phoneNumber}</p>
               </div>
               <button
-                onClick={() => setShowPhoneVerification(true)}
+                onClick={() => { setShowPhoneVerification(true); }}
                 className="text-sm text-blue-600 hover:text-blue-700"
               >
                 {t.settings.profile.securityTab.phoneNumber.changeButton}
@@ -628,7 +626,7 @@ function SecurityTab() {
 
             {!showPhoneVerification ? (
               <button
-                onClick={() => setShowPhoneVerification(true)}
+                onClick={() => { setShowPhoneVerification(true); }}
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
               >
                 <Phone className="w-4 h-4" />
@@ -646,7 +644,7 @@ function SecurityTab() {
                         international
                         defaultCountry="EG"
                         value={phoneNumber}
-                        onChange={(value) => setPhoneNumber(value || "")}
+                        onChange={(value) => { setPhoneNumber(value || ""); }}
                         className="phone-input-custom"
                       />
                       <p className="text-xs text-gray-500 mt-1">
@@ -735,7 +733,7 @@ function SecurityTab() {
       {/* 2FA Setup Modal */}
       <TwoFactorSetup
         isOpen={show2FASetup}
-        onClose={() => setShow2FASetup(false)}
+        onClose={() => { setShow2FASetup(false); }}
         onSuccess={handle2FASetupSuccess}
       />
       <SafeeToastContainer notifications={toast.notifications} onRemove={toast.removeToast} />
@@ -761,7 +759,7 @@ function LinkedAccountsTab() {
   const handleLinkGoogle = async () => {
     try {
       await linkAccountMutation.mutateAsync({ provider: "google" });
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.profile.linkedAccountsTab.alerts.linkFailed);
     }
   };
@@ -778,7 +776,7 @@ function LinkedAccountsTab() {
     try {
       await unlinkAccountMutation.mutateAsync({ accountId, providerId });
       toast.success(t.settings.profile.linkedAccountsTab.alerts.unlinkSuccess);
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.profile.linkedAccountsTab.alerts.unlinkFailed);
     }
   };
@@ -812,7 +810,7 @@ function LinkedAccountsTab() {
                 <button
                   onClick={() => {
                     const account = accounts.find((acc: LinkedAccount) => acc.providerId === "google");
-                    if (account) handleUnlink(account.id!, account.providerId);
+                    if (account) handleUnlink(account.id, account.providerId);
                   }}
                   className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                 >
@@ -865,7 +863,7 @@ function DangerZoneTab() {
       await deleteUserMutation.mutateAsync(password);
       toast.success(t.settings.profile.dangerZoneTab.alerts.deleteSuccess);
       window.location.href = "/";
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.profile.dangerZoneTab.alerts.deleteFailed);
     }
   };
@@ -887,7 +885,7 @@ function DangerZoneTab() {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => { setPassword(e.target.value); }}
               className="w-full px-4 py-2 border border-red-300 rounded-lg"
               required
             />
@@ -900,7 +898,7 @@ function DangerZoneTab() {
             <input
               type="text"
               value={confirmText}
-              onChange={(e) => setConfirmText(e.target.value)}
+              onChange={(e) => { setConfirmText(e.target.value); }}
               className="w-full px-4 py-2 border border-red-300 rounded-lg"
               placeholder={t.settings.profile.dangerZoneTab.confirmTextPlaceholder}
               required

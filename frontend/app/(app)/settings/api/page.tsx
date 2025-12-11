@@ -48,7 +48,7 @@ export default function APIKeysSettings() {
   const copyToClipboard = (key: string, keyId: string) => {
     navigator.clipboard.writeText(key);
     setCopiedKey(keyId);
-    setTimeout(() => setCopiedKey(null), 2000);
+    setTimeout(() => { setCopiedKey(null); }, 2000);
   };
 
   const maskKey = (key: string) => {
@@ -75,7 +75,7 @@ export default function APIKeysSettings() {
       setShowCreateModal(false);
       setNewKeyName("");
       setNewKeyPermissions([]);
-    } catch (_error) {
+    } catch (err) {
       toast.error("Failed to create API key");
     }
   };
@@ -90,7 +90,7 @@ export default function APIKeysSettings() {
     if (confirmed) {
       try {
         await revokeKey.mutateAsync(keyId);
-      } catch (_error) {
+      } catch (err) {
         toast.error("Failed to revoke API key");
       }
     }
@@ -106,7 +106,7 @@ export default function APIKeysSettings() {
     if (confirmed) {
       try {
         await deleteKey.mutateAsync(keyId);
-      } catch (_error) {
+      } catch (err) {
         toast.error("Failed to delete API key");
       }
     }
@@ -139,14 +139,14 @@ export default function APIKeysSettings() {
   };
 
   // Group permissions by resource
-  const permissionsByResource = availablePermissions.reduce(
-    (acc: Record<string, Array<{ action: string; id: string }>>, perm: Permission) => {
+  const permissionsByResource = availablePermissions.reduce<Record<string, { action: string; id: string }[]>>(
+    (acc: Record<string, { action: string; id: string }[]>, perm: Permission) => {
       const [action, resource] = perm.id.split(":");
       if (!acc[resource]) acc[resource] = [];
       acc[resource].push({ action, id: perm.id });
       return acc;
     },
-    {} as Record<string, Array<{ action: string; id: string }>>,
+    {},
   );
 
   return (
@@ -161,7 +161,7 @@ export default function APIKeysSettings() {
                 <p className="text-gray-600">{t.settings.api.subtitle}</p>
               </div>
               <button
-                onClick={() => setShowCreateModal(true)}
+                onClick={() => { setShowCreateModal(true); }}
                 className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
                 <Plus className="w-4 h-4" />
@@ -255,7 +255,7 @@ export default function APIKeysSettings() {
                       </code>
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => toggleKeyVisibility(apiKey.id)}
+                          onClick={() => { toggleKeyVisibility(apiKey.id); }}
                           className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors"
                           title={
                             revealedKeys.has(apiKey.id)
@@ -270,7 +270,7 @@ export default function APIKeysSettings() {
                           )}
                         </button>
                         <button
-                          onClick={() => copyToClipboard(apiKey.key, apiKey.id)}
+                          onClick={() => { copyToClipboard(apiKey.key, apiKey.id); }}
                           className="p-1.5 text-gray-400 hover:text-gray-200 transition-colors"
                           title={t.settings.api.list.copy}
                         >
@@ -291,7 +291,7 @@ export default function APIKeysSettings() {
                   <Key className="w-12 h-12 text-gray-400 mx-auto mb-3" />
                   <p className="text-gray-600 mb-4">{t.settings.api.empty.title}</p>
                   <button
-                    onClick={() => setShowCreateModal(true)}
+                    onClick={() => { setShowCreateModal(true); }}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                   >
                     {t.settings.api.empty.button}
@@ -328,7 +328,7 @@ export default function APIKeysSettings() {
                     <input
                       type="text"
                       value={newKeyName}
-                      onChange={(e) => setNewKeyName(e.target.value)}
+                      onChange={(e) => { setNewKeyName(e.target.value); }}
                       placeholder={t.settings.api.createModal.keyNamePlaceholder}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
@@ -341,7 +341,7 @@ export default function APIKeysSettings() {
                     </label>
                     <div className="grid grid-cols-2 gap-4">
                       {Object.entries(permissionsByResource).map(
-                        ([resource, actions]: [string, Array<{ action: string; id: string }>]) => {
+                        ([resource, actions]: [string, { action: string; id: string }[]]) => {
                           const allSelected = actions.every((a: { id: string }) =>
                             newKeyPermissions.includes(a.id),
                           );
@@ -354,7 +354,7 @@ export default function APIKeysSettings() {
                               <div className="flex items-center justify-between mb-3">
                                 <h3 className="font-semibold text-gray-900 capitalize">{resource}</h3>
                                 <button
-                                  onClick={() => toggleAllResourcePermissions(resource)}
+                                  onClick={() => { toggleAllResourcePermissions(resource); }}
                                   className={`text-xs px-2 py-1 rounded ${
                                     allSelected
                                       ? "bg-blue-600 text-white"
@@ -377,7 +377,7 @@ export default function APIKeysSettings() {
                                     <input
                                       type="checkbox"
                                       checked={newKeyPermissions.includes(id)}
-                                      onChange={() => togglePermission(id)}
+                                      onChange={() => { togglePermission(id); }}
                                       className="w-3.5 h-3.5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                                     />
                                     <span className="text-gray-700 group-hover:text-gray-900 capitalize">

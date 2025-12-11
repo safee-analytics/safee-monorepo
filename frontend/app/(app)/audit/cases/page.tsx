@@ -40,7 +40,7 @@ export default function CaseManagement() {
     useAuditStore();
 
   // Enable Cmd+K for command palette
-  useCaseCommands(() => setCommandPaletteOpen(true));
+  useCaseCommands(() => { setCommandPaletteOpen(true); });
 
   // Keyboard shortcuts
   useKeyboardShortcuts({
@@ -48,7 +48,7 @@ export default function CaseManagement() {
     shortcuts: [
       {
         key: COMMON_SHORTCUTS.NEW.key,
-        action: () => setIsCreateModalOpen(true),
+        action: () => { setIsCreateModalOpen(true); },
         description: COMMON_SHORTCUTS.NEW.description,
         category: COMMON_SHORTCUTS.NEW.category,
       },
@@ -63,7 +63,7 @@ export default function CaseManagement() {
       },
       {
         key: COMMON_SHORTCUTS.HELP.key,
-        action: () => setShortcutsOverlayOpen(true),
+        action: () => { setShortcutsOverlayOpen(true); },
         description: COMMON_SHORTCUTS.HELP.description,
         category: COMMON_SHORTCUTS.HELP.category,
       },
@@ -71,37 +71,37 @@ export default function CaseManagement() {
     sequences: [
       {
         sequence: COMMON_SHORTCUTS.GO_DASHBOARD.sequence,
-        action: () => router.push("/audit/dashboard"),
+        action: () => { router.push("/audit/dashboard"); },
         description: COMMON_SHORTCUTS.GO_DASHBOARD.description,
         category: COMMON_SHORTCUTS.GO_DASHBOARD.category,
       },
       {
         sequence: COMMON_SHORTCUTS.GO_CASES.sequence,
-        action: () => router.push("/audit/cases"),
+        action: () => { router.push("/audit/cases"); },
         description: COMMON_SHORTCUTS.GO_CASES.description,
         category: COMMON_SHORTCUTS.GO_CASES.category,
       },
       {
         sequence: COMMON_SHORTCUTS.GO_DOCUMENTS.sequence,
-        action: () => router.push("/audit/documents"),
+        action: () => { router.push("/audit/documents"); },
         description: COMMON_SHORTCUTS.GO_DOCUMENTS.description,
         category: COMMON_SHORTCUTS.GO_DOCUMENTS.category,
       },
       {
         sequence: COMMON_SHORTCUTS.VIEW_TABLE.sequence,
-        action: () => setViewMode("list"),
+        action: () => { setViewMode("list"); },
         description: COMMON_SHORTCUTS.VIEW_TABLE.description,
         category: COMMON_SHORTCUTS.VIEW_TABLE.category,
       },
       {
         sequence: COMMON_SHORTCUTS.VIEW_GRID.sequence,
-        action: () => setViewMode("grid"),
+        action: () => { setViewMode("grid"); },
         description: COMMON_SHORTCUTS.VIEW_GRID.description,
         category: COMMON_SHORTCUTS.VIEW_GRID.category,
       },
       {
         sequence: COMMON_SHORTCUTS.VIEW_KANBAN.sequence,
-        action: () => setViewMode("kanban"),
+        action: () => { setViewMode("kanban"); },
         description: COMMON_SHORTCUTS.VIEW_KANBAN.description,
         category: COMMON_SHORTCUTS.VIEW_KANBAN.category,
       },
@@ -133,7 +133,7 @@ export default function CaseManagement() {
     }
 
     // Add filters from filter tokens (can override URL params)
-    filters.forEach((filter) => {
+    for (const filter of filters) {
       if (filter.type === "status" && isValidCaseStatus(filter.value)) {
         result.status = filter.value;
       } else if (filter.type === "priority" && isValidCasePriority(filter.value)) {
@@ -141,7 +141,7 @@ export default function CaseManagement() {
       } else if (filter.type === "assignee") {
         result.assignedTo = filter.value;
       }
-    });
+    }
 
     return Object.keys(result).length > 0 ? result : undefined;
   }, [searchParams, filters]);
@@ -160,9 +160,9 @@ export default function CaseManagement() {
       });
       toast.success("Case created successfully!");
       refetch();
-    } catch (error) {
+    } catch (err) {
       toast.error("Failed to create case");
-      console.error("Failed to create case:", error);
+      console.error("Failed to create case:", err);
     }
   };
 
@@ -216,7 +216,7 @@ export default function CaseManagement() {
     const uniqueAssignees = Array.from(assigneeMap.entries()).map(([id, name]) => ({ id, name }));
 
     // Apply client-side filters only for non-API filters (like text search)
-    filters.forEach((filter) => {
+    for (const filter of filters) {
       if (filter.type === "text") {
         const searchText = filter.value.toLowerCase();
         mappedCases = mappedCases.filter(
@@ -227,7 +227,7 @@ export default function CaseManagement() {
             c.assignee.name.toLowerCase().includes(searchText),
         );
       }
-    });
+    }
 
     // Calculate stats from all cases (not filtered)
     const calculatedStats = {
@@ -272,7 +272,7 @@ export default function CaseManagement() {
             </p>
           </div>
           <button
-            onClick={() => setIsCreateModalOpen(true)}
+            onClick={() => { setIsCreateModalOpen(true); }}
             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors cursor-pointer"
           >
             <span className="text-lg">+</span>
@@ -360,7 +360,7 @@ export default function CaseManagement() {
             <div className="mb-4 flex items-center justify-end">
               <div className="flex items-center bg-white rounded-lg border border-gray-300 p-1 gap-1">
                 <button
-                  onClick={() => setViewMode("list")}
+                  onClick={() => { setViewMode("list"); }}
                   className={`p-2 rounded transition-colors ${
                     viewMode === "list"
                       ? "bg-blue-100 text-blue-600"
@@ -381,7 +381,7 @@ export default function CaseManagement() {
                   </svg>
                 </button>
                 <button
-                  onClick={() => setViewMode("grid")}
+                  onClick={() => { setViewMode("grid"); }}
                   className={`p-2 rounded transition-colors ${
                     viewMode === "grid"
                       ? "bg-blue-100 text-blue-600"
@@ -402,7 +402,7 @@ export default function CaseManagement() {
                   </svg>
                 </button>
                 <button
-                  onClick={() => setViewMode("kanban")}
+                  onClick={() => { setViewMode("kanban"); }}
                   className={`p-2 rounded transition-colors ${
                     viewMode === "kanban"
                       ? "bg-blue-100 text-blue-600"
@@ -477,13 +477,13 @@ export default function CaseManagement() {
 
       <CreateCaseWizard
         isOpen={isCreateModalOpen}
-        onClose={() => setIsCreateModalOpen(false)}
+        onClose={() => { setIsCreateModalOpen(false); }}
         onSuccess={() => refetch()}
       />
 
       <CasePreviewDrawer
         isOpen={!!previewCase}
-        onClose={() => setPreviewCase(null)}
+        onClose={() => { setPreviewCase(null); }}
         caseData={
           previewCase
             ? {
@@ -503,7 +503,7 @@ export default function CaseManagement() {
 
       <CaseCommands
         isOpen={commandPaletteOpen}
-        onClose={() => setCommandPaletteOpen(false)}
+        onClose={() => { setCommandPaletteOpen(false); }}
         onNewCase={() => {
           setCommandPaletteOpen(false);
           setIsCreateModalOpen(true);
@@ -549,17 +549,17 @@ export default function CaseManagement() {
 
       <BatchOperationsBar
         selectedCount={selectedCases.length}
-        onClearSelection={() => setSelectedCases([])}
-        onArchive={() => toast.info(`Archive ${selectedCases.length} case(s) - Coming soon`)}
-        onDelete={() => toast.info(`Delete ${selectedCases.length} case(s) - Coming soon`)}
-        onStatusChange={() => toast.info("Bulk status change feature coming soon")}
-        onAssignTeam={() => toast.info("Assign team feature coming soon")}
-        onExport={() => toast.info("Export feature coming soon")}
+        onClearSelection={() => { setSelectedCases([]); }}
+        onArchive={() => { toast.info(`Archive ${selectedCases.length} case(s) - Coming soon`); }}
+        onDelete={() => { toast.info(`Delete ${selectedCases.length} case(s) - Coming soon`); }}
+        onStatusChange={() => { toast.info("Bulk status change feature coming soon"); }}
+        onAssignTeam={() => { toast.info("Assign team feature coming soon"); }}
+        onExport={() => { toast.info("Export feature coming soon"); }}
       />
 
       <KeyboardShortcutsOverlay
         isOpen={shortcutsOverlayOpen}
-        onClose={() => setShortcutsOverlayOpen(false)}
+        onClose={() => { setShortcutsOverlayOpen(false); }}
       />
     </div>
   );

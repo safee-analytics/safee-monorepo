@@ -92,7 +92,7 @@ export function SafeeSidebar() {
       >
         {/* Create Button */}
         <button
-          onClick={() => setShowCreateMenu(!showCreateMenu)}
+          onClick={() => { setShowCreateMenu(!showCreateMenu); }}
           className="w-12 h-12 rounded-full bg-safee-600 hover:bg-safee-700 text-white flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95"
         >
           <Plus
@@ -159,7 +159,7 @@ export function SafeeSidebar() {
               <Link
                 key={module.key}
                 href={module.path}
-                onClick={() => setModule(module.key as "hisabiq" | "kanz" | "nisbah" | "audit")}
+                onClick={() => { setModule(module.key); }}
                 className={`w-12 h-12 rounded-lg flex items-center justify-center transition-all relative group ${
                   isActive ? moduleColors[module.key] : "text-gray-600 hover:bg-gray-100"
                 }`}
@@ -202,7 +202,7 @@ export function SafeeSidebar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setShowCreateMenu(false)}
+              onClick={() => { setShowCreateMenu(false); }}
               className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40"
             />
 
@@ -230,7 +230,7 @@ export function SafeeSidebar() {
                       return (
                         <button
                           key={idx}
-                          onClick={() => setShowCreateMenu(false)}
+                          onClick={() => { setShowCreateMenu(false); }}
                           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />
@@ -253,7 +253,7 @@ export function SafeeSidebar() {
                       return (
                         <button
                           key={idx}
-                          onClick={() => setShowCreateMenu(false)}
+                          onClick={() => { setShowCreateMenu(false); }}
                           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />
@@ -276,7 +276,7 @@ export function SafeeSidebar() {
                       return (
                         <button
                           key={idx}
-                          onClick={() => setShowCreateMenu(false)}
+                          onClick={() => { setShowCreateMenu(false); }}
                           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />
@@ -299,7 +299,7 @@ export function SafeeSidebar() {
                       return (
                         <button
                           key={idx}
-                          onClick={() => setShowCreateMenu(false)}
+                          onClick={() => { setShowCreateMenu(false); }}
                           className="w-full flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
                         >
                           <Icon className="w-4 h-4 text-gray-400" />

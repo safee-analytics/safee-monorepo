@@ -31,7 +31,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
     };
 
     document.addEventListener("keydown", down);
-    return () => document.removeEventListener("keydown", down);
+    return () => { document.removeEventListener("keydown", down); };
   }, [open, onOpenChange]);
 
   const handleSelect = (path: string, isAction?: boolean) => {
@@ -116,7 +116,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                   <Command.Item
                     key={item.id}
                     value={`${item.label} ${item.keywords.join(" ")}`}
-                    onSelect={() => handleSelect(item.path)}
+                    onSelect={() => { handleSelect(item.path); }}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-100 data-[selected=true]:bg-gray-100 transition-colors"
                   >
                     <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">
@@ -142,7 +142,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                   <Command.Item
                     key={item.id}
                     value={`${item.label} ${item.keywords.join(" ")}`}
-                    onSelect={() => handleSelect(item.path)}
+                    onSelect={() => { handleSelect(item.path); }}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-safee-50 data-[selected=true]:bg-safee-50 transition-colors"
                   >
                     <div className="w-8 h-8 rounded-lg bg-safee-100 flex items-center justify-center">
@@ -169,7 +169,7 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
                   <Command.Item
                     key={item.id}
                     value={`${item.label} ${item.keywords.join(" ")}`}
-                    onSelect={() => handleSelect(item.path, true)}
+                    onSelect={() => { handleSelect(item.path, true); }}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-gray-50 data-[selected=true]:bg-gray-50 transition-colors"
                   >
                     <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center">

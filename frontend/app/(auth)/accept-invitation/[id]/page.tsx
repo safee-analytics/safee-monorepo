@@ -88,7 +88,7 @@ export default function AcceptInvitationPage() {
             {error || invitationError?.message || "This invitation link is invalid or has expired."}
           </p>
           <button
-            onClick={() => router.push("/")}
+            onClick={() => { router.push("/"); }}
             className="w-full bg-safee-600 hover:bg-safee-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
           >
             Go to Home

@@ -86,7 +86,7 @@ const ShuffleLoader = () => {
             layout
             data-block-id={b.id}
             key={b.id}
-            transition={TRANSITION as Transition}
+            transition={TRANSITION}
             style={{
               width: BLOCK_SIZE,
               height: BLOCK_SIZE,

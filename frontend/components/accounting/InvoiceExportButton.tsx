@@ -27,8 +27,8 @@ export function InvoiceExportButton({ invoice, className }: InvoiceExportButtonP
     setIsExporting(true);
     try {
       await downloadInvoicePDF(invoice, invoiceStyles);
-    } catch (error) {
-      console.error("Failed to export invoice:", error);
+    } catch (err) {
+      console.error("Failed to export invoice:", err);
       toast.error("Failed to export invoice");
     } finally {
       setIsExporting(false);

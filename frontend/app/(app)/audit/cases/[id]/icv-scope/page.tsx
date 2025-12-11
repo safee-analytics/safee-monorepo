@@ -267,7 +267,7 @@ export default function ICVScopePage() {
             {/* Scope Editor */}
             <ICVScopeEditor
               sections={scope.sections}
-              onSectionsChange={(sections) => setScope({ ...scope, sections })}
+              onSectionsChange={(sections) => { setScope({ ...scope, sections }); }}
               readOnly={isReadOnly}
             />
           </motion.div>

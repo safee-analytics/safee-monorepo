@@ -44,8 +44,8 @@ export const ConfirmModal = ({ isOpen, options, onClose }: ConfirmModalProps) =>
     try {
       await onConfirm();
       onClose();
-    } catch (error) {
-      console.error("Confirmation action failed:", error);
+    } catch (err) {
+      console.error("Confirmation action failed:", err);
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +73,7 @@ export const ConfirmModal = ({ isOpen, options, onClose }: ConfirmModalProps) =>
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => { e.stopPropagation(); }}
             className="bg-white dark:bg-gray-800 rounded-xl shadow-2xl w-full max-w-md p-6 cursor-default relative"
           >
             {/* Icon */}
@@ -173,7 +173,7 @@ export function useConfirm() {
   const closeModal = useCallback(() => {
     setIsOpen(false);
     // Clear options after animation completes
-    setTimeout(() => setOptions(null), 300);
+    setTimeout(() => { setOptions(null); }, 300);
   }, []);
 
   return {

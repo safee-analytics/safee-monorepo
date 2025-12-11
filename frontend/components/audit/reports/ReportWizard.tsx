@@ -70,8 +70,8 @@ export function ReportWizard({ onClose, caseId }: ReportWizardProps) {
         },
       });
       onClose();
-    } catch (error) {
-      console.error("Failed to generate report:", error);
+    } catch (err) {
+      console.error("Failed to generate report:", err);
     } finally {
       setIsGenerating(false);
     }

@@ -1,6 +1,5 @@
 "use client";
-
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { z } from "zod";
 import { useUpdateCase, useAssignCase, useRemoveCaseAssignment } from "@/lib/api/hooks";
 import type { components } from "@/lib/api/types";
@@ -33,9 +32,17 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
   const [status, setStatus] = useState(currentStatus);
   const updateCase = useUpdateCase();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+
+  useLayoutEffect(() => {
+    if (isOpen && dropdownRef.current) {
+      const rect = dropdownRef.current.getBoundingClientRect();
+      setDropdownPosition({ top: rect.bottom, left: rect.left });
+    }
+  }, [isOpen]);
 
   const statuses: { value: CaseStatus; label: string; color: string }[] = [
-    { value: "pending", label: "Pending", color: "bg-gray-100 text-gray-700" },
+    { value: "pending", label: "Pending", color: "bg-ray-100 text-gray-700" },
     { value: "in-progress", label: "In Progress", color: "bg-blue-100 text-blue-700" },
     { value: "under-review", label: "Under Review", color: "bg-yellow-100 text-yellow-700" },
     { value: "completed", label: "Completed", color: "bg-green-100 text-green-700" },
@@ -51,7 +58,7 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
     }
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      return () => { document.removeEventListener("mousedown", handleClickOutside); };
     }
   }, [isOpen]);
 
@@ -64,9 +71,9 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
         updates: { status: newStatus },
       });
       onUpdate?.();
-    } catch (error) {
+    } catch (err) {
       setStatus(currentStatus); // Revert on error
-      console.error("Failed to update status:", error);
+      console.error("Failed to update status:", err);
     }
   };
 
@@ -77,7 +84,7 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => { setIsOpen(!isOpen); }}
         className="hover:opacity-80 transition-opacity cursor-pointer"
       >
         <StatusBadge status={badgeStatus} />
@@ -87,8 +94,8 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
         <div
           className="fixed z-[9999] mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 w-fit"
           style={{
-            top: dropdownRef.current?.getBoundingClientRect().bottom ?? 0,
-            left: dropdownRef.current?.getBoundingClientRect().left ?? 0,
+            top: dropdownPosition.top,
+            left: dropdownPosition.left,
           }}
         >
           {statuses
@@ -128,6 +135,14 @@ export function InlinePriority({ caseId, currentPriority, onUpdate }: InlinePrio
   const [priority, setPriority] = useState(currentPriority);
   const updateCase = useUpdateCase();
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+
+  useLayoutEffect(() => {
+    if (isOpen && dropdownRef.current) {
+      const rect = dropdownRef.current.getBoundingClientRect();
+      setDropdownPosition({ top: rect.bottom, left: rect.left });
+    }
+  }, [isOpen]);
 
   const priorities: { value: CasePriority; label: string; color: string; icon: string }[] = [
     { value: "low", label: "Low", color: "text-green-600 bg-green-100", icon: "🟢" },
@@ -148,7 +163,7 @@ export function InlinePriority({ caseId, currentPriority, onUpdate }: InlinePrio
     }
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      return () => { document.removeEventListener("mousedown", handleClickOutside); };
     }
   }, [isOpen]);
 
@@ -161,16 +176,16 @@ export function InlinePriority({ caseId, currentPriority, onUpdate }: InlinePrio
         updates: { priority: newPriority },
       });
       onUpdate?.();
-    } catch (error) {
+    } catch (err) {
       setPriority(currentPriority);
-      console.error("Failed to update priority:", error);
+      console.error("Failed to update priority:", err);
     }
   };
 
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => { setIsOpen(!isOpen); }}
         className="hover:opacity-80 transition-opacity cursor-pointer"
       >
         <PriorityBadge priority={badgePriority} />
@@ -180,8 +195,8 @@ export function InlinePriority({ caseId, currentPriority, onUpdate }: InlinePrio
         <div
           className="fixed z-[9999] mt-1 bg-white rounded-lg shadow-lg border border-gray-200 py-1 w-fit"
           style={{
-            top: dropdownRef.current?.getBoundingClientRect().bottom ?? 0,
-            left: dropdownRef.current?.getBoundingClientRect().left ?? 0,
+            top: dropdownPosition.top,
+            left: dropdownPosition.left,
           }}
         >
           {priorities
@@ -229,6 +244,14 @@ export function InlineAssignee({ caseId, currentAssignee, availableUsers, onUpda
   const removeAssignment = useRemoveCaseAssignment();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+
+  useLayoutEffect(() => {
+    if (isOpen && dropdownRef.current) {
+      const rect = dropdownRef.current.getBoundingClientRect();
+      setDropdownPosition({ top: rect.bottom, left: rect.left });
+    }
+  }, [isOpen]);
 
   const filteredUsers = availableUsers.filter((user) =>
     user.name.toLowerCase().includes(searchTerm.toLowerCase()),
@@ -248,7 +271,7 @@ export function InlineAssignee({ caseId, currentAssignee, availableUsers, onUpda
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       searchInputRef.current?.focus();
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      return () => { document.removeEventListener("mousedown", handleClickOutside); };
     }
   }, [isOpen]);
 
@@ -268,8 +291,8 @@ export function InlineAssignee({ caseId, currentAssignee, availableUsers, onUpda
         assignment: { userId, role: "lead" },
       });
       onUpdate?.();
-    } catch (error) {
-      console.error("Failed to update assignee:", error);
+    } catch (err) {
+      console.error("Failed to update assignee:", err);
     }
   };
 
@@ -298,7 +321,7 @@ export function InlineAssignee({ caseId, currentAssignee, availableUsers, onUpda
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => { setIsOpen(!isOpen); }}
         className="flex items-center gap-2 hover:bg-gray-50 rounded px-2 py-1 transition-colors cursor-pointer"
       >
         <img src={currentAssignee.avatar} alt={currentAssignee.name} className="w-6 h-6 rounded-full" />
@@ -309,8 +332,8 @@ export function InlineAssignee({ caseId, currentAssignee, availableUsers, onUpda
         <div
           className="fixed z-[9999] bg-white rounded-lg shadow-lg border border-gray-200 w-64"
           style={{
-            top: dropdownRef.current?.getBoundingClientRect().bottom ?? 0,
-            left: dropdownRef.current?.getBoundingClientRect().left ?? 0,
+            top: dropdownPosition.top,
+            left: dropdownPosition.left,
           }}
         >
           <div className="p-2 border-b border-gray-200">
@@ -318,7 +341,7 @@ export function InlineAssignee({ caseId, currentAssignee, availableUsers, onUpda
               ref={searchInputRef}
               type="text"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => { setSearchTerm(e.target.value); }}
               onKeyDown={handleKeyDown}
               placeholder="Search users... (Press Enter to save)"
               className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -335,7 +358,7 @@ export function InlineAssignee({ caseId, currentAssignee, availableUsers, onUpda
               filteredUsers.map((user, index) => (
                 <button
                   key={user.id}
-                  onClick={() => setSelectedUserId(user.id)}
+                  onClick={() => { setSelectedUserId(user.id); }}
                   className={`w-full px-3 py-2 text-left text-sm transition-colors flex items-center gap-2 ${
                     user.id === selectedUserId
                       ? "bg-blue-100 text-blue-900"
@@ -376,6 +399,14 @@ export function InlineDueDate({ caseId, currentDueDate, onUpdate }: InlineDueDat
   const updateCase = useUpdateCase();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
+
+  useLayoutEffect(() => {
+    if (isOpen && dropdownRef.current) {
+      const rect = dropdownRef.current.getBoundingClientRect();
+      setDropdownPosition({ top: rect.bottom, left: rect.left });
+    }
+  }, [isOpen]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -386,7 +417,7 @@ export function InlineDueDate({ caseId, currentDueDate, onUpdate }: InlineDueDat
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       inputRef.current?.focus();
-      return () => document.removeEventListener("mousedown", handleClickOutside);
+      return () => { document.removeEventListener("mousedown", handleClickOutside); };
     }
   }, [isOpen]);
 
@@ -398,8 +429,8 @@ export function InlineDueDate({ caseId, currentDueDate, onUpdate }: InlineDueDat
         updates: { dueDate: newDate },
       });
       onUpdate?.();
-    } catch (error) {
-      console.error("Failed to update due date:", error);
+    } catch (err) {
+      console.error("Failed to update due date:", err);
     }
   };
 
@@ -417,7 +448,7 @@ export function InlineDueDate({ caseId, currentDueDate, onUpdate }: InlineDueDat
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => { setIsOpen(!isOpen); }}
         className="text-sm text-gray-700 hover:bg-gray-50 rounded px-2 py-1 transition-colors cursor-pointer"
       >
         {currentDueDate}
@@ -427,8 +458,8 @@ export function InlineDueDate({ caseId, currentDueDate, onUpdate }: InlineDueDat
         <div
           className="fixed z-[9999] bg-white rounded-lg shadow-lg border border-gray-200 p-3"
           style={{
-            top: dropdownRef.current?.getBoundingClientRect().bottom ?? 0,
-            left: dropdownRef.current?.getBoundingClientRect().left ?? 0,
+            top: dropdownPosition.top,
+            left: dropdownPosition.left,
           }}
         >
           <input

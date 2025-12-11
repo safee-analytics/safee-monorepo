@@ -17,12 +17,12 @@ export function useDirection(): Direction {
   useEffect(() => {
     // Watch for direction changes
     const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
+      for (const mutation of mutations) {
         if (mutation.attributeName === "dir") {
           const newDir = document.documentElement.dir as Direction;
           setDirection(newDir || "rtl");
         }
-      });
+      }
     });
 
     observer.observe(document.documentElement, {
@@ -30,7 +30,7 @@ export function useDirection(): Direction {
       attributeFilter: ["dir"],
     });
 
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); };
   }, []);
 
   return direction;

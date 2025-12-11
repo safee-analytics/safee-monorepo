@@ -59,14 +59,13 @@ const templateSections: Record<string, ReportSection[]> = {
 
 export function SectionConfigurator({ templateId, onChange }: SectionConfiguratorProps) {
   const sections = useMemo(() => templateSections[templateId] || [], [templateId]);
-  const [activeSections, setActiveSections] = useState<string[]>([]);
+  const [activeSections, setActiveSections] = useState<string[]>(() =>
+    sections.filter((s) => s.required).map((s) => s.id),
+  );
 
   useEffect(() => {
-    // Initialize with all required sections
-    const requiredSections = sections.filter((s) => s.required).map((s) => s.id);
-    setActiveSections(requiredSections);
-    onChange(requiredSections);
-  }, [sections, onChange]);
+    onChange(activeSections);
+  }, [activeSections, onChange]);
 
   const toggleSection = (sectionId: string) => {
     const section = sections.find((s) => s.id === sectionId);

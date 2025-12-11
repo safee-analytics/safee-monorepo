@@ -142,12 +142,12 @@ export class UploadService {
       });
 
       return metadata;
-    } catch (error) {
+    } catch (err) {
       // Cancel upload on error
       await this.cancelChunkedUpload(uploadId).catch(() => {
         // Ignore cancel errors
       });
-      throw error;
+      throw err;
     }
   }
 
@@ -378,8 +378,8 @@ export class UploadService {
         const metadata = await this.upload(file, options);
         results[i].metadata = metadata;
         results[i].status = "completed";
-      } catch (error) {
-        results[i].error = error as Error;
+      } catch (err) {
+        results[i].error = err as Error;
         results[i].status = "failed";
       }
     }

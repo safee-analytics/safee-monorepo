@@ -42,7 +42,7 @@ export function ActivityCalendar({ activities }: ActivityCalendarProps) {
   const activitiesByDate = useMemo(() => {
     const grouped: Record<string, ActivityResponse[]> = {};
 
-    activities.forEach((activity) => {
+    for (const activity of activities) {
       const date = new Date(activity.dateDeadline);
       const dateKey = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 
@@ -50,7 +50,7 @@ export function ActivityCalendar({ activities }: ActivityCalendarProps) {
         grouped[dateKey] = [];
       }
       grouped[dateKey].push(activity);
-    });
+    }
 
     return grouped;
   }, [activities]);
@@ -106,9 +106,9 @@ export function ActivityCalendar({ activities }: ActivityCalendarProps) {
       return <XCircle className="h-3 w-3 text-red-600" />;
     } else if (activity.state === "today") {
       return <AlertCircle className="h-3 w-3 text-yellow-600" />;
-    } else {
+    } 
       return <Clock className="h-3 w-3 text-blue-600" />;
-    }
+    
   };
 
   const getActivityColor = (activity: ActivityResponse) => {
@@ -121,9 +121,9 @@ export function ActivityCalendar({ activities }: ActivityCalendarProps) {
       return "bg-red-100 text-red-700 border-red-200";
     } else if (activity.state === "today") {
       return "bg-yellow-100 text-yellow-700 border-yellow-200";
-    } else {
+    } 
       return "bg-blue-100 text-blue-700 border-blue-200";
-    }
+    
   };
 
   return (

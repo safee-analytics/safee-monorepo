@@ -25,7 +25,7 @@ interface SortButtonProps {
 function SortButton({ field, children, sortField, onSort }: SortButtonProps) {
   return (
     <button
-      onClick={() => onSort(field)}
+      onClick={() => { onSort(field); }}
       className="flex items-center space-x-1 hover:text-gray-900 transition-colors"
     >
       <span>{children}</span>

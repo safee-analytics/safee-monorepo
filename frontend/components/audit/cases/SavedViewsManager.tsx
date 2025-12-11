@@ -98,7 +98,7 @@ export function SavedViewsManager({
           {favoriteViews.slice(0, 3).map((view) => (
             <button
               key={view.id}
-              onClick={() => onLoadView(view)}
+              onClick={() => { onLoadView(view); }}
               className={`px-3 py-1.5 text-sm rounded-lg border transition-colors ${
                 activeViewId === view.id
                   ? "bg-blue-50 border-blue-200 text-blue-700"
@@ -110,7 +110,7 @@ export function SavedViewsManager({
             </button>
           ))}
           <button
-            onClick={() => setIsExpanded(true)}
+            onClick={() => { setIsExpanded(true); }}
             className="text-sm text-blue-600 hover:text-blue-700 font-medium"
           >
             View all ({savedViews.length})
@@ -137,14 +137,14 @@ export function SavedViewsManager({
                 </div>
                 <div className="flex items-center space-x-2">
                   <button
-                    onClick={() => setShowSaveDialog(true)}
+                    onClick={() => { setShowSaveDialog(true); }}
                     className="px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 text-white rounded-lg flex items-center space-x-1 transition-colors"
                   >
                     <Plus className="h-4 w-4" />
                     <span>Save Current</span>
                   </button>
                   <button
-                    onClick={() => setIsExpanded(false)}
+                    onClick={() => { setIsExpanded(false); }}
                     className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                   >
                     <X className="h-4 w-4 text-gray-500" />
@@ -166,14 +166,14 @@ export function SavedViewsManager({
                         isActive={activeViewId === view.id}
                         isEditing={editingViewId === view.id}
                         editName={editName}
-                        onLoad={() => onLoadView(view)}
-                        onDelete={() => onDeleteView(view.id)}
-                        onToggleFavorite={() => onToggleFavorite(view.id)}
+                        onLoad={() => { onLoadView(view); }}
+                        onDelete={() => { onDeleteView(view.id); }}
+                        onToggleFavorite={() => { onToggleFavorite(view.id); }}
                         onStartEdit={() => {
                           setEditingViewId(view.id);
                           setEditName(view.name);
                         }}
-                        onSaveEdit={() => handleRenameView(view.id)}
+                        onSaveEdit={() => { handleRenameView(view.id); }}
                         onCancelEdit={() => {
                           setEditingViewId(null);
                           setEditName("");
@@ -200,14 +200,14 @@ export function SavedViewsManager({
                         isActive={activeViewId === view.id}
                         isEditing={editingViewId === view.id}
                         editName={editName}
-                        onLoad={() => onLoadView(view)}
-                        onDelete={() => onDeleteView(view.id)}
-                        onToggleFavorite={() => onToggleFavorite(view.id)}
+                        onLoad={() => { onLoadView(view); }}
+                        onDelete={() => { onDeleteView(view.id); }}
+                        onToggleFavorite={() => { onToggleFavorite(view.id); }}
                         onStartEdit={() => {
                           setEditingViewId(view.id);
                           setEditName(view.name);
                         }}
-                        onSaveEdit={() => handleRenameView(view.id)}
+                        onSaveEdit={() => { handleRenameView(view.id); }}
                         onCancelEdit={() => {
                           setEditingViewId(null);
                           setEditName("");
@@ -240,13 +240,13 @@ export function SavedViewsManager({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 grid place-items-center p-4"
-            onClick={() => setShowSaveDialog(false)}
+            onClick={() => { setShowSaveDialog(false); }}
           >
             <motion.div
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
+              onClick={(e) => { e.stopPropagation(); }}
               className="bg-white rounded-xl shadow-xl w-full max-w-md p-6"
             >
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Save Current View</h3>
@@ -257,7 +257,7 @@ export function SavedViewsManager({
                   <input
                     type="text"
                     value={newViewName}
-                    onChange={(e) => setNewViewName(e.target.value)}
+                    onChange={(e) => { setNewViewName(e.target.value); }}
                     placeholder="e.g., High Priority Active Cases"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     autoFocus
@@ -270,7 +270,7 @@ export function SavedViewsManager({
                   </label>
                   <textarea
                     value={newViewDescription}
-                    onChange={(e) => setNewViewDescription(e.target.value)}
+                    onChange={(e) => { setNewViewDescription(e.target.value); }}
                     placeholder="What does this view show?"
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     rows={2}
@@ -294,7 +294,7 @@ export function SavedViewsManager({
 
               <div className="flex items-center justify-end space-x-3 mt-6">
                 <button
-                  onClick={() => setShowSaveDialog(false)}
+                  onClick={() => { setShowSaveDialog(false); }}
                   className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
                 >
                   Cancel
@@ -358,7 +358,7 @@ function ViewCard({
               <input
                 type="text"
                 value={editName}
-                onChange={(e) => onEditNameChange(e.target.value)}
+                onChange={(e) => { onEditNameChange(e.target.value); }}
                 className="flex-1 px-2 py-1 text-sm border border-blue-300 rounded focus:ring-2 focus:ring-blue-500"
                 autoFocus
               />

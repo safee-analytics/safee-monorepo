@@ -81,7 +81,7 @@ export const CustomizableGrid = ({
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-gray-900">Dashboard Widgets</h2>
         <button
-          onClick={() => setIsCustomizing(!isCustomizing)}
+          onClick={() => { setIsCustomizing(!isCustomizing); }}
           className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm ${
             isCustomizing
               ? "bg-safee-600 text-white hover:bg-safee-700"
@@ -117,9 +117,9 @@ export const CustomizableGrid = ({
             isDragOver={dragOverIndex === index}
             onRemove={() => onRemoveWidget?.(widget.id)}
             onResize={(newSize) => onResizeWidget?.(widget.id, newSize)}
-            onDragStart={() => handleDragStart(widget.id, index)}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDrop={(e) => handleDrop(e, index)}
+            onDragStart={() => { handleDragStart(widget.id, index); }}
+            onDragOver={(e) => { handleDragOver(e, index); }}
+            onDrop={(e) => { handleDrop(e, index); }}
             onDragEnd={handleDragEnd}
           />
         ))}
@@ -270,7 +270,7 @@ const GridWidget = ({
             {widget.size !== widget.maxSize && (
               <div
                 draggable
-                onDragStart={(e) => handleResizeDragStart(e, "grow")}
+                onDragStart={(e) => { handleResizeDragStart(e, "grow"); }}
                 onDrag={handleResizeDrag}
                 onDragEnd={handleResizeDragEnd}
                 className="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-16 flex items-center justify-center cursor-ew-resize hover:bg-safee-100 rounded-lg transition-colors z-10 group"
@@ -286,7 +286,7 @@ const GridWidget = ({
             {widget.size !== widget.minSize && (
               <div
                 draggable
-                onDragStart={(e) => handleResizeDragStart(e, "shrink")}
+                onDragStart={(e) => { handleResizeDragStart(e, "shrink"); }}
                 onDrag={handleResizeDrag}
                 onDragEnd={handleResizeDragEnd}
                 className="absolute left-2 top-1/2 -translate-y-1/2 w-6 h-16 flex items-center justify-center cursor-ew-resize hover:bg-safee-100 rounded-lg transition-colors z-10 group"

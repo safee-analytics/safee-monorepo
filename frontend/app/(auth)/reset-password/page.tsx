@@ -54,7 +54,7 @@ function ResetPasswordContent() {
   const token = searchParams.get("token");
   const t = translations[locale];
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
 
@@ -74,17 +74,19 @@ function ResetPasswordContent() {
       return;
     }
 
-    try {
-      await resetPasswordMutation.mutateAsync({ token, password });
-      setSuccess(true);
-      // Redirect to login after 2 seconds
-      setTimeout(() => {
-        router.push("/login");
-      }, 2000);
-    } catch (err) {
-      console.error("Failed to reset password:", err);
-      setError(err instanceof Error ? err.message : "Failed to reset password. Please try again.");
-    }
+    void (async () => {
+      try {
+        await resetPasswordMutation.mutateAsync({ token, password });
+        setSuccess(true);
+        // Redirect to login after 2 seconds
+        setTimeout(() => {
+          router.push("/login");
+        }, 2000);
+      } catch (err) {
+        console.error("Failed to reset password:", err);
+        setError(err instanceof Error ? err.message : "Failed to reset password. Please try again.");
+      }
+    })();
   };
 
   const toggleLanguage = () => {
@@ -116,7 +118,7 @@ function ResetPasswordContent() {
           <h2 className="text-2xl font-bold text-gray-900 mb-2">{t.invalidToken}</h2>
           <p className="text-gray-600 mb-6">{t.invalidTokenDescription}</p>
           <button
-            onClick={() => router.push("/forgot-password")}
+            onClick={() => { router.push("/forgot-password"); }}
             className="w-full bg-safee-600 hover:bg-safee-700 text-white font-medium py-3 px-4 rounded-lg transition-colors"
           >
             Request New Link
@@ -198,7 +200,7 @@ function ResetPasswordContent() {
               id="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => { setPassword(e.target.value); }}
               placeholder={t.passwordPlaceholder}
               required
               minLength={8}
@@ -215,7 +217,7 @@ function ResetPasswordContent() {
               id="confirmPassword"
               type="password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              onChange={(e) => { setConfirmPassword(e.target.value); }}
               placeholder={t.confirmPasswordPlaceholder}
               required
               minLength={8}
@@ -233,7 +235,7 @@ function ResetPasswordContent() {
 
           <button
             type="button"
-            onClick={() => router.push("/login")}
+            onClick={() => { router.push("/login"); }}
             className="w-full text-gray-600 hover:text-gray-800 text-sm font-medium"
           >
             {t.backToLogin}

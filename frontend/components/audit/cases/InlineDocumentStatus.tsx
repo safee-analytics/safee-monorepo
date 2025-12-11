@@ -53,7 +53,7 @@ export function InlineDocumentStatus({ documentId, currentStatus, onUpdate }: In
   return (
     <div className="relative" ref={dropdownRef}>
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={() => { setIsOpen(!isOpen); }}
         className="group flex items-center gap-1 hover:opacity-80 transition-opacity"
       >
         <span className={`px-2 py-1 rounded-full text-xs font-medium ${currentStatusObj?.color}`}>

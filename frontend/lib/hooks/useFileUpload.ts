@@ -73,10 +73,10 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
 
       if (options.autoStart !== false) {
         // Auto-start upload if not disabled
-        uploadFiles.forEach((uploadFile) => {
+        for (const uploadFile of uploadFiles) {
           uploadFile.status = "uploading";
           startUpload(uploadFile);
-        });
+        }
       }
 
       return uploadFiles;
@@ -157,8 +157,8 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         completedFilesRef.current.add(uploadFile.id);
         options.onSuccess?.(uploadFile.file, metadata);
       }
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Upload failed";
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : "Upload failed";
 
       setFiles((prev) =>
         prev.map((f) =>
@@ -166,7 +166,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
         ),
       );
 
-      options.onError?.(uploadFile.file, error as Error);
+      options.onError?.(uploadFile.file, err as Error);
     } finally {
       setIsUploading(false);
       currentUploadIdRef.current = null;
@@ -189,7 +189,7 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
   const startAll = useCallback(
     () => {
       const pending = files.filter((f) => f.status === "pending");
-      pending.forEach((uploadFile) => startUpload(uploadFile));
+      for (const uploadFile of pending) startUpload(uploadFile);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [files],
@@ -205,8 +205,8 @@ export function useFileUpload(options: UseFileUploadOptions = {}) {
       if (uploadFile?.uploadId) {
         try {
           await uploadService.cancelChunkedUpload(uploadFile.uploadId);
-        } catch (error) {
-          console.error("Failed to cancel upload:", error);
+        } catch (err) {
+          console.error("Failed to cancel upload:", err);
         }
       }
 

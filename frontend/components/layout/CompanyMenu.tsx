@@ -68,7 +68,7 @@ export function CompanyMenu() {
     <>
       {/* Gear Icon Trigger */}
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => { setIsOpen(true); }}
         className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors relative"
         title="Settings"
       >
@@ -84,7 +84,7 @@ export function CompanyMenu() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setIsOpen(false)}
+              onClick={() => { setIsOpen(false); }}
               className="fixed inset-0 bg-black bg-opacity-50 z-50"
             />
 
@@ -102,7 +102,7 @@ export function CompanyMenu() {
                   <h2 className="text-xl font-semibold text-gray-900">Company Settings</h2>
                 </div>
                 <button
-                  onClick={() => setIsOpen(false)}
+                  onClick={() => { setIsOpen(false); }}
                   className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-200 rounded-lg transition-colors"
                 >
                   <X className="w-5 h-5" />
@@ -122,7 +122,7 @@ export function CompanyMenu() {
                         const isActive = pathname === item.href;
 
                         return (
-                          <Link key={item.label} href={item.href} onClick={() => setIsOpen(false)}>
+                          <Link key={item.label} href={item.href} onClick={() => { setIsOpen(false); }}>
                             <motion.div
                               whileHover={{ x: 4 }}
                               className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${

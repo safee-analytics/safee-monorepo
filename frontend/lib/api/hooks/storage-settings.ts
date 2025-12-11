@@ -43,7 +43,7 @@ export function useUpdateStorageConfig() {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.storage.config });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.storage.config });
     },
   });
 }

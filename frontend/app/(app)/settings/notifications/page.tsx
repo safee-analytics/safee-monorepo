@@ -74,7 +74,7 @@ export default function NotificationsSettings() {
                   type="checkbox"
                   checked={notifications.emailNotifications}
                   onChange={(e) =>
-                    setNotifications({ ...notifications, emailNotifications: e.target.checked })
+                    { setNotifications({ ...notifications, emailNotifications: e.target.checked }); }
                   }
                   className="sr-only peer"
                 />
@@ -95,7 +95,7 @@ export default function NotificationsSettings() {
                   type="checkbox"
                   checked={notifications.pushNotifications}
                   onChange={(e) =>
-                    setNotifications({ ...notifications, pushNotifications: e.target.checked })
+                    { setNotifications({ ...notifications, pushNotifications: e.target.checked }); }
                   }
                   className="sr-only peer"
                 />
@@ -115,7 +115,7 @@ export default function NotificationsSettings() {
                 <input
                   type="checkbox"
                   checked={notifications.smsNotifications}
-                  onChange={(e) => setNotifications({ ...notifications, smsNotifications: e.target.checked })}
+                  onChange={(e) => { setNotifications({ ...notifications, smsNotifications: e.target.checked }); }}
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -134,7 +134,7 @@ export default function NotificationsSettings() {
                 <input
                   type="checkbox"
                   checked={notifications.soundEnabled}
-                  onChange={(e) => setNotifications({ ...notifications, soundEnabled: e.target.checked })}
+                  onChange={(e) => { setNotifications({ ...notifications, soundEnabled: e.target.checked }); }}
                   className="sr-only peer"
                 />
                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -151,7 +151,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.notificationTypes.auditUpdates}
-                onChange={() => toggleNotificationType("auditUpdates")}
+                onChange={() => { toggleNotificationType("auditUpdates"); }}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
               <span className="text-gray-900">{t.settings.notifications.types.auditUpdates}</span>
@@ -160,7 +160,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.notificationTypes.documentUploads}
-                onChange={() => toggleNotificationType("documentUploads")}
+                onChange={() => { toggleNotificationType("documentUploads"); }}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
               <span className="text-gray-900">{t.settings.notifications.types.documentUploads}</span>
@@ -169,7 +169,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.notificationTypes.taskAssignments}
-                onChange={() => toggleNotificationType("taskAssignments")}
+                onChange={() => { toggleNotificationType("taskAssignments"); }}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
               <span className="text-gray-900">{t.settings.notifications.types.taskAssignments}</span>
@@ -178,7 +178,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.notificationTypes.systemAlerts}
-                onChange={() => toggleNotificationType("systemAlerts")}
+                onChange={() => { toggleNotificationType("systemAlerts"); }}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
               <span className="text-gray-900">{t.settings.notifications.types.systemAlerts}</span>
@@ -187,7 +187,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.notificationTypes.teamMentions}
-                onChange={() => toggleNotificationType("teamMentions")}
+                onChange={() => { toggleNotificationType("teamMentions"); }}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
               <span className="text-gray-900">{t.settings.notifications.types.teamMentions}</span>
@@ -196,7 +196,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.notificationTypes.deadlineReminders}
-                onChange={() => toggleNotificationType("deadlineReminders")}
+                onChange={() => { toggleNotificationType("deadlineReminders"); }}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
               />
               <span className="text-gray-900">{t.settings.notifications.types.deadlineReminders}</span>
@@ -216,7 +216,7 @@ export default function NotificationsSettings() {
                 name="frequency"
                 value="instant"
                 checked={notifications.frequency === "instant"}
-                onChange={(e) => setNotifications({ ...notifications, frequency: e.target.value })}
+                onChange={(e) => { setNotifications({ ...notifications, frequency: e.target.value }); }}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
               />
               <div>
@@ -232,7 +232,7 @@ export default function NotificationsSettings() {
                 name="frequency"
                 value="hourly"
                 checked={notifications.frequency === "hourly"}
-                onChange={(e) => setNotifications({ ...notifications, frequency: e.target.value })}
+                onChange={(e) => { setNotifications({ ...notifications, frequency: e.target.value }); }}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
               />
               <div>
@@ -246,7 +246,7 @@ export default function NotificationsSettings() {
                 name="frequency"
                 value="daily"
                 checked={notifications.frequency === "daily"}
-                onChange={(e) => setNotifications({ ...notifications, frequency: e.target.value })}
+                onChange={(e) => { setNotifications({ ...notifications, frequency: e.target.value }); }}
                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
               />
               <div>
@@ -270,7 +270,7 @@ export default function NotificationsSettings() {
               <input
                 type="checkbox"
                 checked={notifications.quietHoursEnabled}
-                onChange={(e) => setNotifications({ ...notifications, quietHoursEnabled: e.target.checked })}
+                onChange={(e) => { setNotifications({ ...notifications, quietHoursEnabled: e.target.checked }); }}
                 className="sr-only peer"
               />
               <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -285,7 +285,7 @@ export default function NotificationsSettings() {
                 <input
                   type="time"
                   value={notifications.quietHoursStart}
-                  onChange={(e) => setNotifications({ ...notifications, quietHoursStart: e.target.value })}
+                  onChange={(e) => { setNotifications({ ...notifications, quietHoursStart: e.target.value }); }}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>
@@ -296,7 +296,7 @@ export default function NotificationsSettings() {
                 <input
                   type="time"
                   value={notifications.quietHoursEnd}
-                  onChange={(e) => setNotifications({ ...notifications, quietHoursEnd: e.target.value })}
+                  onChange={(e) => { setNotifications({ ...notifications, quietHoursEnd: e.target.value }); }}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 />
               </div>

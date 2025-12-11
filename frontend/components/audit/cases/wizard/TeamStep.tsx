@@ -93,7 +93,7 @@ export function TeamStep({ data, onChange }: WizardStepProps) {
                   <div className="flex items-center space-x-2">
                     <select
                       value={assignment.role}
-                      onChange={(e) => handleChangeRole(assignment.userId, e.target.value)}
+                      onChange={(e) => { handleChangeRole(assignment.userId, e.target.value); }}
                       className="px-3 py-1.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       {ROLES.map((role) => (
@@ -103,7 +103,7 @@ export function TeamStep({ data, onChange }: WizardStepProps) {
                       ))}
                     </select>
                     <button
-                      onClick={() => handleRemoveMember(assignment.userId)}
+                      onClick={() => { handleRemoveMember(assignment.userId); }}
                       className="p-1.5 text-red-600 hover:bg-red-50 rounded transition-colors"
                     >
                       <X className="h-4 w-4" />
@@ -124,7 +124,7 @@ export function TeamStep({ data, onChange }: WizardStepProps) {
         <input
           type="text"
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
+          onChange={(e) => { setSearchTerm(e.target.value); }}
           placeholder="Search team members by name or email..."
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent mb-3"
         />

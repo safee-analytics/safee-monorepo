@@ -81,7 +81,7 @@ export default function DatabaseSettings() {
     try {
       await updateSettings.mutateAsync(settings);
       toast.success(t.settings.database.alerts.settingsSaved);
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.database.alerts.settingsFailed);
     }
   };
@@ -90,7 +90,7 @@ export default function DatabaseSettings() {
     try {
       await createBackup.mutateAsync();
       toast.success(t.settings.database.alerts.backupSuccess);
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.database.alerts.backupFailed);
     }
   };
@@ -108,7 +108,7 @@ export default function DatabaseSettings() {
     try {
       await restoreBackup.mutateAsync(backupId);
       toast.success(t.settings.database.alerts.restoreSuccess);
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.database.alerts.restoreFailed);
     }
   };
@@ -116,7 +116,7 @@ export default function DatabaseSettings() {
   const handleDownload = async (backupId: string) => {
     try {
       await downloadBackup.mutateAsync(backupId);
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.database.alerts.downloadFailed);
     }
   };
@@ -125,7 +125,7 @@ export default function DatabaseSettings() {
     try {
       await optimizeDb.mutateAsync();
       toast.success(t.settings.database.alerts.optimizeSuccess);
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.database.alerts.optimizeFailed);
     }
   };
@@ -134,7 +134,7 @@ export default function DatabaseSettings() {
     try {
       await runMaintenance.mutateAsync();
       toast.success(t.settings.database.alerts.maintenanceSuccess);
-    } catch (_error) {
+    } catch (err) {
       toast.error(t.settings.database.alerts.maintenanceFailed);
     }
   };
@@ -167,7 +167,7 @@ export default function DatabaseSettings() {
             </h2>
             <div className="grid grid-cols-2 gap-4 mb-6">
               <button
-                onClick={() => setDbMode("managed")}
+                onClick={() => { setDbMode("managed"); }}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   dbMode === "managed"
                     ? "border-blue-600 bg-blue-50"
@@ -188,7 +188,7 @@ export default function DatabaseSettings() {
               </button>
 
               <button
-                onClick={() => setDbMode("custom")}
+                onClick={() => { setDbMode("custom"); }}
                 className={`p-4 rounded-lg border-2 transition-all ${
                   dbMode === "custom" ? "border-blue-600 bg-blue-50" : "border-gray-200 hover:border-gray-300"
                 }`}
@@ -218,7 +218,7 @@ export default function DatabaseSettings() {
                     <input
                       type="text"
                       value={customDbConfig.host}
-                      onChange={(e) => setCustomDbConfig({ ...customDbConfig, host: e.target.value })}
+                      onChange={(e) => { setCustomDbConfig({ ...customDbConfig, host: e.target.value }); }}
                       placeholder={t.settings.database.configuration.custom.hostPlaceholder}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
@@ -230,7 +230,7 @@ export default function DatabaseSettings() {
                     <input
                       type="text"
                       value={customDbConfig.port}
-                      onChange={(e) => setCustomDbConfig({ ...customDbConfig, port: e.target.value })}
+                      onChange={(e) => { setCustomDbConfig({ ...customDbConfig, port: e.target.value }); }}
                       placeholder={t.settings.database.configuration.custom.portPlaceholder}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
@@ -244,7 +244,7 @@ export default function DatabaseSettings() {
                   <input
                     type="text"
                     value={customDbConfig.database}
-                    onChange={(e) => setCustomDbConfig({ ...customDbConfig, database: e.target.value })}
+                    onChange={(e) => { setCustomDbConfig({ ...customDbConfig, database: e.target.value }); }}
                     placeholder={t.settings.database.configuration.custom.databasePlaceholder}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -258,7 +258,7 @@ export default function DatabaseSettings() {
                     <input
                       type="text"
                       value={customDbConfig.username}
-                      onChange={(e) => setCustomDbConfig({ ...customDbConfig, username: e.target.value })}
+                      onChange={(e) => { setCustomDbConfig({ ...customDbConfig, username: e.target.value }); }}
                       placeholder={t.settings.database.configuration.custom.usernamePlaceholder}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
@@ -270,7 +270,7 @@ export default function DatabaseSettings() {
                     <input
                       type="password"
                       value={customDbConfig.password}
-                      onChange={(e) => setCustomDbConfig({ ...customDbConfig, password: e.target.value })}
+                      onChange={(e) => { setCustomDbConfig({ ...customDbConfig, password: e.target.value }); }}
                       placeholder={t.settings.database.configuration.custom.passwordPlaceholder}
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     />
@@ -282,7 +282,7 @@ export default function DatabaseSettings() {
                     type="checkbox"
                     id="ssl"
                     checked={customDbConfig.ssl}
-                    onChange={(e) => setCustomDbConfig({ ...customDbConfig, ssl: e.target.checked })}
+                    onChange={(e) => { setCustomDbConfig({ ...customDbConfig, ssl: e.target.checked }); }}
                     className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
                   />
                   <label htmlFor="ssl" className="text-sm font-medium text-gray-700">
@@ -403,7 +403,7 @@ export default function DatabaseSettings() {
                         <input
                           type="checkbox"
                           checked={settings.autoBackup}
-                          onChange={(e) => setSettings({ ...settings, autoBackup: e.target.checked })}
+                          onChange={(e) => { setSettings({ ...settings, autoBackup: e.target.checked }); }}
                           className="sr-only peer"
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -418,7 +418,7 @@ export default function DatabaseSettings() {
                           </label>
                           <select
                             value={settings.backupFrequency}
-                            onChange={(e) => setSettings({ ...settings, backupFrequency: e.target.value })}
+                            onChange={(e) => { setSettings({ ...settings, backupFrequency: e.target.value }); }}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           >
                             <option value="hourly">{t.settings.database.backup.frequency.hourly}</option>
@@ -434,7 +434,7 @@ export default function DatabaseSettings() {
                           </label>
                           <select
                             value={settings.backupRetention}
-                            onChange={(e) => setSettings({ ...settings, backupRetention: e.target.value })}
+                            onChange={(e) => { setSettings({ ...settings, backupRetention: e.target.value }); }}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           >
                             <option value="7">{t.settings.database.backup.retention.sevenDays}</option>
@@ -451,7 +451,7 @@ export default function DatabaseSettings() {
                           </label>
                           <select
                             value={settings.backupLocation}
-                            onChange={(e) => setSettings({ ...settings, backupLocation: e.target.value })}
+                            onChange={(e) => { setSettings({ ...settings, backupLocation: e.target.value }); }}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           >
                             <option value="cloud">{t.settings.database.backup.location.cloud}</option>
@@ -475,7 +475,7 @@ export default function DatabaseSettings() {
                         <input
                           type="checkbox"
                           checked={settings.compressionEnabled}
-                          onChange={(e) => setSettings({ ...settings, compressionEnabled: e.target.checked })}
+                          onChange={(e) => { setSettings({ ...settings, compressionEnabled: e.target.checked }); }}
                           className="sr-only peer"
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
@@ -495,7 +495,7 @@ export default function DatabaseSettings() {
                         <input
                           type="checkbox"
                           checked={settings.encryptionEnabled}
-                          onChange={(e) => setSettings({ ...settings, encryptionEnabled: e.target.checked })}
+                          onChange={(e) => { setSettings({ ...settings, encryptionEnabled: e.target.checked }); }}
                           className="sr-only peer"
                         />
                         <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>

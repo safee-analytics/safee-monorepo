@@ -75,9 +75,9 @@ export function TemplateSelector({ data, onChange }: WizardStepProps) {
           return (
             <button
               key={template.name}
-              onClick={() => handleTemplateSelect(template)}
-              onMouseEnter={() => setHoveredTemplate(template.name)}
-              onMouseLeave={() => setHoveredTemplate(null)}
+              onClick={() => { handleTemplateSelect(template); }}
+              onMouseEnter={() => { setHoveredTemplate(template.name); }}
+              onMouseLeave={() => { setHoveredTemplate(null); }}
               className={`relative p-6 rounded-xl border-2 text-left transition-all ${
                 isSelected
                   ? `${colors.bg} ${colors.border} ring-2 ring-offset-2 ring-${template.color}-500`

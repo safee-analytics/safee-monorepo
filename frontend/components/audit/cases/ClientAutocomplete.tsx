@@ -60,7 +60,7 @@ export function ClientAutocomplete({
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    return () => { document.removeEventListener("mousedown", handleClickOutside); };
   }, []);
 
   const handleClientClick = (clientName: string) => {
@@ -104,8 +104,8 @@ export function ClientAutocomplete({
           ref={inputRef}
           type="text"
           value={value}
-          onChange={(e) => onChange(e.target.value)}
-          onFocus={() => setIsFocused(true)}
+          onChange={(e) => { onChange(e.target.value); }}
+          onFocus={() => { setIsFocused(true); }}
           placeholder={placeholder}
           className={`w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${className}`}
           autoComplete="off"
@@ -132,7 +132,7 @@ export function ClientAutocomplete({
               {filteredClients.map((client, index) => (
                 <div key={`${client.name}-${index}`} className="group hover:bg-blue-50 transition-colors">
                   <button
-                    onClick={() => handleClientClick(client.name)}
+                    onClick={() => { handleClientClick(client.name); }}
                     className="w-full px-4 py-3 text-left flex items-start justify-between"
                   >
                     <div className="flex-1">

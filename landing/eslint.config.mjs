@@ -7,10 +7,39 @@ const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
   safeePlugin.configs.recommended,
-  // Custom rules
+
+  {
+    languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  },
+
+  // Quality rules for landing page
   {
     rules: {
-      // Allow regular img tags in landing page (not performance critical)
+      // TypeScript - Balanced for landing page
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          argsIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          caughtErrorsIgnorePattern: "^_",
+        },
+      ],
+      "@typescript-eslint/no-explicit-any": "warn",
+      "@typescript-eslint/no-floating-promises": "error",
+      "@typescript-eslint/no-misused-promises": "error",
+
+      // Code quality
+      "prefer-const": "error",
+      "no-var": "error",
+      "eqeqeq": ["error", "always"],
+      "no-console": ["warn", { allow: ["warn", "error"] }],
+
+      // Landing page specific - allow img tags for marketing assets
       "@next/next/no-img-element": "off",
     },
   },

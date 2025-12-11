@@ -82,21 +82,21 @@ export function CaseCommands({
       label: "Go to Dashboard",
       icon: <Home className="h-4 w-4" />,
       shortcut: "G then D",
-      onExecute: () => router.push("/audit/dashboard"),
+      onExecute: () => { router.push("/audit/dashboard"); },
     },
     {
       id: "go-cases",
       label: "Go to Cases",
       icon: <Folder className="h-4 w-4" />,
       shortcut: "G then C",
-      onExecute: () => router.push("/audit/cases"),
+      onExecute: () => { router.push("/audit/cases"); },
     },
     {
       id: "go-documents",
       label: "Go to Documents",
       icon: <FileText className="h-4 w-4" />,
       shortcut: "G then F",
-      onExecute: () => router.push("/audit/documents"),
+      onExecute: () => { router.push("/audit/documents"); },
     },
     {
       id: "search",
@@ -132,14 +132,14 @@ export function CaseCommands({
             label: `Assign Team (${selectedCasesCount} selected)`,
             icon: <Users className="h-4 w-4" />,
             shortcut: "Shift+T",
-            onExecute: () => console.warn("Assign team"),
+            onExecute: () => { console.warn("Assign team"); },
           },
           {
             id: "bulk-delete",
             label: `Delete ${selectedCasesCount} Case${selectedCasesCount > 1 ? "s" : ""}`,
             icon: <Trash2 className="h-4 w-4" />,
             shortcut: "Shift+D",
-            onExecute: () => console.warn("Delete cases"),
+            onExecute: () => { console.warn("Delete cases"); },
           },
         ]
       : []),
@@ -157,14 +157,14 @@ export function CaseCommands({
       label: "Toggle Filters",
       icon: <Filter className="h-4 w-4" />,
       shortcut: "Shift+F",
-      onExecute: () => console.warn("Toggle filters"),
+      onExecute: () => { console.warn("Toggle filters"); },
     },
     {
       id: "select-all",
       label: "Select All Cases",
       icon: <CheckSquare className="h-4 w-4" />,
       shortcut: "Cmd+A",
-      onExecute: () => console.warn("Select all"),
+      onExecute: () => { console.warn("Select all"); },
     },
 
     // View Changes

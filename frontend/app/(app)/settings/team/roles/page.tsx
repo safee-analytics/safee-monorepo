@@ -86,15 +86,15 @@ export default function RoleManagement() {
   const updateRoleMutation = useUpdateRolePermissions();
   const deleteRoleMutation = useDeleteRole();
 
-  const groupedRoles = (roles || []).reduce(
+  const groupedRoles = (roles || []).reduce<Record<string, NonNullable<typeof roles>>>(
     (acc, role) => {
       if (!acc[role.role]) {
         acc[role.role] = [];
       }
-      acc[role.role]!.push(role);
+      acc[role.role].push(role);
       return acc;
     },
-    {} as Record<string, NonNullable<typeof roles>>,
+    {},
   );
 
   const handleCreateRole = (roleName: string, permissions: string[]) => {
@@ -183,18 +183,18 @@ export default function RoleManagement() {
     if (!roleGroup) return [];
     // Flatten permission objects to string arrays
     const permissions: string[] = [];
-    roleGroup.forEach((r) => {
+    for (const r of roleGroup) {
       if (typeof r.permission === "string") {
         permissions.push(r.permission);
       } else if (typeof r.permission === "object" && r.permission !== null) {
         // Permission is Record<string, string[]>, flatten to "resource:action" format
-        Object.entries(r.permission).forEach(([resource, actions]) => {
+        for (const [resource, actions] of Object.entries(r.permission)) {
           if (Array.isArray(actions)) {
-            actions.forEach((action) => permissions.push(`${resource}:${action}`));
+            for (const action of actions) permissions.push(`${resource}:${action}`);
           }
-        });
+        }
       }
-    });
+    }
     return permissions;
   };
 
@@ -217,7 +217,7 @@ export default function RoleManagement() {
           </div>
         </div>
         <button
-          onClick={() => setShowCreateModal(true)}
+          onClick={() => { setShowCreateModal(true); }}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
         >
           <Plus className="w-4 h-4" />
@@ -253,7 +253,7 @@ export default function RoleManagement() {
                   </div>
                   <div className="flex items-center gap-1">
                     <button
-                      onClick={() => setEditingRole(isEditing ? null : roleName)}
+                      onClick={() => { setEditingRole(isEditing ? null : roleName); }}
                       className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors"
                     >
                       {isEditing ? (
@@ -276,8 +276,8 @@ export default function RoleManagement() {
                   {isEditing ? (
                     <RolePermissionEditor
                       initialPermissions={permissions}
-                      onSave={(newPermissions) => handleUpdateRole(roleName, newPermissions)}
-                      onCancel={() => setEditingRole(null)}
+                      onSave={(newPermissions) => { handleUpdateRole(roleName, newPermissions); }}
+                      onCancel={() => { setEditingRole(null); }}
                     />
                   ) : (
                     <div className="space-y-1">
@@ -309,7 +309,7 @@ export default function RoleManagement() {
       {/* Create Role Modal */}
       {showCreateModal && (
         <CreateRoleModal
-          onClose={() => setShowCreateModal(false)}
+          onClose={() => { setShowCreateModal(false); }}
           onCreate={handleCreateRole}
           isCreating={createRoleMutation.isPending}
         />
@@ -339,13 +339,13 @@ function RolePermissionEditor({
   };
 
   // Group by module
-  const permissionsByModule = AVAILABLE_PERMISSIONS.reduce(
+  const permissionsByModule = AVAILABLE_PERMISSIONS.reduce<Record<string, typeof AVAILABLE_PERMISSIONS>>(
     (acc, perm) => {
       if (!acc[perm.module]) acc[perm.module] = [];
       acc[perm.module].push(perm);
       return acc;
     },
-    {} as Record<string, typeof AVAILABLE_PERMISSIONS>,
+    {},
   );
 
   return (
@@ -358,7 +358,7 @@ function RolePermissionEditor({
               <input
                 type="checkbox"
                 checked={selectedPermissions.includes(perm.id)}
-                onChange={() => togglePermission(perm.id)}
+                onChange={() => { togglePermission(perm.id); }}
                 className="rounded border-gray-300"
               />
               {perm.label}
@@ -368,7 +368,7 @@ function RolePermissionEditor({
       ))}
       <div className="flex gap-2 pt-2">
         <button
-          onClick={() => onSave(selectedPermissions)}
+          onClick={() => { onSave(selectedPermissions); }}
           className="flex-1 px-3 py-1.5 bg-blue-600 text-white text-sm rounded hover:bg-blue-700"
         >
           Save
@@ -403,13 +403,13 @@ function CreateRoleModal({
     );
   };
 
-  const permissionsByModule = AVAILABLE_PERMISSIONS.reduce(
+  const permissionsByModule = AVAILABLE_PERMISSIONS.reduce<Record<string, typeof AVAILABLE_PERMISSIONS>>(
     (acc, perm) => {
       if (!acc[perm.module]) acc[perm.module] = [];
       acc[perm.module].push(perm);
       return acc;
     },
-    {} as Record<string, typeof AVAILABLE_PERMISSIONS>,
+    {},
   );
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -430,7 +430,7 @@ function CreateRoleModal({
               <input
                 type="text"
                 value={roleName}
-                onChange={(e) => setRoleName(e.target.value)}
+                onChange={(e) => { setRoleName(e.target.value); }}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                 placeholder="e.g. Audit Manager"
@@ -449,7 +449,7 @@ function CreateRoleModal({
                           <input
                             type="checkbox"
                             checked={selectedPermissions.includes(perm.id)}
-                            onChange={() => togglePermission(perm.id)}
+                            onChange={() => { togglePermission(perm.id); }}
                             className="rounded border-gray-300"
                           />
                           {perm.label}

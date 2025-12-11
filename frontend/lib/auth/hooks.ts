@@ -21,10 +21,10 @@ export function useAuth() {
       try {
         await signInMutation.mutateAsync({ email, password });
         return { success: true };
-      } catch (error) {
+      } catch (err) {
         return {
           success: false,
-          error: error instanceof Error ? error.message : "Sign in failed",
+          error: err instanceof Error ? err.message : "Sign in failed",
         };
       }
     },
@@ -36,10 +36,10 @@ export function useAuth() {
       try {
         await signUpMutation.mutateAsync({ email, password, name });
         return { success: true };
-      } catch (error) {
+      } catch (err) {
         return {
           success: false,
-          error: error instanceof Error ? error.message : "Sign up failed",
+          error: err instanceof Error ? err.message : "Sign up failed",
         };
       }
     },
@@ -50,8 +50,8 @@ export function useAuth() {
     try {
       await signOutMutation.mutateAsync();
       router.push("/login");
-    } catch (error) {
-      console.error("Sign out error:", error);
+    } catch (err) {
+      console.error("Sign out error:", err);
       // Try to redirect anyway
       router.push("/login");
     }
@@ -61,9 +61,9 @@ export function useAuth() {
     async (callbackURL?: string) => {
       try {
         await googleSignInMutation.mutateAsync({ callbackURL });
-      } catch (error) {
-        console.error("Google sign in error:", error);
-        throw error;
+      } catch (err) {
+        console.error("Google sign in error:", err);
+        throw err;
       }
     },
     [googleSignInMutation],
@@ -88,7 +88,7 @@ export function useAuth() {
   };
 }
 
-export function useRequireAuth(redirectTo: string = "/login") {
+export function useRequireAuth(redirectTo = "/login") {
   const router = useRouter();
   const pathname = usePathname();
   const { isAuthenticated, isLoading } = useAuth();

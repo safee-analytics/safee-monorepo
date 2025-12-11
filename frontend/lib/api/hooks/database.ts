@@ -63,7 +63,7 @@ export function useUpdateBackupSettings() {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.database.backupSettings });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.database.backupSettings });
     },
   });
 }
@@ -90,7 +90,7 @@ export function useCreateBackup() {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.database.backups });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.database.backups });
     },
   });
 }
@@ -150,7 +150,7 @@ export function useOptimizeDatabase() {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.database.stats });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.database.stats });
     },
   });
 }
@@ -165,7 +165,7 @@ export function useRunMaintenance() {
       return response.data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.database.stats });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.database.stats });
     },
   });
 }

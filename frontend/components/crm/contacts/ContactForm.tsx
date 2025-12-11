@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { contactFormSchema, type ContactFormData } from "@/lib/api/schemas";
 import { Building2, Mail, Phone, Globe, MapPin, Briefcase } from "lucide-react";
@@ -20,7 +20,7 @@ export function ContactForm({ contact, onSubmit, isSubmitting = false }: Contact
   const {
     register,
     handleSubmit,
-    watch,
+    control,
     formState: { errors },
   } = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -44,7 +44,7 @@ export function ContactForm({ contact, onSubmit, isSubmitting = false }: Contact
         },
   });
 
-  const isCompany = watch("isCompany");
+  const isCompany = useWatch({ control, name: "isCompany" });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
@@ -219,7 +219,7 @@ export function ContactForm({ contact, onSubmit, isSubmitting = false }: Contact
 
       {/* Form Actions */}
       <div className="flex items-center justify-end space-x-4">
-        <AnimatedButton type="button" variant="secondary" onClick={() => window.history.back()}>
+        <AnimatedButton type="button" variant="secondary" onClick={() => { window.history.back(); }}>
           Cancel
         </AnimatedButton>
         <AnimatedButton type="submit" variant="primary" disabled={isSubmitting}>

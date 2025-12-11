@@ -43,14 +43,14 @@ export function ReportViewer({ report, onClose, onExport }: ReportViewerProps) {
         <div className="px-6 py-3 border-b border-gray-200 flex items-center justify-between bg-gray-50">
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setZoom(Math.max(50, zoom - 10))}
+              onClick={() => { setZoom(Math.max(50, zoom - 10)); }}
               className="p-2 hover:bg-white rounded-lg border border-gray-300 transition-colors"
             >
               <ZoomOut className="w-4 h-4 text-gray-600" />
             </button>
             <span className="text-sm text-gray-700 font-medium px-3">{zoom}%</span>
             <button
-              onClick={() => setZoom(Math.min(200, zoom + 10))}
+              onClick={() => { setZoom(Math.min(200, zoom + 10)); }}
               className="p-2 hover:bg-white rounded-lg border border-gray-300 transition-colors"
             >
               <ZoomIn className="w-4 h-4 text-gray-600" />

@@ -67,7 +67,7 @@ export function FileList({
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
+    return `${Math.round((bytes / Math.pow(k, i)) * 100) / 100  } ${  sizes[i]}`;
   };
 
   const formatDate = (dateString: string): string => {
@@ -162,7 +162,7 @@ export function FileList({
               <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                 {onPreview && (
                   <button
-                    onClick={() => onPreview(file)}
+                    onClick={() => { onPreview(file); }}
                     className="rounded p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                     title="Preview"
                   >
@@ -171,7 +171,7 @@ export function FileList({
                 )}
                 {onDownload && (
                   <button
-                    onClick={() => onDownload(file)}
+                    onClick={() => { onDownload(file); }}
                     className="rounded p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                     title="Download"
                   >
@@ -180,7 +180,7 @@ export function FileList({
                 )}
                 {onShare && (
                   <button
-                    onClick={() => onShare(file)}
+                    onClick={() => { onShare(file); }}
                     className="rounded p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                     title="Share"
                   >
@@ -194,7 +194,7 @@ export function FileList({
             {showActions && (
               <div className="relative">
                 <button
-                  onClick={() => handleMenuToggle(file.id)}
+                  onClick={() => { handleMenuToggle(file.id); }}
                   className="rounded p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                   title="More actions"
                 >
@@ -204,7 +204,7 @@ export function FileList({
                 {activeMenu === file.id && (
                   <>
                     {/* Backdrop */}
-                    <div className="fixed inset-0 z-10" onClick={() => setActiveMenu(null)} />
+                    <div className="fixed inset-0 z-10" onClick={() => { setActiveMenu(null); }} />
 
                     {/* Menu */}
                     <motion.div
@@ -214,7 +214,7 @@ export function FileList({
                     >
                       {onPreview && (
                         <button
-                          onClick={() => handleAction(() => onPreview(file))}
+                          onClick={() => { handleAction(() => { onPreview(file); }); }}
                           className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                         >
                           <Eye className="h-4 w-4" />
@@ -223,7 +223,7 @@ export function FileList({
                       )}
                       {onDownload && (
                         <button
-                          onClick={() => handleAction(() => onDownload(file))}
+                          onClick={() => { handleAction(() => { onDownload(file); }); }}
                           className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                         >
                           <Download className="h-4 w-4" />
@@ -233,9 +233,9 @@ export function FileList({
                       {file.url && (
                         <button
                           onClick={() =>
-                            handleAction(() => {
+                            { handleAction(() => {
                               navigator.clipboard.writeText(file.url || "");
-                            })
+                            }); }
                           }
                           className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                         >
@@ -245,7 +245,7 @@ export function FileList({
                       )}
                       {onShare && (
                         <button
-                          onClick={() => handleAction(() => onShare(file))}
+                          onClick={() => { handleAction(() => { onShare(file); }); }}
                           className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                         >
                           <Share2 className="h-4 w-4" />
@@ -256,7 +256,7 @@ export function FileList({
                         <>
                           <div className="my-1 border-t border-gray-200 dark:border-gray-700" />
                           <button
-                            onClick={() => handleAction(() => onDelete(file.id))}
+                            onClick={() => { handleAction(() => { onDelete(file.id); }); }}
                             className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
                           >
                             <Trash2 className="h-4 w-4" />

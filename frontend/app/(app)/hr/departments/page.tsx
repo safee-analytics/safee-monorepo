@@ -40,7 +40,7 @@ export default function DepartmentsPage() {
           <p className="text-red-800 font-medium">Failed to load departments</p>
           <p className="text-red-600 text-sm mt-1">{error.message}</p>
           <button
-            onClick={() => window.location.reload()}
+            onClick={() => { window.location.reload(); }}
             className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
           >
             Retry
@@ -116,7 +116,7 @@ export default function DepartmentsPage() {
             type="text"
             placeholder="Search departments by name or code..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => { setSearchQuery(e.target.value); }}
             className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           />
         </div>
@@ -155,7 +155,7 @@ export default function DepartmentsPage() {
                 {filteredDepartments.map((department) => (
                   <tr
                     key={department.id}
-                    onClick={() => handleRowClick(department.id)}
+                    onClick={() => { handleRowClick(department.id); }}
                     className="hover:bg-gray-50 transition-colors cursor-pointer"
                   >
                     <td className="px-6 py-4">

@@ -18,8 +18,8 @@ export default function CRMSettingsPage() {
   const handleSync = async (_type: "stages" | "lost-reasons" | "teams") => {
     try {
       await syncMutation.mutateAsync("all");
-    } catch (error) {
-      console.error(`Failed to sync ${_type}:`, error);
+    } catch (err) {
+      console.error(`Failed to sync ${_type}:`, err);
     }
   };
 
@@ -28,7 +28,7 @@ export default function CRMSettingsPage() {
       <div className="sticky top-[57px] z-30 bg-white border-b border-gray-200">
         <div className="whitespace-nowrap py-4">
           <button
-            onClick={() => router.back()}
+            onClick={() => { router.back(); }}
             className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -51,7 +51,7 @@ export default function CRMSettingsPage() {
         <div className="bg-white rounded-lg border border-gray-200 mb-6">
           <div className="flex border-b border-gray-200">
             <button
-              onClick={() => setActiveTab("stages")}
+              onClick={() => { setActiveTab("stages"); }}
               className={`flex items-center space-x-2 whitespace-nowrap py-4 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === "stages"
                   ? "border-blue-600 text-blue-600"
@@ -63,7 +63,7 @@ export default function CRMSettingsPage() {
               {stages && <span className="text-xs text-gray-500">({stages.length})</span>}
             </button>
             <button
-              onClick={() => setActiveTab("lost-reasons")}
+              onClick={() => { setActiveTab("lost-reasons"); }}
               className={`flex items-center space-x-2 whitespace-nowrap py-4 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === "lost-reasons"
                   ? "border-blue-600 text-blue-600"
@@ -75,7 +75,7 @@ export default function CRMSettingsPage() {
               {lostReasons && <span className="text-xs text-gray-500">({lostReasons.length})</span>}
             </button>
             <button
-              onClick={() => setActiveTab("teams")}
+              onClick={() => { setActiveTab("teams"); }}
               className={`flex items-center space-x-2 whitespace-nowrap py-4 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === "teams"
                   ? "border-blue-600 text-blue-600"
