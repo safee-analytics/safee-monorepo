@@ -1,11 +1,11 @@
-import nextConfig from "eslint-config-next/index.js";
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 import safeePlugin from "@safee/eslint-plugin";
-import tseslint from "typescript-eslint";
 
-const eslintConfig = [
-  ...(Array.isArray(nextConfig) ? nextConfig : [nextConfig]),
-  ...tseslint.configs.recommended,
-
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
   safeePlugin.configs.recommended,
 
   {
@@ -15,20 +15,6 @@ const eslintConfig = [
         tsconfigRootDir: import.meta.dirname,
       },
     },
-  },
-
-  {
-    ignores: [
-      "node_modules/**",
-      ".next/**",
-      "out/**",
-      "build/**",
-      "dist/**",
-      "next-env.d.ts",
-      "*.config.js",
-      "*.config.mjs",
-      "scripts/**/*.mjs", // Build scripts
-    ],
   },
 
   {
@@ -83,6 +69,18 @@ const eslintConfig = [
       "@typescript-eslint/no-explicit-any": "error",
     },
   },
-];
+  // Override default ignores of eslint-config-next
+  globalIgnores([
+    "node_modules/**",
+    ".next/**",
+    "out/**",
+    "build/**",
+    "dist/**",
+    "next-env.d.ts",
+    "*.config.js",
+    "*.config.mjs",
+    "scripts/**/*.mjs",
+  ]),
+]);
 
 export default eslintConfig;
