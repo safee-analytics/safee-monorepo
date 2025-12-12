@@ -10,7 +10,7 @@ import { createClient } from "redis";
 import { instrument } from "@socket.io/admin-ui";
 import { auth } from "../../auth/index.js";
 import { fromNodeHeaders } from "better-auth/node";
-import pino from "pino";
+import { pino } from "pino";
 import type { Server as HTTPServer } from "node:http";
 import type {
   ServerToClientEvents,
@@ -64,9 +64,10 @@ export class WebSocketService {
     this.setupConnectionHandler();
 
     // Setup admin UI (only in development)
-    if (process.env.NODE_ENV === "development") {
-      this.setupAdminUI();
-    }
+    // Temporarily disabled due to proxy error - can be re-enabled later
+    // if (process.env.NODE_ENV === "development") {
+    //   this.setupAdminUI();
+    // }
 
     logger.info("Socket.IO server initialized with Better Auth and Redis");
   }

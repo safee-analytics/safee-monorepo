@@ -21,7 +21,8 @@ interface LoginFormProps {
     forgotPassword: string;
     signIn: string;
     signInWithGoogle: string;
-    signInWithSSO: string;
+    signInWithEmail: string;
+    signInWithPhone: string;
     signInWithMagicLink?: string;
     useMagicLink?: string;
     usePassword?: string;
@@ -33,22 +34,26 @@ interface LoginFormProps {
   };
   onSubmit?: (email: string, password: string) => void;
   onGoogleLogin?: () => void;
-  onSSOLogin?: () => void;
   onGoBack?: () => void;
   onSendMagicLink?: (email: string) => void;
   useMagicLinkMode?: boolean;
   onToggleMagicLink?: () => void;
+  showEmailForm?: boolean;
+  onSelectEmail?: () => void;
+  onSelectPhone?: () => void;
 }
 
 export const SafeeLoginForm = ({
   t,
   onSubmit,
   onGoogleLogin,
-  onSSOLogin,
   onGoBack,
   onSendMagicLink,
   useMagicLinkMode,
   onToggleMagicLink,
+  showEmailForm = true,
+  onSelectEmail,
+  onSelectPhone,
 }: LoginFormProps) => {
   const dir = useDirection();
   const isRTL = dir === "rtl";
@@ -70,15 +75,22 @@ export const SafeeLoginForm = ({
         className="relative z-10 mx-auto w-full max-w-xl p-4"
       >
         <Heading t={t} />
-        <SocialOptions t={t} onGoogleLogin={onGoogleLogin} onSSOLogin={onSSOLogin} />
-        <Or t={t} />
-        <EmailForm
+        <AuthOptions
           t={t}
-          onSubmit={onSubmit}
-          onSendMagicLink={onSendMagicLink}
-          useMagicLinkMode={useMagicLinkMode}
-          onToggleMagicLink={onToggleMagicLink}
+          onGoogleLogin={onGoogleLogin}
+          onSelectEmail={onSelectEmail}
+          onSelectPhone={onSelectPhone}
         />
+        <Or t={t} />
+        {showEmailForm && (
+          <EmailForm
+            t={t}
+            onSubmit={onSubmit}
+            onSendMagicLink={onSendMagicLink}
+            useMagicLinkMode={useMagicLinkMode}
+            onToggleMagicLink={onToggleMagicLink}
+          />
+        )}
         <Terms t={t} />
       </motion.div>
 
@@ -102,23 +114,46 @@ const Heading = ({ t }: { t: LoginFormProps["t"] }) => (
   </div>
 );
 
-const SocialOptions = ({
+const AuthOptions = ({
   t,
   onGoogleLogin,
-  onSSOLogin,
+  onSelectEmail,
+  onSelectPhone,
 }: {
   t: LoginFormProps["t"];
   onGoogleLogin?: () => void;
-  onSSOLogin?: () => void;
+  onSelectEmail?: () => void;
+  onSelectPhone?: () => void;
 }) => (
   <div>
     <BubbleButton className="flex w-full justify-center py-3 mb-3" onClick={onGoogleLogin}>
       <FcGoogle className="text-xl" />
       {t.signInWithGoogle}
     </BubbleButton>
-    <BubbleButton className="flex w-full justify-center py-3" onClick={onSSOLogin}>
-      {t.signInWithSSO}
-    </BubbleButton>
+    <div className="grid grid-cols-2 gap-3">
+      <BubbleButton className="flex w-full justify-center py-3" onClick={onSelectEmail}>
+        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+          />
+        </svg>
+        {t.signInWithEmail}
+      </BubbleButton>
+      <BubbleButton className="flex w-full justify-center py-3" onClick={onSelectPhone}>
+        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"
+          />
+        </svg>
+        {t.signInWithPhone}
+      </BubbleButton>
+    </div>
   </div>
 );
 

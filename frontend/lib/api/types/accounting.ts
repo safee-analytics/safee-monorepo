@@ -734,43 +734,10 @@ export interface components {
       /** Format: double */
       priority?: number;
     };
-    /** @enum {string} */
-    Locale: "en" | "ar";
-    UserProfileResponse: {
-      id: string;
-      email: string;
-      name?: string | null;
-      preferredLocale: components["schemas"]["Locale"];
-      activeOrganizationId?: string | null;
-    };
-    UpdateProfileRequest: {
-      name?: string;
-      preferredLocale?: components["schemas"]["Locale"];
-    };
-    UpdateLocaleRequest: {
-      locale: components["schemas"]["Locale"];
-    };
-    NASConfig: {
-      /** @enum {string} */
-      type: "smb" | "nfs" | "webdav" | "local";
-      host: string;
-      shareName: string;
-      username: string;
-      password: string;
-      domain?: string;
-      mountPoint?: string;
-      /** Format: double */
-      port?: number;
-    };
-    StorageInfo: {
-      totalSpace: string;
-      usedSpace: string;
-      availableSpace: string;
-      /** Format: double */
-      usagePercentage: number;
-    };
     /** @description Construct a type with a set of properties K of type T */
-    "Record_string.unknown_": Record<string, unknown>;
+    "Record_string.unknown_": {
+      [key: string]: unknown;
+    };
     FileMetadata: {
       id: string;
       name: string;
@@ -804,6 +771,98 @@ export interface components {
       name: string;
       parentId?: string;
     };
+    /** @enum {string} */
+    Locale: "en" | "ar";
+    UserProfileResponse: {
+      id: string;
+      email: string;
+      name?: string | null;
+      image?: string | null;
+      preferredLocale: components["schemas"]["Locale"];
+      activeOrganizationId?: string | null;
+    };
+    UpdateProfileRequest: {
+      name?: string;
+      preferredLocale?: components["schemas"]["Locale"];
+    };
+    UpdateLocaleRequest: {
+      locale: components["schemas"]["Locale"];
+    };
+    SubscriptionPlanResponse: {
+      id: string;
+      name: string;
+      slug: string;
+      pricePerSeat: string;
+      /** Format: double */
+      maxSeats: number | null;
+      billingInterval: string;
+      features: components["schemas"]["Record_string.unknown_"] | null;
+    };
+    CreateSubscriptionResponse: {
+      subscriptionId: string;
+      planId: string;
+      /** Format: double */
+      seats: number;
+      status: string;
+    };
+    CreateSubscriptionRequest: {
+      planId: string;
+      /** Format: double */
+      seats: number;
+    };
+    CurrentSubscriptionResponse: {
+      hasSubscription: boolean;
+      status: string | null;
+      plan: {
+        /** Format: double */
+        maxSeats: number | null;
+        pricePerSeat: string;
+        slug: string;
+        name: string;
+        id: string;
+      } | null;
+      seats: {
+        unlimited: boolean;
+        /** Format: double */
+        available: number;
+        /** Format: double */
+        used: number;
+        /** Format: double */
+        purchased: number;
+      } | null;
+      isGrandfathered?: boolean;
+    };
+    UpdateSubscriptionResponse: {
+      subscriptionId: string;
+      planId: string;
+      /** Format: double */
+      seats: number;
+      status: string;
+    };
+    UpdateSubscriptionRequest: {
+      planId?: string;
+      /** Format: double */
+      seats?: number;
+    };
+    NASConfig: {
+      /** @enum {string} */
+      type: "smb" | "nfs" | "webdav" | "local";
+      host: string;
+      shareName: string;
+      username: string;
+      password: string;
+      domain?: string;
+      mountPoint?: string;
+      /** Format: double */
+      port?: number;
+    };
+    StorageInfo: {
+      totalSpace: string;
+      usedSpace: string;
+      availableSpace: string;
+      /** Format: double */
+      usagePercentage: number;
+    };
     SecuritySettings: {
       twoFactorEnabled: boolean;
       sessionTimeout: string;
@@ -818,7 +877,7 @@ export interface components {
     AuditReportResponse: {
       id: string;
       caseId: string;
-      templateId?: string;
+      templateId?: string | null;
       title: string;
       status: components["schemas"]["ReportStatus"];
       generatedData?: components["schemas"]["Record_string.unknown_"] | null;
@@ -830,9 +889,9 @@ export interface components {
           start: string;
         };
       } | null;
-      filePath?: string;
+      filePath?: string | null;
       /** Format: date-time */
-      generatedAt?: string;
+      generatedAt?: string | null;
       generatedBy: string;
       /** Format: date-time */
       createdAt: string;
@@ -843,11 +902,11 @@ export interface components {
       caseId: string;
       templateId: string;
       title: string;
-      titleAr?: string;
+      titleAr?: string | null;
       settings?: {
         customizations?: components["schemas"]["Record_string.unknown_"];
-        /** @enum {string} */
-        locale?: "en" | "ar";
+        /** @enum {string|null} */
+        locale?: "en" | "ar" | null;
         includeSections?: string[];
         dateRange?: {
           end: string;
@@ -856,12 +915,20 @@ export interface components {
       };
     };
     UpdateAuditReportRequest: {
-      title?: string;
-      status?: components["schemas"]["ReportStatus"];
-      generatedData?: components["schemas"]["Record_string.unknown_"];
-      filePath?: string;
+      title?: string | null;
+      status?: components["schemas"]["ReportStatus"] | null;
+      generatedData?: components["schemas"]["Record_string.unknown_"] | null;
+      settings?: {
+        customizations?: components["schemas"]["Record_string.unknown_"];
+        includeSections?: string[];
+        dateRange?: {
+          end: string;
+          start: string;
+        };
+      } | null;
+      filePath?: string | null;
       /** Format: date-time */
-      generatedAt?: string;
+      generatedAt?: string | null;
     };
     /** @enum {string} */
     AuditType:
@@ -876,10 +943,10 @@ export interface components {
     AuditReportTemplateResponse: {
       id: string;
       name: string;
-      nameAr?: string;
-      auditType?: components["schemas"]["AuditType"];
-      description?: string;
-      descriptionAr?: string;
+      nameAr?: string | null;
+      auditType?: components["schemas"]["AuditType"] | null;
+      description?: string | null;
+      descriptionAr?: string | null;
       templateStructure: {
         metadata?: components["schemas"]["Record_string.unknown_"];
         styles?: components["schemas"]["Record_string.unknown_"];
@@ -895,7 +962,7 @@ export interface components {
       };
       isDefault: boolean;
       isActive: boolean;
-      organizationId?: string;
+      organizationId?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -903,10 +970,10 @@ export interface components {
     };
     CreateAuditReportTemplateRequest: {
       name: string;
-      nameAr?: string;
-      auditType?: components["schemas"]["AuditType"];
-      description?: string;
-      descriptionAr?: string;
+      nameAr?: string | null;
+      auditType?: components["schemas"]["AuditType"] | null;
+      description?: string | null;
+      descriptionAr?: string | null;
       templateStructure: {
         metadata?: components["schemas"]["Record_string.unknown_"];
         styles?: components["schemas"]["Record_string.unknown_"];
@@ -920,11 +987,46 @@ export interface components {
           id: string;
         }[];
       };
-      isDefault?: boolean;
-      isActive?: boolean;
+      isDefault?: boolean | null;
+      isActive?: boolean | null;
     };
     SlugResponse: {
       nextSlug: string;
+    };
+    OrganizationResponse: {
+      id: string;
+      name: string;
+      slug: string;
+      logo?: string | null;
+      industry?: string | null;
+      size?: string | null;
+      country?: string | null;
+      createdAt: string;
+      updatedAt: string;
+    };
+    OnboardingStatus: {
+      /** @enum {string} */
+      currentStep: "select-plan" | "create-organization" | "completed";
+      hasSubscription: boolean;
+      hasOrganization: boolean;
+      subscription: {
+        isFree: boolean;
+        /** Format: double */
+        seats: number;
+        planSlug: string;
+        planName: string;
+      } | null;
+      nextAction: {
+        ctaRoute: string;
+        ctaText: string;
+        description: string;
+        title: string;
+      };
+    };
+    UpgradePlanRequest: {
+      planId: string;
+      /** Format: double */
+      seats: number;
     };
     OdooWebhookPayload: {
       /** @enum {string} */
@@ -1021,7 +1123,7 @@ export interface components {
     };
     ProcessOcrRequest: {
       documentId: string;
-      language?: string;
+      language?: string | null;
     };
     DocumentSearchResult: {
       id: string;
@@ -1059,7 +1161,11 @@ export interface components {
       /** Format: double */
       port?: number;
     };
-    NASStatusResponse: Record<string, components["schemas"]["NASConnectionStatus"]>;
+    /** @description Construct a type with a set of properties K of type T */
+    "Record_string.NASConnectionStatus_": {
+      [key: string]: components["schemas"]["NASConnectionStatus"];
+    };
+    NASStatusResponse: components["schemas"]["Record_string.NASConnectionStatus_"];
     Integration: {
       id: string;
       name: string;
@@ -1079,109 +1185,109 @@ export interface components {
     EmployeeDbResponse: {
       id: string;
       organizationId: string;
-      userId?: string;
+      userId?: string | null;
       /** Format: double */
-      odooEmployeeId?: number;
+      odooEmployeeId?: number | null;
       name: string;
-      email?: string;
-      phone?: string;
-      mobile?: string;
-      workEmail?: string;
-      workPhone?: string;
-      workLocation?: string;
-      jobTitle?: string;
-      departmentId?: string;
-      managerId?: string;
-      employeeType?: components["schemas"]["EmployeeType"];
-      gender?: components["schemas"]["Gender"];
-      maritalStatus?: components["schemas"]["MaritalStatus"];
-      birthday?: string;
-      placeOfBirth?: string;
-      countryOfBirth?: string;
-      nationality?: string;
-      identificationId?: string;
-      passportId?: string;
-      bankAccountNumber?: string;
-      bankName?: string;
-      bankIban?: string;
-      emergencyContact?: string;
-      emergencyPhone?: string;
-      emergencyRelation?: string;
-      hireDate?: string;
-      terminationDate?: string;
-      photoUrl?: string;
-      notes?: string;
+      email?: string | null;
+      phone?: string | null;
+      mobile?: string | null;
+      workEmail?: string | null;
+      workPhone?: string | null;
+      workLocation?: string | null;
+      jobTitle?: string | null;
+      departmentId?: string | null;
+      managerId?: string | null;
+      employeeType?: components["schemas"]["EmployeeType"] | null;
+      gender?: components["schemas"]["Gender"] | null;
+      maritalStatus?: components["schemas"]["MaritalStatus"] | null;
+      birthday?: string | null;
+      placeOfBirth?: string | null;
+      countryOfBirth?: string | null;
+      nationality?: string | null;
+      identificationId?: string | null;
+      passportId?: string | null;
+      bankAccountNumber?: string | null;
+      bankName?: string | null;
+      bankIban?: string | null;
+      emergencyContact?: string | null;
+      emergencyPhone?: string | null;
+      emergencyRelation?: string | null;
+      hireDate?: string | null;
+      terminationDate?: string | null;
+      photoUrl?: string | null;
+      notes?: string | null;
       active: boolean;
-      lastSyncedAt?: string;
+      lastSyncedAt?: string | null;
       createdAt: string;
       updatedAt: string;
     };
     CreateEmployeeRequest: {
-      userId?: string;
+      userId?: string | null;
       /** Format: double */
-      odooEmployeeId?: number;
+      odooEmployeeId?: number | null;
       name: string;
-      email?: string;
-      phone?: string;
-      mobile?: string;
-      workEmail?: string;
-      workPhone?: string;
-      workLocation?: string;
-      jobTitle?: string;
-      departmentId?: string;
-      managerId?: string;
-      employeeType?: components["schemas"]["EmployeeType"];
-      gender?: components["schemas"]["Gender"];
-      maritalStatus?: components["schemas"]["MaritalStatus"];
-      birthday?: string;
-      placeOfBirth?: string;
-      countryOfBirth?: string;
-      nationality?: string;
-      identificationId?: string;
-      passportId?: string;
-      bankAccountNumber?: string;
-      bankName?: string;
-      bankIban?: string;
-      emergencyContact?: string;
-      emergencyPhone?: string;
-      emergencyRelation?: string;
-      hireDate?: string;
-      terminationDate?: string;
-      photoUrl?: string;
-      notes?: string;
-      active?: boolean;
+      email?: string | null;
+      phone?: string | null;
+      mobile?: string | null;
+      workEmail?: string | null;
+      workPhone?: string | null;
+      workLocation?: string | null;
+      jobTitle?: string | null;
+      departmentId?: string | null;
+      managerId?: string | null;
+      employeeType?: components["schemas"]["EmployeeType"] | null;
+      gender?: components["schemas"]["Gender"] | null;
+      maritalStatus?: components["schemas"]["MaritalStatus"] | null;
+      birthday?: string | null;
+      placeOfBirth?: string | null;
+      countryOfBirth?: string | null;
+      nationality?: string | null;
+      identificationId?: string | null;
+      passportId?: string | null;
+      bankAccountNumber?: string | null;
+      bankName?: string | null;
+      bankIban?: string | null;
+      emergencyContact?: string | null;
+      emergencyPhone?: string | null;
+      emergencyRelation?: string | null;
+      hireDate?: string | null;
+      terminationDate?: string | null;
+      photoUrl?: string | null;
+      notes?: string | null;
+      active?: boolean | null;
     };
     UpdateEmployeeRequest: {
-      name?: string;
-      email?: string;
-      phone?: string;
-      mobile?: string;
-      workEmail?: string;
-      workPhone?: string;
-      workLocation?: string;
-      jobTitle?: string;
-      departmentId?: string;
-      managerId?: string;
-      employeeType?: components["schemas"]["EmployeeType"];
-      gender?: components["schemas"]["Gender"];
-      maritalStatus?: components["schemas"]["MaritalStatus"];
-      birthday?: string;
-      placeOfBirth?: string;
-      countryOfBirth?: string;
-      nationality?: string;
-      identificationId?: string;
-      passportId?: string;
-      bankAccountNumber?: string;
-      bankName?: string;
-      bankIban?: string;
-      emergencyContact?: string;
-      emergencyPhone?: string;
-      emergencyRelation?: string;
-      hireDate?: string;
-      terminationDate?: string;
-      photoUrl?: string;
-      notes?: string;
-      active?: boolean;
+      name?: string | null;
+      email?: string | null;
+      phone?: string | null;
+      mobile?: string | null;
+      workEmail?: string | null;
+      workPhone?: string | null;
+      workLocation?: string | null;
+      jobTitle?: string | null;
+      departmentId?: string | null;
+      managerId?: string | null;
+      employeeType?: components["schemas"]["EmployeeType"] | null;
+      gender?: components["schemas"]["Gender"] | null;
+      maritalStatus?: components["schemas"]["MaritalStatus"] | null;
+      birthday?: string | null;
+      placeOfBirth?: string | null;
+      countryOfBirth?: string | null;
+      nationality?: string | null;
+      identificationId?: string | null;
+      passportId?: string | null;
+      bankAccountNumber?: string | null;
+      bankName?: string | null;
+      bankIban?: string | null;
+      emergencyContact?: string | null;
+      emergencyPhone?: string | null;
+      emergencyRelation?: string | null;
+      hireDate?: string | null;
+      terminationDate?: string | null;
+      photoUrl?: string | null;
+      notes?: string | null;
+      active?: boolean | null;
     };
     SyncEmployeeFromOdooRequest: {
       /** Format: double */
@@ -1200,37 +1306,37 @@ export interface components {
       id: string;
       organizationId: string;
       /** Format: double */
-      odooDepartmentId?: number;
+      odooDepartmentId?: number | null;
       name: string;
-      code?: string;
-      parentId?: string;
-      managerId?: string;
+      code?: string | null;
+      parentId?: string | null;
+      managerId?: string | null;
       /** Format: double */
-      color?: number;
-      note?: string;
-      lastSyncedAt?: string;
+      color?: number | null;
+      note?: string | null;
+      lastSyncedAt?: string | null;
       createdAt: string;
       updatedAt: string;
     };
     CreateDepartmentRequest: {
       /** Format: double */
-      odooDepartmentId?: number;
+      odooDepartmentId?: number | null;
       name: string;
-      code?: string;
-      parentId?: string;
-      managerId?: string;
+      code?: string | null;
+      parentId?: string | null;
+      managerId?: string | null;
       /** Format: double */
-      color?: number;
-      note?: string;
+      color?: number | null;
+      note?: string | null;
     };
     UpdateDepartmentRequest: {
-      name?: string;
-      code?: string;
-      parentId?: string;
-      managerId?: string;
+      name?: string | null;
+      code?: string | null;
+      parentId?: string | null;
+      managerId?: string | null;
       /** Format: double */
-      color?: number;
-      note?: string;
+      color?: number | null;
+      note?: string | null;
     };
     SyncDepartmentFromOdooRequest: {
       /** Format: double */
@@ -1772,14 +1878,14 @@ export interface components {
       id: string;
       organizationId: string;
       name: string;
-      description?: string;
+      description?: string | null;
       type: components["schemas"]["ConnectorType"];
       isActive: boolean;
       tags: string[];
       metadata: components["schemas"]["Record_string.unknown_"];
-      lastConnectionTest?: string;
-      lastConnectionStatus?: string;
-      lastConnectionError?: string;
+      lastConnectionTest?: string | null;
+      lastConnectionStatus?: string | null;
+      lastConnectionError?: string | null;
       createdAt: string;
       updatedAt: string;
     };
@@ -1794,22 +1900,24 @@ export interface components {
       url?: string;
       apiKey?: string;
       authToken?: string;
-    } & Record<string, unknown>;
+    } & {
+      [key: string]: unknown;
+    };
     CreateConnectorRequest: {
       name: string;
-      description?: string;
+      description?: string | null;
       type: components["schemas"]["ConnectorType"];
       config: components["schemas"]["ConnectorConfig"];
-      tags?: string[];
-      metadata?: components["schemas"]["Record_string.unknown_"];
+      tags?: string[] | null;
+      metadata?: components["schemas"]["Record_string.unknown_"] | null;
     };
     UpdateConnectorRequest: {
-      name?: string;
-      description?: string;
-      config?: components["schemas"]["ConnectorConfig"];
-      tags?: string[];
-      metadata?: components["schemas"]["Record_string.unknown_"];
-      isActive?: boolean;
+      name?: string | null;
+      description?: string | null;
+      config?: components["schemas"]["ConnectorConfig"] | null;
+      tags?: string[] | null;
+      metadata?: components["schemas"]["Record_string.unknown_"] | null;
+      isActive?: boolean | null;
     };
     QueryResponse: {
       rows: unknown[];
@@ -1820,7 +1928,7 @@ export interface components {
     };
     QueryRequest: {
       sql: string;
-      params?: unknown[];
+      params?: unknown[] | null;
     };
     SchemaResponse: {
       tables: {
@@ -1845,8 +1953,8 @@ export interface components {
     FieldMapping: {
       sourceColumn: string;
       targetField: string;
-      /** @enum {string} */
-      transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean";
+      /** @enum {string|null} */
+      transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean" | null;
       defaultValue?: unknown;
     };
     SuggestMappingsRequest: {
@@ -1872,32 +1980,36 @@ export interface components {
       | "plan_created"
       | "report_generated";
     /** @description Construct a type with a set of properties K of type T */
-    "Record_string.boolean_": Record<string, boolean>;
+    "Record_string.boolean_": {
+      [key: string]: boolean;
+    };
     CaseActivityResponse: {
       id: string;
       caseId: string;
       activityType: components["schemas"]["ActivityType"];
-      userId?: string;
+      userId?: string | null;
       user?: {
         email: string;
         name: string | null;
-        id: string;
+        id: string | null;
       };
       metadata?:
         | ({
-            reportId?: string;
-            planId?: string;
-            scopeId?: string;
-            commentId?: string;
-            assignedUserName?: string;
-            assignedUserId?: string;
-            userName?: string;
-            documentId?: string;
-            documentName?: string;
-            newValue?: string;
-            oldValue?: string;
-            caseName?: string;
-          } & Record<string, unknown>)
+            reportId?: string | null;
+            planId?: string | null;
+            scopeId?: string | null;
+            commentId?: string | null;
+            assignedUserName?: string | null;
+            assignedUserId?: string | null;
+            userName?: string | null;
+            documentId?: string | null;
+            documentName?: string | null;
+            newValue?: string | null;
+            oldValue?: string | null;
+            caseName?: string | null;
+          } & {
+            [key: string]: unknown;
+          })
         | null;
       isRead?: components["schemas"]["Record_string.boolean_"] | null;
       /** Format: date-time */
@@ -1907,19 +2019,21 @@ export interface components {
       caseId: string;
       activityType: components["schemas"]["ActivityType"];
       metadata?: {
-        reportId?: string;
-        planId?: string;
-        scopeId?: string;
-        commentId?: string;
-        assignedUserName?: string;
-        assignedUserId?: string;
-        userName?: string;
-        documentId?: string;
-        documentName?: string;
-        newValue?: string;
-        oldValue?: string;
-        caseName?: string;
-      } & Record<string, unknown>;
+        reportId?: string | null;
+        planId?: string | null;
+        scopeId?: string | null;
+        commentId?: string | null;
+        assignedUserName?: string | null;
+        assignedUserId?: string | null;
+        userName?: string | null;
+        documentId?: string | null;
+        documentName?: string | null;
+        newValue?: string | null;
+        oldValue?: string | null;
+        caseName?: string | null;
+      } & {
+        [key: string]: unknown;
+      };
     };
     MarkAsReadRequest: {
       activityIds: string[];
@@ -1931,7 +2045,7 @@ export interface components {
       user?: {
         email: string;
         name: string | null;
-        id: string;
+        id: string | null;
       };
       /** Format: date-time */
       lastSeenAt: string;
@@ -1953,8 +2067,8 @@ export interface components {
       auditType: components["schemas"]["AuditType"];
       status: components["schemas"]["CaseStatus"];
       priority: components["schemas"]["CasePriority"];
-      dueDate?: string;
-      completedDate?: string;
+      dueDate?: string | null;
+      completedDate?: string | null;
       createdBy: string;
       createdAt: string;
       updatedAt: string;
@@ -1962,19 +2076,19 @@ export interface components {
         user?: {
           email: string;
           name: string | null;
-          id: string;
+          id: string | null;
         };
         role: components["schemas"]["AssignmentRole"];
-        userId: string;
+        userId: string | null;
       }[];
     };
     CreateCaseRequest: {
-      caseNumber?: string;
+      caseNumber?: string | null;
       clientName: string;
       auditType: components["schemas"]["AuditType"];
-      status?: components["schemas"]["CaseStatus"];
-      priority?: components["schemas"]["CasePriority"];
-      dueDate?: string;
+      status?: components["schemas"]["CaseStatus"] | null;
+      priority?: components["schemas"]["CasePriority"] | null;
+      dueDate?: string | null;
     };
     /** @enum {string} */
     AuditCategory: "certification" | "financial" | "operational" | "compliance";
@@ -1998,11 +2112,11 @@ export interface components {
     };
     TemplateResponse: {
       id: string;
-      organizationId?: string;
+      organizationId?: string | null;
       name: string;
-      description?: string;
+      description?: string | null;
       auditType: components["schemas"]["AuditType"];
-      category?: components["schemas"]["AuditCategory"];
+      category?: components["schemas"]["AuditCategory"] | null;
       version: string;
       isActive: boolean;
       isPublic: boolean;
@@ -2012,48 +2126,48 @@ export interface components {
       updatedAt: string;
     };
     CreateTemplateRequest: {
-      organizationId?: string;
+      organizationId?: string | null;
       name: string;
-      description?: string;
+      description?: string | null;
       auditType: components["schemas"]["AuditType"];
-      category?: components["schemas"]["AuditCategory"];
+      category?: components["schemas"]["AuditCategory"] | null;
       version?: string;
       isActive?: boolean;
       isPublic?: boolean;
       structure: components["schemas"]["TemplateStructure"];
     };
     UpdateCaseRequest: {
-      caseNumber?: string;
-      clientName?: string;
-      auditType?: components["schemas"]["AuditType"];
-      status?: components["schemas"]["CaseStatus"];
-      priority?: components["schemas"]["CasePriority"];
-      dueDate?: string;
-      completedDate?: string;
+      caseNumber?: string | null;
+      clientName?: string | null;
+      auditType?: components["schemas"]["AuditType"] | null;
+      status?: components["schemas"]["CaseStatus"] | null;
+      priority?: components["schemas"]["CasePriority"] | null;
+      dueDate?: string | null;
+      completedDate?: string | null;
     };
     /** @enum {string} */
     AuditStatus: "draft" | "in-progress" | "under-review" | "completed" | "archived";
     ScopeResponse: {
       id: string;
       caseId: string;
-      templateId?: string;
+      templateId?: string | null;
       name: string;
-      description?: string;
+      description?: string | null;
       status: components["schemas"]["AuditStatus"];
       metadata: components["schemas"]["Record_string.unknown_"];
       createdBy: string;
-      completedBy?: string;
-      archivedBy?: string;
+      completedBy?: string | null;
+      archivedBy?: string | null;
       createdAt: string;
       updatedAt: string;
-      completedAt?: string;
-      archivedAt?: string;
+      completedAt?: string | null;
+      archivedAt?: string | null;
     };
     CreateScopeRequest: {
       name: string;
-      description?: string;
-      status?: components["schemas"]["AuditStatus"];
-      metadata?: components["schemas"]["Record_string.unknown_"];
+      description?: string | null;
+      status?: components["schemas"]["AuditStatus"] | null;
+      metadata?: components["schemas"]["Record_string.unknown_"] | null;
     };
     CreateScopeFromTemplateRequest: {
       templateId: string;
@@ -2065,7 +2179,7 @@ export interface components {
       id: string;
       scopeId: string;
       name: string;
-      description?: string;
+      description?: string | null;
       /** Format: double */
       sortOrder: number;
       isCompleted: boolean;
@@ -2078,27 +2192,27 @@ export interface components {
       sectionId: string;
       referenceNumber: string;
       title: string;
-      description?: string;
+      description?: string | null;
       requirements: components["schemas"]["Record_string.unknown_"];
       /** Format: double */
       sortOrder: number;
       isCompleted: boolean;
-      completedBy?: string;
-      completedAt?: string;
-      memo?: string;
+      completedBy?: string | null;
+      completedAt?: string | null;
+      memo?: string | null;
       fieldData: components["schemas"]["Record_string.unknown_"];
       canEdit: boolean;
       createdAt: string;
       updatedAt: string;
     };
     CompleteProcedureRequest: {
-      fieldData?: components["schemas"]["Record_string.unknown_"];
-      memo?: string;
+      fieldData?: components["schemas"]["Record_string.unknown_"] | null;
+      memo?: string | null;
     };
     DocumentResponse: {
       id: string;
       caseId: string;
-      procedureId?: string;
+      procedureId?: string | null;
       fileName: string;
       /** Format: double */
       fileSize: number;
@@ -2106,28 +2220,28 @@ export interface components {
       storagePath: string;
       /** Format: double */
       version: number;
-      parentDocumentId?: string;
+      parentDocumentId?: string | null;
       uploadedBy: string;
       uploadedAt: string;
       isDeleted: boolean;
     };
     CreateDocumentRequest: {
-      procedureId?: string;
+      procedureId?: string | null;
       fileName: string;
       /** Format: double */
       fileSize: number;
       fileType: string;
       storagePath: string;
       /** Format: double */
-      version?: number;
-      parentDocumentId?: string;
+      version?: number | null;
+      parentDocumentId?: string | null;
     };
     /** @enum {string} */
     NoteType: "observation" | "review_comment" | "general" | "memo";
     NoteResponse: {
       id: string;
       caseId: string;
-      procedureId?: string;
+      procedureId?: string | null;
       noteType: components["schemas"]["NoteType"];
       content: string;
       createdBy: string;
@@ -2136,7 +2250,7 @@ export interface components {
       isEdited: boolean;
     };
     CreateNoteRequest: {
-      procedureId?: string;
+      procedureId?: string | null;
       noteType: components["schemas"]["NoteType"];
       content: string;
     };
@@ -2164,8 +2278,8 @@ export interface components {
       entityType: components["schemas"]["CaseEntityType"];
       entityId: string;
       action: components["schemas"]["CaseAction"];
-      changesBefore?: components["schemas"]["Record_string.unknown_"];
-      changesAfter?: components["schemas"]["Record_string.unknown_"];
+      changesBefore?: components["schemas"]["Record_string.unknown_"] | null;
+      changesAfter?: components["schemas"]["Record_string.unknown_"] | null;
       changedBy: string;
       changedAt: string;
     };
@@ -2175,20 +2289,20 @@ export interface components {
     PlanStatus: "draft" | "in_review" | "approved" | "converted" | "archived";
     AuditPlanResponse: {
       id: string;
-      caseId?: string;
+      caseId?: string | null;
       planType: components["schemas"]["PlanType"];
       title: string;
-      clientName?: string;
-      auditType?: components["schemas"]["AuditType"];
+      clientName?: string | null;
+      auditType?: components["schemas"]["AuditType"] | null;
       /** Format: double */
-      auditYear?: number;
-      startDate?: string;
-      targetCompletion?: string;
+      auditYear?: number | null;
+      startDate?: string | null;
+      targetCompletion?: string | null;
       objectives?:
         | {
             priority?: string;
             description: string;
-            id: string;
+            id: string | null;
           }[]
         | null;
       businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
@@ -2199,31 +2313,31 @@ export interface components {
             hours?: number;
             role: string;
             name: string;
-            userId: string;
+            userId: string | null;
           }[]
         | null;
       phaseBreakdown?:
         | {
-            endDate?: string;
-            startDate?: string;
-            description?: string;
+            endDate?: string | null;
+            startDate?: string | null;
+            description?: string | null;
             /** Format: double */
             duration: number;
-            name: string;
+            name: string | null;
           }[]
         | null;
-      totalBudget?: string;
+      totalBudget?: string | null;
       /** Format: double */
-      totalHours?: number;
-      materialityThreshold?: string;
+      totalHours?: number | null;
+      materialityThreshold?: string | null;
       riskAssessment?: {
         /** Format: double */
-        score?: number;
-        overallRisk?: string;
+        score?: number | null;
+        overallRisk?: string | null;
         risks?: {
           message: string;
           severity: string;
-          type: string;
+          type: string | null;
         }[];
       } | null;
       status: components["schemas"]["PlanStatus"];
@@ -2235,111 +2349,111 @@ export interface components {
       updatedAt: string;
     };
     CreateAuditPlanRequest: {
-      caseId?: string;
-      planType?: components["schemas"]["PlanType"];
+      caseId?: string | null;
+      planType?: components["schemas"]["PlanType"] | null;
       title: string;
-      clientName?: string;
-      auditType?: components["schemas"]["AuditType"];
+      clientName?: string | null;
+      auditType?: components["schemas"]["AuditType"] | null;
       /** Format: double */
-      auditYear?: number;
-      startDate?: string;
-      targetCompletion?: string;
+      auditYear?: number | null;
+      startDate?: string | null;
+      targetCompletion?: string | null;
       objectives?: {
         priority?: string;
         description: string;
-        id: string;
+        id: string | null;
       }[];
-      businessUnits?: components["schemas"]["Record_string.boolean_"];
-      financialAreas?: components["schemas"]["Record_string.boolean_"];
+      businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+      financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
       teamMembers?: {
         /** Format: double */
         hours?: number;
         role: string;
         name: string;
-        userId: string;
+        userId: string | null;
       }[];
       phaseBreakdown?: {
-        endDate?: string;
-        startDate?: string;
-        description?: string;
+        endDate?: string | null;
+        startDate?: string | null;
+        description?: string | null;
         /** Format: double */
         duration: number;
-        name: string;
+        name: string | null;
       }[];
-      totalBudget?: string;
+      totalBudget?: string | null;
       /** Format: double */
-      totalHours?: number;
-      materialityThreshold?: string;
+      totalHours?: number | null;
+      materialityThreshold?: string | null;
       riskAssessment?: {
         /** Format: double */
-        score?: number;
-        overallRisk?: string;
+        score?: number | null;
+        overallRisk?: string | null;
         risks?: {
           message: string;
           severity: string;
-          type: string;
+          type: string | null;
         }[];
       };
-      status?: components["schemas"]["PlanStatus"];
+      status?: components["schemas"]["PlanStatus"] | null;
     };
     UpdateAuditPlanRequest: {
-      caseId?: string;
-      planType?: components["schemas"]["PlanType"];
-      title?: string;
-      clientName?: string;
-      auditType?: components["schemas"]["AuditType"];
+      caseId?: string | null;
+      planType?: components["schemas"]["PlanType"] | null;
+      title?: string | null;
+      clientName?: string | null;
+      auditType?: components["schemas"]["AuditType"] | null;
       /** Format: double */
-      auditYear?: number;
-      startDate?: string;
-      targetCompletion?: string;
+      auditYear?: number | null;
+      startDate?: string | null;
+      targetCompletion?: string | null;
       objectives?: {
         priority?: string;
         description: string;
-        id: string;
+        id: string | null;
       }[];
-      businessUnits?: components["schemas"]["Record_string.boolean_"];
-      financialAreas?: components["schemas"]["Record_string.boolean_"];
+      businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+      financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
       teamMembers?: {
         /** Format: double */
         hours?: number;
         role: string;
         name: string;
-        userId: string;
+        userId: string | null;
       }[];
       phaseBreakdown?: {
-        endDate?: string;
-        startDate?: string;
-        description?: string;
+        endDate?: string | null;
+        startDate?: string | null;
+        description?: string | null;
         /** Format: double */
         duration: number;
-        name: string;
+        name: string | null;
       }[];
-      totalBudget?: string;
+      totalBudget?: string | null;
       /** Format: double */
-      totalHours?: number;
-      materialityThreshold?: string;
+      totalHours?: number | null;
+      materialityThreshold?: string | null;
       riskAssessment?: {
         /** Format: double */
-        score?: number;
-        overallRisk?: string;
+        score?: number | null;
+        overallRisk?: string | null;
         risks?: {
           message: string;
           severity: string;
-          type: string;
+          type: string | null;
         }[];
       };
-      status?: components["schemas"]["PlanStatus"];
+      status?: components["schemas"]["PlanStatus"] | null;
     };
     AuditPlanTemplateResponse: {
       id: string;
       name: string;
-      auditType?: components["schemas"]["AuditType"];
-      description?: string;
+      auditType?: components["schemas"]["AuditType"] | null;
+      description?: string | null;
       defaultObjectives?:
         | {
             priority?: string;
             description: string;
-            id: string;
+            id: string | null;
           }[]
         | null;
       defaultScope?: components["schemas"]["Record_string.unknown_"] | null;
@@ -2348,19 +2462,19 @@ export interface components {
             description?: string;
             /** Format: double */
             duration: number;
-            name: string;
+            name: string | null;
           }[]
         | null;
       defaultBusinessUnits?: components["schemas"]["Record_string.boolean_"] | null;
       defaultFinancialAreas?: components["schemas"]["Record_string.boolean_"] | null;
       /** Format: double */
-      estimatedDuration?: number;
+      estimatedDuration?: number | null;
       /** Format: double */
-      estimatedHours?: number;
-      estimatedBudget?: string;
+      estimatedHours?: number | null;
+      estimatedBudget?: string | null;
       isDefault: boolean;
       isActive: boolean;
-      organizationId?: string;
+      organizationId?: string | null;
       /** Format: date-time */
       createdAt: string;
       /** Format: date-time */
@@ -2368,37 +2482,37 @@ export interface components {
     };
     CreateAuditPlanTemplateRequest: {
       name: string;
-      auditType?: components["schemas"]["AuditType"];
-      description?: string;
+      auditType?: components["schemas"]["AuditType"] | null;
+      description?: string | null;
       defaultObjectives?: {
         priority?: string;
         description: string;
-        id: string;
+        id?: string | null;
       }[];
-      defaultScope?: components["schemas"]["Record_string.unknown_"];
+      defaultScope?: components["schemas"]["Record_string.unknown_"] | null;
       defaultPhases?: {
         description?: string;
         /** Format: double */
         duration: number;
-        name: string;
+        name: string | null;
       }[];
-      defaultBusinessUnits?: components["schemas"]["Record_string.boolean_"];
-      defaultFinancialAreas?: components["schemas"]["Record_string.boolean_"];
+      defaultBusinessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+      defaultFinancialAreas?: components["schemas"]["Record_string.boolean_"] | null;
       /** Format: double */
-      estimatedDuration?: number;
+      estimatedDuration?: number | null;
       /** Format: double */
-      estimatedHours?: number;
-      estimatedBudget?: string;
-      isDefault?: boolean;
-      isActive?: boolean;
+      estimatedHours?: number | null;
+      estimatedBudget?: string | null;
+      isDefault?: boolean | null;
+      isActive?: boolean | null;
     };
     CreatePlanFromTemplateRequest: {
       templateId: string;
       title: string;
-      clientName?: string;
+      clientName?: string | null;
       /** Format: double */
-      auditYear?: number;
-      startDate?: string;
+      auditYear?: number | null;
+      startDate?: string | null;
     };
     /** @enum {string} */
     EntityType: "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
@@ -2461,7 +2575,9 @@ export interface components {
       amount?: number;
       status?: string;
       createdBy?: string;
-    } & Record<string, unknown>;
+    } & {
+      [key: string]: unknown;
+    };
     SubmitForApprovalRequest: {
       entityType: string;
       entityId: string;
@@ -2736,7 +2852,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             /** Format: double */
@@ -2766,7 +2884,9 @@ export interface operations {
     responses: {
       /** @description Invoice created successfully */
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["Invoice"];
         };
@@ -2786,7 +2906,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["Invoice"];
         };
@@ -2806,7 +2928,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             success: boolean;
@@ -2828,7 +2952,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             success: boolean;
@@ -2859,7 +2985,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             /** Format: double */
@@ -2882,7 +3010,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": string;
         };
@@ -2906,7 +3036,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             /** Format: double */
@@ -2936,7 +3068,9 @@ export interface operations {
     responses: {
       /** @description Bill created successfully */
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["Invoice"];
         };
@@ -2956,7 +3090,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["Invoice"];
         };
@@ -2976,7 +3112,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             success: boolean;
@@ -2998,7 +3136,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             success: boolean;
@@ -3029,7 +3169,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             /** Format: double */
@@ -3052,7 +3194,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": string;
         };
@@ -3072,7 +3216,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             parentId?: string;
@@ -3098,7 +3244,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             type: string;
@@ -3126,7 +3274,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["PaymentResponse"][];
         };
@@ -3148,7 +3298,9 @@ export interface operations {
     responses: {
       /** @description Payment created successfully */
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             /** Format: double */
@@ -3171,7 +3323,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             success: boolean;
@@ -3194,7 +3348,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["PartnerResponse"][];
         };
@@ -3214,7 +3370,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["JournalResponse"][];
         };
@@ -3234,7 +3392,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["TaxResponse"][];
         };
@@ -3256,7 +3416,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["AccountBalanceReportResponse"][];
         };
@@ -3278,7 +3440,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["PartnerLedgerReportResponse"] | null;
         };
@@ -3299,7 +3463,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["ProfitLossResponse"];
         };
@@ -3322,7 +3488,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": components["schemas"]["GLEntryResponse"][];
         };
@@ -3340,7 +3508,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             note?: string;
@@ -3365,7 +3535,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             /** Format: double */
@@ -3401,7 +3573,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             /** Format: double */
@@ -3440,7 +3614,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             state: string;
@@ -3475,7 +3651,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             isReconciled: boolean;
@@ -3504,7 +3682,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             /** Format: double */
@@ -3538,7 +3718,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             message?: string;
@@ -3561,7 +3743,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             active: boolean;
@@ -3593,7 +3777,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             /** Format: double */
@@ -3634,7 +3820,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             /** Format: double */
@@ -3663,7 +3851,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             failed: {
@@ -3694,7 +3884,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             failed: {
@@ -3725,7 +3917,9 @@ export interface operations {
     responses: {
       /** @description Invoices created */
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             failed: {
@@ -3774,7 +3968,9 @@ export interface operations {
     responses: {
       /** @description Payments created */
       201: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             failed: {
@@ -3810,7 +4006,9 @@ export interface operations {
     responses: {
       /** @description Ok */
       200: {
-        headers: Record<string, unknown>;
+        headers: {
+          [name: string]: unknown;
+        };
         content: {
           "application/json": {
             failed: {

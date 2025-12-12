@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useForgotPassword } from "@/lib/api/hooks/auth";
+import { authClient } from "@/lib/auth/client";
 import { useOrgStore } from "@/stores/useOrgStore";
+import { useForgotPassword } from "@/lib/api/hooks/auth";
 
 const translations = {
   ar: {

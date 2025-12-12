@@ -28,7 +28,9 @@
     "generate-migration": "npx drizzle-kit generate",
     "drizzle:generate": "npx drizzle-kit generate",
     "drizzle:studio": "npx drizzle-kit studio",
-    "db:reset": "tsx -r dotenv/config src/private/reset-db.ts"
+    "db:reset": "tsx -r dotenv/config src/private/reset-db.ts",
+    "seed:subscription-plans": "tsx -r dotenv/config src/private/seedSubscriptionPlans.ts",
+    "seed:free-subscriptions": "tsx -r dotenv/config src/private/createFreeSubscriptionsForExistingUsers.ts"
   },
   "keywords": [
     "drizzle",

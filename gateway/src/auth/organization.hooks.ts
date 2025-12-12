@@ -4,8 +4,10 @@ import { OdooDatabaseService } from "../server/services/odoo/database.service.js
 import { OdooUserProvisioningService } from "../server/services/odoo/user-provisioning.service.js";
 import { configureOdooWebhooks } from "../server/services/odoo/webhookConfig.service.js";
 import { canManageRole } from "./accessControl.js";
-import { connect, createEmployee } from "@safee/database";
+import { connect, createEmployee, schema } from "@safee/database";
 import { getServerContext } from "../server/serverContext.js";
+import { eq } from "drizzle-orm";
+import { SubscriptionService } from "../server/services/subscription.service.js";
 
 const { drizzle } = connect("better-auth");
 
@@ -22,6 +24,32 @@ function getServices() {
 }
 
 export const organizationHooks: OrganizationOptions["organizationHooks"] = {
+  beforeCreateOrganization: async ({ organization, user }) => {
+    logger.info({ userId: user.id }, "Validating organization creation - checking subscription");
+
+    const subscriptionService = new SubscriptionService({ drizzle, logger });
+
+    try {
+      // Check if user has an active subscription
+      const hasSubscription = await subscriptionService.hasActiveSubscription(user.id);
+
+      if (!hasSubscription) {
+        logger.warn({ userId: user.id }, "User attempted to create organization without active subscription");
+        throw new Error("Please select a subscription plan to create an organization");
+      }
+
+      logger.info({ userId: user.id }, "Subscription validation passed for organization creation");
+
+      return { data: organization };
+    } catch (err) {
+      logger.error(
+        { error: err, userId: user.id },
+        "Failed to validate subscription for organization creation",
+      );
+      throw err;
+    }
+  },
+
   beforeUpdateMemberRole: async ({ member: targetMember, newRole, user, organization }) => {
     logger.info(
       {
@@ -147,15 +175,80 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
       throw new Error("You do not have permission to invite members with this role");
     }
 
-    logger.info({ invitedRole }, "Invitation validation passed");
+    // Check seat availability
+    const subscriptionService = new SubscriptionService({ drizzle, logger });
 
-    return { data: invitation };
+    try {
+      const canInvite = await subscriptionService.canInviteMember(organization.id);
+
+      if (!canInvite) {
+        const seatUsage = await subscriptionService.getSeatUsage(organization.id);
+        logger.warn(
+          {
+            organizationId: organization.id,
+            seatsUsed: seatUsage.used,
+            seatsPurchased: seatUsage.purchased,
+          },
+          "Organization has no available seats for new member",
+        );
+        throw new Error(
+          `Cannot invite member. Organization has used all ${seatUsage.purchased} seats. Please upgrade your subscription to add more members.`,
+        );
+      }
+
+      logger.info({ invitedRole, organizationId: organization.id }, "Invitation validation passed");
+
+      return { data: invitation };
+    } catch (err) {
+      logger.error({ error: err, organizationId: organization.id }, "Failed to validate seat availability");
+      throw err;
+    }
   },
   afterCreateOrganization: async ({ organization, member, user }) => {
     logger.info(
       { organizationId: organization.id, userId: user.id },
-      "Organization created, provisioning Odoo",
+      "Organization created, updating session, linking subscription, and provisioning Odoo",
     );
+
+    // Update the session with the new active organization ID
+    try {
+      const sessions = await drizzle.query.sessions.findMany({
+        where: (sessions, { eq }) => eq(sessions.userId, user.id),
+      });
+
+      if (sessions.length > 0) {
+        // Update all active sessions for this user
+        await drizzle
+          .update(schema.sessions)
+          .set({ activeOrganizationId: organization.id })
+          .where(eq(schema.sessions.userId, user.id));
+
+        logger.info(
+          { userId: user.id, organizationId: organization.id },
+          "Updated session with active organization ID",
+        );
+      }
+    } catch (err) {
+      logger.error(
+        { error: err, userId: user.id, organizationId: organization.id },
+        "Failed to update session with active organization",
+      );
+    }
+
+    // Link the subscription to the organization
+    try {
+      const subscriptionService = new SubscriptionService({ drizzle, logger });
+      await subscriptionService.linkToOrganization(user.id, organization.id);
+      logger.info(
+        { userId: user.id, organizationId: organization.id },
+        "Linked subscription to organization",
+      );
+    } catch (err) {
+      logger.error(
+        { error: err, userId: user.id, organizationId: organization.id },
+        "Failed to link subscription to organization",
+      );
+    }
 
     setImmediate(() => {
       void (async () => {
@@ -278,7 +371,28 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
   },
 
   afterDeleteOrganization: async ({ organization }) => {
-    logger.info({ organizationId: organization.id }, "Organization deleted, cleaning up Odoo database");
+    logger.info(
+      { organizationId: organization.id },
+      "Organization deleted, cleaning up Odoo database and sessions",
+    );
+
+    // Clear activeOrganizationId from all sessions that had this org active
+    try {
+      await drizzle
+        .update(schema.sessions)
+        .set({ activeOrganizationId: null })
+        .where(eq(schema.sessions.activeOrganizationId, organization.id));
+
+      logger.info(
+        { organizationId: organization.id },
+        "Cleared activeOrganizationId from sessions for deleted organization",
+      );
+    } catch (err) {
+      logger.error(
+        { error: err, organizationId: organization.id },
+        "Failed to clear activeOrganizationId from sessions",
+      );
+    }
 
     setImmediate(() => {
       void (async () => {

@@ -1,6 +1,12 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { connect, schema, EmailService, ResendEmailProvider } from "@safee/database";
+import {
+  connect,
+  schema,
+  EmailService,
+  ResendEmailProvider,
+  autoCreateFreeSubscription,
+} from "@safee/database";
 import { randomUUID } from "node:crypto";
 import { createSessionHooks } from "./session.hooks.js";
 import { createPluginsConfig } from "./plugins.config.js";
@@ -152,6 +158,14 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
+          // Auto-create free subscription for new users
+          try {
+            await autoCreateFreeSubscription({ drizzle, logger }, user.id);
+            logger.info({ userId: user.id }, "Free subscription created for new user");
+          } catch (err) {
+            logger.error({ error: err, userId: user.id }, "Failed to create free subscription for new user");
+          }
+
           // Send welcome email to new users
           if (emailService && user.email) {
             try {

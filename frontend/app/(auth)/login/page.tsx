@@ -1,10 +1,11 @@
 "use client";
 
 import { SafeeLoginForm } from "@/components/auth/SafeeLoginForm";
+import { SafeePhoneLoginForm } from "@/components/auth/SafeePhoneLoginForm";
 import { TwoFactorVerification } from "@/components/auth/TwoFactorVerification";
 import { useOrgStore } from "@/stores/useOrgStore";
 import { useAuth } from "@/lib/auth/hooks";
-import { useSendMagicLink } from "@/lib/api/hooks";
+import { useSendMagicLink, useSendPhoneVerification, useSignInWithPhone } from "@/lib/api/hooks";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useRef } from "react";
 
@@ -21,13 +22,22 @@ const translations = {
     forgotPassword: "نسيت كلمة المرور؟",
     signIn: "تسجيل الدخول",
     signInWithGoogle: "تسجيل الدخول باستخدام Google",
-    signInWithSSO: "تسجيل الدخول باستخدام SSO",
+    signInWithEmail: "البريد الإلكتروني",
+    signInWithPhone: "رقم الهاتف",
     signInWithMagicLink: "إرسال رابط سحري",
     useMagicLink: "استخدم رابط سحري بدلاً من ذلك",
     usePassword: "استخدم كلمة المرور بدلاً من ذلك",
     magicLinkSent: "تم إرسال الرابط السحري!",
     magicLinkDescription:
       "قم بفحص بريدك الإلكتروني للحصول على رابط تسجيل الدخول. سينتهي الرابط خلال 15 دقيقة.",
+    phoneNumber: "رقم الهاتف",
+    phoneNumberPlaceholder: "XXXX XXXX",
+    sendCode: "إرسال رمز التحقق",
+    verifyCode: "تحقق من الرمز",
+    enterCode: "أدخل رمز التحقق",
+    codeDescription: "لقد أرسلنا رمز التحقق إلى",
+    resendCode: "إعادة إرسال الرمز",
+    useEmail: "استخدم البريد الإلكتروني بدلاً من ذلك",
     or: "أو",
     termsPrefix: "بتسجيل الدخول، أنت توافق على",
     termsLink: "الشروط والأحكام",
@@ -46,12 +56,21 @@ const translations = {
     forgotPassword: "Forgot password?",
     signIn: "Sign in",
     signInWithGoogle: "Sign in with Google",
-    signInWithSSO: "Sign in with SSO",
+    signInWithEmail: "Email",
+    signInWithPhone: "Phone",
     signInWithMagicLink: "Send Magic Link",
     useMagicLink: "Use a magic link instead",
     usePassword: "Use password instead",
     magicLinkSent: "Magic Link Sent!",
     magicLinkDescription: "Check your email for a sign-in link. The link will expire in 15 minutes.",
+    phoneNumber: "Phone Number",
+    phoneNumberPlaceholder: "XXXX XXXX",
+    sendCode: "Send Verification Code",
+    verifyCode: "Verify Code",
+    enterCode: "Enter Verification Code",
+    codeDescription: "We've sent a verification code to",
+    resendCode: "Resend Code",
+    useEmail: "Use email instead",
     or: "OR",
     termsPrefix: "By signing in, you agree to our",
     termsLink: "Terms & Conditions",
@@ -65,12 +84,16 @@ export default function LoginPage() {
   const { locale, setLocale } = useOrgStore();
   const { signIn, signInWithGoogle, isAuthenticated, isLoading } = useAuth();
   const sendMagicLinkMutation = useSendMagicLink();
+  const sendPhoneVerificationMutation = useSendPhoneVerification();
+  const signInWithPhoneMutation = useSignInWithPhone();
 
   const [isArabic, setIsArabic] = useState(locale === "ar");
   const [error, setError] = useState<string | null>(null);
   const [show2FAVerification, setShow2FAVerification] = useState(false);
   const [loginEmail, setLoginEmail] = useState<string>("");
   const [useMagicLinkMode, setUseMagicLinkMode] = useState(false);
+  const [usePhoneMode, setUsePhoneMode] = useState(false);
+  const [showEmailForm, setShowEmailForm] = useState(true);
   const [magicLinkSent, setMagicLinkSent] = useState(false);
   const hasRedirected = useRef(false);
 
@@ -166,16 +189,6 @@ export default function LoginPage() {
     }
   };
 
-  const handleSSOLogin = async () => {
-    try {
-      // TODO: Implement SSO (SAML/OIDC) for enterprise customers
-      setError("SSO is not yet available. Coming soon!");
-    } catch (err) {
-      console.error("SSO login failed:", err);
-      setError("SSO login failed. Please try again.");
-    }
-  };
-
   const handle2FASuccess = () => {
     setShow2FAVerification(false);
     if (!hasRedirected.current) {
@@ -201,6 +214,37 @@ export default function LoginPage() {
     } catch (err) {
       console.error("Failed to send magic link:", err);
       setError("Failed to send magic link. Please try again.");
+    }
+  };
+
+  const handleSendPhoneCode = async (phoneNumber: string) => {
+    try {
+      setError(null);
+      await sendPhoneVerificationMutation.mutateAsync(phoneNumber);
+    } catch (err) {
+      console.error("Failed to send phone code:", err);
+      setError("Failed to send verification code. Please try again.");
+      throw err;
+    }
+  };
+
+  const handleVerifyPhoneCode = async (phoneNumber: string, code: string) => {
+    try {
+      setError(null);
+      const result = await signInWithPhoneMutation.mutateAsync({ phoneNumber, password: code });
+
+      if (!hasRedirected.current) {
+        hasRedirected.current = true;
+        const redirectUrl = getRedirectUrl();
+        if (typeof window !== "undefined") {
+          sessionStorage.removeItem("redirectAfterLogin");
+        }
+        router.push(redirectUrl);
+      }
+    } catch (err) {
+      console.error("Failed to verify phone code:", err);
+      setError("Invalid verification code. Please try again.");
+      throw err;
     }
   };
 
@@ -264,6 +308,21 @@ export default function LoginPage() {
             </button>
           </div>
         </div>
+      ) : usePhoneMode ? (
+        <SafeePhoneLoginForm
+          t={t}
+          onSendCode={handleSendPhoneCode}
+          onVerifyCode={handleVerifyPhoneCode}
+          onGoogleLogin={() => {
+            void handleGoogleLogin();
+          }}
+          onGoBack={handleGoBack}
+          onToggleEmailLogin={() => {
+            setUsePhoneMode(false);
+            setShowEmailForm(true);
+          }}
+          isLoading={sendPhoneVerificationMutation.isPending || signInWithPhoneMutation.isPending}
+        />
       ) : (
         <SafeeLoginForm
           t={t}
@@ -273,9 +332,6 @@ export default function LoginPage() {
           onGoogleLogin={() => {
             void handleGoogleLogin();
           }}
-          onSSOLogin={() => {
-            void handleSSOLogin();
-          }}
           onGoBack={handleGoBack}
           onSendMagicLink={(email) => {
             void handleSendMagicLink(email);
@@ -283,6 +339,15 @@ export default function LoginPage() {
           useMagicLinkMode={useMagicLinkMode}
           onToggleMagicLink={() => {
             setUseMagicLinkMode(!useMagicLinkMode);
+          }}
+          showEmailForm={showEmailForm}
+          onSelectEmail={() => {
+            setShowEmailForm(true);
+            setUsePhoneMode(false);
+          }}
+          onSelectPhone={() => {
+            setUsePhoneMode(true);
+            setShowEmailForm(false);
           }}
         />
       )}

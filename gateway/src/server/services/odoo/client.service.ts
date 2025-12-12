@@ -170,8 +170,7 @@ export class OdooClientService implements OdooClient {
       }
 
       // Capture all cookies from the authentication response
-      const getSetCookieFn = response.headers.getSetCookie;
-      const setCookieHeaders = getSetCookieFn();
+      const setCookieHeaders = response.headers.getSetCookie();
       if (setCookieHeaders.length > 0) {
         this.cookies = setCookieHeaders.map((cookie) => cookie.split(";")[0]);
         this.logger.info(
