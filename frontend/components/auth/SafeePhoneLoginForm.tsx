@@ -183,9 +183,17 @@ const PhoneForm = ({
     }
   };
 
+  const onSubmitSendCode = (e: React.FormEvent) => {
+    void handleSendCode(e);
+  };
+
+  const onSubmitVerifyCode = (e: React.FormEvent) => {
+    void handleVerifyCode(e);
+  };
+
   if (codeSent) {
     return (
-      <form onSubmit={handleVerifyCode}>
+      <form onSubmit={onSubmitVerifyCode}>
         <div className="mb-6">
           <label className="mb-1.5 block text-gray-700">{t.enterCode}</label>
           <p className="text-sm text-gray-600 mb-4">
@@ -262,7 +270,7 @@ const PhoneForm = ({
   }
 
   return (
-    <form onSubmit={handleSendCode}>
+    <form onSubmit={onSubmitSendCode}>
       <div className="mb-6">
         <label htmlFor="phone-input" className="mb-1.5 block text-gray-700">
           {t.phoneNumber}
@@ -287,6 +295,16 @@ const PhoneForm = ({
       <SplashButton type="submit" className="w-full" disabled={isLoading}>
         {isLoading ? "Sending..." : t.sendCode}
       </SplashButton>
+
+      {onToggleEmailLogin && (
+        <button
+          type="button"
+          onClick={onToggleEmailLogin}
+          className="w-full mt-4 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+        >
+          {t.useEmail}
+        </button>
+      )}
     </form>
   );
 };

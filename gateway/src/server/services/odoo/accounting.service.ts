@@ -251,10 +251,8 @@ export class OdooAccountingService {
       payment_reference: dto.reference,
       narration: dto.notes,
       invoice_payment_term_id: dto.paymentTermId,
-      invoice_line_ids: dto.lines.map((line) => [
-        0,
-        0,
-        {
+      invoice_line_ids: dto.lines.map((line): [number, number, OdooInvoiceLine] => {
+        const lineData: OdooInvoiceLine = {
           name: line.description,
           quantity: line.quantity,
           price_unit: line.unitPrice,
@@ -262,8 +260,9 @@ export class OdooAccountingService {
           tax_ids: line.taxIds ? [[6, false, line.taxIds]] : undefined,
           product_id: line.productId,
           account_id: undefined, // Odoo will set default from product/partner
-        } as OdooInvoiceLine,
-      ]),
+        };
+        return [0, 0, lineData];
+      }),
     };
 
     return this.client.create("account.move", invoiceData);

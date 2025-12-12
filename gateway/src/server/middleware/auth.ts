@@ -52,7 +52,7 @@ export async function expressAuthentication(
         "Better Auth session result",
       );
 
-      if (!session) {
+      if (!session || !session.user || !session.session) {
         context.logger.warn(
           {
             path: request.path,

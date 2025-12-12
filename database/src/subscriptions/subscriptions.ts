@@ -300,7 +300,7 @@ export async function markExistingOrgsAsGrandfathered(deps: DbDeps) {
  * Called during signup to ensure all users have a default subscription
  */
 export async function autoCreateFreeSubscription(deps: DbDeps, userId: string) {
-  const { drizzle, logger } = deps;
+  const { logger } = deps;
 
   // Check if user already has a subscription
   const existing = await getSubscriptionByUserId(deps, userId);
