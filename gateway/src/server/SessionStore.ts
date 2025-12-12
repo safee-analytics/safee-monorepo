@@ -77,18 +77,20 @@ export class SessionStore extends Store {
 
   set(sid: string, session: SessionData, cb = noop) {
     const ttl = this.getTtl(session);
-    void (async () => {
+    const persistSession = async () => {
       try {
         if (ttl > 0) {
           await setRedisUserSession(this.redis, { sid, data: session }, millisecondsToSeconds(ttl));
           cb();
         } else {
-          await this.destroy(sid, cb);
+          this.destroy(sid, cb);
         }
       } catch (err) {
         cb(err as Error);
       }
-    })();
+    };
+
+    void persistSession();
   }
 
   get(sid: string, cb = noop) {

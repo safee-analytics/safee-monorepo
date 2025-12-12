@@ -55,7 +55,7 @@ export async function generateReport(
       "Report generation started",
     );
 
-    setTimeout(async () => {
+    setTimeout(() => void (async () => {
       try {
         const aggregatedData = {
           caseNumber: caseData.caseNumber,
@@ -85,7 +85,7 @@ export async function generateReport(
           status: "failed",
         });
       }
-    }, 0);
+    })(), 0);
 
     return {
       id: newReport.id,

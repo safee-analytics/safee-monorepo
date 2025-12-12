@@ -147,7 +147,7 @@ export class DataProxyService {
   /**
    * Execute a paginated query
    */
-  async executePaginatedQuery<T = unknown>(
+  async executePaginatedQuery(
     organizationId: string,
     connectorId: string,
     params: {
@@ -160,7 +160,7 @@ export class DataProxyService {
       offset: number;
     },
   ): Promise<{
-    rows: T[];
+    rows: unknown[];
     total: number;
     page: number;
     pageSize: number;
@@ -187,27 +187,31 @@ export class DataProxyService {
     if (where && Object.keys(where).length > 0) {
       const conditions = Object.entries(where).map(([key, value], index) => {
         whereParams.push(value);
-        return connector instanceof MSSQLConnector
-          ? `[${key}] = @param${index}`
-          : connector instanceof MySQLConnector
-            ? `\`${key}\` = ?`
-            : `"${key}" = $${index + 1}`;
+        if (connector instanceof MSSQLConnector) {
+          return `[${key}] = @param${index}`;
+        }
+        if (connector instanceof MySQLConnector) {
+          return `\`${key}\` = ?`;
+        }
+        return `"${key}" = $${index + 1}`;
       });
       whereClause = `WHERE ${conditions.join(" AND ")}`;
     }
 
     // Build ORDER BY clause
     let orderByClause = "";
-    if (orderBy && orderBy.length > 0) {
-      const orders = orderBy.map((order) => {
-        const col =
-          connector instanceof MSSQLConnector
-            ? `[${order.column}]`
-            : connector instanceof MySQLConnector
-              ? `\`${order.column}\``
-              : `"${order.column}"`;
-        return `${col} ${order.direction}`;
-      });
+      if (orderBy && orderBy.length > 0) {
+        const orders = orderBy.map((order) => {
+          let col: string;
+          if (connector instanceof MSSQLConnector) {
+            col = `[${order.column}]`;
+          } else if (connector instanceof MySQLConnector) {
+            col = `\`${order.column}\``;
+          } else {
+            col = `"${order.column}"`;
+          }
+          return `${col} ${order.direction}`;
+        });
       orderByClause = `ORDER BY ${orders.join(", ")}`;
     }
 

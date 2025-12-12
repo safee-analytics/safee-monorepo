@@ -8,7 +8,7 @@ import { Server, Socket } from "socket.io";
 import { createAdapter } from "@socket.io/redis-adapter";
 import { createClient } from "redis";
 import { instrument } from "@socket.io/admin-ui";
-import { auth, type Session } from "../../auth/index.js";
+import { auth } from "../../auth/index.js";
 import { fromNodeHeaders } from "better-auth/node";
 import pino from "pino";
 import type { Server as HTTPServer } from "node:http";
@@ -98,41 +98,43 @@ export class WebSocketService {
    * Setup Better Auth authentication middleware
    */
   private setupAuthentication() {
-    this.io.use(async (socket: AuthenticatedSocket, next) => {
-      try {
-        // Extract Better Auth session from cookies
-        const headers = fromNodeHeaders(socket.request.headers);
-        const session = await auth.api.getSession({ headers });
+    this.io.use((socket: AuthenticatedSocket, next) => {
+      void (async () => {
+        try {
+          // Extract Better Auth session from cookies
+          const headers = fromNodeHeaders(socket.request.headers);
+          const session = await auth.api.getSession({ headers });
 
-        if (!session?.user) {
-          logger.warn("Socket.IO connection rejected - no valid session");
-          next(new Error("Unauthorized"));
-          return;
+          if (!session?.user) {
+            logger.warn("Socket.IO connection rejected - no valid session");
+            next(new Error("Unauthorized"));
+            return;
+          }
+
+          // Attach user data to socket
+          socket.data = {
+            userId: session.user.id,
+            organizationId: session.session.activeOrganizationId ?? null,
+            sessionId: session.session.id,
+            email: session.user.email,
+            role: session.user.role ?? "user",
+          };
+
+          logger.info(
+            {
+              userId: socket.data.userId,
+              organizationId: socket.data.organizationId,
+              email: socket.data.email,
+            },
+            "Socket.IO connection authorized",
+          );
+
+          next();
+        } catch (err) {
+          logger.error({ error: err }, "Socket.IO authentication error");
+          next(new Error("Authentication failed"));
         }
-
-        // Attach user data to socket
-        socket.data = {
-          userId: session.user.id,
-          organizationId: session.session.activeOrganizationId ?? null,
-          sessionId: session.session.id,
-          email: session.user.email,
-          role: session.user.role ?? "user",
-        };
-
-        logger.info(
-          {
-            userId: socket.data.userId,
-            organizationId: socket.data.organizationId,
-            email: socket.data.email,
-          },
-          "Socket.IO connection authorized",
-        );
-
-        next();
-      } catch (err) {
-        logger.error({ error: err }, "Socket.IO authentication error");
-        next(new Error("Authentication failed"));
-      }
+      })();
     });
   }
 

@@ -51,9 +51,10 @@ export async function updateAuditPlan(
 
     const teamMembers =
       request.teamMembers
+        // eslint-disable-next-line eqeqeq
         ?.filter((member) => member.userId != null)
         .map((member) => ({
-          userId: member.userId as string,
+          userId: member.userId,
           name: member.name,
           role: member.role,
           hours: member.hours ?? undefined,

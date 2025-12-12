@@ -93,7 +93,7 @@ export class ConnectorManager {
     }
 
     // Encrypt sensitive config data
-    const encryptedConfig = await encryptionService.encrypt(JSON.stringify(params.config));
+    const encryptedConfig = encryptionService.encrypt(JSON.stringify(params.config));
 
     // Create database record
     // Note: config is jsonb, so we store the encrypted string which Postgres will accept
@@ -187,7 +187,7 @@ export class ConnectorManager {
     // Validate and decrypt config
     const configValue = configWrapperSchema.parse(record.config);
     const encryptedConfig = typeof configValue === "string" ? configValue : JSON.stringify(configValue);
-    const decryptedConfigRaw = await encryptionService.decrypt(encryptedConfig);
+    const decryptedConfigRaw = encryptionService.decrypt(encryptedConfig);
     const decryptedConfig = connectorConfigSchema.parse(JSON.parse(decryptedConfigRaw));
 
     // Create metadata
@@ -308,7 +308,7 @@ export class ConnectorManager {
         throw new Error(`Invalid connector configuration: ${validation.errors?.join(", ")}`);
       }
 
-      const encryptedNewConfig = await encryptionService.encrypt(JSON.stringify(updates.config));
+      const encryptedNewConfig = encryptionService.encrypt(JSON.stringify(updates.config));
       updateData.config = encryptedNewConfig as unknown as typeof connectors.$inferInsert.config;
 
       // Test new connection
@@ -337,7 +337,7 @@ export class ConnectorManager {
       updateData.lastConnectionError = null;
 
       // Invalidate cache
-      this.disconnectConnector(connectorId);
+      await this.disconnectConnector(connectorId);
     }
 
     await this.drizzle.update(connectors).set(updateData).where(eq(connectors.id, connectorId));
@@ -370,7 +370,7 @@ export class ConnectorManager {
    */
   async deleteConnector(connectorId: string, organizationId: string) {
     // Disconnect if active
-    this.disconnectConnector(connectorId);
+    await this.disconnectConnector(connectorId);
 
     // Delete from database
     await this.drizzle

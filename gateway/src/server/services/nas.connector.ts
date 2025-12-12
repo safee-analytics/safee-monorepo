@@ -52,7 +52,7 @@ export class NASConnector {
         case "webdav":
           return await this.connectWebDAV();
         default:
-          throw new Error(`Unsupported NAS type: ${this.config.type}`);
+          throw new Error(`Unsupported NAS type: ${String(this.config.type)}`);
       }
     } catch (err) {
       return {

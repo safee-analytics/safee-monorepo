@@ -14,7 +14,7 @@ import {
   Request,
   SuccessResponse,
 } from "tsoa";
-import { Readable } from "stream";
+import { Readable } from "node:stream";
 import { StorageServiceV2 } from "../services/storage.service.v2.js";
 import { StorageConnectorService } from "../services/storage/storage-connector.service.js";
 import { ClientEncryptionService } from "../services/clientEncryption.service.js";
@@ -240,8 +240,8 @@ export class StorageController extends Controller {
       dateFrom,
       dateTo,
       createdBy,
-      limit: limit || 20,
-      offset: offset || 0,
+      limit: limit ?? 20,
+      offset: offset ?? 0,
     });
   }
 

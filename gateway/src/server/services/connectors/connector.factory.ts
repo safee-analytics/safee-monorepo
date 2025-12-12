@@ -6,8 +6,8 @@ import { MSSQLConnector, type MSSQLConnectorConfig } from "./mssql.connector.js"
 /**
  * Factory for creating connector instances based on type
  */
-export class ConnectorFactory {
-  static create(metadata: ConnectorMetadata, config: ConnectorConfig): IConnector {
+export const ConnectorFactory = {
+  create(metadata: ConnectorMetadata, config: ConnectorConfig): IConnector {
     switch (metadata.type) {
       case "postgresql":
         return new PostgreSQLConnector(metadata, config as PostgreSQLConfig);
@@ -27,14 +27,14 @@ export class ConnectorFactory {
         );
 
       default:
-        throw new Error(`Unsupported connector type: ${metadata.type}`);
+        throw new Error(`Unsupported connector type: ${String(metadata.type)}`);
     }
-  }
+  },
 
   /**
    * Get available connector types
    */
-  static getAvailableTypes(): {
+  getAvailableTypes(): {
     type: ConnectorType;
     name: string;
     description: string;
@@ -70,12 +70,12 @@ export class ConnectorFactory {
         ],
       },
     ];
-  }
+  },
 
   /**
    * Get field definitions for a specific connector type
    */
-  static getFieldDefinitions(type: ConnectorType): {
+  getFieldDefinitions(type: ConnectorType): {
     name: string;
     type: "text" | "number" | "password" | "boolean";
     label: string;
@@ -197,12 +197,12 @@ export class ConnectorFactory {
       default:
         return [];
     }
-  }
+  },
 
   /**
    * Validate connector config before creation
    */
-  static async validateConfig(
+  async validateConfig(
     type: ConnectorType,
     config: ConnectorConfig,
   ): Promise<{
@@ -231,5 +231,5 @@ export class ConnectorFactory {
         errors: [err instanceof Error ? err.message : String(err)],
       };
     }
-  }
-}
+  },
+};

@@ -447,7 +447,7 @@ export class HRManagementController extends Controller {
 
     // Sync to Odoo in background (skip if change came from Odoo webhook to prevent loop)
     if (!this.isFromOdooWebhook(request)) {
-      setImmediate(async () => {
+      setImmediate(() => void (async () => {
         try {
           const hrService = await this.getHRService(request);
 
@@ -485,7 +485,7 @@ export class HRManagementController extends Controller {
         } catch (err) {
           ctx.logger.error({ error: err, employeeId: employee.id }, "Failed to sync employee to Odoo");
         }
-      });
+      })());
     }
 
     this.setStatus(201);
@@ -516,7 +516,7 @@ export class HRManagementController extends Controller {
 
     // Sync to Odoo in background (skip if change came from Odoo webhook to prevent loop)
     if (!this.isFromOdooWebhook(request)) {
-      setImmediate(async () => {
+      setImmediate(() => void (async () => {
         try {
           if (!employee.odooEmployeeId) {
             ctx.logger.warn(
@@ -563,7 +563,7 @@ export class HRManagementController extends Controller {
         } catch (err) {
           ctx.logger.error({ error: err, employeeId: employee.id }, "Failed to sync employee update to Odoo");
         }
-      });
+      })());
     }
 
     return mapEmployeeToResponse(employee);
@@ -593,7 +593,7 @@ export class HRManagementController extends Controller {
 
     // Sync to Odoo in background (skip if change came from Odoo webhook to prevent loop)
     if (!this.isFromOdooWebhook(request)) {
-      setImmediate(async () => {
+      setImmediate(() => void (async () => {
         try {
           if (!employee.odooEmployeeId) {
             ctx.logger.warn({ employeeId }, "Cannot sync to Odoo: employee has no odooEmployeeId");
@@ -610,7 +610,7 @@ export class HRManagementController extends Controller {
         } catch (err) {
           ctx.logger.error({ error: err, employeeId }, "Failed to sync employee deactivation to Odoo");
         }
-      });
+      })());
     }
 
     return { success: true };
@@ -738,7 +738,7 @@ export class HRManagementController extends Controller {
           updated++;
         }
       } catch (err) {
-        errors.push(`Failed to sync employee ${odooEmployee.name} (pass 1): ${err}`);
+        errors.push(`Failed to sync employee ${odooEmployee.name} (pass 1): ${String(err)}`);
       }
     }
 
@@ -765,7 +765,7 @@ export class HRManagementController extends Controller {
           });
         }
       } catch (err) {
-        errors.push(`Failed to update employee ${odooEmployee.name} relationships (pass 2): ${err}`);
+        errors.push(`Failed to update employee ${odooEmployee.name} relationships (pass 2): ${String(err)}`);
       }
     }
 
@@ -844,7 +844,7 @@ export class HRManagementController extends Controller {
 
     // Sync to Odoo in background (skip if change came from Odoo webhook to prevent loop)
     if (!this.isFromOdooWebhook(request)) {
-      setImmediate(async () => {
+      setImmediate(() => void (async () => {
         try {
           const hrService = await this.getHRService(request);
 
@@ -874,7 +874,7 @@ export class HRManagementController extends Controller {
         } catch (err) {
           ctx.logger.error({ error: err, departmentId: department.id }, "Failed to sync department to Odoo");
         }
-      });
+      })());
     }
 
     this.setStatus(201);
@@ -905,7 +905,7 @@ export class HRManagementController extends Controller {
 
     // Sync to Odoo in background (skip if change came from Odoo webhook to prevent loop)
     if (!this.isFromOdooWebhook(request)) {
-      setImmediate(async () => {
+      setImmediate(() => void (async () => {
         try {
           if (!department.odooDepartmentId) {
             ctx.logger.warn(
@@ -944,7 +944,7 @@ export class HRManagementController extends Controller {
             "Failed to sync department update to Odoo",
           );
         }
-      });
+      })());
     }
 
     return mapDepartmentToResponse(department);
@@ -974,7 +974,7 @@ export class HRManagementController extends Controller {
 
     // Sync to Odoo in background (skip if change came from Odoo webhook to prevent loop)
     if (!this.isFromOdooWebhook(request)) {
-      setImmediate(async () => {
+      setImmediate(() => void (async () => {
         try {
           if (!department.odooDepartmentId) {
             ctx.logger.warn({ departmentId }, "Cannot sync to Odoo: department has no odooDepartmentId");
@@ -991,7 +991,7 @@ export class HRManagementController extends Controller {
         } catch (err) {
           ctx.logger.error({ error: err, departmentId }, "Failed to sync department deletion to Odoo");
         }
-      });
+      })());
     }
 
     return { success: true };
@@ -1078,7 +1078,7 @@ export class HRManagementController extends Controller {
           updated++;
         }
       } catch (err) {
-        errors.push(`Failed to sync department ${odooDepartment.name} (pass 1): ${err}`);
+        errors.push(`Failed to sync department ${odooDepartment.name} (pass 1): ${String(err)}`);
       }
     }
 
@@ -1098,7 +1098,7 @@ export class HRManagementController extends Controller {
           });
         }
       } catch (err) {
-        errors.push(`Failed to update department ${odooDepartment.name} relationships (pass 2): ${err}`);
+        errors.push(`Failed to update department ${odooDepartment.name} relationships (pass 2): ${String(err)}`);
       }
     }
 

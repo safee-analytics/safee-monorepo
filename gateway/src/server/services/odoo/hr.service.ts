@@ -628,11 +628,10 @@ export class OdooHRService {
     }
 
     // Remove undefined values
-    for (const key of Object.keys(odooData)) {
-      if (odooData[key] === undefined) {
-        delete odooData[key];
-      }
-    }
+    const filteredEntries = Object.entries(odooData).filter(
+      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined
+    );
+    odooData = Object.fromEntries(filteredEntries) as typeof odooData;
 
     if (data.odooEmployeeId) {
       // Update existing employee
@@ -679,11 +678,10 @@ export class OdooHRService {
     }
 
     // Remove undefined values
-    for (const key of Object.keys(odooData)) {
-      if (odooData[key] === undefined) {
-        delete odooData[key];
-      }
-    }
+    const filteredEntries = Object.entries(odooData).filter(
+      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined
+    );
+    odooData = Object.fromEntries(filteredEntries) as typeof odooData;
 
     if (data.odooDepartmentId) {
       // Update existing department

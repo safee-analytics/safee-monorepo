@@ -55,7 +55,7 @@ export class ChunkedUploadService {
 
   constructor(tempBasePath?: string) {
     this.tempBasePath = tempBasePath ?? process.env.TEMP_UPLOAD_PATH ?? "./storage/temp";
-    this.initializeTempStorage();
+    void this.initializeTempStorage();
     this.startCleanupJob();
   }
 
@@ -304,14 +304,16 @@ export class ChunkedUploadService {
     const uploadedBytes = session.uploadedChunks.size * session.chunkSize;
     const percentage = Math.round((uploadedBytes / session.fileSize) * 100);
 
-    const status: UploadStatus["status"] =
-      new Date() > session.expiresAt
-        ? "expired"
-        : session.uploadedChunks.size === 0
-          ? "pending"
-          : session.uploadedChunks.size === session.totalChunks
-            ? "completed"
-            : "uploading";
+    let status: UploadStatus["status"];
+    if (new Date() > session.expiresAt) {
+      status = "expired";
+    } else if (session.uploadedChunks.size === 0) {
+      status = "pending";
+    } else if (session.uploadedChunks.size === session.totalChunks) {
+      status = "completed";
+    } else {
+      status = "uploading";
+    }
 
     return {
       uploadId,
@@ -382,9 +384,9 @@ export class ChunkedUploadService {
    */
   private scheduleCleanup(uploadId: string): void {
     setTimeout(
-      async () => {
+      () => void (async () => {
         await this.cleanupSession(uploadId);
-      },
+      })(),
       5 * 60 * 1000,
     ); // Cleanup after 5 minutes
   }
@@ -415,7 +417,7 @@ export class ChunkedUploadService {
     // Run cleanup every hour
     this.cleanupInterval = setInterval(
       () => {
-        this.cleanupExpiredSessions();
+        void this.cleanupExpiredSessions();
       },
       60 * 60 * 1000,
     );

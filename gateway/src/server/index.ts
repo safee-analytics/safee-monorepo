@@ -271,8 +271,8 @@ export async function startServer(deps: Dependencies) {
     });
   }
 
-  process.on("SIGTERM", shutdown);
-  process.on("SIGINT", shutdown);
+  process.on("SIGTERM", () => void shutdown());
+  process.on("SIGINT", () => void shutdown());
 
   return { httpServer, wsService };
 }

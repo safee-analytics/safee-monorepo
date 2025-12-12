@@ -8,9 +8,9 @@ import type { DrizzleClient } from "@safee/database";
  * Circuit Breaker States
  */
 enum CircuitState {
-  CLOSED = "CLOSED", // Normal operation
-  OPEN = "OPEN", // Failures threshold reached, blocking requests
-  HALF_OPEN = "HALF_OPEN", // Testing if service recovered
+  Closed = "Closed", // Normal operation
+  Open = "Open", // Failures threshold reached, blocking requests
+  HalfOpen = "HalfOpen", // Testing if service recovered
 }
 
 /**
@@ -61,7 +61,7 @@ export class ResilientOdooClient implements OdooClient {
   private auditLogService: OdooAuditLogService;
 
   // Circuit Breaker state
-  private circuitState: CircuitState = CircuitState.CLOSED;
+  private circuitState: CircuitState = CircuitState.Closed;
   private failureCount = 0;
   private successCount = 0;
   private lastFailureTime = 0;
@@ -157,11 +157,11 @@ export class ResilientOdooClient implements OdooClient {
 
     // Check if we should open the circuit
     if (
-      this.circuitState === CircuitState.CLOSED &&
+      this.circuitState === CircuitState.Closed &&
       this.recentFailures.length >= this.circuitBreakerConfig.failureThreshold
     ) {
       this.openCircuit();
-    } else if (this.circuitState === CircuitState.HALF_OPEN) {
+    } else if (this.circuitState === CircuitState.HalfOpen) {
       // Failed during testing, reopen circuit
       this.openCircuit();
     }
@@ -174,7 +174,7 @@ export class ResilientOdooClient implements OdooClient {
     this.successCount++;
     this.failureCount = 0;
 
-    if (this.circuitState === CircuitState.HALF_OPEN) {
+    if (this.circuitState === CircuitState.HalfOpen) {
       // Check if we've had enough successes to close circuit
       if (this.successCount >= this.circuitBreakerConfig.successThreshold) {
         this.closeCircuit();
@@ -196,7 +196,7 @@ export class ResilientOdooClient implements OdooClient {
       "🔴 Circuit breaker OPENED - Odoo integration failing",
     );
 
-    this.circuitState = CircuitState.OPEN;
+    this.circuitState = CircuitState.Open;
     this.circuitOpenTime = Date.now();
     this.successCount = 0;
     this.metrics.circuitBreakerTrips++;
@@ -214,7 +214,7 @@ export class ResilientOdooClient implements OdooClient {
       "🟢 Circuit breaker CLOSED - Odoo integration recovered",
     );
 
-    this.circuitState = CircuitState.CLOSED;
+    this.circuitState = CircuitState.Closed;
     this.failureCount = 0;
     this.successCount = 0;
     this.recentFailures = [];
@@ -224,7 +224,7 @@ export class ResilientOdooClient implements OdooClient {
    * Check circuit breaker state and transition to half-open if timeout passed
    */
   private checkCircuitState(): void {
-    if (this.circuitState === CircuitState.OPEN) {
+    if (this.circuitState === CircuitState.Open) {
       const timeSinceOpen = Date.now() - this.circuitOpenTime;
       if (timeSinceOpen >= this.circuitBreakerConfig.timeout) {
         this.logger.info(
@@ -232,9 +232,9 @@ export class ResilientOdooClient implements OdooClient {
             timeSinceOpenMs: timeSinceOpen,
             database: this.config.database,
           },
-          "🟡 Circuit breaker transitioning to HALF_OPEN - testing recovery",
+          "🟡 Circuit breaker transitioning to HalfOpen - testing recovery",
         );
-        this.circuitState = CircuitState.HALF_OPEN;
+        this.circuitState = CircuitState.HalfOpen;
         this.successCount = 0;
       }
     }
@@ -247,7 +247,7 @@ export class ResilientOdooClient implements OdooClient {
     operation: () => Promise<T>,
     metadata: OperationMetadata,
   ): Promise<T> {
-    const operationId = `${metadata.operation}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const operationId = `${metadata.operation}-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
 
     this.metrics.totalRequests++;
 
@@ -306,9 +306,9 @@ export class ResilientOdooClient implements OdooClient {
     // Check circuit breaker
     this.checkCircuitState();
 
-    if (this.circuitState === CircuitState.OPEN) {
+    if (this.circuitState === CircuitState.Open) {
       this.metrics.failedRequests++;
-      const error = new Error("Circuit breaker is OPEN - Odoo service unavailable");
+      const error = new Error("Circuit breaker is Open - Odoo service unavailable");
       this.logger.error(
         {
           operationId,
@@ -512,7 +512,11 @@ export class ResilientOdooClient implements OdooClient {
       `🚫 Odoo operation failed after all retries: ${metadata.operation}`,
     );
 
-    throw lastError;
+    if (lastError) {
+      throw lastError;
+    }
+
+    throw new Error("Unknown error during resilient Odoo operation");
   }
 
   /**

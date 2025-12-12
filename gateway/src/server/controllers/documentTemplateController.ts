@@ -19,7 +19,7 @@ import { getServerContext } from "../serverContext.js";
 import { DocumentTemplateService } from "../services/documentTemplate.service.js";
 import { getOdooClientManager } from "../services/odoo/manager.service.js";
 import { OdooAccountingService } from "../services/odoo/accounting.service.js";
-import { BadRequest, NotFound } from "../errors.js";
+import { BadRequest } from "../errors.js";
 
 export type DocumentType =
   | "invoice"

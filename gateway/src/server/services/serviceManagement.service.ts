@@ -84,7 +84,14 @@ export class ServiceManagementService {
         const credentials = await this.odooDatabaseService.getCredentials(organizationId);
         if (credentials) {
           const odooUrl = new URL(env.ODOO_URL);
-          const odooPort = odooUrl.port ? parseInt(odooUrl.port) : odooUrl.protocol === "https:" ? 443 : 80;
+          let odooPort: number;
+          if (odooUrl.port) {
+            odooPort = parseInt(odooUrl.port, 10);
+          } else if (odooUrl.protocol === "https:") {
+            odooPort = 443;
+          } else {
+            odooPort = 80;
+          }
 
           await this.odooModuleService.installModules({
             config: {

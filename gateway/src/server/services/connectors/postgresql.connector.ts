@@ -3,7 +3,6 @@ import {
   BaseConnector,
   type ConnectorConfig,
   type ConnectionTestResult,
-  type ConnectorMetadata,
 } from "./base.connector.js";
 
 export interface PostgreSQLConfig extends ConnectorConfig {
@@ -17,12 +16,8 @@ export interface PostgreSQLConfig extends ConnectorConfig {
   connectionTimeout?: number;
 }
 
-export class PostgreSQLConnector extends BaseConnector {
-  private pool: Pool | null = null;
-
-  constructor(metadata: ConnectorMetadata, config: PostgreSQLConfig) {
-    super(metadata, config);
-  }
+  export class PostgreSQLConnector extends BaseConnector {
+    private pool: Pool | null = null;
 
   async validateConfig(config: ConnectorConfig): Promise<{ valid: boolean; errors?: string[] }> {
     const errors: string[] = [];

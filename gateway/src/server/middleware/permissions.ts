@@ -190,7 +190,7 @@ export async function isInApprovalWorkflow(
     }
 
     if (step.approverType === "team" && step.approverId) {
-      return isTeamMember(userId, step.approverId);
+      return await isTeamMember(userId, step.approverId);
     }
 
     if (step.approverType === "role" && step.approverId) {

@@ -154,7 +154,7 @@ export class OdooModuleService {
 
     while (retries <= maxRetries) {
       try {
-        await client.execute<void>("ir.module.module", "button_immediate_install", [moduleIds], {
+        await client.execute<undefined>("ir.module.module", "button_immediate_install", [moduleIds], {
           context: { lang: "en_US" },
         });
 
@@ -247,7 +247,7 @@ export class OdooModuleService {
       "Uninstalling modules",
     );
 
-    await client.execute<void>("ir.module.module", "button_immediate_uninstall", [moduleIds], {
+    await client.execute<undefined>("ir.module.module", "button_immediate_uninstall", [moduleIds], {
       context: { lang: "en_US" },
     });
 

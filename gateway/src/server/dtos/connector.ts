@@ -69,7 +69,7 @@ export interface FieldMapping {
   sourceColumn: string;
   targetField: string;
   transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean" | null;
-  defaultValue?: unknown | null;
+  defaultValue?: unknown;
 }
 
 export interface SuggestMappingsRequest {

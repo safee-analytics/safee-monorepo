@@ -4,7 +4,6 @@ import {
   BaseConnector,
   type ConnectorConfig,
   type ConnectionTestResult,
-  type ConnectorMetadata,
 } from "./base.connector.js";
 
 export interface MySQLConfig extends ConnectorConfig {
@@ -18,12 +17,8 @@ export interface MySQLConfig extends ConnectorConfig {
   connectionTimeout?: number;
 }
 
-export class MySQLConnector extends BaseConnector {
-  private pool: Pool | null = null;
-
-  constructor(metadata: ConnectorMetadata, config: MySQLConfig) {
-    super(metadata, config);
-  }
+  export class MySQLConnector extends BaseConnector {
+    private pool: Pool | null = null;
 
   async validateConfig(config: ConnectorConfig): Promise<{ valid: boolean; errors?: string[] }> {
     const errors: string[] = [];

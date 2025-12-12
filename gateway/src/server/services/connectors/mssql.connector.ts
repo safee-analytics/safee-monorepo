@@ -4,7 +4,6 @@ import {
   BaseConnector,
   type ConnectorConfig,
   type ConnectionTestResult,
-  type ConnectorMetadata,
 } from "./base.connector.js";
 
 export interface MSSQLConnectorConfig extends ConnectorConfig {
@@ -20,12 +19,8 @@ export interface MSSQLConnectorConfig extends ConnectorConfig {
   requestTimeout?: number;
 }
 
-export class MSSQLConnector extends BaseConnector {
-  private pool: ConnectionPool | null = null;
-
-  constructor(metadata: ConnectorMetadata, config: MSSQLConnectorConfig) {
-    super(metadata, config);
-  }
+  export class MSSQLConnector extends BaseConnector {
+    private pool: ConnectionPool | null = null;
 
   async validateConfig(config: ConnectorConfig): Promise<{ valid: boolean; errors?: string[] }> {
     const errors: string[] = [];

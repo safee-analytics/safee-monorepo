@@ -39,11 +39,11 @@ export type StorageConfig = LocalStorageConfig | WebDAVStorageConfig | SMBStorag
  * Storage Factory
  * Creates the appropriate storage adapter based on configuration
  */
-export class StorageFactory {
+export const StorageFactory = {
   /**
    * Create a storage adapter from configuration
    */
-  static createAdapter(config: StorageConfig): StorageAdapter {
+  createAdapter(config: StorageConfig): StorageAdapter {
     switch (config.type) {
       case "local":
         return new LocalAdapter(config.basePath);
@@ -73,12 +73,12 @@ export class StorageFactory {
       default:
         throw new Error(`Unsupported storage type: ${(config as { type: string }).type}`);
     }
-  }
+  },
 
   /**
    * Create adapter from environment variables (for default storage)
    */
-  static createFromEnv(): StorageAdapter {
+  createFromEnv(): StorageAdapter {
     const storageType = (process.env.STORAGE_TYPE ?? "local") as StorageType;
 
     switch (storageType) {
@@ -112,5 +112,5 @@ export class StorageFactory {
       default:
         throw new Error(`Unsupported STORAGE_TYPE: ${storageType}`);
     }
-  }
-}
+  },
+};

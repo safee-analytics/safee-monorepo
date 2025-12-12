@@ -277,13 +277,15 @@ export class ApprovalRulesEngine {
     if (workflowStep.stepType === "single") {
       // Single approval - need at least one approval
       return approvedCount >= 1;
-    } else if (workflowStep.stepType === "parallel") {
+    }
+
+    if (workflowStep.stepType === "parallel") {
       // Parallel - need minimum approvals
       return approvedCount >= workflowStep.minApprovals;
-    } else {
-      // "any" - need at least one approval
-      return approvedCount >= 1;
     }
+
+    // "any" - need at least one approval
+    return approvedCount >= 1;
   }
 
   /**

@@ -284,11 +284,10 @@ export class OdooCRMService {
       odooData.user_id = data.userId;
     }
 
-    for (const key of Object.keys(odooData)) {
-      if (odooData[key] === undefined) {
-        delete odooData[key];
-      }
-    }
+    const filteredEntries = Object.entries(odooData).filter(
+      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined
+    );
+    odooData = Object.fromEntries(filteredEntries) as typeof odooData;
 
     return this.client.create("crm.lead", odooData);
   }
@@ -496,11 +495,10 @@ export class OdooCRMService {
       odooData.country_id = data.countryId;
     }
 
-    for (const key of Object.keys(odooData)) {
-      if (odooData[key] === undefined) {
-        delete odooData[key];
-      }
-    }
+    const filteredEntries = Object.entries(odooData).filter(
+      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined
+    );
+    odooData = Object.fromEntries(filteredEntries) as typeof odooData;
 
     return this.client.create("res.partner", odooData);
   }
@@ -587,11 +585,10 @@ export class OdooCRMService {
       odooData.user_id = data.userId;
     }
 
-    for (const key of Object.keys(odooData)) {
-      if (odooData[key] === undefined) {
-        delete odooData[key];
-      }
-    }
+    const filteredEntries = Object.entries(odooData).filter(
+      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined
+    );
+    odooData = Object.fromEntries(filteredEntries) as typeof odooData;
 
     return this.client.create("mail.activity", odooData);
   }
