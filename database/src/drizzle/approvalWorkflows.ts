@@ -17,7 +17,10 @@ export const approvalWorkflows = systemSchema.table(
     isActive: boolean("is_active").default(true).notNull(),
     rules: jsonb("rules"), // JSONB for flexible rule configuration
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
   },
   (table) => [
     index("approval_workflows_org_id_idx").on(table.organizationId),

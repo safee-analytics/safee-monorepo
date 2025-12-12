@@ -1,19 +1,14 @@
 "use client";
 
 import React from "react";
-import {
-  InvoicePDF,
-  TablePDF,
-  PDFDownloadButton,
-  ExcelPreview,
-  simpleExportToExcel,
-  exportToExcel,
-  exportWithConditionalFormatting,
-  generatePDFBlob,
-  type InvoiceData,
-  type TablePDFData,
-  type ExcelColumn,
-} from "@safee/ui";
+
+// Heavy components - import directly to avoid compilation memory issues
+import { InvoicePDF, type InvoiceData } from "@safee/ui/components/InvoicePDF";
+import { TablePDF, type TablePDFData } from "@safee/ui/components/TablePDF";
+import { PDFDownloadButton } from "@safee/ui/components/PDFDownloadButton";
+import { ExcelPreview, type ExcelColumn } from "@safee/ui/components/ExcelPreview";
+import { simpleExportToExcel, exportToExcel, exportWithConditionalFormatting } from "@safee/ui/utils/excel";
+import { generatePDFBlob } from "@safee/ui/utils/pdf";
 
 // Sample data
 const sampleInvoices = [

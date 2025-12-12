@@ -54,5 +54,8 @@ export const connectors = identitySchema.table("connectors", {
   metadata: jsonb("metadata").$type<Record<string, unknown>>().default({}),
 
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
 });

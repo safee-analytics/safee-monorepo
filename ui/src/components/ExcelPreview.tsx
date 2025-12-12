@@ -1,6 +1,9 @@
 import React from "react";
 import type { ExcelColumn } from "../utils/excel";
 
+// Re-export ExcelColumn for convenience
+export type { ExcelColumn } from "../utils/excel";
+
 export interface ExcelPreviewProps {
   columns: ExcelColumn[];
   data: Record<string, unknown>[];

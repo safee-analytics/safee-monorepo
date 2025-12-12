@@ -29,5 +29,8 @@ export const hrPayslips = hrSchema.table("payslips", {
   lastSyncedAt: timestamp("last_synced_at", { withTimezone: true }),
 
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
 });

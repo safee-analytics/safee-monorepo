@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { WizardStepProps } from "../CreateCaseWizard";
+import type { WizardStepProps } from "./types";
 import { Building2, Calendar, Flag, Sparkles } from "lucide-react";
 import { ClientAutocomplete } from "../ClientAutocomplete";
 import { useAutofill, type AutofillClientHistory } from "@/lib/hooks/useAutofill";

@@ -145,13 +145,18 @@ export class WebSocketService {
    * Setup Socket.IO Admin UI (development only)
    */
   private setupAdminUI() {
-    instrument(this.io, {
-      auth: false, // Disable auth in development for easy testing
-      mode: "development",
-    });
+    try {
+      instrument(this.io, {
+        auth: false, // Disable auth in development for easy testing
+        mode: "development",
+      });
 
-    logger.info("Socket.IO Admin UI enabled");
-    logger.info("Visit: https://admin.socket.io/#/ and connect to http://app.localhost:8080");
+      logger.info("Socket.IO Admin UI enabled");
+      logger.info("Visit: https://admin.socket.io/#/ and connect to http://app.localhost:8080");
+    } catch (error) {
+      logger.warn({ error }, "Failed to setup Socket.IO Admin UI - continuing without it");
+      // Continue without admin UI - not critical for operation
+    }
   }
 
   /**

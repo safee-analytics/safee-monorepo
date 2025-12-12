@@ -17,7 +17,10 @@ export const oauthAccounts = identitySchema.table("oauth_accounts", {
   scope: text("scope"),
   password: text("password"), // For email/password provider
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
 });
 
 export type OAuthAccount = typeof oauthAccounts.$inferSelect;

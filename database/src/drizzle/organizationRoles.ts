@@ -15,7 +15,10 @@ export const organizationRoles = identitySchema.table(
     role: varchar("role", { length: 100 }).notNull(),
     permission: varchar("permission", { length: 100 }).notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
   },
   (table) => [
     index("organization_roles_org_id_idx").on(table.organizationId),

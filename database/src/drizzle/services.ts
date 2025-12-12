@@ -34,5 +34,8 @@ export const services = systemSchema.table("services", {
   isActive: boolean("is_active").default(true).notNull(),
   sortOrder: varchar("sort_order", { length: 10 }).default("0"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
 });

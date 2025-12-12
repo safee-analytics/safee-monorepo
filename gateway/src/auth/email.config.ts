@@ -13,6 +13,14 @@ import {
   generateWelcomeEmailText,
   generateInvitationEmailHTML,
   generateInvitationEmailText,
+  generatePasswordResetEmailHTML,
+  generatePasswordResetEmailText,
+  generateChangeEmailConfirmationHTML,
+  generateChangeEmailConfirmationText,
+  generateDeleteAccountVerificationHTML,
+  generateDeleteAccountVerificationText,
+  generateEmailVerificationHTML,
+  generateEmailVerificationText,
 } from "@safee/database/email-templates";
 import type { Logger } from "pino";
 
@@ -153,6 +161,162 @@ export function createEmailConfig(emailService: EmailService | undefined, logger
           { email: data.email, organizationId: data.organization.id, role: data.role },
           "Invitation email sent successfully",
         );
+      },
+    },
+
+    passwordReset: {
+      async sendPasswordResetEmail({
+        email,
+        name,
+        resetUrl,
+      }: {
+        email: string;
+        name: string;
+        resetUrl: string;
+      }) {
+        if (!emailService) {
+          logger.warn({ email }, "Email service not configured, skipping password reset email");
+          return;
+        }
+
+        await emailService.sendEmail({
+          to: [{ email, name }],
+          from: emailFrom,
+          replyTo: emailReplyTo,
+          subject: "Reset Your Password - Safee Analytics",
+          html: generatePasswordResetEmailHTML({
+            userName: name,
+            resetUrl,
+            expiresIn: "1 hour",
+          }),
+          text: generatePasswordResetEmailText({
+            userName: name,
+            resetUrl,
+            expiresIn: "1 hour",
+          }),
+        });
+
+        logger.info({ email }, "Password reset email sent successfully");
+      },
+    },
+
+    changeEmail: {
+      async sendChangeEmailConfirmation({
+        currentEmail,
+        newEmail,
+        name,
+        confirmationUrl,
+      }: {
+        currentEmail: string;
+        newEmail: string;
+        name: string;
+        confirmationUrl: string;
+      }) {
+        if (!emailService) {
+          logger.warn(
+            { currentEmail, newEmail },
+            "Email service not configured, skipping change email confirmation",
+          );
+          return;
+        }
+
+        // Send to the NEW email address for verification
+        await emailService.sendEmail({
+          to: [{ email: newEmail, name }],
+          from: emailFrom,
+          replyTo: emailReplyTo,
+          subject: "Confirm Your New Email Address - Safee Analytics",
+          html: generateChangeEmailConfirmationHTML({
+            userName: name,
+            currentEmail,
+            newEmail,
+            confirmationUrl,
+            expiresIn: "1 hour",
+          }),
+          text: generateChangeEmailConfirmationText({
+            userName: name,
+            currentEmail,
+            newEmail,
+            confirmationUrl,
+            expiresIn: "1 hour",
+          }),
+        });
+
+        logger.info({ currentEmail, newEmail }, "Change email confirmation sent successfully");
+      },
+    },
+
+    deleteAccount: {
+      async sendDeleteAccountVerification({
+        email,
+        name,
+        verificationUrl,
+      }: {
+        email: string;
+        name: string;
+        verificationUrl: string;
+      }) {
+        if (!emailService) {
+          logger.warn({ email }, "Email service not configured, skipping delete account verification");
+          return;
+        }
+
+        await emailService.sendEmail({
+          to: [{ email, name }],
+          from: emailFrom,
+          replyTo: emailReplyTo,
+          subject: "⚠️ Verify Account Deletion - Safee Analytics",
+          html: generateDeleteAccountVerificationHTML({
+            userName: name,
+            userEmail: email,
+            verificationUrl,
+            expiresIn: "24 hours",
+          }),
+          text: generateDeleteAccountVerificationText({
+            userName: name,
+            userEmail: email,
+            verificationUrl,
+            expiresIn: "24 hours",
+          }),
+        });
+
+        logger.info({ email }, "Delete account verification email sent successfully");
+      },
+    },
+
+    emailVerification: {
+      async sendEmailVerification({
+        email,
+        name,
+        verificationUrl,
+      }: {
+        email: string;
+        name: string;
+        verificationUrl: string;
+      }) {
+        if (!emailService) {
+          logger.warn({ email }, "Email service not configured, skipping email verification");
+          return;
+        }
+
+        await emailService.sendEmail({
+          to: [{ email, name }],
+          from: emailFrom,
+          replyTo: emailReplyTo,
+          subject: "Verify Your Email - Safee Analytics",
+          html: generateEmailVerificationHTML({
+            userName: name,
+            verificationUrl,
+            expiresIn: "24 hours",
+          }),
+          text: generateEmailVerificationText({
+            userName: name,
+            verificationUrl,
+            expiresIn: "24 hours",
+          }),
+        });
+
+        logger.info({ email }, "Email verification sent successfully");
       },
     },
   };

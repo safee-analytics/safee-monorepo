@@ -7,6 +7,17 @@ export default defineConfig([
       // Split into separate chunks to avoid Turbopack bug
       components: "src/components/index.ts",
       utils: "src/utils/index.ts",
+      // Heavy components - build separately for direct imports
+      "components/Charts": "src/components/Charts.tsx",
+      "components/DataGrid": "src/components/DataGrid.tsx",
+      "components/ExcelPreview": "src/components/ExcelPreview.tsx",
+      "components/InvoicePDF": "src/components/InvoicePDF.tsx",
+      "components/PDFDownloadButton": "src/components/PDFDownloadButton.tsx",
+      "components/PDFViewer": "src/components/PDFViewer.tsx",
+      "components/TablePDF": "src/components/TablePDF.tsx",
+      // Heavy utils - build separately for direct imports
+      "utils/excel": "src/utils/excel.ts",
+      "utils/pdf": "src/utils/pdf.ts",
     },
     format: ["cjs", "esm"],
     dts: true,

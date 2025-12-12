@@ -15,6 +15,16 @@
       "types": "./dist/tailwind.config.d.ts",
       "import": "./dist/tailwind.config.mjs",
       "require": "./dist/tailwind.config.js"
+    },
+    "./components/*": {
+      "types": "./dist/components/*.d.ts",
+      "import": "./dist/components/*.mjs",
+      "require": "./dist/components/*.js"
+    },
+    "./utils/*": {
+      "types": "./dist/utils/*.d.ts",
+      "import": "./dist/utils/*.mjs",
+      "require": "./dist/utils/*.js"
     }
   },
   "scripts": {

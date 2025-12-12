@@ -16,7 +16,10 @@ export const userServices = identitySchema.table(
     enabledAt: timestamp("enabled_at", { withTimezone: true }).defaultNow().notNull(),
     disabledAt: timestamp("disabled_at", { withTimezone: true }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
   },
   (table) => [
     primaryKey({ columns: [table.userId, table.serviceId] }),

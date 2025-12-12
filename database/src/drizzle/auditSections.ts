@@ -21,7 +21,10 @@ export const auditSections = auditSchema.table(
       requireReview?: boolean;
     }>(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
   },
   (table) => [
     index("audit_sections_scope_id_idx").on(table.scopeId),

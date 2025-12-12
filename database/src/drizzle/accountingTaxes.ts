@@ -32,7 +32,10 @@ export const accountingTaxes = financeSchema.table(
     lastSyncedAt: timestamp("last_synced_at", { withTimezone: true }),
 
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
   },
   (table) => [
     index("taxes_organization_id_idx").on(table.organizationId),

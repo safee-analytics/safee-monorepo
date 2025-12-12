@@ -21,7 +21,10 @@ export const cases = auditSchema.table(
       .references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" })
       .notNull(),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
   },
   (table) => [
     unique("cases_org_case_number_unique").on(table.organizationId, table.caseNumber),

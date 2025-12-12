@@ -1,28 +1,9 @@
 "use client";
 
 import React from "react";
+
+// Lightweight components from barrel export
 import {
-  // Exports
-  InvoicePDF,
-  PDFDownloadButton,
-  ExcelPreview,
-  exportToExcel,
-  generatePDFBlob,
-  type InvoiceData,
-  type ExcelColumn,
-
-  // Data Grid
-  DataGrid,
-  type ColDef,
-
-  // Charts
-  LineChart,
-  BarChart,
-  PieChart,
-  AreaChart,
-  type ChartDataPoint,
-  type PieChartData,
-
   // Calendar
   CalendarScheduler,
   type CalendarEventData,
@@ -54,6 +35,22 @@ import {
   DragDropList,
   type DragDropItem,
 } from "@safee/ui";
+
+// Heavy components - import directly to avoid compilation memory issues
+import { InvoicePDF, type InvoiceData } from "@safee/ui/components/InvoicePDF";
+import { PDFDownloadButton } from "@safee/ui/components/PDFDownloadButton";
+import { ExcelPreview, type ExcelColumn } from "@safee/ui/components/ExcelPreview";
+import { DataGrid, type ColDef } from "@safee/ui/components/DataGrid";
+import {
+  LineChart,
+  BarChart,
+  PieChart,
+  AreaChart,
+  type ChartDataPoint,
+  type PieChartData,
+} from "@safee/ui/components/Charts";
+import { exportToExcel } from "@safee/ui/utils/excel";
+import { generatePDFBlob } from "@safee/ui/utils/pdf";
 import { FileUpload, AvatarUpload, LogoUpload, DocumentUpload } from "@/components/common";
 import {
   Settings,

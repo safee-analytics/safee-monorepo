@@ -23,7 +23,10 @@ export const apikeys = identitySchema.table("apikeys", {
   lastRequest: timestamp("last_request", { withTimezone: true }),
   expiresAt: timestamp("expires_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
   permissions: text("permissions"),
   metadata: text("metadata"),
 });

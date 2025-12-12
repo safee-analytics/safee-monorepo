@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { WizardStepProps } from "../CreateCaseWizard";
+import type { WizardStepProps } from "./types";
 import { Users, X } from "lucide-react";
 
 // Mock users - in real implementation, fetch from API

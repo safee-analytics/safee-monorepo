@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import type { WizardStepProps } from "../CreateCaseWizard";
+import type { WizardStepProps } from "./types";
 import { Upload, X, FileText, File, Image as ImageIcon } from "lucide-react";
 
 export function DocumentsStep({ data, onChange }: WizardStepProps) {

@@ -14,5 +14,8 @@ export const odooDatabases = odooSchema.table("databases", {
   odooUrl: varchar("odoo_url", { length: 255 }).notNull(),
   isActive: timestamp("is_active").defaultNow().notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
 });

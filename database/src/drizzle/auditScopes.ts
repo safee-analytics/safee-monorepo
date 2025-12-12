@@ -25,7 +25,10 @@ export const auditScopes = auditSchema.table(
     }),
     archivedBy: uuid("archived_by").references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
     completedAt: timestamp("completed_at", { withTimezone: true }),
     archivedAt: timestamp("archived_at", { withTimezone: true }),
   },

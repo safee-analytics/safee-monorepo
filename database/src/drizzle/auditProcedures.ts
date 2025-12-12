@@ -51,7 +51,10 @@ export const auditProcedures = auditSchema.table(
     fieldData: jsonb("field_data").default({}).$type<Record<string, unknown>>(), // Stores custom field values
     canEdit: boolean("can_edit").notNull().default(true),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
   },
   (table) => [
     index("audit_procedures_section_id_idx").on(table.sectionId),

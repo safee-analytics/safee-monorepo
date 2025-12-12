@@ -11,7 +11,7 @@ import { TeamStep } from "./wizard/TeamStep";
 import { DocumentsStep } from "./wizard/DocumentsStep";
 import { useCreateCase } from "@/lib/api/hooks";
 import { useToast } from "@safee/ui";
-import type { CaseTemplateData } from "@/lib/data/caseTemplates";
+import type { WizardStepProps, WizardData, ValidationResult } from "./wizard/types";
 
 interface WizardStep {
   id: string;
@@ -21,44 +21,8 @@ interface WizardStep {
   canSkip: boolean;
 }
 
-export interface WizardStepProps {
-  data: Partial<WizardData>;
-  onChange: (updates: Partial<WizardData>) => void;
-  onNext: () => void;
-  onBack: () => void;
-}
-
-interface ValidationResult {
-  valid: boolean;
-  errors?: Record<string, string>;
-}
-
-export interface WizardData {
-  // Step 1: Template Selection
-  selectedTemplate: CaseTemplateData | null;
-  useTemplate: boolean;
-
-  // Step 2: Quick Start (Essential fields)
-  clientName: string;
-  auditType: string;
-  priority: string;
-  dueDate: string | undefined;
-
-  // Step 3: Details (Optional additional fields)
-  status: string;
-  description?: string;
-  estimatedHours?: number;
-  budget?: number;
-
-  // Step 4: Team Assignment (Optional)
-  assignments?: {
-    userId: string;
-    role: string;
-  }[];
-
-  // Step 5: Documents (Optional)
-  documentPreviews?: File[];
-}
+// Re-export for backwards compatibility
+export type { WizardStepProps, WizardData, ValidationResult } from "./wizard/types";
 
 const WIZARD_STEPS: WizardStep[] = [
   {

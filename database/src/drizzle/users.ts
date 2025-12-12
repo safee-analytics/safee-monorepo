@@ -25,7 +25,10 @@ export const users = identitySchema.table(
     timezone: varchar("timezone", { length: 100 }).default("UTC"),
     dateFormat: varchar("date_format", { length: 50 }).default("DD/MM/YYYY"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
     deletedAt: timestamp("deleted_at", { withTimezone: true }),
   },
   (table) => [

@@ -34,6 +34,6 @@ export const organizations = identitySchema.table("organizations", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
-    .notNull()
-    .$onUpdate(() => /* @__PURE__ */ new Date()),
+    .$onUpdate(() => /* @__PURE__ */ new Date())
+    .notNull(),
 });

@@ -5,7 +5,7 @@ import { randomUUID } from "crypto";
 import { createSessionHooks } from "./session.hooks.js";
 import { createPluginsConfig } from "./plugins.config.js";
 import { createEmailConfig } from "./email.config.js";
-import { userAdditionalFields, userFields, sessionConfig } from "./schema.config.js";
+import { sessionConfig } from "./schema.config.js";
 import pino from "pino";
 
 const logger = pino({ name: "auth" });
@@ -25,7 +25,6 @@ if (process.env.RESEND_API_KEY) {
 export const auth = betterAuth({
   appName: "Safee Analytics",
   baseURL: process.env.BETTER_AUTH_URL || "http://app.localhost:8080/api/v1",
-  // Temporarily disable experimental joins due to Drizzle relation resolution error
   // experimental: { joins: true },
 
   database: drizzleAdapter(drizzle, {
@@ -39,15 +38,12 @@ export const auth = betterAuth({
 
   user: {
     modelName: "user",
-    fields: userFields,
-    additionalFields: userAdditionalFields,
     changeEmail: {
       enabled: true,
       sendChangeEmailConfirmation: async ({
         user,
         newEmail,
-        url: _url,
-        token: _token,
+        url,
       }: {
         user: { id: string; email: string; name: string };
         newEmail: string;
@@ -58,16 +54,21 @@ export const auth = betterAuth({
           logger.warn({ userId: user.id, newEmail }, "Email service not configured");
           return;
         }
-        // TODO: Implement change email confirmation
-        logger.info({ userId: user.id, newEmail }, "Change email confirmation would be sent");
+
+        const emailConfig = createEmailConfig(emailService, logger);
+        await emailConfig.changeEmail.sendChangeEmailConfirmation({
+          currentEmail: user.email,
+          newEmail,
+          name: user.name,
+          confirmationUrl: url,
+        });
       },
     },
     deleteUser: {
       enabled: true,
       sendDeleteAccountVerification: async ({
         user,
-        url: _url,
-        token: _token,
+        url,
       }: {
         user: { id: string; email: string; name: string };
         url: string;
@@ -77,8 +78,13 @@ export const auth = betterAuth({
           logger.warn({ userId: user.id }, "Email service not configured");
           return;
         }
-        // TODO: Implement delete account verification
-        logger.info({ userId: user.id }, "Delete account verification would be sent");
+
+        const emailConfig = createEmailConfig(emailService, logger);
+        await emailConfig.deleteAccount.sendDeleteAccountVerification({
+          email: user.email,
+          name: user.name,
+          verificationUrl: url, // URL already includes the token
+        });
       },
     },
   },
@@ -105,14 +111,22 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     maxPasswordLength: 128,
     autoSignIn: true,
-    sendResetPassword: async ({ user, url: _url, token: _token }) => {
-      // TODO: Send reset password email
-      logger.info({ userId: user.id }, "Reset password email would be sent");
+    sendResetPassword: async ({ user, url }) => {
+      if (!emailService) {
+        logger.warn({ userId: user.id }, "Email service not configured");
+        return;
+      }
+
+      const emailConfig = createEmailConfig(emailService, logger);
+      await emailConfig.passwordReset.sendPasswordResetEmail({
+        email: user.email,
+        name: user.name,
+        resetUrl: url,
+      });
     },
     resetPasswordTokenExpiresIn: 3600,
   },
 
-  // Social providers
   socialProviders: {
     google: {
       clientId: process.env.GOOGLE_CLIENT_ID || "",
@@ -122,10 +136,8 @@ export const auth = betterAuth({
     },
   },
 
-  // Plugins configuration
   plugins: createPluginsConfig(emailService, logger),
 
-  // Database hooks
   databaseHooks: {
     ...createSessionHooks(drizzle),
     user: {

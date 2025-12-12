@@ -25,7 +25,10 @@ export const auditPlanTemplates = auditSchema.table(
     isActive: boolean("is_active").notNull().default(true),
     organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
-    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow().notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
   },
   (table) => [
     index("audit_plan_templates_audit_type_idx").on(table.auditType),

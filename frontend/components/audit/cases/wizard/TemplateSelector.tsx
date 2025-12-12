@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { WizardStepProps } from "../CreateCaseWizard";
+import type { WizardStepProps } from "./types";
 import { SAMPLE_TEMPLATES, getSuggestedDueDate } from "@/lib/data/caseTemplates";
 import { FileText, Clock, CheckCircle } from "lucide-react";
 

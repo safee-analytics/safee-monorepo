@@ -1,6 +1,6 @@
 "use client";
 
-import type { WizardStepProps } from "../CreateCaseWizard";
+import type { WizardStepProps } from "./types";
 import { FileText, DollarSign, Clock } from "lucide-react";
 
 const STATUSES = [
