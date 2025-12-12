@@ -55,37 +55,41 @@ export async function generateReport(
       "Report generation started",
     );
 
-    setTimeout(() => void (async () => {
-      try {
-        const aggregatedData = {
-          caseNumber: caseData.caseNumber,
-          clientName: caseData.clientName,
-          auditType: caseData.auditType,
-          status: caseData.status,
-          generatedAt: new Date().toISOString(),
-          locale: request.settings?.locale ?? "en",
-        };
+    setTimeout(
+      () =>
+        void (async () => {
+          try {
+            const aggregatedData = {
+              caseNumber: caseData.caseNumber,
+              clientName: caseData.clientName,
+              auditType: caseData.auditType,
+              status: caseData.status,
+              generatedAt: new Date().toISOString(),
+              locale: request.settings?.locale ?? "en",
+            };
 
-        await updateAuditReport(deps, newReport.id, {
-          status: "ready",
-          generatedData: aggregatedData,
-          generatedAt: new Date(),
-        });
+            await updateAuditReport(deps, newReport.id, {
+              status: "ready",
+              generatedData: aggregatedData,
+              generatedAt: new Date(),
+            });
 
-        logger.info(
-          {
-            reportId: newReport.id,
-            caseId: request.caseId,
-          },
-          "Report generated successfully",
-        );
-      } catch (err) {
-        logger.error({ error: err, reportId: newReport.id }, "Report generation failed");
-        await updateAuditReport(deps, newReport.id, {
-          status: "failed",
-        });
-      }
-    })(), 0);
+            logger.info(
+              {
+                reportId: newReport.id,
+                caseId: request.caseId,
+              },
+              "Report generated successfully",
+            );
+          } catch (err) {
+            logger.error({ error: err, reportId: newReport.id }, "Report generation failed");
+            await updateAuditReport(deps, newReport.id, {
+              status: "failed",
+            });
+          }
+        })(),
+      0,
+    );
 
     return {
       id: newReport.id,

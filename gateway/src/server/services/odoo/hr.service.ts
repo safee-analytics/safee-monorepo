@@ -629,7 +629,7 @@ export class OdooHRService {
 
     // Remove undefined values
     const filteredEntries = Object.entries(odooData).filter(
-      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined
+      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined,
     );
     odooData = Object.fromEntries(filteredEntries) as typeof odooData;
 
@@ -679,7 +679,7 @@ export class OdooHRService {
 
     // Remove undefined values
     const filteredEntries = Object.entries(odooData).filter(
-      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined
+      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined,
     );
     odooData = Object.fromEntries(filteredEntries) as typeof odooData;
 

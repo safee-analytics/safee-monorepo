@@ -1,10 +1,6 @@
 import sql from "mssql";
 import type { ConnectionPool, config as MSSQLConfig } from "mssql";
-import {
-  BaseConnector,
-  type ConnectorConfig,
-  type ConnectionTestResult,
-} from "./base.connector.js";
+import { BaseConnector, type ConnectorConfig, type ConnectionTestResult } from "./base.connector.js";
 
 export interface MSSQLConnectorConfig extends ConnectorConfig {
   host: string;
@@ -19,8 +15,8 @@ export interface MSSQLConnectorConfig extends ConnectorConfig {
   requestTimeout?: number;
 }
 
-  export class MSSQLConnector extends BaseConnector {
-    private pool: ConnectionPool | null = null;
+export class MSSQLConnector extends BaseConnector {
+  private pool: ConnectionPool | null = null;
 
   async validateConfig(config: ConnectorConfig): Promise<{ valid: boolean; errors?: string[] }> {
     const errors: string[] = [];

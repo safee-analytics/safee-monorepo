@@ -1,10 +1,6 @@
 import mysql from "mysql2/promise";
 import type { Pool, PoolOptions } from "mysql2/promise";
-import {
-  BaseConnector,
-  type ConnectorConfig,
-  type ConnectionTestResult,
-} from "./base.connector.js";
+import { BaseConnector, type ConnectorConfig, type ConnectionTestResult } from "./base.connector.js";
 
 export interface MySQLConfig extends ConnectorConfig {
   host: string;
@@ -17,8 +13,8 @@ export interface MySQLConfig extends ConnectorConfig {
   connectionTimeout?: number;
 }
 
-  export class MySQLConnector extends BaseConnector {
-    private pool: Pool | null = null;
+export class MySQLConnector extends BaseConnector {
+  private pool: Pool | null = null;
 
   async validateConfig(config: ConnectorConfig): Promise<{ valid: boolean; errors?: string[] }> {
     const errors: string[] = [];

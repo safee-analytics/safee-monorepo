@@ -200,18 +200,18 @@ export class DataProxyService {
 
     // Build ORDER BY clause
     let orderByClause = "";
-      if (orderBy && orderBy.length > 0) {
-        const orders = orderBy.map((order) => {
-          let col: string;
-          if (connector instanceof MSSQLConnector) {
-            col = `[${order.column}]`;
-          } else if (connector instanceof MySQLConnector) {
-            col = `\`${order.column}\``;
-          } else {
-            col = `"${order.column}"`;
-          }
-          return `${col} ${order.direction}`;
-        });
+    if (orderBy && orderBy.length > 0) {
+      const orders = orderBy.map((order) => {
+        let col: string;
+        if (connector instanceof MSSQLConnector) {
+          col = `[${order.column}]`;
+        } else if (connector instanceof MySQLConnector) {
+          col = `\`${order.column}\``;
+        } else {
+          col = `"${order.column}"`;
+        }
+        return `${col} ${order.direction}`;
+      });
       orderByClause = `ORDER BY ${orders.join(", ")}`;
     }
 

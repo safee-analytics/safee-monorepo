@@ -384,9 +384,10 @@ export class ChunkedUploadService {
    */
   private scheduleCleanup(uploadId: string): void {
     setTimeout(
-      () => void (async () => {
-        await this.cleanupSession(uploadId);
-      })(),
+      () =>
+        void (async () => {
+          await this.cleanupSession(uploadId);
+        })(),
       5 * 60 * 1000,
     ); // Cleanup after 5 minutes
   }

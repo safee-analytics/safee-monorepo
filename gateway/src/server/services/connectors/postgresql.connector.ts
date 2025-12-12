@@ -1,9 +1,5 @@
 import { Pool } from "pg";
-import {
-  BaseConnector,
-  type ConnectorConfig,
-  type ConnectionTestResult,
-} from "./base.connector.js";
+import { BaseConnector, type ConnectorConfig, type ConnectionTestResult } from "./base.connector.js";
 
 export interface PostgreSQLConfig extends ConnectorConfig {
   host: string;
@@ -16,8 +12,8 @@ export interface PostgreSQLConfig extends ConnectorConfig {
   connectionTimeout?: number;
 }
 
-  export class PostgreSQLConnector extends BaseConnector {
-    private pool: Pool | null = null;
+export class PostgreSQLConnector extends BaseConnector {
+  private pool: Pool | null = null;
 
   async validateConfig(config: ConnectorConfig): Promise<{ valid: boolean; errors?: string[] }> {
     const errors: string[] = [];
