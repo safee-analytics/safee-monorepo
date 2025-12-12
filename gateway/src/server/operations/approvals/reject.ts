@@ -89,11 +89,7 @@ export async function reject(
       requestStatus: "rejected",
     };
   } catch (err) {
-    if (
-      err instanceof InvalidInput ||
-      err instanceof NotFound ||
-      err instanceof InsufficientPermissions
-    ) {
+    if (err instanceof InvalidInput || err instanceof NotFound || err instanceof InsufficientPermissions) {
       throw err;
     }
 

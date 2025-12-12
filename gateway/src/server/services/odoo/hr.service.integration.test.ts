@@ -331,7 +331,7 @@ describe.skip("Odoo HR Service Integration Tests", () => {
 
       expect(filtered.length).toBeGreaterThan(0);
       for (const leave of filtered) {
-        expect((leave.employee_id)[0]).toBe(testEmp!.id);
+        expect(leave.employee_id[0]).toBe(testEmp!.id);
       }
     });
 
@@ -378,7 +378,7 @@ describe.skip("Odoo HR Service Integration Tests", () => {
 
       expect(filtered.length).toBeGreaterThan(0);
       for (const allocation of filtered) {
-        expect((allocation.employee_id)[0]).toBe(testEmp!.id);
+        expect(allocation.employee_id[0]).toBe(testEmp!.id);
       }
     });
   });

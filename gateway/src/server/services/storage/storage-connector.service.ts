@@ -1,5 +1,5 @@
 import type { DrizzleClient } from "@safee/database";
-import { schema, eq, and  } from "@safee/database";
+import { schema, eq, and } from "@safee/database";
 import { StorageFactory, type StorageConfig } from "./storage-factory.js";
 import type { StorageAdapter } from "./storage-adapter.interface.js";
 
@@ -51,7 +51,7 @@ export class StorageConnectorService {
       case "storage_local":
         return {
           type: "local",
-          basePath: (connector.config.basePath!) || `./storage/${connector.organizationId}`,
+          basePath: connector.config.basePath! || `./storage/${connector.organizationId}`,
         };
 
       case "storage_webdav":

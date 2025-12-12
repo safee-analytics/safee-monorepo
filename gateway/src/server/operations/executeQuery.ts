@@ -15,6 +15,6 @@ export async function executeQuery(
   return await dataProxyService.executeQuery(organizationId, {
     connectorId,
     sql: request.sql,
-    params: request.params,
+    params: request.params ?? undefined,
   });
 }

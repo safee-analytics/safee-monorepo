@@ -1,4 +1,4 @@
-import { schema, eq  } from "@safee/database";
+import { schema, eq } from "@safee/database";
 import crypto from "node:crypto";
 import { odooClient } from "./client.js";
 import { type OdooConnectionConfig } from "./client.service.js";

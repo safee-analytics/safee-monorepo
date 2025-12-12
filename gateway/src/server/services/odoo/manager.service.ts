@@ -18,7 +18,12 @@ export class OdooClientManager {
     this.logger = logger;
     this.userProvisioningService = new OdooUserProvisioningService(drizzle);
 
-    setInterval(() => { this.cleanupExpiredClients(); }, 5 * 60 * 1000);
+    setInterval(
+      () => {
+        this.cleanupExpiredClients();
+      },
+      5 * 60 * 1000,
+    );
   }
 
   async getClient(userId: string, organizationId: string): Promise<OdooClient> {

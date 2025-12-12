@@ -62,7 +62,56 @@ import type {
   AssignmentResponse,
   CreateAssignmentRequest,
   HistoryResponse,
+  TemplateStructure,
 } from "../dtos/cases.js";
+import { z } from "zod";
+
+const templateStructureSchema = z.object({
+  sections: z
+    .array(
+      z.object({
+        name: z.string(),
+        description: z
+          .string()
+          .optional()
+          .nullable()
+          .transform((v) => v ?? undefined),
+        sortOrder: z.number(),
+        settings: z
+          .record(z.string(), z.unknown())
+          .optional()
+          .nullable()
+          .transform((v) => v ?? undefined),
+        procedures: z.array(
+          z.object({
+            referenceNumber: z.string(),
+            title: z.string(),
+            description: z
+              .string()
+              .optional()
+              .nullable()
+              .transform((v) => v ?? undefined),
+            requirements: z
+              .record(z.string(), z.unknown())
+              .optional()
+              .nullable()
+              .transform((v) => v ?? undefined),
+            sortOrder: z.number(),
+          }),
+        ),
+      }),
+    )
+    .default([]),
+  settings: z
+    .record(z.string(), z.unknown())
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+});
+
+function sanitizeTemplateStructure(structure: unknown): TemplateStructure {
+  return templateStructureSchema.parse(structure);
+}
 
 @Route("cases")
 @Tags("Cases")
@@ -130,15 +179,15 @@ export class CasesController extends Controller {
 
     return templates.map((t) => ({
       id: t.id,
-      organizationId: t.organizationId ,
+      organizationId: t.organizationId,
       name: t.name,
-      description: t.description ,
+      description: t.description,
       auditType: t.auditType,
-      category: t.category ,
+      category: t.category,
       version: t.version,
       isActive: t.isActive,
       isPublic: t.isPublic,
-      structure: t.structure as TemplateResponse["structure"],
+      structure: sanitizeTemplateStructure(t.structure),
       createdBy: t.createdBy,
       createdAt: t.createdAt.toISOString(),
       updatedAt: t.updatedAt.toISOString(),
@@ -162,27 +211,27 @@ export class CasesController extends Controller {
     const template = await createTemplate(deps, {
       organizationId: request.organizationId ?? organizationId,
       name: request.name,
-      description: request.description,
+      description: request.description ?? undefined,
       auditType: request.auditType,
-      category: request.category,
-      version: request.version,
-      isActive: request.isActive,
-      isPublic: request.isPublic,
-      structure: request.structure,
+      category: request.category ?? undefined,
+      version: request.version ?? undefined,
+      isActive: request.isActive ?? undefined,
+      isPublic: request.isPublic ?? undefined,
+      structure: sanitizeTemplateStructure(request.structure),
       createdBy: userId,
     });
 
     return {
       id: template.id,
-      organizationId: template.organizationId ,
+      organizationId: template.organizationId,
       name: template.name,
-      description: template.description ,
+      description: template.description,
       auditType: template.auditType,
-      category: template.category ,
+      category: template.category,
       version: template.version,
       isActive: template.isActive,
       isPublic: template.isPublic,
-      structure: template.structure as TemplateResponse["structure"],
+      structure: sanitizeTemplateStructure(template.structure),
       createdBy: template.createdBy,
       createdAt: template.createdAt.toISOString(),
       updatedAt: template.updatedAt.toISOString(),
@@ -206,11 +255,11 @@ export class CasesController extends Controller {
 
     return {
       id: template.id,
-      organizationId: template.organizationId ,
+      organizationId: template.organizationId,
       name: template.name,
-      description: template.description ,
+      description: template.description,
       auditType: template.auditType,
-      category: template.category ,
+      category: template.category,
       version: template.version,
       isActive: template.isActive,
       isPublic: template.isPublic,
@@ -288,14 +337,14 @@ export class CasesController extends Controller {
     return scopes.map((s) => ({
       id: s.id,
       caseId: s.caseId,
-      templateId: s.templateId ,
+      templateId: s.templateId,
       name: s.name,
-      description: s.description ,
+      description: s.description,
       status: s.status,
       metadata: s.metadata!,
       createdBy: s.createdBy,
-      completedBy: s.completedBy ,
-      archivedBy: s.archivedBy ,
+      completedBy: s.completedBy,
+      archivedBy: s.archivedBy,
       createdAt: s.createdAt.toISOString(),
       updatedAt: s.updatedAt.toISOString(),
       completedAt: s.completedAt?.toISOString(),
@@ -328,14 +377,14 @@ export class CasesController extends Controller {
     return {
       id: scope.id,
       caseId: scope.caseId,
-      templateId: scope.templateId ,
+      templateId: scope.templateId,
       name: scope.name,
-      description: scope.description ,
+      description: scope.description,
       status: scope.status,
       metadata: scope.metadata!,
       createdBy: scope.createdBy,
-      completedBy: scope.completedBy ,
-      archivedBy: scope.archivedBy ,
+      completedBy: scope.completedBy,
+      archivedBy: scope.archivedBy,
       createdAt: scope.createdAt.toISOString(),
       updatedAt: scope.updatedAt.toISOString(),
       completedAt: scope.completedAt?.toISOString(),
@@ -375,14 +424,14 @@ export class CasesController extends Controller {
     return {
       id: scope.id,
       caseId: scope.caseId,
-      templateId: scope.templateId ,
+      templateId: scope.templateId,
       name: scope.name,
-      description: scope.description ,
+      description: scope.description,
       status: scope.status,
       metadata: scope.metadata!,
       createdBy: scope.createdBy,
-      completedBy: scope.completedBy ,
-      archivedBy: scope.archivedBy ,
+      completedBy: scope.completedBy,
+      archivedBy: scope.archivedBy,
       createdAt: scope.createdAt.toISOString(),
       updatedAt: scope.updatedAt.toISOString(),
       completedAt: scope.completedAt?.toISOString(),
@@ -407,7 +456,7 @@ export class CasesController extends Controller {
       id: s.id,
       scopeId: s.scopeId,
       name: s.name,
-      description: s.description ,
+      description: s.description,
       sortOrder: s.sortOrder,
       isCompleted: s.isCompleted,
       settings: s.settings as Record<string, unknown>,
@@ -435,13 +484,13 @@ export class CasesController extends Controller {
       sectionId: p.sectionId,
       referenceNumber: p.referenceNumber,
       title: p.title,
-      description: p.description ,
+      description: p.description,
       requirements: p.requirements as Record<string, unknown>,
       sortOrder: p.sortOrder,
       isCompleted: p.isCompleted,
-      completedBy: p.completedBy ,
+      completedBy: p.completedBy,
       completedAt: p.completedAt?.toISOString(),
-      memo: p.memo ,
+      memo: p.memo,
       fieldData: p.fieldData!,
       canEdit: p.canEdit,
       createdAt: p.createdAt.toISOString(),
@@ -479,13 +528,13 @@ export class CasesController extends Controller {
     return documents.map((d) => ({
       id: d.id,
       caseId: d.caseId,
-      procedureId: d.procedureId ,
+      procedureId: d.procedureId,
       fileName: d.fileName,
       fileSize: d.fileSize,
       fileType: d.fileType,
       storagePath: d.storagePath,
       version: d.version,
-      parentDocumentId: d.parentDocumentId ,
+      parentDocumentId: d.parentDocumentId,
       uploadedBy: d.uploadedBy,
       uploadedAt: d.uploadedAt.toISOString(),
       isDeleted: d.isDeleted,
@@ -512,21 +561,21 @@ export class CasesController extends Controller {
       fileSize: request.fileSize,
       fileType: request.fileType,
       storagePath: request.storagePath,
-      version: request.version,
-      parentDocumentId: request.parentDocumentId,
+      version: request.version ?? undefined,
+      parentDocumentId: request.parentDocumentId ?? undefined,
       uploadedBy: userId,
     });
 
     return {
       id: document.id,
       caseId: document.caseId,
-      procedureId: document.procedureId ,
+      procedureId: document.procedureId,
       fileName: document.fileName,
       fileSize: document.fileSize,
       fileType: document.fileType,
       storagePath: document.storagePath,
       version: document.version,
-      parentDocumentId: document.parentDocumentId ,
+      parentDocumentId: document.parentDocumentId,
       uploadedBy: document.uploadedBy,
       uploadedAt: document.uploadedAt.toISOString(),
       isDeleted: document.isDeleted,
@@ -562,7 +611,7 @@ export class CasesController extends Controller {
     return notes.map((n) => ({
       id: n.id,
       caseId: n.caseId,
-      procedureId: n.procedureId ,
+      procedureId: n.procedureId,
       noteType: n.noteType,
       content: n.content,
       createdBy: n.createdBy,
@@ -596,7 +645,7 @@ export class CasesController extends Controller {
     return {
       id: note.id,
       caseId: note.caseId,
-      procedureId: note.procedureId ,
+      procedureId: note.procedureId,
       noteType: note.noteType,
       content: note.content,
       createdBy: note.createdBy,
@@ -623,7 +672,7 @@ export class CasesController extends Controller {
     return {
       id: note.id,
       caseId: note.caseId,
-      procedureId: note.procedureId ,
+      procedureId: note.procedureId,
       noteType: note.noteType,
       content: note.content,
       createdBy: note.createdBy,

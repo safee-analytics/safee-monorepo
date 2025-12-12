@@ -40,8 +40,10 @@ export async function updateCase(
     throw new InvalidInput("Case number must be between 3 and 50 characters");
   }
 
+  const clientName = request.clientName ?? undefined;
+
   // Validation: Client name
-  if (request.clientName !== undefined && request.clientName.trim().length === 0) {
+  if (clientName !== undefined && clientName.trim().length === 0) {
     throw new InvalidInput("Client name cannot be empty");
   }
 
@@ -93,9 +95,11 @@ export async function updateCase(
     }
 
     const updated = await dbUpdateCase(deps, caseId, {
-      ...request,
+      status: request.status ?? undefined,
+      priority: request.priority ?? undefined,
       caseNumber: request.caseNumber?.trim(),
-      clientName: request.clientName?.trim(),
+      clientName: clientName?.trim(),
+      auditType: request.auditType ?? undefined,
       dueDate: request.dueDate ? new Date(request.dueDate) : undefined,
       completedDate: request.completedDate ? new Date(request.completedDate) : undefined,
     });

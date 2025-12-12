@@ -104,7 +104,7 @@ export class WebSocketService {
         const headers = fromNodeHeaders(socket.request.headers);
         const session = await auth.api.getSession({ headers });
 
-        if (!session || !session.user || !session.session) {
+        if (!session?.user) {
           logger.warn("Socket.IO connection rejected - no valid session");
           next(new Error("Unauthorized"));
           return;

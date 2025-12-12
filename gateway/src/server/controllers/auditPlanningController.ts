@@ -29,6 +29,7 @@ import {
   getAuditPlanTemplateById,
   createAuditPlanTemplate,
 } from "@safee/database";
+import crypto from "node:crypto";
 import { createAuditPlan as createAuditPlanOp } from "../operations/auditPlanning/createAuditPlan.js";
 import { updateAuditPlan as updateAuditPlanOp } from "../operations/auditPlanning/updateAuditPlan.js";
 import { deleteAuditPlan as deleteAuditPlanOp } from "../operations/auditPlanning/deleteAuditPlan.js";
@@ -48,22 +49,22 @@ export class AuditPlanningController extends Controller {
 
     return plans.map((p) => ({
       id: p.id,
-      caseId: p.caseId ,
+      caseId: p.caseId,
       planType: p.planType,
       title: p.title,
-      clientName: p.clientName ,
-      auditType: p.auditType ,
-      auditYear: p.auditYear ,
-      startDate: p.startDate ,
-      targetCompletion: p.targetCompletion ,
+      clientName: p.clientName,
+      auditType: p.auditType,
+      auditYear: p.auditYear,
+      startDate: p.startDate,
+      targetCompletion: p.targetCompletion,
       objectives: p.objectives,
       businessUnits: p.businessUnits,
       financialAreas: p.financialAreas,
       teamMembers: p.teamMembers,
       phaseBreakdown: p.phaseBreakdown,
-      totalBudget: p.totalBudget ,
-      totalHours: p.totalHours ,
-      materialityThreshold: p.materialityThreshold ,
+      totalBudget: p.totalBudget,
+      totalHours: p.totalHours,
+      materialityThreshold: p.materialityThreshold,
       riskAssessment: p.riskAssessment,
       status: p.status,
       organizationId: p.organizationId,
@@ -89,22 +90,22 @@ export class AuditPlanningController extends Controller {
 
     return {
       id: plan.id,
-      caseId: plan.caseId ,
+      caseId: plan.caseId,
       planType: plan.planType,
       title: plan.title,
-      clientName: plan.clientName ,
-      auditType: plan.auditType ,
-      auditYear: plan.auditYear ,
-      startDate: plan.startDate ,
-      targetCompletion: plan.targetCompletion ,
+      clientName: plan.clientName,
+      auditType: plan.auditType,
+      auditYear: plan.auditYear,
+      startDate: plan.startDate,
+      targetCompletion: plan.targetCompletion,
       objectives: plan.objectives,
       businessUnits: plan.businessUnits,
       financialAreas: plan.financialAreas,
       teamMembers: plan.teamMembers,
       phaseBreakdown: plan.phaseBreakdown,
-      totalBudget: plan.totalBudget ,
-      totalHours: plan.totalHours ,
-      materialityThreshold: plan.materialityThreshold ,
+      totalBudget: plan.totalBudget,
+      totalHours: plan.totalHours,
+      materialityThreshold: plan.materialityThreshold,
       riskAssessment: plan.riskAssessment,
       status: plan.status,
       organizationId: plan.organizationId,
@@ -179,19 +180,19 @@ export class AuditPlanningController extends Controller {
     return templates.map((t) => ({
       id: t.id,
       name: t.name,
-      auditType: t.auditType ,
-      description: t.description ,
+      auditType: t.auditType,
+      description: t.description,
       defaultObjectives: t.defaultObjectives,
       defaultScope: t.defaultScope,
       defaultPhases: t.defaultPhases,
       defaultBusinessUnits: t.defaultBusinessUnits,
       defaultFinancialAreas: t.defaultFinancialAreas,
-      estimatedDuration: t.estimatedDuration ,
-      estimatedHours: t.estimatedHours ,
-      estimatedBudget: t.estimatedBudget ,
+      estimatedDuration: t.estimatedDuration,
+      estimatedHours: t.estimatedHours,
+      estimatedBudget: t.estimatedBudget,
       isDefault: t.isDefault,
       isActive: t.isActive,
-      organizationId: t.organizationId ,
+      organizationId: t.organizationId,
       createdAt: t.createdAt,
       updatedAt: t.updatedAt,
     }));
@@ -210,27 +211,45 @@ export class AuditPlanningController extends Controller {
 
     this.setStatus(201);
 
+    const defaultObjectives =
+      request.defaultObjectives?.map(({ id, description, priority }) => ({
+        id: id ?? crypto.randomUUID(),
+        description,
+        priority,
+      })) ?? undefined;
+
+    const defaultPhases =
+      request.defaultPhases?.map(({ name, duration, description }) => ({
+        name: name ?? "",
+        duration,
+        description: description ?? undefined,
+      })) ?? undefined;
+
     const template = await createAuditPlanTemplate(deps, {
       ...request,
+      defaultObjectives,
+      defaultPhases,
+      isDefault: request.isDefault ?? undefined,
+      isActive: request.isActive ?? undefined,
       organizationId,
     });
 
     return {
       id: template.id,
       name: template.name,
-      auditType: template.auditType ,
-      description: template.description ,
+      auditType: template.auditType,
+      description: template.description,
       defaultObjectives: template.defaultObjectives,
       defaultScope: template.defaultScope,
       defaultPhases: template.defaultPhases,
       defaultBusinessUnits: template.defaultBusinessUnits,
       defaultFinancialAreas: template.defaultFinancialAreas,
-      estimatedDuration: template.estimatedDuration ,
-      estimatedHours: template.estimatedHours ,
-      estimatedBudget: template.estimatedBudget ,
+      estimatedDuration: template.estimatedDuration,
+      estimatedHours: template.estimatedHours,
+      estimatedBudget: template.estimatedBudget,
       isDefault: template.isDefault,
       isActive: template.isActive,
-      organizationId: template.organizationId ,
+      organizationId: template.organizationId,
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
     };
@@ -254,19 +273,19 @@ export class AuditPlanningController extends Controller {
     return {
       id: template.id,
       name: template.name,
-      auditType: template.auditType ,
-      description: template.description ,
+      auditType: template.auditType,
+      description: template.description,
       defaultObjectives: template.defaultObjectives,
       defaultScope: template.defaultScope,
       defaultPhases: template.defaultPhases,
       defaultBusinessUnits: template.defaultBusinessUnits,
       defaultFinancialAreas: template.defaultFinancialAreas,
-      estimatedDuration: template.estimatedDuration ,
-      estimatedHours: template.estimatedHours ,
-      estimatedBudget: template.estimatedBudget ,
+      estimatedDuration: template.estimatedDuration,
+      estimatedHours: template.estimatedHours,
+      estimatedBudget: template.estimatedBudget,
       isDefault: template.isDefault,
       isActive: template.isActive,
-      organizationId: template.organizationId ,
+      organizationId: template.organizationId,
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
     };

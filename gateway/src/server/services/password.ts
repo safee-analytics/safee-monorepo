@@ -114,9 +114,8 @@ export class PasswordService {
         .split("")
         .sort(() => Math.random() - 0.5)
         .join("");
-    } 
-      return "dev-password";
-    
+    }
+    return "dev-password";
   }
 
   isAuthEnabled(): boolean {

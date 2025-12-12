@@ -1,5 +1,5 @@
 import type { DrizzleClient } from "@safee/database";
-import { schema, eq, and  } from "@safee/database";
+import { schema, eq, and } from "@safee/database";
 import { encryptionService } from "../services/encryption.js";
 
 export async function getOdooDevCredentials(

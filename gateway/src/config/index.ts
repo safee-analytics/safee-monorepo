@@ -61,8 +61,7 @@ export interface AuthConfig {
 export function getSecurityConfig(): SecurityConfig {
   const isProduction = ENV === "production";
   const enableHelmet = parseBoolean(process.env.ENABLE_HELMET);
-  const rateLimitWindowMs =
-    parseNumber(process.env.RATE_LIMIT_WINDOW_MS) ?? (isProduction ? 900000 : 60000); // 15min prod, 1min dev
+  const rateLimitWindowMs = parseNumber(process.env.RATE_LIMIT_WINDOW_MS) ?? (isProduction ? 900000 : 60000); // 15min prod, 1min dev
   const rateLimitMaxRequests =
     parseNumber(process.env.RATE_LIMIT_MAX_REQUESTS) ?? (isProduction ? 100 : 1000);
 

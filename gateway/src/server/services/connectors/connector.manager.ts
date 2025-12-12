@@ -118,7 +118,7 @@ export class ConnectorManager {
       organizationId: record.organizationId,
       name: record.name,
       type: record.type as ConnectorMetadata["type"],
-      description: record.description ,
+      description: record.description ?? undefined,
       isActive: record.isActive,
       tags: record.tags ?? [],
       metadata: record.metadata ?? {},
@@ -168,15 +168,17 @@ export class ConnectorManager {
     }
 
     // Load from database
-    const [record] = await this.drizzle
+    const records = await this.drizzle
       .select()
       .from(connectors)
       .where(and(eq(connectors.id, connectorId), eq(connectors.organizationId, organizationId)));
 
     // record is undefined if not found
-    if (record === undefined) {
+    if (records.length === 0) {
       throw new Error(`Connector ${connectorId} not found`);
     }
+
+    const record = records[0];
 
     if (!record.isActive) {
       throw new Error(`Connector ${connectorId} is not active`);
@@ -194,7 +196,7 @@ export class ConnectorManager {
       organizationId: record.organizationId,
       name: record.name,
       type: record.type as ConnectorMetadata["type"],
-      description: record.description ,
+      description: record.description ?? undefined,
       isActive: record.isActive,
       tags: record.tags ?? [],
       metadata: record.metadata ?? {},
@@ -246,7 +248,7 @@ export class ConnectorManager {
     // Filter by tags if provided
     if (filters?.tags && filters.tags.length > 0) {
       return results.filter((r: typeof connectors.$inferSelect) =>
-        filters.tags!.some((tag) => (r.tags)?.includes(tag)),
+        filters.tags!.some((tag) => r.tags?.includes(tag)),
       );
     }
 
@@ -269,15 +271,17 @@ export class ConnectorManager {
       updatedBy?: string;
     },
   ) {
-    const [existing] = await this.drizzle
+    const existingRecords = await this.drizzle
       .select()
       .from(connectors)
       .where(and(eq(connectors.id, connectorId), eq(connectors.organizationId, organizationId)));
 
     // existing is undefined if not found
-    if (existing === undefined) {
+    if (existingRecords.length === 0) {
       throw new Error(`Connector ${connectorId} not found`);
     }
+
+    const existing = existingRecords[0];
 
     type UpdateDataType = Partial<typeof connectors.$inferInsert> & {
       updatedAt: Date;
@@ -313,7 +317,7 @@ export class ConnectorManager {
         organizationId: existing.organizationId,
         name: existing.name,
         type: existing.type as ConnectorMetadata["type"],
-        description: existing.description ,
+        description: existing.description ?? undefined,
         isActive: existing.isActive,
         tags: existing.tags ?? [],
         metadata: existing.metadata ?? {},

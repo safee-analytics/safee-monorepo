@@ -4,10 +4,11 @@ import { ENV } from "../env.js";
 
 type SecretCache = Record<
   string,
-  {
-    value: string;
-    expiry: number;
-  } | undefined
+  | {
+      value: string;
+      expiry: number;
+    }
+  | undefined
 >;
 
 export class SecretsManager {

@@ -59,6 +59,254 @@ import type {
   SyncAllEmployeesResponse,
   SyncAllDepartmentsResponse,
 } from "../dtos/hrManagement.js";
+import { z } from "zod";
+
+const employeeSchema = z.object({
+  userId: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  odooEmployeeId: z
+    .number()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  name: z.string(),
+  email: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  phone: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  mobile: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  workEmail: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  workPhone: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  workLocation: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  jobTitle: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  departmentId: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  managerId: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  employeeType: z
+    .enum(["employee", "student", "trainee", "contractor", "freelance"])
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  gender: z
+    .enum(["male", "female", "other"])
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  maritalStatus: z
+    .enum(["single", "married", "cohabitant", "widower", "divorced"])
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  birthday: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  placeOfBirth: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  countryOfBirth: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  nationality: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  identificationId: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  passportId: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  bankAccountNumber: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  bankName: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  bankIban: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  emergencyContact: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  emergencyPhone: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  emergencyRelation: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  hireDate: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  terminationDate: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  photoUrl: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  notes: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  active: z
+    .boolean()
+    .optional()
+    .nullable()
+    .transform((v) => (v === null ? undefined : v)),
+});
+
+const updateEmployeeSchema = employeeSchema.partial();
+
+const departmentSchema = z.object({
+  odooDepartmentId: z
+    .number()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  name: z.string(),
+  code: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  parentId: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  managerId: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  color: z
+    .number()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+  note: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((v) => v ?? undefined),
+});
+
+const updateDepartmentSchema = departmentSchema.partial();
+
+function sanitizeOdooEmployeePayload(employee: {
+  name: string;
+  workEmail?: string | null;
+  workPhone?: string | null;
+  mobile?: string | null;
+  jobTitle?: string | null;
+  departmentId?: string | null;
+  managerId?: string | null;
+  employeeType?: string | null;
+  gender?: string | null;
+  maritalStatus?: string | null;
+  birthday?: string | null;
+  identificationId?: string | null;
+  passportId?: string | null;
+  emergencyContact?: string | null;
+  emergencyPhone?: string | null;
+  placeOfBirth?: string | null;
+  active?: boolean | null;
+}) {
+  return {
+    name: employee.name,
+    workEmail: employee.workEmail ?? undefined,
+    workPhone: employee.workPhone ?? undefined,
+    mobilePhone: employee.mobile ?? undefined,
+    jobTitle: employee.jobTitle ?? undefined,
+    employeeType: employee.employeeType ?? undefined,
+    gender: employee.gender ?? undefined,
+    maritalStatus: employee.maritalStatus ?? undefined,
+    birthday: employee.birthday ?? undefined,
+    identificationId: employee.identificationId ?? undefined,
+    passportId: employee.passportId ?? undefined,
+    emergencyContact: employee.emergencyContact ?? undefined,
+    emergencyPhone: employee.emergencyPhone ?? undefined,
+    placeOfBirth: employee.placeOfBirth ?? undefined,
+    active: employee.active ?? undefined,
+  };
+}
+
+function sanitizeOdooDepartmentPayload(department: {
+  name: string;
+  color?: number | null;
+  note?: string | null;
+}) {
+  return {
+    name: department.name,
+    color: department.color ?? undefined,
+    note: department.note ?? undefined,
+  };
+}
 
 @Route("hr-management")
 @Tags("HR Management")
@@ -185,14 +433,15 @@ export class HRManagementController extends Controller {
     @Body() body: CreateEmployeeRequest,
   ): Promise<EmployeeDbResponse> {
     const ctx = this.getServerContext(request);
+    const parsedBody = employeeSchema.parse(body);
 
     // Create employee in database
     const employee = await createEmployee(
       { drizzle: ctx.drizzle, logger: ctx.logger },
       {
-        ...body,
+        ...parsedBody,
         organizationId: ctx.organizationId,
-        userId: body.userId ?? ctx.userId, // Use provided userId or current user's userId
+        userId: parsedBody.userId ?? ctx.userId, // Use provided userId or current user's userId
       },
     );
 
@@ -209,7 +458,7 @@ export class HRManagementController extends Controller {
               { drizzle: ctx.drizzle, logger: ctx.logger },
               employee.departmentId,
             );
-            odooDepartmentId = department?.odooDepartmentId ;
+            odooDepartmentId = department?.odooDepartmentId ?? undefined;
           }
 
           // Resolve manager Odoo ID if manager exists
@@ -219,28 +468,14 @@ export class HRManagementController extends Controller {
               { drizzle: ctx.drizzle, logger: ctx.logger },
               employee.managerId,
             );
-            odooManagerId = manager?.odooEmployeeId ;
+            odooManagerId = manager?.odooEmployeeId ?? undefined;
           }
 
           // Create in Odoo
           const odooEmployeeId = await hrService.upsertEmployee({
-            name: employee.name,
-            workEmail: employee.workEmail ,
-            workPhone: employee.workPhone ,
-            mobilePhone: employee.mobile ,
-            jobTitle: employee.jobTitle ,
+            ...sanitizeOdooEmployeePayload(employee),
             departmentId: odooDepartmentId,
             managerId: odooManagerId,
-            employeeType: employee.employeeType ,
-            gender: employee.gender ,
-            maritalStatus: employee.maritalStatus ,
-            birthday: employee.birthday ,
-            identificationId: employee.identificationId ,
-            passportId: employee.passportId ,
-            emergencyContact: employee.emergencyContact ,
-            emergencyPhone: employee.emergencyPhone ,
-            placeOfBirth: employee.placeOfBirth ,
-            active: employee.active,
           });
 
           // Update employee with Odoo ID
@@ -270,9 +505,14 @@ export class HRManagementController extends Controller {
     @Body() body: UpdateEmployeeRequest,
   ): Promise<EmployeeDbResponse> {
     const ctx = this.getServerContext(request);
+    const parsedBody = updateEmployeeSchema.parse(body);
 
     // Update employee in database
-    const employee = await updateEmployee({ drizzle: ctx.drizzle, logger: ctx.logger }, employeeId, body);
+    const employee = await updateEmployee(
+      { drizzle: ctx.drizzle, logger: ctx.logger },
+      employeeId,
+      parsedBody,
+    );
 
     // Sync to Odoo in background (skip if change came from Odoo webhook to prevent loop)
     if (!this.isFromOdooWebhook(request)) {
@@ -295,7 +535,7 @@ export class HRManagementController extends Controller {
               { drizzle: ctx.drizzle, logger: ctx.logger },
               employee.departmentId,
             );
-            odooDepartmentId = department?.odooDepartmentId ;
+            odooDepartmentId = department?.odooDepartmentId ?? undefined;
           }
 
           // Resolve manager Odoo ID if manager exists
@@ -305,29 +545,15 @@ export class HRManagementController extends Controller {
               { drizzle: ctx.drizzle, logger: ctx.logger },
               employee.managerId,
             );
-            odooManagerId = manager?.odooEmployeeId ;
+            odooManagerId = manager?.odooEmployeeId ?? undefined;
           }
 
           // Update in Odoo
           await hrService.upsertEmployee({
             odooEmployeeId: employee.odooEmployeeId,
-            name: employee.name,
-            workEmail: employee.workEmail ,
-            workPhone: employee.workPhone ,
-            mobilePhone: employee.mobile ,
-            jobTitle: employee.jobTitle ,
+            ...sanitizeOdooEmployeePayload(employee),
             departmentId: odooDepartmentId,
             managerId: odooManagerId,
-            employeeType: employee.employeeType ,
-            gender: employee.gender ,
-            maritalStatus: employee.maritalStatus ,
-            birthday: employee.birthday ,
-            identificationId: employee.identificationId ,
-            passportId: employee.passportId ,
-            emergencyContact: employee.emergencyContact ,
-            emergencyPhone: employee.emergencyPhone ,
-            placeOfBirth: employee.placeOfBirth ,
-            active: employee.active,
           });
 
           ctx.logger.info(
@@ -605,12 +831,13 @@ export class HRManagementController extends Controller {
     @Body() body: CreateDepartmentRequest,
   ): Promise<DepartmentDbResponse> {
     const ctx = this.getServerContext(request);
+    const parsedBody = departmentSchema.parse(body);
 
     // Create department in database
     const department = await createDepartment(
       { drizzle: ctx.drizzle, logger: ctx.logger },
       {
-        ...body,
+        ...parsedBody,
         organizationId: ctx.organizationId,
       },
     );
@@ -628,15 +855,14 @@ export class HRManagementController extends Controller {
               { drizzle: ctx.drizzle, logger: ctx.logger },
               department.parentId,
             );
-            odooParentId = parentDept?.odooDepartmentId ;
+            odooParentId = parentDept?.odooDepartmentId ?? undefined;
           }
 
           // Create in Odoo
           const odooDepartmentId = await hrService.upsertDepartment({
-            name: department.name,
+            odooDepartmentId: department.odooDepartmentId ?? undefined,
             parentId: odooParentId,
-            color: department.color ,
-            note: department.note ,
+            ...sanitizeOdooDepartmentPayload(department),
           });
 
           // Update department with Odoo ID
@@ -668,12 +894,13 @@ export class HRManagementController extends Controller {
     @Body() body: UpdateDepartmentRequest,
   ): Promise<DepartmentDbResponse> {
     const ctx = this.getServerContext(request);
+    const parsedBody = updateDepartmentSchema.parse(body);
 
     // Update department in database
     const department = await updateDepartment(
       { drizzle: ctx.drizzle, logger: ctx.logger },
       departmentId,
-      body,
+      parsedBody,
     );
 
     // Sync to Odoo in background (skip if change came from Odoo webhook to prevent loop)
@@ -697,16 +924,14 @@ export class HRManagementController extends Controller {
               { drizzle: ctx.drizzle, logger: ctx.logger },
               department.parentId,
             );
-            odooParentId = parentDept?.odooDepartmentId ;
+            odooParentId = parentDept?.odooDepartmentId ?? undefined;
           }
 
           // Update in Odoo
           await hrService.upsertDepartment({
             odooDepartmentId: department.odooDepartmentId,
-            name: department.name,
             parentId: odooParentId,
-            color: department.color ,
-            note: department.note ,
+            ...sanitizeOdooDepartmentPayload(department),
           });
 
           ctx.logger.info(

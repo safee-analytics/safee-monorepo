@@ -15,6 +15,41 @@ import {
   getActiveViewers,
 } from "@safee/database";
 
+function sanitizeMetadata(
+  metadata: Record<string, unknown> | null | undefined,
+): Record<string, unknown> | undefined {
+  if (!metadata) return undefined;
+  const {
+    caseName,
+    oldValue,
+    newValue,
+    documentName,
+    documentId,
+    userName,
+    userRole,
+    userId,
+    workflowId,
+    stepId,
+    reportId,
+    ...rest
+  } = metadata;
+
+  return {
+    ...rest,
+    caseName: caseName ?? undefined,
+    oldValue: oldValue ?? undefined,
+    newValue: newValue ?? undefined,
+    documentName: documentName ?? undefined,
+    documentId: documentId ?? undefined,
+    userName: userName ?? undefined,
+    userRole: userRole ?? undefined,
+    userId: userId ?? undefined,
+    workflowId: workflowId ?? undefined,
+    stepId: stepId ?? undefined,
+    reportId: reportId ?? undefined,
+  };
+}
+
 @Route("collaboration")
 @Tags("Collaboration")
 export class CollaborationController extends Controller {
@@ -33,7 +68,7 @@ export class CollaborationController extends Controller {
       id: a.id,
       caseId: a.caseId,
       activityType: a.activityType,
-      userId: a.userId ,
+      userId: a.userId,
       user: a.user
         ? {
             id: a.user.id,
@@ -41,7 +76,7 @@ export class CollaborationController extends Controller {
             email: a.user.email,
           }
         : undefined,
-      metadata: a.metadata,
+      metadata: sanitizeMetadata(a.metadata),
       isRead: a.isRead,
       createdAt: a.createdAt,
     }));
@@ -60,14 +95,14 @@ export class CollaborationController extends Controller {
       caseId: request.caseId,
       activityType: request.activityType,
       userId,
-      metadata: request.metadata,
+      metadata: sanitizeMetadata(request.metadata),
     });
 
     return {
       id: activity.id,
       caseId: activity.caseId,
       activityType: activity.activityType,
-      userId: activity.userId ,
+      userId: activity.userId,
       metadata: activity.metadata,
       isRead: activity.isRead,
       createdAt: activity.createdAt,

@@ -40,7 +40,9 @@ export class OrganizationSlugController extends Controller {
       .map((org) => {
         if (org.slug === baseSlug) return 1;
 
-        const match = new RegExp(`^${baseSlug.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}-(\\d+)$`).exec(org.slug);
+        const match = new RegExp(`^${baseSlug.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}-(\\d+)$`).exec(
+          org.slug,
+        );
         return match ? parseInt(match[1], 10) : 0;
       })
       .filter((n) => n > 0);

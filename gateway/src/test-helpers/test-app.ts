@@ -1,5 +1,5 @@
 import { Application } from "express";
-import { connect, redisConnect, InMemoryPubSub , JobScheduler , FileSystemStorage  } from "@safee/database";
+import { connect, redisConnect, InMemoryPubSub, JobScheduler, FileSystemStorage } from "@safee/database";
 import { pino, type Logger } from "pino";
 import { server } from "../server/index.js";
 
@@ -49,12 +49,12 @@ export async function createTestApp(): Promise<TestApp> {
     scheduler,
   });
 
-  const cleanup = async () => {
+  async function cleanup() {
     await scheduler.stop();
     await pubsub.close();
     await redis.quit();
     await closeDb();
-  };
+  }
 
   return { app, cleanup };
 }

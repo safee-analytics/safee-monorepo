@@ -75,7 +75,7 @@ export class OdooClient {
       if (data.error) {
         const errorMessage =
           typeof data.error === "object"
-            ? data.error.message ?? JSON.stringify(data.error)
+            ? (data.error.message ?? JSON.stringify(data.error))
             : String(data.error);
         throw new BadGateway(`Odoo error: ${errorMessage}`);
       }

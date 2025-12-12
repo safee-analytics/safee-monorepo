@@ -262,10 +262,7 @@ export class DataProxyService {
     } else {
       // PostgreSQL and MySQL use positional parameters
       rows = await connector.query<T>(dataQuery, [...whereParams, limit, offset] as unknown[]);
-      const [countRes] = await connector.query<{ count: number | string }>(
-        countQuery,
-        whereParams,
-      );
+      const [countRes] = await connector.query<{ count: number | string }>(countQuery, whereParams);
       countResult = countRes;
     }
 
@@ -337,13 +334,12 @@ export class DataProxyService {
         LIMIT ?
       `;
       return await connector.query<T>(query, [searchPattern, limit]);
-    } 
-      // MSSQL
-      query = `
+    }
+    // MSSQL
+    query = `
         SELECT TOP ${limit} * FROM [${schema}].[${table}]
         WHERE ${whereClause}
       `;
-      return await connector.query<T>(query, { searchTerm: searchPattern });
-    
+    return await connector.query<T>(query, { searchTerm: searchPattern });
   }
 }

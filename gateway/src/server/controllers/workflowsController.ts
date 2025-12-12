@@ -15,7 +15,7 @@ import {
 } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext } from "../serverContext.js";
-import { schema, workflowRulesSchema, ruleSchema, eq, and  } from "@safee/database";
+import { schema, workflowRulesSchema, ruleSchema, eq, and } from "@safee/database";
 import { z } from "zod";
 
 type StepType = "single" | "parallel" | "any";
@@ -198,7 +198,7 @@ export class WorkflowsController extends Controller {
       organizationId: workflow.organizationId,
       entityType: workflow.entityType,
       isActive: workflow.isActive,
-      rules: workflow.rules ,
+      rules: workflow.rules ? workflowRulesSchema.parse(workflow.rules) : undefined,
       createdAt: workflow.createdAt.toISOString(),
       updatedAt: workflow.updatedAt.toISOString(),
       steps: steps.map((s) => ({
@@ -206,7 +206,7 @@ export class WorkflowsController extends Controller {
         stepOrder: s.stepOrder,
         stepType: stepTypeSchema.parse(s.stepType),
         approverType: approverTypeSchema.parse(s.approverType),
-        approverId: s.approverId ,
+        approverId: s.approverId ?? undefined,
         minApprovals: s.minApprovals,
         requiredApprovers: s.requiredApprovers,
       })),
@@ -245,7 +245,7 @@ export class WorkflowsController extends Controller {
       organizationId: w.organizationId,
       entityType: w.entityType,
       isActive: w.isActive,
-      rules: w.rules ,
+      rules: w.rules ? workflowRulesSchema.parse(w.rules) : undefined,
       createdAt: w.createdAt.toISOString(),
       updatedAt: w.updatedAt.toISOString(),
       steps: w.steps.map((s) => ({
@@ -253,7 +253,7 @@ export class WorkflowsController extends Controller {
         stepOrder: s.stepOrder,
         stepType: stepTypeSchema.parse(s.stepType),
         approverType: approverTypeSchema.parse(s.approverType),
-        approverId: s.approverId ,
+        approverId: s.approverId ?? undefined,
         minApprovals: s.minApprovals,
         requiredApprovers: s.requiredApprovers,
       })),
@@ -294,7 +294,7 @@ export class WorkflowsController extends Controller {
       organizationId: workflow.organizationId,
       entityType: workflow.entityType,
       isActive: workflow.isActive,
-      rules: workflow.rules ,
+      rules: workflow.rules ? workflowRulesSchema.parse(workflow.rules) : undefined,
       createdAt: workflow.createdAt.toISOString(),
       updatedAt: workflow.updatedAt.toISOString(),
       steps: workflow.steps.map((s) => ({
@@ -302,7 +302,7 @@ export class WorkflowsController extends Controller {
         stepOrder: s.stepOrder,
         stepType: stepTypeSchema.parse(s.stepType),
         approverType: approverTypeSchema.parse(s.approverType),
-        approverId: s.approverId ,
+        approverId: s.approverId ?? undefined,
         minApprovals: s.minApprovals,
         requiredApprovers: s.requiredApprovers,
       })),
@@ -323,12 +323,12 @@ export class WorkflowsController extends Controller {
     const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     // Update workflow
-    const [workflow] = await ctx.drizzle
+    const updatedWorkflows = await ctx.drizzle
       .update(schema.approvalWorkflows)
       .set({
         name: request.name,
         isActive: request.isActive,
-        rules: request.rules,
+        rules: request.rules ?? undefined,
         updatedAt: new Date(),
       })
       .where(
@@ -340,9 +340,11 @@ export class WorkflowsController extends Controller {
       .returning();
 
     // workflow is undefined if not found
-    if (workflow === undefined) {
+    if (updatedWorkflows.length === 0) {
       throw new Error("Workflow not found");
     }
+
+    const workflow = updatedWorkflows[0];
 
     // Update steps if provided
     if (request.steps) {
@@ -360,7 +362,7 @@ export class WorkflowsController extends Controller {
         stepOrder: step.stepOrder,
         stepType: step.stepType,
         approverType: step.approverType,
-        approverId: step.approverId,
+        approverId: step.approverId ?? undefined,
         minApprovals: step.minApprovals ?? 1,
         requiredApprovers: step.requiredApprovers ?? 1,
       }));

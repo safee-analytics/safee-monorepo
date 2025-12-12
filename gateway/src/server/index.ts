@@ -214,7 +214,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
       return res.status(err.statusCode).json({
         message: err.message,
         code: err.code,
-        ...(err.context && Object.keys(err.context).length > 0 && { context: err.context }),
+        ...(Object.keys(err.context).length > 0 && { context: err.context }),
       });
     }
 
@@ -262,14 +262,14 @@ export async function startServer(deps: Dependencies) {
   deps.logger.info("WebSocket service connected to ChunkedUploadService");
 
   // Graceful shutdown
-  const shutdown = async () => {
+  async function shutdown() {
     deps.logger.info("Starting graceful shutdown...");
     await wsService.shutdown();
     httpServer.close(() => {
       deps.logger.info("HTTP server closed");
       process.exit(0);
     });
-  };
+  }
 
   process.on("SIGTERM", shutdown);
   process.on("SIGINT", shutdown);

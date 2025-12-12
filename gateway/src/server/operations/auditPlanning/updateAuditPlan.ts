@@ -3,6 +3,7 @@ import { updateAuditPlan as dbUpdateAuditPlan, getAuditPlanById } from "@safee/d
 import { pino } from "pino";
 import { OperationFailed, InvalidInput, NotFound } from "../../errors.js";
 import type { UpdateAuditPlanRequest, AuditPlanResponse } from "../../dtos/auditPlanning.js";
+import crypto from "node:crypto";
 
 export async function updateAuditPlan(
   drizzle: DrizzleClient,
@@ -22,11 +23,13 @@ export async function updateAuditPlan(
     throw new NotFound("Audit plan not found");
   }
 
-  if (request.title !== undefined && request.title.trim().length === 0) {
+  const title = request.title ?? undefined;
+
+  if (title !== undefined && title.trim().length === 0) {
     throw new InvalidInput("Title cannot be empty");
   }
 
-  if (request.title !== undefined && request.title.length > 500) {
+  if (title !== undefined && title.length > 500) {
     throw new InvalidInput("Title must be less than 500 characters");
   }
 
@@ -39,7 +42,65 @@ export async function updateAuditPlan(
   }
 
   try {
-    const updatedPlan = await dbUpdateAuditPlan(deps, planId, request);
+    const objectives =
+      request.objectives?.map((obj) => ({
+        id: obj.id ?? crypto.randomUUID(),
+        description: obj.description,
+        priority: obj.priority ?? undefined,
+      })) ?? undefined;
+
+    const teamMembers =
+      request.teamMembers
+        ?.filter((member) => member.userId != null)
+        .map((member) => ({
+          userId: member.userId as string,
+          name: member.name,
+          role: member.role,
+          hours: member.hours ?? undefined,
+        })) ?? undefined;
+
+    const phaseBreakdown =
+      request.phaseBreakdown?.map((phase) => ({
+        name: phase.name ?? "",
+        duration: phase.duration,
+        description: phase.description ?? undefined,
+        startDate: phase.startDate ?? undefined,
+        endDate: phase.endDate ?? undefined,
+      })) ?? undefined;
+
+    const riskAssessment = request.riskAssessment
+      ? {
+          risks:
+            request.riskAssessment.risks?.map((risk) => ({
+              type: risk.type ?? "",
+              severity: risk.severity,
+              message: risk.message,
+            })) ?? undefined,
+          overallRisk: request.riskAssessment.overallRisk ?? undefined,
+          score: request.riskAssessment.score ?? undefined,
+        }
+      : undefined;
+
+    const updatedPlan = await dbUpdateAuditPlan(deps, planId, {
+      title: title?.trim(),
+      status: request.status ?? undefined,
+      caseId: request.caseId ?? undefined,
+      planType: request.planType ?? undefined,
+      clientName: request.clientName ?? undefined,
+      auditType: request.auditType ?? undefined,
+      auditYear: request.auditYear ?? undefined,
+      startDate: request.startDate ?? undefined,
+      targetCompletion: request.targetCompletion ?? undefined,
+      businessUnits: request.businessUnits ?? undefined,
+      financialAreas: request.financialAreas ?? undefined,
+      totalBudget: request.totalBudget ?? undefined,
+      totalHours: request.totalHours ?? undefined,
+      materialityThreshold: request.materialityThreshold ?? undefined,
+      objectives,
+      teamMembers,
+      phaseBreakdown,
+      riskAssessment,
+    });
 
     logger.info(
       {
@@ -51,22 +112,22 @@ export async function updateAuditPlan(
 
     return {
       id: updatedPlan.id,
-      caseId: updatedPlan.caseId ,
+      caseId: updatedPlan.caseId,
       planType: updatedPlan.planType,
       title: updatedPlan.title,
-      clientName: updatedPlan.clientName ,
-      auditType: updatedPlan.auditType ,
-      auditYear: updatedPlan.auditYear ,
-      startDate: updatedPlan.startDate ,
-      targetCompletion: updatedPlan.targetCompletion ,
+      clientName: updatedPlan.clientName,
+      auditType: updatedPlan.auditType,
+      auditYear: updatedPlan.auditYear,
+      startDate: updatedPlan.startDate,
+      targetCompletion: updatedPlan.targetCompletion,
       objectives: updatedPlan.objectives,
       businessUnits: updatedPlan.businessUnits,
       financialAreas: updatedPlan.financialAreas,
       teamMembers: updatedPlan.teamMembers,
       phaseBreakdown: updatedPlan.phaseBreakdown,
-      totalBudget: updatedPlan.totalBudget ,
-      totalHours: updatedPlan.totalHours ,
-      materialityThreshold: updatedPlan.materialityThreshold ,
+      totalBudget: updatedPlan.totalBudget,
+      totalHours: updatedPlan.totalHours,
+      materialityThreshold: updatedPlan.materialityThreshold,
       riskAssessment: updatedPlan.riskAssessment,
       status: updatedPlan.status,
       organizationId: updatedPlan.organizationId,

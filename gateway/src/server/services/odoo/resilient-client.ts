@@ -527,7 +527,7 @@ export class ResilientOdooClient implements OdooClient {
           : 0,
       successRate:
         this.metrics.totalRequests > 0
-          ? `${((this.metrics.successfulRequests / this.metrics.totalRequests) * 100).toFixed(2)  }%`
+          ? `${((this.metrics.successfulRequests / this.metrics.totalRequests) * 100).toFixed(2)}%`
           : "N/A",
       circuitState: this.circuitState,
       recentFailuresCount: this.recentFailures.length,

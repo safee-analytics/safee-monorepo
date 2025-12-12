@@ -75,7 +75,7 @@ export async function getOdooWebhookConfig(
     const odooClientManager = getOdooClientManager();
     const client = await odooClientManager.getClient(userId, organizationId);
 
-    const getParam = async (key: string, defaultValue = ""): Promise<string> => {
+    async function getParam(key: string, defaultValue = ""): Promise<string> {
       const paramIds = await client.search("ir.config_parameter", [[["key", "=", key]]]);
 
       if (paramIds.length === 0) {
@@ -85,7 +85,7 @@ export async function getOdooWebhookConfig(
       const params = await client.read("ir.config_parameter", paramIds, ["value"]);
       const value = params[0]?.value;
       return typeof value === "string" ? value : defaultValue;
-    };
+    }
 
     const config: OdooWebhookConfig = {
       webhooksEnabled: (await getParam("safee.webhooks_enabled", "False")) === "True",

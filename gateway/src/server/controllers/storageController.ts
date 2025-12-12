@@ -108,23 +108,19 @@ export class StorageController extends Controller {
     @FormField() tags?: string,
     @FormField() metadata?: string,
   ): Promise<FileMetadata> {
-    if (!file) {
-      throw new Error("No file provided");
-    }
-
-    if (!request.betterAuthSession?.user.id || !request.betterAuthSession?.session.activeOrganizationId) {
+    if (!request.betterAuthSession?.user.id || !request.betterAuthSession.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
 
     return await storageService.uploadFile(file, {
       folderId,
       tags: tags ? JSON.parse(tags) : undefined,
       metadata: metadata ? JSON.parse(metadata) : undefined,
-      userId: request.betterAuthSession!.user.id,
+      userId: request.betterAuthSession.user.id,
     });
   }
 
@@ -141,23 +137,19 @@ export class StorageController extends Controller {
     @FormField() tags?: string,
     @FormField() metadata?: string,
   ): Promise<FileMetadata[]> {
-    if (!files || files.length === 0) {
-      throw new Error("No files provided");
-    }
-
-    if (!request.betterAuthSession?.user.id || !request.betterAuthSession?.session.activeOrganizationId) {
+    if (!request.betterAuthSession?.user.id || !request.betterAuthSession.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
 
     return await storageService.uploadFiles(files, {
       folderId,
       tags: tags ? JSON.parse(tags) : undefined,
       metadata: metadata ? JSON.parse(metadata) : undefined,
-      userId: request.betterAuthSession!.user.id,
+      userId: request.betterAuthSession.user.id,
     });
   }
 
@@ -175,7 +167,7 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
     return await storageService.getFileMetadata(fileId);
   }
@@ -191,7 +183,7 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const response = (request as any).res as Response;
@@ -210,7 +202,7 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
     await storageService.deleteFile(fileId);
   }
@@ -237,7 +229,7 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
 
     return await storageService.searchFiles({
@@ -263,15 +255,15 @@ export class StorageController extends Controller {
     @Body() body: CreateFolderRequest,
     @Request() request: AuthenticatedRequest,
   ): Promise<FolderMetadata> {
-    if (!request.betterAuthSession?.user.id || !request.betterAuthSession?.session.activeOrganizationId) {
+    if (!request.betterAuthSession?.user.id || !request.betterAuthSession.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
 
-    return await storageService.createFolder(body.name, body.parentId, request.betterAuthSession!.user.id);
+    return await storageService.createFolder(body.name, body.parentId, request.betterAuthSession.user.id);
   }
 
   /**
@@ -288,7 +280,7 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
     return await storageService.getFolderContents(folderId);
   }
@@ -308,7 +300,7 @@ export class StorageController extends Controller {
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
     await storageService.deleteFolder(folderId);
   }
@@ -321,15 +313,15 @@ export class StorageController extends Controller {
   public async getQuota(
     @Request() request: AuthenticatedRequest,
   ): Promise<{ used: number; total: number; remaining: number; unit: string }> {
-    if (!request.betterAuthSession?.user.id || !request.betterAuthSession?.session.activeOrganizationId) {
+    if (!request.betterAuthSession?.user.id || !request.betterAuthSession.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId!,
+      request.betterAuthSession.session.activeOrganizationId,
     );
 
-    return await storageService.getQuota(request.betterAuthSession!.user.id);
+    return await storageService.getQuota(request.betterAuthSession.user.id);
   }
 
   /**
@@ -384,7 +376,7 @@ export class StorageController extends Controller {
       metadata?: Record<string, unknown>;
     },
   ): Promise<{ uploadId: string; expiresAt: Date }> {
-    if (!request.betterAuthSession?.user.id || !request.betterAuthSession?.session.activeOrganizationId) {
+    if (!request.betterAuthSession?.user.id || !request.betterAuthSession.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
@@ -408,8 +400,8 @@ export class StorageController extends Controller {
       mimeType,
       totalChunks,
       chunkSize,
-      userId: request.betterAuthSession!.user.id,
-      organizationId: request.betterAuthSession!.session.activeOrganizationId,
+      userId: request.betterAuthSession.user.id,
+      organizationId: request.betterAuthSession.session.activeOrganizationId,
       metadata,
     });
 
@@ -432,10 +424,6 @@ export class StorageController extends Controller {
     receivedChunks: number[];
     remainingChunks: number[];
   }> {
-    if (!chunk) {
-      throw new Error("No chunk provided");
-    }
-
     const chunkedUploadService = getChunkedUploadServiceInstance();
     return await chunkedUploadService.uploadChunk(uploadId, chunkNumber, chunk.buffer);
   }
@@ -456,7 +444,7 @@ export class StorageController extends Controller {
       metadata?: Record<string, unknown>;
     },
   ): Promise<FileMetadata> {
-    if (!request.betterAuthSession?.user.id || !request.betterAuthSession?.session.activeOrganizationId) {
+    if (!request.betterAuthSession?.user.id || !request.betterAuthSession.session.activeOrganizationId) {
       throw new Error("User not authenticated");
     }
 
@@ -473,7 +461,7 @@ export class StorageController extends Controller {
 
     // Get storage service and save the assembled file
     const storageService = await this.getStorageService(
-      request.betterAuthSession!.session.activeOrganizationId,
+      request.betterAuthSession.session.activeOrganizationId,
     );
 
     // Create a mock Multer file object
@@ -495,7 +483,7 @@ export class StorageController extends Controller {
       folderId: body?.folderId,
       tags: body?.tags,
       metadata: body?.metadata,
-      userId: request.betterAuthSession!.user.id,
+      userId: request.betterAuthSession.user.id,
     });
 
     this.setStatus(201);

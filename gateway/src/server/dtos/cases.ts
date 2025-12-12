@@ -66,18 +66,18 @@ export interface UpdateCaseRequest {
 export type TemplateStructure = {
   sections: {
     name: string;
-    description?: string | null;
+    description?: string;
     sortOrder: number;
-    settings?: Record<string, unknown> | null;
+    settings?: Record<string, unknown>;
     procedures: {
       referenceNumber: string;
       title: string;
-      description?: string | null;
-      requirements?: Record<string, unknown> | null;
+      description?: string;
+      requirements?: Record<string, unknown>;
       sortOrder: number;
     }[];
   }[];
-  settings?: Record<string, unknown> | null;
+  settings?: Record<string, unknown>;
 };
 
 export interface TemplateResponse {
@@ -102,9 +102,9 @@ export interface CreateTemplateRequest {
   description?: string | null;
   auditType: AuditType;
   category?: AuditCategory | null;
-  version?: string | null;
-  isActive?: boolean | null;
-  isPublic?: boolean | null;
+  version?: string;
+  isActive?: boolean;
+  isPublic?: boolean;
   structure: TemplateStructure;
 }
 

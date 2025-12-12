@@ -49,7 +49,7 @@ export class OdooAuditLogService {
       const now = new Date();
 
       // Find non-expired idempotency key
-      const [result] = await this.drizzle
+      const results = await this.drizzle
         .select()
         .from(odooIdempotencyKeys)
         .where(
@@ -58,16 +58,26 @@ export class OdooAuditLogService {
         .limit(1);
 
       // result is always defined from query, log if found
+      if (results.length > 0) {
+        const result = results[0];
+        this.logger.info(
+          {
+            idempotencyKey,
+            status: result.status,
+            operationType: result.operationType,
+          },
+          "Found existing idempotency key",
+        );
+        return result;
+      }
+
       this.logger.info(
         {
           idempotencyKey,
-          status: result ? result.status : "not found",
-          operationType: result ? result.operationType : undefined,
         },
-        result ? "Found existing idempotency key" : "No idempotency key found",
+        "No idempotency key found",
       );
-
-      return result || null;
+      return null;
     } catch (err) {
       this.logger.error({ error: err, idempotencyKey }, "Failed to check idempotency key");
       return null;
@@ -182,14 +192,14 @@ export class OdooAuditLogService {
    */
   async getOperation(operationId: string) {
     try {
-      const [result] = await this.drizzle
+      const results = await this.drizzle
         .select()
         .from(odooAuditLogs)
         .where(eq(odooAuditLogs.operationId, operationId))
         .limit(1);
 
       // result is always defined, return null if empty
-      return result || null;
+      return results[0] ?? null;
     } catch (err) {
       this.logger.error({ error: err, operationId }, "Failed to get operation");
       return null;

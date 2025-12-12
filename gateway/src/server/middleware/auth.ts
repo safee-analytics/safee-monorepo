@@ -2,12 +2,7 @@ import { Request as ExRequest } from "express";
 import { fromNodeHeaders } from "better-auth/node";
 import { type Session, type AuthUser, auth } from "../../auth/index.js";
 import { getServerContext } from "../serverContext.js";
-import {
-  NoTokenProvided,
-  InvalidToken,
-  InsufficientPermissions,
-  UnknownSecurityScheme,
-} from "../errors.js";
+import { NoTokenProvided, InvalidToken, InsufficientPermissions, UnknownSecurityScheme } from "../errors.js";
 import { addAuthContextToLogger } from "./logging.js";
 import type { DrizzleClient } from "@safee/database";
 import type { Logger } from "pino";

@@ -10,9 +10,9 @@ export interface AuditReportResponse {
   status: ReportStatus;
   generatedData?: Record<string, unknown> | null;
   settings?: {
-    dateRange?: { start: string | null; end: string };
-    includeSections?: string[] | null;
-    customizations?: Record<string, unknown> | null;
+    dateRange?: { start: string; end: string };
+    includeSections?: string[];
+    customizations?: Record<string, unknown>;
   } | null;
   filePath?: string | null;
   generatedAt?: Date | null;
@@ -36,6 +36,11 @@ export interface UpdateAuditReportRequest {
   title?: string | null;
   status?: ReportStatus | null;
   generatedData?: Record<string, unknown> | null;
+  settings?: {
+    dateRange?: { start: string; end: string };
+    includeSections?: string[];
+    customizations?: Record<string, unknown>;
+  } | null;
   filePath?: string | null;
   generatedAt?: Date | null;
 }
@@ -51,13 +56,13 @@ export interface AuditReportTemplateResponse {
     sections: {
       id: string;
       type: "cover_page" | "text" | "metrics_table" | "findings_list" | "chart" | "appendix";
-      title?: string | null;
-      titleAr?: string | null;
-      dataSource?: string | null;
-      config?: Record<string, unknown> | null;
+      title?: string;
+      titleAr?: string;
+      dataSource?: string;
+      config?: Record<string, unknown>;
     }[];
-    styles?: Record<string, unknown> | null;
-    metadata?: Record<string, unknown> | null;
+    styles?: Record<string, unknown>;
+    metadata?: Record<string, unknown>;
   };
   isDefault: boolean;
   isActive: boolean;
@@ -76,13 +81,13 @@ export interface CreateAuditReportTemplateRequest {
     sections: {
       id: string;
       type: "cover_page" | "text" | "metrics_table" | "findings_list" | "chart" | "appendix";
-      title?: string | null;
-      titleAr?: string | null;
-      dataSource?: string | null;
-      config?: Record<string, unknown> | null;
+      title?: string;
+      titleAr?: string;
+      dataSource?: string;
+      config?: Record<string, unknown>;
     }[];
-    styles?: Record<string, unknown> | null;
-    metadata?: Record<string, unknown> | null;
+    styles?: Record<string, unknown>;
+    metadata?: Record<string, unknown>;
   };
   isDefault?: boolean | null;
   isActive?: boolean | null;
@@ -94,9 +99,9 @@ export interface GenerateReportRequest {
   title: string;
   titleAr?: string | null;
   settings?: {
-    dateRange?: { start: string | null; end: string };
-    includeSections?: string[] | null;
+    dateRange?: { start: string; end: string };
+    includeSections?: string[];
     locale?: "en" | "ar" | null;
-    customizations?: Record<string, unknown> | null;
+    customizations?: Record<string, unknown>;
   };
 }

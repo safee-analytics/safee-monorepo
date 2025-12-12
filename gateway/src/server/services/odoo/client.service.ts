@@ -84,12 +84,7 @@ export interface OdooClient {
     externalId: string,
     context?: Record<string, unknown>,
   ): Promise<number>;
-  nameSearch(
-    model: string,
-    name: string,
-    domain?: unknown[],
-    limit?: number,
-  ): Promise<[number, string][]>;
+  nameSearch(model: string, name: string, domain?: unknown[], limit?: number): Promise<[number, string][]>;
   fieldsGet(model: string, fields?: string[]): Promise<Record<string, unknown>>;
 }
 
@@ -159,7 +154,7 @@ export class OdooClientService implements OdooClient {
 
         const errorMessage =
           typeof data.error === "object"
-            ? data.error.data?.message ?? data.error.message ?? JSON.stringify(data.error)
+            ? (data.error.data?.message ?? data.error.message ?? JSON.stringify(data.error))
             : String(data.error);
         throw new Error(`Odoo authentication error: ${errorMessage}`);
       }
@@ -176,7 +171,7 @@ export class OdooClientService implements OdooClient {
 
       // Capture all cookies from the authentication response
       const getSetCookieFn = response.headers.getSetCookie;
-      const setCookieHeaders = getSetCookieFn ? getSetCookieFn() : [];
+      const setCookieHeaders = getSetCookieFn();
       if (setCookieHeaders.length > 0) {
         this.cookies = setCookieHeaders.map((cookie) => cookie.split(";")[0]);
         this.logger.info(
@@ -290,7 +285,7 @@ export class OdooClientService implements OdooClient {
     if (data.error) {
       const errorMessage =
         typeof data.error === "object"
-          ? data.error.data?.message ?? data.error.message ?? JSON.stringify(data.error)
+          ? (data.error.data?.message ?? data.error.message ?? JSON.stringify(data.error))
           : String(data.error);
       throw new Error(`Odoo JSON-RPC error: ${errorMessage}`);
     }
@@ -351,7 +346,10 @@ export class OdooClientService implements OdooClient {
     }
 
     // Extract the methodResponse > params > param > value content
-    const valueMatch = /<methodResponse>\s*<params>\s*<param>\s*<value>([\s\S]*?)<\/value>\s*<\/param>\s*<\/params>\s*<\/methodResponse>/.exec(xml);
+    const valueMatch =
+      /<methodResponse>\s*<params>\s*<param>\s*<value>([\s\S]*?)<\/value>\s*<\/param>\s*<\/params>\s*<\/methodResponse>/.exec(
+        xml,
+      );
 
     if (!valueMatch) {
       this.logger.warn({ xmlSnippet: xml.substring(0, 500) }, "Could not find value in XML-RPC response");
@@ -545,7 +543,7 @@ export class OdooClientService implements OdooClient {
 
         const errorMessage =
           typeof data.error === "object"
-            ? data.error.data?.message ?? data.error.message ?? JSON.stringify(data.error)
+            ? (data.error.data?.message ?? data.error.message ?? JSON.stringify(data.error))
             : String(data.error);
         throw new Error(`Odoo error: ${errorMessage}`);
       }

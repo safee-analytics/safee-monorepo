@@ -206,11 +206,10 @@ export class NASConnector {
           mountPoint: this.mountPoint,
           ...spaceInfo,
         };
-      } 
-        return {
-          connected: false,
-        };
-      
+      }
+      return {
+        connected: false,
+      };
     } catch (err) {
       return {
         connected: false,

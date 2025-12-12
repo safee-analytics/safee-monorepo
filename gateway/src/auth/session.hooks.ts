@@ -20,7 +20,10 @@ export function createSessionHooks(drizzle: DrizzleClient) {
               };
             }
           } catch (err) {
-            logger.error({ error: err, userId: session.userId }, "Failed to set active organization on session");
+            logger.error(
+              { error: err, userId: session.userId },
+              "Failed to set active organization on session",
+            );
           }
 
           return { data: session };

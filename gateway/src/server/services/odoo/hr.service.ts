@@ -638,11 +638,10 @@ export class OdooHRService {
       // Update existing employee
       await this.client.write("hr.employee", [data.odooEmployeeId], odooData);
       return data.odooEmployeeId;
-    } 
-      // Create new employee
-      const newId = await this.client.create("hr.employee", odooData);
-      return newId;
-    
+    }
+    // Create new employee
+    const newId = await this.client.create("hr.employee", odooData);
+    return newId;
   }
 
   /**
@@ -690,11 +689,10 @@ export class OdooHRService {
       // Update existing department
       await this.client.write("hr.department", [data.odooDepartmentId], odooData);
       return data.odooDepartmentId;
-    } 
-      // Create new department
-      const newId = await this.client.create("hr.department", odooData);
-      return newId;
-    
+    }
+    // Create new department
+    const newId = await this.client.create("hr.department", odooData);
+    return newId;
   }
 
   /**

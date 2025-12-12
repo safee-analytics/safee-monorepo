@@ -110,30 +110,29 @@ export async function approve(
           message: `Approval recorded. Moving to next step (${nextStep.stepOrder}).`,
           requestStatus: "pending",
         };
-      } 
-        await ctx.drizzle
-          .update(schema.approvalRequests)
-          .set({
-            status: "approved",
-            completedAt: new Date(),
-          })
-          .where(eq(schema.approvalRequests.id, requestId));
+      }
+      await ctx.drizzle
+        .update(schema.approvalRequests)
+        .set({
+          status: "approved",
+          completedAt: new Date(),
+        })
+        .where(eq(schema.approvalRequests.id, requestId));
 
-        logger.info(
-          {
-            requestId,
-            userId,
-            organizationId,
-          },
-          "Approval completed. All workflow steps approved",
-        );
+      logger.info(
+        {
+          requestId,
+          userId,
+          organizationId,
+        },
+        "Approval completed. All workflow steps approved",
+      );
 
-        return {
-          success: true,
-          message: "Approval completed. All workflow steps approved.",
-          requestStatus: "approved",
-        };
-      
+      return {
+        success: true,
+        message: "Approval completed. All workflow steps approved.",
+        requestStatus: "approved",
+      };
     }
 
     logger.info(
@@ -152,11 +151,7 @@ export async function approve(
       requestStatus: "pending",
     };
   } catch (err) {
-    if (
-      err instanceof InvalidInput ||
-      err instanceof NotFound ||
-      err instanceof InsufficientPermissions
-    ) {
+    if (err instanceof InvalidInput || err instanceof NotFound || err instanceof InsufficientPermissions) {
       throw err;
     }
 

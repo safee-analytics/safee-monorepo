@@ -1,6 +1,6 @@
 import type { AuthenticatedRequest } from "./auth.js";
 import { getServerContext } from "../serverContext.js";
-import { eq, and, schema  } from "@safee/database";
+import { eq, and, schema } from "@safee/database";
 import { InsufficientPermissions } from "../errors.js";
 
 /**
@@ -203,7 +203,10 @@ export async function isInApprovalWorkflow(
 
     return false;
   } catch (err) {
-    ctx.logger.error({ error: err, userId, workflowId, stepOrder }, "Error checking approval workflow membership");
+    ctx.logger.error(
+      { error: err, userId, workflowId, stepOrder },
+      "Error checking approval workflow membership",
+    );
     return false;
   }
 }

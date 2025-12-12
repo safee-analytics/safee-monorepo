@@ -65,8 +65,8 @@ export class OdooUserProvisioningService {
     }
 
     const getSetCookieFn = response.headers.getSetCookie;
-    const setCookieHeaders = getSetCookieFn ? getSetCookieFn() : [];
-    const cookies = setCookieHeaders.length > 0 ? setCookieHeaders.map((cookie) => cookie.split(";")[0]) : [];
+    const setCookieHeaders = getSetCookieFn();
+    const cookies = setCookieHeaders.map((cookie) => cookie.split(";")[0]);
 
     this.logger.debug({ cookieCount: cookies.length }, "Captured cookies from Odoo user provisioning auth");
 
@@ -278,7 +278,7 @@ export class OdooUserProvisioningService {
     };
 
     const roleKey = safeeRole ?? "user";
-    const additionalGroups = roleGroups[roleKey] ?? roleGroups.user ?? [];
+    const additionalGroups = roleGroups[roleKey] ?? roleGroups.user;
     return [...baseGroups, ...additionalGroups];
   }
 

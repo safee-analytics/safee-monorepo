@@ -12,7 +12,12 @@ export async function updateConnector(
   const connectorManager = new ConnectorManager(ctx);
 
   return await connectorManager.updateConnector(connectorId, organizationId, {
-    ...request,
+    name: request.name ?? undefined,
+    description: request.description ?? undefined,
+    config: request.config ?? undefined,
+    tags: request.tags ?? undefined,
+    metadata: request.metadata ?? undefined,
+    isActive: request.isActive ?? undefined,
     updatedBy: userId,
   });
 }

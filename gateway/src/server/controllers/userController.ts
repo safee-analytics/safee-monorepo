@@ -153,7 +153,10 @@ export class UserController extends Controller {
       if (err instanceof UserNotFoundError) {
         throw new UserNotFound();
       }
-      this.context.logger.error({ error: err, userId, locale: request.locale }, "Failed to update user locale");
+      this.context.logger.error(
+        { error: err, userId, locale: request.locale },
+        "Failed to update user locale",
+      );
       throw err;
     }
   }

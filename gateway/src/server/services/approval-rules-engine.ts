@@ -111,9 +111,8 @@ export class ApprovalRulesEngine {
 
     if (logic === "OR") {
       return results.some((result) => result);
-    } 
-      return results.every((result) => result);
-    
+    }
+    return results.every((result) => result);
   }
 
   private evaluateCondition(condition: RuleCondition, entityData: EntityData): boolean {

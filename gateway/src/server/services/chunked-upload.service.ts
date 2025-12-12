@@ -48,7 +48,7 @@ export interface UploadStatus {
 
 export class ChunkedUploadService {
   private sessions = new Map<string, UploadSession>();
-   
+
   private cleanupInterval: NodeJS.Timeout | null = null;
   private tempBasePath: string;
   private wsService: WebSocketService | null = null;

@@ -187,9 +187,9 @@ export class OdooWebhookController extends Controller {
       }
 
       // Helper to convert Odoo false to undefined
-      const odooValue = <T>(value: T | false): T | undefined => {
+      function odooValue<T>(value: T | false): T | undefined {
         return value === false ? undefined : value;
-      };
+      }
 
       // Mark request as coming from webhook to prevent sync loop
       request.headers["x-odoo-webhook"] = "true";
@@ -282,9 +282,9 @@ export class OdooWebhookController extends Controller {
       }
 
       // Helper to convert Odoo false to undefined
-      const odooValue = <T>(value: T | false): T | undefined => {
+      function odooValue<T>(value: T | false): T | undefined {
         return value === false ? undefined : value;
-      };
+      }
 
       // Sync to database
       await syncDepartment(
@@ -359,21 +359,21 @@ export class OdooWebhookController extends Controller {
       }
 
       // Helper to convert Odoo false to undefined
-      const odooValue = <T>(value: T | false): T | undefined => {
+      function odooValue<T>(value: T | false): T | undefined {
         return value === false ? undefined : value;
-      };
+      }
 
       // Helper to extract ID from many2one field
-      const extractId = (value: unknown): number | undefined => {
+      function extractId(value: unknown): number | undefined {
         if (!value || value === false) return undefined;
         return Array.isArray(value) ? value[0] : (value as number);
-      };
+      }
 
       // Helper to extract name from many2one field
-      const extractName = (value: unknown): string | undefined => {
+      function extractName(value: unknown): string | undefined {
         if (!value || value === false) return undefined;
         return Array.isArray(value) ? value[1] : undefined;
-      };
+      }
 
       // Sync to database
       await syncInvoice(
@@ -486,29 +486,29 @@ export class OdooWebhookController extends Controller {
         ],
       );
 
-      const odooPayment = payments[0];
-
       // odooPayment is undefined if not found
-      if (odooPayment === undefined) {
+      if (payments.length === 0) {
         throw new NotFound(`Payment with Odoo ID ${record_id} not found`);
       }
 
+      const odooPayment = payments[0];
+
       // Helper to convert Odoo false to undefined
-      const odooValue = <T>(value: T | false): T | undefined => {
+      function odooValue<T>(value: T | false): T | undefined {
         return value === false ? undefined : value;
-      };
+      }
 
       // Helper to extract ID from many2one field
-      const extractId = (value: unknown): number | undefined => {
+      function extractId(value: unknown): number | undefined {
         if (!value || value === false) return undefined;
         return Array.isArray(value) ? value[0] : (value as number);
-      };
+      }
 
       // Helper to extract name from many2one field
-      const extractName = (value: unknown): string | undefined => {
+      function extractName(value: unknown): string | undefined {
         if (!value || value === false) return undefined;
         return Array.isArray(value) ? value[1] : undefined;
-      };
+      }
 
       // Sync to database
       await syncPayment(
@@ -599,9 +599,9 @@ export class OdooWebhookController extends Controller {
       }
 
       // Helper to convert Odoo false to undefined
-      const odooValue = <T>(value: T | false): T | undefined => {
+      function odooValue<T>(value: T | false): T | undefined {
         return value === false ? undefined : value;
-      };
+      }
 
       // Sync to database
       await syncLead(

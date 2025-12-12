@@ -17,13 +17,15 @@ export interface AuditPlanResponse {
   businessUnits?: Record<string, boolean> | null;
   financialAreas?: Record<string, boolean> | null;
   teamMembers?: { userId: string | null; name: string; role: string; hours?: number }[] | null;
-  phaseBreakdown?: {
-    name: string | null;
-    duration: number;
-    description?: string | null;
-    startDate?: string | null;
-    endDate?: string | null;
-  }[] | null;
+  phaseBreakdown?:
+    | {
+        name: string | null;
+        duration: number;
+        description?: string | null;
+        startDate?: string | null;
+        endDate?: string | null;
+      }[]
+    | null;
   totalBudget?: string | null;
   totalHours?: number | null;
   materialityThreshold?: string | null;
@@ -129,7 +131,7 @@ export interface CreateAuditPlanTemplateRequest {
   name: string;
   auditType?: AuditType | null;
   description?: string | null;
-  defaultObjectives?: { id: string | null; description: string; priority?: string }[];
+  defaultObjectives?: { id?: string | null; description: string; priority?: string }[];
   defaultScope?: Record<string, unknown> | null;
   defaultPhases?: { name: string | null; duration: number; description?: string }[];
   defaultBusinessUnits?: Record<string, boolean> | null;

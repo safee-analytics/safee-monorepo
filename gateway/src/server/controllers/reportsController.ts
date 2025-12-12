@@ -48,13 +48,13 @@ export class ReportsController extends Controller {
     return reports.map((r) => ({
       id: r.id,
       caseId: r.caseId,
-      templateId: r.templateId ,
+      templateId: r.templateId,
       title: r.title,
       status: r.status,
       generatedData: r.generatedData,
       settings: r.settings,
-      filePath: r.filePath ,
-      generatedAt: r.generatedAt ,
+      filePath: r.filePath,
+      generatedAt: r.generatedAt,
       generatedBy: r.generatedBy,
       createdAt: r.createdAt,
       updatedAt: r.updatedAt,
@@ -78,13 +78,13 @@ export class ReportsController extends Controller {
     return {
       id: report.id,
       caseId: report.caseId,
-      templateId: report.templateId ,
+      templateId: report.templateId,
       title: report.title,
       status: report.status,
       generatedData: report.generatedData,
       settings: report.settings,
-      filePath: report.filePath ,
-      generatedAt: report.generatedAt ,
+      filePath: report.filePath,
+      generatedAt: report.generatedAt,
       generatedBy: report.generatedBy,
       createdAt: report.createdAt,
       updatedAt: report.updatedAt,
@@ -114,18 +114,25 @@ export class ReportsController extends Controller {
   ): Promise<AuditReportResponse> {
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
-    const updatedReport = await updateAuditReport(deps, reportId, request);
+    const updatedReport = await updateAuditReport(deps, reportId, {
+      title: request.title ?? undefined,
+      status: request.status ?? undefined,
+      generatedData: request.generatedData ?? undefined,
+      settings: request.settings ?? undefined,
+      filePath: request.filePath ?? undefined,
+      generatedAt: request.generatedAt ?? undefined,
+    });
 
     return {
       id: updatedReport.id,
       caseId: updatedReport.caseId,
-      templateId: updatedReport.templateId ,
+      templateId: updatedReport.templateId,
       title: updatedReport.title,
       status: updatedReport.status,
       generatedData: updatedReport.generatedData,
       settings: updatedReport.settings,
-      filePath: updatedReport.filePath ,
-      generatedAt: updatedReport.generatedAt ,
+      filePath: updatedReport.filePath,
+      generatedAt: updatedReport.generatedAt,
       generatedBy: updatedReport.generatedBy,
       createdAt: updatedReport.createdAt,
       updatedAt: updatedReport.updatedAt,
@@ -157,12 +164,12 @@ export class ReportsController extends Controller {
     return templates.map((t) => ({
       id: t.id,
       name: t.name,
-      auditType: t.auditType ,
-      description: t.description ,
+      auditType: t.auditType,
+      description: t.description,
       templateStructure: t.templateStructure,
       isDefault: t.isDefault,
       isActive: t.isActive,
-      organizationId: t.organizationId ,
+      organizationId: t.organizationId,
       createdAt: t.createdAt,
       updatedAt: t.updatedAt,
     }));
@@ -181,20 +188,38 @@ export class ReportsController extends Controller {
 
     this.setStatus(201);
 
+    // Sanitize template structure to match database schema
+    const sanitizedStructure = {
+      sections: request.templateStructure.sections.map((s) => ({
+        id: s.id,
+        type: s.type,
+        title: s.title,
+        dataSource: s.dataSource,
+        config: s.config,
+      })),
+      styles: request.templateStructure.styles,
+      metadata: request.templateStructure.metadata,
+    };
+
     const template = await createAuditReportTemplate(deps, {
-      ...request,
+      name: request.name,
+      auditType: request.auditType ?? undefined,
+      description: request.description ?? undefined,
+      templateStructure: sanitizedStructure,
+      isDefault: request.isDefault ?? undefined,
+      isActive: request.isActive ?? undefined,
       organizationId,
     });
 
     return {
       id: template.id,
       name: template.name,
-      auditType: template.auditType ,
-      description: template.description ,
+      auditType: template.auditType,
+      description: template.description,
       templateStructure: template.templateStructure,
       isDefault: template.isDefault,
       isActive: template.isActive,
-      organizationId: template.organizationId ,
+      organizationId: template.organizationId,
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
     };
@@ -218,12 +243,12 @@ export class ReportsController extends Controller {
     return {
       id: template.id,
       name: template.name,
-      auditType: template.auditType ,
-      description: template.description ,
+      auditType: template.auditType,
+      description: template.description,
       templateStructure: template.templateStructure,
       isDefault: template.isDefault,
       isActive: template.isActive,
-      organizationId: template.organizationId ,
+      organizationId: template.organizationId,
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
     };

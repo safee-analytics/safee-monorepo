@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, vi  } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from "vitest";
 import { type DrizzleClient, schema } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import {
