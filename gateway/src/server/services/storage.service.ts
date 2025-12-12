@@ -20,7 +20,7 @@ export class StorageService {
     // Get storage path from environment or use default
     this.basePath = process.env.NAS_STORAGE_PATH ?? path.join(process.cwd(), "storage");
     this.metadataPath = path.join(this.basePath, ".metadata");
-    this.initializeStorage();
+    void this.initializeStorage();
   }
 
   private get logger() {

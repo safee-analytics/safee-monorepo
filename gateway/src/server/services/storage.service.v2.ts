@@ -30,7 +30,7 @@ export class StorageServiceV2 {
       basePath: process.env.METADATA_PATH ?? "./storage/.metadata",
     });
 
-    this.initializeStorage();
+    void this.initializeStorage();
   }
 
   private async initializeStorage(): Promise<void> {

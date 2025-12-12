@@ -55,7 +55,7 @@ export class WebSocketService {
     });
 
     // Setup Redis adapter for horizontal scaling
-    this.setupRedisAdapter();
+    void this.setupRedisAdapter();
 
     // Authentication middleware
     this.setupAuthentication();
@@ -175,16 +175,16 @@ export class WebSocketService {
       );
 
       // Auto-join user room (for user-specific notifications)
-      socket.join(`user:${userId}`);
+      void socket.join(`user:${userId}`);
 
       // Auto-join organization room (for org-wide broadcasts)
       if (organizationId) {
-        socket.join(`org:${organizationId}`);
+        void socket.join(`org:${organizationId}`);
       }
 
       // Auto-join admin room if user is admin
       if (socket.data.role === "admin") {
-        socket.join("admin:all");
+        void socket.join("admin:all");
       }
 
       // Send welcome message with subscriptions
@@ -236,7 +236,7 @@ export class WebSocketService {
       return;
     }
 
-    socket.join(channel);
+    void socket.join(channel);
     socket.emit("subscribed", { channel });
 
     logger.debug(
@@ -287,7 +287,7 @@ export class WebSocketService {
       return;
     }
 
-    socket.leave(channel);
+    void socket.leave(channel);
     socket.emit("unsubscribed", { channel });
 
     logger.debug(
@@ -384,7 +384,7 @@ export class WebSocketService {
     }
 
     // Close Socket.IO server
-    this.io.close();
+    void this.io.close();
 
     // Close Redis connections
     if (this.pubClient) {
