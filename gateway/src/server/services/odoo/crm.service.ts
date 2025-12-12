@@ -264,7 +264,7 @@ export class OdooCRMService {
     expectedRevenue?: number;
     description?: string;
   }): Promise<number> {
-    const odooData: Record<string, unknown> = {
+    let odooData: Record<string, unknown> = {
       name: data.name,
       type: data.type ?? "lead",
       contact_name: data.contactName,
@@ -284,9 +284,7 @@ export class OdooCRMService {
       odooData.user_id = data.userId;
     }
 
-    const filteredEntries = Object.entries(odooData).filter(
-      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined,
-    );
+    const filteredEntries = Object.entries(odooData).filter(([, value]) => value !== undefined);
     odooData = Object.fromEntries(filteredEntries) as typeof odooData;
 
     return this.client.create("crm.lead", odooData);
@@ -479,7 +477,7 @@ export class OdooCRMService {
     zip?: string;
     countryId?: number;
   }): Promise<number> {
-    const odooData: Record<string, unknown> = {
+    let odooData: Record<string, unknown> = {
       name: data.name,
       is_company: data.isCompany ?? false,
       email: data.email,
@@ -495,9 +493,7 @@ export class OdooCRMService {
       odooData.country_id = data.countryId;
     }
 
-    const filteredEntries = Object.entries(odooData).filter(
-      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined,
-    );
+    const filteredEntries = Object.entries(odooData).filter(([, value]) => value !== undefined);
     odooData = Object.fromEntries(filteredEntries) as typeof odooData;
 
     return this.client.create("res.partner", odooData);
@@ -572,7 +568,7 @@ export class OdooCRMService {
     dateDeadline: string;
     userId?: number;
   }): Promise<number> {
-    const odooData: Record<string, unknown> = {
+    let odooData: Record<string, unknown> = {
       res_id: data.leadId,
       res_model: "crm.lead",
       activity_type_id: data.activityTypeId,
@@ -585,9 +581,7 @@ export class OdooCRMService {
       odooData.user_id = data.userId;
     }
 
-    const filteredEntries = Object.entries(odooData).filter(
-      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined,
-    );
+    const filteredEntries = Object.entries(odooData).filter(([, value]) => value !== undefined);
     odooData = Object.fromEntries(filteredEntries) as typeof odooData;
 
     return this.client.create("mail.activity", odooData);

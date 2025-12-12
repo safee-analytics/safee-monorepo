@@ -250,7 +250,7 @@ export class DataProxyService {
     }
 
     // Execute queries - handle different parameter styles for different connectors
-    let rows: T[];
+    let rows: unknown[];
     let countResult: { count: number | string };
 
     if (connector instanceof MSSQLConnector) {
@@ -259,13 +259,13 @@ export class DataProxyService {
         acc[`param${index}`] = val;
         return acc;
       }, {});
-      rows = await connector.query<T>(dataQuery, queryParams);
+      rows = await connector.query(dataQuery, queryParams);
 
       const [countRes] = await connector.query<{ count: number | string }>(countQuery, queryParams);
       countResult = countRes;
     } else {
       // PostgreSQL and MySQL use positional parameters
-      rows = await connector.query<T>(dataQuery, [...whereParams, limit, offset] as unknown[]);
+      rows = await connector.query(dataQuery, [...whereParams, limit, offset] as unknown[]);
       const [countRes] = await connector.query<{ count: number | string }>(countQuery, whereParams);
       countResult = countRes;
     }

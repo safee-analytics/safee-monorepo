@@ -13,11 +13,11 @@ export async function createConnector(
   const { connector } = await connectorManager.createConnector({
     organizationId,
     name: request.name,
-    description: request.description,
+    description: request.description ?? undefined,
     type: request.type,
     config: request.config,
-    tags: request.tags,
-    metadata: request.metadata,
+    tags: request.tags ?? undefined,
+    metadata: request.metadata ?? undefined,
     createdBy: userId,
   });
 

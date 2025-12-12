@@ -598,7 +598,7 @@ export class OdooHRService {
     placeOfBirth?: string;
     active?: boolean;
   }): Promise<number> {
-    const odooData: Record<string, unknown> = {
+    let odooData: Record<string, unknown> = {
       name: data.name,
       work_email: data.workEmail,
       work_phone: data.workPhone,
@@ -628,9 +628,7 @@ export class OdooHRService {
     }
 
     // Remove undefined values
-    const filteredEntries = Object.entries(odooData).filter(
-      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined,
-    );
+    const filteredEntries = Object.entries(odooData).filter(([, value]) => value !== undefined);
     odooData = Object.fromEntries(filteredEntries) as typeof odooData;
 
     if (data.odooEmployeeId) {
@@ -663,7 +661,7 @@ export class OdooHRService {
     note?: string;
     active?: boolean;
   }): Promise<number> {
-    const odooData: Record<string, unknown> = {
+    let odooData: Record<string, unknown> = {
       name: data.name,
       color: data.color,
       note: data.note,
@@ -678,9 +676,7 @@ export class OdooHRService {
     }
 
     // Remove undefined values
-    const filteredEntries = Object.entries(odooData).filter(
-      ([, value]): value is Exclude<typeof value, undefined> => value !== undefined,
-    );
+    const filteredEntries = Object.entries(odooData).filter(([, value]) => value !== undefined);
     odooData = Object.fromEntries(filteredEntries) as typeof odooData;
 
     if (data.odooDepartmentId) {

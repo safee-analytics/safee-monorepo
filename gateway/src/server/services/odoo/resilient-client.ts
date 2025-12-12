@@ -8,9 +8,9 @@ import type { DrizzleClient } from "@safee/database";
  * Circuit Breaker States
  */
 enum CircuitState {
-  Closed = "Closed", // Normal operation
-  Open = "Open", // Failures threshold reached, blocking requests
-  HalfOpen = "HalfOpen", // Testing if service recovered
+  Closed = "CLOSED", // Normal operation
+  Open = "OPEN", // Failures threshold reached, blocking requests
+  HalfOpen = "HALF_OPEN", // Testing if service recovered
 }
 
 /**

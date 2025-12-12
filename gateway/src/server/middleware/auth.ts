@@ -40,19 +40,19 @@ export async function expressAuthentication(
       context.logger.info(
         {
           hasSession: !!session,
-          hasUser: !!session,
+          hasUser: !!session?.user,
           sessionData: session
             ? {
-                userId: session.user.id,
-                activeOrgId: session.session.activeOrganizationId,
-                fullSessionKeys: Object.keys(session.session),
+                userId: session.user?.id,
+                activeOrgId: session.session?.activeOrganizationId,
+                fullSessionKeys: session.session ? Object.keys(session.session) : null,
               }
             : null,
         },
         "Better Auth session result",
       );
 
-      if (!session) {
+      if (!session || !session.user || !session.session) {
         context.logger.warn(
           {
             path: request.path,
