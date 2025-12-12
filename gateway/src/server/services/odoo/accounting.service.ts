@@ -251,7 +251,7 @@ export class OdooAccountingService {
       payment_reference: dto.reference,
       narration: dto.notes,
       invoice_payment_term_id: dto.paymentTermId,
-      invoice_line_ids: dto.lines.map((line): [number, number, OdooInvoiceLine] => {
+      invoice_line_ids: dto.lines.map((line): [0, 0, OdooInvoiceLine] => {
         const lineData: OdooInvoiceLine = {
           name: line.description,
           quantity: line.quantity,
