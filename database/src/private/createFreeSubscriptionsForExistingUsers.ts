@@ -24,12 +24,9 @@ async function createFreeSubscriptionsForExistingUsers() {
 
     for (const user of users) {
       try {
-        const subscription = await autoCreateFreeSubscription({ drizzle, logger }, user.id);
-
-        if (subscription) {
-          created++;
-          console.log(`✅ Created free subscription for user: ${user.email}`);
-        }
+        await autoCreateFreeSubscription({ drizzle, logger }, user.id);
+        created++;
+        console.log(`✅ Created free subscription for user: ${user.email}`);
       } catch (err) {
         // User already has a subscription, skip
         if (err instanceof Error && err.message.includes("already has")) {

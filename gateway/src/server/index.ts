@@ -1,8 +1,8 @@
-import express, { Request, Response, NextFunction, Application } from "express";
+import express, { Request, Response, NextFunction, Application, json, urlencoded } from "express";
 import cors from "cors";
 import helmet from "helmet";
-import dotenv from "dotenv";
-import swaggerUi from "swagger-ui-express";
+import { config as dotenvConfig } from "dotenv";
+import { serve as swaggerServe, setup as swaggerSetup } from "swagger-ui-express";
 import session from "express-session";
 import { pinoHttp } from "pino-http";
 import type { Logger } from "pino";
@@ -26,7 +26,7 @@ import type { OpenAPIV3 } from "openapi-types";
 import { WebSocketService } from "./services/websocket.service.js";
 import { getChunkedUploadServiceInstance } from "./services/chunked-upload-instance.js";
 
-dotenv.config();
+dotenvConfig();
 
 const HOST = process.env.HOST ?? "localhost";
 const PORT = Number(process.env.PORT) || 3000;
@@ -56,8 +56,8 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
   app.set("trust proxy", 1);
   const odoo = initOdooClientManager(drizzle, logger as unknown as Logger);
 
-  app.use(express.json({ limit: "10mb" }));
-  app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+  app.use(json({ limit: "10mb" }));
+  app.use(urlencoded({ extended: true, limit: "10mb" }));
 
   app.use(
     cors({
@@ -180,7 +180,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
     logger.warn({ err }, "Could not generate Better Auth OpenAPI spec, using TSOA spec only");
   }
 
-  app.use("/docs", swaggerUi.serve, swaggerUi.setup(mergedSpec, swaggerUiOptions));
+  app.use("/docs", swaggerServe, swaggerSetup(mergedSpec, swaggerUiOptions));
 
   app.get("/", (_req, res) => {
     res.json({

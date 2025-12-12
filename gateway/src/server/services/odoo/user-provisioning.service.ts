@@ -1,11 +1,13 @@
 import type { DrizzleClient } from "@safee/database";
 import { schema, eq, and } from "@safee/database";
 import crypto from "node:crypto";
+import { z } from "zod";
 import { encryptionService } from "../encryption.js";
 import { env } from "../../../env.js";
 import { BadGateway, NotFound } from "../../errors.js";
 import { Logger } from "pino";
 import { getServerContext } from "../../serverContext.js";
+import { odooAuthResponseSchema, odooApiKeyResultSchema } from "./schemas.js";
 
 export interface OdooUserProvisionResult {
   odooUid: number;
@@ -17,6 +19,22 @@ export interface OdooUserCredentials {
   databaseName: string;
   odooUid: number;
   odooPassword: string;
+}
+
+function odooApiResponseSchema<T extends z.ZodType>(resultSchema: T) {
+  return z.object({
+    error: z
+      .union([
+        z.object({
+          code: z.number().optional(),
+          message: z.string().optional(),
+          data: z.unknown().optional(),
+        }),
+        z.string(),
+      ])
+      .optional(),
+    result: resultSchema.optional(),
+  });
 }
 
 export class OdooUserProvisioningService {
@@ -52,25 +70,30 @@ export class OdooUserProvisioningService {
       throw new BadGateway(`Odoo authentication failed: ${response.status}`);
     }
 
-    const data = await response.json();
+    const rawData: unknown = await response.json();
+    const parseResult = odooAuthResponseSchema.safeParse(rawData);
+
+    if (!parseResult.success) {
+      throw new BadGateway(`Invalid Odoo authentication response: ${parseResult.error.message}`);
+    }
+
+    const data = parseResult.data;
 
     if (data.error) {
       throw new BadGateway(`Odoo authentication error: ${JSON.stringify(data.error)}`);
     }
 
-    const result = data.result as { uid: number; session_id: string };
-
-    if (!result.uid) {
+    if (!data.result?.uid) {
       throw new BadGateway("Failed to authenticate with Odoo");
     }
 
-    const getSetCookieFn = response.headers.getSetCookie;
-    const setCookieHeaders = getSetCookieFn();
-    const cookies = setCookieHeaders.map((cookie) => cookie.split(";")[0]);
+    const getSetCookie = response.headers.getSetCookie.bind(response.headers);
+    const setCookieHeaders = getSetCookie();
+    const cookies = setCookieHeaders.map((cookie) => cookie.split(";")[0] ?? cookie);
 
     this.logger.debug({ cookieCount: cookies.length }, "Captured cookies from Odoo user provisioning auth");
 
-    return { uid: result.uid, sessionId: result.session_id, cookies };
+    return { uid: data.result.uid, sessionId: data.result.session_id, cookies };
   }
 
   private isSessionExpiredError(error: unknown): boolean {
@@ -84,13 +107,14 @@ export class OdooUserProvisioningService {
     );
   }
 
-  private async callOdooExecuteKw<T = unknown>(
+  private async callOdooExecuteKw<T>(
     sessionId: string,
     cookies: string[],
     model: string,
     method: string,
     args: unknown[],
     kwargs: Record<string, unknown> = {},
+    resultSchema: z.ZodType<T> = z.unknown() as z.ZodType<T>,
     adminCredentials?: { databaseName: string; adminLogin: string; adminPassword: string },
     retryCount = 0,
   ): Promise<T> {
@@ -120,13 +144,25 @@ export class OdooUserProvisioningService {
         throw new BadGateway(`Odoo ${method} failed: ${response.status}`);
       }
 
-      const data = await response.json();
+      const rawData: unknown = await response.json();
+      const responseSchema = odooApiResponseSchema(resultSchema);
+      const parseResult = responseSchema.safeParse(rawData);
+
+      if (!parseResult.success) {
+        throw new BadGateway(`Invalid Odoo ${method} response: ${parseResult.error.message}`);
+      }
+
+      const data = parseResult.data;
 
       if (data.error) {
         throw new BadGateway(`Odoo ${method} error: ${JSON.stringify(data.error)}`);
       }
 
-      return data.result as T;
+      if (data.result === undefined) {
+        throw new BadGateway(`Odoo ${method} returned no result`);
+      }
+
+      return data.result;
     } catch (err) {
       if (this.isSessionExpiredError(err) && adminCredentials && retryCount === 0) {
         this.logger.info({ model, method }, "Odoo session expired in user provisioning, re-authenticating");
@@ -144,6 +180,7 @@ export class OdooUserProvisioningService {
           method,
           args,
           kwargs,
+          resultSchema,
           adminCredentials,
           retryCount + 1,
         );
@@ -185,10 +222,16 @@ export class OdooUserProvisioningService {
   ): Promise<number[]> {
     const groupIds: number[] = [];
 
+    const groupResultSchema = z.array(
+      z.object({
+        res_id: z.number(),
+      }),
+    );
+
     for (const xmlId of groupXmlIds) {
       try {
         const [module, name] = xmlId.split(".");
-        const result = await this.callOdooExecuteKw<{ res_id: number }[]>(
+        const result = await this.callOdooExecuteKw(
           sessionId,
           cookies,
           "ir.model.data",
@@ -200,11 +243,12 @@ export class OdooUserProvisioningService {
             ],
           ],
           { fields: ["res_id"], limit: 1 },
+          groupResultSchema,
           adminCredentials,
         );
 
         // result is always defined, check if it has elements
-        if (result.length > 0) {
+        if (result.length > 0 && result[0]) {
           groupIds.push(result[0].res_id);
         }
       } catch (err) {
@@ -294,26 +338,33 @@ export class OdooUserProvisioningService {
 
     const adminCredentials = { databaseName, adminLogin, adminPassword };
 
-    const existingUsers = await this.callOdooExecuteKw<{ id: number }[]>(
+    const userResultSchema = z.array(
+      z.object({
+        id: z.number(),
+      }),
+    );
+
+    const existingUsers = await this.callOdooExecuteKw(
       sessionId,
       cookies,
       "res.users",
       "search_read",
       [[["login", "=", userEmail]]],
       { fields: ["id"], limit: 1 },
+      userResultSchema,
       adminCredentials,
     );
 
     let userId: number;
 
-    if (existingUsers.length > 0) {
+    if (existingUsers.length > 0 && existingUsers[0]) {
       userId = existingUsers[0].id;
       this.logger.info({ userId, userEmail }, "User already exists in Odoo, will update groups");
     } else {
       this.logger.info({ userEmail }, "User does not exist in Odoo, creating new user");
 
       try {
-        userId = await this.callOdooExecuteKw<number>(
+        userId = await this.callOdooExecuteKw(
           sessionId,
           cookies,
           "res.users",
@@ -326,6 +377,7 @@ export class OdooUserProvisioningService {
             },
           ],
           {},
+          z.number(),
           adminCredentials,
         );
 
@@ -338,17 +390,18 @@ export class OdooUserProvisioningService {
             "User creation race condition detected, re-checking for existing user",
           );
 
-          const recheckUsers = await this.callOdooExecuteKw<{ id: number }[]>(
+          const recheckUsers = await this.callOdooExecuteKw(
             sessionId,
             cookies,
             "res.users",
             "search_read",
             [[["login", "=", userEmail]]],
             { fields: ["id"], limit: 1 },
+            userResultSchema,
             adminCredentials,
           );
 
-          if (recheckUsers.length > 0) {
+          if (recheckUsers.length > 0 && recheckUsers[0]) {
             userId = recheckUsers[0].id;
             this.logger.info({ userId, userEmail }, "Found user created by concurrent request");
           } else {
@@ -370,13 +423,14 @@ export class OdooUserProvisioningService {
         "Assigning groups to Odoo user",
       );
 
-      await this.callOdooExecuteKw<boolean>(
+      await this.callOdooExecuteKw(
         sessionId,
         cookies,
         "res.users",
         "write",
         [[userId], { group_ids: [[6, 0, groupIds]] }],
         {},
+        z.boolean(),
         adminCredentials,
       );
 
@@ -396,13 +450,14 @@ export class OdooUserProvisioningService {
     const { sessionId, cookies } = await this.authenticate(databaseName, adminLogin, adminPassword);
 
     const adminCredentials = { databaseName, adminLogin, adminPassword };
-    await this.callOdooExecuteKw<boolean>(
+    await this.callOdooExecuteKw(
       sessionId,
       cookies,
       "res.users",
       "write",
       [[userId], { password: newPassword }],
       {},
+      z.boolean(),
       adminCredentials,
     );
   }
@@ -440,10 +495,26 @@ export class OdooUserProvisioningService {
         throw new BadGateway(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      const result = await response.json();
+      const rawData: unknown = await response.json();
+      const responseSchema = odooApiResponseSchema(odooApiKeyResultSchema);
+      const parseResult = responseSchema.safeParse(rawData);
+
+      if (!parseResult.success) {
+        throw new BadGateway(`Invalid Odoo API key response: ${parseResult.error.message}`);
+      }
+
+      const result = parseResult.data;
 
       if (result.error) {
-        throw new BadGateway(`Odoo error: ${result.error.message ?? JSON.stringify(result.error)}`);
+        const errorMessage =
+          typeof result.error === "object" && "message" in result.error
+            ? String(result.error.message)
+            : JSON.stringify(result.error);
+        throw new BadGateway(`Odoo error: ${errorMessage}`);
+      }
+
+      if (!result.result) {
+        throw new BadGateway("API key generation returned no result");
       }
 
       const data = result.result;
@@ -763,13 +834,14 @@ export class OdooUserProvisioningService {
     const { sessionId, cookies } = await this.authenticate(databaseName, adminLogin, adminPassword);
 
     const adminCredentials = { databaseName, adminLogin, adminPassword };
-    await this.callOdooExecuteKw<boolean>(
+    await this.callOdooExecuteKw(
       sessionId,
       cookies,
       "res.users",
       "write",
       [[odooUser.odooUid], { active: false }],
       {},
+      z.boolean(),
       adminCredentials,
     );
 

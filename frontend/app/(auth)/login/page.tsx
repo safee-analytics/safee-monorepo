@@ -231,7 +231,7 @@ export default function LoginPage() {
   const handleVerifyPhoneCode = async (phoneNumber: string, code: string) => {
     try {
       setError(null);
-      const result = await signInWithPhoneMutation.mutateAsync({ phoneNumber, password: code });
+      await signInWithPhoneMutation.mutateAsync({ phoneNumber, password: code });
 
       if (!hasRedirected.current) {
         hasRedirected.current = true;

@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { v4 as uuidv4 } from "uuid";
+import { z } from "zod";
 import type { Response } from "express";
 import type { FileMetadata, FolderMetadata, FileSearchParams } from "../controllers/storageController.js";
 import type { ServerContext } from "../serverContext.js";
@@ -11,6 +12,34 @@ export interface UploadOptions {
   metadata?: Record<string, unknown>;
   userId: string;
 }
+
+const fileMetadataSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  path: z.string(),
+  size: z.number(),
+  mimeType: z.string(),
+  createdAt: z.string(),
+  modifiedAt: z.string(),
+  createdBy: z.string(),
+  modifiedBy: z.string().optional(),
+  folderId: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+});
+
+const folderMetadataSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  path: z.string(),
+  parentId: z.string().optional(),
+  createdAt: z.string(),
+  modifiedAt: z.string(),
+  createdBy: z.string(),
+  modifiedBy: z.string().optional(),
+  fileCount: z.number(),
+  subFolderCount: z.number(),
+});
 
 export class StorageService {
   private basePath: string;
@@ -93,7 +122,8 @@ export class StorageService {
 
     try {
       const data = await fs.readFile(metadataFile, "utf-8");
-      return JSON.parse(data);
+      const rawData: unknown = JSON.parse(data);
+      return fileMetadataSchema.parse(rawData);
     } catch (err) {
       this.logger.debug({ error: err, fileId }, "File not found");
       throw new Error(`File not found: ${fileId}`);
@@ -142,7 +172,8 @@ export class StorageService {
 
       try {
         const data = await fs.readFile(path.join(this.metadataPath, metaFile), "utf-8");
-        const metadata: FileMetadata = JSON.parse(data);
+        const rawData: unknown = JSON.parse(data);
+        const metadata = fileMetadataSchema.parse(rawData);
 
         // Apply filters
         if (params.query && !metadata.name.toLowerCase().includes(params.query.toLowerCase())) {
@@ -237,7 +268,8 @@ export class StorageService {
     // Get folder metadata
     const metadataFile = path.join(this.metadataPath, `folder_${folderId}.json`);
     const folderData = await fs.readFile(metadataFile, "utf-8");
-    const folder: FolderMetadata = JSON.parse(folderData);
+    const rawFolderData: unknown = JSON.parse(folderData);
+    const folder = folderMetadataSchema.parse(rawFolderData);
 
     // Get files in folder
     const searchResult = await this.searchFiles({ folderId });
@@ -251,7 +283,8 @@ export class StorageService {
 
       try {
         const data = await fs.readFile(path.join(this.metadataPath, metaFile), "utf-8");
-        const folderMetadata: FolderMetadata = JSON.parse(data);
+        const rawData: unknown = JSON.parse(data);
+        const folderMetadata = folderMetadataSchema.parse(rawData);
 
         if (folderMetadata.parentId === folderId) {
           subFolders.push(folderMetadata);

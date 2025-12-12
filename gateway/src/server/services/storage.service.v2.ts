@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { z } from "zod";
 import type { Response } from "express";
 import type { FileMetadata, FolderMetadata, FileSearchParams } from "../controllers/storageController.js";
 import { logger } from "../utils/logger.js";
@@ -11,6 +12,34 @@ export interface UploadOptions {
   metadata?: Record<string, unknown>;
   userId: string;
 }
+
+const fileMetadataSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  path: z.string(),
+  size: z.number(),
+  mimeType: z.string(),
+  createdAt: z.string(),
+  modifiedAt: z.string(),
+  createdBy: z.string(),
+  modifiedBy: z.string().optional(),
+  folderId: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+});
+
+const folderMetadataSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  path: z.string(),
+  parentId: z.string().optional(),
+  createdAt: z.string(),
+  modifiedAt: z.string(),
+  createdBy: z.string(),
+  modifiedBy: z.string().optional(),
+  fileCount: z.number(),
+  subFolderCount: z.number(),
+});
 
 /**
  * Storage Service V2
@@ -96,7 +125,8 @@ export class StorageServiceV2 {
   public async getFileMetadata(fileId: string): Promise<FileMetadata> {
     try {
       const metadataBuffer = await this.metadataAdapter.download(`${fileId}.json`);
-      return JSON.parse(metadataBuffer.toString("utf-8"));
+      const rawData: unknown = JSON.parse(metadataBuffer.toString("utf-8"));
+      return fileMetadataSchema.parse(rawData);
     } catch (err) {
       logger.debug({ error: err, fileId }, "File not found");
       throw new Error(`File not found: ${fileId}`);
@@ -145,7 +175,8 @@ export class StorageServiceV2 {
 
       try {
         const data = await this.metadataAdapter.download(metaFile);
-        const metadata: FileMetadata = JSON.parse(data.toString("utf-8"));
+        const rawData: unknown = JSON.parse(data.toString("utf-8"));
+        const metadata = fileMetadataSchema.parse(rawData);
 
         // Apply filters
         if (params.query && !metadata.name.toLowerCase().includes(params.query.toLowerCase())) {
@@ -239,7 +270,8 @@ export class StorageServiceV2 {
   ): Promise<{ folder: FolderMetadata; files: FileMetadata[]; subFolders: FolderMetadata[] }> {
     // Get folder metadata
     const folderData = await this.metadataAdapter.download(`folder_${folderId}.json`);
-    const folder: FolderMetadata = JSON.parse(folderData.toString("utf-8"));
+    const rawFolderData: unknown = JSON.parse(folderData.toString("utf-8"));
+    const folder = folderMetadataSchema.parse(rawFolderData);
 
     // Get files in folder
     const searchResult = await this.searchFiles({ folderId });
@@ -253,7 +285,8 @@ export class StorageServiceV2 {
 
       try {
         const data = await this.metadataAdapter.download(metaFile);
-        const folderMetadata: FolderMetadata = JSON.parse(data.toString("utf-8"));
+        const rawData: unknown = JSON.parse(data.toString("utf-8"));
+        const folderMetadata = folderMetadataSchema.parse(rawData);
 
         if (folderMetadata.parentId === folderId) {
           subFolders.push(folderMetadata);

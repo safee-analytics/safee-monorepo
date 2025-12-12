@@ -43,15 +43,18 @@ export async function expressAuthentication(
           hasUser: !!session?.user,
           sessionData: session
             ? {
-                userId: session.user?.id,
-                activeOrgId: session.session?.activeOrganizationId,
-                fullSessionKeys: session.session ? Object.keys(session.session) : null,
+                userId: session.user.id,
+                activeOrgId: session.session.activeOrganizationId,
+                fullSessionKeys: Object.keys(session.session),
               }
             : null,
         },
         "Better Auth session result",
       );
 
+      // Note: Better Auth can return { user: null, session: null } at runtime
+      // despite TypeScript types suggesting otherwise, so these checks are necessary
+      // eslint-disable-next-line @typescript-eslint/prefer-optional-chain, @typescript-eslint/no-unnecessary-condition
       if (!session || !session.user || !session.session) {
         context.logger.warn(
           {
