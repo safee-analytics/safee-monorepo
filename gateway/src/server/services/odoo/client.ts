@@ -1,5 +1,6 @@
 import { env } from "../../../env.js";
 import { BadGateway } from "../../errors.js";
+import { odooApiResponseSchema } from "./schemas.js";
 
 export interface OdooAuthResponse {
   uid: number;
@@ -46,11 +47,11 @@ export class OdooClient {
     this.baseUrl = baseUrl ?? env.ODOO_URL;
   }
 
-  private async callJsonRpc(
+  private async callJsonRpc<T = unknown>(
     endpoint: string,
     params: Record<string, unknown> = {},
     headers: Record<string, string> = {},
-  ): Promise<unknown> {
+  ): Promise<T> {
     try {
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: "POST",
@@ -70,17 +71,24 @@ export class OdooClient {
         throw new BadGateway(`Odoo request failed: ${response.status} ${response.statusText}`);
       }
 
-      const data = await response.json();
+      const rawData: unknown = await response.json();
+      const parseResult = odooApiResponseSchema.safeParse(rawData);
+
+      if (!parseResult.success) {
+        throw new BadGateway(`Invalid Odoo response: ${parseResult.error.message}`);
+      }
+
+      const data = parseResult.data;
 
       if (data.error) {
         const errorMessage =
-          typeof data.error === "object"
-            ? (data.error.message ?? JSON.stringify(data.error))
-            : String(data.error);
+          typeof data.error === "object" && "message" in data.error
+            ? String(data.error.message)
+            : JSON.stringify(data.error);
         throw new BadGateway(`Odoo error: ${errorMessage}`);
       }
 
-      return data.result;
+      return data.result as T;
     } catch (err) {
       if (err instanceof BadGateway) {
         throw err;

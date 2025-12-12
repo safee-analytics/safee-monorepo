@@ -12,6 +12,7 @@ import {
   validateExternalId,
   sanitizeError,
 } from "./validation.js";
+import { odooApiResponseSchema } from "./schemas.js";
 
 export interface OdooConnectionConfig {
   url: string;
@@ -139,7 +140,14 @@ export class OdooClientService implements OdooClient {
         throw new Error(`Odoo authentication failed: ${response.status} ${response.statusText}`);
       }
 
-      const data = await response.json();
+      const rawData: unknown = await response.json();
+      const parseResult = odooApiResponseSchema.safeParse(rawData);
+
+      if (!parseResult.success) {
+        throw new Error(`Invalid Odoo response: ${parseResult.error.message}`);
+      }
+
+      const data = parseResult.data;
 
       if (data.error) {
         // Log full error details for debugging
@@ -153,9 +161,9 @@ export class OdooClientService implements OdooClient {
         );
 
         const errorMessage =
-          typeof data.error === "object"
-            ? (data.error.data?.message ?? data.error.message ?? JSON.stringify(data.error))
-            : String(data.error);
+          typeof data.error === "object" && "message" in data.error
+            ? String(data.error.message)
+            : JSON.stringify(data.error);
         throw new Error(`Odoo authentication error: ${errorMessage}`);
       }
 
@@ -279,13 +287,20 @@ export class OdooClientService implements OdooClient {
       throw new Error(`JSON-RPC request failed: ${response.status}`);
     }
 
-    const data = await response.json();
+    const rawData: unknown = await response.json();
+    const parseResult = odooApiResponseSchema.safeParse(rawData);
+
+    if (!parseResult.success) {
+      throw new Error(`Invalid Odoo response: ${parseResult.error.message}`);
+    }
+
+    const data = parseResult.data;
 
     if (data.error) {
       const errorMessage =
-        typeof data.error === "object"
-          ? (data.error.data?.message ?? data.error.message ?? JSON.stringify(data.error))
-          : String(data.error);
+        typeof data.error === "object" && "message" in data.error
+          ? String(data.error.message)
+          : JSON.stringify(data.error);
       throw new Error(`Odoo JSON-RPC error: ${errorMessage}`);
     }
 
@@ -337,7 +352,7 @@ export class OdooClientService implements OdooClient {
   /**
    * Parse XML-RPC response
    */
-  private parseXmlRpcResponse<T>(xml: string): T {
+  private parseXmlRpcResponse(xml: string): unknown {
     // Check for fault
     if (xml.includes("<fault>")) {
       const errorMatch = /<string>(.*?)<\/string>/.exec(xml);
@@ -352,11 +367,11 @@ export class OdooClientService implements OdooClient {
 
     if (!valueMatch) {
       this.logger.warn({ xmlSnippet: xml.substring(0, 500) }, "Could not find value in XML-RPC response");
-      return [] as T;
+      return [];
     }
 
     const valueXml = valueMatch[1];
-    return this.parseXmlValue(valueXml) as T;
+    return this.parseXmlValue(valueXml);
   }
 
   /**
@@ -528,7 +543,14 @@ export class OdooClientService implements OdooClient {
         throw new Error(`Odoo request failed: ${response.status} ${response.statusText}`);
       }
 
-      const data = await response.json();
+      const rawData: unknown = await response.json();
+      const parseResult = odooApiResponseSchema.safeParse(rawData);
+
+      if (!parseResult.success) {
+        throw new Error(`Invalid Odoo response: ${parseResult.error.message}`);
+      }
+
+      const data = parseResult.data;
 
       if (data.error) {
         this.logger.error(
@@ -541,9 +563,9 @@ export class OdooClientService implements OdooClient {
         );
 
         const errorMessage =
-          typeof data.error === "object"
-            ? (data.error.data?.message ?? data.error.message ?? JSON.stringify(data.error))
-            : String(data.error);
+          typeof data.error === "object" && "message" in data.error
+            ? String(data.error.message)
+            : JSON.stringify(data.error);
         throw new Error(`Odoo error: ${errorMessage}`);
       }
 
@@ -716,13 +738,24 @@ export class OdooClientService implements OdooClient {
         throw new Error(`Failed to get Odoo version: ${response.status} ${response.statusText}`);
       }
 
-      const data = await response.json();
+      const rawData: unknown = await response.json();
+      const parseResult = odooApiResponseSchema.safeParse(rawData);
+
+      if (!parseResult.success) {
+        throw new Error(`Invalid Odoo response: ${parseResult.error.message}`);
+      }
+
+      const data = parseResult.data;
 
       if (data.error) {
         throw new Error(`Odoo error: ${JSON.stringify(data.error)}`);
       }
 
-      return data.result;
+      return data.result as {
+        server_version: string;
+        server_version_info: number[];
+        protocol_version: number;
+      };
     } catch (err) {
       throw err instanceof Error ? err : new Error(`Failed to get Odoo version: ${String(err)}`);
     }

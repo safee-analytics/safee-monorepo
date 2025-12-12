@@ -139,7 +139,7 @@ export class OdooAccountingService {
     paymentState?: "not_paid" | "in_payment" | "paid" | "partial" | "reversed";
     dateFrom?: string;
     dateTo?: string;
-  }): Promise<OdooInvoice[]> {
+  }): Promise<OdooInvoiceRead[]> {
     const domain: (string | [string, string, unknown])[] = [];
 
     if (filters?.moveType) {
@@ -161,7 +161,7 @@ export class OdooAccountingService {
       domain.push(["invoice_date", "<=", filters.dateTo]);
     }
 
-    return this.client.searchRead<OdooInvoice>(
+    return this.client.searchRead<OdooInvoiceRead>(
       "account.move",
       domain,
       [
@@ -813,8 +813,21 @@ export class OdooAccountingService {
     >();
 
     for (const invoice of invoices) {
-      const partnerId = Array.isArray(invoice.partner_id) ? invoice.partner_id[0] : invoice.partner_id;
-      const partnerName = Array.isArray(invoice.partner_id) ? invoice.partner_id[1] : "";
+      // Extract partner ID and name from Odoo's many2one format
+      let partnerId: number;
+      let partnerName: string;
+
+      if (Array.isArray(invoice.partner_id)) {
+        partnerId = invoice.partner_id[0];
+        partnerName = invoice.partner_id[1];
+      } else if (typeof invoice.partner_id === "number") {
+        partnerId = invoice.partner_id;
+        partnerName = "";
+      } else {
+        // Skip invoices without a valid partner (null or false)
+        continue;
+      }
+
       const dueDate = invoice.invoice_date_due ?? invoice.invoice_date ?? today;
       const amount = invoice.amount_residual ?? 0;
 
@@ -894,8 +907,21 @@ export class OdooAccountingService {
     >();
 
     for (const bill of bills) {
-      const partnerId = Array.isArray(bill.partner_id) ? bill.partner_id[0] : bill.partner_id;
-      const partnerName = Array.isArray(bill.partner_id) ? bill.partner_id[1] : "";
+      // Extract partner ID and name from Odoo's many2one format
+      let partnerId: number;
+      let partnerName: string;
+
+      if (Array.isArray(bill.partner_id)) {
+        partnerId = bill.partner_id[0];
+        partnerName = bill.partner_id[1];
+      } else if (typeof bill.partner_id === "number") {
+        partnerId = bill.partner_id;
+        partnerName = "";
+      } else {
+        // Skip bills without a valid partner (null or false)
+        continue;
+      }
+
       const dueDate = bill.invoice_date_due ?? bill.invoice_date ?? today;
       const amount = bill.amount_residual ?? 0;
 

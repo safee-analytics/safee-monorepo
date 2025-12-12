@@ -86,7 +86,9 @@ export class PostgreSQLConnector extends BaseConnector {
 
         try {
           const client = await testPool.connect();
-          const result = await client.query("SELECT version(), current_database(), current_user");
+          const result = await client.query<Record<string, unknown>>(
+            "SELECT version(), current_database(), current_user",
+          );
           client.release();
           return result.rows[0];
         } finally {
@@ -128,7 +130,7 @@ export class PostgreSQLConnector extends BaseConnector {
   async query<T = unknown>(sql: string, params?: unknown[]): Promise<T[]> {
     const pool = this.getPool();
     const result = await pool.query(sql, params);
-    return result.rows;
+    return result.rows as T[];
   }
 
   /**

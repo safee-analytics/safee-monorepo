@@ -185,7 +185,7 @@ export class OnboardingController extends Controller {
 
       if (!currentSubscription) {
         // No subscription - create new one
-        const newSubscription = await service.createSubscription({
+        await service.createSubscription({
           userId,
           planId: request.planId,
           seats: request.seats,

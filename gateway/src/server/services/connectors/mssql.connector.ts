@@ -1,5 +1,5 @@
-import sql from "mssql";
-import type { ConnectionPool, config as MSSQLConfig } from "mssql";
+import { ConnectionPool } from "mssql";
+import type { config as MSSQLConfig } from "mssql";
 import { BaseConnector, type ConnectorConfig, type ConnectionTestResult } from "./base.connector.js";
 
 export interface MSSQLConnectorConfig extends ConnectorConfig {
@@ -65,7 +65,7 @@ export class MSSQLConnector extends BaseConnector {
       requestTimeout: cfg.requestTimeout ?? 15000,
     };
 
-    this.pool = new sql.ConnectionPool(poolConfig);
+    this.pool = new ConnectionPool(poolConfig);
     await this.pool.connect();
 
     this.connected = true;
@@ -83,7 +83,7 @@ export class MSSQLConnector extends BaseConnector {
     try {
       const { latency } = await this.measureLatency(async () => {
         const cfg = this.config as MSSQLConnectorConfig;
-        const testPool = new sql.ConnectionPool({
+        const testPool = new ConnectionPool({
           server: cfg.host,
           port: cfg.port,
           database: cfg.database,
@@ -106,7 +106,7 @@ export class MSSQLConnector extends BaseConnector {
               DB_NAME() as database,
               SUSER_NAME() as username
           `);
-          return result.recordset[0];
+          return result.recordset[0] as Record<string, unknown>;
         } finally {
           await testPool.close();
         }

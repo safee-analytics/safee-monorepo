@@ -14,10 +14,15 @@ import {
   Request,
   SuccessResponse,
 } from "tsoa";
+import { z } from "zod";
 import { Readable } from "node:stream";
 import { StorageServiceV2 } from "../services/storage.service.v2.js";
 import { StorageConnectorService } from "../services/storage/storage-connector.service.js";
 import { ClientEncryptionService } from "../services/clientEncryption.service.js";
+
+// Zod schemas for runtime validation
+const tagsSchema = z.array(z.string());
+const metadataSchema = z.record(z.string(), z.unknown());
 import { getChunkedUploadServiceInstance } from "../services/chunked-upload-instance.js";
 import type { Response } from "express";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
@@ -118,8 +123,8 @@ export class StorageController extends Controller {
 
     return await storageService.uploadFile(file, {
       folderId,
-      tags: tags ? JSON.parse(tags) : undefined,
-      metadata: metadata ? JSON.parse(metadata) : undefined,
+      tags: tags ? tagsSchema.parse(JSON.parse(tags)) : undefined,
+      metadata: metadata ? metadataSchema.parse(JSON.parse(metadata)) : undefined,
       userId: request.betterAuthSession.user.id,
     });
   }
@@ -147,8 +152,8 @@ export class StorageController extends Controller {
 
     return await storageService.uploadFiles(files, {
       folderId,
-      tags: tags ? JSON.parse(tags) : undefined,
-      metadata: metadata ? JSON.parse(metadata) : undefined,
+      tags: tags ? tagsSchema.parse(JSON.parse(tags)) : undefined,
+      metadata: metadata ? metadataSchema.parse(JSON.parse(metadata)) : undefined,
       userId: request.betterAuthSession.user.id,
     });
   }
@@ -185,8 +190,8 @@ export class StorageController extends Controller {
     const storageService = await this.getStorageService(
       request.betterAuthSession.session.activeOrganizationId,
     );
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const response = (request as any).res as Response;
+    // Access response object from request (added by Express middleware)
+    const response = (request as AuthenticatedRequest & { res: Response }).res;
     await storageService.downloadFile(fileId, response);
   }
 

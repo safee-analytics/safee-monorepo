@@ -366,13 +366,19 @@ export class OdooWebhookController extends Controller {
       // Helper to extract ID from many2one field
       function extractId(value: unknown): number | undefined {
         if (!value || value === false) return undefined;
-        return Array.isArray(value) ? value[0] : (value as number);
+        if (Array.isArray(value)) {
+          return value[0] as number;
+        }
+        return value as number;
       }
 
       // Helper to extract name from many2one field
       function extractName(value: unknown): string | undefined {
         if (!value || value === false) return undefined;
-        return Array.isArray(value) ? value[1] : undefined;
+        if (Array.isArray(value)) {
+          return value[1] as string;
+        }
+        return undefined;
       }
 
       // Sync to database
@@ -501,13 +507,19 @@ export class OdooWebhookController extends Controller {
       // Helper to extract ID from many2one field
       function extractId(value: unknown): number | undefined {
         if (!value || value === false) return undefined;
-        return Array.isArray(value) ? value[0] : (value as number);
+        if (Array.isArray(value)) {
+          return value[0] as number;
+        }
+        return value as number;
       }
 
       // Helper to extract name from many2one field
       function extractName(value: unknown): string | undefined {
         if (!value || value === false) return undefined;
-        return Array.isArray(value) ? value[1] : undefined;
+        if (Array.isArray(value)) {
+          return value[1] as string;
+        }
+        return undefined;
       }
 
       // Sync to database

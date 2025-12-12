@@ -43,8 +43,17 @@ export class SMBAdapter implements StorageAdapter {
     domain?: string;
     port?: number;
   }) {
-    // @ts-expect-error - SMB2 package has incorrect type definitions
-    this.client = new SMB2Constructor({
+    // SMB2 package has incorrect type definitions, casting to function type
+    const smb2Factory = SMB2Constructor as unknown as (config: {
+      share: string;
+      domain: string;
+      username: string;
+      password: string;
+      port: number;
+      autoCloseTimeout: number;
+    }) => ISMB2;
+
+    this.client = smb2Factory({
       share: `\\\\${config.host}\\${config.share}`,
       domain: config.domain ?? "WORKGROUP",
       username: config.username ?? "guest",

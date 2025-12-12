@@ -1,4 +1,4 @@
-import mysql from "mysql2/promise";
+import { createPool } from "mysql2/promise";
 import type { Pool, PoolOptions } from "mysql2/promise";
 import { BaseConnector, type ConnectorConfig, type ConnectionTestResult } from "./base.connector.js";
 
@@ -56,7 +56,7 @@ export class MySQLConnector extends BaseConnector {
       queueLimit: 0,
     };
 
-    this.pool = mysql.createPool(poolConfig);
+    this.pool = createPool(poolConfig);
 
     // Test the connection
     const connection = await this.pool.getConnection();
@@ -77,7 +77,7 @@ export class MySQLConnector extends BaseConnector {
     try {
       const { latency } = await this.measureLatency(async () => {
         const cfg = this.config as MySQLConfig;
-        const testPool = mysql.createPool({
+        const testPool = createPool({
           host: cfg.host,
           port: cfg.port,
           database: cfg.database,
