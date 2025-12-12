@@ -35,7 +35,7 @@ export interface TestEncryptionKey {
  */
 export async function createTestOrg(drizzle: DrizzleClient, suffix?: string): Promise<TestOrganization> {
   const timestamp = Date.now();
-  const uniqueSuffix = suffix || `${timestamp}`;
+  const uniqueSuffix = suffix ?? `${timestamp}`;
 
   const [org] = await drizzle
     .insert(schema.organizations)
@@ -57,7 +57,7 @@ export async function createTestUser(
   namePrefix = "Test User",
 ): Promise<TestUser> {
   const timestamp = Date.now();
-  const uniqueSuffix = suffix || `${timestamp}`;
+  const uniqueSuffix = suffix ?? `${timestamp}`;
 
   const [user] = await drizzle
     .insert(schema.users)
@@ -89,9 +89,9 @@ export async function createTestEncryptionKey(
 ): Promise<TestEncryptionKey> {
   return await service.createOrgEncryptionKey({
     organizationId,
-    wrappedOrgKey: customData?.wrappedOrgKey || "base64encodedwrappedkey",
-    salt: customData?.salt || "base64encodedsalt",
-    iv: customData?.iv || "base64encodediv",
+    wrappedOrgKey: customData?.wrappedOrgKey ?? "base64encodedwrappedkey",
+    salt: customData?.salt ?? "base64encodedsalt",
+    iv: customData?.iv ?? "base64encodediv",
     derivationParams: customData?.derivationParams,
   });
 }

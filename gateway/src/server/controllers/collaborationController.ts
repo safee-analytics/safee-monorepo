@@ -33,7 +33,7 @@ export class CollaborationController extends Controller {
       id: a.id,
       caseId: a.caseId,
       activityType: a.activityType,
-      userId: a.userId ?? undefined,
+      userId: a.userId ,
       user: a.user
         ? {
             id: a.user.id,
@@ -53,7 +53,7 @@ export class CollaborationController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: CreateCaseActivityRequest,
   ): Promise<CaseActivityResponse> {
-    const userId = req.betterAuthSession?.user.id || "";
+    const userId = req.betterAuthSession?.user.id ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     const activity = await createActivity(deps, {
@@ -67,7 +67,7 @@ export class CollaborationController extends Controller {
       id: activity.id,
       caseId: activity.caseId,
       activityType: activity.activityType,
-      userId: activity.userId ?? undefined,
+      userId: activity.userId ,
       metadata: activity.metadata,
       isRead: activity.isRead,
       createdAt: activity.createdAt,
@@ -80,7 +80,7 @@ export class CollaborationController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: MarkAsReadRequest,
   ): Promise<{ success: boolean }> {
-    const userId = req.betterAuthSession?.user.id || "";
+    const userId = req.betterAuthSession?.user.id ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     await markActivitiesAsRead(deps, userId, request.activityIds);
@@ -94,7 +94,7 @@ export class CollaborationController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: UpdatePresenceRequest,
   ): Promise<PresenceResponse> {
-    const userId = req.betterAuthSession?.user.id || "";
+    const userId = req.betterAuthSession?.user.id ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     const presence = await updatePresence(deps, {

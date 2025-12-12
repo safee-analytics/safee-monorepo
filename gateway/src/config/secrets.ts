@@ -2,12 +2,13 @@ import { SecretClient } from "@azure/keyvault-secrets";
 import { DefaultAzureCredential } from "@azure/identity";
 import { ENV } from "../env.js";
 
-interface SecretCache {
-  [key: string]: {
+type SecretCache = Record<
+  string,
+  {
     value: string;
     expiry: number;
-  };
-}
+  } | undefined
+>;
 
 export class SecretsManager {
   private client?: SecretClient;
@@ -19,9 +20,9 @@ export class SecretsManager {
       try {
         const credential = new DefaultAzureCredential();
         this.client = new SecretClient(process.env.AZURE_KEY_VAULT_URL, credential);
-      } catch (error) {
+      } catch (err) {
         // eslint-disable-next-line no-console
-        console.warn("Failed to initialize Azure Key Vault client:", error);
+        console.warn("Failed to initialize Azure Key Vault client:", err);
       }
     }
   }
@@ -37,16 +38,14 @@ export class SecretsManager {
     if (this.client) {
       try {
         const secret = await this.client.getSecret(name);
-        value = secret.value || null;
-      } catch (error) {
+        value = secret.value ?? null;
+      } catch (err) {
         // eslint-disable-next-line no-console
-        console.warn(`Failed to retrieve secret "${name}" from Key Vault:`, error);
+        console.warn(`Failed to retrieve secret "${name}" from Key Vault:`, err);
       }
     }
 
-    if (!value) {
-      value = process.env[name.toUpperCase()] || null;
-    }
+    value ??= process.env[name.toUpperCase()] ?? null;
 
     if (value) {
       this.cache[name] = {

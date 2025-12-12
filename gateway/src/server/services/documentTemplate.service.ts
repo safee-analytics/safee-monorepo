@@ -181,9 +181,8 @@ export class DocumentTemplateService {
       )
       .returning();
 
-    if (template) {
-      this.logger.info({ organizationId, templateId }, "Template updated successfully");
-    }
+    // template is always defined after update (returning gives array with one element or empty array)
+    this.logger.info({ organizationId, templateId }, "Template updated successfully");
 
     return template;
   }

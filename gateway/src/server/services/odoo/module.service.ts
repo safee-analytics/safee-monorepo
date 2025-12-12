@@ -85,9 +85,9 @@ export class OdooModuleService {
               { moduleName: module.name, oldState: module.state, newState },
               "Cleared stuck module state",
             );
-          } catch (error) {
+          } catch (err) {
             this.logger.warn(
-              { moduleName: module.name, error: error instanceof Error ? error.message : "Unknown" },
+              { moduleName: module.name, error: err instanceof Error ? err.message : "Unknown" },
               "Failed to clear stuck module, continuing anyway",
             );
           }
@@ -95,9 +95,9 @@ export class OdooModuleService {
 
         await new Promise((resolve) => setTimeout(resolve, 1000));
       }
-    } catch (error) {
+    } catch (err) {
       this.logger.warn(
-        { error: error instanceof Error ? error.message : "Unknown" },
+        { error: err instanceof Error ? err.message : "Unknown" },
         "Failed to check for stuck modules, continuing anyway",
       );
     }
@@ -168,8 +168,8 @@ export class OdooModuleService {
         );
 
         return;
-      } catch (error) {
-        const errorMessage = error instanceof Error ? error.message : String(error);
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : String(err);
 
         if (
           errorMessage.includes("another module operation") ||
@@ -195,7 +195,7 @@ export class OdooModuleService {
             throw new Error("Odoo is busy with another module operation. Please try again in a few moments.");
           }
         } else {
-          throw error;
+          throw err;
         }
       }
     }

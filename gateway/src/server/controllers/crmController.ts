@@ -411,7 +411,7 @@ export class CRMController extends Controller {
 
     const syncService = new CRMSyncService(client, { drizzle, logger }, organizationId);
 
-    const entity = body?.entity || "all";
+    const entity = body?.entity ?? "all";
 
     if (entity === "leads") {
       const result = await syncService.syncLeadsOnly();

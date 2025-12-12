@@ -89,7 +89,7 @@ export interface OdooClient {
     name: string,
     domain?: unknown[],
     limit?: number,
-  ): Promise<Array<[number, string]>>;
+  ): Promise<[number, string][]>;
   fieldsGet(model: string, fields?: string[]): Promise<Record<string, unknown>>;
 }
 
@@ -99,7 +99,7 @@ export class OdooClientService implements OdooClient {
   private uid: number | null = null;
   private sessionId: string | null = null;
   private cookies: string[] = []; // Store all cookies from authentication
-  private useXmlRpc: boolean = false; // Track if we're using XML-RPC (API keys)
+  private useXmlRpc = false; // Track if we're using XML-RPC (API keys)
   private readonly timeout: number = 30000; // 30 seconds
 
   constructor(config: OdooConnectionConfig, logger: Logger) {
@@ -159,7 +159,7 @@ export class OdooClientService implements OdooClient {
 
         const errorMessage =
           typeof data.error === "object"
-            ? data.error.data?.message || data.error.message || JSON.stringify(data.error)
+            ? data.error.data?.message ?? data.error.message ?? JSON.stringify(data.error)
             : String(data.error);
         throw new Error(`Odoo authentication error: ${errorMessage}`);
       }
@@ -175,7 +175,8 @@ export class OdooClientService implements OdooClient {
       }
 
       // Capture all cookies from the authentication response
-      const setCookieHeaders = response.headers.getSetCookie?.() || [];
+      const getSetCookieFn = response.headers.getSetCookie;
+      const setCookieHeaders = getSetCookieFn ? getSetCookieFn() : [];
       if (setCookieHeaders.length > 0) {
         this.cookies = setCookieHeaders.map((cookie) => cookie.split(";")[0]);
         this.logger.info(
@@ -216,9 +217,9 @@ export class OdooClientService implements OdooClient {
         username: this.config.username,
         sessionId: result.session_id,
       };
-    } catch (error) {
-      this.logger.error({ error, database: this.config.database }, "Odoo authentication failed");
-      throw error instanceof Error ? error : new Error(String(error));
+    } catch (err) {
+      this.logger.error({ error: err, database: this.config.database }, "Odoo authentication failed");
+      throw err instanceof Error ? err : new Error(String(err));
     }
   }
 
@@ -289,7 +290,7 @@ export class OdooClientService implements OdooClient {
     if (data.error) {
       const errorMessage =
         typeof data.error === "object"
-          ? data.error.data?.message || data.error.message || JSON.stringify(data.error)
+          ? data.error.data?.message ?? data.error.message ?? JSON.stringify(data.error)
           : String(data.error);
       throw new Error(`Odoo JSON-RPC error: ${errorMessage}`);
     }
@@ -345,14 +346,12 @@ export class OdooClientService implements OdooClient {
   private parseXmlRpcResponse<T>(xml: string): T {
     // Check for fault
     if (xml.includes("<fault>")) {
-      const errorMatch = xml.match(/<string>(.*?)<\/string>/);
+      const errorMatch = /<string>(.*?)<\/string>/.exec(xml);
       throw new Error(`XML-RPC error: ${errorMatch ? errorMatch[1] : "Unknown error"}`);
     }
 
     // Extract the methodResponse > params > param > value content
-    const valueMatch = xml.match(
-      /<methodResponse>\s*<params>\s*<param>\s*<value>([\s\S]*?)<\/value>\s*<\/param>\s*<\/params>\s*<\/methodResponse>/,
-    );
+    const valueMatch = /<methodResponse>\s*<params>\s*<param>\s*<value>([\s\S]*?)<\/value>\s*<\/param>\s*<\/params>\s*<\/methodResponse>/.exec(xml);
 
     if (!valueMatch) {
       this.logger.warn({ xmlSnippet: xml.substring(0, 500) }, "Could not find value in XML-RPC response");
@@ -370,37 +369,37 @@ export class OdooClientService implements OdooClient {
     xml = xml.trim();
 
     // Parse integer
-    const intMatch = xml.match(/^<int>(\d+)<\/int>$/);
+    const intMatch = /^<int>(\d+)<\/int>$/.exec(xml);
     if (intMatch) {
       return parseInt(intMatch[1]);
     }
 
     // Parse boolean
-    const boolMatch = xml.match(/^<boolean>([01])<\/boolean>$/);
+    const boolMatch = /^<boolean>([01])<\/boolean>$/.exec(xml);
     if (boolMatch) {
       return boolMatch[1] === "1";
     }
 
     // Parse double
-    const doubleMatch = xml.match(/^<double>([-+]?[0-9]*\.?[0-9]+)<\/double>$/);
+    const doubleMatch = /^<double>([-+]?[0-9]*\.?[0-9]+)<\/double>$/.exec(xml);
     if (doubleMatch) {
       return parseFloat(doubleMatch[1]);
     }
 
     // Parse string
-    const stringMatch = xml.match(/^<string>([\s\S]*?)<\/string>$/);
+    const stringMatch = /^<string>([\s\S]*?)<\/string>$/.exec(xml);
     if (stringMatch) {
       return this.unescapeXml(stringMatch[1]);
     }
 
     // Parse array
-    const arrayMatch = xml.match(/^<array>\s*<data>([\s\S]*?)<\/data>\s*<\/array>$/);
+    const arrayMatch = /^<array>\s*<data>([\s\S]*?)<\/data>\s*<\/array>$/.exec(xml);
     if (arrayMatch) {
       return this.parseXmlArray(arrayMatch[1]);
     }
 
     // Parse struct
-    const structMatch = xml.match(/^<struct>([\s\S]*?)<\/struct>$/);
+    const structMatch = /^<struct>([\s\S]*?)<\/struct>$/.exec(xml);
     if (structMatch) {
       return this.parseXmlStruct(structMatch[1]);
     }
@@ -513,8 +512,8 @@ export class OdooClientService implements OdooClient {
         let errorBody;
         try {
           errorBody = await response.text();
-        } catch (e) {
-          errorBody = `Could not read error body: ${e instanceof Error ? e.message : String(e)}`;
+        } catch (err) {
+          errorBody = `Could not read error body: ${err instanceof Error ? err.message : String(err)}`;
         }
 
         this.logger.error(
@@ -546,15 +545,15 @@ export class OdooClientService implements OdooClient {
 
         const errorMessage =
           typeof data.error === "object"
-            ? data.error.data?.message || data.error.message || JSON.stringify(data.error)
+            ? data.error.data?.message ?? data.error.message ?? JSON.stringify(data.error)
             : String(data.error);
         throw new Error(`Odoo error: ${errorMessage}`);
       }
 
       return data.result as T;
-    } catch (error) {
+    } catch (err) {
       // Check if session expired and retry once
-      if (this.isSessionExpiredError(error) && retryCount === 0) {
+      if (this.isSessionExpiredError(err) && retryCount === 0) {
         this.logger.info(
           { model, method, retryCount },
           "Odoo session expired, re-authenticating and retrying",
@@ -570,8 +569,8 @@ export class OdooClientService implements OdooClient {
         return this.execute<T>(model, method, args, kwargs, retryCount + 1);
       }
 
-      this.logger.error({ error, model, method, retryCount }, "Odoo execute_kw failed");
-      throw error instanceof Error ? error : new Error(String(error));
+      this.logger.error({ error: err, model, method, retryCount }, "Odoo execute_kw failed");
+      throw err instanceof Error ? err : new Error(String(err));
     }
   }
 
@@ -590,8 +589,8 @@ export class OdooClientService implements OdooClient {
       if (order) kwargs.order = order;
 
       return await this.execute<number[]>(model, "search", [domain], kwargs);
-    } catch (error) {
-      throw sanitizeError(error);
+    } catch (err) {
+      throw sanitizeError(err);
     }
   }
 
@@ -618,8 +617,8 @@ export class OdooClientService implements OdooClient {
       if (context) kwargs.context = context;
 
       return await this.execute<T[]>(model, "search_read", [domain], kwargs);
-    } catch (error) {
-      throw sanitizeError(error);
+    } catch (err) {
+      throw sanitizeError(err);
     }
   }
 
@@ -639,8 +638,8 @@ export class OdooClientService implements OdooClient {
       if (context) kwargs.context = context;
 
       return await this.execute<T[]>(model, "read", [validatedIds], kwargs);
-    } catch (error) {
-      throw sanitizeError(error);
+    } catch (err) {
+      throw sanitizeError(err);
     }
   }
 
@@ -657,8 +656,8 @@ export class OdooClientService implements OdooClient {
       if (context) kwargs.context = context;
 
       return await this.execute<number>(model, "create", [sanitizedValues], kwargs);
-    } catch (error) {
-      throw sanitizeError(error);
+    } catch (err) {
+      throw sanitizeError(err);
     }
   }
 
@@ -677,8 +676,8 @@ export class OdooClientService implements OdooClient {
       if (context) kwargs.context = context;
 
       return await this.execute<boolean>(model, "write", [validatedIds, sanitizedValues], kwargs);
-    } catch (error) {
-      throw sanitizeError(error);
+    } catch (err) {
+      throw sanitizeError(err);
     }
   }
 
@@ -692,8 +691,8 @@ export class OdooClientService implements OdooClient {
       if (context) kwargs.context = context;
 
       return await this.execute<boolean>(model, "unlink", [validatedIds], kwargs);
-    } catch (error) {
-      throw sanitizeError(error);
+    } catch (err) {
+      throw sanitizeError(err);
     }
   }
 
@@ -727,8 +726,8 @@ export class OdooClientService implements OdooClient {
       }
 
       return data.result;
-    } catch (error) {
-      throw error instanceof Error ? error : new Error(`Failed to get Odoo version: ${String(error)}`);
+    } catch (err) {
+      throw err instanceof Error ? err : new Error(`Failed to get Odoo version: ${String(err)}`);
     }
   }
 
@@ -756,8 +755,8 @@ export class OdooClientService implements OdooClient {
       if (context) kwargs.context = context;
 
       return await this.execute<T>(model, validatedMethod, [validatedIds], kwargs);
-    } catch (error) {
-      throw sanitizeError(error);
+    } catch (err) {
+      throw sanitizeError(err);
     }
   }
 
@@ -777,8 +776,8 @@ export class OdooClientService implements OdooClient {
       }
 
       return null;
-    } catch (error) {
-      this.logger.warn({ error: sanitizeError(error), externalId }, "Failed to search by external ID");
+    } catch (err) {
+      this.logger.warn({ error: sanitizeError(err), externalId }, "Failed to search by external ID");
       return null;
     }
   }
@@ -799,8 +798,8 @@ export class OdooClientService implements OdooClient {
 
       const records = await this.read<T>("ir.model.data", [recordId], validatedFields);
       return records.length > 0 ? records[0] : null;
-    } catch (error) {
-      this.logger.warn({ error: sanitizeError(error), externalId }, "Failed to read by external ID");
+    } catch (err) {
+      this.logger.warn({ error: sanitizeError(err), externalId }, "Failed to read by external ID");
       return null;
     }
   }
@@ -820,14 +819,14 @@ export class OdooClientService implements OdooClient {
 
       await this.create("ir.model.data", {
         name: validatedExternalId,
-        model: model,
+        model,
         res_id: recordId,
         module: "__export__",
       });
 
       return recordId;
-    } catch (error) {
-      throw sanitizeError(error);
+    } catch (err) {
+      throw sanitizeError(err);
     }
   }
 
@@ -835,19 +834,19 @@ export class OdooClientService implements OdooClient {
     model: string,
     name: string,
     domain: unknown[] = [],
-    limit: number = 100,
-  ): Promise<Array<[number, string]>> {
+    limit = 100,
+  ): Promise<[number, string][]> {
     try {
       model = validateModel(model);
       const validatedDomain = validateDomain(domain);
-      const validatedLimit = validateLimit(limit) || 100;
+      const validatedLimit = validateLimit(limit) ?? 100;
 
-      return await this.execute<Array<[number, string]>>(model, "name_search", [name], {
+      return await this.execute<[number, string][]>(model, "name_search", [name], {
         args: validatedDomain,
         limit: validatedLimit,
       });
-    } catch (error) {
-      throw sanitizeError(error);
+    } catch (err) {
+      throw sanitizeError(err);
     }
   }
 
@@ -860,8 +859,8 @@ export class OdooClientService implements OdooClient {
       if (validatedFields.length > 0) kwargs.allfields = validatedFields;
 
       return await this.execute<Record<string, unknown>>(model, "fields_get", [], kwargs);
-    } catch (error) {
-      throw sanitizeError(error);
+    } catch (err) {
+      throw sanitizeError(err);
     }
   }
 }

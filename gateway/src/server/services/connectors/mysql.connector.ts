@@ -59,8 +59,8 @@ export class MySQLConnector extends BaseConnector {
       user: cfg.username,
       password: cfg.password,
       ssl: cfg.ssl ? { rejectUnauthorized: false } : undefined,
-      connectionLimit: cfg.maxConnections || 10,
-      connectTimeout: cfg.connectionTimeout || 5000,
+      connectionLimit: cfg.maxConnections ?? 10,
+      connectTimeout: cfg.connectionTimeout ?? 5000,
       waitForConnections: true,
       queueLimit: 0,
     };
@@ -117,11 +117,11 @@ export class MySQLConnector extends BaseConnector {
           database: (this.config as MySQLConfig).database,
         },
       };
-    } catch (error) {
+    } catch (err) {
       return {
         status: "failed",
         message: "Failed to connect to MySQL database",
-        error: error instanceof Error ? error.message : String(error),
+        error: err instanceof Error ? err.message : String(err),
       };
     }
   }
@@ -149,7 +149,7 @@ export class MySQLConnector extends BaseConnector {
    * Get schema information from the external database
    */
   async getSchemaInfo(): Promise<{
-    tables: Array<{ schema: string; name: string; type: string }>;
+    tables: { schema: string; name: string; type: string }[];
   }> {
     const tables = await this.query<{ schema: string; name: string; type: string }>(`
       SELECT
@@ -171,12 +171,12 @@ export class MySQLConnector extends BaseConnector {
     schema: string,
     table: string,
   ): Promise<
-    Array<{
+    {
       name: string;
       type: string;
       nullable: boolean;
       default: string | null;
-    }>
+    }[]
   > {
     return await this.query(
       `

@@ -90,8 +90,8 @@ export class ApprovalsController extends Controller {
 
     return {
       ctx,
-      organizationId: req.betterAuthSession?.session.activeOrganizationId || "",
-      userId: req.betterAuthSession?.user.id || "",
+      organizationId: req.betterAuthSession?.session.activeOrganizationId ?? "",
+      userId: req.betterAuthSession?.user.id ?? "",
     };
   }
 
@@ -122,7 +122,7 @@ export class ApprovalsController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Query() status?: "pending" | "approved" | "rejected" | "cancelled",
   ): Promise<ApprovalRequestResponse[]> {
-    const userId = req.betterAuthSession?.user.id || "";
+    const userId = req.betterAuthSession?.user.id ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     // Find approval steps assigned to this user
@@ -137,19 +137,19 @@ export class ApprovalsController extends Controller {
       entityId: step.request.entityId,
       status: step.request.status,
       requestedBy: step.request.requestedBy,
-      requestedByName: step.request.requestedByUser?.name || undefined,
+      requestedByName: step.request.requestedByUser.name,
       submittedAt: step.request.submittedAt.toISOString(),
       completedAt: step.request.completedAt?.toISOString(),
       steps: step.request.steps.map((s) => ({
         id: s.id,
         stepOrder: s.stepOrder,
         approverId: s.approverId,
-        approverName: s.approver?.name || undefined,
+        approverName: s.approver ? s.approver.name : undefined,
         status: s.status,
-        comments: s.comments || undefined,
+        comments: s.comments,
         actionAt: s.actionAt?.toISOString(),
-        delegatedTo: s.delegatedTo || undefined,
-        delegatedToName: s.delegatedToUser?.name || undefined,
+        delegatedTo: s.delegatedTo,
+        delegatedToName: s.delegatedToUser ? s.delegatedToUser.name : undefined,
       })),
     }));
   }
@@ -179,19 +179,19 @@ export class ApprovalsController extends Controller {
       entityId: request.entityId,
       status: request.status,
       requestedBy: request.requestedBy,
-      requestedByName: request.requestedByUser?.name || undefined,
+      requestedByName: request.requestedByUser?.name,
       submittedAt: request.submittedAt.toISOString(),
       completedAt: request.completedAt?.toISOString(),
       steps: request.steps.map((s) => ({
         id: s.id,
         stepOrder: s.stepOrder,
         approverId: s.approverId,
-        approverName: s.approver?.name || undefined,
+        approverName: s.approver ? s.approver.name : undefined,
         status: s.status,
-        comments: s.comments || undefined,
+        comments: s.comments,
         actionAt: s.actionAt?.toISOString(),
-        delegatedTo: s.delegatedTo || undefined,
-        delegatedToName: s.delegatedToUser?.name || undefined,
+        delegatedTo: s.delegatedTo,
+        delegatedToName: s.delegatedToUser ? s.delegatedToUser.name : undefined,
       })),
     };
   }
@@ -263,19 +263,19 @@ export class ApprovalsController extends Controller {
       entityId: request.entityId,
       status: request.status,
       requestedBy: request.requestedBy,
-      requestedByName: request.requestedByUser?.name || undefined,
+      requestedByName: request.requestedByUser?.name,
       submittedAt: request.submittedAt.toISOString(),
       completedAt: request.completedAt?.toISOString(),
       steps: request.steps.map((s) => ({
         id: s.id,
         stepOrder: s.stepOrder,
         approverId: s.approverId,
-        approverName: s.approver?.name || undefined,
+        approverName: s.approver ? s.approver.name : undefined,
         status: s.status,
-        comments: s.comments || undefined,
+        comments: s.comments,
         actionAt: s.actionAt?.toISOString(),
-        delegatedTo: s.delegatedTo || undefined,
-        delegatedToName: s.delegatedToUser?.name || undefined,
+        delegatedTo: s.delegatedTo,
+        delegatedToName: s.delegatedToUser ? s.delegatedToUser.name : undefined,
       })),
     }));
   }

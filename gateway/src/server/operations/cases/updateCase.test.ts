@@ -33,7 +33,7 @@ void describe("updateCase operation", async () => {
     await close();
   });
 
-  void it("should update a case successfully", async () => {
+  it("should update a case successfully", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-001",
       clientName: "Original Client",
@@ -52,7 +52,7 @@ void describe("updateCase operation", async () => {
     expect(result.caseNumber).toBe("CASE-001"); // unchanged
   });
 
-  void it("should create history entry with changes", async () => {
+  it("should create history entry with changes", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-002",
       clientName: "Test Client",
@@ -80,7 +80,7 @@ void describe("updateCase operation", async () => {
     });
   });
 
-  void it("should auto-set completed date when marking as completed", async () => {
+  it("should auto-set completed date when marking as completed", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-003",
       clientName: "Test Client",
@@ -95,7 +95,7 @@ void describe("updateCase operation", async () => {
     expect(result.completedDate).toBeDefined();
   });
 
-  void it("should throw NotFound for non-existent case", async () => {
+  it("should throw NotFound for non-existent case", async () => {
     await expect(
       updateCase(drizzle, testOrg.id, testUser.id, "non-existent-id", {
         clientName: "Test",
@@ -103,7 +103,7 @@ void describe("updateCase operation", async () => {
     ).rejects.toThrow(NotFound);
   });
 
-  void it("should throw InsufficientPermissions for different organization", async () => {
+  it("should throw InsufficientPermissions for different organization", async () => {
     const testOrg2 = await createTestOrganization(drizzle);
 
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
@@ -119,7 +119,7 @@ void describe("updateCase operation", async () => {
     ).rejects.toThrow(InsufficientPermissions);
   });
 
-  void it("should reject invalid case number format", async () => {
+  it("should reject invalid case number format", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-005",
       clientName: "Test Client",
@@ -133,7 +133,7 @@ void describe("updateCase operation", async () => {
     ).rejects.toThrow(InvalidInput);
   });
 
-  void it("should reject empty client name", async () => {
+  it("should reject empty client name", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-006",
       clientName: "Test Client",
@@ -147,7 +147,7 @@ void describe("updateCase operation", async () => {
     ).rejects.toThrow("Client name cannot be empty");
   });
 
-  void it("should reject completed date without completed status", async () => {
+  it("should reject completed date without completed status", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-007",
       clientName: "Test Client",
@@ -162,7 +162,7 @@ void describe("updateCase operation", async () => {
     ).rejects.toThrow("Completed date can only be set when status is 'completed'");
   });
 
-  void it("should reject due date in the past", async () => {
+  it("should reject due date in the past", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-008",
       clientName: "Test Client",
@@ -179,7 +179,7 @@ void describe("updateCase operation", async () => {
     ).rejects.toThrow("Due date cannot be in the past");
   });
 
-  void it("should not create history if no changes", async () => {
+  it("should not create history if no changes", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-009",
       clientName: "Test Client",
@@ -201,7 +201,7 @@ void describe("updateCase operation", async () => {
     expect(history).toHaveLength(0);
   });
 
-  void it("should trim whitespace from updated fields", async () => {
+  it("should trim whitespace from updated fields", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-010",
       clientName: "Test Client",

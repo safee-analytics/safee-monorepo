@@ -26,7 +26,7 @@ void describe("createConnector", async () => {
     await close();
   });
 
-  void it("should create a new connector", async () => {
+  it("should create a new connector", async () => {
     const timestamp = Date.now();
     const [org] = await drizzle
       .insert(schema.organizations)
@@ -70,7 +70,7 @@ void describe("createConnector", async () => {
     expect(result.organizationId).toBe(org.id);
   });
 
-  void it("should create connector with minimal fields", async () => {
+  it("should create connector with minimal fields", async () => {
     const timestamp = Date.now();
     const [org] = await drizzle
       .insert(schema.organizations)

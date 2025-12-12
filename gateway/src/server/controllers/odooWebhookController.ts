@@ -47,7 +47,6 @@ export class OdooWebhookController extends Controller {
   /**
    * Stringify JSON with sorted keys to match Odoo's json.dumps(sort_keys=True)
    */
-  // eslint-disable-next-line safee/tsoa-security
   private stringifyWithSortedKeys(obj: unknown): string {
     return JSON.stringify(obj, Object.keys(obj as object).sort());
   }
@@ -55,7 +54,6 @@ export class OdooWebhookController extends Controller {
   /**
    * Verify webhook signature
    */
-  // eslint-disable-next-line safee/tsoa-security
   private verifyWebhook(request: AuthenticatedRequest, body: OdooWebhookPayload): void {
     const webhookVerification = getWebhookVerification();
 
@@ -71,7 +69,6 @@ export class OdooWebhookController extends Controller {
    * Get Odoo client for webhook processing
    * Maps Odoo user ID to Safee user, then gets their client
    */
-  // eslint-disable-next-line safee/tsoa-security
   private async getClientForWebhook(odooUserId: string, organizationId: string) {
     const { drizzle, logger } = getServerContext();
 
@@ -100,8 +97,8 @@ export class OdooWebhookController extends Controller {
       // Fall back to admin client if user not found
       return createOdooClient(
         {
-          url: process.env.ODOO_URL || "http://localhost:8069",
-          port: parseInt(process.env.ODOO_PORT || "8069", 10),
+          url: process.env.ODOO_URL ?? "http://localhost:8069",
+          port: parseInt(process.env.ODOO_PORT ?? "8069", 10),
           database: odooDb.databaseName,
           username: odooDb.adminLogin,
           password: encryptionService.decrypt(odooDb.adminPassword),
@@ -231,9 +228,9 @@ export class OdooWebhookController extends Controller {
         success: true,
         message: `Employee ${event === "create" ? "created" : "updated"}`,
       };
-    } catch (error) {
-      logger.error({ error, payload }, "Failed to process employee webhook");
-      throw error;
+    } catch (err) {
+      logger.error({ error: err, payload }, "Failed to process employee webhook");
+      throw err;
     }
   }
 
@@ -295,7 +292,7 @@ export class OdooWebhookController extends Controller {
         {
           organizationId: organization_id,
           odooDepartmentId: odooDepartment.id,
-          name: odooDepartment.complete_name || odooDepartment.name || "Unknown",
+          name: odooDepartment.complete_name ?? odooDepartment.name,
           code: odooDepartment.name,
           parentId: odooDepartment.parent_id?.[0]?.toString(),
           managerId: odooDepartment.manager_id?.[0]?.toString(),
@@ -309,9 +306,9 @@ export class OdooWebhookController extends Controller {
         success: true,
         message: `Department ${event === "create" ? "created" : "updated"}`,
       };
-    } catch (error) {
-      logger.error({ error, payload }, "Failed to process department webhook");
-      throw error;
+    } catch (err) {
+      logger.error({ error: err, payload }, "Failed to process department webhook");
+      throw err;
     }
   }
 
@@ -368,13 +365,13 @@ export class OdooWebhookController extends Controller {
 
       // Helper to extract ID from many2one field
       const extractId = (value: unknown): number | undefined => {
-        if (!value || value === false || value === null) return undefined;
+        if (!value || value === false) return undefined;
         return Array.isArray(value) ? value[0] : (value as number);
       };
 
       // Helper to extract name from many2one field
       const extractName = (value: unknown): string | undefined => {
-        if (!value || value === false || value === null) return undefined;
+        if (!value || value === false) return undefined;
         return Array.isArray(value) ? value[1] : undefined;
       };
 
@@ -412,9 +409,9 @@ export class OdooWebhookController extends Controller {
         success: true,
         message: `Invoice ${event === "create" ? "created" : "updated"}`,
       };
-    } catch (error) {
-      logger.error({ error, payload }, "Failed to process invoice webhook");
-      throw error;
+    } catch (err) {
+      logger.error({ error: err, payload }, "Failed to process invoice webhook");
+      throw err;
     }
   }
 
@@ -491,7 +488,8 @@ export class OdooWebhookController extends Controller {
 
       const odooPayment = payments[0];
 
-      if (!odooPayment) {
+      // odooPayment is undefined if not found
+      if (odooPayment === undefined) {
         throw new NotFound(`Payment with Odoo ID ${record_id} not found`);
       }
 
@@ -502,13 +500,13 @@ export class OdooWebhookController extends Controller {
 
       // Helper to extract ID from many2one field
       const extractId = (value: unknown): number | undefined => {
-        if (!value || value === false || value === null) return undefined;
+        if (!value || value === false) return undefined;
         return Array.isArray(value) ? value[0] : (value as number);
       };
 
       // Helper to extract name from many2one field
       const extractName = (value: unknown): string | undefined => {
-        if (!value || value === false || value === null) return undefined;
+        if (!value || value === false) return undefined;
         return Array.isArray(value) ? value[1] : undefined;
       };
 
@@ -542,9 +540,9 @@ export class OdooWebhookController extends Controller {
         success: true,
         message: `Payment ${event === "create" ? "created" : "updated"}`,
       };
-    } catch (error) {
-      logger.error({ error, payload }, "Failed to process payment webhook");
-      throw error;
+    } catch (err) {
+      logger.error({ error: err, payload }, "Failed to process payment webhook");
+      throw err;
     }
   }
 
@@ -663,9 +661,9 @@ export class OdooWebhookController extends Controller {
         success: true,
         message: `Lead ${event === "create" ? "created" : "updated"}`,
       };
-    } catch (error) {
-      logger.error({ error, payload }, "Failed to process lead webhook");
-      throw error;
+    } catch (err) {
+      logger.error({ error: err, payload }, "Failed to process lead webhook");
+      throw err;
     }
   }
 
@@ -787,9 +785,9 @@ export class OdooWebhookController extends Controller {
         success: true,
         message: `Contact ${event === "create" ? "created" : "updated"}`,
       };
-    } catch (error) {
-      logger.error({ error, payload }, "Failed to process contact webhook");
-      throw error;
+    } catch (err) {
+      logger.error({ error: err, payload }, "Failed to process contact webhook");
+      throw err;
     }
   }
 }

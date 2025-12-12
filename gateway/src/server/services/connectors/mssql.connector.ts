@@ -66,12 +66,12 @@ export class MSSQLConnector extends BaseConnector {
         enableArithAbort: true,
       },
       pool: {
-        max: cfg.maxConnections || 10,
+        max: cfg.maxConnections ?? 10,
         min: 0,
         idleTimeoutMillis: 30000,
       },
-      connectionTimeout: cfg.connectionTimeout || 5000,
-      requestTimeout: cfg.requestTimeout || 15000,
+      connectionTimeout: cfg.connectionTimeout ?? 5000,
+      requestTimeout: cfg.requestTimeout ?? 15000,
     };
 
     this.pool = new sql.ConnectionPool(poolConfig);
@@ -129,11 +129,11 @@ export class MSSQLConnector extends BaseConnector {
           database: (this.config as MSSQLConnectorConfig).database,
         },
       };
-    } catch (error) {
+    } catch (err) {
       return {
         status: "failed",
         message: "Failed to connect to MSSQL database",
-        error: error instanceof Error ? error.message : String(error),
+        error: err instanceof Error ? err.message : String(err),
       };
     }
   }
@@ -170,7 +170,7 @@ export class MSSQLConnector extends BaseConnector {
    * Get schema information from the external database
    */
   async getSchemaInfo(): Promise<{
-    tables: Array<{ schema: string; name: string; type: string }>;
+    tables: { schema: string; name: string; type: string }[];
   }> {
     const tables = await this.query<{ schema: string; name: string; type: string }>(`
       SELECT
@@ -192,12 +192,12 @@ export class MSSQLConnector extends BaseConnector {
     schema: string,
     table: string,
   ): Promise<
-    Array<{
+    {
       name: string;
       type: string;
       nullable: boolean;
       default: string | null;
-    }>
+    }[]
   > {
     return await this.query(
       `

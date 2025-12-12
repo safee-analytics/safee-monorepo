@@ -33,7 +33,7 @@ interface ISMB2 {
  */
 export class SMBAdapter implements StorageAdapter {
   private client: ISMB2;
-  private connected: boolean = false;
+  private connected = false;
 
   constructor(config: {
     host: string;
@@ -46,10 +46,10 @@ export class SMBAdapter implements StorageAdapter {
     // @ts-expect-error - SMB2 package has incorrect type definitions
     this.client = new SMB2Constructor({
       share: `\\\\${config.host}\\${config.share}`,
-      domain: config.domain || "WORKGROUP",
-      username: config.username || "guest",
-      password: config.password || "",
-      port: config.port || 445,
+      domain: config.domain ?? "WORKGROUP",
+      username: config.username ?? "guest",
+      password: config.password ?? "",
+      port: config.port ?? 445,
       autoCloseTimeout: 10000,
     });
   }
@@ -164,10 +164,9 @@ export class SMBAdapter implements StorageAdapter {
   }
 
   async disconnect(): Promise<void> {
-    if (this.client) {
-      this.client.disconnect();
-      this.connected = false;
-    }
+    // this.client is always defined in constructor, just disconnect
+    this.client.disconnect();
+    this.connected = false;
   }
 
   /**

@@ -101,12 +101,12 @@ export class CRMSyncService {
             color: lead.color,
           });
           result.leadsSync++;
-        } catch (error) {
-          result.errors.push(`Failed to sync lead ${lead.id}: ${(error as Error).message}`);
+        } catch (err) {
+          result.errors.push(`Failed to sync lead ${lead.id}: ${(err as Error).message}`);
         }
       }
-    } catch (error) {
-      result.errors.push(`Failed to fetch leads: ${(error as Error).message}`);
+    } catch (err) {
+      result.errors.push(`Failed to fetch leads: ${(err as Error).message}`);
     }
   }
 
@@ -141,12 +141,12 @@ export class CRMSyncService {
             active: contact.active ?? true,
           });
           result.contactsSync++;
-        } catch (error) {
-          result.errors.push(`Failed to sync contact ${contact.id}: ${(error as Error).message}`);
+        } catch (err) {
+          result.errors.push(`Failed to sync contact ${contact.id}: ${(err as Error).message}`);
         }
       }
-    } catch (error) {
-      result.errors.push(`Failed to fetch contacts: ${(error as Error).message}`);
+    } catch (err) {
+      result.errors.push(`Failed to fetch contacts: ${(err as Error).message}`);
     }
   }
 
@@ -154,8 +154,8 @@ export class CRMSyncService {
     try {
       const stages = await this.crmService.getStages({});
       result.stagesSync = stages.length;
-    } catch (error) {
-      result.errors.push(`Failed to sync stages: ${(error as Error).message}`);
+    } catch (err) {
+      result.errors.push(`Failed to sync stages: ${(err as Error).message}`);
     }
   }
 
@@ -163,8 +163,8 @@ export class CRMSyncService {
     try {
       const teams = await this.crmService.getTeams({});
       result.teamsSync = teams.length;
-    } catch (error) {
-      result.errors.push(`Failed to sync teams: ${(error as Error).message}`);
+    } catch (err) {
+      result.errors.push(`Failed to sync teams: ${(err as Error).message}`);
     }
   }
 
@@ -172,8 +172,8 @@ export class CRMSyncService {
     try {
       const reasons = await this.crmService.getLostReasons({});
       result.lostReasonsSync = reasons.length;
-    } catch (error) {
-      result.errors.push(`Failed to sync lost reasons: ${(error as Error).message}`);
+    } catch (err) {
+      result.errors.push(`Failed to sync lost reasons: ${(err as Error).message}`);
     }
   }
 

@@ -14,11 +14,11 @@ export async function installOdooModules(
       success: true,
       message: "Odoo modules installed successfully",
     };
-  } catch (error) {
-    ctx.logger.error({ organizationId, error }, "Failed to install Odoo modules");
+  } catch (err) {
+    ctx.logger.error({ organizationId, error: err }, "Failed to install Odoo modules");
     return {
       success: false,
-      message: error instanceof Error ? error.message : "Failed to install modules",
+      message: err instanceof Error ? err.message : "Failed to install modules",
     };
   }
 }

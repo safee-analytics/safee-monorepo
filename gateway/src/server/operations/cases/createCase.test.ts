@@ -32,7 +32,7 @@ void describe("createCase operation", async () => {
     await close();
   });
 
-  void it("should create a case successfully", async () => {
+  it("should create a case successfully", async () => {
     const result = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-001",
       clientName: "Test Client",
@@ -49,7 +49,7 @@ void describe("createCase operation", async () => {
     expect(result.createdBy).toBe(testUser.id);
   });
 
-  void it("should create a case with all optional fields", async () => {
+  it("should create a case with all optional fields", async () => {
     const tomorrow = new Date();
     tomorrow.setDate(tomorrow.getDate() + 1);
 
@@ -67,7 +67,7 @@ void describe("createCase operation", async () => {
     expect(result.dueDate).toBeDefined();
   });
 
-  void it("should create history entry on case creation", async () => {
+  it("should create history entry on case creation", async () => {
     const result = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-003",
       clientName: "Test Client 3",
@@ -88,7 +88,7 @@ void describe("createCase operation", async () => {
     });
   });
 
-  void it("should trim whitespace from client name", async () => {
+  it("should trim whitespace from client name", async () => {
     const result = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-004",
       clientName: "  Test Client  ",
@@ -99,7 +99,7 @@ void describe("createCase operation", async () => {
     expect(result.auditType).toBe("ICV");
   });
 
-  void it("should reject invalid case number format", async () => {
+  it("should reject invalid case number format", async () => {
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "case-001", // lowercase
@@ -117,7 +117,7 @@ void describe("createCase operation", async () => {
     ).rejects.toThrow(InvalidInput);
   });
 
-  void it("should reject case number that is too short", async () => {
+  it("should reject case number that is too short", async () => {
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "C1",
@@ -127,7 +127,7 @@ void describe("createCase operation", async () => {
     ).rejects.toThrow("Case number must be between 3 and 50 characters");
   });
 
-  void it("should reject case number that is too long", async () => {
+  it("should reject case number that is too long", async () => {
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "C".repeat(51),
@@ -137,7 +137,7 @@ void describe("createCase operation", async () => {
     ).rejects.toThrow("Case number must be between 3 and 50 characters");
   });
 
-  void it("should reject empty client name", async () => {
+  it("should reject empty client name", async () => {
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "CASE-005",
@@ -147,7 +147,7 @@ void describe("createCase operation", async () => {
     ).rejects.toThrow("Client name cannot be empty");
   });
 
-  void it("should reject empty client name with whitespace", async () => {
+  it("should reject empty client name with whitespace", async () => {
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "CASE-007",
@@ -157,7 +157,7 @@ void describe("createCase operation", async () => {
     ).rejects.toThrow("Client name cannot be empty");
   });
 
-  void it("should reject due date in the past", async () => {
+  it("should reject due date in the past", async () => {
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
 
@@ -171,7 +171,7 @@ void describe("createCase operation", async () => {
     ).rejects.toThrow("Due date cannot be in the past");
   });
 
-  void it("should reject duplicate case number", async () => {
+  it("should reject duplicate case number", async () => {
     await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-009",
       clientName: "Test Client",
@@ -187,7 +187,7 @@ void describe("createCase operation", async () => {
     ).rejects.toThrow("A case with this case number already exists");
   });
 
-  void it("should allow same case number in different organizations", async () => {
+  it("should allow same case number in different organizations", async () => {
     const testOrg2 = await createTestOrganization(drizzle);
 
     await createCase(drizzle, testOrg.id, testUser.id, {

@@ -105,8 +105,8 @@ export function mapContact(contact: OdooContact): ContactResponse {
     industry: mapRelation(contact.industry_id),
     ref: contact.ref,
     barcode: contact.barcode,
-    isCustomer: (contact.customer_rank || 0) > 0,
-    isSupplier: (contact.supplier_rank || 0) > 0,
+    isCustomer: (contact.customer_rank ?? 0) > 0,
+    isSupplier: (contact.supplier_rank ?? 0) > 0,
     active: contact.active,
   };
 }

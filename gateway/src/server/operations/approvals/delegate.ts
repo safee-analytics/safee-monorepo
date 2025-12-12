@@ -37,7 +37,7 @@ export async function delegate(
       .update(schema.approvalSteps)
       .set({
         delegatedTo: request.delegateToUserId,
-        comments: request.comments || null,
+        comments: request.comments ?? null,
       })
       .where(eq(schema.approvalSteps.id, approvalStep.id));
 
@@ -54,12 +54,12 @@ export async function delegate(
       success: true,
       message: "Approval delegated successfully.",
     };
-  } catch (error) {
-    if (error instanceof NotFound) {
-      throw error;
+  } catch (err) {
+    if (err instanceof NotFound) {
+      throw err;
     }
 
-    logger.error({ error, userId, requestId }, "Failed to delegate approval");
+    logger.error({ error: err, userId, requestId }, "Failed to delegate approval");
     throw new OperationFailed("Failed to delegate approval");
   }
 }

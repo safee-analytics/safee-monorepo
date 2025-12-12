@@ -68,7 +68,7 @@ export function createPluginsConfig(emailService: EmailService | undefined, logg
           return 50;
         },
       },
-      sendInvitationEmail: emailConfig.invitationEmail.sendInvitationEmail,
+      sendInvitationEmail: (data) => emailConfig.invitationEmail.sendInvitationEmail(data),
     }),
   ];
 }

@@ -2,7 +2,7 @@ import { Route, Tags, Post, Body, Request, Controller, NoSecurity } from "tsoa";
 import { recordEmailBounce, connect } from "@safee/database";
 import { logger } from "../utils/logger.js";
 import type { Request as ExpressRequest } from "express";
-import crypto from "crypto";
+import crypto from "node:crypto";
 
 const { drizzle } = connect("gateway-email-webhooks");
 
@@ -29,7 +29,6 @@ export class EmailWebhookController extends Controller {
   /**
    * Verify webhook signature from Resend
    */
-  // eslint-disable-next-line safee/tsoa-security
   private verifyWebhookSignature(request: ExpressRequest, payload: ResendWebhookPayload): boolean {
     const signature = request.headers["svix-signature"] as string;
     const timestamp = request.headers["svix-timestamp"] as string;
@@ -60,8 +59,8 @@ export class EmailWebhookController extends Controller {
       return signatures.some((sig) =>
         crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expectedSignature)),
       );
-    } catch (error) {
-      logger.error({ error }, "Error verifying webhook signature");
+    } catch (err) {
+      logger.error({ error: err }, "Error verifying webhook signature");
       return false;
     }
   }
@@ -137,8 +136,8 @@ export class EmailWebhookController extends Controller {
       }
 
       return { success: true };
-    } catch (error) {
-      logger.error({ error, type, email }, "Error processing email webhook");
+    } catch (err) {
+      logger.error({ error: err, type, email }, "Error processing email webhook");
       this.setStatus(500);
       return { success: false };
     }

@@ -62,10 +62,10 @@ export class ResilientOdooClient implements OdooClient {
 
   // Circuit Breaker state
   private circuitState: CircuitState = CircuitState.CLOSED;
-  private failureCount: number = 0;
-  private successCount: number = 0;
-  private lastFailureTime: number = 0;
-  private circuitOpenTime: number = 0;
+  private failureCount = 0;
+  private successCount = 0;
+  private lastFailureTime = 0;
+  private circuitOpenTime = 0;
   private recentFailures: number[] = []; // Timestamps of recent failures
 
   // Configuration
@@ -256,7 +256,7 @@ export class ResilientOdooClient implements OdooClient {
       const idempotencyKey = this.auditLogService.generateIdempotencyKey(
         metadata.operation,
         metadata.model,
-        metadata.requestPayload || {},
+        metadata.requestPayload ?? {},
         metadata.organizationId,
       );
 
@@ -297,7 +297,7 @@ export class ResilientOdooClient implements OdooClient {
           operationId,
           firstAttemptAt: new Date(),
           expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours TTL
-          userId: metadata.userId || null,
+          userId: metadata.userId ?? null,
           organizationId: metadata.organizationId,
         });
       }
@@ -330,7 +330,7 @@ export class ResilientOdooClient implements OdooClient {
       idempotencyKey = this.auditLogService.generateIdempotencyKey(
         metadata.operation,
         metadata.model,
-        metadata.requestPayload || {},
+        metadata.requestPayload ?? {},
         metadata.organizationId,
       );
     }
@@ -344,11 +344,11 @@ export class ResilientOdooClient implements OdooClient {
         await this.auditLogService.logOperationStart({
           operationId,
           operationType: metadata.operation,
-          odooModel: metadata.model || null,
-          odooMethod: metadata.method || null,
-          odooRecordIds: metadata.recordIds || null,
-          odooDomain: metadata.domain || null,
-          requestPayload: metadata.requestPayload || null,
+          odooModel: metadata.model ?? null,
+          odooMethod: metadata.method ?? null,
+          odooRecordIds: metadata.recordIds ?? null,
+          odooDomain: metadata.domain ?? null,
+          requestPayload: metadata.requestPayload ?? null,
           responseData: null,
           status: "processing",
           errorMessage: null,
@@ -361,7 +361,7 @@ export class ResilientOdooClient implements OdooClient {
           isRetry: attempt > 0,
           parentOperationId: attempt > 0 ? operationId : null,
           circuitState: this.circuitState,
-          userId: metadata.userId || null,
+          userId: metadata.userId ?? null,
           organizationId: metadata.organizationId,
           metadata: null,
         });
@@ -427,10 +427,10 @@ export class ResilientOdooClient implements OdooClient {
         }
 
         return result;
-      } catch (error) {
+      } catch (err) {
         const duration = Date.now() - attemptStartTime;
         const endTime = new Date();
-        lastError = error instanceof Error ? error : new Error(String(error));
+        lastError = err instanceof Error ? err : new Error(String(err));
 
         const isRetryable = this.isRetryableError(lastError);
         const willRetry = isRetryable && attempt < this.retryConfig.maxRetries;
@@ -527,7 +527,7 @@ export class ResilientOdooClient implements OdooClient {
           : 0,
       successRate:
         this.metrics.totalRequests > 0
-          ? ((this.metrics.successfulRequests / this.metrics.totalRequests) * 100).toFixed(2) + "%"
+          ? `${((this.metrics.successfulRequests / this.metrics.totalRequests) * 100).toFixed(2)  }%`
           : "N/A",
       circuitState: this.circuitState,
       recentFailuresCount: this.recentFailures.length,

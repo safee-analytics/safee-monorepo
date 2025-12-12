@@ -37,7 +37,7 @@ void describe("getOdooUserWebCredentials", async () => {
     await close();
   });
 
-  void it("should retrieve and decrypt user web credentials with database info", async () => {
+  it("should retrieve and decrypt user web credentials with database info", async () => {
     const [odooDb] = await drizzle
       .insert(schema.odooDatabases)
       .values({
@@ -70,7 +70,7 @@ void describe("getOdooUserWebCredentials", async () => {
     expect(credentials?.webUrl).toContain("db=odoo_test_db");
   });
 
-  void it("should return null for non-existent user", async () => {
+  it("should return null for non-existent user", async () => {
     const fakeUserId = "00000000-0000-0000-0000-000000000000";
     const fakeOrgId = "00000000-0000-0000-0000-000000000001";
 
@@ -79,7 +79,7 @@ void describe("getOdooUserWebCredentials", async () => {
     expect(credentials).toBeNull();
   });
 
-  void it("should return null if user has no odoo account", async () => {
+  it("should return null if user has no odoo account", async () => {
     const credentials = await getOdooUserWebCredentials(drizzle, user.id, org.id);
 
     expect(credentials).toBeNull();

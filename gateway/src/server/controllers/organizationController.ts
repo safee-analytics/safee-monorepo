@@ -74,9 +74,9 @@ export class OrganizationController extends Controller {
         createdAt: updatedOrg.createdAt.toISOString(),
         updatedAt: updatedOrg.updatedAt.toISOString(),
       };
-    } catch (error) {
-      this.context.logger.error({ error, orgId }, "Failed to update organization logo");
-      throw error;
+    } catch (err) {
+      this.context.logger.error({ error: err, orgId }, "Failed to update organization logo");
+      throw err;
     }
   }
 }

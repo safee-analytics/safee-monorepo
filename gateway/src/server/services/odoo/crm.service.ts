@@ -132,7 +132,7 @@ export class OdooCRMService {
     partnerId?: number;
     active?: boolean;
   }): Promise<OdooLead[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.type) {
       domain.push(["type", "=", filters.type]);
@@ -266,7 +266,7 @@ export class OdooCRMService {
   }): Promise<number> {
     const odooData: Record<string, unknown> = {
       name: data.name,
-      type: data.type || "lead",
+      type: data.type ?? "lead",
       contact_name: data.contactName,
       email_from: data.emailFrom,
       phone: data.phone,
@@ -284,11 +284,11 @@ export class OdooCRMService {
       odooData.user_id = data.userId;
     }
 
-    Object.keys(odooData).forEach((key) => {
+    for (const key of Object.keys(odooData)) {
       if (odooData[key] === undefined) {
         delete odooData[key];
       }
-    });
+    }
 
     return this.client.create("crm.lead", odooData);
   }
@@ -361,7 +361,7 @@ export class OdooCRMService {
   }
 
   async getStages(filters?: { teamId?: number; isWon?: boolean }): Promise<OdooStage[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.teamId) {
       domain.push(["team_ids", "in", [filters.teamId]]);
@@ -397,7 +397,7 @@ export class OdooCRMService {
     isSupplier?: boolean;
     isCompany?: boolean;
   }): Promise<OdooContact[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.isCustomer) {
       domain.push(["customer_rank", ">", 0]);
@@ -482,7 +482,7 @@ export class OdooCRMService {
   }): Promise<number> {
     const odooData: Record<string, unknown> = {
       name: data.name,
-      is_company: data.isCompany || false,
+      is_company: data.isCompany ?? false,
       email: data.email,
       phone: data.phone,
       phone_mobile_search: data.phoneMobileSearch,
@@ -496,11 +496,11 @@ export class OdooCRMService {
       odooData.country_id = data.countryId;
     }
 
-    Object.keys(odooData).forEach((key) => {
+    for (const key of Object.keys(odooData)) {
       if (odooData[key] === undefined) {
         delete odooData[key];
       }
-    });
+    }
 
     return this.client.create("res.partner", odooData);
   }
@@ -526,7 +526,7 @@ export class OdooCRMService {
     userId?: number;
     state?: string;
   }): Promise<OdooActivity[]> {
-    const domain: Array<string | [string, string, unknown]> = [["res_model", "=", "crm.lead"]];
+    const domain: (string | [string, string, unknown])[] = [["res_model", "=", "crm.lead"]];
 
     if (filters?.leadId) {
       domain.push(["res_id", "=", filters.leadId]);
@@ -587,11 +587,11 @@ export class OdooCRMService {
       odooData.user_id = data.userId;
     }
 
-    Object.keys(odooData).forEach((key) => {
+    for (const key of Object.keys(odooData)) {
       if (odooData[key] === undefined) {
         delete odooData[key];
       }
-    });
+    }
 
     return this.client.create("mail.activity", odooData);
   }
@@ -601,7 +601,7 @@ export class OdooCRMService {
   }
 
   async getTeams(filters?: { active?: boolean }): Promise<OdooTeam[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.active !== false) {
       domain.push(["active", "=", true]);
@@ -621,7 +621,7 @@ export class OdooCRMService {
   }
 
   async getLostReasons(filters?: { active?: boolean }): Promise<OdooLostReason[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.active !== false) {
       domain.push(["active", "=", true]);

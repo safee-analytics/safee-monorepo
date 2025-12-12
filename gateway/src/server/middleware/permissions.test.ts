@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, beforeEach, vi  } from "vitest";
 import { type DrizzleClient, schema } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import {
@@ -10,7 +10,6 @@ import {
 } from "./permissions.js";
 import type { AuthenticatedRequest } from "./auth.js";
 import { InsufficientPermissions } from "../errors.js";
-import { vi } from "vitest";
 
 let testDrizzle: DrizzleClient;
 
@@ -46,7 +45,7 @@ void describe("permissions middleware", () => {
   });
 
   void describe("hasPermission", () => {
-    void it("should return true for owner role", async () => {
+    it("should return true for owner role", async () => {
       const timestamp = Date.now();
       const [org] = await drizzle
         .insert(schema.organizations)
@@ -74,7 +73,7 @@ void describe("permissions middleware", () => {
       expect(result).toBe(true);
     });
 
-    void it("should return true for admin role", async () => {
+    it("should return true for admin role", async () => {
       const timestamp = Date.now();
       const [org] = await drizzle
         .insert(schema.organizations)
@@ -102,7 +101,7 @@ void describe("permissions middleware", () => {
       expect(result).toBe(true);
     });
 
-    void it("should return false for member role with manage action", async () => {
+    it("should return false for member role with manage action", async () => {
       const timestamp = Date.now();
       const [org] = await drizzle
         .insert(schema.organizations)
@@ -130,7 +129,7 @@ void describe("permissions middleware", () => {
       expect(result).toBe(false);
     });
 
-    void it("should return true for member role with non-manage action", async () => {
+    it("should return true for member role with non-manage action", async () => {
       const timestamp = Date.now();
       const [org] = await drizzle
         .insert(schema.organizations)
@@ -158,7 +157,7 @@ void describe("permissions middleware", () => {
       expect(result).toBe(true);
     });
 
-    void it("should return false when user is not a member", async () => {
+    it("should return false when user is not a member", async () => {
       const timestamp = Date.now();
       const [org] = await drizzle
         .insert(schema.organizations)
@@ -174,7 +173,7 @@ void describe("permissions middleware", () => {
   });
 
   void describe("hasRole", () => {
-    void it("should return true when user has the specified role", async () => {
+    it("should return true when user has the specified role", async () => {
       const timestamp = Date.now();
       const [org] = await drizzle
         .insert(schema.organizations)
@@ -202,7 +201,7 @@ void describe("permissions middleware", () => {
       expect(result).toBe(true);
     });
 
-    void it("should return false when user has different role", async () => {
+    it("should return false when user has different role", async () => {
       const timestamp = Date.now();
       const [org] = await drizzle
         .insert(schema.organizations)
@@ -230,7 +229,7 @@ void describe("permissions middleware", () => {
       expect(result).toBe(false);
     });
 
-    void it("should return false when user is not a member", async () => {
+    it("should return false when user is not a member", async () => {
       const timestamp = Date.now();
       const [org] = await drizzle
         .insert(schema.organizations)
@@ -246,7 +245,7 @@ void describe("permissions middleware", () => {
   });
 
   void describe("requirePermission middleware", () => {
-    void it("should throw InsufficientPermissions when no session", async () => {
+    it("should throw InsufficientPermissions when no session", async () => {
       const mockRequest = {} as AuthenticatedRequest;
 
       const middleware = requirePermission("read", "users");
@@ -254,7 +253,7 @@ void describe("permissions middleware", () => {
       await expect(middleware(mockRequest)).rejects.toThrow(InsufficientPermissions);
     });
 
-    void it("should throw InsufficientPermissions when no organizationId", async () => {
+    it("should throw InsufficientPermissions when no organizationId", async () => {
       const mockRequest = {
         betterAuthSession: {
           user: { id: "user-123" },
@@ -267,7 +266,7 @@ void describe("permissions middleware", () => {
       await expect(middleware(mockRequest)).rejects.toThrow(InsufficientPermissions);
     });
 
-    void it("should not throw when user has permission", async () => {
+    it("should not throw when user has permission", async () => {
       const timestamp = Date.now();
       const [org] = await drizzle
         .insert(schema.organizations)
@@ -305,7 +304,7 @@ void describe("permissions middleware", () => {
   });
 
   void describe("canApprove", () => {
-    void it("should return true for admin", async () => {
+    it("should return true for admin", async () => {
       const timestamp = Date.now();
       const [org] = await drizzle
         .insert(schema.organizations)
@@ -335,7 +334,7 @@ void describe("permissions middleware", () => {
   });
 
   void describe("canSubmitForApproval", () => {
-    void it("should return true for member with create permission", async () => {
+    it("should return true for member with create permission", async () => {
       const timestamp = Date.now();
       const [org] = await drizzle
         .insert(schema.organizations)

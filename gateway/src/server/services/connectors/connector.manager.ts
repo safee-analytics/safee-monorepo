@@ -105,8 +105,8 @@ export class ConnectorManager {
         description: params.description,
         type: params.type,
         config: encryptedConfig as unknown as Record<string, unknown>,
-        tags: params.tags || [],
-        metadata: params.metadata || {},
+        tags: params.tags ?? [],
+        metadata: params.metadata ?? {},
         createdBy: params.createdBy,
         updatedBy: params.createdBy,
       })
@@ -118,10 +118,10 @@ export class ConnectorManager {
       organizationId: record.organizationId,
       name: record.name,
       type: record.type as ConnectorMetadata["type"],
-      description: record.description || undefined,
+      description: record.description ,
       isActive: record.isActive,
-      tags: (record.tags as string[]) || [],
-      metadata: (record.metadata as Record<string, unknown>) || {},
+      tags: record.tags ?? [],
+      metadata: record.metadata ?? {},
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
     };
@@ -173,7 +173,8 @@ export class ConnectorManager {
       .from(connectors)
       .where(and(eq(connectors.id, connectorId), eq(connectors.organizationId, organizationId)));
 
-    if (!record) {
+    // record is undefined if not found
+    if (record === undefined) {
       throw new Error(`Connector ${connectorId} not found`);
     }
 
@@ -193,10 +194,10 @@ export class ConnectorManager {
       organizationId: record.organizationId,
       name: record.name,
       type: record.type as ConnectorMetadata["type"],
-      description: record.description || undefined,
+      description: record.description ,
       isActive: record.isActive,
-      tags: (record.tags as string[]) || [],
-      metadata: (record.metadata as Record<string, unknown>) || {},
+      tags: record.tags ?? [],
+      metadata: record.metadata ?? {},
       createdAt: record.createdAt,
       updatedAt: record.updatedAt,
     };
@@ -245,7 +246,7 @@ export class ConnectorManager {
     // Filter by tags if provided
     if (filters?.tags && filters.tags.length > 0) {
       return results.filter((r: typeof connectors.$inferSelect) =>
-        filters.tags!.some((tag) => (r.tags as string[])?.includes(tag)),
+        filters.tags!.some((tag) => (r.tags)?.includes(tag)),
       );
     }
 
@@ -273,7 +274,8 @@ export class ConnectorManager {
       .from(connectors)
       .where(and(eq(connectors.id, connectorId), eq(connectors.organizationId, organizationId)));
 
-    if (!existing) {
+    // existing is undefined if not found
+    if (existing === undefined) {
       throw new Error(`Connector ${connectorId} not found`);
     }
 
@@ -311,10 +313,10 @@ export class ConnectorManager {
         organizationId: existing.organizationId,
         name: existing.name,
         type: existing.type as ConnectorMetadata["type"],
-        description: existing.description || undefined,
+        description: existing.description ,
         isActive: existing.isActive,
-        tags: (existing.tags as string[]) || [],
-        metadata: (existing.metadata as Record<string, unknown>) || {},
+        tags: existing.tags ?? [],
+        metadata: existing.metadata ?? {},
         createdAt: existing.createdAt,
         updatedAt: existing.updatedAt,
       };
@@ -352,7 +354,7 @@ export class ConnectorManager {
       .set({
         lastConnectionTest: new Date(),
         lastConnectionStatus: result.status,
-        lastConnectionError: result.error || null,
+        lastConnectionError: result.error ?? null,
       })
       .where(eq(connectors.id, connectorId));
 

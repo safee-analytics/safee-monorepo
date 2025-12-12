@@ -72,7 +72,7 @@ export class CasesController extends Controller {
   @Get("/")
   @Security("jwt")
   public async listCases(@Request() req: AuthenticatedRequest): Promise<CaseResponse[]> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     const cases = await getCasesByOrganization(deps, organizationId);
@@ -90,16 +90,14 @@ export class CasesController extends Controller {
       createdBy: c.createdBy,
       createdAt: c.createdAt.toISOString(),
       updatedAt: c.updatedAt.toISOString(),
-      assignments: c.assignments?.map((a) => ({
+      assignments: c.assignments.map((a) => ({
         userId: a.userId,
         role: a.role,
-        user: a.user
-          ? {
-              id: a.user.id,
-              name: a.user.name,
-              email: a.user.email,
-            }
-          : undefined,
+        user: {
+          id: a.user.id,
+          name: a.user.name,
+          email: a.user.email,
+        },
       })),
     }));
   }
@@ -111,8 +109,8 @@ export class CasesController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: CreateCaseRequest,
   ): Promise<CaseResponse> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
-    const userId = req.betterAuthSession?.user.id || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
+    const userId = req.betterAuthSession?.user.id ?? "";
 
     this.setStatus(201);
 
@@ -132,11 +130,11 @@ export class CasesController extends Controller {
 
     return templates.map((t) => ({
       id: t.id,
-      organizationId: t.organizationId ?? undefined,
+      organizationId: t.organizationId ,
       name: t.name,
-      description: t.description ?? undefined,
+      description: t.description ,
       auditType: t.auditType,
-      category: t.category ?? undefined,
+      category: t.category ,
       version: t.version,
       isActive: t.isActive,
       isPublic: t.isPublic,
@@ -155,8 +153,8 @@ export class CasesController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: CreateTemplateRequest,
   ): Promise<TemplateResponse> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
-    const userId = req.betterAuthSession?.user.id || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
+    const userId = req.betterAuthSession?.user.id ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     this.setStatus(201);
@@ -176,11 +174,11 @@ export class CasesController extends Controller {
 
     return {
       id: template.id,
-      organizationId: template.organizationId ?? undefined,
+      organizationId: template.organizationId ,
       name: template.name,
-      description: template.description ?? undefined,
+      description: template.description ,
       auditType: template.auditType,
-      category: template.category ?? undefined,
+      category: template.category ,
       version: template.version,
       isActive: template.isActive,
       isPublic: template.isPublic,
@@ -208,11 +206,11 @@ export class CasesController extends Controller {
 
     return {
       id: template.id,
-      organizationId: template.organizationId ?? undefined,
+      organizationId: template.organizationId ,
       name: template.name,
-      description: template.description ?? undefined,
+      description: template.description ,
       auditType: template.auditType,
-      category: template.category ?? undefined,
+      category: template.category ,
       version: template.version,
       isActive: template.isActive,
       isPublic: template.isPublic,
@@ -257,8 +255,8 @@ export class CasesController extends Controller {
     @Path() caseId: string,
     @Body() request: UpdateCaseRequest,
   ): Promise<CaseResponse> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
-    const userId = req.betterAuthSession?.user.id || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
+    const userId = req.betterAuthSession?.user.id ?? "";
 
     return await updateCaseOp(req.drizzle, organizationId, userId, caseId, request);
   }
@@ -269,8 +267,8 @@ export class CasesController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Path() caseId: string,
   ): Promise<{ success: boolean }> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
-    const userId = req.betterAuthSession?.user.id || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
+    const userId = req.betterAuthSession?.user.id ?? "";
 
     return await deleteCaseOp(req.drizzle, organizationId, userId, caseId);
   }
@@ -290,14 +288,14 @@ export class CasesController extends Controller {
     return scopes.map((s) => ({
       id: s.id,
       caseId: s.caseId,
-      templateId: s.templateId ?? undefined,
+      templateId: s.templateId ,
       name: s.name,
-      description: s.description ?? undefined,
+      description: s.description ,
       status: s.status,
-      metadata: s.metadata as Record<string, unknown>,
+      metadata: s.metadata!,
       createdBy: s.createdBy,
-      completedBy: s.completedBy ?? undefined,
-      archivedBy: s.archivedBy ?? undefined,
+      completedBy: s.completedBy ,
+      archivedBy: s.archivedBy ,
       createdAt: s.createdAt.toISOString(),
       updatedAt: s.updatedAt.toISOString(),
       completedAt: s.completedAt?.toISOString(),
@@ -313,7 +311,7 @@ export class CasesController extends Controller {
     @Path() caseId: string,
     @Body() request: CreateScopeRequest,
   ): Promise<ScopeResponse> {
-    const userId = req.betterAuthSession?.user.id || "";
+    const userId = req.betterAuthSession?.user.id ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     this.setStatus(201);
@@ -330,14 +328,14 @@ export class CasesController extends Controller {
     return {
       id: scope.id,
       caseId: scope.caseId,
-      templateId: scope.templateId ?? undefined,
+      templateId: scope.templateId ,
       name: scope.name,
-      description: scope.description ?? undefined,
+      description: scope.description ,
       status: scope.status,
-      metadata: scope.metadata as Record<string, unknown>,
+      metadata: scope.metadata!,
       createdBy: scope.createdBy,
-      completedBy: scope.completedBy ?? undefined,
-      archivedBy: scope.archivedBy ?? undefined,
+      completedBy: scope.completedBy ,
+      archivedBy: scope.archivedBy ,
       createdAt: scope.createdAt.toISOString(),
       updatedAt: scope.updatedAt.toISOString(),
       completedAt: scope.completedAt?.toISOString(),
@@ -353,8 +351,8 @@ export class CasesController extends Controller {
     @Path() caseId: string,
     @Body() request: CreateScopeFromTemplateRequest,
   ): Promise<ScopeResponse> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
-    const userId = req.betterAuthSession?.user.id || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
+    const userId = req.betterAuthSession?.user.id ?? "";
 
     this.setStatus(201);
 
@@ -369,7 +367,7 @@ export class CasesController extends Controller {
     @Path() scopeId: string,
     @Body() request: UpdateScopeStatusRequest,
   ): Promise<ScopeResponse> {
-    const userId = req.betterAuthSession?.user.id || "";
+    const userId = req.betterAuthSession?.user.id ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     const scope = await updateScopeStatus(deps, scopeId, request.status, userId);
@@ -377,14 +375,14 @@ export class CasesController extends Controller {
     return {
       id: scope.id,
       caseId: scope.caseId,
-      templateId: scope.templateId ?? undefined,
+      templateId: scope.templateId ,
       name: scope.name,
-      description: scope.description ?? undefined,
+      description: scope.description ,
       status: scope.status,
-      metadata: scope.metadata as Record<string, unknown>,
+      metadata: scope.metadata!,
       createdBy: scope.createdBy,
-      completedBy: scope.completedBy ?? undefined,
-      archivedBy: scope.archivedBy ?? undefined,
+      completedBy: scope.completedBy ,
+      archivedBy: scope.archivedBy ,
       createdAt: scope.createdAt.toISOString(),
       updatedAt: scope.updatedAt.toISOString(),
       completedAt: scope.completedAt?.toISOString(),
@@ -409,7 +407,7 @@ export class CasesController extends Controller {
       id: s.id,
       scopeId: s.scopeId,
       name: s.name,
-      description: s.description ?? undefined,
+      description: s.description ,
       sortOrder: s.sortOrder,
       isCompleted: s.isCompleted,
       settings: s.settings as Record<string, unknown>,
@@ -437,14 +435,14 @@ export class CasesController extends Controller {
       sectionId: p.sectionId,
       referenceNumber: p.referenceNumber,
       title: p.title,
-      description: p.description ?? undefined,
+      description: p.description ,
       requirements: p.requirements as Record<string, unknown>,
       sortOrder: p.sortOrder,
       isCompleted: p.isCompleted,
-      completedBy: p.completedBy ?? undefined,
+      completedBy: p.completedBy ,
       completedAt: p.completedAt?.toISOString(),
-      memo: p.memo ?? undefined,
-      fieldData: p.fieldData as Record<string, unknown>,
+      memo: p.memo ,
+      fieldData: p.fieldData!,
       canEdit: p.canEdit,
       createdAt: p.createdAt.toISOString(),
       updatedAt: p.updatedAt.toISOString(),
@@ -461,7 +459,7 @@ export class CasesController extends Controller {
     @Path() procedureId: string,
     @Body() request: CompleteProcedureRequest,
   ): Promise<ProcedureResponse> {
-    const userId = req.betterAuthSession?.user.id || "";
+    const userId = req.betterAuthSession?.user.id ?? "";
 
     return await completeProcedureOp(req.drizzle, userId, caseId, procedureId, request);
   }
@@ -481,13 +479,13 @@ export class CasesController extends Controller {
     return documents.map((d) => ({
       id: d.id,
       caseId: d.caseId,
-      procedureId: d.procedureId ?? undefined,
+      procedureId: d.procedureId ,
       fileName: d.fileName,
-      fileSize: Number(d.fileSize),
+      fileSize: d.fileSize,
       fileType: d.fileType,
       storagePath: d.storagePath,
       version: d.version,
-      parentDocumentId: d.parentDocumentId ?? undefined,
+      parentDocumentId: d.parentDocumentId ,
       uploadedBy: d.uploadedBy,
       uploadedAt: d.uploadedAt.toISOString(),
       isDeleted: d.isDeleted,
@@ -502,7 +500,7 @@ export class CasesController extends Controller {
     @Path() caseId: string,
     @Body() request: CreateDocumentRequest,
   ): Promise<DocumentResponse> {
-    const userId = req.betterAuthSession?.user.id || "";
+    const userId = req.betterAuthSession?.user.id ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     this.setStatus(201);
@@ -522,13 +520,13 @@ export class CasesController extends Controller {
     return {
       id: document.id,
       caseId: document.caseId,
-      procedureId: document.procedureId ?? undefined,
+      procedureId: document.procedureId ,
       fileName: document.fileName,
-      fileSize: Number(document.fileSize),
+      fileSize: document.fileSize,
       fileType: document.fileType,
       storagePath: document.storagePath,
       version: document.version,
-      parentDocumentId: document.parentDocumentId ?? undefined,
+      parentDocumentId: document.parentDocumentId ,
       uploadedBy: document.uploadedBy,
       uploadedAt: document.uploadedAt.toISOString(),
       isDeleted: document.isDeleted,
@@ -564,7 +562,7 @@ export class CasesController extends Controller {
     return notes.map((n) => ({
       id: n.id,
       caseId: n.caseId,
-      procedureId: n.procedureId ?? undefined,
+      procedureId: n.procedureId ,
       noteType: n.noteType,
       content: n.content,
       createdBy: n.createdBy,
@@ -582,7 +580,7 @@ export class CasesController extends Controller {
     @Path() caseId: string,
     @Body() request: CreateNoteRequest,
   ): Promise<NoteResponse> {
-    const userId = req.betterAuthSession?.user.id || "";
+    const userId = req.betterAuthSession?.user.id ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     this.setStatus(201);
@@ -598,7 +596,7 @@ export class CasesController extends Controller {
     return {
       id: note.id,
       caseId: note.caseId,
-      procedureId: note.procedureId ?? undefined,
+      procedureId: note.procedureId ,
       noteType: note.noteType,
       content: note.content,
       createdBy: note.createdBy,
@@ -625,7 +623,7 @@ export class CasesController extends Controller {
     return {
       id: note.id,
       caseId: note.caseId,
-      procedureId: note.procedureId ?? undefined,
+      procedureId: note.procedureId ,
       noteType: note.noteType,
       content: note.content,
       createdBy: note.createdBy,
@@ -664,7 +662,7 @@ export class CasesController extends Controller {
     @Path() caseId: string,
     @Body() request: CreateAssignmentRequest,
   ): Promise<AssignmentResponse> {
-    const userId = req.betterAuthSession?.user.id || "";
+    const userId = req.betterAuthSession?.user.id ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     this.setStatus(201);

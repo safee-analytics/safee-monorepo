@@ -1,6 +1,5 @@
 import type { DrizzleClient } from "@safee/database";
-import { schema } from "@safee/database";
-import { eq, and } from "@safee/database";
+import { schema, eq, and  } from "@safee/database";
 import { encryptionService } from "../services/encryption.js";
 
 export async function getOdooDevCredentials(
@@ -24,7 +23,7 @@ export async function getOdooDevCredentials(
     where: and(eq(schema.odooUsers.userId, userId), eq(schema.odooUsers.odooDatabaseId, odooDb.id)),
   });
 
-  if (!odooUser || !odooUser.password) {
+  if (!odooUser?.password) {
     return null;
   }
 

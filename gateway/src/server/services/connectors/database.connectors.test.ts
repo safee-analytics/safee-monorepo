@@ -291,10 +291,10 @@ describe("Database Connectors", () => {
         },
       ];
 
-      configs.forEach((config) => {
+      for (const config of configs) {
         expect(config).toHaveProperty("ssl");
         expect(typeof config.ssl).toBe("boolean");
-      });
+      }
     });
 
     it("should support optional connection pooling configuration", () => {

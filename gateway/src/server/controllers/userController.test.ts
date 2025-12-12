@@ -54,7 +54,7 @@ void describe("UserController", () => {
   });
 
   void describe("getCurrentUser", () => {
-    void it("should return current user profile", async () => {
+    it("should return current user profile", async () => {
       const timestamp = Date.now();
       await drizzle
         .insert(schema.organizations)
@@ -88,13 +88,13 @@ void describe("UserController", () => {
       expect(result.preferredLocale).toBe("en");
     });
 
-    void it("should throw Unauthorized when no session", async () => {
+    it("should throw Unauthorized when no session", async () => {
       const mockRequest = {} as AuthenticatedRequest;
 
       await expect(controller.getCurrentUser(mockRequest)).rejects.toThrow(Unauthorized);
     });
 
-    void it("should throw UserNotFound when user does not exist", async () => {
+    it("should throw UserNotFound when user does not exist", async () => {
       const mockRequest = {
         betterAuthSession: {
           user: { id: "00000000-0000-0000-0000-000000000999" },
@@ -105,7 +105,7 @@ void describe("UserController", () => {
       await expect(controller.getCurrentUser(mockRequest)).rejects.toThrow(UserNotFound);
     });
 
-    void it("should return user without organization if not set", async () => {
+    it("should return user without organization if not set", async () => {
       const timestamp = Date.now();
       const [user] = await drizzle
         .insert(schema.users)
@@ -128,7 +128,7 @@ void describe("UserController", () => {
       expect(result.id).toBe(user.id);
     });
 
-    void it("should handle Arabic locale", async () => {
+    it("should handle Arabic locale", async () => {
       const timestamp = Date.now();
       const [user] = await drizzle
         .insert(schema.users)
@@ -154,7 +154,7 @@ void describe("UserController", () => {
   });
 
   void describe("updateCurrentUser", () => {
-    void it("should update user name", async () => {
+    it("should update user name", async () => {
       const timestamp = Date.now();
       const [user] = await drizzle
         .insert(schema.users)
@@ -178,7 +178,7 @@ void describe("UserController", () => {
       expect(result.email).toBe(user.email);
     });
 
-    void it("should update user locale", async () => {
+    it("should update user locale", async () => {
       const timestamp = Date.now();
       const [user] = await drizzle
         .insert(schema.users)
@@ -202,7 +202,7 @@ void describe("UserController", () => {
       expect(result.name).toBe("Test User");
     });
 
-    void it("should update both name and locale", async () => {
+    it("should update both name and locale", async () => {
       const timestamp = Date.now();
       const [user] = await drizzle
         .insert(schema.users)
@@ -229,7 +229,7 @@ void describe("UserController", () => {
       expect(result.preferredLocale).toBe("ar");
     });
 
-    void it("should throw Unauthorized when no session", async () => {
+    it("should throw Unauthorized when no session", async () => {
       const mockRequest = {} as AuthenticatedRequest;
 
       await expect(controller.updateCurrentUser({ name: "New Name" }, mockRequest)).rejects.toThrow(
@@ -237,7 +237,7 @@ void describe("UserController", () => {
       );
     });
 
-    void it("should throw UserNotFound when user does not exist", async () => {
+    it("should throw UserNotFound when user does not exist", async () => {
       const mockRequest = {
         betterAuthSession: {
           user: { id: "00000000-0000-0000-0000-000000000999" },
@@ -250,7 +250,7 @@ void describe("UserController", () => {
       );
     });
 
-    void it("should handle empty update request", async () => {
+    it("should handle empty update request", async () => {
       const timestamp = Date.now();
       const [user] = await drizzle
         .insert(schema.users)
@@ -276,7 +276,7 @@ void describe("UserController", () => {
   });
 
   void describe("updateCurrentUserLocale", () => {
-    void it("should update user locale to Arabic", async () => {
+    it("should update user locale to Arabic", async () => {
       const timestamp = Date.now();
       const [user] = await drizzle
         .insert(schema.users)
@@ -306,7 +306,7 @@ void describe("UserController", () => {
       expect(updatedUser?.preferredLocale).toBe("ar");
     });
 
-    void it("should update user locale to English", async () => {
+    it("should update user locale to English", async () => {
       const timestamp = Date.now();
       const [user] = await drizzle
         .insert(schema.users)
@@ -330,7 +330,7 @@ void describe("UserController", () => {
       expect(result.locale).toBe("en");
     });
 
-    void it("should throw Unauthorized when no session", async () => {
+    it("should throw Unauthorized when no session", async () => {
       const mockRequest = {} as AuthenticatedRequest;
 
       await expect(controller.updateCurrentUserLocale({ locale: "ar" }, mockRequest)).rejects.toThrow(
@@ -338,7 +338,7 @@ void describe("UserController", () => {
       );
     });
 
-    void it("should handle non-existent user", async () => {
+    it("should handle non-existent user", async () => {
       const mockRequest = {
         betterAuthSession: {
           user: { id: "00000000-0000-0000-0000-000000000999" },
@@ -349,7 +349,7 @@ void describe("UserController", () => {
       await expect(controller.updateCurrentUserLocale({ locale: "ar" }, mockRequest)).rejects.toThrow();
     });
 
-    void it("should allow switching locales multiple times", async () => {
+    it("should allow switching locales multiple times", async () => {
       const timestamp = Date.now();
       const [user] = await drizzle
         .insert(schema.users)

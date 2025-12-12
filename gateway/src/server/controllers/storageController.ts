@@ -408,8 +408,8 @@ export class StorageController extends Controller {
       mimeType,
       totalChunks,
       chunkSize,
-      userId: request.betterAuthSession.user.id,
-      organizationId: request.betterAuthSession.session.activeOrganizationId,
+      userId: request.betterAuthSession!.user.id,
+      organizationId: request.betterAuthSession!.session.activeOrganizationId,
       metadata,
     });
 
@@ -473,7 +473,7 @@ export class StorageController extends Controller {
 
     // Get storage service and save the assembled file
     const storageService = await this.getStorageService(
-      request.betterAuthSession.session.activeOrganizationId,
+      request.betterAuthSession!.session.activeOrganizationId,
     );
 
     // Create a mock Multer file object
@@ -495,7 +495,7 @@ export class StorageController extends Controller {
       folderId: body?.folderId,
       tags: body?.tags,
       metadata: body?.metadata,
-      userId: request.betterAuthSession.user.id,
+      userId: request.betterAuthSession!.user.id,
     });
 
     this.setStatus(201);

@@ -27,66 +27,66 @@ export interface CaseResponse {
   auditType: AuditType;
   status: CaseStatus;
   priority: CasePriority;
-  dueDate?: string;
-  completedDate?: string;
+  dueDate?: string | null;
+  completedDate?: string | null;
   createdBy: string;
   createdAt: string;
   updatedAt: string;
-  assignments?: Array<{
-    userId: string;
+  assignments?: {
+    userId: string | null;
     role: AssignmentRole;
     user?: {
-      id: string;
+      id: string | null;
       name: string | null;
       email: string;
     };
-  }>;
+  }[];
 }
 
 export interface CreateCaseRequest {
-  caseNumber?: string; // Optional - will be auto-generated if not provided
+  caseNumber?: string | null; // Optional - will be auto-generated if not provided
   clientName: string;
   auditType: AuditType;
-  status?: CaseStatus;
-  priority?: CasePriority;
-  dueDate?: string;
+  status?: CaseStatus | null;
+  priority?: CasePriority | null;
+  dueDate?: string | null;
 }
 
 export interface UpdateCaseRequest {
-  caseNumber?: string;
-  clientName?: string;
-  auditType?: AuditType;
-  status?: CaseStatus;
-  priority?: CasePriority;
-  dueDate?: string;
-  completedDate?: string;
+  caseNumber?: string | null;
+  clientName?: string | null;
+  auditType?: AuditType | null;
+  status?: CaseStatus | null;
+  priority?: CasePriority | null;
+  dueDate?: string | null;
+  completedDate?: string | null;
 }
 
 // Template DTOs
 export type TemplateStructure = {
-  sections: Array<{
+  sections: {
     name: string;
-    description?: string;
+    description?: string | null;
     sortOrder: number;
-    settings?: Record<string, unknown>;
-    procedures: Array<{
+    settings?: Record<string, unknown> | null;
+    procedures: {
       referenceNumber: string;
       title: string;
-      description?: string;
-      requirements?: Record<string, unknown>;
+      description?: string | null;
+      requirements?: Record<string, unknown> | null;
       sortOrder: number;
-    }>;
-  }>;
-  settings?: Record<string, unknown>;
+    }[];
+  }[];
+  settings?: Record<string, unknown> | null;
 };
 
 export interface TemplateResponse {
   id: string;
-  organizationId?: string;
+  organizationId?: string | null;
   name: string;
-  description?: string;
+  description?: string | null;
   auditType: AuditType;
-  category?: AuditCategory;
+  category?: AuditCategory | null;
   version: string;
   isActive: boolean;
   isPublic: boolean;
@@ -97,14 +97,14 @@ export interface TemplateResponse {
 }
 
 export interface CreateTemplateRequest {
-  organizationId?: string;
+  organizationId?: string | null;
   name: string;
-  description?: string;
+  description?: string | null;
   auditType: AuditType;
-  category?: AuditCategory;
-  version?: string;
-  isActive?: boolean;
-  isPublic?: boolean;
+  category?: AuditCategory | null;
+  version?: string | null;
+  isActive?: boolean | null;
+  isPublic?: boolean | null;
   structure: TemplateStructure;
 }
 
@@ -114,25 +114,25 @@ export type AuditStatus = "draft" | "in-progress" | "under-review" | "completed"
 export interface ScopeResponse {
   id: string;
   caseId: string;
-  templateId?: string;
+  templateId?: string | null;
   name: string;
-  description?: string;
+  description?: string | null;
   status: AuditStatus;
   metadata: Record<string, unknown>;
   createdBy: string;
-  completedBy?: string;
-  archivedBy?: string;
+  completedBy?: string | null;
+  archivedBy?: string | null;
   createdAt: string;
   updatedAt: string;
-  completedAt?: string;
-  archivedAt?: string;
+  completedAt?: string | null;
+  archivedAt?: string | null;
 }
 
 export interface CreateScopeRequest {
   name: string;
-  description?: string;
-  status?: AuditStatus;
-  metadata?: Record<string, unknown>;
+  description?: string | null;
+  status?: AuditStatus | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 export interface CreateScopeFromTemplateRequest {
@@ -148,7 +148,7 @@ export interface SectionResponse {
   id: string;
   scopeId: string;
   name: string;
-  description?: string;
+  description?: string | null;
   sortOrder: number;
   isCompleted: boolean;
   settings: Record<string, unknown>;
@@ -162,13 +162,13 @@ export interface ProcedureResponse {
   sectionId: string;
   referenceNumber: string;
   title: string;
-  description?: string;
+  description?: string | null;
   requirements: Record<string, unknown>;
   sortOrder: number;
   isCompleted: boolean;
-  completedBy?: string;
-  completedAt?: string;
-  memo?: string;
+  completedBy?: string | null;
+  completedAt?: string | null;
+  memo?: string | null;
   fieldData: Record<string, unknown>;
   canEdit: boolean;
   createdAt: string;
@@ -176,34 +176,34 @@ export interface ProcedureResponse {
 }
 
 export interface CompleteProcedureRequest {
-  fieldData?: Record<string, unknown>;
-  memo?: string;
+  fieldData?: Record<string, unknown> | null;
+  memo?: string | null;
 }
 
 // Document DTOs
 export interface DocumentResponse {
   id: string;
   caseId: string;
-  procedureId?: string;
+  procedureId?: string | null;
   fileName: string;
   fileSize: number;
   fileType: string;
   storagePath: string;
   version: number;
-  parentDocumentId?: string;
+  parentDocumentId?: string | null;
   uploadedBy: string;
   uploadedAt: string;
   isDeleted: boolean;
 }
 
 export interface CreateDocumentRequest {
-  procedureId?: string;
+  procedureId?: string | null;
   fileName: string;
   fileSize: number;
   fileType: string;
   storagePath: string;
-  version?: number;
-  parentDocumentId?: string;
+  version?: number | null;
+  parentDocumentId?: string | null;
 }
 
 export type NoteType = "observation" | "review_comment" | "general" | "memo";
@@ -223,7 +223,7 @@ export type CaseAction =
 export interface NoteResponse {
   id: string;
   caseId: string;
-  procedureId?: string;
+  procedureId?: string | null;
   noteType: NoteType;
   content: string;
   createdBy: string;
@@ -233,7 +233,7 @@ export interface NoteResponse {
 }
 
 export interface CreateNoteRequest {
-  procedureId?: string;
+  procedureId?: string | null;
   noteType: NoteType;
   content: string;
 }
@@ -263,8 +263,8 @@ export interface HistoryResponse {
   entityType: CaseEntityType;
   entityId: string;
   action: CaseAction;
-  changesBefore?: Record<string, unknown>;
-  changesAfter?: Record<string, unknown>;
+  changesBefore?: Record<string, unknown> | null;
+  changesAfter?: Record<string, unknown> | null;
   changedBy: string;
   changedAt: string;
 }

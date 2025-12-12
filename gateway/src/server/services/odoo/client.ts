@@ -43,7 +43,7 @@ export class OdooClient {
   private baseUrl: string;
 
   constructor(baseUrl?: string) {
-    this.baseUrl = baseUrl || env.ODOO_URL;
+    this.baseUrl = baseUrl ?? env.ODOO_URL;
   }
 
   private async callJsonRpc(
@@ -75,17 +75,17 @@ export class OdooClient {
       if (data.error) {
         const errorMessage =
           typeof data.error === "object"
-            ? data.error.message || JSON.stringify(data.error)
+            ? data.error.message ?? JSON.stringify(data.error)
             : String(data.error);
         throw new BadGateway(`Odoo error: ${errorMessage}`);
       }
 
       return data.result;
-    } catch (error) {
-      if (error instanceof BadGateway) {
-        throw error;
+    } catch (err) {
+      if (err instanceof BadGateway) {
+        throw err;
       }
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = err instanceof Error ? err.message : String(err);
       throw new BadGateway(`Odoo request error: ${errorMessage}`);
     }
   }
@@ -104,11 +104,11 @@ export class OdooClient {
       if (!response.ok) {
         throw new BadGateway(`Odoo request failed: ${response.status} ${response.statusText}`);
       }
-    } catch (error) {
-      if (error instanceof BadGateway) {
-        throw error;
+    } catch (err) {
+      if (err instanceof BadGateway) {
+        throw err;
       }
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = err instanceof Error ? err.message : String(err);
       throw new BadGateway(`Odoo request error: ${errorMessage}`);
     }
   }
@@ -118,11 +118,11 @@ export class OdooClient {
       master_pwd: params.masterPassword,
       name: params.name,
       demo: "false",
-      lang: params.lang || "en_US",
+      lang: params.lang ?? "en_US",
       password: params.adminPassword,
       login: params.adminLogin,
-      country_code: params.countryCode || "SA",
-      phone: params.phone || "",
+      country_code: params.countryCode ?? "SA",
+      phone: params.phone ?? "",
     });
 
     return {
@@ -152,7 +152,7 @@ export class OdooClient {
     masterPassword: string,
     originalName: string,
     newName: string,
-    neutralize: boolean = false,
+    neutralize = false,
   ): Promise<void> {
     await this.callFormUrlEncoded("/web/database/duplicate", {
       master_pwd: masterPassword,
@@ -174,7 +174,7 @@ export class OdooClient {
       const formData = new URLSearchParams({
         master_pwd: params.masterPassword,
         name: params.name,
-        backup_format: params.format || "zip",
+        backup_format: params.format ?? "zip",
       });
 
       const response = await fetch(`${this.baseUrl}/web/database/backup`, {
@@ -191,11 +191,11 @@ export class OdooClient {
 
       const arrayBuffer = await response.arrayBuffer();
       return Buffer.from(arrayBuffer);
-    } catch (error) {
-      if (error instanceof BadGateway) {
-        throw error;
+    } catch (err) {
+      if (err instanceof BadGateway) {
+        throw err;
       }
-      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorMessage = err instanceof Error ? err.message : String(err);
       throw new BadGateway(`Odoo backup error: ${errorMessage}`);
     }
   }
@@ -242,7 +242,7 @@ export class OdooClient {
         model: params.model,
         method: params.method,
         args: params.args,
-        kwargs: params.kwargs || {},
+        kwargs: params.kwargs ?? {},
       },
       {
         Cookie: `session_id=${sessionId}`,

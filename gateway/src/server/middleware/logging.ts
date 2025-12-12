@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import type { Logger } from "pino";
 
 export function loggingMiddleware(logger: Logger) {
@@ -34,14 +34,26 @@ export function loggingMiddleware(logger: Logger) {
     res.on("finish", () => {
       const duration = Date.now() - req.startTime;
       const statusCode = res.statusCode;
-      const level = statusCode >= 500 ? "error" : statusCode >= 400 ? "warn" : "info";
+      let level: "error" | "warn" | "info" = "info";
+      if (statusCode >= 500) {
+        level = "error";
+      } else if (statusCode >= 400) {
+        level = "warn";
+      }
+
+      const session = req.betterAuthSession;
+      const authContext = session
+        ? {
+            userId: session.user.id,
+            organizationId: session.session.activeOrganizationId,
+          }
+        : {};
 
       req.log[level](
         {
           statusCode,
           duration,
-          userId: req.betterAuthSession?.user?.id,
-          organizationId: req.betterAuthSession?.session?.activeOrganizationId,
+          ...authContext,
           ...(statusCode >= 400 && responseBody ? { responseBody } : {}),
         },
         `← Response ${statusCode} (${duration}ms)`,
@@ -61,7 +73,7 @@ export function addAuthContextToLogger(req: Request, userId: string, organizatio
   req.log.debug({ userId, organizationId }, "Authentication context added to logger");
 }
 
-export function sanitizeForLogging<T extends Record<string, unknown>>(obj: T): Record<string, unknown> {
+export function sanitizeForLogging(obj: Record<string, unknown>): Record<string, unknown> {
   const sensitive = ["password", "token", "secret", "apiKey", "authorization"];
   const sanitized: Record<string, unknown> = { ...obj };
 

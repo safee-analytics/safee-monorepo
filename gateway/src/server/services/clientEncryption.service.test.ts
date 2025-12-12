@@ -29,7 +29,7 @@ void describe("ClientEncryptionService", async () => {
   });
 
   void describe("getOrgEncryptionKey", () => {
-    void it("should return null when no encryption key exists", async () => {
+    it("should return null when no encryption key exists", async () => {
       const org = await createTestOrg(drizzle);
 
       const result = await service.getOrgEncryptionKey(org.id);
@@ -37,7 +37,7 @@ void describe("ClientEncryptionService", async () => {
       expect(result).toBeNull();
     });
 
-    void it("should return active encryption key for organization", async () => {
+    it("should return active encryption key for organization", async () => {
       const org = await createTestOrg(drizzle);
 
       const keyData = {
@@ -67,7 +67,7 @@ void describe("ClientEncryptionService", async () => {
       expect(result?.derivationParams).toEqual(keyData.derivationParams);
     });
 
-    void it("should only return active encryption key", async () => {
+    it("should only return active encryption key", async () => {
       const org = await createTestOrg(drizzle);
 
       // Create inactive key manually
@@ -90,7 +90,7 @@ void describe("ClientEncryptionService", async () => {
   });
 
   void describe("createOrgEncryptionKey", () => {
-    void it("should create encryption key with default derivation params", async () => {
+    it("should create encryption key with default derivation params", async () => {
       const org = await createTestOrg(drizzle);
 
       const result = await service.createOrgEncryptionKey({
@@ -115,7 +115,7 @@ void describe("ClientEncryptionService", async () => {
       });
     });
 
-    void it("should create encryption key with custom derivation params", async () => {
+    it("should create encryption key with custom derivation params", async () => {
       const org = await createTestOrg(drizzle);
 
       const customParams = {
@@ -131,7 +131,7 @@ void describe("ClientEncryptionService", async () => {
   });
 
   void describe("grantAuditorAccess", () => {
-    void it("should grant auditor access successfully", async () => {
+    it("should grant auditor access successfully", async () => {
       const org = await createTestOrg(drizzle);
       const auditor = await createTestUser(drizzle, "auditor", "Auditor");
       const granter = await createTestUser(drizzle, "granter", "Granter");
@@ -155,7 +155,7 @@ void describe("ClientEncryptionService", async () => {
       expect(result.isRevoked).toBe(false);
     });
 
-    void it("should grant auditor access without expiry date", async () => {
+    it("should grant auditor access without expiry date", async () => {
       const org = await createTestOrg(drizzle);
       const auditor = await createTestUser(drizzle, "auditor", "Auditor");
       const granter = await createTestUser(drizzle, "granter", "Granter");
@@ -173,7 +173,7 @@ void describe("ClientEncryptionService", async () => {
   });
 
   void describe("getAuditorAccess", () => {
-    void it("should return null when no auditor access exists", async () => {
+    it("should return null when no auditor access exists", async () => {
       const org = await createTestOrg(drizzle);
       const auditor = await createTestUser(drizzle, "auditor", "Auditor");
 
@@ -182,7 +182,7 @@ void describe("ClientEncryptionService", async () => {
       expect(result).toBeNull();
     });
 
-    void it("should return auditor access when it exists and is valid", async () => {
+    it("should return auditor access when it exists and is valid", async () => {
       const org = await createTestOrg(drizzle);
       const auditor = await createTestUser(drizzle, "auditor", "Auditor");
       const granter = await createTestUser(drizzle, "granter", "Granter");
@@ -204,7 +204,7 @@ void describe("ClientEncryptionService", async () => {
       expect(result?.isRevoked).toBe(false);
     });
 
-    void it("should return null when auditor access is revoked", async () => {
+    it("should return null when auditor access is revoked", async () => {
       const org = await createTestOrg(drizzle);
       const auditor = await createTestUser(drizzle, "auditor", "Auditor");
       const granter = await createTestUser(drizzle, "granter", "Granter");
@@ -224,7 +224,7 @@ void describe("ClientEncryptionService", async () => {
       expect(result).toBeNull();
     });
 
-    void it("should return null when auditor access is expired", async () => {
+    it("should return null when auditor access is expired", async () => {
       const org = await createTestOrg(drizzle);
       const auditor = await createTestUser(drizzle, "auditor", "Auditor");
       const granter = await createTestUser(drizzle, "granter", "Granter");
@@ -247,7 +247,7 @@ void describe("ClientEncryptionService", async () => {
   });
 
   void describe("revokeAuditorAccess", () => {
-    void it("should revoke auditor access successfully", async () => {
+    it("should revoke auditor access successfully", async () => {
       const org = await createTestOrg(drizzle);
       const auditor = await createTestUser(drizzle, "auditor", "Auditor");
       const granter = await createTestUser(drizzle, "granter", "Granter");
@@ -270,7 +270,7 @@ void describe("ClientEncryptionService", async () => {
   });
 
   void describe("listAuditorAccess", () => {
-    void it("should return empty array when no auditor access exists", async () => {
+    it("should return empty array when no auditor access exists", async () => {
       const org = await createTestOrg(drizzle);
 
       const result = await service.listAuditorAccess(org.id);
@@ -278,7 +278,7 @@ void describe("ClientEncryptionService", async () => {
       expect(result).toEqual([]);
     });
 
-    void it("should return all auditor access for organization", async () => {
+    it("should return all auditor access for organization", async () => {
       const org = await createTestOrg(drizzle);
       const auditor1 = await createTestUser(drizzle, "auditor1", "Auditor 1");
       const auditor2 = await createTestUser(drizzle, "auditor2", "Auditor 2");
@@ -306,7 +306,7 @@ void describe("ClientEncryptionService", async () => {
       expect(result[1].auditorUserId).toBe(auditor2.id);
     });
 
-    void it("should return both revoked and active auditor access", async () => {
+    it("should return both revoked and active auditor access", async () => {
       const org = await createTestOrg(drizzle);
       const auditor1 = await createTestUser(drizzle, "auditor1", "Auditor 1");
       const auditor2 = await createTestUser(drizzle, "auditor2", "Auditor 2");
@@ -338,7 +338,7 @@ void describe("ClientEncryptionService", async () => {
   });
 
   void describe("storeFileEncryptionMetadata", () => {
-    void it("should store file encryption metadata successfully", async () => {
+    it("should store file encryption metadata successfully", async () => {
       const org = await createTestOrg(drizzle);
       const user = await createTestUser(drizzle);
       const encryptionKey = await createTestEncryptionKey(service, org.id);
@@ -371,7 +371,7 @@ void describe("ClientEncryptionService", async () => {
   });
 
   void describe("getFileEncryptionMetadata", () => {
-    void it("should return null when no file encryption metadata exists", async () => {
+    it("should return null when no file encryption metadata exists", async () => {
       const fileId = "550e8400-e29b-41d4-a716-446655440000";
 
       const result = await service.getFileEncryptionMetadata(fileId);
@@ -379,7 +379,7 @@ void describe("ClientEncryptionService", async () => {
       expect(result).toBeNull();
     });
 
-    void it("should return file encryption metadata when it exists", async () => {
+    it("should return file encryption metadata when it exists", async () => {
       const org = await createTestOrg(drizzle);
       const user = await createTestUser(drizzle);
       const encryptionKey = await createTestEncryptionKey(service, org.id);

@@ -9,8 +9,8 @@ import { getServerContext } from "../server/serverContext.js";
 
 const { drizzle } = connect("better-auth");
 
-let odooDatabaseService: OdooDatabaseService;
-let odooUserProvisioningService: OdooUserProvisioningService;
+let odooDatabaseService: OdooDatabaseService | undefined;
+let odooUserProvisioningService: OdooUserProvisioningService | undefined;
 
 function getServices() {
   if (!odooDatabaseService) {
@@ -157,45 +157,49 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
       "Organization created, provisioning Odoo",
     );
 
-    setImmediate(async () => {
-      try {
-        const { odooDatabaseService, odooUserProvisioningService } = getServices();
-        const existingCreds = await odooDatabaseService.getCredentials(organization.id);
+    setImmediate(() => {
+      void (async () => {
+        try {
+          const { odooDatabaseService, odooUserProvisioningService } = getServices();
+          const existingCreds = await odooDatabaseService.getCredentials(organization.id);
 
-        if (existingCreds) {
-          logger.info(
-            { organizationId: organization.id },
-            "Odoo database already provisioned, skipping database creation",
+          if (existingCreds) {
+            logger.info(
+              { organizationId: organization.id },
+              "Odoo database already provisioned, skipping database creation",
+            );
+          } else {
+            logger.info({ organizationId: organization.id }, "Provisioning Odoo database");
+            await odooDatabaseService.provisionDatabase(organization.id);
+            logger.info({ organizationId: organization.id }, "Odoo database provisioned");
+          }
+
+          if (odooUserProvisioningService) {
+            const userExists = await odooUserProvisioningService.userExists(user.id, organization.id);
+
+            if (userExists) {
+              logger.info(
+                { userId: user.id, organizationId: organization.id },
+                "Odoo user already provisioned, skipping user creation",
+              );
+            } else {
+              logger.info({ userId: user.id, organizationId: organization.id }, "Provisioning Odoo user");
+              await odooUserProvisioningService.provisionUser(user.id, organization.id, member.role);
+              logger.info({ userId: user.id }, "Odoo user provisioned");
+            }
+          }
+
+          // Configure Odoo webhooks for the organization
+          logger.info({ organizationId: organization.id }, "Configuring Odoo webhooks");
+          await configureOdooWebhooks(logger, user.id, organization.id);
+          logger.info({ organizationId: organization.id }, "Odoo webhooks configured");
+        } catch (err) {
+          logger.error(
+            { error: err, userId: user.id, organizationId: organization.id },
+            "Failed to provision Odoo resources",
           );
-        } else {
-          logger.info({ organizationId: organization.id }, "Provisioning Odoo database");
-          await odooDatabaseService.provisionDatabase(organization.id);
-          logger.info({ organizationId: organization.id }, "Odoo database provisioned");
         }
-
-        const userExists = await odooUserProvisioningService.userExists(user.id, organization.id);
-
-        if (userExists) {
-          logger.info(
-            { userId: user.id, organizationId: organization.id },
-            "Odoo user already provisioned, skipping user creation",
-          );
-        } else {
-          logger.info({ userId: user.id, organizationId: organization.id }, "Provisioning Odoo user");
-          await odooUserProvisioningService.provisionUser(user.id, organization.id, member.role);
-          logger.info({ userId: user.id }, "Odoo user provisioned");
-        }
-
-        // Configure Odoo webhooks for the organization
-        logger.info({ organizationId: organization.id }, "Configuring Odoo webhooks");
-        await configureOdooWebhooks(logger, user.id, organization.id);
-        logger.info({ organizationId: organization.id }, "Odoo webhooks configured");
-      } catch (error) {
-        logger.error(
-          { error, userId: user.id, organizationId: organization.id },
-          "Failed to provision Odoo resources",
-        );
-      }
+      })();
     });
   },
 
@@ -205,44 +209,49 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
       "Member added to organization, provisioning Odoo user and creating employee record",
     );
 
-    setImmediate(async () => {
-      try {
-        const { odooUserProvisioningService } = getServices();
-        const userExists = await odooUserProvisioningService.userExists(user.id, organization.id);
+    setImmediate(() => {
+      void (async () => {
+        try {
+          const { odooUserProvisioningService } = getServices();
 
-        if (userExists) {
-          logger.info({ userId: user.id }, "Odoo user already exists for new member");
-        } else {
-          await odooUserProvisioningService.provisionUser(user.id, organization.id, member.role);
-          logger.info({ userId: user.id }, "Odoo user provisioned for new member");
-        }
+          if (odooUserProvisioningService) {
+            const userExists = await odooUserProvisioningService.userExists(user.id, organization.id);
 
-        const existingEmployee = await drizzle.query.hrEmployees.findFirst({
-          where: (employees, { eq }) => eq(employees.userId, user.id),
-        });
+            if (userExists) {
+              logger.info({ userId: user.id }, "Odoo user already exists for new member");
+            } else {
+              await odooUserProvisioningService.provisionUser(user.id, organization.id, member.role);
+              logger.info({ userId: user.id }, "Odoo user provisioned for new member");
+            }
+          }
 
-        if (!existingEmployee) {
-          logger.info({ userId: user.id }, "Creating employee record for new member");
-          await createEmployee(
-            { drizzle, logger },
-            {
-              organizationId: organization.id,
-              userId: user.id,
-              name: user.name,
-              workEmail: user.email,
-              active: true,
-            },
+          const existingEmployee = await drizzle.query.hrEmployees.findFirst({
+            where: (employees, { eq }) => eq(employees.userId, user.id),
+          });
+
+          if (!existingEmployee) {
+            logger.info({ userId: user.id }, "Creating employee record for new member");
+            await createEmployee(
+              { drizzle, logger },
+              {
+                organizationId: organization.id,
+                userId: user.id,
+                name: user.name,
+                workEmail: user.email,
+                active: true,
+              },
+            );
+            logger.info({ userId: user.id }, "Employee record created for new member");
+          } else {
+            logger.info({ userId: user.id }, "Employee record already exists for user");
+          }
+        } catch (err) {
+          logger.error(
+            { error: err, userId: user.id },
+            "Failed to provision Odoo user or create employee for new member",
           );
-          logger.info({ userId: user.id }, "Employee record created for new member");
-        } else {
-          logger.info({ userId: user.id }, "Employee record already exists for user");
         }
-      } catch (error) {
-        logger.error(
-          { error, userId: user.id },
-          "Failed to provision Odoo user or create employee for new member",
-        );
-      }
+      })();
     });
   },
 
@@ -252,28 +261,35 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
       "Member removed, deactivating Odoo user",
     );
 
-    setImmediate(async () => {
-      try {
-        const { odooUserProvisioningService } = getServices();
-        await odooUserProvisioningService.deactivateUser(user.id, organization.id);
-        logger.info({ userId: user.id }, "Odoo user deactivated");
-      } catch (error) {
-        logger.error({ error, userId: user.id }, "Failed to deactivate Odoo user");
-      }
+    setImmediate(() => {
+      void (async () => {
+        try {
+          const { odooUserProvisioningService } = getServices();
+
+          if (odooUserProvisioningService) {
+            await odooUserProvisioningService.deactivateUser(user.id, organization.id);
+            logger.info({ userId: user.id }, "Odoo user deactivated");
+          }
+        } catch (err) {
+          logger.error({ error: err, userId: user.id }, "Failed to deactivate Odoo user");
+        }
+      })();
     });
   },
 
   afterDeleteOrganization: async ({ organization }) => {
     logger.info({ organizationId: organization.id }, "Organization deleted, cleaning up Odoo database");
 
-    setImmediate(async () => {
-      try {
-        const { odooDatabaseService } = getServices();
-        await odooDatabaseService.deleteDatabase(organization.id);
-        logger.info({ organizationId: organization.id }, "Odoo database deleted successfully");
-      } catch (error) {
-        logger.error({ error, organizationId: organization.id }, "Failed to delete Odoo database");
-      }
+    setImmediate(() => {
+      void (async () => {
+        try {
+          const { odooDatabaseService } = getServices();
+          await odooDatabaseService.deleteDatabase(organization.id);
+          logger.info({ organizationId: organization.id }, "Odoo database deleted successfully");
+        } catch (err) {
+          logger.error({ error: err, organizationId: organization.id }, "Failed to delete Odoo database");
+        }
+      })();
     });
   },
 };

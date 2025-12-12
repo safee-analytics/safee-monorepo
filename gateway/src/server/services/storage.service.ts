@@ -1,5 +1,5 @@
-import fs from "fs/promises";
-import path from "path";
+import fs from "node:fs/promises";
+import path from "node:path";
 import { v4 as uuidv4 } from "uuid";
 import type { Response } from "express";
 import type { FileMetadata, FolderMetadata, FileSearchParams } from "../controllers/storageController.js";
@@ -18,7 +18,7 @@ export class StorageService {
 
   constructor(private readonly ctx: ServerContext) {
     // Get storage path from environment or use default
-    this.basePath = process.env.NAS_STORAGE_PATH || path.join(process.cwd(), "storage");
+    this.basePath = process.env.NAS_STORAGE_PATH ?? path.join(process.cwd(), "storage");
     this.metadataPath = path.join(this.basePath, ".metadata");
     this.initializeStorage();
   }
@@ -31,8 +31,8 @@ export class StorageService {
     try {
       await fs.mkdir(this.basePath, { recursive: true });
       await fs.mkdir(this.metadataPath, { recursive: true });
-    } catch (error) {
-      this.logger.error({ error }, "Failed to initialize storage");
+    } catch (err) {
+      this.logger.error({ error: err }, "Failed to initialize storage");
     }
   }
 
@@ -94,8 +94,8 @@ export class StorageService {
     try {
       const data = await fs.readFile(metadataFile, "utf-8");
       return JSON.parse(data);
-    } catch (error) {
-      this.logger.debug({ error, fileId }, "File not found");
+    } catch (err) {
+      this.logger.debug({ error: err, fileId }, "File not found");
       throw new Error(`File not found: ${fileId}`);
     }
   }
@@ -174,8 +174,8 @@ export class StorageService {
         }
 
         filesMetadata.push(metadata);
-      } catch (error) {
-        this.logger.error({ error, metaFile }, "Error reading metadata file");
+      } catch (err) {
+        this.logger.error({ error: err, metaFile }, "Error reading metadata file");
       }
     }
 
@@ -183,8 +183,8 @@ export class StorageService {
     filesMetadata.sort((a, b) => new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime());
 
     // Pagination
-    const limit = params.limit || 20;
-    const offset = params.offset || 0;
+    const limit = params.limit ?? 20;
+    const offset = params.offset ?? 0;
     const paginatedFiles = filesMetadata.slice(offset, offset + limit);
 
     return {
@@ -256,8 +256,8 @@ export class StorageService {
         if (folderMetadata.parentId === folderId) {
           subFolders.push(folderMetadata);
         }
-      } catch (error) {
-        this.logger.error({ error, metaFile }, "Error reading folder metadata");
+      } catch (err) {
+        this.logger.error({ error: err, metaFile }, "Error reading folder metadata");
       }
     }
 
@@ -307,7 +307,7 @@ export class StorageService {
     }
 
     // Get total quota from config (default 100GB)
-    const total = parseInt(process.env.STORAGE_QUOTA_BYTES || "107374182400", 10);
+    const total = parseInt(process.env.STORAGE_QUOTA_BYTES ?? "107374182400", 10);
 
     return {
       used,

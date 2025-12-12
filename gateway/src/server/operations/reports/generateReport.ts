@@ -63,7 +63,7 @@ export async function generateReport(
           auditType: caseData.auditType,
           status: caseData.status,
           generatedAt: new Date().toISOString(),
-          locale: request.settings?.locale || "en",
+          locale: request.settings?.locale ?? "en",
         };
 
         await updateAuditReport(deps, newReport.id, {
@@ -90,13 +90,13 @@ export async function generateReport(
     return {
       id: newReport.id,
       caseId: newReport.caseId,
-      templateId: newReport.templateId ?? undefined,
+      templateId: newReport.templateId ,
       title: newReport.title,
       status: newReport.status,
       generatedData: newReport.generatedData,
       settings: newReport.settings,
-      filePath: newReport.filePath ?? undefined,
-      generatedAt: newReport.generatedAt ?? undefined,
+      filePath: newReport.filePath ,
+      generatedAt: newReport.generatedAt ,
       generatedBy: newReport.generatedBy,
       createdAt: newReport.createdAt,
       updatedAt: newReport.updatedAt,

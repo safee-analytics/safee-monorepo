@@ -217,13 +217,13 @@ export class OdooController extends Controller {
     }
 
     const odooClient = new OdooClient();
-    const masterPassword = process.env.ODOO_MASTER_PASSWORD || "admin";
+    const masterPassword = process.env.ODOO_MASTER_PASSWORD ?? "admin";
 
     await odooClient.duplicateDatabase(
       masterPassword,
       info.databaseName,
       body.newName,
-      body.neutralize || false,
+      body.neutralize ?? false,
     );
 
     return {
@@ -246,7 +246,7 @@ export class OdooController extends Controller {
     }
 
     const odooClient = new OdooClient();
-    const masterPassword = process.env.ODOO_MASTER_PASSWORD || "admin";
+    const masterPassword = process.env.ODOO_MASTER_PASSWORD ?? "admin";
 
     const backupData = await odooClient.backupDatabase({
       masterPassword,
@@ -298,7 +298,7 @@ export class OdooController extends Controller {
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
-    return client.search(body.model, body.domain || [], {
+    return client.search(body.model, body.domain ?? [], {
       limit: body.limit,
       offset: body.offset,
       order: body.order,
@@ -317,8 +317,8 @@ export class OdooController extends Controller {
 
     return client.searchRead(
       body.model,
-      body.domain || [],
-      body.fields || [],
+      body.domain ?? [],
+      body.fields ?? [],
       {
         limit: body.limit,
         offset: body.offset,
@@ -338,7 +338,7 @@ export class OdooController extends Controller {
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
-    return client.read(body.model, body.ids, body.fields || [], body.context);
+    return client.read(body.model, body.ids, body.fields ?? [], body.context);
   }
 
   @Post("/rpc/create")
@@ -396,7 +396,7 @@ export class OdooController extends Controller {
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
     const client = await getOdooClientManager().getClient(userId, organizationId);
 
-    return client.execute(body.model, body.method, body.args || [], body.kwargs || {});
+    return client.execute(body.model, body.method, body.args ?? [], body.kwargs ?? {});
   }
 
   @Get("/dev-credentials")
@@ -486,13 +486,13 @@ export class OdooController extends Controller {
     @Query() simple?: boolean,
   ): Promise<
     | Record<string, unknown>
-    | Array<{
+    | {
         name: string;
         type: string;
         label: string;
         required?: boolean;
         readonly?: boolean;
-      }>
+      }[]
   > {
     const userId = req.betterAuthSession!.user.id;
     const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
@@ -508,32 +508,32 @@ export class OdooController extends Controller {
       exists: boolean;
       loginUrl: string;
     };
-    users: Array<{
+    users: {
       id: number;
       name: string;
       login: string;
       email: string;
       active: boolean;
-      groups: Array<{
+      groups: {
         id: number;
         name: string;
         fullName: string;
-      }>;
-    }>;
-    modules: Array<{
+      }[];
+    }[];
+    modules: {
       id: number;
       name: string;
       displayName: string;
       state: string;
       summary: string;
-    }>;
-    accessGroups: Array<{
+    }[];
+    accessGroups: {
       id: number;
       name: string;
       fullName: string;
       category: string;
       users: number[];
-    }>;
+    }[];
   }> {
     const organizationId = req.betterAuthSession!.session.activeOrganizationId!;
     const ctx = getServerContext();

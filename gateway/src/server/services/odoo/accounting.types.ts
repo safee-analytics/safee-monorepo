@@ -39,7 +39,7 @@ export interface OdooInvoiceLine {
   quantity: number;
   price_unit: number;
   discount?: number;
-  tax_ids?: Array<[6, false, number[]]>; // Odoo many2many format
+  tax_ids?: [6, false, number[]][]; // Odoo many2many format
   account_id?: number;
   analytic_distribution?: Record<string, number>; // Cost center distribution
 }
@@ -54,7 +54,7 @@ export interface OdooInvoice {
   invoice_payment_term_id?: number; // Payment term
   payment_reference?: string;
   currency_id?: number;
-  invoice_line_ids: Array<[0, 0, OdooInvoiceLine]>; // Odoo one2many create format
+  invoice_line_ids: [0, 0, OdooInvoiceLine][]; // Odoo one2many create format
   state?: "draft" | "posted" | "cancel";
   amount_untaxed?: number;
   amount_tax?: number;
@@ -161,23 +161,23 @@ export interface OdooPartnerLedgerReport {
   debit: number;
   credit: number;
   balance: number;
-  entries: Array<{
+  entries: {
     date: string;
     move_name: string;
     label: string;
     debit: number;
     credit: number;
     balance: number;
-  }>;
+  }[];
 }
 
 export interface OdooFinancialReport {
-  lines: Array<{
+  lines: {
     name: string;
     level: number;
     balance: number;
     account_type?: string;
-  }>;
+  }[];
 }
 
 // DTOs for API requests
@@ -191,14 +191,14 @@ export interface CreateInvoiceDTO {
   reference?: string;
   notes?: string;
   paymentTermId?: number;
-  lines: Array<{
+  lines: {
     description: string;
     quantity: number;
     unitPrice: number;
     discount?: number;
     taxIds?: number[];
     productId?: number;
-  }>;
+  }[];
 }
 
 export interface CreateRefundDTO {

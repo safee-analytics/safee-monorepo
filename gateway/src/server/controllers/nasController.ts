@@ -13,9 +13,7 @@ interface ConnectNASRequest {
   port?: number;
 }
 
-interface NASStatusResponse {
-  [name: string]: NASConnectionStatus;
-}
+type NASStatusResponse = Record<string, NASConnectionStatus>;
 
 @Route("nas")
 @Tags("NAS Management")

@@ -15,8 +15,7 @@ import {
 } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext } from "../serverContext.js";
-import { schema, workflowRulesSchema, ruleSchema } from "@safee/database";
-import { eq, and } from "@safee/database";
+import { schema, workflowRulesSchema, ruleSchema, eq, and  } from "@safee/database";
 import { z } from "zod";
 
 type StepType = "single" | "parallel" | "any";
@@ -161,7 +160,7 @@ export class WorkflowsController extends Controller {
     @Body() request: CreateWorkflowRequest,
   ): Promise<WorkflowResponse> {
     const ctx = getServerContext();
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     // Validate with Zod
     const validated = createWorkflowSchema.parse(request);
@@ -185,8 +184,8 @@ export class WorkflowsController extends Controller {
       stepType: step.stepType,
       approverType: step.approverType,
       approverId: step.approverId,
-      minApprovals: step.minApprovals || 1,
-      requiredApprovers: step.requiredApprovers || 1,
+      minApprovals: step.minApprovals ?? 1,
+      requiredApprovers: step.requiredApprovers ?? 1,
     }));
 
     const steps = await ctx.drizzle.insert(schema.approvalWorkflowSteps).values(stepsToInsert).returning();
@@ -199,7 +198,7 @@ export class WorkflowsController extends Controller {
       organizationId: workflow.organizationId,
       entityType: workflow.entityType,
       isActive: workflow.isActive,
-      rules: workflow.rules || undefined,
+      rules: workflow.rules ,
       createdAt: workflow.createdAt.toISOString(),
       updatedAt: workflow.updatedAt.toISOString(),
       steps: steps.map((s) => ({
@@ -207,7 +206,7 @@ export class WorkflowsController extends Controller {
         stepOrder: s.stepOrder,
         stepType: stepTypeSchema.parse(s.stepType),
         approverType: approverTypeSchema.parse(s.approverType),
-        approverId: s.approverId || undefined,
+        approverId: s.approverId ,
         minApprovals: s.minApprovals,
         requiredApprovers: s.requiredApprovers,
       })),
@@ -225,7 +224,7 @@ export class WorkflowsController extends Controller {
     @Query() isActive?: boolean,
   ): Promise<WorkflowResponse[]> {
     const ctx = getServerContext();
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     const workflows = await ctx.drizzle.query.approvalWorkflows.findMany({
       where: and(
@@ -246,7 +245,7 @@ export class WorkflowsController extends Controller {
       organizationId: w.organizationId,
       entityType: w.entityType,
       isActive: w.isActive,
-      rules: w.rules || undefined,
+      rules: w.rules ,
       createdAt: w.createdAt.toISOString(),
       updatedAt: w.updatedAt.toISOString(),
       steps: w.steps.map((s) => ({
@@ -254,7 +253,7 @@ export class WorkflowsController extends Controller {
         stepOrder: s.stepOrder,
         stepType: stepTypeSchema.parse(s.stepType),
         approverType: approverTypeSchema.parse(s.approverType),
-        approverId: s.approverId || undefined,
+        approverId: s.approverId ,
         minApprovals: s.minApprovals,
         requiredApprovers: s.requiredApprovers,
       })),
@@ -271,7 +270,7 @@ export class WorkflowsController extends Controller {
     @Path() workflowId: string,
   ): Promise<WorkflowResponse> {
     const ctx = getServerContext();
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     const workflow = await ctx.drizzle.query.approvalWorkflows.findFirst({
       where: and(
@@ -295,7 +294,7 @@ export class WorkflowsController extends Controller {
       organizationId: workflow.organizationId,
       entityType: workflow.entityType,
       isActive: workflow.isActive,
-      rules: workflow.rules || undefined,
+      rules: workflow.rules ,
       createdAt: workflow.createdAt.toISOString(),
       updatedAt: workflow.updatedAt.toISOString(),
       steps: workflow.steps.map((s) => ({
@@ -303,7 +302,7 @@ export class WorkflowsController extends Controller {
         stepOrder: s.stepOrder,
         stepType: stepTypeSchema.parse(s.stepType),
         approverType: approverTypeSchema.parse(s.approverType),
-        approverId: s.approverId || undefined,
+        approverId: s.approverId ,
         minApprovals: s.minApprovals,
         requiredApprovers: s.requiredApprovers,
       })),
@@ -321,7 +320,7 @@ export class WorkflowsController extends Controller {
     @Body() request: UpdateWorkflowRequest,
   ): Promise<WorkflowResponse> {
     const ctx = getServerContext();
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     // Update workflow
     const [workflow] = await ctx.drizzle
@@ -340,7 +339,8 @@ export class WorkflowsController extends Controller {
       )
       .returning();
 
-    if (!workflow) {
+    // workflow is undefined if not found
+    if (workflow === undefined) {
       throw new Error("Workflow not found");
     }
 
@@ -361,8 +361,8 @@ export class WorkflowsController extends Controller {
         stepType: step.stepType,
         approverType: step.approverType,
         approverId: step.approverId,
-        minApprovals: step.minApprovals || 1,
-        requiredApprovers: step.requiredApprovers || 1,
+        minApprovals: step.minApprovals ?? 1,
+        requiredApprovers: step.requiredApprovers ?? 1,
       }));
 
       await ctx.drizzle.insert(schema.approvalWorkflowSteps).values(stepsToInsert);
@@ -382,7 +382,7 @@ export class WorkflowsController extends Controller {
     @Path() workflowId: string,
   ): Promise<{ success: boolean }> {
     const ctx = getServerContext();
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     await ctx.drizzle
       .delete(schema.approvalWorkflows)
@@ -406,7 +406,7 @@ export class WorkflowsController extends Controller {
     @Path() workflowId: string,
   ): Promise<{ success: boolean }> {
     const ctx = getServerContext();
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     await ctx.drizzle
       .update(schema.approvalWorkflows)
@@ -431,7 +431,7 @@ export class WorkflowsController extends Controller {
     @Path() workflowId: string,
   ): Promise<{ success: boolean }> {
     const ctx = getServerContext();
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     await ctx.drizzle
       .update(schema.approvalWorkflows)
@@ -457,7 +457,7 @@ export class WorkflowsController extends Controller {
     @Body() request: CreateRuleRequest,
   ): Promise<RuleResponse> {
     const ctx = getServerContext();
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     const [rule] = await ctx.drizzle
       .insert(schema.approvalRules)
@@ -467,7 +467,7 @@ export class WorkflowsController extends Controller {
         ruleName: request.ruleName,
         conditions: request.conditions,
         workflowId: request.workflowId,
-        priority: request.priority || 0,
+        priority: request.priority ?? 0,
       })
       .returning();
 
@@ -494,7 +494,7 @@ export class WorkflowsController extends Controller {
     @Query() entityType?: string,
   ): Promise<RuleResponse[]> {
     const ctx = getServerContext();
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     const rules = await ctx.drizzle.query.approvalRules.findMany({
       where: and(
@@ -525,7 +525,7 @@ export class WorkflowsController extends Controller {
     @Path() ruleId: string,
   ): Promise<{ success: boolean }> {
     const ctx = getServerContext();
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     await ctx.drizzle
       .delete(schema.approvalRules)

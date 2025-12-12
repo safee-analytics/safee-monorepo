@@ -64,8 +64,9 @@ export class SessionStore extends Store {
       return this.options.ttl;
     }
 
-    if (session.cookie.expires) {
-      return new Date(session.cookie.expires).getTime() - Date.now();
+    const maxAge = typeof session.cookie.maxAge === "number" ? session.cookie.maxAge : undefined;
+    if (maxAge !== undefined) {
+      return maxAge;
     }
     return 24 * 60 * 60 * 1000;
   }
@@ -74,52 +75,60 @@ export class SessionStore extends Store {
     return this.options.serializer ?? JSON;
   }
 
-  async set(sid: string, session: SessionData, cb = noop) {
+  set(sid: string, session: SessionData, cb = noop) {
     const ttl = this.getTtl(session);
-    try {
-      if (ttl > 0) {
+    void (async () => {
+      try {
+        if (ttl > 0) {
+          await setRedisUserSession(this.redis, { sid, data: session }, millisecondsToSeconds(ttl));
+          cb();
+        } else {
+          await this.destroy(sid, cb);
+        }
+      } catch (err) {
+        cb(err as Error);
+      }
+    })();
+  }
+
+  get(sid: string, cb = noop) {
+    void (async () => {
+      const session = await getRedisUserSession(this.redis, sid);
+
+      if (session === null) {
+        cb();
+        return;
+      }
+
+      try {
+        const result = session.data as SessionData;
+        cb(undefined, result);
+      } catch (err) {
+        cb(err as Error);
+      }
+    })();
+  }
+
+  override touch(sid: string, session: SessionData, cb = noop) {
+    const ttl = this.getTtl(session);
+    void (async () => {
+      try {
         await setRedisUserSession(this.redis, { sid, data: session }, millisecondsToSeconds(ttl));
         cb();
-      } else {
-        await this.destroy(sid, cb);
+      } catch (err) {
+        cb(err as Error);
       }
-    } catch (err) {
-      cb(err);
-    }
+    })();
   }
 
-  async get(sid: string, cb = noop) {
-    const session = await getRedisUserSession(this.redis, sid);
-
-    if (session === null) {
-      cb();
-      return;
-    }
-
-    try {
-      const result = session.data as SessionData;
-      cb(undefined, result);
-    } catch (err) {
-      cb(err);
-    }
-  }
-
-  override async touch(sid: string, session: SessionData, cb = noop) {
-    const ttl = this.getTtl(session);
-    try {
-      await setRedisUserSession(this.redis, { sid, data: session }, millisecondsToSeconds(ttl));
-      cb();
-    } catch (err) {
-      cb(err);
-    }
-  }
-
-  async destroy(sid: string, cb = noop) {
-    try {
-      await destroyRedisUserSession(this.redis, sid);
-      cb();
-    } catch (err) {
-      cb(err);
-    }
+  destroy(sid: string, cb = noop) {
+    void (async () => {
+      try {
+        await destroyRedisUserSession(this.redis, sid);
+        cb();
+      } catch (err) {
+        cb(err as Error);
+      }
+    })();
   }
 }

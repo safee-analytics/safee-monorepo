@@ -205,7 +205,8 @@ export class DocumentTemplateController extends Controller {
 
     const template = await service.updateTemplate(templateId, organizationId, body);
 
-    if (!template) {
+    // template is undefined if not found, not null
+    if (template === undefined) {
       throw new NotFound("Template not found");
     }
 

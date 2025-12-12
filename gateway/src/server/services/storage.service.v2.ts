@@ -22,12 +22,12 @@ export class StorageServiceV2 {
 
   constructor(adapter?: StorageAdapter) {
     // Use provided adapter or create from environment
-    this.adapter = adapter || StorageFactory.createFromEnv();
+    this.adapter = adapter ?? StorageFactory.createFromEnv();
 
     // Metadata always stored locally for fast access
     this.metadataAdapter = StorageFactory.createAdapter({
       type: "local",
-      basePath: process.env.METADATA_PATH || "./storage/.metadata",
+      basePath: process.env.METADATA_PATH ?? "./storage/.metadata",
     });
 
     this.initializeStorage();
@@ -38,8 +38,8 @@ export class StorageServiceV2 {
       await this.adapter.mkdir("/");
       await this.metadataAdapter.mkdir("/");
       logger.info("Storage initialized successfully");
-    } catch (error) {
-      logger.error({ error }, "Failed to initialize storage");
+    } catch (err) {
+      logger.error({ error: err }, "Failed to initialize storage");
     }
   }
 
@@ -97,8 +97,8 @@ export class StorageServiceV2 {
     try {
       const metadataBuffer = await this.metadataAdapter.download(`${fileId}.json`);
       return JSON.parse(metadataBuffer.toString("utf-8"));
-    } catch (error) {
-      logger.debug({ error, fileId }, "File not found");
+    } catch (err) {
+      logger.debug({ error: err, fileId }, "File not found");
       throw new Error(`File not found: ${fileId}`);
     }
   }
@@ -177,8 +177,8 @@ export class StorageServiceV2 {
         }
 
         filesMetadata.push(metadata);
-      } catch (error) {
-        logger.error({ error, metaFile }, "Error reading metadata file");
+      } catch (err) {
+        logger.error({ error: err, metaFile }, "Error reading metadata file");
       }
     }
 
@@ -186,8 +186,8 @@ export class StorageServiceV2 {
     filesMetadata.sort((a, b) => new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime());
 
     // Pagination
-    const limit = params.limit || 20;
-    const offset = params.offset || 0;
+    const limit = params.limit ?? 20;
+    const offset = params.offset ?? 0;
     const paginatedFiles = filesMetadata.slice(offset, offset + limit);
 
     return {
@@ -258,8 +258,8 @@ export class StorageServiceV2 {
         if (folderMetadata.parentId === folderId) {
           subFolders.push(folderMetadata);
         }
-      } catch (error) {
-        logger.error({ error, metaFile }, "Error reading folder metadata");
+      } catch (err) {
+        logger.error({ error: err, metaFile }, "Error reading folder metadata");
       }
     }
 
@@ -313,7 +313,7 @@ export class StorageServiceV2 {
     const stats = await this.adapter.getStats();
 
     // If adapter doesn't provide stats, use default
-    const total = stats.total || parseInt(process.env.STORAGE_QUOTA_BYTES || "107374182400", 10);
+    const total = stats.total || parseInt(process.env.STORAGE_QUOTA_BYTES ?? "107374182400", 10);
 
     return {
       used,

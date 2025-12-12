@@ -41,7 +41,7 @@ export async function convertPlanToCase(
 
     let nextNumber = 1;
     if (latestCase?.caseNumber) {
-      const match = latestCase.caseNumber.match(/CASE-(\d+)/);
+      const match = /CASE-(\d+)/.exec(latestCase.caseNumber);
       if (match) {
         nextNumber = parseInt(match[1], 10) + 1;
       }

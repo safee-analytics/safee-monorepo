@@ -1,8 +1,13 @@
 import { Request as ExRequest } from "express";
 import { fromNodeHeaders } from "better-auth/node";
-import { auth, type Session } from "../../auth/index.js";
+import { type Session, type AuthUser, auth } from "../../auth/index.js";
 import { getServerContext } from "../serverContext.js";
-import { NoTokenProvided, InvalidToken, InsufficientPermissions, UnknownSecurityScheme } from "../errors.js";
+import {
+  NoTokenProvided,
+  InvalidToken,
+  InsufficientPermissions,
+  UnknownSecurityScheme,
+} from "../errors.js";
 import { addAuthContextToLogger } from "./logging.js";
 import type { DrizzleClient } from "@safee/database";
 import type { Logger } from "pino";
@@ -17,7 +22,7 @@ export async function expressAuthentication(
   request: ExRequest,
   securityName: string,
   scopes?: string[],
-): Promise<Session["user"]> {
+): Promise<AuthUser> {
   if (securityName === "jwt") {
     const context = getServerContext();
 
@@ -37,23 +42,22 @@ export async function expressAuthentication(
       const session = await auth.api.getSession({
         headers,
       });
-
       context.logger.info(
         {
           hasSession: !!session,
-          hasUser: !!session?.user,
+          hasUser: !!session,
           sessionData: session
             ? {
-                userId: session.user?.id,
-                activeOrgId: session.session?.activeOrganizationId,
-                fullSessionKeys: Object.keys(session.session || {}),
+                userId: session.user.id,
+                activeOrgId: session.session.activeOrganizationId,
+                fullSessionKeys: Object.keys(session.session),
               }
             : null,
         },
         "Better Auth session result",
       );
 
-      if (!session?.user) {
+      if (!session) {
         context.logger.warn(
           {
             path: request.path,
@@ -68,7 +72,7 @@ export async function expressAuthentication(
       const user = session.user;
 
       if (scopes && scopes.length > 0) {
-        const userRole = user.role || "user";
+        const userRole = user.role ?? "user";
         const hasRole = scopes.includes(userRole) || userRole === "admin"; // admin can access all
 
         if (!hasRole) {
@@ -97,15 +101,15 @@ export async function expressAuthentication(
       context.logger.debug({ userId: user.id }, "Authentication successful");
 
       return user;
-    } catch (error) {
-      context.logger.warn({ error: error instanceof Error ? error.message : error }, "Authentication failed");
+    } catch (err) {
+      context.logger.warn({ error: err instanceof Error ? err.message : err }, "Authentication failed");
 
       if (
-        error instanceof NoTokenProvided ||
-        error instanceof InvalidToken ||
-        error instanceof InsufficientPermissions
+        err instanceof NoTokenProvided ||
+        err instanceof InvalidToken ||
+        err instanceof InsufficientPermissions
       ) {
-        throw error;
+        throw err;
       }
 
       throw new InvalidToken();
@@ -134,6 +138,6 @@ export function requireRole(requiredRole: string) {
 export function requireAdmin() {
   return (request: AuthenticatedRequest): boolean => {
     const user = request.betterAuthSession?.user;
-    return user?.role === "admin";
+    return user !== undefined && user.role === "admin";
   };
 }

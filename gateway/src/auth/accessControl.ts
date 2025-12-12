@@ -75,7 +75,7 @@ export const ac = createAccessControl({
   ],
 } as const);
 
-export const roleHierarchy = {
+export const roleHierarchy: Record<string, number> = {
   owner: 0, // Highest authority - can manage everyone
   admin: 1, // Can manage managers and below
   manager: 2, // Can manage senior staff and below
@@ -101,15 +101,15 @@ export const roleHierarchy = {
   // Sales/CRM
   sales_manager: 2,
   sales_rep: 4,
-} as const;
+};
 
 export function canManageRole(roleA: string, roleB: string): boolean {
   if (roleA === "owner") return true;
 
   if (roleB === "owner") return false;
 
-  const levelA = roleHierarchy[roleA as keyof typeof roleHierarchy] ?? 4;
-  const levelB = roleHierarchy[roleB as keyof typeof roleHierarchy] ?? 4;
+  const levelA = roleHierarchy[roleA] ?? 4;
+  const levelB = roleHierarchy[roleB] ?? 4;
 
   return levelA < levelB;
 }

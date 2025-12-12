@@ -131,8 +131,8 @@ export type CreateSectionInput = NewAuditSection;
 export type CreateProcedureInput = Omit<NewAuditProcedure, "isCompleted" | "completedBy" | "completedAt">;
 export type CompleteProcedureInput = {
   completedBy: string;
-  fieldData?: Record<string, unknown>;
-  memo?: string;
+  fieldData?: Record<string, unknown> | null;
+  memo?: string | null;
 };
 export type CreateDocumentInput = Omit<NewCaseDocument, "isDeleted">;
 export type CreateNoteInput = Omit<NewCaseNote, "isEdited">;
@@ -167,26 +167,26 @@ export type {
  * Extended types with relations
  */
 export interface CaseWithRelations extends Case {
-  auditScopes?: AuditScope[];
-  documents?: CaseDocument[];
-  notes?: CaseNote[];
-  assignments?: CaseAssignment[];
-  history?: CaseHistory[];
+  auditScopes?: AuditScope[] | null;
+  documents?: CaseDocument[] | null;
+  notes?: CaseNote[] | null;
+  assignments?: CaseAssignment[] | null;
+  history?: CaseHistory[] | null;
 }
 
 export interface AuditScopeWithRelations extends AuditScope {
-  case?: Case;
-  template?: AuditTemplate;
-  sections?: AuditSection[];
+  case?: Case | null;
+  template?: AuditTemplate | null;
+  sections?: AuditSection[] | null;
 }
 
 export interface AuditSectionWithRelations extends AuditSection {
-  scope?: AuditScope;
-  procedures?: AuditProcedure[];
+  scope?: AuditScope | null;
+  procedures?: AuditProcedure[] | null;
 }
 
 export interface AuditProcedureWithRelations extends AuditProcedure {
-  section?: AuditSection;
-  documents?: CaseDocument[];
-  notes?: CaseNote[];
+  section?: AuditSection | null;
+  documents?: CaseDocument[] | null;
+  notes?: CaseNote[] | null;
 }

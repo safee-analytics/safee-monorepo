@@ -27,7 +27,7 @@ void describe("deleteConnector", async () => {
     await close();
   });
 
-  void it("should delete a connector", async () => {
+  it("should delete a connector", async () => {
     const timestamp = Date.now();
     const [org] = await drizzle
       .insert(schema.organizations)

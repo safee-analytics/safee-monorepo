@@ -2,41 +2,41 @@ import type { ConnectorType, ConnectorConfig } from "../services/connectors/base
 
 export interface CreateConnectorRequest {
   name: string;
-  description?: string;
+  description?: string | null;
   type: ConnectorType;
   config: ConnectorConfig;
-  tags?: string[];
-  metadata?: Record<string, unknown>;
+  tags?: string[] | null;
+  metadata?: Record<string, unknown> | null;
 }
 
 export interface UpdateConnectorRequest {
-  name?: string;
-  description?: string;
-  config?: ConnectorConfig;
-  tags?: string[];
-  metadata?: Record<string, unknown>;
-  isActive?: boolean;
+  name?: string | null;
+  description?: string | null;
+  config?: ConnectorConfig | null;
+  tags?: string[] | null;
+  metadata?: Record<string, unknown> | null;
+  isActive?: boolean | null;
 }
 
 export interface ConnectorResponse {
   id: string;
   organizationId: string;
   name: string;
-  description?: string;
+  description?: string | null;
   type: ConnectorType;
   isActive: boolean;
   tags: string[];
   metadata: Record<string, unknown>;
-  lastConnectionTest?: string;
-  lastConnectionStatus?: string;
-  lastConnectionError?: string;
+  lastConnectionTest?: string | null;
+  lastConnectionStatus?: string | null;
+  lastConnectionError?: string | null;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface QueryRequest {
   sql: string;
-  params?: unknown[];
+  params?: unknown[] | null;
 }
 
 export interface QueryResponse<T = unknown> {
@@ -46,21 +46,21 @@ export interface QueryResponse<T = unknown> {
 }
 
 export interface SchemaResponse {
-  tables: Array<{
+  tables: {
     schema: string;
     name: string;
     type: "table" | "view";
-  }>;
+  }[];
 }
 
 export interface TablePreviewResponse {
   schema: string;
   table: string;
-  columns: Array<{
+  columns: {
     name: string;
     type: string;
     nullable: boolean;
-  }>;
+  }[];
   sampleData: unknown[];
   totalRows: number;
 }
@@ -68,8 +68,8 @@ export interface TablePreviewResponse {
 export interface FieldMapping {
   sourceColumn: string;
   targetField: string;
-  transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean";
-  defaultValue?: unknown;
+  transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean" | null;
+  defaultValue?: unknown | null;
 }
 
 export interface SuggestMappingsRequest {

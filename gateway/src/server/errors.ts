@@ -132,7 +132,7 @@ export class TokenExpired extends Unauthorized {
 export class InvalidCredentials extends Unauthorized {
   override code = "InvalidCredentials";
 
-  constructor(message: string = "Invalid credentials", opts?: ErrorOptions) {
+  constructor(message = "Invalid credentials", opts?: ErrorOptions) {
     super(message, {}, opts);
   }
 }
@@ -140,7 +140,15 @@ export class InvalidCredentials extends Unauthorized {
 export class InsufficientPermissions extends Forbidden {
   override code = "InsufficientPermissions";
 
-  constructor(message: string = "Insufficient permissions", opts?: ErrorOptions) {
+  constructor(message = "Insufficient permissions", opts?: ErrorOptions) {
+    super(message, {}, opts);
+  }
+}
+
+export class InactiveAccount extends Forbidden {
+  override code = "InactiveAccount";
+
+  constructor(message = "Inactive account", opts?: ErrorOptions) {
     super(message, {}, opts);
   }
 }
@@ -267,6 +275,6 @@ export class AuthenticationFailed extends Unauthorized {
   override code = "AuthenticationFailed";
 
   constructor(reason?: string, opts?: ErrorOptions) {
-    super(reason || "Authentication failed", reason ? { reason } : {}, opts);
+    super(reason ?? "Authentication failed", reason ? { reason } : {}, opts);
   }
 }

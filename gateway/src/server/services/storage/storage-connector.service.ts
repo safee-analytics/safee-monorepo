@@ -1,11 +1,10 @@
 import type { DrizzleClient } from "@safee/database";
-import { schema } from "@safee/database";
-import { eq, and } from "@safee/database";
+import { schema, eq, and  } from "@safee/database";
 import { StorageFactory, type StorageConfig } from "./storage-factory.js";
 import type { StorageAdapter } from "./storage-adapter.interface.js";
 
 export class StorageConnectorService {
-  private adapters: Map<string, StorageAdapter> = new Map();
+  private adapters = new Map<string, StorageAdapter>();
 
   constructor(private drizzle: DrizzleClient) {}
 
@@ -52,27 +51,27 @@ export class StorageConnectorService {
       case "storage_local":
         return {
           type: "local",
-          basePath: (connector.config.basePath as string) || `./storage/${connector.organizationId}`,
+          basePath: (connector.config.basePath!) || `./storage/${connector.organizationId}`,
         };
 
       case "storage_webdav":
         return {
           type: "webdav",
-          url: connector.config.url as string,
-          username: connector.config.username as string,
-          password: connector.config.password as string,
-          basePath: connector.config.basePath as string | undefined,
+          url: connector.config.url!,
+          username: connector.config.username!,
+          password: connector.config.password!,
+          basePath: connector.config.basePath,
         };
 
       case "storage_smb":
         return {
           type: "smb",
-          host: connector.config.host as string,
-          share: connector.config.share as string,
-          username: connector.config.username as string | undefined,
-          password: connector.config.password as string | undefined,
-          domain: connector.config.domain as string | undefined,
-          port: connector.config.port as number | undefined,
+          host: connector.config.host!,
+          share: connector.config.share!,
+          username: connector.config.username,
+          password: connector.config.password,
+          domain: connector.config.domain,
+          port: connector.config.port,
         };
 
       case "storage_cloud":

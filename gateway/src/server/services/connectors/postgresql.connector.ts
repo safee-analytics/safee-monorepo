@@ -58,8 +58,8 @@ export class PostgreSQLConnector extends BaseConnector {
       user: cfg.username,
       password: cfg.password,
       ssl: cfg.ssl ? { rejectUnauthorized: false } : false,
-      max: cfg.maxConnections || 10,
-      connectionTimeoutMillis: cfg.connectionTimeout || 5000,
+      max: cfg.maxConnections ?? 10,
+      connectionTimeoutMillis: cfg.connectionTimeout ?? 5000,
       idleTimeoutMillis: 30000,
     });
 
@@ -111,11 +111,11 @@ export class PostgreSQLConnector extends BaseConnector {
           database: (this.config as PostgreSQLConfig).database,
         },
       };
-    } catch (error) {
+    } catch (err) {
       return {
         status: "failed",
         message: "Failed to connect to PostgreSQL database",
-        error: error instanceof Error ? error.message : String(error),
+        error: err instanceof Error ? err.message : String(err),
       };
     }
   }
@@ -144,7 +144,7 @@ export class PostgreSQLConnector extends BaseConnector {
    * Get schema information from the external database
    */
   async getSchemaInfo(): Promise<{
-    tables: Array<{ schema: string; name: string; type: string }>;
+    tables: { schema: string; name: string; type: string }[];
   }> {
     const tables = await this.query<{ schema: string; name: string; type: string }>(`
       SELECT
@@ -166,12 +166,12 @@ export class PostgreSQLConnector extends BaseConnector {
     schema: string,
     table: string,
   ): Promise<
-    Array<{
+    {
       name: string;
       type: string;
       nullable: boolean;
       default: string | null;
-    }>
+    }[]
   > {
     return await this.query(
       `

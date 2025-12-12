@@ -68,7 +68,7 @@ export class StorageFactory {
 
       case "cloud":
         // Managed cloud storage - stored on our servers
-        return new LocalAdapter(process.env.CLOUD_STORAGE_PATH || `./storage/cloud/${config.organizationId}`);
+        return new LocalAdapter(process.env.CLOUD_STORAGE_PATH ?? `./storage/cloud/${config.organizationId}`);
 
       default:
         throw new Error(`Unsupported storage type: ${(config as { type: string }).type}`);
@@ -79,11 +79,11 @@ export class StorageFactory {
    * Create adapter from environment variables (for default storage)
    */
   static createFromEnv(): StorageAdapter {
-    const storageType = (process.env.STORAGE_TYPE || "local") as StorageType;
+    const storageType = (process.env.STORAGE_TYPE ?? "local") as StorageType;
 
     switch (storageType) {
       case "local":
-        return new LocalAdapter(process.env.STORAGE_PATH || "./storage");
+        return new LocalAdapter(process.env.STORAGE_PATH ?? "./storage");
 
       case "webdav":
         if (!process.env.WEBDAV_URL || !process.env.WEBDAV_USERNAME || !process.env.WEBDAV_PASSWORD) {

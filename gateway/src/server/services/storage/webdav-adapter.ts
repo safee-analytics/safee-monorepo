@@ -33,7 +33,7 @@ export class WebDAVAdapter implements StorageAdapter {
       username: config.username,
       password: config.password,
     });
-    this.basePath = config.basePath || "/";
+    this.basePath = config.basePath ?? "/";
   }
 
   private resolvePath(path: string): string {

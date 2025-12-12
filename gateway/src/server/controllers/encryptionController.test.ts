@@ -61,7 +61,7 @@ void describe("EncryptionController", () => {
   });
 
   void describe("getEncryptionStatus", () => {
-    void it("should return disabled when no encryption key exists", async () => {
+    it("should return disabled when no encryption key exists", async () => {
       const org = await createTestOrg(drizzle);
 
       const mockRequest = {
@@ -77,7 +77,7 @@ void describe("EncryptionController", () => {
       expect(result.keyData).toBeUndefined();
     });
 
-    void it("should return enabled with key data when encryption is enabled", async () => {
+    it("should return enabled with key data when encryption is enabled", async () => {
       const org = await createTestOrg(drizzle);
       const service = new ClientEncryptionService(drizzle);
 
@@ -113,7 +113,7 @@ void describe("EncryptionController", () => {
       expect(result.keyData?.wrappedOrgKey).toBe(keyData.wrappedOrgKey);
     });
 
-    void it("should throw error when no active organization", async () => {
+    it("should throw error when no active organization", async () => {
       const mockRequest = {
         betterAuthSession: {
           user: { id: "test-user-id" },
@@ -126,7 +126,7 @@ void describe("EncryptionController", () => {
   });
 
   void describe("setupEncryption", () => {
-    void it("should enable encryption for organization", async () => {
+    it("should enable encryption for organization", async () => {
       const org = await createTestOrg(drizzle);
       const user = await createTestUser(drizzle);
 
@@ -158,7 +158,7 @@ void describe("EncryptionController", () => {
       expect(updatedOrg?.encryptionEnabledAt).toBeDefined();
     });
 
-    void it("should throw error when encryption already enabled", async () => {
+    it("should throw error when encryption already enabled", async () => {
       const org = await createTestOrg(drizzle);
       const user = await createTestUser(drizzle);
       const service = new ClientEncryptionService(drizzle);
@@ -183,7 +183,7 @@ void describe("EncryptionController", () => {
       );
     });
 
-    void it("should throw error when no active organization", async () => {
+    it("should throw error when no active organization", async () => {
       const mockRequest = {
         betterAuthSession: {
           user: { id: "test-user-id" },
@@ -202,7 +202,7 @@ void describe("EncryptionController", () => {
   });
 
   void describe("grantAuditorAccess", () => {
-    void it("should grant auditor access successfully", async () => {
+    it("should grant auditor access successfully", async () => {
       const org = await createTestOrg(drizzle);
       const auditor = await createTestUser(drizzle, "auditor", "Auditor");
       const granter = await createTestUser(drizzle, "granter", "Granter");
@@ -229,7 +229,7 @@ void describe("EncryptionController", () => {
       expect(result.accessId).toBeDefined();
     });
 
-    void it("should grant auditor access without expiry date", async () => {
+    it("should grant auditor access without expiry date", async () => {
       const org = await createTestOrg(drizzle);
       const auditor = await createTestUser(drizzle, "auditor", "Auditor");
       const granter = await createTestUser(drizzle, "granter", "Granter");
@@ -255,7 +255,7 @@ void describe("EncryptionController", () => {
       expect(result.accessId).toBeDefined();
     });
 
-    void it("should throw error when encryption not enabled", async () => {
+    it("should throw error when encryption not enabled", async () => {
       const org = await createTestOrg(drizzle);
       const auditor = await createTestUser(drizzle, "auditor", "Auditor");
       const granter = await createTestUser(drizzle, "granter", "Granter");
@@ -277,7 +277,7 @@ void describe("EncryptionController", () => {
       );
     });
 
-    void it("should throw error when no active organization", async () => {
+    it("should throw error when no active organization", async () => {
       const mockRequest = {
         betterAuthSession: {
           user: { id: "test-user-id" },
@@ -297,7 +297,7 @@ void describe("EncryptionController", () => {
   });
 
   void describe("getMyAuditorAccess", () => {
-    void it("should return no access when user has no auditor access", async () => {
+    it("should return no access when user has no auditor access", async () => {
       const org = await createTestOrg(drizzle);
       const user = await createTestUser(drizzle);
 
@@ -315,7 +315,7 @@ void describe("EncryptionController", () => {
       expect(result.expiresAt).toBeUndefined();
     });
 
-    void it("should return access data when user has auditor access", async () => {
+    it("should return access data when user has auditor access", async () => {
       const org = await createTestOrg(drizzle);
       const auditor = await createTestUser(drizzle, "auditor", "Auditor");
       const granter = await createTestUser(drizzle, "granter", "Granter");
@@ -348,7 +348,7 @@ void describe("EncryptionController", () => {
       expect(result.expiresAt).toBe(expiresAt.toISOString());
     });
 
-    void it("should throw error when no active organization", async () => {
+    it("should throw error when no active organization", async () => {
       const mockRequest = {
         betterAuthSession: {
           user: { id: "test-user-id" },
@@ -361,7 +361,7 @@ void describe("EncryptionController", () => {
   });
 
   void describe("revokeAuditorAccess", () => {
-    void it("should revoke auditor access successfully", async () => {
+    it("should revoke auditor access successfully", async () => {
       const org = await createTestOrg(drizzle);
       const auditor = await createTestUser(drizzle, "auditor", "Auditor");
       const granter = await createTestUser(drizzle, "granter", "Granter");

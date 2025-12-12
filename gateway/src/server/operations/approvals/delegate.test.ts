@@ -52,14 +52,14 @@ void describe("delegate operation", async () => {
     await close();
   });
 
-  void it("should delegate a pending approval successfully", async () => {
+  it("should delegate a pending approval successfully", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
     const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
-      entityId: entityId,
-      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+      entityId,
+      entityData: { entityType: "invoice", entityId, amount: 1000, currency: "USD" },
     });
 
     const result = await delegate(ctx, approverUser.id, submitResult.requestId, {
@@ -80,14 +80,14 @@ void describe("delegate operation", async () => {
     expect(approvalStep?.status).toBe("pending");
   });
 
-  void it("should delegate without comments", async () => {
+  it("should delegate without comments", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
     const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
-      entityId: entityId,
-      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+      entityId,
+      entityData: { entityType: "invoice", entityId, amount: 1000, currency: "USD" },
     });
 
     const result = await delegate(ctx, approverUser.id, submitResult.requestId, {
@@ -105,7 +105,7 @@ void describe("delegate operation", async () => {
     expect(approvalStep?.comments).toBeNull();
   });
 
-  void it("should throw NotFound when approval request does not exist", async () => {
+  it("should throw NotFound when approval request does not exist", async () => {
     const nonExistentRequestId = crypto.randomUUID();
 
     await expect(
@@ -115,14 +115,14 @@ void describe("delegate operation", async () => {
     ).rejects.toThrow(NotFound);
   });
 
-  void it("should throw NotFound when user has no pending approval step", async () => {
+  it("should throw NotFound when user has no pending approval step", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
     const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
-      entityId: entityId,
-      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+      entityId,
+      entityData: { entityType: "invoice", entityId, amount: 1000, currency: "USD" },
     });
 
     const otherUser = await createTestUser(drizzle, { email: "other@test.com", name: "Other" });
@@ -134,14 +134,14 @@ void describe("delegate operation", async () => {
     ).rejects.toThrow(NotFound);
   });
 
-  void it("should throw NotFound when trying to delegate already actioned step", async () => {
+  it("should throw NotFound when trying to delegate already actioned step", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
     const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
-      entityId: entityId,
-      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+      entityId,
+      entityData: { entityType: "invoice", entityId, amount: 1000, currency: "USD" },
     });
 
     await drizzle
@@ -159,14 +159,14 @@ void describe("delegate operation", async () => {
     ).rejects.toThrow(NotFound);
   });
 
-  void it("should allow re-delegation to another user", async () => {
+  it("should allow re-delegation to another user", async () => {
     await createTestApprovalWorkflow(drizzle, testOrg.id, approverUser.id);
     const entityId = crypto.randomUUID();
 
     const submitResult = await submitForApproval(ctx, testOrg.id, testUser.id, {
       entityType: "invoice",
-      entityId: entityId,
-      entityData: { entityType: "invoice", entityId: entityId, amount: 1000, currency: "USD" },
+      entityId,
+      entityData: { entityType: "invoice", entityId, amount: 1000, currency: "USD" },
     });
 
     await delegate(ctx, approverUser.id, submitResult.requestId, {

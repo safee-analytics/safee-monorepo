@@ -26,12 +26,12 @@ import type { Logger } from "pino";
 
 export function createEmailConfig(emailService: EmailService | undefined, logger: Logger) {
   const emailFrom = {
-    email: process.env.EMAIL_FROM_ADDRESS || "noreply@safee.local",
-    name: process.env.EMAIL_FROM_NAME || "Safee Analytics",
+    email: process.env.EMAIL_FROM_ADDRESS ?? "noreply@safee.local",
+    name: process.env.EMAIL_FROM_NAME ?? "Safee Analytics",
   };
 
   const emailReplyTo = {
-    email: process.env.EMAIL_REPLY_TO || process.env.EMAIL_FROM_ADDRESS || "support@safee.local",
+    email: process.env.EMAIL_REPLY_TO ?? process.env.EMAIL_FROM_ADDRESS ?? "support@safee.local",
     name: "Safee Support",
   };
 
@@ -71,12 +71,18 @@ export function createEmailConfig(emailService: EmailService | undefined, logger
           return;
         }
 
-        const subject =
-          type === "sign-in"
-            ? "Sign In Verification Code"
-            : type === "email-verification"
-              ? "Email Verification Code"
-              : "Password Reset Code";
+        let subject: string;
+        switch (type) {
+          case "sign-in":
+            subject = "Sign In Verification Code";
+            break;
+          case "email-verification":
+            subject = "Email Verification Code";
+            break;
+          default:
+            subject = "Password Reset Code";
+            break;
+        }
 
         await emailService.sendEmail({
           to: [{ email }],
@@ -135,7 +141,7 @@ export function createEmailConfig(emailService: EmailService | undefined, logger
           return;
         }
 
-        const frontendUrl = process.env.FRONTEND_URL || "http://app.localhost:8080";
+        const frontendUrl = process.env.FRONTEND_URL ?? "http://app.localhost:8080";
         const invitationUrl = `${frontendUrl}/accept-invitation/${data.id}`;
 
         await emailService.sendEmail({

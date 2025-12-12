@@ -34,7 +34,7 @@ void describe("auth middleware", () => {
   });
 
   void describe("expressAuthentication", () => {
-    void it("should authenticate successfully with valid session", async () => {
+    it("should authenticate successfully with valid session", async () => {
       const mockSession = {
         user: {
           id: "user-123",
@@ -70,7 +70,7 @@ void describe("auth middleware", () => {
       expect((mockRequest as AuthenticatedRequest).betterAuthSession).toEqual(mockSession);
     });
 
-    void it("should throw NoTokenProvided when no session exists", async () => {
+    it("should throw NoTokenProvided when no session exists", async () => {
       vi.mocked(auth.api.getSession).mockResolvedValue(null);
 
       const mockRequest = {
@@ -81,7 +81,7 @@ void describe("auth middleware", () => {
       await expect(expressAuthentication(mockRequest, "jwt")).rejects.toThrow(NoTokenProvided);
     });
 
-    void it("should throw NoTokenProvided when session has no user", async () => {
+    it("should throw NoTokenProvided when session has no user", async () => {
       vi.mocked(auth.api.getSession).mockResolvedValue({
         user: null,
         session: null,
@@ -95,7 +95,7 @@ void describe("auth middleware", () => {
       await expect(expressAuthentication(mockRequest, "jwt")).rejects.toThrow(NoTokenProvided);
     });
 
-    void it("should check role scopes correctly for admin", async () => {
+    it("should check role scopes correctly for admin", async () => {
       const mockSession = {
         user: {
           id: "user-123",
@@ -130,7 +130,7 @@ void describe("auth middleware", () => {
       expect(result).toEqual(mockSession.user);
     });
 
-    void it("should throw InsufficientPermissions when role does not match scopes", async () => {
+    it("should throw InsufficientPermissions when role does not match scopes", async () => {
       const mockSession = {
         user: {
           id: "user-123",
@@ -165,7 +165,7 @@ void describe("auth middleware", () => {
       );
     });
 
-    void it("should allow access when user role matches one of the scopes", async () => {
+    it("should allow access when user role matches one of the scopes", async () => {
       const mockSession = {
         user: {
           id: "user-123",
@@ -200,7 +200,7 @@ void describe("auth middleware", () => {
       expect(result).toEqual(mockSession.user);
     });
 
-    void it("should throw UnknownSecurityScheme for non-jwt security", async () => {
+    it("should throw UnknownSecurityScheme for non-jwt security", async () => {
       const mockRequest = {
         headers: {},
         path: "/api/test",
@@ -209,7 +209,7 @@ void describe("auth middleware", () => {
       await expect(expressAuthentication(mockRequest, "apiKey")).rejects.toThrow(UnknownSecurityScheme);
     });
 
-    void it("should throw InvalidToken on authentication errors", async () => {
+    it("should throw InvalidToken on authentication errors", async () => {
       vi.mocked(auth.api.getSession).mockRejectedValue(new Error("Invalid token"));
 
       const mockRequest = {
@@ -224,7 +224,7 @@ void describe("auth middleware", () => {
   });
 
   void describe("requireRole", () => {
-    void it("should return true for matching role", () => {
+    it("should return true for matching role", () => {
       const mockRequest = {
         betterAuthSession: {
           user: {
@@ -239,7 +239,7 @@ void describe("auth middleware", () => {
       expect(checkRole(mockRequest)).toBe(true);
     });
 
-    void it("should return false for non-matching role", () => {
+    it("should return false for non-matching role", () => {
       const mockRequest = {
         betterAuthSession: {
           user: {
@@ -254,7 +254,7 @@ void describe("auth middleware", () => {
       expect(checkRole(mockRequest)).toBe(false);
     });
 
-    void it("should return true for admin accessing any role", () => {
+    it("should return true for admin accessing any role", () => {
       const mockRequest = {
         betterAuthSession: {
           user: {
@@ -269,7 +269,7 @@ void describe("auth middleware", () => {
       expect(checkRole(mockRequest)).toBe(true);
     });
 
-    void it("should return false when no session exists", () => {
+    it("should return false when no session exists", () => {
       const mockRequest = {} as AuthenticatedRequest;
 
       const checkRole = requireRole("manager");
@@ -278,7 +278,7 @@ void describe("auth middleware", () => {
   });
 
   void describe("requireAdmin", () => {
-    void it("should return true for admin role", () => {
+    it("should return true for admin role", () => {
       const mockRequest = {
         betterAuthSession: {
           user: {
@@ -293,7 +293,7 @@ void describe("auth middleware", () => {
       expect(checkAdmin(mockRequest)).toBe(true);
     });
 
-    void it("should return false for non-admin role", () => {
+    it("should return false for non-admin role", () => {
       const mockRequest = {
         betterAuthSession: {
           user: {
@@ -308,7 +308,7 @@ void describe("auth middleware", () => {
       expect(checkAdmin(mockRequest)).toBe(false);
     });
 
-    void it("should return false when no session exists", () => {
+    it("should return false when no session exists", () => {
       const mockRequest = {} as AuthenticatedRequest;
 
       const checkAdmin = requireAdmin();

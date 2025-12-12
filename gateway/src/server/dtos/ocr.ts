@@ -1,6 +1,6 @@
 export interface ProcessOcrRequest {
   documentId: string;
-  language?: string;
+  language?: string | null;
 }
 
 export interface OcrResponse {

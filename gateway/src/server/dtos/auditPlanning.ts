@@ -5,32 +5,32 @@ export type PlanStatus = "draft" | "in_review" | "approved" | "converted" | "arc
 
 export interface AuditPlanResponse {
   id: string;
-  caseId?: string;
+  caseId?: string | null;
   planType: PlanType;
   title: string;
-  clientName?: string;
-  auditType?: AuditType;
-  auditYear?: number;
-  startDate?: string;
-  targetCompletion?: string;
-  objectives?: Array<{ id: string; description: string; priority?: string }> | null;
+  clientName?: string | null;
+  auditType?: AuditType | null;
+  auditYear?: number | null;
+  startDate?: string | null;
+  targetCompletion?: string | null;
+  objectives?: { id: string | null; description: string; priority?: string }[] | null;
   businessUnits?: Record<string, boolean> | null;
   financialAreas?: Record<string, boolean> | null;
-  teamMembers?: Array<{ userId: string; name: string; role: string; hours?: number }> | null;
-  phaseBreakdown?: Array<{
-    name: string;
+  teamMembers?: { userId: string | null; name: string; role: string; hours?: number }[] | null;
+  phaseBreakdown?: {
+    name: string | null;
     duration: number;
-    description?: string;
-    startDate?: string;
-    endDate?: string;
-  }> | null;
-  totalBudget?: string;
-  totalHours?: number;
-  materialityThreshold?: string;
+    description?: string | null;
+    startDate?: string | null;
+    endDate?: string | null;
+  }[] | null;
+  totalBudget?: string | null;
+  totalHours?: number | null;
+  materialityThreshold?: string | null;
   riskAssessment?: {
-    risks?: Array<{ type: string; severity: string; message: string }>;
-    overallRisk?: string;
-    score?: number;
+    risks?: { type: string | null; severity: string; message: string }[];
+    overallRisk?: string | null;
+    score?: number | null;
   } | null;
   status: PlanStatus;
   organizationId: string;
@@ -40,65 +40,65 @@ export interface AuditPlanResponse {
 }
 
 export interface CreateAuditPlanRequest {
-  caseId?: string;
-  planType?: PlanType;
+  caseId?: string | null;
+  planType?: PlanType | null;
   title: string;
-  clientName?: string;
-  auditType?: AuditType;
-  auditYear?: number;
-  startDate?: string;
-  targetCompletion?: string;
-  objectives?: Array<{ id: string; description: string; priority?: string }>;
-  businessUnits?: Record<string, boolean>;
-  financialAreas?: Record<string, boolean>;
-  teamMembers?: Array<{ userId: string; name: string; role: string; hours?: number }>;
-  phaseBreakdown?: Array<{
-    name: string;
+  clientName?: string | null;
+  auditType?: AuditType | null;
+  auditYear?: number | null;
+  startDate?: string | null;
+  targetCompletion?: string | null;
+  objectives?: { id: string | null; description: string; priority?: string }[];
+  businessUnits?: Record<string, boolean> | null;
+  financialAreas?: Record<string, boolean> | null;
+  teamMembers?: { userId: string | null; name: string; role: string; hours?: number }[];
+  phaseBreakdown?: {
+    name: string | null;
     duration: number;
-    description?: string;
-    startDate?: string;
-    endDate?: string;
-  }>;
-  totalBudget?: string;
-  totalHours?: number;
-  materialityThreshold?: string;
+    description?: string | null;
+    startDate?: string | null;
+    endDate?: string | null;
+  }[];
+  totalBudget?: string | null;
+  totalHours?: number | null;
+  materialityThreshold?: string | null;
   riskAssessment?: {
-    risks?: Array<{ type: string; severity: string; message: string }>;
-    overallRisk?: string;
-    score?: number;
+    risks?: { type: string | null; severity: string; message: string }[];
+    overallRisk?: string | null;
+    score?: number | null;
   };
-  status?: PlanStatus;
+  status?: PlanStatus | null;
 }
 
 export interface UpdateAuditPlanRequest {
-  caseId?: string;
-  planType?: PlanType;
-  title?: string;
-  clientName?: string;
-  auditType?: AuditType;
-  auditYear?: number;
-  startDate?: string;
-  targetCompletion?: string;
-  objectives?: Array<{ id: string; description: string; priority?: string }>;
-  businessUnits?: Record<string, boolean>;
-  financialAreas?: Record<string, boolean>;
-  teamMembers?: Array<{ userId: string; name: string; role: string; hours?: number }>;
-  phaseBreakdown?: Array<{
-    name: string;
+  caseId?: string | null;
+  planType?: PlanType | null;
+  title?: string | null;
+  clientName?: string | null;
+  auditType?: AuditType | null;
+  auditYear?: number | null;
+  startDate?: string | null;
+  targetCompletion?: string | null;
+  objectives?: { id: string | null; description: string; priority?: string }[];
+  businessUnits?: Record<string, boolean> | null;
+  financialAreas?: Record<string, boolean> | null;
+  teamMembers?: { userId: string | null; name: string; role: string; hours?: number }[];
+  phaseBreakdown?: {
+    name: string | null;
     duration: number;
-    description?: string;
-    startDate?: string;
-    endDate?: string;
-  }>;
-  totalBudget?: string;
-  totalHours?: number;
-  materialityThreshold?: string;
+    description?: string | null;
+    startDate?: string | null;
+    endDate?: string | null;
+  }[];
+  totalBudget?: string | null;
+  totalHours?: number | null;
+  materialityThreshold?: string | null;
   riskAssessment?: {
-    risks?: Array<{ type: string; severity: string; message: string }>;
-    overallRisk?: string;
-    score?: number;
+    risks?: { type: string | null; severity: string; message: string }[];
+    overallRisk?: string | null;
+    score?: number | null;
   };
-  status?: PlanStatus;
+  status?: PlanStatus | null;
 }
 
 export interface ConvertPlanToCaseRequest {
@@ -108,43 +108,43 @@ export interface ConvertPlanToCaseRequest {
 export interface AuditPlanTemplateResponse {
   id: string;
   name: string;
-  auditType?: AuditType;
-  description?: string;
-  defaultObjectives?: Array<{ id: string; description: string; priority?: string }> | null;
+  auditType?: AuditType | null;
+  description?: string | null;
+  defaultObjectives?: { id: string | null; description: string; priority?: string }[] | null;
   defaultScope?: Record<string, unknown> | null;
-  defaultPhases?: Array<{ name: string; duration: number; description?: string }> | null;
+  defaultPhases?: { name: string | null; duration: number; description?: string }[] | null;
   defaultBusinessUnits?: Record<string, boolean> | null;
   defaultFinancialAreas?: Record<string, boolean> | null;
-  estimatedDuration?: number;
-  estimatedHours?: number;
-  estimatedBudget?: string;
+  estimatedDuration?: number | null;
+  estimatedHours?: number | null;
+  estimatedBudget?: string | null;
   isDefault: boolean;
   isActive: boolean;
-  organizationId?: string;
+  organizationId?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
 
 export interface CreateAuditPlanTemplateRequest {
   name: string;
-  auditType?: AuditType;
-  description?: string;
-  defaultObjectives?: Array<{ id: string; description: string; priority?: string }>;
-  defaultScope?: Record<string, unknown>;
-  defaultPhases?: Array<{ name: string; duration: number; description?: string }>;
-  defaultBusinessUnits?: Record<string, boolean>;
-  defaultFinancialAreas?: Record<string, boolean>;
-  estimatedDuration?: number;
-  estimatedHours?: number;
-  estimatedBudget?: string;
-  isDefault?: boolean;
-  isActive?: boolean;
+  auditType?: AuditType | null;
+  description?: string | null;
+  defaultObjectives?: { id: string | null; description: string; priority?: string }[];
+  defaultScope?: Record<string, unknown> | null;
+  defaultPhases?: { name: string | null; duration: number; description?: string }[];
+  defaultBusinessUnits?: Record<string, boolean> | null;
+  defaultFinancialAreas?: Record<string, boolean> | null;
+  estimatedDuration?: number | null;
+  estimatedHours?: number | null;
+  estimatedBudget?: string | null;
+  isDefault?: boolean | null;
+  isActive?: boolean | null;
 }
 
 export interface CreatePlanFromTemplateRequest {
   templateId: string;
   title: string;
-  clientName?: string;
-  auditYear?: number;
-  startDate?: string;
+  clientName?: string | null;
+  auditYear?: number | null;
+  startDate?: string | null;
 }

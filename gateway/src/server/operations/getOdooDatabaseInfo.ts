@@ -36,32 +36,32 @@ export async function getOdooDatabaseInfo(
     exists: boolean;
     loginUrl: string;
   };
-  users: Array<{
+  users: {
     id: number;
     name: string;
     login: string;
     email: string;
     active: boolean;
-    groups: Array<{
+    groups: {
       id: number;
       name: string;
       fullName: string;
-    }>;
-  }>;
-  modules: Array<{
+    }[];
+  }[];
+  modules: {
     id: number;
     name: string;
     displayName: string;
     state: string;
     summary: string;
-  }>;
-  accessGroups: Array<{
+  }[];
+  accessGroups: {
     id: number;
     name: string;
     fullName: string;
     category: string;
     users: number[];
-  }>;
+  }[];
 }> {
   const logger = getServerContext().logger.child({ operation: "getOdooDatabaseInfo", organizationId });
 
@@ -71,8 +71,8 @@ export async function getOdooDatabaseInfo(
     throw new Error("Odoo database not found for organization");
   }
 
-  const odooUrl = process.env.ODOO_URL || "http://localhost:8069";
-  const odooPort = parseInt(process.env.ODOO_PORT || "8069", 10);
+  const odooUrl = process.env.ODOO_URL ?? "http://localhost:8069";
+  const odooPort = parseInt(process.env.ODOO_PORT ?? "8069", 10);
 
   const client = createOdooClient(
     {
@@ -115,12 +115,12 @@ export async function getOdooDatabaseInfo(
     login: user.login,
     email: user.email || user.login,
     active: user.active,
-    groups: (user.group_ids || []).map((groupId) => {
+    groups: user.group_ids.map((groupId) => {
       const group = groupsMap.get(groupId);
       return {
         id: groupId,
-        name: group?.name || "Unknown",
-        fullName: group?.full_name || "Unknown",
+        name: group?.name ?? "Unknown",
+        fullName: group?.full_name ?? "Unknown",
       };
     }),
   }));
@@ -130,7 +130,7 @@ export async function getOdooDatabaseInfo(
     name: group.name,
     fullName: group.full_name,
     category: "Access Rights",
-    users: group.user_ids || [],
+    users: group.user_ids,
   }));
 
   const modules = installedModules.map((module) => ({

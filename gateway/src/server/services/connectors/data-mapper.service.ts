@@ -149,7 +149,7 @@ export class DataMapperService {
       company: contactMappings, // Similar to contacts
     };
 
-    const entityMappings = mappingsByEntity[targetEntity] || {};
+    const entityMappings = mappingsByEntity[targetEntity as keyof typeof mappingsByEntity] ?? {};
 
     // Try to match columns
     for (const column of sourceColumns) {
@@ -199,15 +199,21 @@ export class DataMapperService {
       // Apply transform
       if (mapping.transform && value !== null && value !== undefined) {
         switch (mapping.transform) {
-          case "lowercase":
-            value = String(value).toLowerCase();
+          case "lowercase": {
+            const stringValue = typeof value === "string" ? value : JSON.stringify(value);
+            value = stringValue.toLowerCase();
             break;
-          case "uppercase":
-            value = String(value).toUpperCase();
+          }
+          case "uppercase": {
+            const stringValue = typeof value === "string" ? value : JSON.stringify(value);
+            value = stringValue.toUpperCase();
             break;
-          case "trim":
-            value = String(value).trim();
+          }
+          case "trim": {
+            const stringValue = typeof value === "string" ? value : JSON.stringify(value);
+            value = stringValue.trim();
             break;
+          }
           case "date":
             if (typeof value === "string" || typeof value === "number") {
               value = new Date(value);
@@ -231,7 +237,7 @@ export class DataMapperService {
   /**
    * Fetch and transform data from external table
    */
-  async fetchMappedData<T = unknown>(
+  async fetchMappedData(
     organizationId: string,
     mapping: TableMapping,
     options?: {
@@ -239,20 +245,20 @@ export class DataMapperService {
       offset?: number;
       where?: Record<string, unknown>;
     },
-  ): Promise<{ data: T[]; total: number }> {
+  ): Promise<{ data: Record<string, unknown>[]; total: number }> {
     // Get raw data from external database
     const result = await this.dataProxyService.executePaginatedQuery(organizationId, mapping.connectorId, {
       schema: mapping.sourceSchema,
       table: mapping.sourceTable,
       where: { ...mapping.filters, ...options?.where },
-      limit: options?.limit || 100,
-      offset: options?.offset || 0,
+      limit: options?.limit ?? 100,
+      offset: options?.offset ?? 0,
     });
 
     // Transform each row - rows are unknown, need to assert as Record for transform
     const transformedData = result.rows.map((row) =>
       this.transformRow(row as Record<string, unknown>, mapping.fieldMappings),
-    ) as T[];
+    );
 
     return {
       data: transformedData,
@@ -266,12 +272,12 @@ export class DataMapperService {
   async previewMapping(
     organizationId: string,
     mapping: TableMapping,
-    limit: number = 10,
+    limit = 10,
   ): Promise<
-    Array<{
+    {
       source: Record<string, unknown>;
       target: Record<string, unknown>;
-    }>
+    }[]
   > {
     const result = await this.dataProxyService.executePaginatedQuery(organizationId, mapping.connectorId, {
       schema: mapping.sourceSchema,
@@ -345,8 +351,8 @@ export class DataMapperService {
           }`,
         );
       }
-    } catch (error) {
-      errors.push(`Failed to validate mapping: ${error instanceof Error ? error.message : String(error)}`);
+    } catch (err) {
+      errors.push(`Failed to validate mapping: ${err instanceof Error ? err.message : String(err)}`);
     }
 
     return {

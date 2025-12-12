@@ -1,5 +1,15 @@
 import { ENV } from "../env.js";
 
+function parseNumber(value?: string) {
+  if (value === undefined) return undefined;
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
+function parseBoolean(value?: string) {
+  return value === undefined ? undefined : value.toLowerCase() === "true";
+}
+
 export interface SecurityConfig {
   enableHelmet: boolean;
   rateLimitWindowMs: number;
@@ -50,11 +60,16 @@ export interface AuthConfig {
 
 export function getSecurityConfig(): SecurityConfig {
   const isProduction = ENV === "production";
+  const enableHelmet = parseBoolean(process.env.ENABLE_HELMET);
+  const rateLimitWindowMs =
+    parseNumber(process.env.RATE_LIMIT_WINDOW_MS) ?? (isProduction ? 900000 : 60000); // 15min prod, 1min dev
+  const rateLimitMaxRequests =
+    parseNumber(process.env.RATE_LIMIT_MAX_REQUESTS) ?? (isProduction ? 100 : 1000);
 
   return {
-    enableHelmet: process.env.ENABLE_HELMET?.toLowerCase() === "true" || isProduction,
-    rateLimitWindowMs: Number(process.env.RATE_LIMIT_WINDOW_MS) || (isProduction ? 900000 : 60000), // 15min prod, 1min dev
-    rateLimitMaxRequests: Number(process.env.RATE_LIMIT_MAX_REQUESTS) || (isProduction ? 100 : 1000),
+    enableHelmet: enableHelmet ?? isProduction,
+    rateLimitWindowMs,
+    rateLimitMaxRequests,
     cookieSecure: isProduction,
     cookieSameSite: isProduction ? "strict" : "lax",
     csrfProtection: isProduction,
@@ -62,15 +77,16 @@ export function getSecurityConfig(): SecurityConfig {
 }
 
 export function getStorageConfig(): StorageConfig {
-  const useCloud = process.env.USE_CLOUD_STORAGE?.toLowerCase() === "true";
+  const useCloud = parseBoolean(process.env.USE_CLOUD_STORAGE) ?? false;
+  const storageProvider = (process.env.STORAGE_PROVIDER as "azure" | "gcp" | undefined) ?? "azure";
 
   return {
     useCloudStorage: useCloud,
-    provider: useCloud ? (process.env.STORAGE_PROVIDER as "azure" | "gcp") || "azure" : "local",
-    bucket: process.env.FILE_UPLOAD_BUCKET || "dev-safee-storage",
-    uploadPath: process.env.FILE_UPLOAD_PATH || "uploads",
-    maxFileSize: Number(process.env.MAX_FILE_SIZE) || 100 * 1024 * 1024, // 100MB default (increased from 10MB)
-    allowedMimeTypes: process.env.ALLOWED_MIME_TYPES?.split(",") || [
+    provider: useCloud ? storageProvider : "local",
+    bucket: process.env.FILE_UPLOAD_BUCKET ?? "dev-safee-storage",
+    uploadPath: process.env.FILE_UPLOAD_PATH ?? "uploads",
+    maxFileSize: parseNumber(process.env.MAX_FILE_SIZE) ?? 100 * 1024 * 1024, // 100MB default (increased from 10MB)
+    allowedMimeTypes: process.env.ALLOWED_MIME_TYPES?.split(",") ?? [
       "image/jpeg",
       "image/png",
       "image/webp",
@@ -80,12 +96,12 @@ export function getStorageConfig(): StorageConfig {
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ],
     // Chunked upload configuration
-    chunkSize: Number(process.env.CHUNK_SIZE) || 5 * 1024 * 1024, // 5MB chunks
-    chunkThreshold: Number(process.env.CHUNK_THRESHOLD) || 10 * 1024 * 1024, // Files > 10MB use chunking
-    chunkUploadExpiry: Number(process.env.CHUNK_UPLOAD_EXPIRY) || 86400, // 24 hours in seconds
-    tempUploadPath: process.env.TEMP_UPLOAD_PATH || "./storage/temp",
-    maxChunkSize: Number(process.env.MAX_CHUNK_SIZE) || 10 * 1024 * 1024, // 10MB max per chunk
-    concurrentChunkUploads: Number(process.env.CONCURRENT_CHUNK_UPLOADS) || 3, // 3 parallel uploads
+    chunkSize: parseNumber(process.env.CHUNK_SIZE) ?? 5 * 1024 * 1024, // 5MB chunks
+    chunkThreshold: parseNumber(process.env.CHUNK_THRESHOLD) ?? 10 * 1024 * 1024, // Files > 10MB use chunking
+    chunkUploadExpiry: parseNumber(process.env.CHUNK_UPLOAD_EXPIRY) ?? 86400, // 24 hours in seconds
+    tempUploadPath: process.env.TEMP_UPLOAD_PATH ?? "./storage/temp",
+    maxChunkSize: parseNumber(process.env.MAX_CHUNK_SIZE) ?? 10 * 1024 * 1024, // 10MB max per chunk
+    concurrentChunkUploads: parseNumber(process.env.CONCURRENT_CHUNK_UPLOADS) ?? 3, // 3 parallel uploads
   };
 }
 
@@ -93,10 +109,10 @@ export function getDatabaseConfig(): DatabaseConfig {
   const isProduction = ENV === "production";
 
   return {
-    url: process.env.DATABASE_URL || "",
-    connectionLimit: Number(process.env.DATABASE_CONNECTION_LIMIT) || (isProduction ? 20 : 5),
+    url: process.env.DATABASE_URL ?? "",
+    connectionLimit: parseNumber(process.env.DATABASE_CONNECTION_LIMIT) ?? (isProduction ? 20 : 5),
     sslMode: isProduction,
-    poolTimeout: Number(process.env.DATABASE_POOL_TIMEOUT) || 30000, // 30 seconds
+    poolTimeout: parseNumber(process.env.DATABASE_POOL_TIMEOUT) ?? 30000, // 30 seconds
   };
 }
 
@@ -105,23 +121,25 @@ export function getLoggingConfig(): LoggingConfig {
   const isDevelopment = ENV === "local" || ENV === "development";
 
   return {
-    level: process.env.LOG_LEVEL || (isProduction ? "info" : "debug"),
-    sqlLevel: process.env.SQL_LOG_LEVEL || (isProduction ? "warn" : "info"),
-    enableRequestLogging: !isProduction || process.env.ENABLE_REQUEST_LOGGING?.toLowerCase() === "true",
-    enableQueryLogging: isDevelopment || process.env.ENABLE_QUERY_LOGGING?.toLowerCase() === "true",
+    level: process.env.LOG_LEVEL ?? (isProduction ? "info" : "debug"),
+    sqlLevel: process.env.SQL_LOG_LEVEL ?? (isProduction ? "warn" : "info"),
+    enableRequestLogging: parseBoolean(process.env.ENABLE_REQUEST_LOGGING) ?? !isProduction,
+    enableQueryLogging: parseBoolean(process.env.ENABLE_QUERY_LOGGING) ?? isDevelopment,
   };
 }
 
 export function getAuthConfig(): AuthConfig {
   const isProduction = ENV === "production";
+  const enablePasswordValidationEnv = process.env.ENABLE_PASSWORD_VALIDATION?.toLowerCase();
 
   return {
     enableAuthentication: true, // Always enabled - authentication required for all environments
-    jwtSecret: process.env.JWT_SECRET || "dev-secret-key-please-change-in-production",
-    jwtExpiresIn: process.env.JWT_EXPIRES_IN || "1h",
-    jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN || "7d",
-    bcryptRounds: Number(process.env.BCRYPT_ROUNDS) || (isProduction ? 12 : 8),
-    enablePasswordValidation: process.env.ENABLE_PASSWORD_VALIDATION?.toLowerCase() !== "false",
+    jwtSecret: process.env.JWT_SECRET ?? "dev-secret-key-please-change-in-production",
+    jwtExpiresIn: process.env.JWT_EXPIRES_IN ?? "1h",
+    jwtRefreshExpiresIn: process.env.JWT_REFRESH_EXPIRES_IN ?? "7d",
+    bcryptRounds: parseNumber(process.env.BCRYPT_ROUNDS) ?? (isProduction ? 12 : 8),
+    enablePasswordValidation:
+      enablePasswordValidationEnv === undefined ? true : enablePasswordValidationEnv !== "false",
   };
 }
 

@@ -47,7 +47,7 @@ export class OdooAccountingService {
   }
 
   async getAccounts(filters?: { accountType?: string; onlyActive?: boolean }): Promise<OdooAccount[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.accountType) {
       domain.push(["account_type", "=", filters.accountType]);
@@ -140,7 +140,7 @@ export class OdooAccountingService {
     dateFrom?: string;
     dateTo?: string;
   }): Promise<OdooInvoice[]> {
-    const domain: Array<string | [string, string, unknown]> = [];
+    const domain: (string | [string, string, unknown])[] = [];
 
     if (filters?.moveType) {
       domain.push(["move_type", "=", filters.moveType]);
@@ -236,8 +236,8 @@ export class OdooAccountingService {
   }
 
   async createInvoice(dto: CreateInvoiceDTO): Promise<number> {
-    const moveType = dto.moveType || "out_invoice";
-    const partnerId = dto.customerId || dto.supplierId;
+    const moveType = dto.moveType ?? "out_invoice";
+    const partnerId = dto.customerId ?? dto.supplierId;
 
     if (!partnerId) {
       throw new Error("Either customerId or supplierId is required");
@@ -286,7 +286,7 @@ export class OdooAccountingService {
     return result.res_id;
   }
 
-  async getInvoicePDF(invoiceId: number, templateId: string = "account.report_invoice"): Promise<Buffer> {
+  async getInvoicePDF(invoiceId: number, templateId = "account.report_invoice"): Promise<Buffer> {
     const _result = await this.client.executeKw<string>("account.move", "action_invoice_print", [
       [invoiceId],
     ]);
@@ -306,15 +306,15 @@ export class OdooAccountingService {
    * @param model - The model to get reports for (e.g., 'account.move', 'hr.payslip')
    */
   async getAvailableReportTemplates(model?: string): Promise<
-    Array<{
+    {
       id: number;
       name: string;
       report_name: string;
       model: string;
       report_type: string;
-    }>
+    }[]
   > {
-    const domain: Array<[string, string, unknown]> = [["report_type", "=", "qweb-pdf"]];
+    const domain: [string, string, unknown][] = [["report_type", "=", "qweb-pdf"]];
 
     if (model) {
       domain.push(["model", "=", model]);
@@ -347,7 +347,7 @@ export class OdooAccountingService {
     dateFrom?: string;
     dateTo?: string;
   }): Promise<OdooPayment[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.paymentType) {
       domain.push(["payment_type", "=", filters.paymentType]);
@@ -478,7 +478,7 @@ export class OdooAccountingService {
   }
 
   async getPartners(filters?: { isCustomer?: boolean; isSupplier?: boolean }): Promise<OdooPartner[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.isCustomer) {
       domain.push(["customer_rank", ">", 0]);
@@ -534,7 +534,7 @@ export class OdooAccountingService {
   }
 
   async getJournals(type?: "sale" | "purchase" | "cash" | "bank" | "general"): Promise<OdooJournal[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (type) {
       domain.push(["type", "=", type]);
@@ -549,7 +549,7 @@ export class OdooAccountingService {
   }
 
   async getTaxes(typeTaxUse?: "sale" | "purchase" | "none"): Promise<OdooTax[]> {
-    const domain: Array<[string, string, unknown]> = [["active", "=", true]];
+    const domain: [string, string, unknown][] = [["active", "=", true]];
 
     if (typeTaxUse) {
       domain.push(["type_tax_use", "=", typeTaxUse]);
@@ -569,7 +569,7 @@ export class OdooAccountingService {
     dateFrom?: string;
     dateTo?: string;
   }): Promise<OdooGLEntry[]> {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.accountId) {
       domain.push(["account_id", "=", filters.accountId]);
@@ -620,8 +620,8 @@ export class OdooAccountingService {
         const account = await this.getAccount(accountId);
         accountMap.set(accountId, {
           account_id: accountId,
-          account_code: account?.code || "",
-          account_name: account?.name || accountName,
+          account_code: account?.code ?? "",
+          account_name: account?.name ?? accountName,
           debit: 0,
           credit: 0,
           balance: 0,
@@ -740,11 +740,11 @@ export class OdooAccountingService {
    * Get payment terms
    */
   async getPaymentTerms(): Promise<
-    Array<{
+    {
       id: number;
       name: string;
       note?: string;
-    }>
+    }[]
   > {
     const results = await this.client.searchRead<{ id: number; name: string; note?: string }>(
       "account.payment.term",
@@ -777,7 +777,7 @@ export class OdooAccountingService {
    * Get aged receivables report (customer invoices aging)
    */
   async getAgedReceivables(asOfDate?: string): Promise<
-    Array<{
+    {
       partnerId: number;
       partnerName: string;
       current: number; // Not yet due
@@ -786,9 +786,9 @@ export class OdooAccountingService {
       days_61_90: number;
       days_over_90: number;
       total: number;
-    }>
+    }[]
   > {
-    const today = asOfDate || new Date().toISOString().split("T")[0];
+    const today = asOfDate ?? new Date().toISOString().split("T")[0];
 
     // Get all unpaid customer invoices
     const invoices = await this.getInvoices({
@@ -815,8 +815,8 @@ export class OdooAccountingService {
     for (const invoice of invoices) {
       const partnerId = Array.isArray(invoice.partner_id) ? invoice.partner_id[0] : invoice.partner_id;
       const partnerName = Array.isArray(invoice.partner_id) ? invoice.partner_id[1] : "";
-      const dueDate = invoice.invoice_date_due || invoice.invoice_date || today;
-      const amount = invoice.amount_residual || 0;
+      const dueDate = invoice.invoice_date_due ?? invoice.invoice_date ?? today;
+      const amount = invoice.amount_residual ?? 0;
 
       if (!partnerMap.has(partnerId)) {
         partnerMap.set(partnerId, {
@@ -858,7 +858,7 @@ export class OdooAccountingService {
    * Get aged payables report (vendor bills aging)
    */
   async getAgedPayables(asOfDate?: string): Promise<
-    Array<{
+    {
       partnerId: number;
       partnerName: string;
       current: number; // Not yet due
@@ -867,9 +867,9 @@ export class OdooAccountingService {
       days_61_90: number;
       days_over_90: number;
       total: number;
-    }>
+    }[]
   > {
-    const today = asOfDate || new Date().toISOString().split("T")[0];
+    const today = asOfDate ?? new Date().toISOString().split("T")[0];
 
     // Get all unpaid vendor bills
     const bills = await this.getInvoices({
@@ -896,8 +896,8 @@ export class OdooAccountingService {
     for (const bill of bills) {
       const partnerId = Array.isArray(bill.partner_id) ? bill.partner_id[0] : bill.partner_id;
       const partnerName = Array.isArray(bill.partner_id) ? bill.partner_id[1] : "";
-      const dueDate = bill.invoice_date_due || bill.invoice_date || today;
-      const amount = bill.amount_residual || 0;
+      const dueDate = bill.invoice_date_due ?? bill.invoice_date ?? today;
+      const amount = bill.amount_residual ?? 0;
 
       if (!partnerMap.has(partnerId)) {
         partnerMap.set(partnerId, {
@@ -946,7 +946,7 @@ export class OdooAccountingService {
     dateTo?: string;
     state?: "open" | "confirm";
   }): Promise<
-    Array<{
+    {
       id: number;
       name: string;
       journalId: number;
@@ -956,9 +956,9 @@ export class OdooAccountingService {
       balanceEndReal: number;
       balanceEnd: number;
       state: string;
-    }>
+    }[]
   > {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (filters?.journalId) {
       domain.push(["journal_id", "=", filters.journalId]);
@@ -1009,14 +1009,14 @@ export class OdooAccountingService {
    * Get bank statement lines (transactions)
    */
   async getBankStatementLines(statementId: number): Promise<
-    Array<{
+    {
       id: number;
       date: string;
       paymentRef: string;
       partnerName?: string;
       amount: number;
       isReconciled: boolean;
-    }>
+    }[]
   > {
     const results = await this.client.searchRead<{
       id: number;
@@ -1045,23 +1045,23 @@ export class OdooAccountingService {
    * Get reconciliation suggestions for a bank statement line
    */
   async getReconciliationSuggestions(lineId: number): Promise<
-    Array<{
+    {
       moveId: number;
       moveName: string;
       partnerName: string;
       date: string;
       amount: number;
-    }>
+    }[]
   > {
     // Call Odoo's reconciliation widget data method
     const suggestions = await this.client.executeKw<
-      Array<{
+      {
         id: number;
         name: string;
         partner_name: string;
         date: string;
         amount_residual: number;
-      }>
+      }[]
     >("account.bank.statement.line", "get_reconciliation_proposition", [[lineId]]);
 
     return suggestions.map((sugg) => ({
@@ -1090,10 +1090,10 @@ export class OdooAccountingService {
       ]);
 
       return { success: true };
-    } catch (error) {
+    } catch (err) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : "Reconciliation failed",
+        message: err instanceof Error ? err.message : "Reconciliation failed",
       };
     }
   }
@@ -1103,17 +1103,17 @@ export class OdooAccountingService {
   /**
    * Get currencies
    */
-  async getCurrencies(onlyActive: boolean = true): Promise<
-    Array<{
+  async getCurrencies(onlyActive = true): Promise<
+    {
       id: number;
       name: string;
       symbol: string;
       position: "after" | "before";
       rounding: number;
       active: boolean;
-    }>
+    }[]
   > {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
     if (onlyActive) {
       domain.push(["active", "=", true]);
     }
@@ -1136,16 +1136,16 @@ export class OdooAccountingService {
     dateFrom?: string,
     dateTo?: string,
   ): Promise<
-    Array<{
+    {
       id: number;
       currencyId: number;
       currencyName: string;
       name: string; // Date
       rate: number;
       companyId: number;
-    }>
+    }[]
   > {
-    const domain: Array<[string, string, unknown]> = [];
+    const domain: [string, string, unknown][] = [];
 
     if (currencyId) {
       domain.push(["currency_id", "=", currencyId]);
@@ -1188,7 +1188,7 @@ export class OdooAccountingService {
       amount,
       fromCurrencyId,
       toCurrencyId,
-      date || new Date().toISOString().split("T")[0],
+      date ?? new Date().toISOString().split("T")[0],
     ]);
 
     return {
@@ -1204,19 +1204,19 @@ export class OdooAccountingService {
    */
   async batchValidateInvoices(invoiceIds: number[]): Promise<{
     success: number[];
-    failed: Array<{ id: number; error: string }>;
+    failed: { id: number; error: string }[];
   }> {
     const success: number[] = [];
-    const failed: Array<{ id: number; error: string }> = [];
+    const failed: { id: number; error: string }[] = [];
 
     for (const invoiceId of invoiceIds) {
       try {
         await this.postInvoice(invoiceId);
         success.push(invoiceId);
-      } catch (error) {
+      } catch (err) {
         failed.push({
           id: invoiceId,
-          error: error instanceof Error ? error.message : "Unknown error",
+          error: err instanceof Error ? err.message : "Unknown error",
         });
       }
     }
@@ -1229,19 +1229,19 @@ export class OdooAccountingService {
    */
   async batchCancelInvoices(invoiceIds: number[]): Promise<{
     success: number[];
-    failed: Array<{ id: number; error: string }>;
+    failed: { id: number; error: string }[];
   }> {
     const success: number[] = [];
-    const failed: Array<{ id: number; error: string }> = [];
+    const failed: { id: number; error: string }[] = [];
 
     for (const invoiceId of invoiceIds) {
       try {
         await this.cancelInvoice(invoiceId);
         success.push(invoiceId);
-      } catch (error) {
+      } catch (err) {
         failed.push({
           id: invoiceId,
-          error: error instanceof Error ? error.message : "Unknown error",
+          error: err instanceof Error ? err.message : "Unknown error",
         });
       }
     }
@@ -1253,20 +1253,20 @@ export class OdooAccountingService {
    * Batch create invoices
    */
   async batchCreateInvoices(invoices: CreateInvoiceDTO[]): Promise<{
-    success: Array<{ index: number; id: number }>;
-    failed: Array<{ index: number; error: string }>;
+    success: { index: number; id: number }[];
+    failed: { index: number; error: string }[];
   }> {
-    const success: Array<{ index: number; id: number }> = [];
-    const failed: Array<{ index: number; error: string }> = [];
+    const success: { index: number; id: number }[] = [];
+    const failed: { index: number; error: string }[] = [];
 
     for (let i = 0; i < invoices.length; i++) {
       try {
         const invoiceId = await this.createInvoice(invoices[i]);
         success.push({ index: i, id: invoiceId });
-      } catch (error) {
+      } catch (err) {
         failed.push({
           index: i,
-          error: error instanceof Error ? error.message : "Unknown error",
+          error: err instanceof Error ? err.message : "Unknown error",
         });
       }
     }
@@ -1278,20 +1278,20 @@ export class OdooAccountingService {
    * Batch create payments
    */
   async batchCreatePayments(payments: CreatePaymentDTO[]): Promise<{
-    success: Array<{ index: number; id: number }>;
-    failed: Array<{ index: number; error: string }>;
+    success: { index: number; id: number }[];
+    failed: { index: number; error: string }[];
   }> {
-    const success: Array<{ index: number; id: number }> = [];
-    const failed: Array<{ index: number; error: string }> = [];
+    const success: { index: number; id: number }[] = [];
+    const failed: { index: number; error: string }[] = [];
 
     for (let i = 0; i < payments.length; i++) {
       try {
         const paymentId = await this.createPayment(payments[i]);
         success.push({ index: i, id: paymentId });
-      } catch (error) {
+      } catch (err) {
         failed.push({
           index: i,
-          error: error instanceof Error ? error.message : "Unknown error",
+          error: err instanceof Error ? err.message : "Unknown error",
         });
       }
     }
@@ -1304,19 +1304,19 @@ export class OdooAccountingService {
    */
   async batchConfirmPayments(paymentIds: number[]): Promise<{
     success: number[];
-    failed: Array<{ id: number; error: string }>;
+    failed: { id: number; error: string }[];
   }> {
     const success: number[] = [];
-    const failed: Array<{ id: number; error: string }> = [];
+    const failed: { id: number; error: string }[] = [];
 
     for (const paymentId of paymentIds) {
       try {
         await this.postPayment(paymentId);
         success.push(paymentId);
-      } catch (error) {
+      } catch (err) {
         failed.push({
           id: paymentId,
-          error: error instanceof Error ? error.message : "Unknown error",
+          error: err instanceof Error ? err.message : "Unknown error",
         });
       }
     }

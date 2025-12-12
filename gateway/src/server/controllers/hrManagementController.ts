@@ -192,7 +192,7 @@ export class HRManagementController extends Controller {
       {
         ...body,
         organizationId: ctx.organizationId,
-        userId: body.userId || ctx.userId, // Use provided userId or current user's userId
+        userId: body.userId ?? ctx.userId, // Use provided userId or current user's userId
       },
     );
 
@@ -209,7 +209,7 @@ export class HRManagementController extends Controller {
               { drizzle: ctx.drizzle, logger: ctx.logger },
               employee.departmentId,
             );
-            odooDepartmentId = department?.odooDepartmentId ?? undefined;
+            odooDepartmentId = department?.odooDepartmentId ;
           }
 
           // Resolve manager Odoo ID if manager exists
@@ -219,27 +219,27 @@ export class HRManagementController extends Controller {
               { drizzle: ctx.drizzle, logger: ctx.logger },
               employee.managerId,
             );
-            odooManagerId = manager?.odooEmployeeId ?? undefined;
+            odooManagerId = manager?.odooEmployeeId ;
           }
 
           // Create in Odoo
           const odooEmployeeId = await hrService.upsertEmployee({
             name: employee.name,
-            workEmail: employee.workEmail ?? undefined,
-            workPhone: employee.workPhone ?? undefined,
-            mobilePhone: employee.mobile ?? undefined,
-            jobTitle: employee.jobTitle ?? undefined,
+            workEmail: employee.workEmail ,
+            workPhone: employee.workPhone ,
+            mobilePhone: employee.mobile ,
+            jobTitle: employee.jobTitle ,
             departmentId: odooDepartmentId,
             managerId: odooManagerId,
-            employeeType: employee.employeeType ?? undefined,
-            gender: employee.gender ?? undefined,
-            maritalStatus: employee.maritalStatus ?? undefined,
-            birthday: employee.birthday ?? undefined,
-            identificationId: employee.identificationId ?? undefined,
-            passportId: employee.passportId ?? undefined,
-            emergencyContact: employee.emergencyContact ?? undefined,
-            emergencyPhone: employee.emergencyPhone ?? undefined,
-            placeOfBirth: employee.placeOfBirth ?? undefined,
+            employeeType: employee.employeeType ,
+            gender: employee.gender ,
+            maritalStatus: employee.maritalStatus ,
+            birthday: employee.birthday ,
+            identificationId: employee.identificationId ,
+            passportId: employee.passportId ,
+            emergencyContact: employee.emergencyContact ,
+            emergencyPhone: employee.emergencyPhone ,
+            placeOfBirth: employee.placeOfBirth ,
             active: employee.active,
           });
 
@@ -247,8 +247,8 @@ export class HRManagementController extends Controller {
           await updateEmployee({ drizzle: ctx.drizzle, logger: ctx.logger }, employee.id, { odooEmployeeId });
 
           ctx.logger.info({ employeeId: employee.id, odooEmployeeId }, "Employee synced to Odoo");
-        } catch (error) {
-          ctx.logger.error({ error, employeeId: employee.id }, "Failed to sync employee to Odoo");
+        } catch (err) {
+          ctx.logger.error({ error: err, employeeId: employee.id }, "Failed to sync employee to Odoo");
         }
       });
     }
@@ -295,7 +295,7 @@ export class HRManagementController extends Controller {
               { drizzle: ctx.drizzle, logger: ctx.logger },
               employee.departmentId,
             );
-            odooDepartmentId = department?.odooDepartmentId ?? undefined;
+            odooDepartmentId = department?.odooDepartmentId ;
           }
 
           // Resolve manager Odoo ID if manager exists
@@ -305,28 +305,28 @@ export class HRManagementController extends Controller {
               { drizzle: ctx.drizzle, logger: ctx.logger },
               employee.managerId,
             );
-            odooManagerId = manager?.odooEmployeeId ?? undefined;
+            odooManagerId = manager?.odooEmployeeId ;
           }
 
           // Update in Odoo
           await hrService.upsertEmployee({
             odooEmployeeId: employee.odooEmployeeId,
             name: employee.name,
-            workEmail: employee.workEmail ?? undefined,
-            workPhone: employee.workPhone ?? undefined,
-            mobilePhone: employee.mobile ?? undefined,
-            jobTitle: employee.jobTitle ?? undefined,
+            workEmail: employee.workEmail ,
+            workPhone: employee.workPhone ,
+            mobilePhone: employee.mobile ,
+            jobTitle: employee.jobTitle ,
             departmentId: odooDepartmentId,
             managerId: odooManagerId,
-            employeeType: employee.employeeType ?? undefined,
-            gender: employee.gender ?? undefined,
-            maritalStatus: employee.maritalStatus ?? undefined,
-            birthday: employee.birthday ?? undefined,
-            identificationId: employee.identificationId ?? undefined,
-            passportId: employee.passportId ?? undefined,
-            emergencyContact: employee.emergencyContact ?? undefined,
-            emergencyPhone: employee.emergencyPhone ?? undefined,
-            placeOfBirth: employee.placeOfBirth ?? undefined,
+            employeeType: employee.employeeType ,
+            gender: employee.gender ,
+            maritalStatus: employee.maritalStatus ,
+            birthday: employee.birthday ,
+            identificationId: employee.identificationId ,
+            passportId: employee.passportId ,
+            emergencyContact: employee.emergencyContact ,
+            emergencyPhone: employee.emergencyPhone ,
+            placeOfBirth: employee.placeOfBirth ,
             active: employee.active,
           });
 
@@ -334,8 +334,8 @@ export class HRManagementController extends Controller {
             { employeeId: employee.id, odooEmployeeId: employee.odooEmployeeId },
             "Employee synced to Odoo",
           );
-        } catch (error) {
-          ctx.logger.error({ error, employeeId: employee.id }, "Failed to sync employee update to Odoo");
+        } catch (err) {
+          ctx.logger.error({ error: err, employeeId: employee.id }, "Failed to sync employee update to Odoo");
         }
       });
     }
@@ -381,8 +381,8 @@ export class HRManagementController extends Controller {
             { employeeId, odooEmployeeId: employee.odooEmployeeId },
             "Employee deactivated in Odoo",
           );
-        } catch (error) {
-          ctx.logger.error({ error, employeeId }, "Failed to sync employee deactivation to Odoo");
+        } catch (err) {
+          ctx.logger.error({ error: err, employeeId }, "Failed to sync employee deactivation to Odoo");
         }
       });
     }
@@ -511,8 +511,8 @@ export class HRManagementController extends Controller {
         } else {
           updated++;
         }
-      } catch (error) {
-        errors.push(`Failed to sync employee ${odooEmployee.name} (pass 1): ${error}`);
+      } catch (err) {
+        errors.push(`Failed to sync employee ${odooEmployee.name} (pass 1): ${err}`);
       }
     }
 
@@ -538,8 +538,8 @@ export class HRManagementController extends Controller {
             managerId: managerUuid,
           });
         }
-      } catch (error) {
-        errors.push(`Failed to update employee ${odooEmployee.name} relationships (pass 2): ${error}`);
+      } catch (err) {
+        errors.push(`Failed to update employee ${odooEmployee.name} relationships (pass 2): ${err}`);
       }
     }
 
@@ -628,15 +628,15 @@ export class HRManagementController extends Controller {
               { drizzle: ctx.drizzle, logger: ctx.logger },
               department.parentId,
             );
-            odooParentId = parentDept?.odooDepartmentId ?? undefined;
+            odooParentId = parentDept?.odooDepartmentId ;
           }
 
           // Create in Odoo
           const odooDepartmentId = await hrService.upsertDepartment({
             name: department.name,
             parentId: odooParentId,
-            color: department.color ?? undefined,
-            note: department.note ?? undefined,
+            color: department.color ,
+            note: department.note ,
           });
 
           // Update department with Odoo ID
@@ -645,8 +645,8 @@ export class HRManagementController extends Controller {
           });
 
           ctx.logger.info({ departmentId: department.id, odooDepartmentId }, "Department synced to Odoo");
-        } catch (error) {
-          ctx.logger.error({ error, departmentId: department.id }, "Failed to sync department to Odoo");
+        } catch (err) {
+          ctx.logger.error({ error: err, departmentId: department.id }, "Failed to sync department to Odoo");
         }
       });
     }
@@ -697,7 +697,7 @@ export class HRManagementController extends Controller {
               { drizzle: ctx.drizzle, logger: ctx.logger },
               department.parentId,
             );
-            odooParentId = parentDept?.odooDepartmentId ?? undefined;
+            odooParentId = parentDept?.odooDepartmentId ;
           }
 
           // Update in Odoo
@@ -705,17 +705,17 @@ export class HRManagementController extends Controller {
             odooDepartmentId: department.odooDepartmentId,
             name: department.name,
             parentId: odooParentId,
-            color: department.color ?? undefined,
-            note: department.note ?? undefined,
+            color: department.color ,
+            note: department.note ,
           });
 
           ctx.logger.info(
             { departmentId: department.id, odooDepartmentId: department.odooDepartmentId },
             "Department synced to Odoo",
           );
-        } catch (error) {
+        } catch (err) {
           ctx.logger.error(
-            { error, departmentId: department.id },
+            { error: err, departmentId: department.id },
             "Failed to sync department update to Odoo",
           );
         }
@@ -763,8 +763,8 @@ export class HRManagementController extends Controller {
             { departmentId, odooDepartmentId: department.odooDepartmentId },
             "Department deleted from Odoo",
           );
-        } catch (error) {
-          ctx.logger.error({ error, departmentId }, "Failed to sync department deletion to Odoo");
+        } catch (err) {
+          ctx.logger.error({ error: err, departmentId }, "Failed to sync department deletion to Odoo");
         }
       });
     }
@@ -797,7 +797,7 @@ export class HRManagementController extends Controller {
       {
         organizationId: ctx.organizationId,
         odooDepartmentId: odooDepartment.id,
-        name: odooDepartment.complete_name || odooDepartment.name || "Unknown", // Use complete_name for full path
+        name: odooDepartment.complete_name ?? odooDepartment.name, // Use complete_name for full path
         code: odooDepartment.name, // Use short name for code
         parentId: odooDepartment.parent_id?.[0]?.toString(),
         managerId: odooDepartment.manager_id?.[0]?.toString(),
@@ -837,7 +837,7 @@ export class HRManagementController extends Controller {
           {
             organizationId: ctx.organizationId,
             odooDepartmentId: odooDepartment.id,
-            name: odooDepartment.complete_name || odooDepartment.name || "Unknown", // Use complete_name for full path
+            name: odooDepartment.complete_name ?? odooDepartment.name, // Use complete_name for full path
             code: odooDepartment.name, // Use short name for code
             // Omit parentId and managerId in first pass
             color: this.odooValueOrUndefined(odooDepartment.color),
@@ -852,8 +852,8 @@ export class HRManagementController extends Controller {
         } else {
           updated++;
         }
-      } catch (error) {
-        errors.push(`Failed to sync department ${odooDepartment.name} (pass 1): ${error}`);
+      } catch (err) {
+        errors.push(`Failed to sync department ${odooDepartment.name} (pass 1): ${err}`);
       }
     }
 
@@ -872,8 +872,8 @@ export class HRManagementController extends Controller {
             parentId: parentUuid,
           });
         }
-      } catch (error) {
-        errors.push(`Failed to update department ${odooDepartment.name} relationships (pass 2): ${error}`);
+      } catch (err) {
+        errors.push(`Failed to update department ${odooDepartment.name} relationships (pass 2): ${err}`);
       }
     }
 

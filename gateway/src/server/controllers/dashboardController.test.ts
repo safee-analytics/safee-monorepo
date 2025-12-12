@@ -41,7 +41,7 @@ void describe("Dashboard Controller Database Functions", async () => {
   });
 
   void describe("getCaseStats", () => {
-    void it("should return zero stats for organization with no cases", async () => {
+    it("should return zero stats for organization with no cases", async () => {
       const deps = { drizzle, logger };
       const stats = await getCaseStats(deps, testOrg.id);
 
@@ -54,7 +54,7 @@ void describe("Dashboard Controller Database Functions", async () => {
       });
     });
 
-    void it("should return correct stats when cases exist", async () => {
+    it("should return correct stats when cases exist", async () => {
       const deps = { drizzle, logger };
 
       await drizzle.insert(schema.cases).values([
@@ -114,7 +114,7 @@ void describe("Dashboard Controller Database Functions", async () => {
       expect(stats.completionRate).toBe(40);
     });
 
-    void it("should calculate completion rate correctly", async () => {
+    it("should calculate completion rate correctly", async () => {
       const deps = { drizzle, logger };
 
       await drizzle.insert(schema.cases).values([
@@ -161,7 +161,7 @@ void describe("Dashboard Controller Database Functions", async () => {
       expect(stats.completionRate).toBe(75);
     });
 
-    void it("should only count cases for the specified organization", async () => {
+    it("should only count cases for the specified organization", async () => {
       const deps = { drizzle, logger };
       const otherOrg = await createTestOrganization(drizzle);
 
@@ -193,14 +193,14 @@ void describe("Dashboard Controller Database Functions", async () => {
   });
 
   void describe("getRecentCaseActivity", () => {
-    void it("should return empty array when no cases exist", async () => {
+    it("should return empty array when no cases exist", async () => {
       const deps = { drizzle, logger };
       const activity = await getRecentCaseActivity(deps, testOrg.id, 10);
 
       expect(activity).toEqual([]);
     });
 
-    void it("should return recent cases ordered by updatedAt desc", async () => {
+    it("should return recent cases ordered by updatedAt desc", async () => {
       const deps = { drizzle, logger };
 
       const [case1] = await drizzle
@@ -253,7 +253,7 @@ void describe("Dashboard Controller Database Functions", async () => {
       expect(activity[2].caseId).toBe(case1.id);
     });
 
-    void it("should respect the limit parameter", async () => {
+    it("should respect the limit parameter", async () => {
       const deps = { drizzle, logger };
 
       for (let i = 1; i <= 5; i++) {
@@ -273,7 +273,7 @@ void describe("Dashboard Controller Database Functions", async () => {
       expect(activity).toHaveLength(3);
     });
 
-    void it("should include user information", async () => {
+    it("should include user information", async () => {
       const deps = { drizzle, logger };
 
       await drizzle.insert(schema.cases).values({
@@ -295,14 +295,14 @@ void describe("Dashboard Controller Database Functions", async () => {
   });
 
   void describe("getRecentNotifications", () => {
-    void it("should return empty array when no notifications exist", async () => {
+    it("should return empty array when no notifications exist", async () => {
       const deps = { drizzle, logger };
       const notifications = await getRecentNotifications(deps, testUser.id, testOrg.id, 10);
 
       expect(notifications).toEqual([]);
     });
 
-    void it("should return notifications for the user", async () => {
+    it("should return notifications for the user", async () => {
       const deps = { drizzle, logger };
 
       await drizzle.insert(schema.notifications).values({
@@ -322,7 +322,7 @@ void describe("Dashboard Controller Database Functions", async () => {
       expect(notifications[0].isRead).toBe(false);
     });
 
-    void it("should order notifications by createdAt desc", async () => {
+    it("should order notifications by createdAt desc", async () => {
       const deps = { drizzle, logger };
 
       await drizzle.insert(schema.notifications).values([
@@ -363,7 +363,7 @@ void describe("Dashboard Controller Database Functions", async () => {
       expect(notifications[2].title).toBe("Notification 1");
     });
 
-    void it("should include action button data", async () => {
+    it("should include action button data", async () => {
       const deps = { drizzle, logger };
 
       await drizzle.insert(schema.notifications).values({
@@ -385,7 +385,7 @@ void describe("Dashboard Controller Database Functions", async () => {
   });
 
   void describe("markNotificationAsRead", () => {
-    void it("should mark notification as read", async () => {
+    it("should mark notification as read", async () => {
       const deps = { drizzle, logger };
 
       const [notification] = await drizzle
@@ -412,7 +412,7 @@ void describe("Dashboard Controller Database Functions", async () => {
       expect(updated.readAt).toBeInstanceOf(Date);
     });
 
-    void it("should only mark notification for the specific user", async () => {
+    it("should only mark notification for the specific user", async () => {
       const deps = { drizzle, logger };
       const otherUser = await createTestUser(drizzle);
 
@@ -440,14 +440,14 @@ void describe("Dashboard Controller Database Functions", async () => {
   });
 
   void describe("getUnreadNotificationsCount", () => {
-    void it("should return 0 when no unread notifications exist", async () => {
+    it("should return 0 when no unread notifications exist", async () => {
       const deps = { drizzle, logger };
       const count = await getUnreadNotificationsCount(deps, testUser.id, testOrg.id);
 
       expect(count).toBe(0);
     });
 
-    void it("should return correct count of unread notifications", async () => {
+    it("should return correct count of unread notifications", async () => {
       const deps = { drizzle, logger };
 
       await drizzle.insert(schema.notifications).values([
@@ -482,7 +482,7 @@ void describe("Dashboard Controller Database Functions", async () => {
       expect(count).toBe(2);
     });
 
-    void it("should only count notifications for the specific user and organization", async () => {
+    it("should only count notifications for the specific user and organization", async () => {
       const deps = { drizzle, logger };
       const otherUser = await createTestUser(drizzle);
       const otherOrg = await createTestOrganization(drizzle);

@@ -41,29 +41,29 @@ export class AuditPlanningController extends Controller {
   @Get("/")
   @Security("jwt")
   public async listPlans(@Request() req: AuthenticatedRequest): Promise<AuditPlanResponse[]> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     const plans = await getAuditPlansByOrganization(deps, organizationId);
 
     return plans.map((p) => ({
       id: p.id,
-      caseId: p.caseId ?? undefined,
+      caseId: p.caseId ,
       planType: p.planType,
       title: p.title,
-      clientName: p.clientName ?? undefined,
-      auditType: p.auditType ?? undefined,
-      auditYear: p.auditYear ?? undefined,
-      startDate: p.startDate ?? undefined,
-      targetCompletion: p.targetCompletion ?? undefined,
+      clientName: p.clientName ,
+      auditType: p.auditType ,
+      auditYear: p.auditYear ,
+      startDate: p.startDate ,
+      targetCompletion: p.targetCompletion ,
       objectives: p.objectives,
       businessUnits: p.businessUnits,
       financialAreas: p.financialAreas,
       teamMembers: p.teamMembers,
       phaseBreakdown: p.phaseBreakdown,
-      totalBudget: p.totalBudget ?? undefined,
-      totalHours: p.totalHours ?? undefined,
-      materialityThreshold: p.materialityThreshold ?? undefined,
+      totalBudget: p.totalBudget ,
+      totalHours: p.totalHours ,
+      materialityThreshold: p.materialityThreshold ,
       riskAssessment: p.riskAssessment,
       status: p.status,
       organizationId: p.organizationId,
@@ -89,22 +89,22 @@ export class AuditPlanningController extends Controller {
 
     return {
       id: plan.id,
-      caseId: plan.caseId ?? undefined,
+      caseId: plan.caseId ,
       planType: plan.planType,
       title: plan.title,
-      clientName: plan.clientName ?? undefined,
-      auditType: plan.auditType ?? undefined,
-      auditYear: plan.auditYear ?? undefined,
-      startDate: plan.startDate ?? undefined,
-      targetCompletion: plan.targetCompletion ?? undefined,
+      clientName: plan.clientName ,
+      auditType: plan.auditType ,
+      auditYear: plan.auditYear ,
+      startDate: plan.startDate ,
+      targetCompletion: plan.targetCompletion ,
       objectives: plan.objectives,
       businessUnits: plan.businessUnits,
       financialAreas: plan.financialAreas,
       teamMembers: plan.teamMembers,
       phaseBreakdown: plan.phaseBreakdown,
-      totalBudget: plan.totalBudget ?? undefined,
-      totalHours: plan.totalHours ?? undefined,
-      materialityThreshold: plan.materialityThreshold ?? undefined,
+      totalBudget: plan.totalBudget ,
+      totalHours: plan.totalHours ,
+      materialityThreshold: plan.materialityThreshold ,
       riskAssessment: plan.riskAssessment,
       status: plan.status,
       organizationId: plan.organizationId,
@@ -121,8 +121,8 @@ export class AuditPlanningController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: CreateAuditPlanRequest,
   ): Promise<AuditPlanResponse> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
-    const userId = req.betterAuthSession?.user.id || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
+    const userId = req.betterAuthSession?.user.id ?? "";
 
     this.setStatus(201);
 
@@ -136,7 +136,7 @@ export class AuditPlanningController extends Controller {
     @Path() planId: string,
     @Body() request: UpdateAuditPlanRequest,
   ): Promise<AuditPlanResponse> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     return await updateAuditPlanOp(req.drizzle, organizationId, planId, request);
   }
@@ -147,7 +147,7 @@ export class AuditPlanningController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Path() planId: string,
   ): Promise<{ success: boolean }> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
 
     return await deleteAuditPlanOp(req.drizzle, organizationId, planId);
   }
@@ -159,8 +159,8 @@ export class AuditPlanningController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Path() planId: string,
   ): Promise<{ caseId: string; message: string }> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
-    const userId = req.betterAuthSession?.user.id || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
+    const userId = req.betterAuthSession?.user.id ?? "";
 
     this.setStatus(201);
 
@@ -171,7 +171,7 @@ export class AuditPlanningController extends Controller {
   @Security("jwt")
   @OperationId("ListAuditPlanTemplates")
   public async listTemplates(@Request() req: AuthenticatedRequest): Promise<AuditPlanTemplateResponse[]> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     const templates = await getAuditPlanTemplates(deps, organizationId);
@@ -179,19 +179,19 @@ export class AuditPlanningController extends Controller {
     return templates.map((t) => ({
       id: t.id,
       name: t.name,
-      auditType: t.auditType ?? undefined,
-      description: t.description ?? undefined,
+      auditType: t.auditType ,
+      description: t.description ,
       defaultObjectives: t.defaultObjectives,
       defaultScope: t.defaultScope,
       defaultPhases: t.defaultPhases,
       defaultBusinessUnits: t.defaultBusinessUnits,
       defaultFinancialAreas: t.defaultFinancialAreas,
-      estimatedDuration: t.estimatedDuration ?? undefined,
-      estimatedHours: t.estimatedHours ?? undefined,
-      estimatedBudget: t.estimatedBudget ?? undefined,
+      estimatedDuration: t.estimatedDuration ,
+      estimatedHours: t.estimatedHours ,
+      estimatedBudget: t.estimatedBudget ,
       isDefault: t.isDefault,
       isActive: t.isActive,
-      organizationId: t.organizationId ?? undefined,
+      organizationId: t.organizationId ,
       createdAt: t.createdAt,
       updatedAt: t.updatedAt,
     }));
@@ -205,7 +205,7 @@ export class AuditPlanningController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: CreateAuditPlanTemplateRequest,
   ): Promise<AuditPlanTemplateResponse> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
     const deps = { drizzle: req.drizzle, logger: req.logger };
 
     this.setStatus(201);
@@ -218,19 +218,19 @@ export class AuditPlanningController extends Controller {
     return {
       id: template.id,
       name: template.name,
-      auditType: template.auditType ?? undefined,
-      description: template.description ?? undefined,
+      auditType: template.auditType ,
+      description: template.description ,
       defaultObjectives: template.defaultObjectives,
       defaultScope: template.defaultScope,
       defaultPhases: template.defaultPhases,
       defaultBusinessUnits: template.defaultBusinessUnits,
       defaultFinancialAreas: template.defaultFinancialAreas,
-      estimatedDuration: template.estimatedDuration ?? undefined,
-      estimatedHours: template.estimatedHours ?? undefined,
-      estimatedBudget: template.estimatedBudget ?? undefined,
+      estimatedDuration: template.estimatedDuration ,
+      estimatedHours: template.estimatedHours ,
+      estimatedBudget: template.estimatedBudget ,
       isDefault: template.isDefault,
       isActive: template.isActive,
-      organizationId: template.organizationId ?? undefined,
+      organizationId: template.organizationId ,
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
     };
@@ -254,19 +254,19 @@ export class AuditPlanningController extends Controller {
     return {
       id: template.id,
       name: template.name,
-      auditType: template.auditType ?? undefined,
-      description: template.description ?? undefined,
+      auditType: template.auditType ,
+      description: template.description ,
       defaultObjectives: template.defaultObjectives,
       defaultScope: template.defaultScope,
       defaultPhases: template.defaultPhases,
       defaultBusinessUnits: template.defaultBusinessUnits,
       defaultFinancialAreas: template.defaultFinancialAreas,
-      estimatedDuration: template.estimatedDuration ?? undefined,
-      estimatedHours: template.estimatedHours ?? undefined,
-      estimatedBudget: template.estimatedBudget ?? undefined,
+      estimatedDuration: template.estimatedDuration ,
+      estimatedHours: template.estimatedHours ,
+      estimatedBudget: template.estimatedBudget ,
       isDefault: template.isDefault,
       isActive: template.isActive,
-      organizationId: template.organizationId ?? undefined,
+      organizationId: template.organizationId ,
       createdAt: template.createdAt,
       updatedAt: template.updatedAt,
     };
@@ -279,8 +279,8 @@ export class AuditPlanningController extends Controller {
     @Request() req: AuthenticatedRequest,
     @Body() request: CreatePlanFromTemplateRequest,
   ): Promise<AuditPlanResponse> {
-    const organizationId = req.betterAuthSession?.session.activeOrganizationId || "";
-    const userId = req.betterAuthSession?.user.id || "";
+    const organizationId = req.betterAuthSession?.session.activeOrganizationId ?? "";
+    const userId = req.betterAuthSession?.user.id ?? "";
 
     this.setStatus(201);
 

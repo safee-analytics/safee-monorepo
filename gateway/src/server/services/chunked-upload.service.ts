@@ -4,11 +4,11 @@
  * resumability, and real-time WebSocket progress tracking
  */
 
-/// <reference types="node" />
+// / <reference types="node" />
 
 import { v4 as uuidv4 } from "uuid";
-import { promises as fs } from "fs";
-import path from "path";
+import { promises as fs } from "node:fs";
+import path from "node:path";
 import { logger } from "../utils/logger.js";
 import type { WebSocketService } from "./websocket.service.js";
 
@@ -47,14 +47,14 @@ export interface UploadStatus {
 }
 
 export class ChunkedUploadService {
-  private sessions: Map<string, UploadSession> = new Map();
-  // eslint-disable-next-line no-undef
+  private sessions = new Map<string, UploadSession>();
+   
   private cleanupInterval: NodeJS.Timeout | null = null;
   private tempBasePath: string;
   private wsService: WebSocketService | null = null;
 
   constructor(tempBasePath?: string) {
-    this.tempBasePath = tempBasePath || process.env.TEMP_UPLOAD_PATH || "./storage/temp";
+    this.tempBasePath = tempBasePath ?? process.env.TEMP_UPLOAD_PATH ?? "./storage/temp";
     this.initializeTempStorage();
     this.startCleanupJob();
   }
@@ -74,8 +74,8 @@ export class ChunkedUploadService {
     try {
       await fs.mkdir(this.tempBasePath, { recursive: true });
       logger.info({ path: this.tempBasePath }, "Temporary upload storage initialized");
-    } catch (error) {
-      logger.error({ error, path: this.tempBasePath }, "Failed to initialize temp storage");
+    } catch (err) {
+      logger.error({ error: err, path: this.tempBasePath }, "Failed to initialize temp storage");
       throw new Error("Failed to initialize temporary upload storage");
     }
   }
@@ -403,8 +403,8 @@ export class ChunkedUploadService {
       this.sessions.delete(uploadId);
 
       logger.info({ uploadId, fileName: session.fileName }, "Upload session cleaned up");
-    } catch (error) {
-      logger.error({ error, uploadId }, "Failed to cleanup session");
+    } catch (err) {
+      logger.error({ error: err, uploadId }, "Failed to cleanup session");
     }
   }
 

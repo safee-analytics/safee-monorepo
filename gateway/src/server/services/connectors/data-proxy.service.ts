@@ -18,11 +18,11 @@ export interface QueryResult<T = unknown> {
 export interface TablePreview {
   schema: string;
   table: string;
-  columns: Array<{
+  columns: {
     name: string;
     type: string;
     nullable: boolean;
-  }>;
+  }[];
   sampleData: unknown[];
   totalRows: number;
 }
@@ -49,8 +49,8 @@ export class DataProxyService {
     } else if (connector instanceof MSSQLConnector) {
       // MSSQL uses named parameters
       const params: Record<string, unknown> | undefined = request.params
-        ? request.params.reduce<Record<string, unknown>>((acc, val, idx) => {
-            acc[`param${idx}`] = val;
+        ? request.params.reduce<Record<string, unknown>>((acc, val, index) => {
+            acc[`param${index}`] = val;
             return acc;
           }, {})
         : undefined;
@@ -93,7 +93,7 @@ export class DataProxyService {
     connectorId: string,
     schema: string,
     table: string,
-    limit: number = 100,
+    limit = 100,
   ): Promise<TablePreview> {
     const connector = await this.connectorManager.getConnector(connectorId, organizationId);
 
@@ -185,13 +185,13 @@ export class DataProxyService {
     let whereClause = "";
     const whereParams: unknown[] = [];
     if (where && Object.keys(where).length > 0) {
-      const conditions = Object.entries(where).map(([key, value], idx) => {
+      const conditions = Object.entries(where).map(([key, value], index) => {
         whereParams.push(value);
         return connector instanceof MSSQLConnector
-          ? `[${key}] = @param${idx}`
+          ? `[${key}] = @param${index}`
           : connector instanceof MySQLConnector
             ? `\`${key}\` = ?`
-            : `"${key}" = $${idx + 1}`;
+            : `"${key}" = $${index + 1}`;
       });
       whereClause = `WHERE ${conditions.join(" AND ")}`;
     }
@@ -199,14 +199,14 @@ export class DataProxyService {
     // Build ORDER BY clause
     let orderByClause = "";
     if (orderBy && orderBy.length > 0) {
-      const orders = orderBy.map((o) => {
+      const orders = orderBy.map((order) => {
         const col =
           connector instanceof MSSQLConnector
-            ? `[${o.column}]`
+            ? `[${order.column}]`
             : connector instanceof MySQLConnector
-              ? `\`${o.column}\``
-              : `"${o.column}"`;
-        return `${col} ${o.direction}`;
+              ? `\`${order.column}\``
+              : `"${order.column}"`;
+        return `${col} ${order.direction}`;
       });
       orderByClause = `ORDER BY ${orders.join(", ")}`;
     }
@@ -251,8 +251,8 @@ export class DataProxyService {
 
     if (connector instanceof MSSQLConnector) {
       // MSSQL uses named parameters
-      const queryParams = whereParams.reduce<Record<string, unknown>>((acc, val, idx) => {
-        acc[`param${idx}`] = val;
+      const queryParams = whereParams.reduce<Record<string, unknown>>((acc, val, index) => {
+        acc[`param${index}`] = val;
         return acc;
       }, {});
       rows = await connector.query<T>(dataQuery, queryParams);
@@ -264,7 +264,7 @@ export class DataProxyService {
       rows = await connector.query<T>(dataQuery, [...whereParams, limit, offset] as unknown[]);
       const [countRes] = await connector.query<{ count: number | string }>(
         countQuery,
-        whereParams as unknown[],
+        whereParams,
       );
       countResult = countRes;
     }
@@ -337,13 +337,13 @@ export class DataProxyService {
         LIMIT ?
       `;
       return await connector.query<T>(query, [searchPattern, limit]);
-    } else {
+    } 
       // MSSQL
       query = `
         SELECT TOP ${limit} * FROM [${schema}].[${table}]
         WHERE ${whereClause}
       `;
       return await connector.query<T>(query, { searchTerm: searchPattern });
-    }
+    
   }
 }

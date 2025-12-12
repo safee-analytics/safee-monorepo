@@ -51,8 +51,8 @@ export class AccountingController extends Controller {
   @OperationId("GetAccountingInvoices")
   public async getInvoices(
     @Request() request: AuthenticatedRequest,
-    @Query() page: number = 1,
-    @Query() limit: number = 20,
+    @Query() page = 1,
+    @Query() limit = 20,
     @Query() type?: "SALES" | "PURCHASE",
     @Query() state?: "draft" | "posted" | "cancel",
     @Query() dateFrom?: string,
@@ -78,11 +78,11 @@ export class AccountingController extends Controller {
 
     const invoices: Invoice[] = odooInvoices.map((inv) => ({
       id: inv.id ? inv.id.toString() : "",
-      number: inv.name || "Draft",
+      number: inv.name ?? "Draft",
       type: inv.move_type === "out_invoice" ? "SALES" : "PURCHASE",
-      date: inv.invoice_date || "",
-      total: inv.amount_total || 0,
-      status: inv.state || "draft",
+      date: inv.invoice_date ?? "",
+      total: inv.amount_total ?? 0,
+      status: inv.state ?? "draft",
     }));
 
     return {
@@ -110,11 +110,11 @@ export class AccountingController extends Controller {
 
     return {
       id: invoice.id ? invoice.id.toString() : "",
-      number: invoice.name || "Draft",
+      number: invoice.name ?? "Draft",
       type: invoice.move_type === "out_invoice" ? "SALES" : "PURCHASE",
-      date: invoice.invoice_date || "",
-      total: invoice.amount_total || 0,
-      status: invoice.state || "draft",
+      date: invoice.invoice_date ?? "",
+      total: invoice.amount_total ?? 0,
+      status: invoice.state ?? "draft",
     };
   }
 
@@ -130,8 +130,8 @@ export class AccountingController extends Controller {
 
     const customerId =
       invoiceRequest.type === "SALES"
-        ? Number.parseInt(invoiceRequest.customerId || "0")
-        : Number.parseInt(invoiceRequest.supplierId || "0");
+        ? Number.parseInt(invoiceRequest.customerId ?? "0")
+        : Number.parseInt(invoiceRequest.supplierId ?? "0");
 
     const invoiceId = await service.createInvoice({
       customerId,
@@ -154,11 +154,11 @@ export class AccountingController extends Controller {
     this.setStatus(201);
     return {
       id: odooInvoice.id ? odooInvoice.id.toString() : "",
-      number: odooInvoice.name || "Draft",
+      number: odooInvoice.name ?? "Draft",
       type: invoiceRequest.type,
-      date: odooInvoice.invoice_date || invoiceRequest.date,
-      total: odooInvoice.amount_total || 0,
-      status: odooInvoice.state || "draft",
+      date: odooInvoice.invoice_date ?? invoiceRequest.date,
+      total: odooInvoice.amount_total ?? 0,
+      status: odooInvoice.state ?? "draft",
     };
   }
 
@@ -226,8 +226,8 @@ export class AccountingController extends Controller {
   @OperationId("GetAccountingBills")
   public async getBills(
     @Request() request: AuthenticatedRequest,
-    @Query() page: number = 1,
-    @Query() limit: number = 20,
+    @Query() page = 1,
+    @Query() limit = 20,
     @Query() state?: "draft" | "posted" | "cancel",
     @Query() dateFrom?: string,
     @Query() dateTo?: string,
@@ -248,11 +248,11 @@ export class AccountingController extends Controller {
 
     const bills: Invoice[] = odooBills.map((bill) => ({
       id: bill.id ? bill.id.toString() : "",
-      number: bill.name || "Draft",
+      number: bill.name ?? "Draft",
       type: "PURCHASE",
-      date: bill.invoice_date || "",
-      total: bill.amount_total || 0,
-      status: bill.state || "draft",
+      date: bill.invoice_date ?? "",
+      total: bill.amount_total ?? 0,
+      status: bill.state ?? "draft",
     }));
 
     return {
@@ -277,11 +277,11 @@ export class AccountingController extends Controller {
 
     return {
       id: bill.id ? bill.id.toString() : "",
-      number: bill.name || "Draft",
+      number: bill.name ?? "Draft",
       type: "PURCHASE",
-      date: bill.invoice_date || "",
-      total: bill.amount_total || 0,
-      status: bill.state || "draft",
+      date: bill.invoice_date ?? "",
+      total: bill.amount_total ?? 0,
+      status: bill.state ?? "draft",
     };
   }
 
@@ -295,7 +295,7 @@ export class AccountingController extends Controller {
   ): Promise<Invoice> {
     const service = await this.getAccountingService(request);
 
-    const supplierId = Number.parseInt(billRequest.supplierId || "0");
+    const supplierId = Number.parseInt(billRequest.supplierId ?? "0");
 
     const billId = await service.createInvoice({
       moveType: "in_invoice",
@@ -319,11 +319,11 @@ export class AccountingController extends Controller {
     this.setStatus(201);
     return {
       id: odooBill.id ? odooBill.id.toString() : "",
-      number: odooBill.name || "Draft",
+      number: odooBill.name ?? "Draft",
       type: "PURCHASE",
-      date: odooBill.invoice_date || billRequest.date,
-      total: odooBill.amount_total || 0,
-      status: odooBill.state || "draft",
+      date: odooBill.invoice_date ?? billRequest.date,
+      total: odooBill.amount_total ?? 0,
+      status: odooBill.state ?? "draft",
     };
   }
 
@@ -388,13 +388,13 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Query() accountType?: string,
   ): Promise<
-    Array<{
+    {
       id: string;
       code: string;
       name: string;
       type: string;
       parentId?: string;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     const accounts = await service.getAccounts({
@@ -417,12 +417,12 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Query() q: string,
   ): Promise<
-    Array<{
+    {
       id: string;
       code: string;
       name: string;
       type: string;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     const accounts = await service.searchAccounts(q);
@@ -687,7 +687,7 @@ export class AccountingController extends Controller {
   @OperationId("GetAccountingPaymentTerms")
   public async getPaymentTerms(
     @Request() request: AuthenticatedRequest,
-  ): Promise<Array<{ id: number; name: string; note?: string }>> {
+  ): Promise<{ id: number; name: string; note?: string }[]> {
     const service = await this.getAccountingService(request);
     return service.getPaymentTerms();
   }
@@ -701,7 +701,7 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Query() asOfDate?: string,
   ): Promise<
-    Array<{
+    {
       partnerId: number;
       partnerName: string;
       current: number;
@@ -710,7 +710,7 @@ export class AccountingController extends Controller {
       days_61_90: number;
       days_over_90: number;
       total: number;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getAgedReceivables(asOfDate);
@@ -723,7 +723,7 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Query() asOfDate?: string,
   ): Promise<
-    Array<{
+    {
       partnerId: number;
       partnerName: string;
       current: number;
@@ -732,7 +732,7 @@ export class AccountingController extends Controller {
       days_61_90: number;
       days_over_90: number;
       total: number;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getAgedPayables(asOfDate);
@@ -750,7 +750,7 @@ export class AccountingController extends Controller {
     @Query() dateTo?: string,
     @Query() state?: "open" | "confirm",
   ): Promise<
-    Array<{
+    {
       id: number;
       name: string;
       journalId: number;
@@ -760,7 +760,7 @@ export class AccountingController extends Controller {
       balanceEndReal: number;
       balanceEnd: number;
       state: string;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getBankStatements({ journalId, dateFrom, dateTo, state });
@@ -773,14 +773,14 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Path() statementId: number,
   ): Promise<
-    Array<{
+    {
       id: number;
       date: string;
       paymentRef: string;
       partnerName?: string;
       amount: number;
       isReconciled: boolean;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getBankStatementLines(statementId);
@@ -793,13 +793,13 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Path() lineId: number,
   ): Promise<
-    Array<{
+    {
       moveId: number;
       moveName: string;
       partnerName: string;
       date: string;
       amount: number;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getReconciliationSuggestions(lineId);
@@ -824,16 +824,16 @@ export class AccountingController extends Controller {
   @OperationId("GetAccountingCurrencies")
   public async getCurrencies(
     @Request() request: AuthenticatedRequest,
-    @Query() onlyActive: boolean = true,
+    @Query() onlyActive = true,
   ): Promise<
-    Array<{
+    {
       id: number;
       name: string;
       symbol: string;
       position: "after" | "before";
       rounding: number;
       active: boolean;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getCurrencies(onlyActive);
@@ -848,14 +848,14 @@ export class AccountingController extends Controller {
     @Query() dateFrom?: string,
     @Query() dateTo?: string,
   ): Promise<
-    Array<{
+    {
       id: number;
       currencyId: number;
       currencyName: string;
       name: string;
       rate: number;
       companyId: number;
-    }>
+    }[]
   > {
     const service = await this.getAccountingService(request);
     return service.getCurrencyRates(currencyId, dateFrom, dateTo);
@@ -882,7 +882,7 @@ export class AccountingController extends Controller {
     @Body() body: { invoiceIds: number[] },
   ): Promise<{
     success: number[];
-    failed: Array<{ id: number; error: string }>;
+    failed: { id: number; error: string }[];
   }> {
     const service = await this.getAccountingService(request);
     return service.batchValidateInvoices(body.invoiceIds);
@@ -896,7 +896,7 @@ export class AccountingController extends Controller {
     @Body() body: { invoiceIds: number[] },
   ): Promise<{
     success: number[];
-    failed: Array<{ id: number; error: string }>;
+    failed: { id: number; error: string }[];
   }> {
     const service = await this.getAccountingService(request);
     return service.batchCancelInvoices(body.invoiceIds);
@@ -910,15 +910,15 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body() body: { invoices: InvoiceCreateRequest[] },
   ): Promise<{
-    success: Array<{ index: number; id: number }>;
-    failed: Array<{ index: number; error: string }>;
+    success: { index: number; id: number }[];
+    failed: { index: number; error: string }[];
   }> {
     const service = await this.getAccountingService(request);
 
     const dtos = body.invoices.map((inv) => ({
       moveType: inv.type === "SALES" ? ("out_invoice" as const) : ("in_invoice" as const),
-      customerId: inv.type === "SALES" ? Number.parseInt(inv.customerId || "0") : undefined,
-      supplierId: inv.type === "PURCHASE" ? Number.parseInt(inv.supplierId || "0") : undefined,
+      customerId: inv.type === "SALES" ? Number.parseInt(inv.customerId ?? "0") : undefined,
+      supplierId: inv.type === "PURCHASE" ? Number.parseInt(inv.supplierId ?? "0") : undefined,
       invoiceDate: inv.date,
       dueDate: inv.dueDate,
       lines: inv.items.map((item) => ({
@@ -940,7 +940,7 @@ export class AccountingController extends Controller {
     @Request() request: AuthenticatedRequest,
     @Body()
     body: {
-      payments: Array<{
+      payments: {
         type: "inbound" | "outbound";
         partnerId: number;
         partnerType: "customer" | "supplier";
@@ -948,11 +948,11 @@ export class AccountingController extends Controller {
         date: string;
         journalId: number;
         reference?: string;
-      }>;
+      }[];
     },
   ): Promise<{
-    success: Array<{ index: number; id: number }>;
-    failed: Array<{ index: number; error: string }>;
+    success: { index: number; id: number }[];
+    failed: { index: number; error: string }[];
   }> {
     const service = await this.getAccountingService(request);
     this.setStatus(201);
@@ -967,7 +967,7 @@ export class AccountingController extends Controller {
     @Body() body: { paymentIds: number[] },
   ): Promise<{
     success: number[];
-    failed: Array<{ id: number; error: string }>;
+    failed: { id: number; error: string }[];
   }> {
     const service = await this.getAccountingService(request);
     return service.batchConfirmPayments(body.paymentIds);

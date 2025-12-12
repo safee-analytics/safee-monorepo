@@ -34,7 +34,7 @@ void describe("deleteCase operation", async () => {
     await close();
   });
 
-  void it("should delete a case successfully", async () => {
+  it("should delete a case successfully", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-001",
       clientName: "Test Client",
@@ -50,7 +50,7 @@ void describe("deleteCase operation", async () => {
     expect(found).toHaveLength(0);
   });
 
-  void it("should create history entry before deletion", async () => {
+  it("should create history entry before deletion", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-002",
       clientName: "Test Client",
@@ -62,11 +62,11 @@ void describe("deleteCase operation", async () => {
     // History should be deleted with case (cascade)
   });
 
-  void it("should throw NotFound for non-existent case", async () => {
+  it("should throw NotFound for non-existent case", async () => {
     await expect(deleteCase(drizzle, testOrg.id, testUser.id, "non-existent-id")).rejects.toThrow(NotFound);
   });
 
-  void it("should throw InsufficientPermissions for different organization", async () => {
+  it("should throw InsufficientPermissions for different organization", async () => {
     const testOrg2 = await createTestOrganization(drizzle);
 
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
@@ -80,7 +80,7 @@ void describe("deleteCase operation", async () => {
     );
   });
 
-  void it("should reject deletion of case with active scopes", async () => {
+  it("should reject deletion of case with active scopes", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 
@@ -102,7 +102,7 @@ void describe("deleteCase operation", async () => {
     );
   });
 
-  void it("should allow deletion of case with archived scopes", async () => {
+  it("should allow deletion of case with archived scopes", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 
@@ -124,7 +124,7 @@ void describe("deleteCase operation", async () => {
     expect(result.success).toBe(true);
   });
 
-  void it("should reject deletion of completed case", async () => {
+  it("should reject deletion of completed case", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-006",
       clientName: "Test Client",
@@ -137,7 +137,7 @@ void describe("deleteCase operation", async () => {
     );
   });
 
-  void it("should allow deletion of pending case", async () => {
+  it("should allow deletion of pending case", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-007",
       clientName: "Test Client",
@@ -150,7 +150,7 @@ void describe("deleteCase operation", async () => {
     expect(result.success).toBe(true);
   });
 
-  void it("should allow deletion of in-progress case", async () => {
+  it("should allow deletion of in-progress case", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-008",
       clientName: "Test Client",

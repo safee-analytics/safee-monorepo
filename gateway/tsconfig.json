@@ -1,7 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "references": [{ "path": "../database" }],
-  "include": ["src", "src/server/swagger.json", "package.json"],
+  "include": ["src", "src/server/swagger.json", "package.json", "auth-schema.ts"],
   "exclude": ["src/server/generated/routes.ts"],
   "compilerOptions": {
     "rootDir": ".",

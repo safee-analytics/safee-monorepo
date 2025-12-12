@@ -4,7 +4,7 @@ const isDevelopment = process.env.NODE_ENV === "development";
 
 export const logger = pino({
   name: "safee-api",
-  level: process.env.LOG_LEVEL || (isDevelopment ? "debug" : "info"),
+  level: process.env.LOG_LEVEL ?? (isDevelopment ? "debug" : "info"),
   transport: isDevelopment
     ? {
         target: "pino-pretty",

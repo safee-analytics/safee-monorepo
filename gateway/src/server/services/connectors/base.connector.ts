@@ -66,7 +66,7 @@ export interface IConnector {
 }
 
 export abstract class BaseConnector implements IConnector {
-  protected connected: boolean = false;
+  protected connected = false;
   protected config: ConnectorConfig;
   protected metadata: ConnectorMetadata;
 
@@ -134,10 +134,10 @@ export abstract class BaseConnector implements IConnector {
     try {
       const result = await operation();
       return { success: true, result };
-    } catch (error) {
+    } catch (err) {
       return {
         success: false,
-        error: `${errorMessage}: ${error instanceof Error ? error.message : String(error)}`,
+        error: `${errorMessage}: ${err instanceof Error ? err.message : String(err)}`,
       };
     }
   }

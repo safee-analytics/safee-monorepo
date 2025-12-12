@@ -48,7 +48,7 @@ export class ApprovalRulesEngine {
         },
       });
 
-      if (!rules || rules.length === 0) {
+      if (rules.length === 0) {
         this.logger.debug({ organizationId, entityType: entityData.entityType }, "No approval rules found");
         return null;
       }
@@ -81,9 +81,9 @@ export class ApprovalRulesEngine {
 
       this.logger.debug({ organizationId, entityData }, "No matching approval rule found");
       return null;
-    } catch (error) {
-      this.logger.error({ error, organizationId, entityData }, "Error finding matching workflow");
-      throw error;
+    } catch (err) {
+      this.logger.error({ error: err, organizationId, entityData }, "Error finding matching workflow");
+      throw err;
     }
   }
 
@@ -91,9 +91,9 @@ export class ApprovalRulesEngine {
     try {
       const parsed = ruleSchema.parse(conditions);
       return parsed;
-    } catch (error) {
+    } catch (err) {
       this.logger.error(
-        { error, conditions, conditionsType: typeof conditions },
+        { error: err, conditions, conditionsType: typeof conditions },
         "Error parsing rule conditions",
       );
       return { conditions: [], logic: "AND" };
@@ -103,7 +103,7 @@ export class ApprovalRulesEngine {
   private evaluateRule(rule: Rule, entityData: EntityData): boolean {
     const { conditions, logic = "AND" } = rule;
 
-    if (!conditions || conditions.length === 0) {
+    if (conditions.length === 0) {
       return false;
     }
 
@@ -111,9 +111,9 @@ export class ApprovalRulesEngine {
 
     if (logic === "OR") {
       return results.some((result) => result);
-    } else {
+    } 
       return results.every((result) => result);
-    }
+    
   }
 
   private evaluateCondition(condition: RuleCondition, entityData: EntityData): boolean {
@@ -281,12 +281,10 @@ export class ApprovalRulesEngine {
     } else if (workflowStep.stepType === "parallel") {
       // Parallel - need minimum approvals
       return approvedCount >= workflowStep.minApprovals;
-    } else if (workflowStep.stepType === "any") {
-      // Any - need at least one approval
+    } else {
+      // "any" - need at least one approval
       return approvedCount >= 1;
     }
-
-    return false;
   }
 
   /**

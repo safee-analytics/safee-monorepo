@@ -32,7 +32,7 @@ void describe("listConnectors", async () => {
     await close();
   });
 
-  void it("should list all connectors for an organization", async () => {
+  it("should list all connectors for an organization", async () => {
     await drizzle
       .insert(schema.connectors)
       .values({
@@ -65,7 +65,7 @@ void describe("listConnectors", async () => {
     expect(connectors[1].name).toBe("MySQL Connector");
   });
 
-  void it("should filter connectors by type", async () => {
+  it("should filter connectors by type", async () => {
     await drizzle.insert(schema.connectors).values([
       {
         organizationId: org.id,
@@ -90,7 +90,7 @@ void describe("listConnectors", async () => {
     expect(connectors[0].type).toBe("postgresql");
   });
 
-  void it("should filter connectors by isActive status", async () => {
+  it("should filter connectors by isActive status", async () => {
     await drizzle.insert(schema.connectors).values([
       {
         organizationId: org.id,
@@ -115,7 +115,7 @@ void describe("listConnectors", async () => {
     expect(connectors[0].isActive).toBe(true);
   });
 
-  void it("should return empty array for organization with no connectors", async () => {
+  it("should return empty array for organization with no connectors", async () => {
     const ctx = getServerContext();
     const connectors = await listConnectors(ctx, org.id, {});
 

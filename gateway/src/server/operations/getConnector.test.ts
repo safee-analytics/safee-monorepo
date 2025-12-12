@@ -26,7 +26,7 @@ void describe("getConnector", async () => {
     await close();
   });
 
-  void it("should retrieve a connector by id", async () => {
+  it("should retrieve a connector by id", async () => {
     const timestamp = Date.now();
     const [org] = await drizzle
       .insert(schema.organizations)
@@ -69,7 +69,7 @@ void describe("getConnector", async () => {
     expect(result.metadata).toEqual({ version: "1.0" });
   });
 
-  void it("should throw error for non-existent connector", async () => {
+  it("should throw error for non-existent connector", async () => {
     const timestamp = Date.now();
     const [org] = await drizzle
       .insert(schema.organizations)
@@ -85,7 +85,7 @@ void describe("getConnector", async () => {
     await expect(getConnector(ctx, fakeConnectorId, org.id)).rejects.toThrow();
   });
 
-  void it("should throw error when accessing connector from different organization", async () => {
+  it("should throw error when accessing connector from different organization", async () => {
     const timestamp = Date.now();
     const [org1] = await drizzle
       .insert(schema.organizations)

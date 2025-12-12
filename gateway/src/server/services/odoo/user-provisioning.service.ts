@@ -1,7 +1,6 @@
 import type { DrizzleClient } from "@safee/database";
-import { schema } from "@safee/database";
-import { eq, and } from "@safee/database";
-import crypto from "crypto";
+import { schema, eq, and } from "@safee/database";
+import crypto from "node:crypto";
 import { encryptionService } from "../encryption.js";
 import { env } from "../../../env.js";
 import { BadGateway, NotFound } from "../../errors.js";
@@ -65,7 +64,8 @@ export class OdooUserProvisioningService {
       throw new BadGateway("Failed to authenticate with Odoo");
     }
 
-    const setCookieHeaders = response.headers.getSetCookie?.() || [];
+    const getSetCookieFn = response.headers.getSetCookie;
+    const setCookieHeaders = getSetCookieFn ? getSetCookieFn() : [];
     const cookies = setCookieHeaders.length > 0 ? setCookieHeaders.map((cookie) => cookie.split(";")[0]) : [];
 
     this.logger.debug({ cookieCount: cookies.length }, "Captured cookies from Odoo user provisioning auth");
@@ -127,8 +127,8 @@ export class OdooUserProvisioningService {
       }
 
       return data.result as T;
-    } catch (error) {
-      if (this.isSessionExpiredError(error) && adminCredentials && retryCount === 0) {
+    } catch (err) {
+      if (this.isSessionExpiredError(err) && adminCredentials && retryCount === 0) {
         this.logger.info({ model, method }, "Odoo session expired in user provisioning, re-authenticating");
 
         const { sessionId: newSessionId, cookies: newCookies } = await this.authenticate(
@@ -149,7 +149,7 @@ export class OdooUserProvisioningService {
         );
       }
 
-      throw error;
+      throw err;
     }
   }
 
@@ -188,7 +188,7 @@ export class OdooUserProvisioningService {
     for (const xmlId of groupXmlIds) {
       try {
         const [module, name] = xmlId.split(".");
-        const result = await this.callOdooExecuteKw<Array<{ res_id: number }>>(
+        const result = await this.callOdooExecuteKw<{ res_id: number }[]>(
           sessionId,
           cookies,
           "ir.model.data",
@@ -203,11 +203,12 @@ export class OdooUserProvisioningService {
           adminCredentials,
         );
 
-        if (result && result.length > 0) {
+        // result is always defined, check if it has elements
+        if (result.length > 0) {
           groupIds.push(result[0].res_id);
         }
-      } catch (error) {
-        this.logger.warn({ xmlId, error }, "Failed to find group, skipping");
+      } catch (err) {
+        this.logger.warn({ xmlId, error: err }, "Failed to find group, skipping");
       }
     }
 
@@ -276,7 +277,8 @@ export class OdooUserProvisioningService {
       ],
     };
 
-    const additionalGroups = roleGroups[safeeRole || "user"] || roleGroups.user || [];
+    const roleKey = safeeRole ?? "user";
+    const additionalGroups = roleGroups[roleKey] ?? roleGroups.user ?? [];
     return [...baseGroups, ...additionalGroups];
   }
 
@@ -292,7 +294,7 @@ export class OdooUserProvisioningService {
 
     const adminCredentials = { databaseName, adminLogin, adminPassword };
 
-    const existingUsers = await this.callOdooExecuteKw<Array<{ id: number }>>(
+    const existingUsers = await this.callOdooExecuteKw<{ id: number }[]>(
       sessionId,
       cookies,
       "res.users",
@@ -328,18 +330,15 @@ export class OdooUserProvisioningService {
         );
 
         this.logger.info({ userId }, "User created successfully");
-      } catch (error) {
+      } catch (err) {
         // Handle race condition: if user was created by another concurrent request
-        if (
-          error instanceof Error &&
-          error.message.includes("duplicate key value violates unique constraint")
-        ) {
+        if (err instanceof Error && err.message.includes("duplicate key value violates unique constraint")) {
           this.logger.warn(
             { userEmail },
             "User creation race condition detected, re-checking for existing user",
           );
 
-          const recheckUsers = await this.callOdooExecuteKw<Array<{ id: number }>>(
+          const recheckUsers = await this.callOdooExecuteKw<{ id: number }[]>(
             sessionId,
             cookies,
             "res.users",
@@ -353,10 +352,10 @@ export class OdooUserProvisioningService {
             userId = recheckUsers[0].id;
             this.logger.info({ userId, userEmail }, "Found user created by concurrent request");
           } else {
-            throw error;
+            throw err;
           }
         } else {
-          throw error;
+          throw err;
         }
       }
     }
@@ -444,13 +443,13 @@ export class OdooUserProvisioningService {
       const result = await response.json();
 
       if (result.error) {
-        throw new BadGateway(`Odoo error: ${result.error.message || JSON.stringify(result.error)}`);
+        throw new BadGateway(`Odoo error: ${result.error.message ?? JSON.stringify(result.error)}`);
       }
 
       const data = result.result;
 
       if (!data.ok) {
-        throw new BadGateway(`Failed to generate API key: ${data.error || "Unknown error"}`);
+        throw new BadGateway(`Failed to generate API key: ${data.error ?? "Unknown error"}`);
       }
 
       if (!data.token) {
@@ -463,10 +462,13 @@ export class OdooUserProvisioningService {
       );
 
       return data.token;
-    } catch (error) {
-      this.logger.error({ targetUserLogin, keyName, error }, "Failed to generate API key via HTTP endpoint");
+    } catch (err) {
+      this.logger.error(
+        { targetUserLogin, keyName, error: err },
+        "Failed to generate API key via HTTP endpoint",
+      );
       throw new BadGateway(
-        `Failed to generate API key: ${error instanceof Error ? error.message : "Unknown error"}`,
+        `Failed to generate API key: ${err instanceof Error ? err.message : "Unknown error"}`,
       );
     }
   }
@@ -538,9 +540,9 @@ export class OdooUserProvisioningService {
             odooLogin: existingOdooUser.odooLogin,
             odooPassword: apiKey,
           };
-        } catch (error) {
+        } catch (err) {
           this.logger.warn(
-            { userId, error: error instanceof Error ? error.message : "Unknown error" },
+            { userId, error: err instanceof Error ? err.message : "Unknown error" },
             "⚠️  Failed to generate API key for existing user, will use password",
           );
         }
@@ -559,11 +561,11 @@ export class OdooUserProvisioningService {
 
     const { databaseName, adminLogin, adminPassword } = await this.getAdminCredentials(organizationId);
 
-    const role = safeeRole || user.role || "user";
+    const role = safeeRole ?? user.role ?? "user";
 
     this.logger.info({ userId, role }, "Provisioning Odoo user with role");
 
-    const userName = user.name || user.email;
+    const userName = user.name ?? user.email;
 
     const odooUid = await this.createOdooUser(
       databaseName,
@@ -579,12 +581,12 @@ export class OdooUserProvisioningService {
     try {
       await this.setOdooUserPassword(databaseName, adminLogin, adminPassword, odooUid, password);
       this.logger.info({ userId, odooUid }, "Password set successfully");
-    } catch (error) {
+    } catch (err) {
       this.logger.error(
-        { userId, odooUid, error: error instanceof Error ? error.message : "Unknown error" },
+        { userId, odooUid, error: err instanceof Error ? err.message : "Unknown error" },
         "Failed to set Odoo password",
       );
-      throw error;
+      throw err;
     }
 
     let apiKey: string | null = null;
@@ -595,9 +597,9 @@ export class OdooUserProvisioningService {
       apiKey = await this.generateApiKey(databaseName, adminLogin, adminPassword, user.email, keyName);
       authCredential = apiKey; // Prefer API key
       this.logger.info({ userId, odooUid, keyName }, "✅ API key generated successfully (preferred)");
-    } catch (error) {
+    } catch (err) {
       this.logger.warn(
-        { userId, odooUid, error: error instanceof Error ? error.message : "Unknown error" },
+        { userId, odooUid, error: err instanceof Error ? err.message : "Unknown error" },
         "⚠️  Failed to generate API key, will use password authentication",
       );
     }
@@ -687,9 +689,9 @@ export class OdooUserProvisioningService {
           odooUid: odooUser.odooUid,
           odooPassword: apiKey,
         };
-      } catch (error) {
+      } catch (err) {
         this.logger.warn(
-          { userId, error: error instanceof Error ? error.message : "Unknown error" },
+          { userId, error: err instanceof Error ? err.message : "Unknown error" },
           "⚠️  Failed to generate API key, will use password",
         );
       }

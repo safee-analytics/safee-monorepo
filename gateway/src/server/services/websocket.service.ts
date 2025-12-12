@@ -8,10 +8,10 @@ import { Server, Socket } from "socket.io";
 import { createAdapter } from "@socket.io/redis-adapter";
 import { createClient } from "redis";
 import { instrument } from "@socket.io/admin-ui";
-import { auth } from "../../auth/index.js";
+import { auth, type Session } from "../../auth/index.js";
 import { fromNodeHeaders } from "better-auth/node";
 import pino from "pino";
-import type { Server as HTTPServer } from "http";
+import type { Server as HTTPServer } from "node:http";
 import type {
   ServerToClientEvents,
   ClientToServerEvents,
@@ -37,7 +37,7 @@ export class WebSocketService {
     this.io = new Server(httpServer, {
       path: "/socket.io",
       cors: {
-        origin: process.env.ALLOWED_ORIGINS?.split(",") || [
+        origin: process.env.ALLOWED_ORIGINS?.split(",") ?? [
           "http://app.localhost:8080",
           "http://localhost:3001",
         ],
@@ -76,7 +76,7 @@ export class WebSocketService {
    */
   private async setupRedisAdapter() {
     try {
-      const redisUrl = process.env.REDIS_URL || "redis://localhost:16379";
+      const redisUrl = process.env.REDIS_URL ?? "redis://localhost:16379";
 
       // Create Redis clients for pub/sub
       this.pubClient = createClient({ url: redisUrl });
@@ -88,8 +88,8 @@ export class WebSocketService {
       this.io.adapter(createAdapter(this.pubClient, this.subClient));
 
       logger.info({ redisUrl }, "Socket.IO Redis adapter connected");
-    } catch (error) {
-      logger.error({ error }, "Failed to setup Redis adapter - running without clustering support");
+    } catch (err) {
+      logger.error({ error: err }, "Failed to setup Redis adapter - running without clustering support");
       // Continue without Redis - Socket.IO will use in-memory adapter
     }
   }
@@ -104,15 +104,10 @@ export class WebSocketService {
         const headers = fromNodeHeaders(socket.request.headers);
         const session = await auth.api.getSession({ headers });
 
-        if (!session?.user || !session?.session) {
+        if (!session || !session.user || !session.session) {
           logger.warn("Socket.IO connection rejected - no valid session");
-          return next(new Error("Unauthorized"));
-        }
-
-        // Check if user is active
-        if (!session.user.isActive) {
-          logger.warn({ userId: session.user.id }, "Socket.IO connection rejected - inactive user");
-          return next(new Error("Account inactive"));
+          next(new Error("Unauthorized"));
+          return;
         }
 
         // Attach user data to socket
@@ -121,7 +116,7 @@ export class WebSocketService {
           organizationId: session.session.activeOrganizationId ?? null,
           sessionId: session.session.id,
           email: session.user.email,
-          role: session.user.role || "user",
+          role: session.user.role ?? "user",
         };
 
         logger.info(
@@ -134,8 +129,8 @@ export class WebSocketService {
         );
 
         next();
-      } catch (error) {
-        logger.error({ error }, "Socket.IO authentication error");
+      } catch (err) {
+        logger.error({ error: err }, "Socket.IO authentication error");
         next(new Error("Authentication failed"));
       }
     });
@@ -153,8 +148,8 @@ export class WebSocketService {
 
       logger.info("Socket.IO Admin UI enabled");
       logger.info("Visit: https://admin.socket.io/#/ and connect to http://app.localhost:8080");
-    } catch (error) {
-      logger.warn({ error }, "Failed to setup Socket.IO Admin UI - continuing without it");
+    } catch (err) {
+      logger.warn({ error: err }, "Failed to setup Socket.IO Admin UI - continuing without it");
       // Continue without admin UI - not critical for operation
     }
   }
@@ -355,13 +350,13 @@ export class WebSocketService {
     const sockets = await this.io.fetchSockets();
     const rooms = new Map<string, number>();
 
-    sockets.forEach((socket) => {
-      socket.rooms.forEach((room) => {
+    for (const socket of sockets) {
+      for (const room of socket.rooms) {
         if (room !== socket.id) {
-          rooms.set(room, (rooms.get(room) || 0) + 1);
+          rooms.set(room, (rooms.get(room) ?? 0) + 1);
         }
-      });
-    });
+      }
+    }
 
     return {
       totalConnections: this.io.engine.clientsCount,
@@ -382,9 +377,9 @@ export class WebSocketService {
 
     // Close all socket connections
     const sockets = await this.io.fetchSockets();
-    sockets.forEach((socket) => {
+    for (const socket of sockets) {
       socket.disconnect(true);
-    });
+    }
 
     // Close Socket.IO server
     this.io.close();

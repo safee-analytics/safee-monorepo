@@ -42,7 +42,7 @@ void describe("completeProcedure operation", async () => {
     await close();
   });
 
-  void it("should complete a procedure successfully", async () => {
+  it("should complete a procedure successfully", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 
@@ -84,7 +84,7 @@ void describe("completeProcedure operation", async () => {
     expect(result.memo).toBe("Test memo");
   });
 
-  void it("should create history entry", async () => {
+  it("should create history entry", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 
@@ -127,7 +127,7 @@ void describe("completeProcedure operation", async () => {
     expect(history[0].action).toBe("completed");
   });
 
-  void it("should throw NotFound for non-existent procedure", async () => {
+  it("should throw NotFound for non-existent procedure", async () => {
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-003",
       clientName: "Test Client",
@@ -141,7 +141,7 @@ void describe("completeProcedure operation", async () => {
     ).rejects.toThrow(NotFound);
   });
 
-  void it("should throw InvalidInput if already completed", async () => {
+  it("should throw InvalidInput if already completed", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 
@@ -181,7 +181,7 @@ void describe("completeProcedure operation", async () => {
     ).rejects.toThrow("Procedure is already completed");
   });
 
-  void it("should throw InvalidInput if not editable", async () => {
+  it("should throw InvalidInput if not editable", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 
@@ -222,7 +222,7 @@ void describe("completeProcedure operation", async () => {
     ).rejects.toThrow("This procedure cannot be edited");
   });
 
-  void it("should reject if field data required but not provided", async () => {
+  it("should reject if field data required but not provided", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 
@@ -263,7 +263,7 @@ void describe("completeProcedure operation", async () => {
     ).rejects.toThrow("Field data is required for this procedure");
   });
 
-  void it("should reject if observations required but not provided", async () => {
+  it("should reject if observations required but not provided", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 
@@ -304,7 +304,7 @@ void describe("completeProcedure operation", async () => {
     ).rejects.toThrow("Observations/memo is required for this procedure");
   });
 
-  void it("should complete without field data if not required", async () => {
+  it("should complete without field data if not required", async () => {
     const logger = pino({ level: "silent" });
     const deps = { drizzle, logger };
 

@@ -28,7 +28,7 @@ import { getChunkedUploadServiceInstance } from "./services/chunked-upload-insta
 
 dotenv.config();
 
-const HOST = process.env.HOST || "localhost";
+const HOST = process.env.HOST ?? "localhost";
 const PORT = Number(process.env.PORT) || 3000;
 const IS_LOCAL = process.env.NODE_ENV !== "production";
 const COOKIE_KEY = process.env.COOKIE_KEY;
@@ -62,9 +62,9 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
   app.use(
     cors({
       origin: [
-        process.env.CORS_ORIGIN || "http://localhost:3001",
-        process.env.FRONTEND_URL || "http://localhost:3001",
-        process.env.LANDING_URL || "http://localhost:3002",
+        process.env.CORS_ORIGIN ?? "http://localhost:3001",
+        process.env.FRONTEND_URL ?? "http://localhost:3001",
+        process.env.LANDING_URL ?? "http://localhost:3002",
         "http://localhost:3000",
         "http://localhost:8080",
         "http://app.localhost:8080",
@@ -100,9 +100,10 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
     app.use((req, res, next) => {
       const apiKey = req.headers["x-safee-api-key"];
       if (apiKey !== API_SECRET_KEY) {
-        return res.status(401).json({ error: "Invalid API key" });
+        res.status(401).json({ error: "Invalid API key" });
+        return;
       }
-      return next();
+      next();
     });
   }
 
@@ -137,7 +138,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
         logger,
         serializers: {
           req(req: { body: unknown; raw: { body: unknown } }) {
-            req.body = req.raw?.body;
+            req.body = req.raw.body;
             return req;
           },
         },
@@ -169,7 +170,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
 
   let mergedSpec = swaggerDocument as OpenAPIV3.Document;
   try {
-    const betterAuthSpec = await auth.api.generateOpenAPISchema?.();
+    const betterAuthSpec = await auth.api.generateOpenAPISchema();
 
     mergedSpec = mergeBetterAuthSpec(
       swaggerDocument as OpenAPIV3.Document,
@@ -191,7 +192,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
 
   app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof ValidateError) {
-      logger.info({ err, url: req.url, userId: req.betterAuthSession?.user?.id }, "validation error");
+      logger.info({ err, url: req.url, userId: req.betterAuthSession?.user.id }, "validation error");
       return res.status(422).json({
         message: "Validation Failed",
         details: err.fields,
@@ -203,7 +204,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
         {
           err,
           url: req.url,
-          userId: req.betterAuthSession?.user?.id,
+          userId: req.betterAuthSession?.user.id,
           code: err.code,
           statusCode: err.statusCode,
         },
@@ -213,7 +214,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
       return res.status(err.statusCode).json({
         message: err.message,
         code: err.code,
-        ...(Object.keys(err.context || {}).length > 0 && { context: err.context }),
+        ...(err.context && Object.keys(err.context).length > 0 && { context: err.context }),
       });
     }
 
@@ -224,7 +225,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
         errorStack: err instanceof Error ? err.stack : undefined,
         url: req.url,
         method: req.method,
-        userId: req.betterAuthSession?.user?.id,
+        userId: req.betterAuthSession?.user.id,
       },
       "Unhandled error in request handler",
     );

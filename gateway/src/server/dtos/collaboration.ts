@@ -19,25 +19,25 @@ export interface CaseActivityResponse {
   id: string;
   caseId: string;
   activityType: ActivityType;
-  userId?: string;
+  userId?: string | null;
   user?: {
-    id: string;
+    id: string | null;
     name: string | null;
     email: string;
   };
   metadata?: {
-    caseName?: string;
-    oldValue?: string;
-    newValue?: string;
-    documentName?: string;
-    documentId?: string;
-    userName?: string;
-    assignedUserId?: string;
-    assignedUserName?: string;
-    commentId?: string;
-    scopeId?: string;
-    planId?: string;
-    reportId?: string;
+    caseName?: string | null;
+    oldValue?: string | null;
+    newValue?: string | null;
+    documentName?: string | null;
+    documentId?: string | null;
+    userName?: string | null;
+    assignedUserId?: string | null;
+    assignedUserName?: string | null;
+    commentId?: string | null;
+    scopeId?: string | null;
+    planId?: string | null;
+    reportId?: string | null;
     [key: string]: unknown;
   } | null;
   isRead?: Record<string, boolean> | null;
@@ -48,18 +48,18 @@ export interface CreateCaseActivityRequest {
   caseId: string;
   activityType: ActivityType;
   metadata?: {
-    caseName?: string;
-    oldValue?: string;
-    newValue?: string;
-    documentName?: string;
-    documentId?: string;
-    userName?: string;
-    assignedUserId?: string;
-    assignedUserName?: string;
-    commentId?: string;
-    scopeId?: string;
-    planId?: string;
-    reportId?: string;
+    caseName?: string | null;
+    oldValue?: string | null;
+    newValue?: string | null;
+    documentName?: string | null;
+    documentId?: string | null;
+    userName?: string | null;
+    assignedUserId?: string | null;
+    assignedUserName?: string | null;
+    commentId?: string | null;
+    scopeId?: string | null;
+    planId?: string | null;
+    reportId?: string | null;
     [key: string]: unknown;
   };
 }
@@ -69,7 +69,7 @@ export interface PresenceResponse {
   caseId: string;
   userId: string;
   user?: {
-    id: string;
+    id: string | null;
     name: string | null;
     email: string;
   };

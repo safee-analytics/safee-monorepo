@@ -52,27 +52,21 @@ async function main() {
   return async () => {
     logger.info("Cleaning up resources");
 
-    if (wsService) {
-      await wsService.shutdown();
-      logger.info("WebSocket server closed");
-    }
+    await wsService.shutdown();
+    logger.info("WebSocket server closed");
 
-    if (httpServer) {
-      await new Promise<void>((resolve) => {
-        httpServer.close(() => resolve());
+    await new Promise<void>((resolve) => {
+      httpServer.close(() => {
+        resolve();
       });
-      logger.info("HTTP server closed");
-    }
+    });
+    logger.info("HTTP server closed");
 
-    if (scheduler) {
-      await scheduler.stop();
-      logger.info("Job scheduler stopped");
-    }
+    await scheduler.stop();
+    logger.info("Job scheduler stopped");
 
-    if (redis) {
-      await redis.quit();
-      logger.info("Redis connection closed");
-    }
+    await redis.quit();
+    logger.info("Redis connection closed");
   };
 }
 
@@ -83,30 +77,34 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     .then((cleanupFn) => {
       cleanup = cleanupFn;
     })
-    .catch((err) => {
+    .catch((err: unknown) => {
       logger.error(err, "Error starting server");
       process.exit(1);
     });
 
-  process.on("unhandledRejection", (err) => {
-    logger.debug(err, "Unhandled promise rejection");
+  process.on("unhandledRejection", (err: unknown) => {
+    logger.debug({ err }, "Unhandled promise rejection");
   });
 
-  process.on("SIGINT", async () => {
-    logger.info("Received SIGINT, shutting down gracefully");
-    if (cleanup) {
-      await cleanup();
-    }
-    logger.info("Exiting");
-    process.exit(0);
+  process.on("SIGINT", () => {
+    void (async () => {
+      logger.info("Received SIGINT, shutting down gracefully");
+      if (cleanup) {
+        await cleanup();
+      }
+      logger.info("Exiting");
+      process.exit(0);
+    })();
   });
 
-  process.on("SIGTERM", async () => {
-    logger.info("Received SIGTERM, shutting down gracefully");
-    if (cleanup) {
-      await cleanup();
-    }
-    logger.info("Exiting");
-    process.exit(0);
+  process.on("SIGTERM", () => {
+    void (async () => {
+      logger.info("Received SIGTERM, shutting down gracefully");
+      if (cleanup) {
+        await cleanup();
+      }
+      logger.info("Exiting");
+      process.exit(0);
+    })();
   });
 }

@@ -97,7 +97,7 @@ export class ClientEncryptionService {
         iv: data.iv,
         keyVersion: 1,
         algorithm: "AES-256-GCM",
-        derivationParams: data.derivationParams || {
+        derivationParams: data.derivationParams ?? {
           iterations: 600000,
           hash: "SHA-256",
           keyLength: 32,

@@ -9,8 +9,8 @@ import { initTestServerContext } from "../../test-helpers/testServerContext.js";
 import { getServerContext } from "../../serverContext.js";
 import { pino } from "pino";
 
-const ODOO_URL = process.env.ODOO_URL || "http://localhost:18069";
-const ODOO_MASTER_PASSWORD = process.env.ODOO_ADMIN_PASSWORD || "admin";
+const ODOO_URL = process.env.ODOO_URL ?? "http://localhost:18069";
+const ODOO_MASTER_PASSWORD = process.env.ODOO_ADMIN_PASSWORD ?? "admin";
 
 describe.skip("Odoo HR Service Integration Tests", () => {
   let drizzle: DrizzleClient;
@@ -67,8 +67,8 @@ describe.skip("Odoo HR Service Integration Tests", () => {
         if (moduleIds.length > 0) {
           await client.execute("ir.module.module", "button_immediate_install", [moduleIds]);
         }
-      } catch (error) {
-        console.warn(`Failed to install module ${moduleName}:`, error);
+      } catch (err) {
+        console.warn(`Failed to install module ${moduleName}:`, err);
       }
     }
 
@@ -151,15 +151,15 @@ describe.skip("Odoo HR Service Integration Tests", () => {
     for (const record of createdRecords.reverse()) {
       try {
         await client.unlink(record.model, [record.id]);
-      } catch (error) {
-        console.warn(`Failed to delete ${record.model} ${record.id}:`, error);
+      } catch (err) {
+        console.warn(`Failed to delete ${record.model} ${record.id}:`, err);
       }
     }
 
     try {
       await odooClient.dropDatabase(ODOO_MASTER_PASSWORD, testDatabaseName);
-    } catch (error) {
-      console.warn(`Failed to delete Odoo database ${testDatabaseName}:`, error);
+    } catch (err) {
+      console.warn(`Failed to delete Odoo database ${testDatabaseName}:`, err);
     }
 
     await drizzle
@@ -263,9 +263,9 @@ describe.skip("Odoo HR Service Integration Tests", () => {
       const filtered = await hrService.getContracts({ state: "open" });
 
       expect(filtered.length).toBeGreaterThan(0);
-      filtered.forEach((contract) => {
+      for (const contract of filtered) {
         expect(contract.state).toBe("open");
-      });
+      }
     });
   });
 
@@ -330,18 +330,18 @@ describe.skip("Odoo HR Service Integration Tests", () => {
       const filtered = await hrService.getLeaveRequests({ employeeId: testEmp!.id });
 
       expect(filtered.length).toBeGreaterThan(0);
-      filtered.forEach((leave) => {
-        expect((leave.employee_id as [number, string])[0]).toBe(testEmp!.id);
-      });
+      for (const leave of filtered) {
+        expect((leave.employee_id)[0]).toBe(testEmp!.id);
+      }
     });
 
     it("should filter leave requests by state", async () => {
       const filtered = await hrService.getLeaveRequests({ state: "validate" });
 
       expect(filtered.length).toBeGreaterThan(0);
-      filtered.forEach((leave) => {
+      for (const leave of filtered) {
         expect(leave.state).toBe("validate");
-      });
+      }
     });
   });
 
@@ -377,9 +377,9 @@ describe.skip("Odoo HR Service Integration Tests", () => {
       const filtered = await hrService.getLeaveAllocations({ employeeId: testEmp!.id });
 
       expect(filtered.length).toBeGreaterThan(0);
-      filtered.forEach((allocation) => {
-        expect((allocation.employee_id as [number, string])[0]).toBe(testEmp!.id);
-      });
+      for (const allocation of filtered) {
+        expect((allocation.employee_id)[0]).toBe(testEmp!.id);
+      }
     });
   });
 
@@ -424,9 +424,9 @@ describe.skip("Odoo HR Service Integration Tests", () => {
       const filtered = await hrService.getPayslips({ state: "done" });
 
       expect(filtered.length).toBeGreaterThan(0);
-      filtered.forEach((payslip) => {
+      for (const payslip of filtered) {
         expect(payslip.state).toBe("done");
-      });
+      }
     });
   });
 
