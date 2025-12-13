@@ -1,4 +1,6 @@
-import { ConnectionPool } from "mssql";
+// mssql is a CommonJS module that doesn't support named imports in ESM
+// eslint-disable-next-line @typescript-eslint/no-import-type-side-effects
+import mssql from "mssql";
 import type { config as MSSQLConfig } from "mssql";
 import { BaseConnector, type ConnectorConfig, type ConnectionTestResult } from "./base.connector.js";
 
@@ -16,7 +18,7 @@ export interface MSSQLConnectorConfig extends ConnectorConfig {
 }
 
 export class MSSQLConnector extends BaseConnector {
-  private pool: ConnectionPool | null = null;
+  private pool: mssql.ConnectionPool | null = null;
 
   async validateConfig(config: ConnectorConfig): Promise<{ valid: boolean; errors?: string[] }> {
     const errors: string[] = [];
@@ -65,7 +67,7 @@ export class MSSQLConnector extends BaseConnector {
       requestTimeout: cfg.requestTimeout ?? 15000,
     };
 
-    this.pool = new ConnectionPool(poolConfig);
+    this.pool = new mssql.ConnectionPool(poolConfig);
     await this.pool.connect();
 
     this.connected = true;
@@ -83,7 +85,7 @@ export class MSSQLConnector extends BaseConnector {
     try {
       const { latency } = await this.measureLatency(async () => {
         const cfg = this.config as MSSQLConnectorConfig;
-        const testPool = new ConnectionPool({
+        const testPool = new mssql.ConnectionPool({
           server: cfg.host,
           port: cfg.port,
           database: cfg.database,
