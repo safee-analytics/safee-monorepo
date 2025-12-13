@@ -43,6 +43,14 @@ export interface StorageAdapter {
    * Get storage stats
    */
   getStats(): Promise<StorageStats>;
+
+  /**
+   * Get signed URL for temporary file access
+   * @param path - File path
+   * @param expiresIn - Expiration time in seconds (default: 3600)
+   * @param action - Action type: 'read' or 'write'
+   */
+  getSignedUrl?(path: string, expiresIn?: number, action?: "read" | "write"): Promise<string>;
 }
 
 export interface FileStats {
