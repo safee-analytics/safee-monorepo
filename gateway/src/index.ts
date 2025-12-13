@@ -1,36 +1,14 @@
-import { pino } from "pino";
 import { connect, redisConnect, getStorage, getDefaultPubSub, JobScheduler } from "@safee/database";
-import { LOG_LEVEL, ENV } from "./env.js";
+import { LOG_LEVEL } from "./env.js";
 import { startServer } from "./server/index.js";
+import { createLogger } from "./logger.js";
 
 export * from "./server/services/password.js";
 export * from "./server/errors.js";
 export * from "./test-helpers/test-app.js";
 
-const isDevelopment = ENV === "local" || ENV === "development";
-
-const logger = pino(
-  isDevelopment
-    ? {
-        level: LOG_LEVEL,
-        base: { app: "gateway" },
-        customLevels: { http: 27 },
-        transport: {
-          target: "pino-pretty",
-          options: {
-            colorize: true,
-            translateTime: "HH:MM:ss",
-            ignore: "pid,hostname",
-            singleLine: false,
-          },
-        },
-      }
-    : {
-        level: LOG_LEVEL,
-        base: { app: "gateway" },
-        customLevels: { http: 27 },
-      },
-);
+// Create logger with error notification transports (Slack, Sentry)
+const logger = createLogger("gateway");
 
 async function main() {
   const { drizzle } = connect("gateway");

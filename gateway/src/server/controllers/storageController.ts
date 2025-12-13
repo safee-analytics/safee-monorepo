@@ -525,4 +525,107 @@ export class StorageController extends Controller {
     const chunkedUploadService = getChunkedUploadServiceInstance();
     return chunkedUploadService.getUploadStatus(uploadId);
   }
+
+  // ============================================================================
+  // Signed URL Endpoints (MinIO Direct Upload/Download)
+  // ============================================================================
+
+  /**
+   * Generate signed URL for direct upload to storage
+   * Allows client to upload directly to MinIO, bypassing the gateway
+   */
+  @Post("signed-url/upload")
+  @Security("jwt")
+  @SuccessResponse("200", "Signed URL generated")
+  public async generateUploadUrl(
+    @Request() request: AuthenticatedRequest,
+    @Body()
+    body: {
+      path: string;
+      expiresIn?: number; // Seconds, default 3600 (1 hour)
+      contentType?: string;
+    },
+  ): Promise<{ url: string; expiresAt: Date; path: string }> {
+    if (!request.betterAuthSession?.session.activeOrganizationId) {
+      throw new Error("User not authenticated");
+    }
+
+    const organizationId = request.betterAuthSession.session.activeOrganizationId;
+
+    // Scope path to organization for security
+    const scopedPath = `organizations/${organizationId}/${body.path}`;
+    const expiresIn = body.expiresIn ?? 3600;
+
+    const storageService = await this.getStorageService(organizationId);
+    const adapter = (storageService as unknown as { adapter: { getSignedUrl?: Function } }).adapter;
+
+    if (!adapter.getSignedUrl) {
+      throw new Error("Storage adapter does not support signed URLs");
+    }
+
+    const url = await adapter.getSignedUrl(scopedPath, expiresIn, "write");
+    const expiresAt = new Date(Date.now() + expiresIn * 1000);
+
+    // Log the operation for SOC-2 audit trail
+    request.logger.info(
+      {
+        organizationId,
+        path: scopedPath,
+        expiresAt,
+        action: "generate_upload_url",
+      },
+      "Generated signed upload URL",
+    );
+
+    return { url, expiresAt, path: scopedPath };
+  }
+
+  /**
+   * Generate signed URL for direct download from storage
+   * Allows client to download directly from MinIO, bypassing the gateway
+   */
+  @Post("signed-url/download")
+  @Security("jwt")
+  @SuccessResponse("200", "Signed URL generated")
+  public async generateDownloadUrl(
+    @Request() request: AuthenticatedRequest,
+    @Body()
+    body: {
+      path: string;
+      expiresIn?: number; // Seconds, default 3600 (1 hour)
+    },
+  ): Promise<{ url: string; expiresAt: Date; path: string }> {
+    if (!request.betterAuthSession?.session.activeOrganizationId) {
+      throw new Error("User not authenticated");
+    }
+
+    const organizationId = request.betterAuthSession.session.activeOrganizationId;
+
+    // Scope path to organization for security
+    const scopedPath = `organizations/${organizationId}/${body.path}`;
+    const expiresIn = body.expiresIn ?? 3600;
+
+    const storageService = await this.getStorageService(organizationId);
+    const adapter = (storageService as unknown as { adapter: { getSignedUrl?: Function } }).adapter;
+
+    if (!adapter.getSignedUrl) {
+      throw new Error("Storage adapter does not support signed URLs");
+    }
+
+    const url = await adapter.getSignedUrl(scopedPath, expiresIn, "read");
+    const expiresAt = new Date(Date.now() + expiresIn * 1000);
+
+    // Log the operation for SOC-2 audit trail
+    request.logger.info(
+      {
+        organizationId,
+        path: scopedPath,
+        expiresAt,
+        action: "generate_download_url",
+      },
+      "Generated signed download URL",
+    );
+
+    return { url, expiresAt, path: scopedPath };
+  }
 }

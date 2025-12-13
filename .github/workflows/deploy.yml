@@ -104,35 +104,111 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.DEV_SERVER_IP }} >> ~/.ssh/known_hosts
 
-      - name: Deploy to dev server
+      - name: Deploy to dev server with blue-green strategy
         run: |
           ssh -i ~/.ssh/deploy_key root@${{ secrets.DEV_SERVER_IP }} << 'ENDSSH'
+            set -e  # CRITICAL: Exit on any error for fail-closed deployment
+
             cd /opt/safee
 
-            echo "💾 Creating backup of current state..."
-            docker compose ps --format json > .deployment-backup.json || true
+            echo "🎯 Determining deployment colors..."
+            CURRENT_COLOR=$(cat active-deployment 2>/dev/null || echo "blue")
+            NEW_COLOR=$([ "$CURRENT_COLOR" = "blue" ] && echo "green" || echo "blue")
+            echo "   Current: $CURRENT_COLOR → New: $NEW_COLOR"
 
+            echo ""
             echo "📥 Pulling latest Docker images..."
             if ! docker compose pull; then
               echo "❌ Failed to pull images"
               exit 1
             fi
 
-            echo "🔄 Restarting services..."
-            if ! docker compose up -d --remove-orphans --wait --wait-timeout 120; then
-              echo "❌ Failed to start services, rolling back..."
-              docker compose down
-              docker compose up -d --wait
+            echo ""
+            echo "🚀 Starting $NEW_COLOR deployment..."
+            export DEPLOYMENT_COLOR=$NEW_COLOR
+            export TAG=dev
+
+            # Start new deployment with migrations
+            if ! docker compose --profile $NEW_COLOR up -d --wait --wait-timeout 180; then
+              echo "❌ Failed to start $NEW_COLOR deployment"
+              docker compose logs migrations
+              docker compose --profile $NEW_COLOR down
               exit 1
             fi
 
-            echo "🧹 Cleaning up old images..."
+            echo ""
+            echo "🔍 Checking migration status..."
+            MIGRATION_EXIT_CODE=$(docker inspect safee-migrations-1 --format='{{.State.ExitCode}}' 2>/dev/null || echo "255")
+
+            if [ "$MIGRATION_EXIT_CODE" != "0" ]; then
+              echo "❌ Migrations failed with exit code: $MIGRATION_EXIT_CODE"
+              echo ""
+              echo "📋 Migration logs:"
+              docker compose logs migrations
+              echo ""
+              echo "🔄 Stopping $NEW_COLOR deployment..."
+              docker compose --profile $NEW_COLOR down
+              echo "✋ Deployment aborted - $CURRENT_COLOR remains active"
+              exit 1
+            fi
+
+            echo "✅ Migrations completed successfully"
+
+            echo ""
+            echo "🏥 Health checking $NEW_COLOR deployment..."
+            MAX_ATTEMPTS=24
+            ATTEMPT=1
+
+            while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
+              if docker exec safee-api-$NEW_COLOR wget --spider -q http://localhost:3000/api/v1/health 2>/dev/null; then
+                echo "✅ Health check passed on attempt $ATTEMPT"
+                break
+              fi
+
+              if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
+                echo "❌ Health check failed after $MAX_ATTEMPTS attempts"
+                echo ""
+                echo "📋 Container logs:"
+                docker compose logs --tail=50 api-$NEW_COLOR
+                echo ""
+                echo "🔄 Rolling back..."
+                docker compose --profile $NEW_COLOR down
+                echo "✋ Deployment failed - $CURRENT_COLOR remains active"
+                exit 1
+              fi
+
+              echo "⏳ Waiting for health check (attempt $ATTEMPT/$MAX_ATTEMPTS)..."
+              sleep 5
+              ATTEMPT=$((ATTEMPT + 1))
+            done
+
+            echo ""
+            echo "🔀 Switching traffic to $NEW_COLOR..."
+            echo "$NEW_COLOR" > active-deployment
+            export DEPLOYMENT_COLOR=$NEW_COLOR
+
+            # Restart Caddy to pick up new DEPLOYMENT_COLOR
+            docker compose restart caddy
+            sleep 3
+
+            echo "✅ Traffic switched to $NEW_COLOR"
+
+            echo ""
+            echo "🧹 Cleaning up $CURRENT_COLOR deployment..."
+            sleep 30  # Grace period for active connections
+            docker compose --profile $CURRENT_COLOR down
+
+            echo ""
+            echo "🧹 Cleaning up old Docker images..."
             docker image prune -af --filter "until=24h"
 
-            echo "✅ Deployment complete!"
             echo ""
-            echo "📊 Service Status:"
+            echo "✅ Blue-green deployment complete!"
+            echo ""
+            echo "📊 Active Services:"
             docker compose ps
+            echo ""
+            echo "🎨 Active Color: $(cat active-deployment)"
           ENDSSH
 
       - name: Verify deployment

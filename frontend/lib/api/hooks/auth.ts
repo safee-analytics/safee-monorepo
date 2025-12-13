@@ -102,9 +102,7 @@ export function useSignInWithGoogle() {
     mutationFn: async (options?: { callbackURL?: string }) => {
       // Use absolute URL to ensure redirect goes to frontend domain, not API domain
       const frontendUrl = typeof window !== "undefined" ? window.location.origin : "";
-      const absoluteCallbackURL = options?.callbackURL
-        ? `${frontendUrl}${options.callbackURL}`
-        : frontendUrl;
+      const absoluteCallbackURL = options?.callbackURL ? `${frontendUrl}${options.callbackURL}` : frontendUrl;
 
       const { data, error } = await authClient.signIn.social({
         provider: "google",
