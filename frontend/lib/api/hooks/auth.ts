@@ -100,9 +100,15 @@ export function useSignOut() {
 export function useSignInWithGoogle() {
   return useMutation({
     mutationFn: async (options?: { callbackURL?: string }) => {
+      // Use absolute URL to ensure redirect goes to frontend domain, not API domain
+      const frontendUrl = typeof window !== "undefined" ? window.location.origin : "";
+      const absoluteCallbackURL = options?.callbackURL
+        ? `${frontendUrl}${options.callbackURL}`
+        : frontendUrl;
+
       const { data, error } = await authClient.signIn.social({
         provider: "google",
-        callbackURL: options?.callbackURL || "/",
+        callbackURL: absoluteCallbackURL,
       });
       if (error) throw new Error(error.message);
       return data;
@@ -417,9 +423,15 @@ export function useLinkSocialAccount() {
 
   return useMutation({
     mutationFn: async (data: { provider: "google" | "github" | "facebook"; callbackURL?: string }) => {
+      // Use absolute URL to ensure redirect goes to frontend domain, not API domain
+      const frontendUrl = typeof window !== "undefined" ? window.location.origin : "";
+      const absoluteCallbackURL = data.callbackURL
+        ? `${frontendUrl}${data.callbackURL}`
+        : `${frontendUrl}/settings/account`;
+
       const { data: result, error } = await authClient.linkSocial({
         provider: data.provider,
-        callbackURL: data.callbackURL || "/settings/account",
+        callbackURL: absoluteCallbackURL,
       });
       if (error) throw new Error(error.message);
       return result;

@@ -41,13 +41,14 @@ export async function expressAuthentication(
         {
           hasSession: !!session,
           hasUser: !!session?.user,
-          sessionData: session
-            ? {
-                userId: session.user.id,
-                activeOrgId: session.session.activeOrganizationId,
-                fullSessionKeys: Object.keys(session.session),
-              }
-            : null,
+          sessionData:
+            session && session.user && session.session
+              ? {
+                  userId: session.user.id,
+                  activeOrgId: session.session.activeOrganizationId,
+                  fullSessionKeys: Object.keys(session.session),
+                }
+              : null,
         },
         "Better Auth session result",
       );
