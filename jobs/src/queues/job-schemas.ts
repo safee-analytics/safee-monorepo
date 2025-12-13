@@ -4,20 +4,20 @@ import { z } from "zod";
 export const AnalyticsJobSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("calculate_dashboard_metrics"),
-    organizationId: z.string().uuid(),
+    organizationId: z.uuid(),
     dateRange: z.object({
-      start: z.string().datetime(),
-      end: z.string().datetime(),
+      start: z.iso.datetime(),
+      end: z.iso.datetime(),
     }),
   }),
   z.object({
     type: z.literal("aggregate_case_statistics"),
-    caseId: z.string().uuid(),
-    organizationId: z.string().uuid(),
+    caseId: z.uuid(),
+    organizationId: z.uuid(),
   }),
   z.object({
     type: z.literal("calculate_organization_analytics"),
-    organizationId: z.string().uuid(),
+    organizationId: z.uuid(),
     metrics: z.array(z.enum(["cases", "users", "documents", "reports"])),
   }),
 ]);
@@ -27,14 +27,14 @@ export type AnalyticsJob = z.infer<typeof AnalyticsJobSchema>;
 export const EmailJobSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("send_transactional"),
-    to: z.string().email(),
+    to: z.email(),
     template: z.string(),
-    data: z.record(z.unknown()),
-    organizationId: z.string().uuid().optional(),
+    data: z.record(z.string(), z.unknown()),
+    organizationId: z.uuid().optional(),
   }),
   z.object({
     type: z.literal("send_notification"),
-    userId: z.string().uuid(),
+    userId: z.uuid(),
     notificationType: z.enum([
       "case_update",
       "case_assigned",
@@ -44,15 +44,15 @@ export const EmailJobSchema = z.discriminatedUnion("type", [
       "report_ready",
       "document_uploaded",
     ]),
-    payload: z.record(z.unknown()),
-    organizationId: z.string().uuid(),
+    payload: z.record(z.string(), z.unknown()),
+    organizationId: z.uuid(),
   }),
   z.object({
     type: z.literal("send_bulk_notification"),
-    userIds: z.array(z.string().uuid()),
+    userIds: z.array(z.uuid()),
     notificationType: z.string(),
-    payload: z.record(z.unknown()),
-    organizationId: z.string().uuid(),
+    payload: z.record(z.string(), z.unknown()),
+    organizationId: z.uuid(),
   }),
 ]);
 export type EmailJob = z.infer<typeof EmailJobSchema>;
@@ -61,27 +61,27 @@ export type EmailJob = z.infer<typeof EmailJobSchema>;
 export const OdooSyncJobSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("sync_employee"),
-    employeeId: z.string().uuid(),
+    employeeId: z.uuid(),
     direction: z.enum(["to_odoo", "from_odoo", "bidirectional"]),
-    organizationId: z.string().uuid(),
+    organizationId: z.uuid(),
   }),
   z.object({
     type: z.literal("sync_invoice"),
-    invoiceId: z.string().uuid(),
+    invoiceId: z.uuid(),
     direction: z.enum(["to_odoo", "from_odoo"]),
-    organizationId: z.string().uuid(),
+    organizationId: z.uuid(),
   }),
   z.object({
     type: z.literal("sync_department"),
-    departmentId: z.string().uuid(),
+    departmentId: z.uuid(),
     direction: z.enum(["to_odoo", "from_odoo", "bidirectional"]),
-    organizationId: z.string().uuid(),
+    organizationId: z.uuid(),
   }),
   z.object({
     type: z.literal("bulk_sync_employees"),
-    employeeIds: z.array(z.string().uuid()).optional(),
+    employeeIds: z.array(z.uuid()).optional(),
     direction: z.enum(["to_odoo", "from_odoo", "bidirectional"]),
-    organizationId: z.string().uuid(),
+    organizationId: z.uuid(),
   }),
 ]);
 export type OdooSyncJob = z.infer<typeof OdooSyncJobSchema>;
@@ -90,8 +90,8 @@ export type OdooSyncJob = z.infer<typeof OdooSyncJobSchema>;
 export const ReportsJobSchema = z.discriminatedUnion("type", [
   z.object({
     type: z.literal("generate_pdf"),
-    reportId: z.string().uuid(),
-    organizationId: z.string().uuid(),
+    reportId: z.uuid(),
+    organizationId: z.uuid(),
     options: z
       .object({
         includeCharts: z.boolean().optional(),
@@ -101,8 +101,8 @@ export const ReportsJobSchema = z.discriminatedUnion("type", [
   }),
   z.object({
     type: z.literal("generate_excel"),
-    reportId: z.string().uuid(),
-    organizationId: z.string().uuid(),
+    reportId: z.uuid(),
+    organizationId: z.uuid(),
     options: z
       .object({
         includeFormulas: z.boolean().optional(),
@@ -112,17 +112,17 @@ export const ReportsJobSchema = z.discriminatedUnion("type", [
   }),
   z.object({
     type: z.literal("generate_audit_trail"),
-    organizationId: z.string().uuid(),
+    organizationId: z.uuid(),
     dateRange: z.object({
-      start: z.string().datetime(),
-      end: z.string().datetime(),
+      start: z.iso.datetime(),
+      end: z.iso.datetime(),
     }),
     entityTypes: z.array(z.enum(["case", "document", "user", "invoice", "employee"])).optional(),
   }),
   z.object({
     type: z.literal("generate_case_report"),
-    caseId: z.string().uuid(),
-    organizationId: z.string().uuid(),
+    caseId: z.uuid(),
+    organizationId: z.uuid(),
     format: z.enum(["pdf", "excel"]),
   }),
 ]);

@@ -6,17 +6,33 @@ interface SentryOptions {
   release: string;
 }
 
+interface LogObject {
+  level: number;
+  time: number;
+  name?: string;
+  msg?: string;
+  jobId?: string;
+  organizationId?: string;
+  err?: {
+    type?: string;
+    message?: string;
+    stack?: string;
+  };
+  [key: string]: unknown;
+}
+
 /**
  * Pino transport that sends error logs to Sentry
  * Uses Sentry's HTTP API directly (no SDK needed)
  */
 export default async function (opts: SentryOptions) {
   // Parse DSN to get project info
-  const dsnMatch = opts.dsn.match(/https:\/\/([^@]+)@([^/]+)\/(\d+)/);
+  const dsnMatch = /https:\/\/([^@]+)@([^/]+)\/(\d+)/.exec(opts.dsn);
   if (!dsnMatch) {
+    // eslint-disable-next-line no-console
     console.error("Invalid Sentry DSN format");
     return build(async function (source) {
-      for await (const obj of source) {
+      for await (const _ of source) {
         // Do nothing if DSN is invalid
       }
     });
@@ -27,42 +43,43 @@ export default async function (opts: SentryOptions) {
 
   return build(async function (source) {
     for await (const obj of source) {
+      const logObj = obj as LogObject;
       // Only process error and fatal levels
-      if (obj.level < 50) continue;
+      if (logObj.level < 50) continue;
 
       try {
-        const level = obj.level >= 60 ? "fatal" : "error";
+        const level = logObj.level >= 60 ? "fatal" : "error";
 
         const event = {
           event_id: crypto.randomUUID().replace(/-/g, ""),
-          timestamp: new Date(obj.time).toISOString(),
+          timestamp: new Date(logObj.time).toISOString(),
           platform: "node",
           level,
-          logger: obj.name || "pino",
-          message: obj.msg || "Unknown error",
+          logger: logObj.name ?? "pino",
+          message: logObj.msg ?? "Unknown error",
           environment: opts.environment,
           release: opts.release,
-          server_name: process.env.HOSTNAME || "unknown",
+          server_name: process.env.HOSTNAME ?? "unknown",
           tags: {
-            service: obj.name || "unknown",
-            jobId: obj.jobId,
-            organizationId: obj.organizationId,
+            service: logObj.name ?? "unknown",
+            jobId: logObj.jobId,
+            organizationId: logObj.organizationId,
           },
           extra: {
-            ...obj,
+            ...logObj,
             // Don't duplicate these fields
             msg: undefined,
             level: undefined,
             time: undefined,
           },
-          ...(obj.err && {
+          ...(logObj.err && {
             exception: {
               values: [
                 {
-                  type: obj.err.type || "Error",
-                  value: obj.err.message,
+                  type: logObj.err.type ?? "Error",
+                  value: logObj.err.message,
                   stacktrace: {
-                    frames: parseStackTrace(obj.err.stack),
+                    frames: parseStackTrace(logObj.err.stack),
                   },
                 },
               ],
@@ -78,8 +95,9 @@ export default async function (opts: SentryOptions) {
           },
           body: JSON.stringify(event),
         });
-      } catch (error) {
-        console.error("Failed to send Sentry notification:", error);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error("Failed to send Sentry notification:", err);
       }
     }
   });
@@ -88,14 +106,14 @@ export default async function (opts: SentryOptions) {
 /**
  * Parse stack trace string into Sentry frame format
  */
-function parseStackTrace(stack?: string): Array<{ filename: string; function: string; lineno: number }> {
+function parseStackTrace(stack?: string): { filename: string; function: string; lineno: number }[] {
   if (!stack) return [];
 
   const frames = stack
     .split("\n")
     .slice(1) // Skip first line (error message)
     .map((line) => {
-      const match = line.match(/at\s+(.+?)\s+\((.+?):(\d+):\d+\)/);
+      const match = /at\s+(.+?)\s+\((.+?):(\d+):\d+\)/.exec(line);
       if (!match) return null;
 
       return {

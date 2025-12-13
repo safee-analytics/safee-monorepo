@@ -1,5 +1,4 @@
 import { connect, redisConnect, getStorage, getDefaultPubSub, JobScheduler } from "@safee/database";
-import { LOG_LEVEL } from "./env.js";
 import { startServer } from "./server/index.js";
 import { createLogger } from "./logger.js";
 

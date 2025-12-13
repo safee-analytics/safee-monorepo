@@ -76,6 +76,7 @@
     "./logging": "./build/src/logging.js",
     "./storage": "./build/src/storage/index.js",
     "./test-helpers": "./build/src/test-helpers/index.js",
-    "./email-templates": "./build/src/email-templates.js"
+    "./email-templates": "./build/src/email-templates.js",
+    "./jobs": "./build/src/jobs/index.js"
   }
 }

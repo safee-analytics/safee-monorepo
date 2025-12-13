@@ -14,8 +14,8 @@ function getErrorTransports(): TransportTargetOptions[] {
       level: "error",
       options: {
         webhookUrl: process.env.SLACK_WEBHOOK_URL,
-        channel: process.env.SLACK_CHANNEL || "#dev-alerts",
-        username: process.env.SLACK_USERNAME || "Safee Error Bot",
+        channel: process.env.SLACK_CHANNEL ?? "#dev-alerts",
+        username: process.env.SLACK_USERNAME ?? "Safee Error Bot",
       },
     });
   }
@@ -27,8 +27,8 @@ function getErrorTransports(): TransportTargetOptions[] {
       level: "error",
       options: {
         dsn: process.env.SENTRY_DSN,
-        environment: process.env.NODE_ENV || "development",
-        release: process.env.GIT_SHA || "unknown",
+        environment: process.env.NODE_ENV ?? "development",
+        release: process.env.GIT_SHA ?? "unknown",
       },
     });
   }
@@ -45,7 +45,7 @@ export function createLogger(name: string) {
   // Common base configuration
   const baseConfig = {
     name,
-    level: process.env.LOG_LEVEL || "info",
+    level: process.env.LOG_LEVEL ?? "info",
     base: { app: name },
     customLevels: { http: 27 }, // Custom level for HTTP request logging
   };

@@ -557,13 +557,19 @@ export class StorageController extends Controller {
     const expiresIn = body.expiresIn ?? 3600;
 
     const storageService = await this.getStorageService(organizationId);
-    const adapter = (storageService as unknown as { adapter: { getSignedUrl?: Function } }).adapter;
+    const adapter = (
+      storageService as unknown as {
+        adapter: {
+          getSignedUrl?: (path: string, expiresIn: number, action: string) => Promise<string>;
+        };
+      }
+    ).adapter;
 
     if (!adapter.getSignedUrl) {
       throw new Error("Storage adapter does not support signed URLs");
     }
 
-    const url = await adapter.getSignedUrl(scopedPath, expiresIn, "write");
+    const url: string = await adapter.getSignedUrl(scopedPath, expiresIn, "write");
     const expiresAt = new Date(Date.now() + expiresIn * 1000);
 
     // Log the operation for SOC-2 audit trail
@@ -606,13 +612,19 @@ export class StorageController extends Controller {
     const expiresIn = body.expiresIn ?? 3600;
 
     const storageService = await this.getStorageService(organizationId);
-    const adapter = (storageService as unknown as { adapter: { getSignedUrl?: Function } }).adapter;
+    const adapter = (
+      storageService as unknown as {
+        adapter: {
+          getSignedUrl?: (path: string, expiresIn: number, action: string) => Promise<string>;
+        };
+      }
+    ).adapter;
 
     if (!adapter.getSignedUrl) {
       throw new Error("Storage adapter does not support signed URLs");
     }
 
-    const url = await adapter.getSignedUrl(scopedPath, expiresIn, "read");
+    const url: string = await adapter.getSignedUrl(scopedPath, expiresIn, "read");
     const expiresAt = new Date(Date.now() + expiresIn * 1000);
 
     // Log the operation for SOC-2 audit trail

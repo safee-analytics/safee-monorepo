@@ -14,4 +14,4 @@ export type { JobLog, NewJobLog } from "../drizzle/jobLogs.js";
 
 export type { AuditEvent, NewAuditEvent } from "../drizzle/auditEvents.js";
 
-export type { JobStatus, JobType, Priority } from "../drizzle/_common.js";
+export type { JobName, JobStatus, JobType, Priority } from "../drizzle/_common.js";

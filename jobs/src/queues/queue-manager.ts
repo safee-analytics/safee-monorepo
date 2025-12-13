@@ -1,16 +1,14 @@
-import { Queue, QueueOptions } from "bullmq";
-import Redis from "ioredis";
-import { createJob, logJobInfo } from "@safee/database/jobs";
-import { connect } from "@safee/database";
-import type { JobName, Priority } from "@safee/database/drizzle/_common";
+import { Queue, type QueueOptions, type ConnectionOptions } from "bullmq";
+import { Redis } from "ioredis";
+import { connect, createJob, logJobInfo, type JobName, type Priority } from "@safee/database";
 import { createLogger } from "../logger.js";
 
 const logger = createLogger("queue-manager");
 const { drizzle } = connect("queue-manager");
 
-const connection = new Redis(process.env.REDIS_URL || "redis://localhost:6379", {
+const connection = new Redis(process.env.REDIS_URL ?? "redis://localhost:6379", {
   maxRetriesPerRequest: null,
-});
+}) as ConnectionOptions;
 
 const DEFAULT_QUEUE_OPTIONS: QueueOptions = {
   connection,
@@ -22,27 +20,19 @@ const DEFAULT_QUEUE_OPTIONS: QueueOptions = {
   },
 };
 
-// Map queue names to PostgreSQL job names
-const QUEUE_TO_JOB_NAME: Record<string, JobName> = {
-  analytics: "calculate_analytics",
-  email: "send_bulk_email",
-  "odoo-sync": "sync_odoo",
-  reports: "generate_report",
-};
-
 /**
  * Queue manager with dual persistence:
  * - BullMQ (Redis) for efficient job processing
  * - PostgreSQL for audit trails and compliance
  */
 export class QueueManager {
-  private queues: Map<string, Queue> = new Map();
+  private queues = new Map<string, Queue>();
 
   constructor() {
-    ["analytics", "email", "odoo-sync", "reports"].forEach((queueName) => {
+    for (const queueName of ["analytics", "email", "odoo-sync", "reports"]) {
       this.queues.set(queueName, new Queue(queueName, DEFAULT_QUEUE_OPTIONS));
       logger.info({ queueName }, "Queue initialized");
-    });
+    }
   }
 
   /**
@@ -50,14 +40,33 @@ export class QueueManager {
    * BullMQ handles processing, PostgreSQL provides audit trail
    */
   async addJob(
-    queueName: string,
+    queueName: "analytics" | "email" | "odoo-sync" | "reports",
     data: Record<string, unknown>,
     options: { priority?: Priority; organizationId?: string } = {},
   ): Promise<{ bullmqJobId: string; pgJobId: string }> {
     const queue = this.queues.get(queueName);
     if (!queue) throw new Error(`Queue ${queueName} not found`);
 
-    const jobName = QUEUE_TO_JOB_NAME[queueName];
+    // Map queue name to job name using type-safe switch
+    let jobName: JobName;
+    switch (queueName) {
+      case "analytics":
+        jobName = "calculate_analytics";
+        break;
+      case "email":
+        jobName = "send_bulk_email";
+        break;
+      case "odoo-sync":
+        jobName = "sync_odoo";
+        break;
+      case "reports":
+        jobName = "generate_report";
+        break;
+      default:
+        throw new Error("Unknown queue");
+    }
+
+    const priority: Priority = options.priority ?? "normal";
 
     // 1. Create job in PostgreSQL first (source of truth for audit)
     const pgJob = await createJob(
@@ -65,15 +74,23 @@ export class QueueManager {
       {
         jobName,
         type: "immediate",
-        priority: options.priority || "normal",
+        priority,
         payload: data,
         organizationId: options.organizationId,
       },
     );
 
     // 2. Add to BullMQ with PostgreSQL job ID as reference
+    // Map priority to BullMQ numeric priority (lower = higher priority)
+    let bullmqPriority = 5; // default
+    if (options.priority === "critical") {
+      bullmqPriority = 1;
+    } else if (options.priority === "high") {
+      bullmqPriority = 3;
+    }
+
     const bullmqJob = await queue.add(queueName, data, {
-      priority: options.priority === "critical" ? 1 : options.priority === "high" ? 3 : 5,
+      priority: bullmqPriority,
       jobId: pgJob.id, // Use PostgreSQL ID as BullMQ job ID for correlation
     });
 

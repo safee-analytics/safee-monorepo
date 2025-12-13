@@ -6,18 +6,31 @@ interface SlackOptions {
   username: string;
 }
 
+interface LogObject {
+  level: number;
+  time: number;
+  name?: string;
+  msg?: string;
+  jobId?: string;
+  err?: {
+    message?: string;
+    stack?: string;
+  };
+}
+
 /**
  * Pino transport that sends error logs to Slack
  */
 export default async function (opts: SlackOptions) {
   return build(async function (source) {
     for await (const obj of source) {
+      const logObj = obj as LogObject;
       // Only process error and fatal levels
-      if (obj.level < 50) continue; // 50 = error, 60 = fatal
+      if (logObj.level < 50) continue; // 50 = error, 60 = fatal
 
       try {
-        const color = obj.level >= 60 ? "#ff0000" : "#ff9900"; // red for fatal, orange for error
-        const levelText = obj.level >= 60 ? "FATAL" : "ERROR";
+        const color = logObj.level >= 60 ? "#ff0000" : "#ff9900"; // red for fatal, orange for error
+        const levelText = logObj.level >= 60 ? "FATAL" : "ERROR";
 
         const payload = {
           channel: opts.channel,
@@ -25,39 +38,39 @@ export default async function (opts: SlackOptions) {
           attachments: [
             {
               color,
-              title: `${levelText}: ${obj.msg || "Unknown error"}`,
+              title: `${levelText}: ${logObj.msg ?? "Unknown error"}`,
               fields: [
                 {
                   title: "Service",
-                  value: obj.name || "unknown",
+                  value: logObj.name ?? "unknown",
                   short: true,
                 },
                 {
                   title: "Time",
-                  value: new Date(obj.time).toISOString(),
+                  value: new Date(logObj.time).toISOString(),
                   short: true,
                 },
-                ...(obj.err
+                ...(logObj.err
                   ? [
                       {
                         title: "Error",
-                        value: `\`\`\`${obj.err.message}\n${obj.err.stack}\`\`\``,
+                        value: `\`\`\`${logObj.err.message ?? ""}\n${logObj.err.stack ?? ""}\`\`\``,
                         short: false,
                       },
                     ]
                   : []),
-                ...(obj.jobId
+                ...(logObj.jobId
                   ? [
                       {
                         title: "Job ID",
-                        value: obj.jobId,
+                        value: logObj.jobId,
                         short: true,
                       },
                     ]
                   : []),
               ],
               footer: "Safee Error Notification",
-              ts: Math.floor(obj.time / 1000),
+              ts: Math.floor(logObj.time / 1000),
             },
           ],
         };
@@ -67,9 +80,10 @@ export default async function (opts: SlackOptions) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),
         });
-      } catch (error) {
+      } catch (err) {
         // Don't crash if Slack notification fails
-        console.error("Failed to send Slack notification:", error);
+        // eslint-disable-next-line no-console
+        console.error("Failed to send Slack notification:", err);
       }
     }
   });

@@ -1,21 +1,34 @@
-import { Worker, Job } from "bullmq";
-import Redis from "ioredis";
-import { connect } from "@safee/database";
-import { startJob, completeJob, failJob } from "@safee/database/jobs";
-import type { JobName } from "@safee/database/drizzle/_common";
+import { Worker, Job, type ConnectionOptions } from "bullmq";
+import { Redis } from "ioredis";
+import { z } from "zod";
+import { connect, startJob, completeJob, failJob, type JobName } from "@safee/database";
 import { createLogger } from "./logger.js";
+import {
+  AnalyticsJobSchema,
+  EmailJobSchema,
+  OdooSyncJobSchema,
+  ReportsJobSchema,
+} from "./queues/job-schemas.js";
+
+// Schema for basic job data structure
+const JobDataSchema = z
+  .object({
+    type: z.string(),
+  })
+  .catchall(z.unknown()); // Allow additional properties
 
 const logger = createLogger("job-worker");
 const { drizzle } = connect("job-worker");
 
-const connection = new Redis(process.env.REDIS_URL || "redis://localhost:6379", {
+const redisConnection = new Redis(process.env.REDIS_URL ?? "redis://localhost:6379", {
   maxRetriesPerRequest: null,
 });
+const connection = redisConnection as unknown as ConnectionOptions;
 
 // Job processors for each job name
-const jobProcessors: Record<JobName, (payload: Record<string, unknown>) => Promise<void>> = {
+const jobProcessors = {
   // Existing job types
-  send_email: async (payload) => {
+  send_email: async (payload: Record<string, unknown>) => {
     logger.info({ payload }, "Processing send_email job");
     // TODO: Implement email sending
     // - Load email template
@@ -23,7 +36,7 @@ const jobProcessors: Record<JobName, (payload: Record<string, unknown>) => Promi
     // - Send via email service (SendGrid, AWS SES, etc.)
   },
 
-  encrypt_file: async (payload) => {
+  encrypt_file: async (payload: Record<string, unknown>) => {
     logger.info({ payload }, "Processing encrypt_file job");
     // TODO: Implement file encryption
     // - Fetch file from storage
@@ -32,7 +45,7 @@ const jobProcessors: Record<JobName, (payload: Record<string, unknown>) => Promi
     // - Update database record
   },
 
-  rotate_encryption_key: async (payload) => {
+  rotate_encryption_key: async (payload: Record<string, unknown>) => {
     logger.info({ payload }, "Processing rotate_encryption_key job");
     // TODO: Implement key rotation
     // - Generate new encryption key
@@ -41,7 +54,7 @@ const jobProcessors: Record<JobName, (payload: Record<string, unknown>) => Promi
     // - Archive old key
   },
 
-  reencrypt_files: async (payload) => {
+  reencrypt_files: async (payload: Record<string, unknown>) => {
     logger.info({ payload }, "Processing reencrypt_files job");
     // TODO: Implement file re-encryption
     // - Fetch all files for organization
@@ -51,72 +64,80 @@ const jobProcessors: Record<JobName, (payload: Record<string, unknown>) => Promi
   },
 
   // NEW - Job types from BullMQ migration
-  calculate_analytics: async (payload) => {
-    logger.info({ payload }, "Processing calculate_analytics job");
-    // TODO: Implementation based on payload.type
+  calculate_analytics: async (payload: Record<string, unknown>) => {
+    const data = AnalyticsJobSchema.parse(payload);
+    logger.info({ payload: data }, "Processing calculate_analytics job");
+    // TODO: Implementation based on data.type
     // - calculate_dashboard_metrics: Aggregate dashboard stats
     // - aggregate_case_statistics: Calculate case metrics
     // - calculate_organization_analytics: Org-wide KPIs
   },
 
-  send_bulk_email: async (payload) => {
-    logger.info({ payload }, "Processing send_bulk_email job");
-    // TODO: Implementation based on payload.type
+  send_bulk_email: async (payload: Record<string, unknown>) => {
+    const data = EmailJobSchema.parse(payload);
+    logger.info({ payload: data }, "Processing send_bulk_email job");
+    // TODO: Implementation based on data.type
     // - send_transactional: Single email with template
     // - send_notification: User notification email
     // - send_bulk_notification: Batch email sending
   },
 
-  sync_odoo: async (payload) => {
-    logger.info({ payload }, "Processing sync_odoo job");
-    // TODO: Implementation based on payload.type
+  sync_odoo: async (payload: Record<string, unknown>) => {
+    const data = OdooSyncJobSchema.parse(payload);
+    logger.info({ payload: data }, "Processing sync_odoo job");
+    // TODO: Implementation based on data.type
     // - sync_employee: Bidirectional employee sync
     // - sync_invoice: Invoice sync to/from Odoo
     // - sync_department: Department sync
     // - bulk_sync_employees: Batch employee sync
   },
 
-  generate_report: async (payload) => {
-    logger.info({ payload }, "Processing generate_report job");
-    // TODO: Implementation based on payload.type
+  generate_report: async (payload: Record<string, unknown>) => {
+    const data = ReportsJobSchema.parse(payload);
+    logger.info({ payload: data }, "Processing generate_report job");
+    // TODO: Implementation based on data.type
     // - generate_pdf: Create PDF report
     // - generate_excel: Create Excel workbook
     // - generate_audit_trail: Compliance audit report
     // - generate_case_report: Case-specific report
   },
-};
+} satisfies Record<JobName, (payload: Record<string, unknown>) => Promise<void>>;
 
 /**
  * Unified job processor for all BullMQ queues
  */
 async function processJob(job: Job): Promise<void> {
-  logger.info({ jobId: job.id, data: job.data }, "Processing job from BullMQ");
+  // Validate basic job structure with Zod
+  const jobData = JobDataSchema.parse(job.data);
+
+  logger.info({ jobId: job.id, data: jobData }, "Processing job from BullMQ");
 
   // Update PostgreSQL job status to running
   await startJob({ drizzle, logger }, job.id!);
 
   try {
-    // Determine job type from payload
-    const jobType = job.data.type as string;
-    const jobName = job.name as string;
+    const jobType = jobData.type;
+    const jobName = job.name;
 
     logger.info({ jobId: job.id, jobName, jobType }, "Executing job processor");
 
-    // Find the appropriate processor based on queue name
-    let processorKey: JobName;
-    if (jobName === "analytics") processorKey = "calculate_analytics";
-    else if (jobName === "email") processorKey = "send_bulk_email";
-    else if (jobName === "odoo-sync") processorKey = "sync_odoo";
-    else if (jobName === "reports") processorKey = "generate_report";
-    else throw new Error(`Unknown job name: ${jobName}`);
+    // Find the appropriate processor based on queue name using type-safe switch
+    let processor: (payload: Record<string, unknown>) => Promise<void>;
 
-    const processor = jobProcessors[processorKey];
-    if (!processor) {
-      throw new Error(`No processor found for: ${processorKey}`);
+    if (jobName === "analytics") {
+      processor = jobProcessors.calculate_analytics;
+    } else if (jobName === "email") {
+      processor = jobProcessors.send_bulk_email;
+    } else if (jobName === "odoo-sync") {
+      processor = jobProcessors.sync_odoo;
+    } else if (jobName === "reports") {
+      processor = jobProcessors.generate_report;
+    } else {
+      throw new Error(`Unknown job name: ${jobName}`);
     }
 
-    // Execute job processor
-    await processor(job.data);
+    // Execute job processor (further Zod validation happens inside each processor)
+    await processor(jobData);
 
     // Mark as completed in PostgreSQL
     await completeJob({ drizzle, logger }, job.id!, {
@@ -125,14 +146,14 @@ async function processJob(job: Job): Promise<void> {
     });
 
     logger.info({ jobId: job.id }, "Job completed successfully");
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : String(err);
     logger.error({ jobId: job.id, error: errorMessage }, "Job failed");
 
     // Mark as failed in PostgreSQL (BullMQ will handle retries)
     await failJob({ drizzle, logger }, job.id!, errorMessage, true);
 
-    throw error; // Re-throw so BullMQ knows it failed
+    throw err; // Re-throw so BullMQ knows it failed
   }
 }
 
@@ -174,19 +195,23 @@ async function startWorkers() {
   logger.info({ queues: queues.length }, "All BullMQ workers started");
 
   // Graceful shutdown
-  const shutdown = async (signal: string) => {
+  async function shutdown(signal: string) {
     logger.info({ signal }, "Shutting down gracefully");
     await Promise.all(workers.map((w) => w.close()));
-    await connection.quit();
+    await redisConnection.quit();
     process.exit(0);
-  };
+  }
 
-  process.on("SIGTERM", () => shutdown("SIGTERM"));
-  process.on("SIGINT", () => shutdown("SIGINT"));
+  process.on("SIGTERM", () => {
+    void shutdown("SIGTERM");
+  });
+  process.on("SIGINT", () => {
+    void shutdown("SIGINT");
+  });
 }
 
 // Start all workers
-startWorkers().catch((err) => {
+startWorkers().catch((err: unknown) => {
   logger.error({ error: err }, "Failed to start workers");
   process.exit(1);
 });

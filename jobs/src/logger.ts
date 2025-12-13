@@ -1,5 +1,4 @@
-import pino from "pino";
-import type { TransportTargetOptions } from "pino";
+import { pino, type Logger, TransportTargetOptions } from "pino";
 
 /**
  * Configure error notification transports based on environment variables
@@ -14,8 +13,8 @@ function getErrorTransports(): TransportTargetOptions[] {
       level: "error",
       options: {
         webhookUrl: process.env.SLACK_WEBHOOK_URL,
-        channel: process.env.SLACK_CHANNEL || "#errors",
-        username: process.env.SLACK_USERNAME || "Safee Error Bot",
+        channel: process.env.SLACK_CHANNEL ?? "#errors",
+        username: process.env.SLACK_USERNAME ?? "Safee Error Bot",
       },
     });
   }
@@ -27,8 +26,8 @@ function getErrorTransports(): TransportTargetOptions[] {
       level: "error",
       options: {
         dsn: process.env.SENTRY_DSN,
-        environment: process.env.NODE_ENV || "development",
-        release: process.env.GIT_SHA || "unknown",
+        environment: process.env.NODE_ENV ?? "development",
+        release: process.env.GIT_SHA ?? "unknown",
       },
     });
   }
@@ -39,14 +38,14 @@ function getErrorTransports(): TransportTargetOptions[] {
 /**
  * Create logger with error notification transports
  */
-export function createLogger(name: string) {
+export function createLogger(name: string): Logger {
   const errorTransports = getErrorTransports();
 
   // If we have error transports, use pino with transport
   if (errorTransports.length > 0) {
     return pino({
       name,
-      level: process.env.LOG_LEVEL || "info",
+      level: process.env.LOG_LEVEL ?? "info",
       transport: {
         targets: [
           // Console output (always enabled)
@@ -69,7 +68,7 @@ export function createLogger(name: string) {
   // No error transports - just use basic logger
   return pino({
     name,
-    level: process.env.LOG_LEVEL || "info",
+    level: process.env.LOG_LEVEL ?? "info",
     transport: {
       target: "pino-pretty",
       options: {
