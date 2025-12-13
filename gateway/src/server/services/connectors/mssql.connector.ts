@@ -134,7 +134,7 @@ export class MSSQLConnector extends BaseConnector {
   /**
    * Get the connection pool for executing raw SQL queries
    */
-  getPool(): ConnectionPool {
+  getPool(): mssql.ConnectionPool {
     if (!this.connected || !this.pool) {
       throw new Error("Connector is not connected");
     }
