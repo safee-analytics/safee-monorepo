@@ -38,8 +38,8 @@ jobs:
               NEXT_PUBLIC_API_URL=https://api-dev.safee.dev
               NEXT_PUBLIC_APP_URL=https://dev.safee.dev
               NEXT_PUBLIC_LANDING_URL=https://landing.safee.dev
-              NEXT_PUBLIC_SENTRY_DSN=${{ secrets.SENTRY_DSN != '' && secrets.SENTRY_DSN || 'https://0ce4dd15134f4beeb1896ea47fd4dd6d@o4510529722449920.ingest.de.sentry.io/4510529723760720' }}
-              SENTRY_DSN=${{ secrets.SENTRY_DSN != '' && secrets.SENTRY_DSN || 'https://0ce4dd15134f4beeb1896ea47fd4dd6d@o4510529722449920.ingest.de.sentry.io/4510529723760720' }}
+              NEXT_PUBLIC_SENTRY_DSN=https://0ce4dd15134f4beeb1896ea47fd4dd6d@o4510529722449920.ingest.de.sentry.io/4510529723760720
+              SENTRY_DSN=https://0ce4dd15134f4beeb1896ea47fd4dd6d@o4510529722449920.ingest.de.sentry.io/4510529723760720
           - service: landing
             file: landing/Dockerfile
             build-args: |
