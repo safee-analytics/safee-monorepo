@@ -162,7 +162,7 @@ jobs:
             ATTEMPT=1
 
             while [ $ATTEMPT -le $MAX_ATTEMPTS ]; do
-              if docker exec safee-api-$NEW_COLOR wget --spider -q http://localhost:3000/api/v1/health 2>/dev/null; then
+              if docker exec safee-api-$NEW_COLOR wget --spider -q http://127.0.0.1:3000/api/v1/health 2>/dev/null; then
                 echo "✅ Health check passed on attempt $ATTEMPT"
                 break
               fi
