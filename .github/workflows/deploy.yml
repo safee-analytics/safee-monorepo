@@ -167,11 +167,22 @@ jobs:
                 break
               fi
 
+              # Dump logs every 5 attempts to help diagnose issues
+              if [ $((ATTEMPT % 5)) -eq 0 ]; then
+                echo ""
+                echo "⚠️  Health check still failing after $ATTEMPT attempts. Recent logs:"
+                docker compose --profile $NEW_COLOR logs --tail=20 api-$NEW_COLOR
+                echo ""
+              fi
+
               if [ $ATTEMPT -eq $MAX_ATTEMPTS ]; then
                 echo "❌ Health check failed after $MAX_ATTEMPTS attempts"
                 echo ""
-                echo "📋 Container logs:"
-                docker compose logs --tail=50 api-$NEW_COLOR
+                echo "📋 Full container logs:"
+                docker compose --profile $NEW_COLOR logs --tail=100 api-$NEW_COLOR
+                echo ""
+                echo "🔍 Container status:"
+                docker compose --profile $NEW_COLOR ps api-$NEW_COLOR
                 echo ""
                 echo "🔄 Rolling back..."
                 docker compose --profile $NEW_COLOR down
