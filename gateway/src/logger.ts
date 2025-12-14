@@ -52,37 +52,45 @@ export function createLogger(name: string) {
 
   // If we have error transports, use pino with transport
   if (errorTransports.length > 0) {
+    const targets: TransportTargetOptions[] = [
+      // Error notification transports
+      ...errorTransports,
+    ];
+
+    // Add pino-pretty only in development
+    if (process.env.NODE_ENV !== "production") {
+      targets.unshift({
+        target: "pino-pretty",
+        level: "trace",
+        options: {
+          colorize: true,
+          translateTime: "SYS:standard",
+          ignore: "pid,hostname",
+        },
+      });
+    }
+
+    return pino({
+      ...baseConfig,
+      transport: { targets },
+    });
+  }
+
+  // No error transports - use pino-pretty in dev, JSON in production
+  if (process.env.NODE_ENV !== "production") {
     return pino({
       ...baseConfig,
       transport: {
-        targets: [
-          // Console output (always enabled)
-          {
-            target: "pino-pretty",
-            level: "trace",
-            options: {
-              colorize: true,
-              translateTime: "SYS:standard",
-              ignore: "pid,hostname",
-            },
-          },
-          // Error notification transports
-          ...errorTransports,
-        ],
+        target: "pino-pretty",
+        options: {
+          colorize: true,
+          translateTime: "SYS:standard",
+          ignore: "pid,hostname",
+        },
       },
     });
   }
 
-  // No error transports - just use basic logger
-  return pino({
-    ...baseConfig,
-    transport: {
-      target: "pino-pretty",
-      options: {
-        colorize: true,
-        translateTime: "SYS:standard",
-        ignore: "pid,hostname",
-      },
-    },
-  });
+  // Production mode without error transports - use plain JSON logging
+  return pino(baseConfig);
 }
