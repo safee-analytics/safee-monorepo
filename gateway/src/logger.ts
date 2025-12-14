@@ -1,5 +1,10 @@
 import { pino } from "pino";
 import type { TransportTargetOptions } from "pino";
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /**
  * Configure error notification transports based on environment variables
@@ -10,7 +15,7 @@ function getErrorTransports(): TransportTargetOptions[] {
   // Slack notifications for errors
   if (process.env.SLACK_WEBHOOK_URL) {
     transports.push({
-      target: "./transports/slack.transport.js",
+      target: join(__dirname, "transports", "slack.transport.js"),
       level: "error",
       options: {
         webhookUrl: process.env.SLACK_WEBHOOK_URL,
@@ -23,7 +28,7 @@ function getErrorTransports(): TransportTargetOptions[] {
   // Sentry for error tracking
   if (process.env.SENTRY_DSN) {
     transports.push({
-      target: "./transports/sentry.transport.js",
+      target: join(__dirname, "transports", "sentry.transport.js"),
       level: "error",
       options: {
         dsn: process.env.SENTRY_DSN,
