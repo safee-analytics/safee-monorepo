@@ -395,6 +395,10 @@ fmt-eslint-plugin-safee:
 test-eslint-plugin-safee: build-eslint-plugin-safee
     npm -w eslint-plugin-safee test
 
+[group('infra')]
+fmt-infra:
+    terraform -chdir=infra fmt -recursive
+
 [private]
 clean-eslint-plugin-safee:
     npx -w eslint-plugin-safee tsc --build --clean
