@@ -49,21 +49,25 @@ services:
 
   odoo:
     build:
-      context: ./odoo
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: odoo/Dockerfile
+    image: safee-odoo:18.0
     ports:
       - "8069:8069"
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      - ODOO_DB_HOST=postgres
-      - ODOO_DB_PORT=5432
-      - ODOO_DB_USER=safee
-      - ODOO_DB_PASSWORD=safee
-      - ODOO_ADMIN_PASSWD=${ODOO_ADMIN_PASSWORD:-admin}
+      - HOST=postgres
+      - PORT=5432
+      - USER=safee
+      - PASSWORD=safee
+      - ODOO_ADMIN_PASSWORD=${ODOO_ADMIN_PASSWORD:-admin}
+      - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
+      - SLACK_ERROR_CHANNEL=${SLACK_ERROR_CHANNEL:-#dev_odoo_alerts}
     volumes:
       - odoo-data:/var/lib/odoo
+      - ./odoo/odoo.conf:/etc/odoo/odoo.conf:ro
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8069/web/health"]
       interval: 10s

@@ -56,3 +56,5 @@ caddy-logs/
 .aider*
 CLAUDE.local.md
 
+odoo/custom_addons/
+odoo/.env
