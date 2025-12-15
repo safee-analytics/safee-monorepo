@@ -350,6 +350,8 @@ export function useListSessions() {
       if (error) throw new Error(error.message);
       return data;
     },
+    staleTime: 2 * 60 * 1000, // 2 minutes - sessions don't change frequently
+    gcTime: 5 * 60 * 1000, // 5 minutes in memory
   });
 }
 
@@ -451,6 +453,8 @@ export function useListLinkedAccounts() {
       if (error) throw new Error(error.message);
       return data;
     },
+    staleTime: 10 * 60 * 1000, // 10 minutes - social accounts rarely change
+    gcTime: 30 * 60 * 1000, // 30 minutes in memory
   });
 }
 
@@ -585,6 +589,8 @@ export function useGet2FAStatus() {
     queryKey: [...authQueryKeys.user, "2fa-status"] as const,
     queryFn: () => Promise.resolve(session.data?.user.twoFactorEnabled ?? false),
     enabled: !!session.data,
+    staleTime: 10 * 60 * 1000, // 10 minutes - 2FA status rarely changes
+    gcTime: 30 * 60 * 1000, // 30 minutes in memory
   });
 }
 
