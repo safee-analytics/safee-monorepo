@@ -203,17 +203,18 @@ jobs:
             # Restart Caddy to pick up new DEPLOYMENT_COLOR
             docker compose restart caddy
 
-            # Wait for Caddy to be fully ready
+            # Wait for Caddy to be fully ready by checking admin API
             echo "⏳ Waiting for Caddy to be ready..."
-            MAX_CADDY_WAIT=30
+            MAX_CADDY_WAIT=20
             CADDY_ATTEMPT=1
             while [ $CADDY_ATTEMPT -le $MAX_CADDY_WAIT ]; do
-              if docker exec safee-caddy-1 wget --spider -q http://127.0.0.1:80 2>/dev/null; then
+              # Check if Caddy admin API is responding (port 2019)
+              if docker exec safee-caddy-1 wget --spider -q http://127.0.0.1:2019/config/ 2>/dev/null; then
                 echo "✅ Caddy is ready after $CADDY_ATTEMPT seconds"
                 break
               fi
               if [ $CADDY_ATTEMPT -eq $MAX_CADDY_WAIT ]; then
-                echo "⚠️  Caddy health check timeout, proceeding anyway..."
+                echo "⚠️  Caddy health check timeout after ${MAX_CADDY_WAIT}s, proceeding anyway..."
                 break
               fi
               sleep 1
