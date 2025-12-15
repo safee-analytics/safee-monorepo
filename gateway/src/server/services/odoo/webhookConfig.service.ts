@@ -42,7 +42,7 @@ export async function configureOdooWebhooks(
     };
 
     // Track changes for rollback
-    const appliedChanges: Array<{ key: string; paramId?: number; oldValue?: string; isNew: boolean }> = [];
+    const appliedChanges: { key: string; paramId?: number; oldValue?: string; isNew: boolean }[] = [];
 
     try {
       for (const [key, value] of Object.entries(configParams)) {
