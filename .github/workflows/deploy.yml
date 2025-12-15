@@ -226,7 +226,9 @@ jobs:
             echo ""
             echo "🧹 Cleaning up $CURRENT_COLOR deployment..."
             sleep 30  # Grace period for active connections
-            docker compose --profile $CURRENT_COLOR down
+            # Only stop the old API container, not all services
+            docker compose stop api-$CURRENT_COLOR
+            docker compose rm -f api-$CURRENT_COLOR
 
             echo ""
             echo "🧹 Cleaning up old Docker images..."
