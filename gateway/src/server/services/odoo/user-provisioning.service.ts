@@ -898,7 +898,10 @@ export class OdooUserProvisioningService {
 
       this.logger.info({ userId, odooUid: odooUser.odooUid }, "✅ Odoo user deactivated successfully");
     } catch (err) {
-      this.logger.error({ userId, odooUid: odooUser.odooUid, error: err, odooDeactivated }, "❌ Failed to deactivate Odoo user");
+      this.logger.error(
+        { userId, odooUid: odooUser.odooUid, error: err, odooDeactivated },
+        "❌ Failed to deactivate Odoo user",
+      );
 
       // Rollback: Reactivate Odoo user if DB update failed
       if (odooDeactivated) {
@@ -919,7 +922,10 @@ export class OdooUserProvisioningService {
             adminCredentials,
           );
 
-          this.logger.info({ userId, odooUid: odooUser.odooUid }, "Rollback successful: Odoo user reactivated");
+          this.logger.info(
+            { userId, odooUid: odooUser.odooUid },
+            "Rollback successful: Odoo user reactivated",
+          );
         } catch (rollbackErr) {
           this.logger.error(
             { userId, odooUid: odooUser.odooUid, error: rollbackErr },
