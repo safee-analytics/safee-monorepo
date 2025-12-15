@@ -638,76 +638,110 @@ export class OdooUserProvisioningService {
 
     const userName = user.name ?? user.email;
 
-    const odooUid = await this.createOdooUser(
-      databaseName,
-      adminLogin,
-      adminPassword,
-      user.email,
-      userName,
-      role,
-    );
-
-    const password = this.generateSecurePassword();
+    let odooUid: number | null = null;
+    let odooUserCreated = false;
 
     try {
+      odooUid = await this.createOdooUser(
+        databaseName,
+        adminLogin,
+        adminPassword,
+        user.email,
+        userName,
+        role,
+      );
+      odooUserCreated = true;
+
+      const password = this.generateSecurePassword();
+
       await this.setOdooUserPassword(databaseName, adminLogin, adminPassword, odooUid, password);
       this.logger.info({ userId, odooUid }, "Password set successfully");
+
+      let apiKey: string | null = null;
+      let authCredential = password; // Default to password
+
+      try {
+        const keyName = `safee-${userName}-${Date.now()}`;
+        apiKey = await this.generateApiKey(databaseName, adminLogin, adminPassword, user.email, keyName);
+        authCredential = apiKey; // Prefer API key
+        this.logger.info({ userId, odooUid, keyName }, "✅ API key generated successfully (preferred)");
+      } catch (err) {
+        this.logger.warn(
+          { userId, odooUid, error: err instanceof Error ? err.message : "Unknown error" },
+          "⚠️  Failed to generate API key, will use password authentication",
+        );
+      }
+
+      const odooDb = await this.drizzle.query.odooDatabases.findFirst({
+        where: eq(schema.odooDatabases.organizationId, organizationId),
+      });
+
+      if (!odooDb) {
+        throw new NotFound("Odoo database not found");
+      }
+
+      // Only insert database record if everything succeeded
+      await this.drizzle.insert(schema.odooUsers).values({
+        userId,
+        odooDatabaseId: odooDb.id,
+        odooUid,
+        odooLogin: user.email,
+        apiKey: apiKey ? encryptionService.encrypt(apiKey) : null,
+        password: encryptionService.encrypt(password),
+        lastSyncedAt: new Date(),
+      });
+
+      this.logger.info(
+        {
+          userId,
+          odooUid,
+          databaseName,
+          hasApiKey: !!apiKey,
+        },
+        "✅ Odoo user provisioned successfully",
+      );
+
+      return {
+        odooUid,
+        odooLogin: user.email,
+        odooPassword: authCredential,
+      };
     } catch (err) {
       this.logger.error(
-        { userId, odooUid, error: err instanceof Error ? err.message : "Unknown error" },
-        "Failed to set Odoo password",
+        { userId, odooUid, error: err, odooUserCreated },
+        "❌ Failed to provision Odoo user, rolling back",
       );
+
+      // Rollback: Deactivate the Odoo user if it was created
+      if (odooUserCreated && odooUid) {
+        try {
+          this.logger.info({ userId, odooUid }, "Rolling back: Deactivating Odoo user");
+
+          const { sessionId, cookies } = await this.authenticate(databaseName, adminLogin, adminPassword);
+          const adminCredentials = { databaseName, adminLogin, adminPassword };
+
+          await this.callOdooExecuteKw(
+            sessionId,
+            cookies,
+            "res.users",
+            "write",
+            [[odooUid], { active: false }],
+            {},
+            z.boolean(),
+            adminCredentials,
+          );
+
+          this.logger.info({ userId, odooUid }, "Rollback successful: Odoo user deactivated");
+        } catch (rollbackErr) {
+          this.logger.error(
+            { userId, odooUid, error: rollbackErr },
+            "❌ Rollback failed: Could not deactivate Odoo user",
+          );
+        }
+      }
+
       throw err;
     }
-
-    let apiKey: string | null = null;
-    let authCredential = password; // Default to password
-
-    try {
-      const keyName = `safee-${userName}-${Date.now()}`;
-      apiKey = await this.generateApiKey(databaseName, adminLogin, adminPassword, user.email, keyName);
-      authCredential = apiKey; // Prefer API key
-      this.logger.info({ userId, odooUid, keyName }, "✅ API key generated successfully (preferred)");
-    } catch (err) {
-      this.logger.warn(
-        { userId, odooUid, error: err instanceof Error ? err.message : "Unknown error" },
-        "⚠️  Failed to generate API key, will use password authentication",
-      );
-    }
-
-    const odooDb = await this.drizzle.query.odooDatabases.findFirst({
-      where: eq(schema.odooDatabases.organizationId, organizationId),
-    });
-
-    if (!odooDb) {
-      throw new NotFound("Odoo database not found");
-    }
-
-    await this.drizzle.insert(schema.odooUsers).values({
-      userId,
-      odooDatabaseId: odooDb.id,
-      odooUid,
-      odooLogin: user.email,
-      apiKey: apiKey ? encryptionService.encrypt(apiKey) : null,
-      password: encryptionService.encrypt(password),
-      lastSyncedAt: new Date(),
-    });
-
-    this.logger.info(
-      {
-        userId,
-        odooUid,
-        databaseName,
-        hasApiKey: !!apiKey,
-      },
-      "✅ Odoo user provisioned successfully",
-    );
-
-    return {
-      odooUid,
-      odooLogin: user.email,
-      odooPassword: authCredential,
-    };
   }
 
   async getUserCredentials(userId: string, organizationId: string): Promise<OdooUserCredentials | null> {
@@ -828,28 +862,73 @@ export class OdooUserProvisioningService {
     });
 
     if (!odooUser) {
+      this.logger.warn({ userId }, "No Odoo user found to deactivate");
       return;
     }
 
-    const { sessionId, cookies } = await this.authenticate(databaseName, adminLogin, adminPassword);
+    if (!odooUser.isActive) {
+      this.logger.info({ userId }, "Odoo user already inactive");
+      return;
+    }
 
-    const adminCredentials = { databaseName, adminLogin, adminPassword };
-    await this.callOdooExecuteKw(
-      sessionId,
-      cookies,
-      "res.users",
-      "write",
-      [[odooUser.odooUid], { active: false }],
-      {},
-      z.boolean(),
-      adminCredentials,
-    );
+    let odooDeactivated = false;
 
-    await this.drizzle
-      .update(schema.odooUsers)
-      .set({ isActive: false, updatedAt: new Date() })
-      .where(eq(schema.odooUsers.id, odooUser.id));
+    try {
+      const { sessionId, cookies } = await this.authenticate(databaseName, adminLogin, adminPassword);
 
-    this.logger.info({ userId, odooUid: odooUser.odooUid }, "Odoo user deactivated");
+      const adminCredentials = { databaseName, adminLogin, adminPassword };
+      await this.callOdooExecuteKw(
+        sessionId,
+        cookies,
+        "res.users",
+        "write",
+        [[odooUser.odooUid], { active: false }],
+        {},
+        z.boolean(),
+        adminCredentials,
+      );
+
+      odooDeactivated = true;
+
+      // Only update database record after Odoo deactivation succeeds
+      await this.drizzle
+        .update(schema.odooUsers)
+        .set({ isActive: false, updatedAt: new Date() })
+        .where(eq(schema.odooUsers.id, odooUser.id));
+
+      this.logger.info({ userId, odooUid: odooUser.odooUid }, "✅ Odoo user deactivated successfully");
+    } catch (err) {
+      this.logger.error({ userId, odooUid: odooUser.odooUid, error: err, odooDeactivated }, "❌ Failed to deactivate Odoo user");
+
+      // Rollback: Reactivate Odoo user if DB update failed
+      if (odooDeactivated) {
+        try {
+          this.logger.info({ userId, odooUid: odooUser.odooUid }, "Rolling back: Reactivating Odoo user");
+
+          const { sessionId, cookies } = await this.authenticate(databaseName, adminLogin, adminPassword);
+          const adminCredentials = { databaseName, adminLogin, adminPassword };
+
+          await this.callOdooExecuteKw(
+            sessionId,
+            cookies,
+            "res.users",
+            "write",
+            [[odooUser.odooUid], { active: true }],
+            {},
+            z.boolean(),
+            adminCredentials,
+          );
+
+          this.logger.info({ userId, odooUid: odooUser.odooUid }, "Rollback successful: Odoo user reactivated");
+        } catch (rollbackErr) {
+          this.logger.error(
+            { userId, odooUid: odooUser.odooUid, error: rollbackErr },
+            "❌ Rollback failed: Could not reactivate Odoo user - manual cleanup required",
+          );
+        }
+      }
+
+      throw err;
+    }
   }
 }

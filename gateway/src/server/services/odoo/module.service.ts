@@ -138,10 +138,11 @@ export class OdooModuleService {
     }
 
     const moduleIds = modulesToInstall.map((m) => m.id);
+    const moduleNames = modulesToInstall.map((m) => m.name);
 
     this.logger.info(
       {
-        modulesToInstall: modulesToInstall.map((m) => m.name),
+        modulesToInstall: moduleNames,
         moduleIds,
         database: config.database,
       },
@@ -160,7 +161,7 @@ export class OdooModuleService {
 
         this.logger.info(
           {
-            installed: modulesToInstall.map((m) => m.name),
+            installed: moduleNames,
             database: config.database,
             organizationId,
           },
@@ -195,6 +196,24 @@ export class OdooModuleService {
             throw new Error("Odoo is busy with another module operation. Please try again in a few moments.");
           }
         } else {
+          // Installation failed with real error
+          this.logger.error(
+            { modules: moduleNames, database: config.database, error: errorMessage },
+            "❌ Module installation failed",
+          );
+
+          // Note: Odoo's button_immediate_install is atomic - either all modules install or none do
+          // If it fails, modules remain uninstalled, so no rollback needed
+          // However, we should clear any stuck states
+          try {
+            await this.clearStuckModuleOperations(client);
+          } catch (cleanupErr) {
+            this.logger.warn(
+              { error: cleanupErr instanceof Error ? cleanupErr.message : "Unknown" },
+              "Failed to clear stuck modules after installation error",
+            );
+          }
+
           throw err;
         }
       }
@@ -211,6 +230,8 @@ export class OdooModuleService {
       { modules, database: config.database, organizationId },
       "Starting module uninstallation",
     );
+
+    await this.clearStuckModuleOperations(client);
 
     const moduleRecords = await this.getModulesByName(client, modules);
 
@@ -237,28 +258,52 @@ export class OdooModuleService {
     }
 
     const moduleIds = modulesToUninstall.map((m) => m.id);
+    const moduleNames = modulesToUninstall.map((m) => m.name);
 
     this.logger.info(
       {
-        modulesToUninstall: modulesToUninstall.map((m) => m.name),
+        modulesToUninstall: moduleNames,
         moduleIds,
         database: config.database,
       },
       "Uninstalling modules",
     );
 
-    await client.execute<undefined>("ir.module.module", "button_immediate_uninstall", [moduleIds], {
-      context: { lang: "en_US" },
-    });
+    try {
+      await client.execute<undefined>("ir.module.module", "button_immediate_uninstall", [moduleIds], {
+        context: { lang: "en_US" },
+      });
 
-    this.logger.info(
-      {
-        uninstalled: modulesToUninstall.map((m) => m.name),
-        database: config.database,
-        organizationId,
-      },
-      "✅ Odoo modules uninstalled successfully",
-    );
+      this.logger.info(
+        {
+          uninstalled: moduleNames,
+          database: config.database,
+          organizationId,
+        },
+        "✅ Odoo modules uninstalled successfully",
+      );
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+
+      this.logger.error(
+        { modules: moduleNames, database: config.database, error: errorMessage },
+        "❌ Module uninstallation failed",
+      );
+
+      // Note: Odoo's button_immediate_uninstall is atomic - either all modules uninstall or none do
+      // If it fails, modules remain installed, so no rollback needed
+      // However, we should clear any stuck states
+      try {
+        await this.clearStuckModuleOperations(client);
+      } catch (cleanupErr) {
+        this.logger.warn(
+          { error: cleanupErr instanceof Error ? cleanupErr.message : "Unknown" },
+          "Failed to clear stuck modules after uninstallation error",
+        );
+      }
+
+      throw err;
+    }
   }
 
   private async getModulesByName(client: OdooClient, moduleNames: string[]): Promise<OdooModule[]> {

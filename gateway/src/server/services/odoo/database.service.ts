@@ -366,32 +366,36 @@ export class OdooDatabaseService {
       "Duplicating Odoo template database (fast provisioning)",
     );
 
-    // Duplicate template database (2-5 seconds vs 10-15 minutes!)
-    await odooClient.duplicateDatabase(
-      env.ODOO_ADMIN_PASSWORD,
-      templateName,
-      databaseName,
-      false, // neutralize = false (keep data intact)
-    );
-
-    this.logger.info(
-      { databaseName, organizationId },
-      "Template duplicated successfully, updating company information",
-    );
-
-    // Update company information in the new database
-    const odooUrl = env.ODOO_URL;
-    const odooPort = env.ODOO_PORT;
-
-    const config: OdooConnectionConfig = {
-      url: odooUrl,
-      port: odooPort,
-      database: databaseName,
-      username: "admin", // Template admin user
-      password: adminPassword, // Will be updated below
-    };
+    let dbCreated = false;
 
     try {
+      // Duplicate template database (2-5 seconds vs 10-15 minutes!)
+      await odooClient.duplicateDatabase(
+        env.ODOO_ADMIN_PASSWORD,
+        templateName,
+        databaseName,
+        false, // neutralize = false (keep data intact)
+      );
+
+      dbCreated = true;
+
+      this.logger.info(
+        { databaseName, organizationId },
+        "Template duplicated successfully, updating company information",
+      );
+
+      // Update company information in the new database
+      const odooUrl = env.ODOO_URL;
+      const odooPort = env.ODOO_PORT;
+
+      const config: OdooConnectionConfig = {
+        url: odooUrl,
+        port: odooPort,
+        database: databaseName,
+        username: "admin", // Template admin user
+        password: adminPassword, // Will be updated below
+      };
+
       // Connect with template's admin password first (default template password)
       const templatePassword = env.ODOO_ADMIN_PASSWORD || "admin";
       const tempAuth = await odooClient.authenticate(config.database, "admin", templatePassword);
@@ -417,35 +421,51 @@ export class OdooDatabaseService {
       });
 
       this.logger.info({ databaseName, companyName: org.name }, "Company information updated successfully");
+
+      // Only insert database record if everything succeeded
+      const encryptedPassword = encryptionService.encrypt(adminPassword);
+
+      await this.drizzle.insert(schema.odooDatabases).values({
+        organizationId,
+        databaseName,
+        adminLogin,
+        adminPassword: encryptedPassword,
+        odooUrl: env.ODOO_URL,
+      });
+
+      this.logger.info(
+        { organizationId, databaseName, provisioningTime: "~5s (template-based)" },
+        "✅ Odoo database provisioned successfully using template pattern",
+      );
+
+      return {
+        databaseName,
+        adminLogin,
+        adminPassword,
+        odooUrl: env.ODOO_URL,
+      };
     } catch (err) {
       this.logger.error(
-        { organizationId, databaseName, error: err },
-        "Failed to update company information, but database was duplicated",
+        { organizationId, databaseName, error: err, dbCreated },
+        "❌ Failed to provision Odoo database, rolling back",
       );
-      // Continue anyway - database is created, admin can fix manually
+
+      // Rollback: Delete the Odoo database if it was created
+      if (dbCreated) {
+        try {
+          this.logger.info({ databaseName }, "Rolling back: Deleting Odoo database");
+          await odooClient.dropDatabase(env.ODOO_ADMIN_PASSWORD, databaseName);
+          this.logger.info({ databaseName }, "Rollback successful: Odoo database deleted");
+        } catch (rollbackErr) {
+          this.logger.error(
+            { databaseName, error: rollbackErr },
+            "❌ Rollback failed: Could not delete Odoo database",
+          );
+        }
+      }
+
+      throw err;
     }
-
-    const encryptedPassword = encryptionService.encrypt(adminPassword);
-
-    await this.drizzle.insert(schema.odooDatabases).values({
-      organizationId,
-      databaseName,
-      adminLogin,
-      adminPassword: encryptedPassword,
-      odooUrl: env.ODOO_URL,
-    });
-
-    this.logger.info(
-      { organizationId, databaseName, provisioningTime: "~5s (template-based)" },
-      "✅ Odoo database provisioned successfully using template pattern",
-    );
-
-    return {
-      databaseName,
-      adminLogin,
-      adminPassword,
-      odooUrl: env.ODOO_URL,
-    };
   }
 
   async getDatabaseInfo(organizationId: string): Promise<{
@@ -480,11 +500,46 @@ export class OdooDatabaseService {
 
     const databaseName = this.generateDatabaseName(org.slug, org.id);
 
-    await odooClient.dropDatabase(env.ODOO_ADMIN_PASSWORD, databaseName);
+    // Get the database record before deletion (for potential rollback)
+    const dbRecord = await this.drizzle.query.odooDatabases.findFirst({
+      where: eq(schema.odooDatabases.organizationId, organizationId),
+    });
 
-    await this.drizzle
-      .delete(schema.odooDatabases)
-      .where(eq(schema.odooDatabases.organizationId, organizationId));
+    if (!dbRecord) {
+      this.logger.warn({ organizationId }, "No Odoo database record found, nothing to delete");
+      return;
+    }
+
+    let odooDbDeleted = false;
+
+    try {
+      // Delete Odoo database first
+      await odooClient.dropDatabase(env.ODOO_ADMIN_PASSWORD, databaseName);
+      odooDbDeleted = true;
+
+      // Only delete database record after Odoo database is deleted
+      await this.drizzle
+        .delete(schema.odooDatabases)
+        .where(eq(schema.odooDatabases.organizationId, organizationId));
+
+      this.logger.info({ organizationId, databaseName }, "✅ Odoo database deleted successfully");
+    } catch (err) {
+      this.logger.error(
+        { organizationId, databaseName, error: err, odooDbDeleted },
+        "❌ Failed to delete Odoo database",
+      );
+
+      // Note: We cannot easily rollback Odoo database deletion (would need to restore from backup)
+      // If Odoo deletion succeeded but DB record deletion failed, log it clearly
+      if (odooDbDeleted) {
+        this.logger.error(
+          { organizationId, databaseName },
+          "⚠️  CRITICAL: Odoo database was deleted but DB record deletion failed - manual cleanup required",
+        );
+      }
+
+      throw err;
+    }
   }
 
   async listAllDatabases(): Promise<string[]> {

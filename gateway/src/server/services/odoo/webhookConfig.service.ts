@@ -41,22 +41,67 @@ export async function configureOdooWebhooks(
       "safee.organization_id": organizationId,
     };
 
-    for (const [key, value] of Object.entries(configParams)) {
-      // Check if parameter exists
-      const paramIds = await client.search("ir.config_parameter", [[["key", "=", key]]]);
+    // Track changes for rollback
+    const appliedChanges: Array<{ key: string; paramId?: number; oldValue?: string; isNew: boolean }> = [];
 
-      if (paramIds.length > 0) {
-        // Update existing parameter
-        await client.write("ir.config_parameter", paramIds, { value });
-        logger.debug({ key, paramId: paramIds[0] }, "Updated Odoo config parameter");
-      } else {
-        // Create new parameter
-        await client.create("ir.config_parameter", { key, value });
-        logger.debug({ key }, "Created Odoo config parameter");
+    try {
+      for (const [key, value] of Object.entries(configParams)) {
+        // Check if parameter exists
+        const paramIds = await client.search("ir.config_parameter", [[["key", "=", key]]]);
+
+        if (paramIds.length > 0) {
+          // Get old value for rollback
+          const oldParams = await client.read("ir.config_parameter", paramIds, ["value"]);
+          const oldValue = oldParams[0]?.value;
+
+          // Update existing parameter
+          await client.write("ir.config_parameter", paramIds, { value });
+          logger.debug({ key, paramId: paramIds[0] }, "Updated Odoo config parameter");
+
+          appliedChanges.push({
+            key,
+            paramId: paramIds[0],
+            oldValue: typeof oldValue === "string" ? oldValue : undefined,
+            isNew: false,
+          });
+        } else {
+          // Create new parameter
+          const newParamId = await client.create("ir.config_parameter", { key, value });
+          logger.debug({ key, paramId: newParamId }, "Created Odoo config parameter");
+
+          appliedChanges.push({ key, paramId: newParamId, isNew: true });
+        }
       }
-    }
 
-    logger.info({ organizationId }, "Odoo webhooks configured successfully");
+      logger.info({ organizationId }, "✅ Odoo webhooks configured successfully");
+    } catch (err) {
+      logger.error(
+        { error: err, organizationId, changesApplied: appliedChanges.length },
+        "❌ Failed to configure Odoo webhooks, rolling back",
+      );
+
+      // Rollback: Revert all applied changes
+      for (const change of appliedChanges.reverse()) {
+        try {
+          if (change.isNew && change.paramId) {
+            // Delete newly created parameter
+            await client.unlink("ir.config_parameter", [change.paramId]);
+            logger.debug({ key: change.key, paramId: change.paramId }, "Rollback: Deleted config parameter");
+          } else if (change.oldValue !== undefined && change.paramId) {
+            // Restore old value
+            await client.write("ir.config_parameter", [change.paramId], { value: change.oldValue });
+            logger.debug({ key: change.key, paramId: change.paramId }, "Rollback: Restored old config value");
+          }
+        } catch (rollbackErr) {
+          logger.error(
+            { key: change.key, paramId: change.paramId, error: rollbackErr },
+            "❌ Rollback failed for config parameter",
+          );
+        }
+      }
+
+      throw err;
+    }
   } catch (err) {
     logger.error({ error: err, organizationId }, "Failed to configure Odoo webhooks");
     throw err;
