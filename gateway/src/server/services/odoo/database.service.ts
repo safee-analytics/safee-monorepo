@@ -345,7 +345,7 @@ export class OdooDatabaseService {
     }
 
     // Check if template exists
-    const templateName = "_odoo_template";
+    const templateName = "odoo_template";
     const templateExists = await odooClient.databaseExists(templateName);
 
     if (!templateExists) {
