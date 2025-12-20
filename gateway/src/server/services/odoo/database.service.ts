@@ -34,6 +34,37 @@ export class OdooDatabaseService {
     return crypto.randomBytes(32).toString("base64url");
   }
 
+  private async retryWithBackoff<T>(
+    fn: () => Promise<T>,
+    maxRetries = 5,
+    initialDelay = 1000,
+    context = "operation",
+  ): Promise<T> {
+    let lastError: Error | undefined;
+
+    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+      try {
+        return await fn();
+      } catch (error) {
+        lastError = error as Error;
+
+        if (attempt === maxRetries) {
+          break;
+        }
+
+        const delay = initialDelay * Math.pow(2, attempt - 1);
+        this.logger.warn(
+          { attempt, maxRetries, delay, error: lastError.message },
+          `${context} failed, retrying...`,
+        );
+
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+    }
+
+    throw lastError;
+  }
+
   private generateDatabaseName(orgSlug: string, orgId: string): string {
     const sanitized = orgSlug.toLowerCase().replace(/[^a-z0-9]/g, "_");
     const shortId = orgId.replace(/-/g, "").substring(0, 8);
@@ -397,8 +428,14 @@ export class OdooDatabaseService {
       };
 
       // Connect with template's admin password first (default template password)
+      // Retry with backoff to handle Neon database replication delay
       const templatePassword = env.ODOO_ADMIN_PASSWORD || "admin";
-      const tempAuth = await odooClient.authenticate(config.database, "admin", templatePassword);
+      const tempAuth = await this.retryWithBackoff(
+        () => odooClient.authenticate(config.database, "admin", templatePassword),
+        5,
+        2000,
+        "Database authentication after duplication",
+      );
 
       // Update admin password
       await odooClient.write(tempAuth.session_id, "res.users", [1], {
