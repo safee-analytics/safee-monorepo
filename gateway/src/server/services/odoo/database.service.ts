@@ -45,8 +45,8 @@ export class OdooDatabaseService {
     for (let attempt = 1; attempt <= maxRetries; attempt++) {
       try {
         return await fn();
-      } catch (error) {
-        lastError = error as Error;
+      } catch (err) {
+        lastError = err as Error;
 
         if (attempt === maxRetries) {
           break;
@@ -58,11 +58,11 @@ export class OdooDatabaseService {
           `${context} failed, retrying...`,
         );
 
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
 
-    throw lastError;
+    throw new Error(lastError?.message ?? `${context} failed after ${maxRetries} retries`);
   }
 
   private generateDatabaseName(orgSlug: string, orgId: string): string {
