@@ -29,7 +29,7 @@ import { ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.
 interface OdooProvisionResponse {
   success: boolean;
   message: string;
-  jobId: string;
+  jobId?: string;
 }
 
 interface OdooInfoResponse {
@@ -145,7 +145,10 @@ export class OdooController extends Controller {
   @Post("/provision")
   @Security("jwt")
   @SuccessResponse("202", "Accepted")
-  public async provisionDatabase(@Request() request: AuthenticatedRequest): Promise<OdooProvisionResponse> {
+  public async provisionDatabase(
+    @Request() request: AuthenticatedRequest,
+    @Query() sync?: boolean,
+  ): Promise<OdooProvisionResponse> {
     const organizationId = request.betterAuthSession?.session.activeOrganizationId;
 
     if (!organizationId) {
@@ -154,13 +157,30 @@ export class OdooController extends Controller {
       });
     }
 
-    const job = await odooProvisioningQueue.add("provision", { organizationId });
+    // Always do fast provisioning (base modules only)
+    const databaseService = this.getDatabaseService();
+    await databaseService.provisionDatabase(organizationId);
+
+    // Queue module installation as background job (will take 10-15 minutes)
+    const moduleJob = await odooProvisioningQueue.add(
+      "install-modules",
+      {
+        organizationId,
+      },
+      {
+        attempts: 3,
+        backoff: {
+          type: "exponential",
+          delay: 5000,
+        },
+      },
+    );
 
     this.setStatus(202);
     return {
       success: true,
-      message: "Odoo database provisioning has been queued.",
-      jobId: job.id!,
+      message: "Odoo database provisioned successfully. Extended modules are installing in background.",
+      jobId: moduleJob.id!,
     };
   }
 

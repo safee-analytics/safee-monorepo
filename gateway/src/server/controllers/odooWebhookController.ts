@@ -23,7 +23,6 @@ import {
 } from "@safee/database";
 
 const {
-
   getOdooClientManager,
 
   OdooHRService,
@@ -41,9 +40,10 @@ const {
   createOdooClient,
 
   EncryptionService,
-
 } = odoo;
-const encryptionService = new EncryptionService(process.env.JWT_SECRET ?? "development-encryption-key-change-in-production");
+const encryptionService = new EncryptionService(
+  process.env.JWT_SECRET ?? "development-encryption-key-change-in-production",
+);
 
 interface OdooWebhookPayload {
   event: "create" | "write" | "unlink"; // Odoo event types

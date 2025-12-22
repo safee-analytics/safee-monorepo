@@ -10,7 +10,7 @@ interface OdooUser {
   login: string;
   email: string;
   active: boolean;
-  group_ids: number[];
+  groups_id: number[]; // Odoo 18: field name is groups_id, not group_ids
 }
 
 interface OdooGroup {
@@ -93,7 +93,7 @@ export async function getOdooDatabaseInfo(
   const odooUsers = await client.searchRead<OdooUser>(
     "res.users",
     [],
-    ["id", "name", "login", "email", "active", "group_ids"],
+    ["id", "name", "login", "email", "active", "groups_id"],
   );
 
   const odooGroups = await client.searchRead<OdooGroup>(
@@ -116,7 +116,7 @@ export async function getOdooDatabaseInfo(
     login: user.login,
     email: user.email || user.login,
     active: user.active,
-    groups: user.group_ids.map((groupId: number) => {
+    groups: user.groups_id.map((groupId: number) => {
       const group = groupsMap.get(groupId);
       if (group) {
         return {

@@ -4,7 +4,9 @@ import { connectTest, nukeDatabase } from "@safee/database/test-helpers";
 import { eq } from "@safee/database";
 import { updateConnector } from "./updateConnector.js";
 import { odoo } from "@safee/database";
-const encryptionService = new odoo.EncryptionService(process.env.JWT_SECRET ?? "development-encryption-key-change-in-production");
+const encryptionService = new odoo.EncryptionService(
+  process.env.JWT_SECRET ?? "development-encryption-key-change-in-production",
+);
 import { initTestServerContext } from "../test-helpers/testServerContext.js";
 import { getServerContext } from "../serverContext.js";
 

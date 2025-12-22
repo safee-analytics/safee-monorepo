@@ -78,7 +78,6 @@ export class OdooClient {
 
       clearTimeout(timeoutId);
 
-
       if (!response.ok) {
         throw new BadGateway(`Odoo request failed: ${response.status} ${response.statusText}`);
       }
@@ -125,7 +124,6 @@ export class OdooClient {
       });
 
       clearTimeout(timeoutId);
-
 
       if (!response.ok) {
         throw new BadGateway(`Odoo request failed: ${response.status} ${response.statusText}`);
@@ -331,6 +329,25 @@ export class OdooClient {
       args: [ids, values],
     });
 
+    return result as boolean;
+  }
+
+  /**
+   * Update records using external API with execute_kw (for database provisioning)
+   */
+  async writeExternal(
+    database: string,
+    uid: number,
+    password: string,
+    model: string,
+    ids: number[],
+    values: Record<string, unknown>,
+  ): Promise<boolean> {
+    const result = await this.callJsonRpc("/jsonrpc", {
+      service: "object",
+      method: "execute_kw",
+      args: [database, uid, password, model, "write", [ids, values]],
+    });
     return result as boolean;
   }
 

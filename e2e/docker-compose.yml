@@ -15,6 +15,8 @@ services:
     volumes:
       - "../database/tests/:/tests"
       - postgres-data:/var/lib/postgresql/data
+    networks:
+      - safee_net
 
   redis:
     image: redis:7
@@ -25,33 +27,12 @@ services:
       interval: 2s
       timeout: 3s
       retries: 5
-
-  odoo:
-    profiles:
-      - odoo
-    # Uses published image from GHCR (built by GitHub Actions)
-    # Use ODOO_IMAGE env var to override, e.g., ODOO_IMAGE=safee-odoo:local
-    image: ${ODOO_IMAGE:-ghcr.io/safee-analytics/odoo:latest}
-    depends_on:
-      postgres:
-        condition: service_healthy
-    ports:
-      - "18069:8069"
-    environment:
-      - ODOO_DB_HOST=postgres
-      - ODOO_DB_PORT=5432
-      - ODOO_DB_USER=safee
-      - ODOO_DB_PASSWORD=safee
-      - ODOO_ADMIN_PASSWD=${ODOO_ADMIN_PASSWD:-admin}
-    volumes:
-      - odoo-data:/var/lib/odoo
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8069/web/health || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 60s
+    networks:
+      - safee_net
 
 volumes:
   postgres-data:
-  odoo-data:
+
+networks:
+  safee_net:
+    name: safee_net

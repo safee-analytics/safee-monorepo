@@ -61,5 +61,5 @@ export class EncryptionService {
 
 // Singleton for backward compatibility (uses environment variable or default)
 export const encryptionService = new EncryptionService(
-  process.env.JWT_SECRET ?? "development-encryption-key-change-in-production"
+  process.env.JWT_SECRET ?? "development-encryption-key-change-in-production",
 );

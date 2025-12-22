@@ -44,9 +44,12 @@ jobs:
             file: landing/Dockerfile
             build-args: |
               NEXT_PUBLIC_APP_URL=https://dev.safee.dev
+          - service: jobs-worker
+            file: jobs/Dockerfile
+            build-args: ""
           - service: caddy
-            file: infra/caddy/Dockerfile
-            context: infra/caddy
+            file: caddy/Dockerfile
+            context: caddy
             build-args: ""
 
     steps:
@@ -105,6 +108,14 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.DEV_SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Setup Odoo Environment
+        run: |
+          ssh -i ~/.ssh/deploy_key root@${{ secrets.DEV_SERVER_IP }} << 'ENDSSH'
+            set -e
+            cd /opt/safee
+            bash scripts/setup-odoo.sh
+          ENDSSH
 
       - name: Deploy to dev server with blue-green strategy
         run: |

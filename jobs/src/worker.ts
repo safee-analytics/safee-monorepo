@@ -123,7 +123,35 @@ const jobProcessors = {
     });
 
     await odooDatabaseService.provisionDatabase(organizationId);
-  }
+  },
+  install_odoo_modules: async (payload: Record<string, unknown>) => {
+    const { organizationId } = payload as { organizationId: string };
+    logger.info({ organizationId }, "Processing install_odoo_modules job (background)");
+
+    // Get Redis client from database package
+    const redis = await redisConnect();
+
+    // Create Odoo database service with all required dependencies
+    const odooDatabaseService = new odoo.OdooDatabaseService({
+      logger,
+      drizzle,
+      redis,
+      odooClient: new odoo.OdooClient(process.env.ODOO_URL ?? "http://localhost:8069"),
+      encryptionService: new odoo.EncryptionService(process.env.JWT_SECRET ?? "development-key"),
+      odooConfig: {
+        url: process.env.ODOO_URL ?? "http://localhost:8069",
+        port: parseInt(process.env.ODOO_PORT ?? "8069", 10),
+        adminPassword: process.env.ODOO_ADMIN_PASSWORD ?? "admin",
+      },
+    });
+
+    logger.info(
+      { organizationId },
+      "Installing extended Odoo modules in background (this may take 10-15 minutes)",
+    );
+    await odooDatabaseService.installModulesForOrganization(organizationId);
+    logger.info({ organizationId }, "✅ All Odoo modules installed successfully");
+  },
 } satisfies Record<JobName, (payload: Record<string, unknown>) => Promise<void>>;
 
 /**
@@ -157,6 +185,8 @@ async function processJob(job: Job): Promise<void> {
       processor = jobProcessors.generate_report;
     } else if (jobName === "odoo-provisioning") {
       processor = jobProcessors.odoo_provisioning;
+    } else if (jobName === "install-modules") {
+      processor = jobProcessors.install_odoo_modules;
     } else {
       throw new Error(`Unknown job name: ${jobName}`);
     }
@@ -189,7 +219,7 @@ async function startWorkers() {
   const workers: Worker[] = [];
 
   // Create a worker for each queue
-  const queues = ["analytics", "email", "odoo-sync", "reports", "odoo-provisioning"];
+  const queues = ["analytics", "email", "odoo-sync", "reports", "odoo-provisioning", "install-modules"];
 
   for (const queueName of queues) {
     const worker = new Worker(queueName, processJob, {

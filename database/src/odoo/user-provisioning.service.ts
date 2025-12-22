@@ -439,7 +439,7 @@ export class OdooUserProvisioningService {
         cookies,
         "res.users",
         "write",
-        [[userId], { group_ids: [[6, 0, groupIds]] }],
+        [[userId], { groups_id: [[6, 0, groupIds]] }],
         {},
         z.boolean(),
         adminCredentials,

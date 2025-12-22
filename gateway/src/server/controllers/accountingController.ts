@@ -16,11 +16,7 @@ import {
 import type { Invoice, InvoiceCreateRequest } from "../types/invoice.js";
 import { odoo } from "@safee/database";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
-import type {
-  CreatePaymentDTO,
-  AccountBalanceQuery,
-  PartnerLedgerQuery,
-} from "../dtos/accounting.js";
+import type { CreatePaymentDTO, AccountBalanceQuery, PartnerLedgerQuery } from "../dtos/accounting.js";
 import type {
   PaymentResponse,
   PartnerResponse,

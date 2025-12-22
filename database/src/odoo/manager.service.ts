@@ -3,7 +3,10 @@ import type { DrizzleClient } from "@safee/database";
 import { schema, eq, and } from "@safee/database";
 import { createOdooClient, type OdooClient, type OdooConnectionConfig } from "./client.service.js";
 import { OperationFailed } from "./errors.js";
-import { OdooUserProvisioningService, type OdooUserProvisioningServiceDependencies } from "./user-provisioning.service.js";
+import {
+  OdooUserProvisioningService,
+  type OdooUserProvisioningServiceDependencies,
+} from "./user-provisioning.service.js";
 
 export interface OdooClientManagerConfig {
   url: string;

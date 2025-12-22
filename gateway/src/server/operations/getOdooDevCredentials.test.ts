@@ -3,7 +3,9 @@ import { type DrizzleClient, schema } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import { getOdooDevCredentials } from "./getOdooDevCredentials.js";
 import { odoo } from "@safee/database";
-const encryptionService = new odoo.EncryptionService(process.env.JWT_SECRET ?? "development-encryption-key-change-in-production");
+const encryptionService = new odoo.EncryptionService(
+  process.env.JWT_SECRET ?? "development-encryption-key-change-in-production",
+);
 
 void describe("getOdooDevCredentials", async () => {
   let drizzle: DrizzleClient;
