@@ -443,11 +443,17 @@ export class OdooDatabaseService {
         "Database authentication after creation",
       );
 
-      this.logger.info({ databaseName, uid: auth.uid }, "Authentication successful, updating company information");
+      this.logger.info(
+        { databaseName, uid: auth.uid },
+        "Authentication successful, updating company information",
+      );
 
       // Update company name using external API (execute_kw endpoint)
       await this.retryWithBackoff(
-        () => this.odooClient.writeExternal(databaseName, auth.uid, adminPassword, "res.company", [1], { name: org.name }),
+        () =>
+          this.odooClient.writeExternal(databaseName, auth.uid, adminPassword, "res.company", [1], {
+            name: org.name,
+          }),
         5,
         2000,
         "Update company name",
@@ -455,7 +461,10 @@ export class OdooDatabaseService {
 
       // Update partner (company) name using external API
       await this.retryWithBackoff(
-        () => this.odooClient.writeExternal(databaseName, auth.uid, adminPassword, "res.partner", [1], { name: org.name }),
+        () =>
+          this.odooClient.writeExternal(databaseName, auth.uid, adminPassword, "res.partner", [1], {
+            name: org.name,
+          }),
         5,
         2000,
         "Update partner name",
