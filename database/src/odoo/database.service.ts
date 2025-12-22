@@ -1,4 +1,5 @@
-import { schema, eq, type DrizzleClient, type RedisClient } from "@safee/database";
+import { schema, eq, type DrizzleClient } from "../drizzle.js";
+import type { RedisClient } from "../index.js";
 import crypto from "node:crypto";
 import { type OdooClient } from "./client.js";
 import { type OdooConnectionConfig } from "./client.service.js";

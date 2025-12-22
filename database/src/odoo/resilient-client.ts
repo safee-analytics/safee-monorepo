@@ -2,7 +2,7 @@ import type { Logger } from "pino";
 import type { OdooClient, OdooConnectionConfig } from "./client.service.js";
 import { OdooClientService } from "./client.service.js";
 import { OdooAuditLogService } from "./audit-log.service.js";
-import type { DrizzleClient } from "@safee/database";
+import type { DrizzleClient } from "../drizzle.js";
 
 /**
  * Circuit Breaker States

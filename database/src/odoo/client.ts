@@ -59,7 +59,9 @@ export class OdooClient {
   ): Promise<T> {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 seconds timeout
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, 30000); // 30 seconds timeout
 
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: "POST",
@@ -112,7 +114,9 @@ export class OdooClient {
   private async callFormUrlEncoded(endpoint: string, params: Record<string, string>): Promise<void> {
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 seconds timeout
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, 30000); // 30 seconds timeout
       const formData = new URLSearchParams(params);
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: "POST",

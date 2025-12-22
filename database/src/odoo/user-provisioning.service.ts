@@ -1,5 +1,5 @@
-import type { DrizzleClient } from "@safee/database";
-import { schema, eq, and } from "@safee/database";
+import type { DrizzleClient } from "../drizzle.js";
+import { schema, eq, and } from "../drizzle.js";
 import crypto from "node:crypto";
 import { z } from "zod";
 import type { EncryptionService } from "../encryption.js";

@@ -1,6 +1,6 @@
 import { type OdooClient, type OdooConnectionConfig } from "./client.service.js";
 import { createResilientOdooClient } from "./resilient-client.js";
-import type { DrizzleClient } from "@safee/database";
+import type { DrizzleClient } from "../drizzle.js";
 import type { Logger } from "pino";
 import { NotFound } from "./errors.js";
 
