@@ -14,14 +14,13 @@ import {
   Request,
 } from "tsoa";
 import type { Invoice, InvoiceCreateRequest } from "../types/invoice.js";
-import { getOdooClientManager } from "../services/odoo/manager.service.js";
-import { OdooAccountingService } from "../services/odoo/accounting.service.js";
+import { odoo } from "@safee/database";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import type {
   CreatePaymentDTO,
   AccountBalanceQuery,
   PartnerLedgerQuery,
-} from "../services/odoo/accounting.types.js";
+} from "../dtos/accounting.js";
 import type {
   PaymentResponse,
   PartnerResponse,
@@ -39,11 +38,11 @@ import { getServerContext } from "../serverContext.js";
 @Tags("Accounting")
 export class AccountingController extends Controller {
   @NoSecurity()
-  private async getAccountingService(request: AuthenticatedRequest): Promise<OdooAccountingService> {
+  private async getAccountingService(request: AuthenticatedRequest): Promise<odoo.OdooAccountingService> {
     const userId = request.betterAuthSession!.user.id;
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
-    const client = await getOdooClientManager().getClient(userId, organizationId);
-    return new OdooAccountingService(client);
+    const client = await odoo.getOdooClientManager().getClient(userId, organizationId);
+    return new odoo.OdooAccountingService(client);
   }
 
   @Get("invoices")

@@ -1,9 +1,8 @@
-import { schema, eq, and } from "@safee/database";
-import { OdooModuleService } from "./odoo/module.service.js";
-import { OdooDatabaseService } from "./odoo/database.service.js";
-import { ServiceNotFound, ServiceAlreadyEnabled } from "../errors.js";
+import { schema, eq, and, odoo } from "@safee/database";
+import { ServiceAlreadyEnabled, ServiceNotFound } from "../errors.js";
 import { env } from "../../env.js";
 import type { ServerContext } from "../serverContext.js";
+import { ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.js";
 
 export interface EnableServiceForOrganizationParams {
   organizationId: string;
@@ -16,12 +15,26 @@ export interface EnableServiceForUserParams {
 }
 
 export class ServiceManagementService {
-  private odooDatabaseService: OdooDatabaseService;
-  private odooModuleService: OdooModuleService;
+  private odooDatabaseService: odoo.OdooDatabaseService;
+  private odooModuleService: odoo.OdooModuleService;
 
   constructor(private readonly ctx: ServerContext) {
-    this.odooDatabaseService = new OdooDatabaseService(ctx);
-    this.odooModuleService = new OdooModuleService(ctx);
+    this.odooDatabaseService = new odoo.OdooDatabaseService({
+      logger: ctx.logger,
+      drizzle: ctx.drizzle,
+      redis: ctx.redis,
+      odooClient: new odoo.OdooClient(ODOO_URL),
+      encryptionService: new odoo.EncryptionService(JWT_SECRET),
+      odooConfig: {
+        url: ODOO_URL,
+        port: ODOO_PORT,
+        adminPassword: ODOO_ADMIN_PASSWORD,
+      },
+    });
+    this.odooModuleService = new odoo.OdooModuleService({
+      logger: ctx.logger,
+      drizzle: ctx.drizzle,
+    });
   }
 
   private get logger() {

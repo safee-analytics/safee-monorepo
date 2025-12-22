@@ -2,11 +2,9 @@ import type { DrizzleClient } from "@safee/database";
 import { schema, eq, and } from "@safee/database";
 import crypto from "node:crypto";
 import { z } from "zod";
-import { encryptionService } from "../encryption.js";
-import { env } from "../../../env.js";
-import { BadGateway, NotFound } from "../../errors.js";
-import { Logger } from "pino";
-import { getServerContext } from "../../serverContext.js";
+import type { EncryptionService } from "../encryption.js";
+import { NotFound, OperationFailed } from "./errors.js";
+import type { Logger } from "pino";
 import { odooAuthResponseSchema, odooApiKeyResultSchema } from "./schemas.js";
 
 export interface OdooUserProvisionResult {
@@ -19,6 +17,13 @@ export interface OdooUserCredentials {
   databaseName: string;
   odooUid: number;
   odooPassword: string;
+}
+
+export interface OdooUserProvisioningServiceDependencies {
+  drizzle: DrizzleClient;
+  logger: Logger;
+  encryptionService: EncryptionService;
+  odooUrl: string;
 }
 
 function odooApiResponseSchema<T extends z.ZodType>(resultSchema: T) {
@@ -38,10 +43,16 @@ function odooApiResponseSchema<T extends z.ZodType>(resultSchema: T) {
 }
 
 export class OdooUserProvisioningService {
-  constructor(private readonly drizzle: DrizzleClient) {}
+  private readonly drizzle: DrizzleClient;
+  private readonly logger: Logger;
+  private readonly encryptionService: EncryptionService;
+  private readonly odooUrl: string;
 
-  private get logger(): Logger {
-    return getServerContext().logger;
+  constructor(deps: OdooUserProvisioningServiceDependencies) {
+    this.drizzle = deps.drizzle;
+    this.logger = deps.logger;
+    this.encryptionService = deps.encryptionService;
+    this.odooUrl = deps.odooUrl;
   }
 
   private async authenticate(
@@ -49,7 +60,7 @@ export class OdooUserProvisioningService {
     login: string,
     password: string,
   ): Promise<{ uid: number; sessionId: string; cookies: string[] }> {
-    const response = await fetch(`${env.ODOO_URL}/web/session/authenticate`, {
+    const response = await fetch(`${this.odooUrl}/web/session/authenticate`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -67,24 +78,24 @@ export class OdooUserProvisioningService {
     });
 
     if (!response.ok) {
-      throw new BadGateway(`Odoo authentication failed: ${response.status}`);
+      throw new OperationFailed(`Odoo authentication failed: ${response.status}`);
     }
 
     const rawData: unknown = await response.json();
     const parseResult = odooAuthResponseSchema.safeParse(rawData);
 
     if (!parseResult.success) {
-      throw new BadGateway(`Invalid Odoo authentication response: ${parseResult.error.message}`);
+      throw new OperationFailed(`Invalid Odoo authentication response: ${parseResult.error.message}`);
     }
 
     const data = parseResult.data;
 
     if (data.error) {
-      throw new BadGateway(`Odoo authentication error: ${JSON.stringify(data.error)}`);
+      throw new OperationFailed(`Odoo authentication error: ${JSON.stringify(data.error)}`);
     }
 
     if (!data.result?.uid) {
-      throw new BadGateway("Failed to authenticate with Odoo");
+      throw new OperationFailed("Failed to authenticate with Odoo");
     }
 
     const getSetCookie = response.headers.getSetCookie.bind(response.headers);
@@ -121,7 +132,7 @@ export class OdooUserProvisioningService {
     try {
       const cookieHeader = cookies.length > 0 ? cookies.join("; ") : `session_id=${sessionId}`;
 
-      const response = await fetch(`${env.ODOO_URL}/web/dataset/call_kw`, {
+      const response = await fetch(`${this.odooUrl}/web/dataset/call_kw`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -141,7 +152,7 @@ export class OdooUserProvisioningService {
       });
 
       if (!response.ok) {
-        throw new BadGateway(`Odoo ${method} failed: ${response.status}`);
+        throw new OperationFailed(`Odoo ${method} failed: ${response.status}`);
       }
 
       const rawData: unknown = await response.json();
@@ -149,17 +160,17 @@ export class OdooUserProvisioningService {
       const parseResult = responseSchema.safeParse(rawData);
 
       if (!parseResult.success) {
-        throw new BadGateway(`Invalid Odoo ${method} response: ${parseResult.error.message}`);
+        throw new OperationFailed(`Invalid Odoo ${method} response: ${parseResult.error.message}`);
       }
 
       const data = parseResult.data;
 
       if (data.error) {
-        throw new BadGateway(`Odoo ${method} error: ${JSON.stringify(data.error)}`);
+        throw new OperationFailed(`Odoo ${method} error: ${JSON.stringify(data.error)}`);
       }
 
       if (data.result === undefined) {
-        throw new BadGateway(`Odoo ${method} returned no result`);
+        throw new OperationFailed(`Odoo ${method} returned no result`);
       }
 
       return data.result;
@@ -206,7 +217,7 @@ export class OdooUserProvisioningService {
     return {
       databaseName: odooDb.databaseName,
       adminLogin: odooDb.adminLogin,
-      adminPassword: encryptionService.decrypt(odooDb.adminPassword),
+      adminPassword: this.encryptionService.decrypt(odooDb.adminPassword),
     };
   }
 
@@ -472,7 +483,7 @@ export class OdooUserProvisioningService {
     this.logger.info({ targetUserLogin, keyName }, "Generating API key for Odoo user via HTTP endpoint");
 
     try {
-      const response = await fetch(`${env.ODOO_URL}/api/generate_key`, {
+      const response = await fetch(`${this.odooUrl}/api/generate_key`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -492,7 +503,7 @@ export class OdooUserProvisioningService {
       });
 
       if (!response.ok) {
-        throw new BadGateway(`HTTP ${response.status}: ${response.statusText}`);
+        throw new OperationFailed(`HTTP ${response.status}: ${response.statusText}`);
       }
 
       const rawData: unknown = await response.json();
@@ -500,7 +511,7 @@ export class OdooUserProvisioningService {
       const parseResult = responseSchema.safeParse(rawData);
 
       if (!parseResult.success) {
-        throw new BadGateway(`Invalid Odoo API key response: ${parseResult.error.message}`);
+        throw new OperationFailed(`Invalid Odoo API key response: ${parseResult.error.message}`);
       }
 
       const result = parseResult.data;
@@ -510,21 +521,21 @@ export class OdooUserProvisioningService {
           typeof result.error === "object" && "message" in result.error
             ? String(result.error.message)
             : JSON.stringify(result.error);
-        throw new BadGateway(`Odoo error: ${errorMessage}`);
+        throw new OperationFailed(`Odoo error: ${errorMessage}`);
       }
 
       if (!result.result) {
-        throw new BadGateway("API key generation returned no result");
+        throw new OperationFailed("API key generation returned no result");
       }
 
       const data = result.result;
 
       if (!data.ok) {
-        throw new BadGateway(`Failed to generate API key: ${data.error ?? "Unknown error"}`);
+        throw new OperationFailed(`Failed to generate API key: ${data.error ?? "Unknown error"}`);
       }
 
       if (!data.token) {
-        throw new BadGateway("API key token not returned from endpoint");
+        throw new OperationFailed("API key token not returned from endpoint");
       }
 
       this.logger.info(
@@ -538,7 +549,7 @@ export class OdooUserProvisioningService {
         { targetUserLogin, keyName, error: err },
         "Failed to generate API key via HTTP endpoint",
       );
-      throw new BadGateway(
+      throw new OperationFailed(
         `Failed to generate API key: ${err instanceof Error ? err.message : "Unknown error"}`,
       );
     }
@@ -599,7 +610,7 @@ export class OdooUserProvisioningService {
           await this.drizzle
             .update(schema.odooUsers)
             .set({
-              apiKey: encryptionService.encrypt(apiKey),
+              apiKey: this.encryptionService.encrypt(apiKey),
               lastSyncedAt: new Date(),
             })
             .where(eq(schema.odooUsers.id, existingOdooUser.id));
@@ -620,8 +631,8 @@ export class OdooUserProvisioningService {
       }
 
       const authCredential = existingOdooUser.apiKey
-        ? encryptionService.decrypt(existingOdooUser.apiKey)
-        : encryptionService.decrypt(existingOdooUser.password);
+        ? this.encryptionService.decrypt(existingOdooUser.apiKey)
+        : this.encryptionService.decrypt(existingOdooUser.password);
 
       return {
         odooUid: existingOdooUser.odooUid,
@@ -686,8 +697,8 @@ export class OdooUserProvisioningService {
         odooDatabaseId: odooDb.id,
         odooUid,
         odooLogin: user.email,
-        apiKey: apiKey ? encryptionService.encrypt(apiKey) : null,
-        password: encryptionService.encrypt(password),
+        apiKey: apiKey ? this.encryptionService.encrypt(apiKey) : null,
+        password: this.encryptionService.encrypt(password),
         lastSyncedAt: new Date(),
       });
 
@@ -782,7 +793,7 @@ export class OdooUserProvisioningService {
         await this.drizzle
           .update(schema.odooUsers)
           .set({
-            apiKey: encryptionService.encrypt(apiKey),
+            apiKey: this.encryptionService.encrypt(apiKey),
             lastSyncedAt: new Date(),
           })
           .where(eq(schema.odooUsers.id, odooUser.id));
@@ -803,8 +814,8 @@ export class OdooUserProvisioningService {
     }
 
     const authCredential = odooUser.apiKey
-      ? encryptionService.decrypt(odooUser.apiKey)
-      : encryptionService.decrypt(odooUser.password);
+      ? this.encryptionService.decrypt(odooUser.apiKey)
+      : this.encryptionService.decrypt(odooUser.password);
 
     return {
       databaseName: odooDb.databaseName,
@@ -839,8 +850,8 @@ export class OdooUserProvisioningService {
 
     return {
       login: odooUser.odooLogin,
-      password: encryptionService.decrypt(odooUser.password),
-      webUrl: `${env.ODOO_URL}/web/login?db=${odooDb.databaseName}`,
+      password: this.encryptionService.decrypt(odooUser.password),
+      webUrl: `${this.odooUrl}/web/login?db=${odooDb.databaseName}`,
     };
   }
 
@@ -851,7 +862,7 @@ export class OdooUserProvisioningService {
       throw new NotFound("Odoo user not found");
     }
 
-    return `${env.ODOO_URL}/web/login?db=${credentials.databaseName}`;
+    return `${this.odooUrl}/web/login?db=${credentials.databaseName}`;
   }
 
   async deactivateUser(userId: string, organizationId: string): Promise<void> {

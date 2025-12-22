@@ -42,6 +42,7 @@
   "exports": {
     ".": "./build/src/index.js",
     "./jobRegistry": "./build/src/jobRegistry.js",
-    "./jobPayloads": "./build/src/jobPayloads.js"
+    "./jobPayloads": "./build/src/jobPayloads.js",
+    "./queues": "./build/src/queues/index.js"
   }
 }

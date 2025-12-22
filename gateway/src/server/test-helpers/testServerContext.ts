@@ -2,7 +2,8 @@ import { pino } from "pino";
 import { initServerContext } from "../serverContext.js";
 import type { DrizzleClient, JobScheduler, RedisClient, Storage, PubSub } from "@safee/database";
 import { redisConnect } from "@safee/database";
-import { OdooClientManager } from "../services/odoo/manager.service.js";
+import { odoo } from "@safee/database";
+const { OdooClientManager } = odoo;
 
 export async function initTestServerContext(drizzle: DrizzleClient): Promise<RedisClient> {
   const logger = pino({ level: "silent" });
@@ -33,7 +34,12 @@ export async function initTestServerContext(drizzle: DrizzleClient): Promise<Red
     scheduleJob: () => Promise.reject(new Error("Mock scheduler - not implemented")),
   } as unknown as JobScheduler;
 
-  const odooClientManager = new OdooClientManager(drizzle, logger);
+  const odooClientManager = new OdooClientManager({
+    drizzle,
+    logger,
+    odooConfig: { url: "http://localhost", port: 8069 },
+    userProvisioningService: {} as any,
+  });
 
   initServerContext({
     drizzle,

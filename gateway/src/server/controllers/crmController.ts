@@ -14,8 +14,8 @@ import {
   SuccessResponse,
 } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
-import { getOdooClientManager } from "../services/odoo/manager.service.js";
-import { OdooCRMService } from "../services/odoo/crm.service.js";
+import { odoo } from "@safee/database";
+const { getOdooClientManager, OdooCRMService } = odoo;
 import { CRMSyncService } from "../services/sync/crmSync.service.js";
 import { BadRequest, NotFound } from "../errors.js";
 import { getServerContext } from "../serverContext.js";
@@ -45,7 +45,7 @@ import {
 @Tags("CRM")
 export class CRMController extends Controller {
   @Security("jwt")
-  private async getCRMService(request: AuthenticatedRequest): Promise<OdooCRMService> {
+  private async getCRMService(request: AuthenticatedRequest): Promise<odoo.OdooCRMService> {
     const userId = request.betterAuthSession?.user.id;
     const organizationId = request.betterAuthSession?.session.activeOrganizationId;
 

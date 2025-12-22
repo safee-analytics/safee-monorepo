@@ -1,7 +1,8 @@
-import { NotFound } from "../../errors.js";
 import { type OdooClient, type OdooConnectionConfig } from "./client.service.js";
 import { createResilientOdooClient } from "./resilient-client.js";
-import type { ServerContext } from "../../serverContext.js";
+import type { DrizzleClient } from "@safee/database";
+import type { Logger } from "pino";
+import { NotFound } from "./errors.js";
 
 export interface OdooModule {
   id: number;
@@ -28,15 +29,24 @@ export interface OdooModuleUninstallParams {
   userId?: string;
 }
 
+interface OdooModuleServiceDependencies {
+  logger: Logger;
+  drizzle: DrizzleClient;
+}
+
 export class OdooModuleService {
-  constructor(private readonly ctx: ServerContext) {}
+  private readonly deps: OdooModuleServiceDependencies;
+
+  constructor(deps: OdooModuleServiceDependencies) {
+    this.deps = deps;
+  }
 
   private get logger() {
-    return this.ctx.logger;
+    return this.deps.logger;
   }
 
   private get drizzle() {
-    return this.ctx.drizzle;
+    return this.deps.drizzle;
   }
   async getAvailableModules(client: OdooClient): Promise<OdooModule[]> {
     return await client.searchRead<OdooModule>(

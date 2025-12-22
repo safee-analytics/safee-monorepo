@@ -44,16 +44,17 @@ export const jobStatusEnum = jobsSchema.enum("job_status", [
 export const jobTypeEnum = jobsSchema.enum("job_type", ["cron", "scheduled", "immediate", "recurring"]);
 
 export const jobNameEnum = jobsSchema.enum("job_name", [
-  // Existing job types
   "send_email",
   "encrypt_file",
   "rotate_encryption_key",
   "reencrypt_files",
-  // NEW - BullMQ queues with PostgreSQL persistence
+
+  // BullMQ jobs
   "calculate_analytics",
   "send_bulk_email",
   "sync_odoo",
   "generate_report",
+  "odoo_provisioning",
 ]);
 
 export const priorityEnum = jobsSchema.enum("priority", ["low", "normal", "high", "critical"]);

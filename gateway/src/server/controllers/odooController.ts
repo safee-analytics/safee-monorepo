@@ -1,3 +1,5 @@
+import { odoo } from "@safee/database";
+import { odooProvisioningQueue } from "@safee/jobs/queues";
 import {
   Controller,
   Get,
@@ -13,10 +15,6 @@ import {
   SuccessResponse,
   NoSecurity,
 } from "tsoa";
-import { OdooDatabaseService } from "../services/odoo/database.service.js";
-import { OdooUserProvisioningService } from "../services/odoo/user-provisioning.service.js";
-import { getOdooClientManager } from "../services/odoo/manager.service.js";
-import { OdooClient } from "../services/odoo/client.js";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { BadRequest } from "../errors.js";
 import { getOdooAdminCredentials } from "../operations/getOdooAdminCredentials.js";
@@ -26,13 +24,12 @@ import { installOdooModules as installOdooModulesOp } from "../operations/instal
 import { getOdooModelFields as getOdooModelFieldsOp } from "../operations/getOdooModelFields.js";
 import { getOdooDatabaseInfo as getOdooDatabaseInfoOp } from "../operations/getOdooDatabaseInfo.js";
 import { getServerContext } from "../serverContext.js";
+import { ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.js";
+
 interface OdooProvisionResponse {
   success: boolean;
-  databaseName: string;
-  adminLogin: string;
-  adminPassword: string;
-  odooUrl: string;
-  loginUrl: string;
+  message: string;
+  jobId: string;
 }
 
 interface OdooInfoResponse {
@@ -116,19 +113,38 @@ interface OdooExecuteRequest {
 @Tags("Odoo")
 export class OdooController extends Controller {
   @NoSecurity()
-  private getDatabaseService(): OdooDatabaseService {
+  private getDatabaseService(): odoo.OdooDatabaseService {
     const ctx = getServerContext();
-    return new OdooDatabaseService(ctx);
+
+    return new odoo.OdooDatabaseService({
+      logger: ctx.logger,
+      drizzle: ctx.drizzle,
+      redis: ctx.redis,
+      odooClient: new odoo.OdooClient(ODOO_URL),
+      encryptionService: new odoo.EncryptionService(JWT_SECRET),
+      odooConfig: {
+        url: ODOO_URL,
+        port: ODOO_PORT,
+        adminPassword: ODOO_ADMIN_PASSWORD,
+      },
+    });
   }
 
   @NoSecurity()
-  private getUserProvisioningService(): OdooUserProvisioningService {
-    const { drizzle } = getServerContext();
-    return new OdooUserProvisioningService(drizzle);
+  private getUserProvisioningService(): odoo.OdooUserProvisioningService {
+    const ctx = getServerContext();
+
+    return new odoo.OdooUserProvisioningService({
+      drizzle: ctx.drizzle,
+      logger: ctx.logger,
+      encryptionService: new odoo.EncryptionService(JWT_SECRET),
+      odooUrl: ODOO_URL,
+    });
   }
 
   @Post("/provision")
   @Security("jwt")
+  @SuccessResponse("202", "Accepted")
   public async provisionDatabase(@Request() request: AuthenticatedRequest): Promise<OdooProvisionResponse> {
     const organizationId = request.betterAuthSession?.session.activeOrganizationId;
 
@@ -138,15 +154,13 @@ export class OdooController extends Controller {
       });
     }
 
-    const databaseService = this.getDatabaseService();
-    const result = await databaseService.provisionDatabase(organizationId);
+    const job = await odooProvisioningQueue.add("provision", { organizationId });
 
-    const loginUrl = await databaseService.getAuthUrl(organizationId);
-
+    this.setStatus(202);
     return {
       success: true,
-      ...result,
-      loginUrl,
+      message: "Odoo database provisioning has been queued.",
+      jobId: job.id!,
     };
   }
 
@@ -216,8 +230,8 @@ export class OdooController extends Controller {
       throw new Error("Cannot duplicate: Database does not exist");
     }
 
-    const odooClient = new OdooClient();
-    const masterPassword = process.env.ODOO_MASTER_PASSWORD ?? "admin";
+    const odooClient = new odoo.OdooClient(ODOO_URL);
+    const masterPassword = ODOO_ADMIN_PASSWORD;
 
     await odooClient.duplicateDatabase(
       masterPassword,
@@ -245,8 +259,8 @@ export class OdooController extends Controller {
       throw new Error("Cannot backup: Database does not exist");
     }
 
-    const odooClient = new OdooClient();
-    const masterPassword = process.env.ODOO_MASTER_PASSWORD ?? "admin";
+    const odooClient = new odoo.OdooClient(ODOO_URL);
+    const masterPassword = ODOO_ADMIN_PASSWORD;
 
     const backupData = await odooClient.backupDatabase({
       masterPassword,
@@ -296,7 +310,7 @@ export class OdooController extends Controller {
   ): Promise<number[]> {
     const userId = request.betterAuthSession!.user.id;
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
-    const client = await getOdooClientManager().getClient(userId, organizationId);
+    const client = await odoo.getOdooClientManager().getClient(userId, organizationId);
 
     return client.search(body.model, body.domain ?? [], {
       limit: body.limit,
@@ -313,7 +327,7 @@ export class OdooController extends Controller {
   ): Promise<Record<string, unknown>[]> {
     const userId = request.betterAuthSession!.user.id;
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
-    const client = await getOdooClientManager().getClient(userId, organizationId);
+    const client = await odoo.getOdooClientManager().getClient(userId, organizationId);
 
     return client.searchRead(
       body.model,
@@ -336,7 +350,7 @@ export class OdooController extends Controller {
   ): Promise<Record<string, unknown>[]> {
     const userId = request.betterAuthSession!.user.id;
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
-    const client = await getOdooClientManager().getClient(userId, organizationId);
+    const client = await odoo.getOdooClientManager().getClient(userId, organizationId);
 
     return client.read(body.model, body.ids, body.fields ?? [], body.context);
   }
@@ -349,7 +363,7 @@ export class OdooController extends Controller {
   ): Promise<{ id: number }> {
     const userId = request.betterAuthSession!.user.id;
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
-    const client = await getOdooClientManager().getClient(userId, organizationId);
+    const client = await odoo.getOdooClientManager().getClient(userId, organizationId);
 
     const id = await client.create(body.model, body.values, body.context);
 
@@ -364,7 +378,7 @@ export class OdooController extends Controller {
   ): Promise<{ success: boolean }> {
     const userId = request.betterAuthSession!.user.id;
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
-    const client = await getOdooClientManager().getClient(userId, organizationId);
+    const client = await odoo.getOdooClientManager().getClient(userId, organizationId);
 
     const success = await client.write(body.model, body.ids, body.values, body.context);
 
@@ -379,7 +393,7 @@ export class OdooController extends Controller {
   ): Promise<{ success: boolean }> {
     const userId = request.betterAuthSession!.user.id;
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
-    const client = await getOdooClientManager().getClient(userId, organizationId);
+    const client = await odoo.getOdooClientManager().getClient(userId, organizationId);
 
     const success = await client.unlink(body.model, body.ids, body.context);
 
@@ -394,7 +408,7 @@ export class OdooController extends Controller {
   ): Promise<unknown> {
     const userId = request.betterAuthSession!.user.id;
     const organizationId = request.betterAuthSession!.session.activeOrganizationId!;
-    const client = await getOdooClientManager().getClient(userId, organizationId);
+    const client = await odoo.getOdooClientManager().getClient(userId, organizationId);
 
     return client.execute(body.model, body.method, body.args ?? [], body.kwargs ?? {});
   }

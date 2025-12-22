@@ -1,7 +1,7 @@
 import { Worker, Job, type ConnectionOptions } from "bullmq";
 import { Redis } from "ioredis";
 import { z } from "zod";
-import { connect, startJob, completeJob, failJob, type JobName } from "@safee/database";
+import { connect, startJob, completeJob, failJob, type JobName, redisConnect, odoo } from "@safee/database";
 import { createLogger } from "./logger.js";
 import {
   AnalyticsJobSchema,
@@ -101,6 +101,29 @@ const jobProcessors = {
     // - generate_audit_trail: Compliance audit report
     // - generate_case_report: Case-specific report
   },
+  odoo_provisioning: async (payload: Record<string, unknown>) => {
+    const { organizationId } = payload as { organizationId: string };
+    logger.info({ organizationId }, "Processing odoo_provisioning job");
+
+    // Get Redis client from database package
+    const redis = await redisConnect();
+
+    // Create Odoo database service with all required dependencies
+    const odooDatabaseService = new odoo.OdooDatabaseService({
+      logger,
+      drizzle,
+      redis,
+      odooClient: new odoo.OdooClient(process.env.ODOO_URL ?? "http://localhost:8069"),
+      encryptionService: new odoo.EncryptionService(process.env.JWT_SECRET ?? "development-key"),
+      odooConfig: {
+        url: process.env.ODOO_URL ?? "http://localhost:8069",
+        port: parseInt(process.env.ODOO_PORT ?? "8069", 10),
+        adminPassword: process.env.ODOO_ADMIN_PASSWORD ?? "admin",
+      },
+    });
+
+    await odooDatabaseService.provisionDatabase(organizationId);
+  }
 } satisfies Record<JobName, (payload: Record<string, unknown>) => Promise<void>>;
 
 /**
@@ -132,6 +155,8 @@ async function processJob(job: Job): Promise<void> {
       processor = jobProcessors.sync_odoo;
     } else if (jobName === "reports") {
       processor = jobProcessors.generate_report;
+    } else if (jobName === "odoo-provisioning") {
+      processor = jobProcessors.odoo_provisioning;
     } else {
       throw new Error(`Unknown job name: ${jobName}`);
     }
@@ -164,7 +189,7 @@ async function startWorkers() {
   const workers: Worker[] = [];
 
   // Create a worker for each queue
-  const queues = ["analytics", "email", "odoo-sync", "reports"];
+  const queues = ["analytics", "email", "odoo-sync", "reports", "odoo-provisioning"];
 
   for (const queueName of queues) {
     const worker = new Worker(queueName, processJob, {

@@ -38,13 +38,8 @@ import {
   getLeaveBalanceByEmployee,
   getLeaveBalanceByLeaveType,
 } from "@safee/database";
-import { getOdooClientManager } from "../services/odoo/manager.service.js";
-import {
-  OdooHRService,
-  parseEmployeeType,
-  parseGender,
-  parseMaritalStatus,
-} from "../services/odoo/hr.service.js";
+import { odoo } from "@safee/database";
+const { getOdooClientManager, OdooHRService, parseEmployeeType, parseGender, parseMaritalStatus } = odoo;
 import { mapEmployeeToResponse, mapDepartmentToResponse } from "./hrManagementController.mappers.js";
 import type {
   EmployeeDbResponse,
@@ -333,7 +328,7 @@ export class HRManagementController extends Controller {
   }
 
   @NoSecurity()
-  private async getHRService(request: AuthenticatedRequest): Promise<OdooHRService> {
+  private async getHRService(request: AuthenticatedRequest): Promise<odoo.OdooHRService> {
     const { userId, organizationId } = this.getServerContext(request);
     const odooClientManager = getOdooClientManager();
     const client = await odooClientManager.getClient(userId, organizationId);

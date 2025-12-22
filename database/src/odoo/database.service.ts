@@ -1,12 +1,11 @@
-import { schema, eq } from "@safee/database";
+import { schema, eq, type DrizzleClient, type RedisClient } from "@safee/database";
 import crypto from "node:crypto";
-import { odooClient } from "./client.js";
+import { type OdooClient } from "./client.js";
 import { type OdooConnectionConfig } from "./client.service.js";
-import { encryptionService } from "../encryption.js";
-import { env } from "../../../env.js";
-import { OrganizationNotFound, OdooDatabaseAlreadyExists, OdooDatabaseNotFound } from "../../errors.js";
-import type { ServerContext } from "../../serverContext.js";
+import { type EncryptionService } from "../encryption.js";
+import { OrganizationNotFound, OdooDatabaseAlreadyExists, OdooDatabaseNotFound } from "../errors.js";
 import { OdooModuleService } from "./module.service.js";
+import type { Logger } from "pino";
 
 export interface OdooProvisionResult {
   databaseName: string;
@@ -15,19 +14,51 @@ export interface OdooProvisionResult {
   odooUrl: string;
 }
 
+export interface OdooConfig {
+  url: string;
+  port?: number;
+  adminPassword: string;
+}
+
+export interface OdooDatabaseServiceDependencies {
+  logger: Logger;
+  drizzle: DrizzleClient;
+  redis: RedisClient;
+  odooClient: OdooClient;
+  encryptionService: EncryptionService;
+  odooConfig: OdooConfig;
+}
+
 export class OdooDatabaseService {
   private odooModuleService: OdooModuleService;
+  private readonly deps: OdooDatabaseServiceDependencies;
 
-  constructor(private readonly ctx: ServerContext) {
-    this.odooModuleService = new OdooModuleService(ctx);
+  constructor(deps: OdooDatabaseServiceDependencies) {
+    this.deps = deps;
+    this.odooModuleService = new OdooModuleService({
+      logger: deps.logger,
+      drizzle: deps.drizzle,
+    });
   }
 
   private get logger() {
-    return this.ctx.logger;
+    return this.deps.logger;
   }
 
   private get drizzle() {
-    return this.ctx.drizzle;
+    return this.deps.drizzle;
+  }
+
+  private get odooClient() {
+    return this.deps.odooClient;
+  }
+
+  private get encryptionService() {
+    return this.deps.encryptionService;
+  }
+
+  private get odooConfig() {
+    return this.deps.odooConfig;
   }
 
   private generateSecurePassword(): string {
@@ -90,12 +121,9 @@ export class OdooDatabaseService {
       "Installing required Odoo modules with resilient client",
     );
 
-    const odooUrl = env.ODOO_URL;
-    const odooPort = env.ODOO_PORT;
-
     const config: OdooConnectionConfig = {
-      url: odooUrl,
-      port: odooPort,
+      url: this.odooConfig.url,
+      port: this.odooConfig.port ?? 8069,
       database: databaseName,
       username: adminLogin,
       password: adminPassword,
@@ -369,7 +397,7 @@ export class OdooDatabaseService {
 
     const databaseName = this.generateDatabaseName(org.slug, org.id);
 
-    const exists = await odooClient.databaseExists(databaseName);
+    const exists = await this.odooClient.databaseExists(databaseName);
     if (exists) {
       this.logger.error({ databaseName }, "Odoo database name already in use");
       throw new OdooDatabaseAlreadyExists(organizationId);
@@ -377,7 +405,7 @@ export class OdooDatabaseService {
 
     // Check if template exists
     const templateName = "odoo_template";
-    const templateExists = await odooClient.databaseExists(templateName);
+    const templateExists = await this.odooClient.databaseExists(templateName);
 
     if (!templateExists) {
       this.logger.error(
@@ -401,8 +429,8 @@ export class OdooDatabaseService {
 
     try {
       // Duplicate template database (2-5 seconds vs 10-15 minutes!)
-      await odooClient.duplicateDatabase(
-        env.ODOO_ADMIN_PASSWORD,
+      await this.odooClient.duplicateDatabase(
+        this.odooConfig.adminPassword,
         templateName,
         databaseName,
         false, // neutralize = false (keep data intact)
@@ -415,94 +443,91 @@ export class OdooDatabaseService {
         "Template duplicated successfully, updating company information",
       );
 
-      // Update company information in the new database
-      const odooUrl = env.ODOO_URL;
-      const odooPort = env.ODOO_PORT;
+        // Update company information in the new database
+        const config: OdooConnectionConfig = {
+          url: this.odooConfig.url,
+          port: this.odooConfig.port ?? 8069,
+          database: databaseName,
+          username: "admin", // Template admin user
+          password: adminPassword, // Will be updated below
+        };
 
-      const config: OdooConnectionConfig = {
-        url: odooUrl,
-        port: odooPort,
-        database: databaseName,
-        username: "admin", // Template admin user
-        password: adminPassword, // Will be updated below
-      };
+        // Connect with template's admin password first (default template password)
+        // Retry with backoff to handle Neon database replication delay
+        const templatePassword = this.odooConfig.adminPassword;
+        const tempAuth = await this.retryWithBackoff(
+          () => this.odooClient.authenticate(config.database, "admin", templatePassword),
+          5,
+          2000,
+          "Database authentication after duplication",
+        );
 
-      // Connect with template's admin password first (default template password)
-      // Retry with backoff to handle Neon database replication delay
-      const templatePassword = env.ODOO_ADMIN_PASSWORD || "admin";
-      const tempAuth = await this.retryWithBackoff(
-        () => odooClient.authenticate(config.database, "admin", templatePassword),
-        5,
-        2000,
-        "Database authentication after duplication",
-      );
+        // Update admin password
+        await this.odooClient.write(tempAuth.session_id, "res.users", [1], {
+          login: adminLogin,
+          password: adminPassword,
+        });
 
-      // Update admin password
-      await odooClient.write(tempAuth.session_id, "res.users", [1], {
-        login: adminLogin,
-        password: adminPassword,
-      });
+        // Re-authenticate with new password
+        const auth = await this.odooClient.authenticate(config.database, adminLogin, adminPassword);
 
-      // Re-authenticate with new password
-      const auth = await odooClient.authenticate(config.database, adminLogin, adminPassword);
+        // Update company name
+        await this.odooClient.write(auth.session_id, "res.company", [1], {
+          name: org.name,
+        });
 
-      // Update company name
-      await odooClient.write(auth.session_id, "res.company", [1], {
-        name: org.name,
-      });
+        // Update partner (company) name and locale
+        await this.odooClient.write(auth.session_id, "res.partner", [1], {
+          name: org.name,
+          lang: org.defaultLocale === "ar" ? "ar_001" : "en_US",
+        });
 
-      // Update partner (company) name and locale
-      await odooClient.write(auth.session_id, "res.partner", [1], {
-        name: org.name,
-        lang: org.defaultLocale === "ar" ? "ar_001" : "en_US",
-      });
+        this.logger.info({ databaseName, companyName: org.name }, "Company information updated successfully");
 
-      this.logger.info({ databaseName, companyName: org.name }, "Company information updated successfully");
+        // Only insert database record if everything succeeded
+        const encryptedPassword = this.encryptionService.encrypt(adminPassword);
 
-      // Only insert database record if everything succeeded
-      const encryptedPassword = encryptionService.encrypt(adminPassword);
+        await this.drizzle.insert(schema.odooDatabases).values({
+          organizationId,
+          databaseName,
+          adminLogin,
+          adminPassword: encryptedPassword,
+          odooUrl: this.odooConfig.url,
+        });
 
-      await this.drizzle.insert(schema.odooDatabases).values({
-        organizationId,
-        databaseName,
-        adminLogin,
-        adminPassword: encryptedPassword,
-        odooUrl: env.ODOO_URL,
-      });
+        this.logger.info(
+          { organizationId, databaseName, provisioningTime: "~5s (template-based)" },
+          "✅ Odoo database provisioned successfully using template pattern",
+        );
 
-      this.logger.info(
-        { organizationId, databaseName, provisioningTime: "~5s (template-based)" },
-        "✅ Odoo database provisioned successfully using template pattern",
-      );
+        return {
+          databaseName,
+          adminLogin,
+          adminPassword,
+          odooUrl: this.odooConfig.url,
+        };
+      } catch (err) {
+        this.logger.error(
+          { organizationId, databaseName, error: err, dbCreated },
+          "❌ Failed to provision Odoo database, rolling back",
+        );
 
-      return {
-        databaseName,
-        adminLogin,
-        adminPassword,
-        odooUrl: env.ODOO_URL,
-      };
-    } catch (err) {
-      this.logger.error(
-        { organizationId, databaseName, error: err, dbCreated },
-        "❌ Failed to provision Odoo database, rolling back",
-      );
-
-      // Rollback: Delete the Odoo database if it was created
-      if (dbCreated) {
-        try {
-          this.logger.info({ databaseName }, "Rolling back: Deleting Odoo database");
-          await odooClient.dropDatabase(env.ODOO_ADMIN_PASSWORD, databaseName);
-          this.logger.info({ databaseName }, "Rollback successful: Odoo database deleted");
-        } catch (rollbackErr) {
-          this.logger.error(
-            { databaseName, error: rollbackErr },
-            "❌ Rollback failed: Could not delete Odoo database",
-          );
+        // Rollback: Delete the Odoo database if it was created
+        if (dbCreated) {
+          try {
+            this.logger.info({ databaseName }, "Rolling back: Deleting Odoo database");
+            await this.odooClient.dropDatabase(this.odooConfig.adminPassword, databaseName);
+            this.logger.info({ databaseName }, "Rollback successful: Odoo database deleted");
+          } catch (rollbackErr) {
+            this.logger.error(
+              { databaseName, error: rollbackErr },
+              "❌ Rollback failed: Could not delete Odoo database",
+            );
+          }
         }
-      }
 
-      throw err;
-    }
+        throw err;
+      }
   }
 
   async getDatabaseInfo(organizationId: string): Promise<{
@@ -518,7 +543,7 @@ export class OdooDatabaseService {
     }
 
     const databaseName = this.generateDatabaseName(org.slug, org.id);
-    const exists = await odooClient.databaseExists(databaseName);
+    const exists = await this.odooClient.databaseExists(databaseName);
 
     return {
       databaseName,
@@ -551,7 +576,7 @@ export class OdooDatabaseService {
 
     try {
       // Delete Odoo database first
-      await odooClient.dropDatabase(env.ODOO_ADMIN_PASSWORD, databaseName);
+      await this.odooClient.dropDatabase(this.odooConfig.adminPassword, databaseName);
       odooDbDeleted = true;
 
       // Only delete database record after Odoo database is deleted
@@ -580,7 +605,7 @@ export class OdooDatabaseService {
   }
 
   async listAllDatabases(): Promise<string[]> {
-    return odooClient.listDatabases();
+    return this.odooClient.listDatabases();
   }
 
   async getAuthUrl(organizationId: string): Promise<string> {
@@ -590,7 +615,7 @@ export class OdooDatabaseService {
       throw new OdooDatabaseNotFound(organizationId);
     }
 
-    return `${env.ODOO_URL}/web/login?db=${info.databaseName}`;
+    return `${this.odooConfig.url}/web/login?db=${info.databaseName}`;
   }
 
   getProxyHeaders(organizationId: string): Record<string, string> {
@@ -613,7 +638,7 @@ export class OdooDatabaseService {
       return null;
     }
 
-    const adminPassword = encryptionService.decrypt(dbRecord.adminPassword);
+    const adminPassword = this.encryptionService.decrypt(dbRecord.adminPassword);
 
     return {
       databaseName: dbRecord.databaseName,

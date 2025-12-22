@@ -1,7 +1,7 @@
 import { Controller, Get, Route, Tags, Security, Request, Path, Query, OperationId } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
-import { getOdooClientManager } from "../services/odoo/manager.service.js";
-import { OdooHRService } from "../services/odoo/hr.service.js";
+import { odoo } from "@safee/database";
+const { getOdooClientManager, OdooHRService } = odoo;
 import { BadRequest, NotFound } from "../errors.js";
 import type {
   EmployeeResponse,
@@ -31,7 +31,7 @@ export class HRController extends Controller {
    * Get the HR service for the current organization
    */
   @Security("jwt")
-  private async getHRService(request: AuthenticatedRequest): Promise<OdooHRService> {
+  private async getHRService(request: AuthenticatedRequest): Promise<odoo.OdooHRService> {
     const userId = request.betterAuthSession?.user.id;
     const organizationId = request.betterAuthSession?.session.activeOrganizationId;
 

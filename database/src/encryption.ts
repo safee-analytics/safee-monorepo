@@ -1,16 +1,18 @@
 import crypto from "node:crypto";
-import { env } from "../../env.js";
 
 export class EncryptionService {
   private readonly algorithm = "aes-256-gcm";
   private readonly keyLength = 32; // 256 bits
   private readonly ivLength = 16; // 128 bits
   private readonly authTagLength = 16; // 128 bits
+  private readonly encryptionKey: Buffer;
+
+  constructor(secret: string) {
+    this.encryptionKey = crypto.scryptSync(secret, "safee-encryption-salt", this.keyLength);
+  }
 
   private getEncryptionKey(): Buffer {
-    const key = env.JWT_SECRET || "development-encryption-key-change-in-production";
-
-    return crypto.scryptSync(key, "safee-encryption-salt", this.keyLength);
+    return this.encryptionKey;
   }
 
   encrypt(plaintext: string): string {
@@ -57,4 +59,7 @@ export class EncryptionService {
   }
 }
 
-export const encryptionService = new EncryptionService();
+// Singleton for backward compatibility (uses environment variable or default)
+export const encryptionService = new EncryptionService(
+  process.env.JWT_SECRET ?? "development-encryption-key-change-in-production"
+);

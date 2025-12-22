@@ -1,16 +1,10 @@
 import { Controller, Post, Route, Tags, Body, Request, NoSecurity } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getWebhookVerification } from "../services/webhookVerification.js";
-import { getOdooClientManager } from "../services/odoo/manager.service.js";
+import { Unauthorized, NotFound } from "../errors.js";
+import { getServerContext } from "../serverContext.js";
 import {
-  OdooHRService,
-  parseEmployeeType,
-  parseGender,
-  parseMaritalStatus,
-} from "../services/odoo/hr.service.js";
-import { OdooCRMService } from "../services/odoo/crm.service.js";
-import { OdooAccountingService } from "../services/odoo/accounting.service.js";
-import {
+  odoo,
   syncEmployee,
   syncDepartment,
   syncContact,
@@ -27,10 +21,29 @@ import {
   eq,
   and,
 } from "@safee/database";
-import { Unauthorized, NotFound } from "../errors.js";
-import { getServerContext } from "../serverContext.js";
-import { createOdooClient } from "../services/odoo/client.service.js";
-import { encryptionService } from "../services/encryption.js";
+
+const {
+
+  getOdooClientManager,
+
+  OdooHRService,
+
+  parseEmployeeType,
+
+  parseGender,
+
+  parseMaritalStatus,
+
+  OdooCRMService,
+
+  OdooAccountingService,
+
+  createOdooClient,
+
+  EncryptionService,
+
+} = odoo;
+const encryptionService = new EncryptionService(process.env.JWT_SECRET ?? "development-encryption-key-change-in-production");
 
 interface OdooWebhookPayload {
   event: "create" | "write" | "unlink"; // Odoo event types
