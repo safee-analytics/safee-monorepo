@@ -1,7 +1,5 @@
-import type { OdooClient } from "../odoo/client.service.js";
-import { OdooCRMService } from "../odoo/crm.service.js";
-import type { DbDeps } from "@safee/database";
-import { syncLead, syncContact } from "@safee/database";
+import { odoo, type DbDeps, syncLead, syncContact } from "@safee/database";
+type OdooClient = odoo.OdooClientType;
 
 export interface CRMSyncResult {
   leadsSync: number;
@@ -14,14 +12,14 @@ export interface CRMSyncResult {
 }
 
 export class CRMSyncService {
-  private crmService: OdooCRMService;
+  private crmService: odoo.OdooCRMService;
 
   constructor(
     private readonly odooClient: OdooClient,
     private readonly db: DbDeps,
     private readonly organizationId: string,
   ) {
-    this.crmService = new OdooCRMService(odooClient);
+    this.crmService = new odoo.OdooCRMService(odooClient);
   }
 
   async syncAll(): Promise<CRMSyncResult> {

@@ -185,14 +185,6 @@ export class UserNotFound extends NotFound {
   }
 }
 
-export class OrganizationNotFound extends NotFound {
-  override code = "OrganizationNotFound";
-
-  constructor(opts?: ErrorOptions) {
-    super("Organization not found", {}, opts);
-  }
-}
-
 export class SessionNotFound extends NotFound {
   override code = "SessionNotFound";
 
@@ -209,35 +201,19 @@ export class RoleNotFound extends NotFound {
   }
 }
 
-export class ServiceNotFound extends NotFound {
-  override code = "ServiceNotFound";
-
-  constructor(serviceId: string, opts?: ErrorOptions) {
-    super(`Service not found: ${serviceId}`, { serviceId }, opts);
-  }
-}
-
-export class OdooDatabaseNotFound extends NotFound {
-  override code = "OdooDatabaseNotFound";
-
-  constructor(organizationId: string, opts?: ErrorOptions) {
-    super(`Odoo database not found for organization: ${organizationId}`, { organizationId }, opts);
-  }
-}
-
-export class OdooDatabaseAlreadyExists extends Conflict {
-  override code = "OdooDatabaseAlreadyExists";
-
-  constructor(organizationId: string, opts?: ErrorOptions) {
-    super(`Odoo database already exists for organization: ${organizationId}`, { organizationId }, opts);
-  }
-}
-
 export class ServiceAlreadyEnabled extends Conflict {
   override code = "ServiceAlreadyEnabled";
 
   constructor(opts?: ErrorOptions) {
     super("Service already enabled for organization", {}, opts);
+  }
+}
+
+export class ServiceNotFound extends NotFound {
+  override code = "ServiceNotFound";
+
+  constructor(serviceId: string, opts?: ErrorOptions) {
+    super(`Service not found: ${serviceId}`, { serviceId }, opts);
   }
 }
 

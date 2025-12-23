@@ -241,9 +241,9 @@ start-e2e service="" $DATABASE_URL=test_database_url $REDIS_URL="redis://localho
     COMPOSE_FILES="-f e2e/docker-compose.yml"
     # Check if odoo submodule is actually populated (not just initialized)
     # by verifying if the Dockerfile exists
-    if [ "{{service}}" = "odoo" ] && [ -f "odoo/Dockerfile" ] && [ -f "e2e/docker-compose.local.yml" ]; then
+    if [ "{{service}}" = "odoo" ] && [ -f "odoo/Dockerfile" ] && [ -f "e2e/docker-compose.override.yml" ]; then
       echo "Using local Odoo build..."
-      COMPOSE_FILES="$COMPOSE_FILES -f e2e/docker-compose.local.yml"
+      COMPOSE_FILES="$COMPOSE_FILES -f e2e/docker-compose.override.yml"
     fi
     if [ "{{service}}" = "odoo" ]; then
       docker compose $COMPOSE_FILES --profile odoo up -d --wait postgres redis odoo
@@ -471,17 +471,17 @@ docker-redis-cli:
 caddy-dev:
     @echo "Starting Caddy on http://localhost:8080"
     @echo "Make sure backend (port 3000) and frontend (port 3001) are running!"
-    caddy run --config Caddyfile.dev
+    caddy run --config caddy/Caddyfile.local
 
 [group('caddy')]
 caddy-prod:
     @echo "Starting Caddy with auto HTTPS"
-    @echo "Make sure to update domain in Caddyfile first!"
-    sudo caddy run --config Caddyfile
+    @echo "Make sure to update domain in caddy/Caddyfile.prod first!"
+    sudo caddy run --config caddy/Caddyfile.prod
 
 [group('caddy')]
 caddy-reload:
-    caddy reload --config Caddyfile
+    caddy reload --config caddy/Caddyfile.prod
 
 [group('caddy')]
 caddy-stop:
@@ -489,15 +489,18 @@ caddy-stop:
 
 [group('caddy')]
 caddy-fmt:
-    caddy fmt --overwrite Caddyfile
-    caddy fmt --overwrite Caddyfile.dev
+    caddy fmt --overwrite caddy/Caddyfile.local
+    caddy fmt --overwrite caddy/Caddyfile.dev
+    caddy fmt --overwrite caddy/Caddyfile.prod
 
 [group('caddy')]
 caddy-validate:
-    @echo "Validating Caddyfile..."
-    caddy validate --config Caddyfile
-    @echo "Validating Caddyfile.dev..."
-    caddy validate --config Caddyfile.dev
+    @echo "Validating local Caddyfile..."
+    caddy validate --config caddy/Caddyfile.local
+    @echo "Validating dev Caddyfile..."
+    caddy validate --config caddy/Caddyfile.dev
+    @echo "Validating prod Caddyfile..."
+    caddy validate --config caddy/Caddyfile.prod
 
 [group('caddy')]
 dev-with-caddy:
@@ -540,4 +543,4 @@ dev-with-caddy:
     echo "Press Ctrl+C to stop all services"
     echo ""
 
-    caddy run --config Caddyfile.dev
+    caddy run --config caddy/Caddyfile.local

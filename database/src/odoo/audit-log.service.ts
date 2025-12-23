@@ -1,5 +1,5 @@
 import type { Logger } from "pino";
-import { schema, type DrizzleClient, eq, and, gt, lt } from "@safee/database";
+import { schema, type DrizzleClient, eq, and, gt, lt } from "../drizzle.js";
 
 type NewOdooAuditLog = typeof schema.odooAuditLogs.$inferInsert;
 type NewOdooIdempotencyKey = typeof schema.odooIdempotencyKeys.$inferInsert;

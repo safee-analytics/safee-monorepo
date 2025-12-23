@@ -44,9 +44,12 @@ jobs:
             file: landing/Dockerfile
             build-args: |
               NEXT_PUBLIC_APP_URL=https://dev.safee.dev
+          - service: jobs-worker
+            file: jobs/Dockerfile
+            build-args: ""
           - service: caddy
-            file: infra/caddy/Dockerfile
-            context: infra/caddy
+            file: caddy/Dockerfile
+            context: caddy
             build-args: ""
 
     steps:

@@ -17,7 +17,8 @@ import type { AuthenticatedRequest } from "./middleware/auth.js";
 import { ApiError } from "./errors.js";
 import swaggerDocument from "./swagger.json" with { type: "json" };
 import { initServerContext } from "./serverContext.js";
-import { initOdooClientManager } from "./services/odoo/manager.service.js";
+import { odoo } from "@safee/database";
+import { ODOO_URL, ODOO_PORT, JWT_SECRET } from "../env.js";
 import { hoursToMilliseconds } from "date-fns";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "../auth/index.js";
@@ -54,7 +55,25 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
     logger.warn("Running in local mode");
   }
   app.set("trust proxy", 1);
-  const odoo = initOdooClientManager(drizzle, logger as unknown as Logger);
+
+  // Initialize Odoo user provisioning service
+  const odooUserProvisioningService = new odoo.OdooUserProvisioningService({
+    drizzle,
+    logger: logger as unknown as Logger,
+    encryptionService: new odoo.EncryptionService(JWT_SECRET),
+    odooUrl: ODOO_URL,
+  });
+
+  // Initialize Odoo client manager
+  const odooClientManager = odoo.initOdooClientManager({
+    drizzle,
+    logger: logger as unknown as Logger,
+    odooConfig: {
+      url: ODOO_URL,
+      port: ODOO_PORT,
+    },
+    userProvisioningService: odooUserProvisioningService,
+  });
 
   app.use(json({ limit: "10mb" }));
   app.use(urlencoded({ extended: true, limit: "10mb" }));
@@ -90,7 +109,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
     storage,
     pubsub,
     scheduler,
-    odoo,
+    odoo: odooClientManager,
   });
 
   app.use(helmet());

@@ -1,4 +1,4 @@
-import { schema, eq, and } from "@safee/database";
+import { schema, eq, and, odoo } from "@safee/database";
 import {
   type ConnectorMetadata,
   type IConnector,
@@ -6,7 +6,7 @@ import {
   type ConnectorConfig,
 } from "./base.connector.js";
 import { ConnectorFactory } from "./connector.factory.js";
-import { encryptionService } from "../encryption.js";
+import { JWT_SECRET } from "../../../env.js";
 import { z } from "zod";
 import type { ServerContext } from "../../serverContext.js";
 
@@ -62,6 +62,7 @@ const connectorConfigSchema = z.union([postgresqlConfigSchema, mysqlConfigSchema
 export class ConnectorManager {
   // In-memory cache of active connector instances
   private activeConnectors = new Map<string, IConnector>();
+  private readonly encryptionService = new odoo.EncryptionService(JWT_SECRET);
 
   constructor(private readonly ctx: ServerContext) {}
 
@@ -93,7 +94,7 @@ export class ConnectorManager {
     }
 
     // Encrypt sensitive config data
-    const encryptedConfig = encryptionService.encrypt(JSON.stringify(params.config));
+    const encryptedConfig = this.encryptionService.encrypt(JSON.stringify(params.config));
 
     // Create database record
     // Note: config is jsonb, so we store the encrypted string which Postgres will accept
@@ -187,7 +188,7 @@ export class ConnectorManager {
     // Validate and decrypt config
     const configValue = configWrapperSchema.parse(record.config);
     const encryptedConfig = typeof configValue === "string" ? configValue : JSON.stringify(configValue);
-    const decryptedConfigRaw = encryptionService.decrypt(encryptedConfig);
+    const decryptedConfigRaw = this.encryptionService.decrypt(encryptedConfig);
     const decryptedConfig = connectorConfigSchema.parse(JSON.parse(decryptedConfigRaw));
 
     // Create metadata
@@ -308,7 +309,7 @@ export class ConnectorManager {
         throw new Error(`Invalid connector configuration: ${validation.errors?.join(", ")}`);
       }
 
-      const encryptedNewConfig = encryptionService.encrypt(JSON.stringify(updates.config));
+      const encryptedNewConfig = this.encryptionService.encrypt(JSON.stringify(updates.config));
       updateData.config = encryptedNewConfig as unknown as typeof connectors.$inferInsert.config;
 
       // Test new connection

@@ -27,6 +27,21 @@ import { fileEncryptionMetadata } from "../drizzle/fileEncryptionMetadata.js";
 import { auditorAccess } from "../drizzle/auditorAccess.js";
 import { userKeypairs } from "../drizzle/userKeypairs.js";
 import { encryptionKeys } from "../drizzle/encryptionKeys.js";
+import { hrPayslipLines } from "../drizzle/hrPayslipLines.js";
+import { hrPayslips } from "../drizzle/hrPayslips.js";
+import { hrLeaveRequests } from "../drizzle/hrLeaveRequests.js";
+import { hrLeaveAllocations } from "../drizzle/hrLeaveAllocations.js";
+import { hrLeaveTypes } from "../drizzle/hrLeaveTypes.js";
+import { hrContracts } from "../drizzle/hrContracts.js";
+import { hrEmployees } from "../drizzle/hrEmployees.js";
+import { hrDepartments } from "../drizzle/hrDepartments.js";
+import { crmActivities } from "../drizzle/crmActivities.js";
+import { crmLeads } from "../drizzle/crmLeads.js";
+import { crmStages } from "../drizzle/crmStages.js";
+import { crmContacts } from "../drizzle/crmContacts.js";
+import { crmTeams } from "../drizzle/crmTeams.js";
+import { crmLostReasons } from "../drizzle/crmLostReasons.js";
+import { documentTemplates } from "../drizzle/documentTemplates.js";
 
 export type TestOrganization = InferSelectModel<typeof organizations>;
 export type TestUser = InferSelectModel<typeof users>;
@@ -122,14 +137,36 @@ export async function createTestFixtures(db: DrizzleClient): Promise<TestFixture
 }
 
 export async function cleanTestData(db: DrizzleClient): Promise<void> {
+  await db.delete(caseHistory);
+  await db.delete(caseNotes);
+  await db.delete(caseDocuments);
+  await db.delete(caseAssignments);
   await db.delete(approvalSteps);
   await db.delete(approvalRequests);
+  await db.delete(fileEncryptionMetadata);
+  await db.delete(auditorAccess);
+  await db.delete(userKeypairs);
+  await db.delete(cases);
+  await db.delete(auditProcedures);
+  await db.delete(auditSections);
+  await db.delete(auditScopes);
+  await db.delete(auditTemplates);
   await db.delete(approvalWorkflowSteps);
   await db.delete(approvalRules);
   await db.delete(approvalWorkflows);
-
-  await db.delete(users);
+  await db.delete(notifications);
+  await db.delete(notificationSettings);
+  await db.delete(connectors);
+  await db.delete(securityEvents);
+  await db.delete(loginAttempts);
+  await db.delete(verifications);
+  await db.delete(oauthAccounts);
+  await db.delete(sessions);
   await db.delete(jobs);
+  await db.delete(jobSchedules);
+  await db.delete(members);
+  await db.delete(encryptionKeys);
+  await db.delete(users);
   await db.delete(organizations);
 }
 
@@ -215,13 +252,16 @@ export async function nukeDatabase(db: DrizzleClient): Promise<void> {
   await db.delete(caseNotes);
   await db.delete(caseDocuments);
   await db.delete(caseAssignments);
+  await db.delete(approvalSteps);
+  await db.delete(approvalRequests);
+  await db.delete(fileEncryptionMetadata);
+  await db.delete(auditorAccess);
+  await db.delete(userKeypairs);
   await db.delete(cases);
   await db.delete(auditProcedures);
   await db.delete(auditSections);
   await db.delete(auditScopes);
   await db.delete(auditTemplates);
-  await db.delete(approvalSteps);
-  await db.delete(approvalRequests);
   await db.delete(approvalWorkflowSteps);
   await db.delete(approvalRules);
   await db.delete(approvalWorkflows);
@@ -236,11 +276,22 @@ export async function nukeDatabase(db: DrizzleClient): Promise<void> {
   await db.delete(jobs);
   await db.delete(jobSchedules);
   await db.delete(members);
-  // Delete encryption tables before users and organizations
-  await db.delete(fileEncryptionMetadata);
-  await db.delete(auditorAccess);
-  await db.delete(userKeypairs);
   await db.delete(encryptionKeys);
   await db.delete(users);
   await db.delete(organizations);
+  await db.delete(hrPayslipLines);
+  await db.delete(hrPayslips);
+  await db.delete(hrLeaveRequests);
+  await db.delete(hrLeaveAllocations);
+  await db.delete(hrLeaveTypes);
+  await db.delete(hrContracts);
+  await db.delete(hrEmployees);
+  await db.delete(hrDepartments);
+  await db.delete(crmActivities);
+  await db.delete(crmLeads);
+  await db.delete(crmStages);
+  await db.delete(crmContacts);
+  await db.delete(crmTeams);
+  await db.delete(crmLostReasons);
+  await db.delete(documentTemplates);
 }

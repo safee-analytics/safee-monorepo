@@ -6,6 +6,7 @@ import {
   type PubSub,
   type JobScheduler,
   schema,
+  type odoo,
 } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import { UserController } from "./userController.js";
@@ -13,7 +14,7 @@ import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { Unauthorized, UserNotFound } from "../errors.js";
 import type { ServerContext } from "../serverContext.js";
 import type { Logger } from "pino";
-import type { OdooClientManager } from "../services/odoo/manager.service.js";
+type OdooClientManager = odoo.OdooClientManager;
 
 void describe("UserController", () => {
   let drizzle: DrizzleClient;

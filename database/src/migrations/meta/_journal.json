@@ -281,6 +281,13 @@
       "when": 1765663355442,
       "tag": "0039_damp_moira_mactaggert",
       "breakpoints": false
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1766447029274,
+      "tag": "0040_smooth_gideon",
+      "breakpoints": false
     }
   ]
 }

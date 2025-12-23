@@ -1,0 +1,68 @@
+# Global options
+{
+	# Email for Let's Encrypt notifications
+	email admin@safee.dev
+}
+
+# Frontend
+dev.safee.dev {
+	# Proxy API requests to active backend (blue-green deployment)
+	handle /api/* {
+		@active_is_blue expression `{env.DEPLOYMENT_COLOR} == "blue"`
+		@active_is_green expression `{env.DEPLOYMENT_COLOR} == "green"`
+
+		handle @active_is_blue {
+			reverse_proxy api-blue:3000 {
+				health_uri /api/v1/health
+				health_interval 10s
+				health_timeout 5s
+			}
+		}
+
+		handle @active_is_green {
+			reverse_proxy api-green:3000 {
+				health_uri /api/v1/health
+				health_interval 10s
+				health_timeout 5s
+			}
+		}
+	}
+
+	# Everything else goes to frontend
+	handle {
+		reverse_proxy frontend:3001
+	}
+
+	encode gzip
+}
+
+# API/Backend - Direct API access
+api-dev.safee.dev {
+	# Blue-green routing for direct API access
+	@active_is_blue expression `{env.DEPLOYMENT_COLOR} == "blue"`
+	@active_is_green expression `{env.DEPLOYMENT_COLOR} == "green"`
+
+	handle @active_is_blue {
+		reverse_proxy api-blue:3000 {
+			health_uri /api/v1/health
+			health_interval 10s
+			health_timeout 5s
+		}
+	}
+
+	handle @active_is_green {
+		reverse_proxy api-green:3000 {
+			health_uri /api/v1/health
+			health_interval 10s
+			health_timeout 5s
+		}
+	}
+
+	encode gzip
+}
+
+# Landing page
+landing.safee.dev {
+	reverse_proxy landing:3002
+	encode gzip
+}

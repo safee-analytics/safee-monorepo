@@ -4,7 +4,6 @@ WORKDIR /workspace
 RUN apk add --no-cache libc6-compat
 COPY package.json package-lock.json tsconfig.json ./
 COPY database/package.json ./database/
-COPY gateway/package.json ./gateway/
 COPY jobs/package.json ./jobs/
 RUN npm ci --omit=dev
 
@@ -14,7 +13,6 @@ WORKDIR /workspace
 RUN apk add --no-cache libc6-compat
 COPY package.json package-lock.json tsconfig.json ./
 COPY database/package.json database/tsconfig.json ./database/
-COPY gateway/package.json ./gateway/
 COPY jobs/package.json jobs/tsconfig.json ./jobs/
 RUN npm ci
 
@@ -24,20 +22,11 @@ COPY database ./database/
 RUN npm run build -w database
 
 # Stage 4: Build jobs (reuse build-deps)
-FROM build-deps AS jobs
+FROM build-deps AS builder
 COPY --from=database /workspace/database/build ./database/build
 COPY --from=database /workspace/database/src ./database/src
 COPY jobs ./jobs/
 RUN npm run build -w jobs
-
-# Stage 5: Build gateway (reuse build-deps)
-FROM build-deps AS builder
-COPY --from=database /workspace/database/build ./database/build
-COPY --from=database /workspace/database/src ./database/src
-COPY --from=jobs /workspace/jobs/build ./jobs/build
-COPY --from=jobs /workspace/jobs/src ./jobs/src
-COPY gateway ./gateway/
-RUN npm run build -w gateway
 
 # Production image
 FROM node:20.19.0-alpine AS runner
@@ -51,24 +40,20 @@ RUN adduser --system --uid 1001 nodeapp
 # Copy dependencies
 COPY --from=deps --chown=nodeapp:nodejs /workspace/node_modules ./node_modules
 COPY --from=deps --chown=nodeapp:nodejs /workspace/database/node_modules ./database/node_modules
-COPY --from=deps --chown=nodeapp:nodejs /workspace/gateway/node_modules ./gateway/node_modules
 COPY --from=deps --chown=nodeapp:nodejs /workspace/jobs/node_modules ./jobs/node_modules
 
 # Copy built artifacts
 COPY --chown=nodeapp:nodejs package.json package-lock.json ./
 COPY --chown=nodeapp:nodejs database/package.json ./database/
-COPY --chown=nodeapp:nodejs database/drizzle.config.ts ./database/
-COPY --chown=nodeapp:nodejs gateway/package.json ./gateway/
 COPY --chown=nodeapp:nodejs jobs/package.json ./jobs/
 COPY --from=database --chown=nodeapp:nodejs /workspace/database/build ./database/build
 COPY --from=database --chown=nodeapp:nodejs /workspace/database/src ./database/src
-COPY --from=builder --chown=nodeapp:nodejs /workspace/gateway/build ./gateway/build
-COPY --from=jobs --chown=nodeapp:nodejs /workspace/jobs/build ./jobs/build
+COPY --from=builder --chown=nodeapp:nodejs /workspace/jobs/build ./jobs/build
 
 USER nodeapp
 
-# Expose port
-EXPOSE 3000
+# Expose metrics port if needed
+EXPOSE 9090
 
-# Start gateway directly (bypass npm workspaces)
-CMD ["node", "gateway/build/src/index.js"]
+# Start job worker directly (bypass npm workspaces)
+CMD ["node", "jobs/build/src/worker.js"]

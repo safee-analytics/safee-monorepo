@@ -1,12 +1,24 @@
-import { OdooDatabaseService } from "../services/odoo/database.service.js";
+import { odoo } from "@safee/database";
 import type { ServerContext } from "../serverContext.js";
+import { ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.js";
 
 export async function installOdooModules(
   organizationId: string,
   ctx: ServerContext,
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const odooDatabaseService = new OdooDatabaseService(ctx);
+    const odooDatabaseService = new odoo.OdooDatabaseService({
+      logger: ctx.logger,
+      drizzle: ctx.drizzle,
+      redis: ctx.redis,
+      odooClient: new odoo.OdooClient(ODOO_URL),
+      encryptionService: new odoo.EncryptionService(JWT_SECRET),
+      odooConfig: {
+        url: ODOO_URL,
+        port: ODOO_PORT,
+        adminPassword: ODOO_ADMIN_PASSWORD,
+      },
+    });
     await odooDatabaseService.installModulesForOrganization(organizationId);
     ctx.logger.info({ organizationId }, "Odoo modules installed successfully");
 

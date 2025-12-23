@@ -1,11 +1,10 @@
-import type {
-  OdooLead,
-  OdooStage,
-  OdooContact,
-  OdooActivity,
-  OdooTeam,
-  OdooLostReason,
-} from "../services/odoo/crm.service.js";
+import type { odoo } from "@safee/database";
+type OdooLead = odoo.OdooLead;
+type OdooStage = odoo.OdooStage;
+type OdooContact = odoo.OdooContact;
+type OdooActivity = odoo.OdooActivity;
+type OdooTeam = odoo.OdooTeam;
+type OdooLostReason = odoo.OdooLostReason;
 import type {
   LeadResponse,
   StageResponse,
