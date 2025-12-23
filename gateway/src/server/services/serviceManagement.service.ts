@@ -1,8 +1,7 @@
 import { schema, eq, and, odoo } from "@safee/database";
 import { ServiceAlreadyEnabled, ServiceNotFound } from "../errors.js";
-import { env } from "../../env.js";
+import { env, ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.js";
 import type { ServerContext } from "../serverContext.js";
-import { ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.js";
 
 export interface EnableServiceForOrganizationParams {
   organizationId: string;

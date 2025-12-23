@@ -37,8 +37,8 @@ import {
   syncDepartment,
   getLeaveBalanceByEmployee,
   getLeaveBalanceByLeaveType,
+  odoo,
 } from "@safee/database";
-import { odoo } from "@safee/database";
 const { getOdooClientManager, OdooHRService, parseEmployeeType, parseGender, parseMaritalStatus } = odoo;
 import { mapEmployeeToResponse, mapDepartmentToResponse } from "./hrManagementController.mappers.js";
 import type {

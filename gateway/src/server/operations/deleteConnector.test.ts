@@ -1,9 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, type RedisClient, schema } from "@safee/database";
+import { type DrizzleClient, type RedisClient, schema, eq, odoo } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
-import { eq } from "@safee/database";
 import { deleteConnector } from "./deleteConnector.js";
-import { odoo } from "@safee/database";
 const encryptionService = new odoo.EncryptionService(
   process.env.JWT_SECRET ?? "development-encryption-key-change-in-production",
 );

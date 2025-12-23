@@ -147,7 +147,6 @@ export class OdooController extends Controller {
   @SuccessResponse("202", "Accepted")
   public async provisionDatabase(
     @Request() request: AuthenticatedRequest,
-    @Query() sync?: boolean,
   ): Promise<OdooProvisionResponse> {
     const organizationId = request.betterAuthSession?.session.activeOrganizationId;
 

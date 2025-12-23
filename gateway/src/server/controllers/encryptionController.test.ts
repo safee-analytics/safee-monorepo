@@ -7,13 +7,13 @@ import {
   type JobScheduler,
   schema,
   eq,
+  type odoo,
 } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import { EncryptionController } from "./encryptionController.js";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import type { ServerContext } from "../serverContext.js";
 import type { Logger } from "pino";
-import type { odoo } from "@safee/database";
 type OdooClientManager = odoo.OdooClientManager;
 import { initServerContext } from "../serverContext.js";
 import { ClientEncryptionService } from "../services/clientEncryption.service.js";

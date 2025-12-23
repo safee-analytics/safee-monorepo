@@ -1,7 +1,5 @@
-import { odoo } from "@safee/database";
+import { odoo, type DbDeps, syncLead, syncContact } from "@safee/database";
 type OdooClient = odoo.OdooClientType;
-import type { DbDeps } from "@safee/database";
-import { syncLead, syncContact } from "@safee/database";
 
 export interface CRMSyncResult {
   leadsSync: number;
