@@ -106,6 +106,19 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.DEV_SERVER_IP }} >> ~/.ssh/known_hosts
 
+      - name: Setup Odoo Environment (if needed)
+        run: |
+          ssh -i ~/.ssh/deploy_key root@${{ secrets.DEV_SERVER_IP }} << 'ENDSSH'
+            set -e
+            cd /opt/safee
+            if [ -f "scripts/setup-odoo.sh" ]; then
+              echo "Running Odoo setup script..."
+              bash scripts/setup-odoo.sh
+            else
+              echo "Setup script not found, skipping (server likely already configured)"
+            fi
+          ENDSSH
+
       - name: Deploy to dev server with blue-green strategy
         run: |
           ssh -i ~/.ssh/deploy_key root@${{ secrets.DEV_SERVER_IP }} << 'ENDSSH'
