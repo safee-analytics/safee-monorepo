@@ -17,7 +17,7 @@ export {
   type OdooClientManagerDependencies,
   type OdooClientManagerConfig,
 } from "./manager.service.js";
-export { OdooClient } from "./client.js";
+export { OdooClient, OdooLanguage, OdooDemo } from "./client.js";
 export type { OdooClient as OdooClientType } from "./client.service.js";
 export { OdooClientService, createOdooClient } from "./client.service.js";
 export { OdooCRMService } from "./crm.service.js";

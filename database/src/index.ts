@@ -63,6 +63,7 @@ export * from "./accounting/index.js";
 export * from "./llm/index.js";
 
 export * as odoo from "./odoo/index.js";
+export { OdooLanguage, OdooDemo } from "./odoo/client.js";
 export * as generalUtils from "./general-utils/index.js";
 
 export * from "./test-helpers/integration-setup.js";

@@ -26,6 +26,19 @@ import { getOdooDatabaseInfo as getOdooDatabaseInfoOp } from "../operations/getO
 import { getServerContext } from "../serverContext.js";
 import { ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.js";
 
+enum OdooLanguage {
+  ENGLISH = "en_US",
+  ARABIC = "ar_001",
+  FRENCH = "fr_FR",
+  SPANISH = "es_ES",
+  GERMAN = "de_DE",
+}
+
+enum OdooDemo {
+  ENABLED = "true",
+  DISABLED = "false",
+}
+
 interface OdooProvisionResponse {
   success: boolean;
   message: string;
@@ -145,7 +158,17 @@ export class OdooController extends Controller {
   @Post("/provision")
   @Security("jwt")
   @SuccessResponse("202", "Accepted")
-  public async provisionDatabase(@Request() request: AuthenticatedRequest): Promise<OdooProvisionResponse> {
+  public async provisionDatabase(
+    @Request() request: AuthenticatedRequest,
+    @Body()
+    body?: {
+      lang?: OdooLanguage;
+      demo?: OdooDemo;
+      countryCode?: string;
+      phone?: string;
+      timeoutMs?: number;
+    },
+  ): Promise<OdooProvisionResponse> {
     const organizationId = request.betterAuthSession?.session.activeOrganizationId;
 
     if (!organizationId) {
@@ -154,21 +177,23 @@ export class OdooController extends Controller {
       });
     }
 
-    // Always do fast provisioning (base modules only)
-    const databaseService = this.getDatabaseService();
-    await databaseService.provisionDatabase(organizationId);
-
-    // Queue module installation as background job (will take 10-15 minutes)
-    const moduleJob = await odooProvisioningQueue.add(
-      "install-modules",
+    // Queue entire provisioning process as background job (database creation + module installation)
+    // This will take 5-20 minutes total
+    const provisioningJob = await odooProvisioningQueue.add(
+      "odoo-provisioning",
       {
         organizationId,
+        lang: body?.lang,
+        demo: body?.demo,
+        countryCode: body?.countryCode,
+        phone: body?.phone,
+        timeoutMs: body?.timeoutMs,
       },
       {
         attempts: 3,
         backoff: {
           type: "exponential",
-          delay: 5000,
+          delay: 10000,
         },
       },
     );
@@ -176,8 +201,9 @@ export class OdooController extends Controller {
     this.setStatus(202);
     return {
       success: true,
-      message: "Odoo database provisioned successfully. Extended modules are installing in background.",
-      jobId: moduleJob.id!,
+      message:
+        "Odoo database provisioning started. This will take 5-20 minutes. You will be notified when complete.",
+      jobId: provisioningJob.id!,
     };
   }
 

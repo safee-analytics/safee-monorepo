@@ -102,8 +102,18 @@ const jobProcessors = {
     // - generate_case_report: Case-specific report
   },
   odoo_provisioning: async (payload: Record<string, unknown>) => {
-    const { organizationId } = payload as { organizationId: string };
-    logger.info({ organizationId }, "Processing odoo_provisioning job");
+    const { organizationId, lang, demo, countryCode, phone, timeoutMs } = payload as {
+      organizationId: string;
+      lang?: odoo.OdooLanguage;
+      demo?: odoo.OdooDemo;
+      countryCode?: string;
+      phone?: string;
+      timeoutMs?: number;
+    };
+    logger.info(
+      { organizationId, lang, demo, countryCode, phone, timeoutMs },
+      "Processing odoo_provisioning job",
+    );
 
     // Get Redis client from database package
     const redis = await redisConnect();
@@ -122,7 +132,13 @@ const jobProcessors = {
       },
     });
 
-    await odooDatabaseService.provisionDatabase(organizationId);
+    await odooDatabaseService.provisionDatabase(organizationId, {
+      lang,
+      demo,
+      countryCode,
+      phone,
+      timeoutMs,
+    });
   },
   install_odoo_modules: async (payload: Record<string, unknown>) => {
     const { organizationId } = payload as { organizationId: string };

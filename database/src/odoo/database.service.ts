@@ -1,7 +1,7 @@
 import { schema, eq, type DrizzleClient } from "../drizzle.js";
 import type { RedisClient } from "../index.js";
 import crypto from "node:crypto";
-import { type OdooClient } from "./client.js";
+import { type OdooClient, OdooLanguage, OdooDemo } from "./client.js";
 import { type OdooConnectionConfig } from "./client.service.js";
 import { type EncryptionService } from "../encryption.js";
 import { OrganizationNotFound, OdooDatabaseAlreadyExists, OdooDatabaseNotFound } from "../errors.js";
@@ -348,7 +348,16 @@ export class OdooDatabaseService {
     );
   }
 
-  async provisionDatabase(organizationId: string): Promise<OdooProvisionResult> {
+  async provisionDatabase(
+    organizationId: string,
+    options?: {
+      lang?: OdooLanguage;
+      demo?: OdooDemo;
+      countryCode?: string;
+      phone?: string;
+      timeoutMs?: number;
+    },
+  ): Promise<OdooProvisionResult> {
     this.logger.info(
       { organizationId, orgIdType: typeof organizationId },
       "Starting Odoo database provisioning (fast creation + background module install)",
@@ -421,8 +430,11 @@ export class OdooDatabaseService {
         name: databaseName,
         adminLogin,
         adminPassword,
-        lang: org.defaultLocale === "ar" ? "ar_001" : "en_US",
-        countryCode: "SA",
+        lang: options?.lang ?? (org.defaultLocale === "ar" ? OdooLanguage.ARABIC : OdooLanguage.ENGLISH),
+        demo: options?.demo ?? OdooDemo.DISABLED,
+        countryCode: options?.countryCode ?? "SA",
+        phone: options?.phone ?? "",
+        timeoutMs: options?.timeoutMs,
       });
 
       dbCreated = true;

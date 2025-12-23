@@ -29,14 +29,29 @@ export interface OdooDatabase {
   created: boolean;
 }
 
+export enum OdooLanguage {
+  ENGLISH = "en_US",
+  ARABIC = "ar_001",
+  FRENCH = "fr_FR",
+  SPANISH = "es_ES",
+  GERMAN = "de_DE",
+}
+
+export enum OdooDemo {
+  ENABLED = "true",
+  DISABLED = "false",
+}
+
 export interface CreateDatabaseParams {
   masterPassword: string;
   name: string;
   adminLogin: string;
   adminPassword: string;
-  lang?: string;
-  countryCode?: string;
-  phone?: string;
+  lang?: OdooLanguage; // Default: OdooLanguage.ENGLISH
+  demo?: OdooDemo; // Default: OdooDemo.DISABLED
+  countryCode?: string; // Default: "SA"
+  phone?: string; // Default: ""
+  timeoutMs?: number; // Timeout in milliseconds (default: 300000 = 5 minutes)
 }
 
 export interface BackupDatabaseParams {
@@ -56,12 +71,13 @@ export class OdooClient {
     endpoint: string,
     params: Record<string, unknown> = {},
     headers: Record<string, string> = {},
+    timeoutMs: number = 30000,
   ): Promise<T> {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
         controller.abort();
-      }, 30000); // 30 seconds timeout
+      }, timeoutMs);
 
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: "POST",
@@ -111,12 +127,16 @@ export class OdooClient {
     }
   }
 
-  private async callFormUrlEncoded(endpoint: string, params: Record<string, string>): Promise<void> {
+  private async callFormUrlEncoded(
+    endpoint: string,
+    params: Record<string, string>,
+    timeoutMs: number = 30000,
+  ): Promise<void> {
     try {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => {
         controller.abort();
-      }, 30000); // 30 seconds timeout
+      }, timeoutMs);
       const formData = new URLSearchParams(params);
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: "POST",
@@ -142,16 +162,21 @@ export class OdooClient {
   }
 
   async createDatabase(params: CreateDatabaseParams): Promise<OdooDatabase> {
-    await this.callFormUrlEncoded("/web/database/create", {
-      master_pwd: params.masterPassword,
-      name: params.name,
-      demo: "false",
-      lang: params.lang ?? "en_US",
-      password: params.adminPassword,
-      login: params.adminLogin,
-      country_code: params.countryCode ?? "SA",
-      phone: params.phone ?? "",
-    });
+    // Database creation can take 2-5 minutes, so default to 5-minute timeout
+    await this.callFormUrlEncoded(
+      "/web/database/create",
+      {
+        master_pwd: params.masterPassword,
+        name: params.name,
+        demo: params.demo ?? OdooDemo.DISABLED,
+        lang: params.lang ?? OdooLanguage.ENGLISH,
+        password: params.adminPassword,
+        login: params.adminLogin,
+        country_code: params.countryCode ?? "SA",
+        phone: params.phone ?? "",
+      },
+      params.timeoutMs ?? 300000,
+    );
 
     return {
       name: params.name,
