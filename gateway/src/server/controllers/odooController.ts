@@ -27,16 +27,16 @@ import { getServerContext } from "../serverContext.js";
 import { ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.js";
 
 enum OdooLanguage {
-  ENGLISH = "en_US",
-  ARABIC = "ar_001",
-  FRENCH = "fr_FR",
-  SPANISH = "es_ES",
-  GERMAN = "de_DE",
+  English = "en_US",
+  Arabic = "ar_001",
+  French = "fr_FR",
+  Spanish = "es_ES",
+  German = "de_DE",
 }
 
 enum OdooDemo {
-  ENABLED = "true",
-  DISABLED = "false",
+  Enabled = "true",
+  Disabled = "false",
 }
 
 interface OdooProvisionResponse {

@@ -30,16 +30,16 @@ export interface OdooDatabase {
 }
 
 export enum OdooLanguage {
-  ENGLISH = "en_US",
-  ARABIC = "ar_001",
-  FRENCH = "fr_FR",
-  SPANISH = "es_ES",
-  GERMAN = "de_DE",
+  English = "en_US",
+  Arabic = "ar_001",
+  French = "fr_FR",
+  Spanish = "es_ES",
+  German = "de_DE",
 }
 
 export enum OdooDemo {
-  ENABLED = "true",
-  DISABLED = "false",
+  Enabled = "true",
+  Disabled = "false",
 }
 
 export interface CreateDatabaseParams {
@@ -71,7 +71,7 @@ export class OdooClient {
     endpoint: string,
     params: Record<string, unknown> = {},
     headers: Record<string, string> = {},
-    timeoutMs: number = 30000,
+    timeoutMs = 30000,
   ): Promise<T> {
     try {
       const controller = new AbortController();
@@ -130,7 +130,7 @@ export class OdooClient {
   private async callFormUrlEncoded(
     endpoint: string,
     params: Record<string, string>,
-    timeoutMs: number = 30000,
+    timeoutMs = 30000,
   ): Promise<void> {
     try {
       const controller = new AbortController();
@@ -168,8 +168,8 @@ export class OdooClient {
       {
         master_pwd: params.masterPassword,
         name: params.name,
-        demo: params.demo ?? OdooDemo.DISABLED,
-        lang: params.lang ?? OdooLanguage.ENGLISH,
+        demo: params.demo ?? OdooDemo.Disabled,
+        lang: params.lang ?? OdooLanguage.English,
         password: params.adminPassword,
         login: params.adminLogin,
         country_code: params.countryCode ?? "SA",
