@@ -7,7 +7,7 @@ services:
       - "443:443"
       - "443:443/udp"  # HTTP/3
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ./caddy/Caddyfile.dev:/etc/caddy/Caddyfile
       - caddy-data:/data
       - caddy-config:/config
       - caddy-logs:/var/log/caddy
@@ -15,10 +15,9 @@ services:
       - CADDY_INGRESS_NETWORKS=safee-network
     networks:
       - safee-network
-    # depends_on commented out since frontend/backend run locally
-    # depends_on:
-    #   - frontend
-    #   - backend
+    depends_on:
+      - frontend
+      - backend
 
   postgres:
     image: postgres:15
@@ -51,62 +50,90 @@ services:
     build:
       context: .
       dockerfile: odoo/Dockerfile
-    image: safee-odoo:18.0
+    image: safee-odoo:local
     ports:
       - "8069:8069"
     depends_on:
       postgres:
         condition: service_healthy
     environment:
-      - HOST=postgres
-      - PORT=5432
-      - USER=safee
-      - PASSWORD=safee
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=safee
+      - DB_PASSWORD=safee
       - ODOO_ADMIN_PASSWORD=${ODOO_ADMIN_PASSWORD:-admin}
       - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
       - SLACK_ERROR_CHANNEL=${SLACK_ERROR_CHANNEL:-#dev_odoo_alerts}
     volumes:
       - odoo-data:/var/lib/odoo
-      - ./odoo/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./infra/config/odoo.conf:/etc/odoo/odoo.conf:ro
+    networks:
+      - safee-network
+    profiles:
+      - odoo
+    user: odoo
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8069/web/health"]
       interval: 10s
       timeout: 5s
       retries: 5
       start_period: 60s
+
+  backend:
+    build:
+      context: .
+      dockerfile: gateway/Dockerfile
+    image: safee-backend:local
+    expose:
+      - "3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://safee:safee@postgres:5432/safee
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
     networks:
       - safee-network
 
-  # Backend Gateway (Express/TSOA)
-  # Uncomment to run backend in Docker
-  # backend:
-  #   build:
-  #     context: .
-  #     dockerfile: gateway/Dockerfile
-  #   expose:
-  #     - "3000"
-  #   environment:
-  #     - NODE_ENV=production
-  #     - DATABASE_URL=postgresql://safee:safee@postgres:5432/safee
-  #     - REDIS_URL=redis://redis:6379
-  #   depends_on:
-  #     - postgres
-  #     - redis
-  #   networks:
-  #     - safee-network
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    image: safee-frontend:local
+    expose:
+      - "3001"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - safee-network
 
-  # Frontend (Next.js)
-  # Uncomment to run frontend in Docker
-  # frontend:
-  #   build:
-  #     context: .
-  #     dockerfile: frontend/Dockerfile
-  #   expose:
-  #     - "3001"
-  #   environment:
-  #     - NODE_ENV=production
-  #   networks:
-  #     - safee-network
+  landing:
+    build:
+      context: .
+      dockerfile: landing/Dockerfile
+    image: safee-landing:local
+    expose:
+      - "3002"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - safee-network
+
+  jobs-worker:
+    build:
+      context: .
+      dockerfile: jobs/Dockerfile
+    image: safee-jobs-worker:local
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://safee:safee@postgres:5432/safee
+      - REDIS_URL=redis://redis:6379
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - safee-network
 
 networks:
   safee-network:

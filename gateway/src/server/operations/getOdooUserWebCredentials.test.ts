@@ -2,7 +2,10 @@ import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { type DrizzleClient, schema } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import { getOdooUserWebCredentials } from "./getOdooUserWebCredentials.js";
-import { encryptionService } from "../services/encryption.js";
+import { odoo } from "@safee/database";
+const encryptionService = new odoo.EncryptionService(
+  process.env.JWT_SECRET ?? "development-encryption-key-change-in-production",
+);
 
 void describe("getOdooUserWebCredentials", async () => {
   let drizzle: DrizzleClient;

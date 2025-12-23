@@ -1,6 +1,5 @@
-import { DrizzleClient, RedisClient, Storage, PubSub, JobScheduler } from "@safee/database";
+import { DrizzleClient, RedisClient, Storage, PubSub, JobScheduler, odoo } from "@safee/database";
 import { Logger } from "pino";
-import type { OdooClientManager } from "./services/odoo/manager.service.js";
 import { OperationFailed } from "./errors.js";
 
 export interface ServerContext {
@@ -10,7 +9,7 @@ export interface ServerContext {
   storage: Storage;
   pubsub: PubSub;
   scheduler: JobScheduler;
-  odoo: OdooClientManager;
+  odoo: odoo.OdooClientManager;
 }
 
 let instance: ServerContext | undefined = undefined;

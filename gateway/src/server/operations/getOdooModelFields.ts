@@ -1,4 +1,4 @@
-import { getOdooClientManager } from "../services/odoo/manager.service.js";
+import { odoo } from "@safee/database";
 
 export async function getOdooModelFields(
   userId: string,
@@ -15,7 +15,7 @@ export async function getOdooModelFields(
       readonly?: boolean;
     }[]
 > {
-  const client = await getOdooClientManager().getClient(userId, organizationId);
+  const client = await odoo.getOdooClientManager().getClient(userId, organizationId);
   const fields = await client.fieldsGet(modelName);
 
   // If simple mode, return just essential info

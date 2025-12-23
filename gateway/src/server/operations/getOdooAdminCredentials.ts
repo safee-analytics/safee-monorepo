@@ -5,8 +5,8 @@
  */
 
 import type { DrizzleClient } from "@safee/database";
-import { schema, eq } from "@safee/database";
-import { encryptionService } from "../services/encryption.js";
+import { schema, eq, odoo } from "@safee/database";
+import { JWT_SECRET } from "../../env.js";
 
 export interface OdooAdminCredentials {
   databaseName: string;
@@ -28,6 +28,7 @@ export async function getOdooAdminCredentials(
   }
 
   // Decrypt the admin password
+  const encryptionService = new odoo.EncryptionService(JWT_SECRET);
   const adminPassword = encryptionService.decrypt(dbRecord.adminPassword);
 
   return {

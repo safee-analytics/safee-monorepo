@@ -2,16 +2,15 @@
  * Mappers to convert Odoo tuple format [id, name] to proper objects
  */
 
-import type {
-  OdooEmployee,
-  OdooDepartment,
-  OdooContract,
-  OdooLeaveType,
-  OdooLeaveRequest,
-  OdooLeaveAllocation,
-  OdooPayslip,
-  OdooPayslipLine,
-} from "../services/odoo/hr.service.js";
+import type { odoo } from "@safee/database";
+type OdooEmployee = odoo.OdooEmployee;
+type OdooDepartment = odoo.OdooDepartment;
+type OdooContract = odoo.OdooContract;
+type OdooLeaveType = odoo.OdooLeaveType;
+type OdooLeaveRequest = odoo.OdooLeaveRequest;
+type OdooLeaveAllocation = odoo.OdooLeaveAllocation;
+type OdooPayslip = odoo.OdooPayslip;
+type OdooPayslipLine = odoo.OdooPayslipLine;
 import type {
   EmployeeResponse,
   DepartmentResponse,

@@ -1,24 +1,39 @@
 import type { OrganizationOptions } from "better-auth/plugins/organization";
 import { logger } from "../server/utils/logger.js";
-import { OdooDatabaseService } from "../server/services/odoo/database.service.js";
-import { OdooUserProvisioningService } from "../server/services/odoo/user-provisioning.service.js";
-import { configureOdooWebhooks } from "../server/services/odoo/webhookConfig.service.js";
 import { canManageRole } from "./accessControl.js";
-import { connect, createEmployee, schema } from "@safee/database";
+import { connect, createEmployee, schema, odoo, redisConnect } from "@safee/database";
 import { getServerContext } from "../server/serverContext.js";
 import { eq } from "drizzle-orm";
 import { SubscriptionService } from "../server/services/subscription.service.js";
+import { ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../env.js";
 
 const { drizzle } = connect("better-auth");
 
-let odooDatabaseService: OdooDatabaseService | undefined;
-let odooUserProvisioningService: OdooUserProvisioningService | undefined;
+let odooDatabaseService: odoo.OdooDatabaseService | undefined;
+let odooUserProvisioningService: odoo.OdooUserProvisioningService | undefined;
 
-function getServices() {
+async function getServices() {
   if (!odooDatabaseService) {
     const ctx = getServerContext();
-    odooDatabaseService = new OdooDatabaseService(ctx);
-    odooUserProvisioningService = new OdooUserProvisioningService(drizzle);
+    const redis = await redisConnect();
+    odooDatabaseService = new odoo.OdooDatabaseService({
+      logger: ctx.logger,
+      drizzle: ctx.drizzle,
+      redis,
+      odooClient: new odoo.OdooClient(ODOO_URL),
+      encryptionService: new odoo.EncryptionService(JWT_SECRET),
+      odooConfig: {
+        url: ODOO_URL,
+        port: ODOO_PORT,
+        adminPassword: ODOO_ADMIN_PASSWORD,
+      },
+    });
+    odooUserProvisioningService = new odoo.OdooUserProvisioningService({
+      drizzle,
+      logger,
+      encryptionService: new odoo.EncryptionService(JWT_SECRET),
+      odooUrl: ODOO_URL,
+    });
   }
   return { odooDatabaseService, odooUserProvisioningService };
 }
@@ -253,7 +268,7 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
     setImmediate(() => {
       void (async () => {
         try {
-          const { odooDatabaseService, odooUserProvisioningService } = getServices();
+          const { odooDatabaseService, odooUserProvisioningService } = await getServices();
           const existingCreds = await odooDatabaseService.getCredentials(organization.id);
 
           if (existingCreds) {
@@ -284,7 +299,7 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
 
           // Configure Odoo webhooks for the organization
           logger.info({ organizationId: organization.id }, "Configuring Odoo webhooks");
-          await configureOdooWebhooks(logger, user.id, organization.id);
+          await odoo.configureOdooWebhooks(logger, user.id, organization.id);
           logger.info({ organizationId: organization.id }, "Odoo webhooks configured");
         } catch (err) {
           logger.error(
@@ -305,7 +320,7 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
     setImmediate(() => {
       void (async () => {
         try {
-          const { odooUserProvisioningService } = getServices();
+          const { odooUserProvisioningService } = await getServices();
 
           if (odooUserProvisioningService) {
             const userExists = await odooUserProvisioningService.userExists(user.id, organization.id);
@@ -357,7 +372,7 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
     setImmediate(() => {
       void (async () => {
         try {
-          const { odooUserProvisioningService } = getServices();
+          const { odooUserProvisioningService } = await getServices();
 
           if (odooUserProvisioningService) {
             await odooUserProvisioningService.deactivateUser(user.id, organization.id);
@@ -397,7 +412,7 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
     setImmediate(() => {
       void (async () => {
         try {
-          const { odooDatabaseService } = getServices();
+          const { odooDatabaseService } = await getServices();
           await odooDatabaseService.deleteDatabase(organization.id);
           logger.info({ organizationId: organization.id }, "Odoo database deleted successfully");
         } catch (err) {

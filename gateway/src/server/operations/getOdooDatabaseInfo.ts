@@ -1,7 +1,8 @@
 import type { DrizzleClient } from "@safee/database";
 import { getOdooAdminCredentials } from "./getOdooAdminCredentials.js";
-import { createOdooClient } from "../services/odoo/client.service.js";
+import { odoo } from "@safee/database";
 import { getServerContext } from "../serverContext.js";
+const { createOdooClient } = odoo;
 
 interface OdooUser {
   id: number;
@@ -9,7 +10,7 @@ interface OdooUser {
   login: string;
   email: string;
   active: boolean;
-  group_ids: number[];
+  groups_id: number[]; // Odoo 18: field name is groups_id, not group_ids
 }
 
 interface OdooGroup {
@@ -92,7 +93,7 @@ export async function getOdooDatabaseInfo(
   const odooUsers = await client.searchRead<OdooUser>(
     "res.users",
     [],
-    ["id", "name", "login", "email", "active", "group_ids"],
+    ["id", "name", "login", "email", "active", "groups_id"],
   );
 
   const odooGroups = await client.searchRead<OdooGroup>(
@@ -107,25 +108,32 @@ export async function getOdooDatabaseInfo(
     ["id", "name", "display_name", "state", "summary"],
   );
 
-  const groupsMap = new Map(odooGroups.map((g) => [g.id, g]));
+  const groupsMap = new Map(odooGroups.map((g: OdooGroup) => [g.id, g]));
 
-  const users = odooUsers.map((user) => ({
+  const users = odooUsers.map((user: OdooUser) => ({
     id: user.id,
     name: user.name,
     login: user.login,
     email: user.email || user.login,
     active: user.active,
-    groups: user.group_ids.map((groupId) => {
+    groups: user.groups_id.map((groupId: number) => {
       const group = groupsMap.get(groupId);
+      if (group) {
+        return {
+          id: groupId,
+          name: group.name,
+          fullName: group.full_name,
+        };
+      }
       return {
         id: groupId,
-        name: group?.name ?? "Unknown",
-        fullName: group?.full_name ?? "Unknown",
+        name: "Unknown",
+        fullName: "Unknown",
       };
     }),
   }));
 
-  const accessGroups = odooGroups.map((group) => ({
+  const accessGroups = odooGroups.map((group: OdooGroup) => ({
     id: group.id,
     name: group.name,
     fullName: group.full_name,
@@ -133,7 +141,7 @@ export async function getOdooDatabaseInfo(
     users: group.user_ids,
   }));
 
-  const modules = installedModules.map((module) => ({
+  const modules = installedModules.map((module: OdooModule) => ({
     id: module.id,
     name: module.name,
     displayName: module.display_name,

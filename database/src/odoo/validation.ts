@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { BadRequest, Forbidden } from "../../errors.js";
+import { ValidationError, PermissionDenied } from "./errors.js";
 
 /**
  * Validation schemas for Odoo operations
@@ -95,7 +95,7 @@ export function sanitizeError(error: unknown): Error {
 export function validateModel(model: string): string {
   const result = OdooModelSchema.safeParse(model);
   if (!result.success) {
-    throw new BadRequest(`Invalid model name: ${model}`);
+    throw new ValidationError(`Invalid model name: ${model}`);
   }
   return result.data;
 }
@@ -107,7 +107,7 @@ export function validateFields(fields: string[]): string[] {
   const validated = fields.map((field) => {
     const result = OdooFieldNameSchema.safeParse(field);
     if (!result.success) {
-      throw new BadRequest(`Invalid field name: ${field}`);
+      throw new ValidationError(`Invalid field name: ${field}`);
     }
     return result.data;
   });
@@ -121,7 +121,7 @@ export function validateIds(ids: number[]): number[] {
   const validated = ids.map((id) => {
     const result = OdooRecordIdSchema.safeParse(id);
     if (!result.success) {
-      throw new BadRequest(`Invalid record ID: ${id}`);
+      throw new ValidationError(`Invalid record ID: ${id}`);
     }
     return result.data;
   });
@@ -134,7 +134,7 @@ export function validateIds(ids: number[]): number[] {
 export function validateDomain(domain: unknown[]): unknown[] {
   // Basic validation - ensure it's an array
   if (!Array.isArray(domain)) {
-    throw new BadRequest("Domain must be an array");
+    throw new ValidationError("Domain must be an array");
   }
 
   // Validate each leaf
@@ -143,10 +143,10 @@ export function validateDomain(domain: unknown[]): unknown[] {
       // Validate domain leaf [field, operator, value]
       const result = OdooDomainLeafSchema.safeParse(item);
       if (!result.success) {
-        throw new BadRequest(`Invalid domain leaf: ${JSON.stringify(item)}`);
+        throw new ValidationError(`Invalid domain leaf: ${JSON.stringify(item)}`);
       }
     } else if (typeof item === "string" && !["&", "|", "!"].includes(item)) {
-      throw new BadRequest(`Invalid domain operator: ${item}`);
+      throw new ValidationError(`Invalid domain operator: ${item}`);
     }
   }
 
@@ -159,14 +159,14 @@ export function validateDomain(domain: unknown[]): unknown[] {
 export function validateMethod(method: string): string {
   const result = OdooMethodNameSchema.safeParse(method);
   if (!result.success) {
-    throw new BadRequest(`Invalid method name: ${method}`);
+    throw new ValidationError(`Invalid method name: ${method}`);
   }
 
   // Blacklist dangerous methods
   const dangerousMethods = ["unlink_all", "drop_table", "execute", "sql_query", "__import__", "eval", "exec"];
 
   if (dangerousMethods.includes(method.toLowerCase())) {
-    throw new Forbidden(`Method not allowed: ${method}`);
+    throw new PermissionDenied(`Method not allowed: ${method}`);
   }
 
   return result.data;
@@ -180,7 +180,7 @@ export function validateLimit(limit?: number): number | undefined {
 
   const result = OdooLimitSchema.safeParse(limit);
   if (!result.success) {
-    throw new BadRequest(`Invalid limit: ${limit}. Must be between 1 and 10000`);
+    throw new ValidationError(`Invalid limit: ${limit}. Must be between 1 and 10000`);
   }
   return result.data;
 }
@@ -193,7 +193,7 @@ export function validateOffset(offset?: number): number | undefined {
 
   const result = OdooOffsetSchema.safeParse(offset);
   if (!result.success) {
-    throw new BadRequest(`Invalid offset: ${offset}. Must be >= 0`);
+    throw new ValidationError(`Invalid offset: ${offset}. Must be >= 0`);
   }
   return result.data;
 }
@@ -206,7 +206,7 @@ export function validateOrder(order?: string): string | undefined {
 
   const result = OdooOrderSchema.safeParse(order);
   if (!result.success) {
-    throw new BadRequest(`Invalid order clause: ${order}`);
+    throw new ValidationError(`Invalid order clause: ${order}`);
   }
   return result.data;
 }
@@ -221,12 +221,12 @@ export function sanitizeValues(values: Record<string, unknown>): Record<string, 
     // Validate field name
     const result = OdooFieldNameSchema.safeParse(key);
     if (!result.success) {
-      throw new BadRequest(`Invalid field name in values: ${key}`);
+      throw new ValidationError(`Invalid field name in values: ${key}`);
     }
 
     // Basic type validation
     if (typeof value === "function") {
-      throw new BadRequest(`Functions not allowed in values`);
+      throw new ValidationError(`Functions not allowed in values`);
     }
 
     sanitized[key] = value;
@@ -241,7 +241,7 @@ export function sanitizeValues(values: Record<string, unknown>): Record<string, 
 export function validateExternalId(externalId: string): string {
   const result = OdooExternalIdSchema.safeParse(externalId);
   if (!result.success) {
-    throw new BadRequest(`Invalid external ID: ${externalId}`);
+    throw new ValidationError(`Invalid external ID: ${externalId}`);
   }
   return result.data;
 }

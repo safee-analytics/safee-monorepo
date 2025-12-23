@@ -1,22 +1,36 @@
 import type { Logger } from "pino";
-import type { DrizzleClient } from "@safee/database";
-import { schema, eq, and } from "@safee/database";
+import type { DrizzleClient } from "../drizzle.js";
+import { schema, eq, and } from "../drizzle.js";
 import { createOdooClient, type OdooClient, type OdooConnectionConfig } from "./client.service.js";
-import { OperationFailed } from "../../errors.js";
+import { OperationFailed } from "./errors.js";
 import { OdooUserProvisioningService } from "./user-provisioning.service.js";
+
+export interface OdooClientManagerConfig {
+  url: string;
+  port: number;
+}
+
+export interface OdooClientManagerDependencies {
+  drizzle: DrizzleClient;
+  logger: Logger;
+  odooConfig: OdooClientManagerConfig;
+  userProvisioningService: OdooUserProvisioningService;
+}
 
 export class OdooClientManager {
   private clients = new Map<string, { client: OdooClient; expiresAt: Date }>();
   private readonly cacheTTL: number = 60 * 60 * 1000; // 60 minutes
   private logger: Logger;
   private drizzle: DrizzleClient;
+  private odooConfig: OdooClientManagerConfig;
   private creationPromises = new Map<string, Promise<OdooClient>>();
   private userProvisioningService: OdooUserProvisioningService;
 
-  constructor(drizzle: DrizzleClient, logger: Logger) {
-    this.drizzle = drizzle;
-    this.logger = logger;
-    this.userProvisioningService = new OdooUserProvisioningService(drizzle);
+  constructor(deps: OdooClientManagerDependencies) {
+    this.drizzle = deps.drizzle;
+    this.logger = deps.logger;
+    this.odooConfig = deps.odooConfig;
+    this.userProvisioningService = deps.userProvisioningService;
 
     setInterval(
       () => {
@@ -72,9 +86,6 @@ export class OdooClientManager {
       }
     }
 
-    const odooUrl = process.env.ODOO_URL ?? "http://localhost:8069";
-    const odooPort = parseInt(process.env.ODOO_PORT ?? "8069", 10);
-
     const user = await this.drizzle.query.odooUsers.findFirst({
       where: and(
         eq(schema.odooUsers.userId, userId),
@@ -101,8 +112,8 @@ export class OdooClientManager {
     );
 
     const config: OdooConnectionConfig = {
-      url: odooUrl,
-      port: odooPort,
+      url: this.odooConfig.url,
+      port: this.odooConfig.port,
       database: userCredentials.databaseName,
       username: user.odooLogin, // Use login (email), not UID
       password: userCredentials.odooPassword,
@@ -171,10 +182,10 @@ export class OdooClientManager {
 
 let odooClientManager: OdooClientManager | null = null;
 
-export function initOdooClientManager(drizzle: DrizzleClient, logger: Logger): OdooClientManager {
+export function initOdooClientManager(deps: OdooClientManagerDependencies): OdooClientManager {
   if (!odooClientManager) {
-    odooClientManager = new OdooClientManager(drizzle, logger);
-    logger.info("Odoo client manager initialized");
+    odooClientManager = new OdooClientManager(deps);
+    deps.logger.info("Odoo client manager initialized");
   }
   return odooClientManager;
 }

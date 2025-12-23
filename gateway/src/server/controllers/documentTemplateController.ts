@@ -17,8 +17,8 @@ import {
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { getServerContext } from "../serverContext.js";
 import { DocumentTemplateService } from "../services/documentTemplate.service.js";
-import { getOdooClientManager } from "../services/odoo/manager.service.js";
-import { OdooAccountingService } from "../services/odoo/accounting.service.js";
+import { odoo } from "@safee/database";
+const { getOdooClientManager, OdooAccountingService } = odoo;
 import { BadRequest } from "../errors.js";
 
 export type DocumentType =
@@ -100,7 +100,7 @@ export class DocumentTemplateController extends Controller {
   }
 
   @NoSecurity()
-  private async getAccountingService(request: AuthenticatedRequest): Promise<OdooAccountingService> {
+  private async getAccountingService(request: AuthenticatedRequest): Promise<odoo.OdooAccountingService> {
     const userId = request.betterAuthSession?.user.id;
     const organizationId = this.getOrganizationId(request);
 

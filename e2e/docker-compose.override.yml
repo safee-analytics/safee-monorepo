@@ -1,0 +1,10 @@
+services:
+  odoo:
+    image: safee-odoo:local
+    build:
+      context: ..
+      dockerfile: odoo/Dockerfile
+    volumes:
+      - ../infra/config/odoo.conf:/etc/odoo/odoo.conf:ro
+    networks:
+      - safee_net

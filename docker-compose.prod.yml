@@ -1,0 +1,177 @@
+services:
+  # Caddy reverse proxy - handles all external traffic
+  caddy:
+    image: ghcr.io/${IMAGE_PREFIX:-safee}/safee-caddy:${TAG:-dev}
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"  # HTTP/3
+    volumes:
+      - caddy-data:/data
+      - caddy-config:/config
+      - caddy-logs:/var/log/caddy
+    environment:
+      - DEPLOYMENT_COLOR=${DEPLOYMENT_COLOR:-blue}
+      - CADDY_INGRESS_NETWORKS=safee-network
+    networks:
+      - safee-network
+    depends_on:
+      - frontend
+      - landing
+    # Note: api-blue and api-green are started via profiles, not dependencies
+
+  # Redis cache and queue
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    networks:
+      - safee-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Database migrations (one-shot)
+  # Uses external database provider (Neon, Supabase, RDS, etc.)
+  migrations:
+    image: ghcr.io/${IMAGE_PREFIX:-safee}/safee-backend:${TAG:-dev}
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - safee-network
+    command: ["node", "database/build/src/migrate.js"]
+    restart: "no"
+
+  # Backend API - Blue deployment
+  api-blue:
+    image: ghcr.io/${IMAGE_PREFIX:-safee}/safee-backend:${TAG:-dev}
+    restart: unless-stopped
+    profiles:
+      - blue
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL}
+      - ODOO_URL=${ODOO_URL}
+      - ODOO_PORT=${ODOO_PORT}
+      - ODOO_ADMIN_PASSWORD=${ODOO_ADMIN_PASSWORD}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+    depends_on:
+      redis:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    networks:
+      - safee-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/api/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  # Backend API - Green deployment
+  api-green:
+    image: ghcr.io/${IMAGE_PREFIX:-safee}/safee-backend:${TAG:-dev}
+    restart: unless-stopped
+    profiles:
+      - green
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL}
+      - ODOO_URL=${ODOO_URL}
+      - ODOO_PORT=${ODOO_PORT}
+      - ODOO_ADMIN_PASSWORD=${ODOO_ADMIN_PASSWORD}
+      - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
+      - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
+      - RESEND_API_KEY=${RESEND_API_KEY}
+    depends_on:
+      redis:
+        condition: service_healthy
+      migrations:
+        condition: service_completed_successfully
+    networks:
+      - safee-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/api/v1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+
+  # Frontend application
+  frontend:
+    image: ghcr.io/${IMAGE_PREFIX:-safee}/safee-frontend:${TAG:-dev}
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - safee-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3001"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Landing page
+  landing:
+    image: ghcr.io/${IMAGE_PREFIX:-safee}/safee-landing:${TAG:-dev}
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+    networks:
+      - safee-network
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3002"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # Background job worker
+  jobs-worker:
+    image: ghcr.io/${IMAGE_PREFIX:-safee}/safee-jobs-worker:${TAG:-dev}
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+      - JWT_SECRET=${JWT_SECRET}
+      - ODOO_URL=${ODOO_URL}
+      - ODOO_PORT=${ODOO_PORT}
+      - ODOO_ADMIN_PASSWORD=${ODOO_ADMIN_PASSWORD}
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - safee-network
+
+  # Note: Odoo runs on a separate server (deployed via Terraform)
+  # Access via ODOO_URL environment variable
+
+networks:
+  safee-network:
+    driver: bridge
+
+volumes:
+  redis-data:
+  caddy-data:
+  caddy-config:
+  caddy-logs:

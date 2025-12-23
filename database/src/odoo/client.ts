@@ -1,6 +1,11 @@
-import { env } from "../../../env.js";
-import { BadGateway } from "../../errors.js";
 import { odooApiResponseSchema } from "./schemas.js";
+
+class BadGateway extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "BadGateway";
+  }
+}
 
 export interface OdooAuthResponse {
   uid: number;
@@ -43,8 +48,8 @@ export interface BackupDatabaseParams {
 export class OdooClient {
   private baseUrl: string;
 
-  constructor(baseUrl?: string) {
-    this.baseUrl = baseUrl ?? env.ODOO_URL;
+  constructor(baseUrl: string = process.env.ODOO_URL ?? "http://localhost:8069") {
+    this.baseUrl = baseUrl;
   }
 
   private async callJsonRpc<T = unknown>(
@@ -53,6 +58,11 @@ export class OdooClient {
     headers: Record<string, string> = {},
   ): Promise<T> {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, 30000); // 30 seconds timeout
+
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: "POST",
         headers: {
@@ -65,7 +75,10 @@ export class OdooClient {
           params,
           id: null,
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new BadGateway(`Odoo request failed: ${response.status} ${response.statusText}`);
@@ -100,6 +113,10 @@ export class OdooClient {
 
   private async callFormUrlEncoded(endpoint: string, params: Record<string, string>): Promise<void> {
     try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, 30000); // 30 seconds timeout
       const formData = new URLSearchParams(params);
       const response = await fetch(`${this.baseUrl}${endpoint}`, {
         method: "POST",
@@ -107,7 +124,10 @@ export class OdooClient {
           "Content-Type": "application/x-www-form-urlencoded",
         },
         body: formData.toString(),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new BadGateway(`Odoo request failed: ${response.status} ${response.statusText}`);
@@ -313,6 +333,25 @@ export class OdooClient {
       args: [ids, values],
     });
 
+    return result as boolean;
+  }
+
+  /**
+   * Update records using external API with execute_kw (for database provisioning)
+   */
+  async writeExternal(
+    database: string,
+    uid: number,
+    password: string,
+    model: string,
+    ids: number[],
+    values: Record<string, unknown>,
+  ): Promise<boolean> {
+    const result = await this.callJsonRpc("/jsonrpc", {
+      service: "object",
+      method: "execute_kw",
+      args: [database, uid, password, model, "write", [ids, values]],
+    });
     return result as boolean;
   }
 
