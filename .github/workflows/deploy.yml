@@ -44,6 +44,10 @@ jobs:
             file: landing/Dockerfile
             build-args: |
               NEXT_PUBLIC_APP_URL=https://dev.safee.dev
+          - service: admin
+            file: admin/Dockerfile
+            build-args: |
+              NEXT_PUBLIC_GATEWAY_URL=https://api-dev.safee.dev
           - service: jobs-worker
             file: jobs/Dockerfile
             build-args: ""
@@ -290,6 +294,7 @@ jobs:
           check_service "Frontend" "https://dev.safee.dev" || FAILED=1
           check_service "API" "https://api-dev.safee.dev/api/v1/get-session" || FAILED=1
           check_service "Landing" "https://safee.dev" || FAILED=1
+          check_service "Admin" "https://admin-dev.safee.dev" || FAILED=1
 
           if [ $FAILED -eq 1 ]; then
             echo ""

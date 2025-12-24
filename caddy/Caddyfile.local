@@ -21,6 +21,21 @@ http://localhost:8080 {
 	}
 }
 
+# Admin dashboard (restricted to super admins)
+http://admin.localhost:8080 {
+	reverse_proxy localhost:3003 {
+		header_up Host {host}
+		header_up X-Real-IP {remote_host}
+	}
+
+	# Logging for development
+	log {
+		output stdout
+		format json
+		level INFO
+	}
+}
+
 # Application frontend + API (same subdomain to avoid cookie issues)
 http://app.localhost:8080 {
 	# Order matters! Socket.IO/WebSocket routes MUST be first

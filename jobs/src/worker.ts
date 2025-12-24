@@ -1,4 +1,4 @@
-import { Worker, Job, type ConnectionOptions } from "bullmq";
+import { Worker, Job } from "bullmq";
 import { Redis } from "ioredis";
 import { z } from "zod";
 import { connect, startJob, completeJob, failJob, type JobName, redisConnect, odoo } from "@safee/database";
@@ -9,6 +9,7 @@ import {
   OdooSyncJobSchema,
   ReportsJobSchema,
 } from "./queues/job-schemas.js";
+import { JWT_SECRET, ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD } from "./env.js";
 
 // Schema for basic job data structure
 const JobDataSchema = z
@@ -20,10 +21,10 @@ const JobDataSchema = z
 const logger = createLogger("job-worker");
 const { drizzle } = connect("job-worker");
 
-const redisConnection = new Redis(process.env.REDIS_URL ?? "redis://localhost:6379", {
+const connection = new Redis(process.env.REDIS_URL ?? "redis://localhost:6379", {
   maxRetriesPerRequest: null,
+  enableReadyCheck: false,
 });
-const connection = redisConnection as unknown as ConnectionOptions;
 
 // Job processors for each job name
 const jobProcessors = {
@@ -123,12 +124,12 @@ const jobProcessors = {
       logger,
       drizzle,
       redis,
-      odooClient: new odoo.OdooClient(process.env.ODOO_URL ?? "http://localhost:8069"),
-      encryptionService: new odoo.EncryptionService(process.env.JWT_SECRET ?? "development-key"),
+      odooClient: new odoo.OdooClient(ODOO_URL),
+      encryptionService: new odoo.EncryptionService(JWT_SECRET),
       odooConfig: {
-        url: process.env.ODOO_URL ?? "http://localhost:8069",
-        port: parseInt(process.env.ODOO_PORT ?? "8069", 10),
-        adminPassword: process.env.ODOO_ADMIN_PASSWORD ?? "admin",
+        url: ODOO_URL,
+        port: ODOO_PORT,
+        adminPassword: ODOO_ADMIN_PASSWORD,
       },
     });
 
@@ -152,12 +153,12 @@ const jobProcessors = {
       logger,
       drizzle,
       redis,
-      odooClient: new odoo.OdooClient(process.env.ODOO_URL ?? "http://localhost:8069"),
-      encryptionService: new odoo.EncryptionService(process.env.JWT_SECRET ?? "development-key"),
+      odooClient: new odoo.OdooClient(ODOO_URL),
+      encryptionService: new odoo.EncryptionService(JWT_SECRET),
       odooConfig: {
-        url: process.env.ODOO_URL ?? "http://localhost:8069",
-        port: parseInt(process.env.ODOO_PORT ?? "8069", 10),
-        adminPassword: process.env.ODOO_ADMIN_PASSWORD ?? "admin",
+        url: ODOO_URL,
+        port: ODOO_PORT,
+        adminPassword: ODOO_ADMIN_PASSWORD,
       },
     });
 
@@ -269,7 +270,7 @@ async function startWorkers() {
   async function shutdown(signal: string) {
     logger.info({ signal }, "Shutting down gracefully");
     await Promise.all(workers.map((w) => w.close()));
-    await redisConnection.quit();
+    await connection.quit();
     process.exit(0);
   }
 

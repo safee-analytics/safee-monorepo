@@ -512,6 +512,10 @@ dev-with-caddy:
     echo "🚀 Starting full stack development environment..."
     echo ""
 
+    echo "▶ Starting Job Worker..."
+    (cd jobs && npm run dev) &
+    WORKER_PID=$!
+
     echo "▶ Starting Gateway (port 3000)..."
     (cd gateway && npm run dev) &
     GATEWAY_PID=$!
@@ -526,6 +530,11 @@ dev-with-caddy:
     (cd landing && npm run dev) &
     LANDING_PID=$!
 
+    # Start Admin in background (port 3003)
+    echo "▶ Starting Admin (port 3003)..."
+    (cd admin && npm run dev) &
+    ADMIN_PID=$!
+
     # Wait for services to be ready
     echo ""
     echo "⏳ Waiting for services to start..."
@@ -538,9 +547,31 @@ dev-with-caddy:
     echo "  📄 Landing page: http://localhost:8080"
     echo "  💻 App: http://localhost:8080/app"
     echo "  🔌 API: http://localhost:8080/api"
+    echo "  👤 Admin: http://admin.localhost:8080"
+    echo "  📊 Queue Dashboard: http://localhost:8080/admin/queues"
+    echo "  ⚙️  Job Worker: Running"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo ""
     echo "Press Ctrl+C to stop all services"
     echo ""
 
     caddy run --config caddy/Caddyfile.local
+
+
+[group('admin')]
+build-admin: build-database build-jobs
+    npm -w admin run build
+
+[group('admin')]
+dev-admin:
+    npm -w admin run dev
+
+[group('admin')]
+lint-admin:
+    npm -w admin run lint
+
+[group('admin')]
+fmt-admin:
+    npx -w admin prettier . --write --cache
+
+

@@ -29,11 +29,11 @@ console.log(`Running in ${ENV} mode`);
 export const IS_LOCAL = ENV === "local";
 export const API_SECRET_KEY = process.env.API_SECRET_KEY;
 
-export const PORT = number("PORT", 4050);
+export const PORT = number("PORT", 3000);
 export const HOST = process.env.HOST ?? "0.0.0.0";
 export const LOG_LEVEL = process.env.LOG_LEVEL ?? "info";
 export const COOKIE_KEY = process.env.COOKIE_KEY;
-export const JWT_SECRET = process.env.JWT_SECRET ?? "fake-jwt-secret";
+export const JWT_SECRET = required("JWT_SECRET");
 
 // Azure Key Vault and secrets management
 export const AZURE_KEY_VAULT_URL = process.env.AZURE_KEY_VAULT_URL;
@@ -50,6 +50,7 @@ export const APPLICATION_INSIGHTS_CONNECTION_STRING = process.env.APPLICATION_IN
 export const APPLICATION_INSIGHTS_INSTRUMENTATION_KEY = process.env.APPLICATION_INSIGHTS_INSTRUMENTATION_KEY;
 
 export const DATABASE_URL = ENV !== "test" ? required("DATABASE_URL") : null;
+export const REDIS_URL = process.env.REDIS_URL ?? "redis://localhost:6379";
 
 // Odoo Configuration
 export const ODOO_URL = process.env.ODOO_URL ?? "http://localhost:8069";
@@ -88,6 +89,7 @@ export const env = {
   APPLICATION_INSIGHTS_CONNECTION_STRING,
   APPLICATION_INSIGHTS_INSTRUMENTATION_KEY,
   DATABASE_URL,
+  REDIS_URL,
   ODOO_URL,
   ODOO_PORT,
   ODOO_ADMIN_PASSWORD,

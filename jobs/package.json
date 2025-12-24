@@ -4,6 +4,8 @@
   "description": "Job handlers and email templates for Safee Analytics",
   "module": "src/index.ts",
   "scripts": {
+    "dev": "tsx watch -r dotenv/config src/worker.ts",
+    "start": "node build/src/worker.js",
     "lint": "eslint . --max-warnings 0 --cache",
     "lint:fix": "eslint . --max-warnings 0 --fix",
     "fmt": "prettier . --write --cache",

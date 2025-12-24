@@ -26,6 +26,7 @@ import { mergeBetterAuthSpec } from "./mergeOpenApiSpecs.js";
 import type { OpenAPIV3 } from "openapi-types";
 import { WebSocketService } from "./services/websocket.service.js";
 import { getChunkedUploadServiceInstance } from "./services/chunked-upload-instance.js";
+import { setupBullBoard } from "./bull-board.js";
 
 dotenvConfig();
 
@@ -88,6 +89,8 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
         "http://localhost:8080",
         "http://app.localhost:8080",
         "http://api.localhost:8080",
+        "http://admin.localhost:8080",
+        "http://localhost:3003",
       ],
       credentials: true,
     }),
@@ -112,7 +115,26 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
     odoo: odooClientManager,
   });
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          baseUri: ["'self'"],
+          fontSrc: ["'self'", "https:", "data:"],
+          formAction: ["'self'"],
+          frameAncestors: ["'self'", "http://localhost:3003", "http://admin.localhost:8080"],
+          imgSrc: ["'self'", "data:"],
+          objectSrc: ["'none'"],
+          scriptSrc: ["'self'"],
+          scriptSrcAttr: ["'none'"],
+          styleSrc: ["'self'", "https:", "'unsafe-inline'"],
+          upgradeInsecureRequests: [],
+        },
+      },
+      frameguard: false, // Disable X-Frame-Options, use CSP frame-ancestors instead
+    }),
+  );
 
   logger.info("Shared key authorization: %s", API_SECRET_KEY ? "Required" : "Disabled");
   if (API_SECRET_KEY) {
@@ -176,6 +198,28 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
   RegisterRoutes(app);
   app.all("/api/v1/*", toNodeHandler(auth));
   logger.info("Better Auth mounted at /api/v1/auth/*");
+
+  // Setup Bull Board for queue monitoring with relaxed CSP
+  const bullBoardAdapter = setupBullBoard(logger as unknown as Logger, redis);
+  app.use(
+    "/admin/queues",
+    // Relax CSP for Bull Board since it uses inline scripts/styles
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+          styleSrc: ["'self'", "'unsafe-inline'"],
+          imgSrc: ["'self'", "data:", "blob:"],
+          fontSrc: ["'self'", "data:"],
+          connectSrc: ["'self'"],
+          frameAncestors: ["'self'", "http://localhost:3003", "http://admin.localhost:8080"],
+        },
+      },
+    }),
+    bullBoardAdapter.getRouter(),
+  );
+  logger.info("Bull Board mounted at /admin/queues");
 
   const swaggerUiOptions = {
     explorer: true,

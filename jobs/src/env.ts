@@ -3,10 +3,24 @@
  * Includes LLM provider API keys and telemetry settings
  */
 
+function required(name: string) {
+  const value = process.env[name];
+  if (!value) throw new Error(`Environment variable ${name} is required`);
+  return value;
+}
+
 // Environment
 export const IS_LOCAL = process.env.NODE_ENV === "local" || process.env.NODE_ENV === "development";
 export const IS_DEV = process.env.NODE_ENV === "development";
 export const IS_PROD = process.env.NODE_ENV === "production";
+
+// Encryption & Security
+export const JWT_SECRET = required("JWT_SECRET");
+
+// Odoo Configuration
+export const ODOO_URL = process.env.ODOO_URL ?? "http://localhost:8069";
+export const ODOO_PORT = parseInt(process.env.ODOO_PORT ?? "8069", 10);
+export const ODOO_ADMIN_PASSWORD = required("ODOO_ADMIN_PASSWORD");
 
 // LLM Provider API Keys
 export const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY ?? "";

@@ -1,4 +1,4 @@
-import { Queue, type QueueOptions, type ConnectionOptions } from "bullmq";
+import { Queue, type QueueOptions } from "bullmq";
 import { Redis } from "ioredis";
 import { connect, createJob, logJobInfo, type JobName, type Priority } from "@safee/database";
 import { createLogger } from "../logger.js";
@@ -8,7 +8,8 @@ const { drizzle } = connect("queue-manager");
 
 const connection = new Redis(process.env.REDIS_URL ?? "redis://localhost:6379", {
   maxRetriesPerRequest: null,
-}) as ConnectionOptions;
+  enableReadyCheck: false,
+});
 
 const DEFAULT_QUEUE_OPTIONS: QueueOptions = {
   connection,
@@ -29,7 +30,14 @@ export class QueueManager {
   private queues = new Map<string, Queue>();
 
   constructor() {
-    for (const queueName of ["analytics", "email", "odoo-sync", "reports"]) {
+    for (const queueName of [
+      "analytics",
+      "email",
+      "odoo-sync",
+      "reports",
+      "odoo-provisioning",
+      "install-modules",
+    ]) {
       this.queues.set(queueName, new Queue(queueName, DEFAULT_QUEUE_OPTIONS));
       logger.info({ queueName }, "Queue initialized");
     }
@@ -40,7 +48,7 @@ export class QueueManager {
    * BullMQ handles processing, PostgreSQL provides audit trail
    */
   async addJob(
-    queueName: "analytics" | "email" | "odoo-sync" | "reports",
+    queueName: "analytics" | "email" | "odoo-sync" | "reports" | "odoo-provisioning" | "install-modules",
     data: Record<string, unknown>,
     options: { priority?: Priority; organizationId?: string } = {},
   ): Promise<{ bullmqJobId: string; pgJobId: string }> {
@@ -61,6 +69,12 @@ export class QueueManager {
         break;
       case "reports":
         jobName = "generate_report";
+        break;
+      case "odoo-provisioning":
+        jobName = "odoo_provisioning";
+        break;
+      case "install-modules":
+        jobName = "install_odoo_modules";
         break;
       default:
         throw new Error("Unknown queue");

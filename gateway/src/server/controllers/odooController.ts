@@ -1,4 +1,4 @@
-import { odoo } from "@safee/database";
+import { odoo, createJob } from "@safee/database";
 import { odooProvisioningQueue } from "@safee/jobs/queues";
 import {
   Controller,
@@ -177,11 +177,31 @@ export class OdooController extends Controller {
       });
     }
 
+    // Create PostgreSQL job entry first for tracking
+    const ctx = getServerContext();
+    const pgJob = await createJob({ drizzle: ctx.drizzle, logger: ctx.logger }, {
+      jobName: "odoo_provisioning",
+      organizationId,
+      status: "pending",
+      type: "immediate",
+      priority: "high",
+      payload: {
+        lang: body?.lang,
+        demo: body?.demo,
+        countryCode: body?.countryCode,
+        phone: body?.phone,
+        timeoutMs: body?.timeoutMs,
+      },
+      maxRetries: 3,
+    });
+
     // Queue entire provisioning process as background job (database creation + module installation)
     // This will take 5-20 minutes total
+    // Use the PostgreSQL job ID as the BullMQ job ID for tracking
     const provisioningJob = await odooProvisioningQueue.add(
       "odoo-provisioning",
       {
+        type: "odoo-provisioning",
         organizationId,
         lang: body?.lang,
         demo: body?.demo,
@@ -190,6 +210,7 @@ export class OdooController extends Controller {
         timeoutMs: body?.timeoutMs,
       },
       {
+        jobId: pgJob.id,
         attempts: 3,
         backoff: {
           type: "exponential",

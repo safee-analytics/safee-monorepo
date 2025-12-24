@@ -18,7 +18,7 @@ const logger = pino({ name: "auth" });
 const emailFromAddress = process.env.EMAIL_FROM_ADDRESS ?? "noreply@safee.dev";
 const emailFromName = process.env.EMAIL_FROM_NAME ?? "Safee Analytics";
 const betterAuthUrl = process.env.BETTER_AUTH_URL ?? "http://app.localhost:8080/api/v1";
-const cookieDomain = process.env.COOKIE_DOMAIN ?? "app.localhost";
+const cookieDomain = process.env.COOKIE_DOMAIN ?? "localhost";
 const googleClientId = process.env.GOOGLE_CLIENT_ID ?? "";
 const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET ?? "";
 const corsOrigin = process.env.CORS_ORIGIN ?? "http://app.localhost:8080";
@@ -200,8 +200,11 @@ export const auth = betterAuth({
     "http://localhost:3000",
     "http://localhost:8080",
     "http://app.localhost:8080",
+    "http://admin.localhost:8080",
+    "http://localhost:3003",
     "https://safee.dev",
     "https://app.safee.dev",
+    "https://admin.safee.dev",
   ],
 });
 
