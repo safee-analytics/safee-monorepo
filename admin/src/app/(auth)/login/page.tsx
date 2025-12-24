@@ -67,9 +67,7 @@ export default function LoginPage() {
         <div className="bg-white rounded-2xl shadow-xl border border-gray-200/60 p-8">
           <div className="mb-6">
             <h2 className="text-2xl font-bold text-gray-900">Welcome back</h2>
-            <p className="mt-1 text-sm text-gray-600">
-              Sign in to access the admin dashboard
-            </p>
+            <p className="mt-1 text-sm text-gray-600">Sign in to access the admin dashboard</p>
           </div>
 
           {error && (
@@ -95,10 +93,7 @@ export default function LoginPage() {
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email Field */}
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
               </label>
               <div className="relative">
@@ -120,10 +115,7 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -161,16 +153,12 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-xs text-gray-500">
-              This dashboard is restricted to super administrators only
-            </p>
+            <p className="text-xs text-gray-500">This dashboard is restricted to super administrators only</p>
           </div>
         </div>
 
         {/* Footer */}
-        <p className="mt-8 text-center text-xs text-gray-500">
-          &copy; 2025 Safee. All rights reserved.
-        </p>
+        <p className="mt-8 text-center text-xs text-gray-500">&copy; 2025 Safee. All rights reserved.</p>
       </div>
     </div>
   );

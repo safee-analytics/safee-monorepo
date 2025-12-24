@@ -179,21 +179,24 @@ export class OdooController extends Controller {
 
     // Create PostgreSQL job entry first for tracking
     const ctx = getServerContext();
-    const pgJob = await createJob({ drizzle: ctx.drizzle, logger: ctx.logger }, {
-      jobName: "odoo_provisioning",
-      organizationId,
-      status: "pending",
-      type: "immediate",
-      priority: "high",
-      payload: {
-        lang: body?.lang,
-        demo: body?.demo,
-        countryCode: body?.countryCode,
-        phone: body?.phone,
-        timeoutMs: body?.timeoutMs,
+    const pgJob = await createJob(
+      { drizzle: ctx.drizzle, logger: ctx.logger },
+      {
+        jobName: "odoo_provisioning",
+        organizationId,
+        status: "pending",
+        type: "immediate",
+        priority: "high",
+        payload: {
+          lang: body?.lang,
+          demo: body?.demo,
+          countryCode: body?.countryCode,
+          phone: body?.phone,
+          timeoutMs: body?.timeoutMs,
+        },
+        maxRetries: 3,
       },
-      maxRetries: 3,
-    });
+    );
 
     // Queue entire provisioning process as background job (database creation + module installation)
     // This will take 5-20 minutes total

@@ -13,7 +13,7 @@ async function getOrganizations(searchQuery?: string, page: number = 1, limit: n
     const whereClause = searchQuery
       ? or(
           ilike(schema.organizations.name, `%${searchQuery}%`),
-          ilike(schema.organizations.slug, `%${searchQuery}%`)
+          ilike(schema.organizations.slug, `%${searchQuery}%`),
         )
       : undefined;
 
@@ -53,12 +53,14 @@ async function getOrganizations(searchQuery?: string, page: number = 1, limit: n
             slug: org.slug || "",
             createdAt: org.createdAt || new Date(),
             updatedAt: org.updatedAt || new Date(),
-            odooDatabase: odooDb ? {
-              id: odooDb.id || "",
-              dbName: odooDb.dbName || "",
-              status: odooDb.status || "",
-              createdAt: odooDb.createdAt || new Date(),
-            } : null,
+            odooDatabase: odooDb
+              ? {
+                  id: odooDb.id || "",
+                  dbName: odooDb.dbName || "",
+                  status: odooDb.status || "",
+                  createdAt: odooDb.createdAt || new Date(),
+                }
+              : null,
           };
         } catch (error) {
           console.error("Error fetching Odoo database for org:", org.id, error);
@@ -71,7 +73,7 @@ async function getOrganizations(searchQuery?: string, page: number = 1, limit: n
             odooDatabase: null,
           };
         }
-      })
+      }),
     );
 
     // Get total count
@@ -158,9 +160,7 @@ export default async function OrganizationsPage({
                   {page > 1 && (
                     <Link
                       href={`/organizations?${new URLSearchParams(
-                        searchQuery
-                          ? { q: searchQuery, page: String(page - 1) }
-                          : { page: String(page - 1) }
+                        searchQuery ? { q: searchQuery, page: String(page - 1) } : { page: String(page - 1) },
                       )}`}
                       className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
                     >
@@ -170,9 +170,7 @@ export default async function OrganizationsPage({
                   {page < totalPages && (
                     <Link
                       href={`/organizations?${new URLSearchParams(
-                        searchQuery
-                          ? { q: searchQuery, page: String(page + 1) }
-                          : { page: String(page + 1) }
+                        searchQuery ? { q: searchQuery, page: String(page + 1) } : { page: String(page + 1) },
                       )}`}
                       className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                     >

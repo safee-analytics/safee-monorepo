@@ -563,15 +563,29 @@ build-admin: build-database build-jobs
     npm -w admin run build
 
 [group('admin')]
-dev-admin:
-    npm -w admin run dev
+check-admin: build-database build-jobs
+    npx -w admin tsc --noEmit
 
 [group('admin')]
-lint-admin:
-    npm -w admin run lint
+lint-admin: build-eslint-plugin-safee
+    npx -w admin eslint . --max-warnings 0 --cache
 
 [group('admin')]
 fmt-admin:
     npx -w admin prettier . --write --cache
+
+[group('admin')]
+clean-admin:
+    npx -w admin tsc --build --clean
+    rm -f admin/.eslintcache
+    rm -rf admin/node_modules/.cache/prettier/
+
+[group('admin')]
+test-admin:
+    npm -w admin test
+
+[group('admin')]
+dev-admin:
+    npm -w admin run dev
 
 

@@ -4,10 +4,7 @@ import { getDbClient } from "@/lib/db";
 
 const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL ?? "http://localhost:3000";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: organizationId } = await params;
     const drizzle = getDbClient();
@@ -20,10 +17,7 @@ export async function POST(
       .limit(1);
 
     if (!org) {
-      return NextResponse.json(
-        { error: "Organization not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Organization not found" }, { status: 404 });
     }
 
     // Check if Odoo database already exists
@@ -36,7 +30,7 @@ export async function POST(
     if (existingDb) {
       return NextResponse.json(
         { error: "Odoo database already exists for this organization" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -50,10 +44,7 @@ export async function POST(
       .limit(1);
 
     if (!member) {
-      return NextResponse.json(
-        { error: "No members found in organization" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "No members found in organization" }, { status: 400 });
     }
 
     // Create a session for this user with the organization
@@ -90,9 +81,7 @@ export async function POST(
     console.log("Gateway response status:", response.status);
 
     // Clean up temporary session
-    await drizzle
-      .delete(schema.sessions)
-      .where(eq(schema.sessions.id, session.id));
+    await drizzle.delete(schema.sessions).where(eq(schema.sessions.id, session.id));
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -110,7 +99,7 @@ export async function POST(
 
       return NextResponse.json(
         { error: error.message || "Failed to provision Odoo database" },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
@@ -119,9 +108,6 @@ export async function POST(
     return NextResponse.json(result);
   } catch (error) {
     console.error("Error provisioning Odoo:", error);
-    return NextResponse.json(
-      { error: "Failed to provision Odoo database" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to provision Odoo database" }, { status: 500 });
   }
 }

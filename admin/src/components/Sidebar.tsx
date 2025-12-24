@@ -62,9 +62,7 @@ export function Sidebar() {
                 )}
               />
               <span>{item.name}</span>
-              {isActive && (
-                <div className="ml-auto h-1.5 w-1.5 rounded-full bg-blue-600" />
-              )}
+              {isActive && <div className="ml-auto h-1.5 w-1.5 rounded-full bg-blue-600" />}
             </Link>
           );
         })}

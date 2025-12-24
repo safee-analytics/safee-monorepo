@@ -62,10 +62,7 @@ export function UserEditForm({ user }: { user: User }) {
       )}
 
       <div>
-        <label
-          htmlFor="name"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
+        <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
           Name
         </label>
         <input
@@ -79,10 +76,7 @@ export function UserEditForm({ user }: { user: User }) {
       </div>
 
       <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
           Email
         </label>
         <input
@@ -96,10 +90,7 @@ export function UserEditForm({ user }: { user: User }) {
       </div>
 
       <div>
-        <label
-          htmlFor="role"
-          className="block text-sm font-medium text-gray-700 mb-2"
-        >
+        <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
           Role
         </label>
         <select
@@ -119,9 +110,7 @@ export function UserEditForm({ user }: { user: User }) {
           id="banned"
           type="checkbox"
           checked={formData.banned}
-          onChange={(e) =>
-            setFormData({ ...formData, banned: e.target.checked })
-          }
+          onChange={(e) => setFormData({ ...formData, banned: e.target.checked })}
           className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
         />
         <label htmlFor="banned" className="text-sm font-medium text-gray-700">
@@ -131,18 +120,13 @@ export function UserEditForm({ user }: { user: User }) {
 
       {formData.banned && (
         <div>
-          <label
-            htmlFor="banReason"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
+          <label htmlFor="banReason" className="block text-sm font-medium text-gray-700 mb-2">
             Ban Reason (optional)
           </label>
           <textarea
             id="banReason"
             value={formData.banReason}
-            onChange={(e) =>
-              setFormData({ ...formData, banReason: e.target.value })
-            }
+            onChange={(e) => setFormData({ ...formData, banReason: e.target.value })}
             rows={3}
             className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             placeholder="Reason for banning this user..."

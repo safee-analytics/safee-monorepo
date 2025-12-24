@@ -5,7 +5,6 @@ import {
   Trash2,
   Building2,
   Database,
-  Play,
   RefreshCw,
   CheckCircle,
   XCircle,
@@ -37,7 +36,11 @@ export function OrganizationsTable({ organizations }: { organizations: Organizat
   const [syncingId, setSyncingId] = useState<string | null>(null);
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(`Are you sure you want to delete organization "${name}"? This will also delete all associated data.`)) {
+    if (
+      !confirm(
+        `Are you sure you want to delete organization "${name}"? This will also delete all associated data.`,
+      )
+    ) {
       return;
     }
 
@@ -210,9 +213,7 @@ export function OrganizationsTable({ organizations }: { organizations: Organizat
                   <span className="text-sm text-gray-400">—</span>
                 )}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                {getStatusBadge(org.odooDatabase?.status)}
-              </td>
+              <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(org.odooDatabase?.status)}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {format(new Date(org.createdAt), "MMM d, yyyy")}
               </td>

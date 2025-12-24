@@ -28,11 +28,7 @@ COPY --from=jobs /workspace/jobs/build ./jobs/build
 COPY --from=jobs /workspace/jobs/src ./jobs/src
 COPY admin ./admin/
 ARG NEXT_PUBLIC_GATEWAY_URL
-ARG BETTER_AUTH_SECRET
-ARG BETTER_AUTH_URL
 ENV NEXT_PUBLIC_GATEWAY_URL=${NEXT_PUBLIC_GATEWAY_URL}
-ENV BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
-ENV BETTER_AUTH_URL=${BETTER_AUTH_URL}
 RUN npm run build -w admin
 
 # Production image - standalone mode

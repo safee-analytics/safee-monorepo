@@ -1,11 +1,4 @@
-import {
-  Users,
-  Building2,
-  Database,
-  Activity,
-  ArrowUpRight,
-  TrendingUp,
-} from "lucide-react";
+import { Users, Building2, Database, Activity, ArrowUpRight } from "lucide-react";
 import { redisConnect, schema, count } from "@safee/database";
 import { Queue } from "bullmq";
 import { getDbClient } from "@/lib/db";
@@ -25,14 +18,7 @@ async function getDashboardStats() {
   try {
     const redis = await redisConnect();
 
-    const queueNames = [
-      "analytics",
-      "email",
-      "odoo-sync",
-      "reports",
-      "odoo-provisioning",
-      "install-modules",
-    ];
+    const queueNames = ["analytics", "email", "odoo-sync", "reports", "odoo-provisioning", "install-modules"];
 
     for (const queueName of queueNames) {
       try {
@@ -42,10 +28,7 @@ async function getDashboardStats() {
             port: parseInt(process.env.REDIS_PORT ?? "6379", 10),
           },
         });
-        const [active, waiting] = await Promise.all([
-          queue.getActiveCount(),
-          queue.getWaitingCount(),
-        ]);
+        const [active, waiting] = await Promise.all([queue.getActiveCount(), queue.getWaitingCount()]);
         activeJobsCount += active + waiting;
         await queue.close();
       } catch (queueError) {
@@ -75,9 +58,7 @@ export default async function HomePage() {
       <div className="border-b border-gray-200 bg-white/80 backdrop-blur-sm px-8 py-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="mt-1 text-sm text-gray-600">
-            Welcome back! Here's what's happening today.
-          </p>
+          <p className="mt-1 text-sm text-gray-600">Welcome back! Here&apos;s what&apos;s happening today.</p>
         </div>
       </div>
 
@@ -162,50 +143,40 @@ export default async function HomePage() {
         {/* Recent Activity */}
         <div className="grid gap-6 md:grid-cols-2">
           <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-200/60 backdrop-blur-sm">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Recent Activity
-          </h2>
-          <div className="space-y-4">
-            <div className="flex items-start">
-              <div className="flex-shrink-0">
-                <div className="h-2 w-2 mt-2 rounded-full bg-green-500" />
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+            <div className="space-y-4">
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <div className="h-2 w-2 mt-2 rounded-full bg-green-500" />
+                </div>
+                <div className="ml-3 flex-1">
+                  <p className="text-sm text-gray-900">New organization created: Acme Corp</p>
+                  <p className="text-xs text-gray-500">2 minutes ago</p>
+                </div>
               </div>
-              <div className="ml-3 flex-1">
-                <p className="text-sm text-gray-900">
-                  New organization created: Acme Corp
-                </p>
-                <p className="text-xs text-gray-500">2 minutes ago</p>
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <div className="h-2 w-2 mt-2 rounded-full bg-blue-500" />
+                </div>
+                <div className="ml-3 flex-1">
+                  <p className="text-sm text-gray-900">Database provisioning completed</p>
+                  <p className="text-xs text-gray-500">15 minutes ago</p>
+                </div>
               </div>
-            </div>
-            <div className="flex items-start">
-              <div className="flex-shrink-0">
-                <div className="h-2 w-2 mt-2 rounded-full bg-blue-500" />
-              </div>
-              <div className="ml-3 flex-1">
-                <p className="text-sm text-gray-900">
-                  Database provisioning completed
-                </p>
-                <p className="text-xs text-gray-500">15 minutes ago</p>
-              </div>
-            </div>
-            <div className="flex items-start">
-              <div className="flex-shrink-0">
-                <div className="h-2 w-2 mt-2 rounded-full bg-yellow-500" />
-              </div>
-              <div className="ml-3 flex-1">
-                <p className="text-sm text-gray-900">
-                  User john@example.com logged in
-                </p>
-                <p className="text-xs text-gray-500">1 hour ago</p>
+              <div className="flex items-start">
+                <div className="flex-shrink-0">
+                  <div className="h-2 w-2 mt-2 rounded-full bg-yellow-500" />
+                </div>
+                <div className="ml-3 flex-1">
+                  <p className="text-sm text-gray-900">User john@example.com logged in</p>
+                  <p className="text-xs text-gray-500">1 hour ago</p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
           <div className="rounded-xl bg-white p-6 shadow-sm border border-gray-200/60 backdrop-blur-sm">
-            <h2 className="text-lg font-semibold text-gray-900 mb-4">
-              System Status
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">System Status</h2>
             <div className="space-y-4">
               <div>
                 <div className="flex items-center justify-between mb-2">

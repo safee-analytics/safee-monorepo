@@ -215,9 +215,7 @@ export function OrganizationDetails({ organization }: { organization: Organizati
           <div className="text-center py-8">
             <Database className="h-12 w-12 text-gray-300 mx-auto mb-3" />
             <p className="text-gray-600">No Odoo database provisioned yet</p>
-            <p className="text-sm text-gray-500 mt-1">
-              Click "Provision Odoo" to create a new database
-            </p>
+            <p className="text-sm text-gray-500 mt-1">Click &quot;Provision Odoo&quot; to create a new database</p>
           </div>
         )}
       </div>
@@ -227,10 +225,7 @@ export function OrganizationDetails({ organization }: { organization: Organizati
         <h3 className="text-lg font-semibold text-gray-900 mb-4">Members</h3>
         <div className="space-y-3">
           {organization.members.map((member) => (
-            <div
-              key={member.id}
-              className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-            >
+            <div key={member.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
               <div>
                 <p className="text-sm font-medium text-gray-900">{member.user.name}</p>
                 <p className="text-xs text-gray-500">{member.user.email}</p>

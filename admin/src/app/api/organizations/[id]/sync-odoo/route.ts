@@ -3,10 +3,7 @@ import { schema, eq } from "@safee/database";
 import { getDbClient } from "@/lib/db";
 import { odooSyncQueue } from "@safee/jobs/queues";
 
-export async function POST(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id: organizationId } = await params;
     const drizzle = getDbClient();
@@ -19,17 +16,11 @@ export async function POST(
       .limit(1);
 
     if (!odooDb) {
-      return NextResponse.json(
-        { error: "No Odoo database found for this organization" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "No Odoo database found for this organization" }, { status: 404 });
     }
 
     if (odooDb.status !== "active") {
-      return NextResponse.json(
-        { error: "Odoo database is not active" },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: "Odoo database is not active" }, { status: 400 });
     }
 
     // Queue sync job
@@ -44,7 +35,7 @@ export async function POST(
           type: "exponential",
           delay: 5000,
         },
-      }
+      },
     );
 
     return NextResponse.json({
@@ -54,9 +45,6 @@ export async function POST(
     });
   } catch (error) {
     console.error("Error syncing Odoo:", error);
-    return NextResponse.json(
-      { error: "Failed to sync Odoo database" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to sync Odoo database" }, { status: 500 });
   }
 }

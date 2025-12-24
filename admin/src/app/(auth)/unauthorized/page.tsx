@@ -24,12 +24,10 @@ export default function UnauthorizedPage() {
         </div>
 
         {/* Content */}
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">
-          Access Denied
-        </h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-4">Access Denied</h1>
         <p className="text-gray-600 mb-8">
-          You don't have permission to access the admin dashboard. This area is
-          restricted to super administrators only.
+          You don&apos;t have permission to access the admin dashboard. This area is restricted to super
+          administrators only.
         </p>
 
         {/* Actions */}
@@ -52,8 +50,7 @@ export default function UnauthorizedPage() {
 
         {/* Footer */}
         <p className="mt-8 text-xs text-gray-500">
-          If you believe this is an error, please contact your system
-          administrator.
+          If you believe this is an error, please contact your system administrator.
         </p>
       </div>
     </div>

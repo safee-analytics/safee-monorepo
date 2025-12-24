@@ -10,10 +10,7 @@ async function getUsers(searchQuery?: string, page: number = 1, limit: number = 
 
   // Build where clause for search
   const whereClause = searchQuery
-    ? or(
-        ilike(schema.users.email, `%${searchQuery}%`),
-        ilike(schema.users.name, `%${searchQuery}%`)
-      )
+    ? or(ilike(schema.users.email, `%${searchQuery}%`), ilike(schema.users.name, `%${searchQuery}%`))
     : undefined;
 
   // Get users with pagination
@@ -26,10 +23,7 @@ async function getUsers(searchQuery?: string, page: number = 1, limit: number = 
     .offset(offset);
 
   // Get total count
-  const [totalResult] = await drizzle
-    .select({ count: count() })
-    .from(schema.users)
-    .where(whereClause);
+  const [totalResult] = await drizzle.select({ count: count() }).from(schema.users).where(whereClause);
 
   return {
     users,
@@ -57,9 +51,7 @@ export default async function UsersPage({
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Users</h1>
-            <p className="mt-1 text-sm text-gray-600">
-              Manage user accounts and permissions ({total} total)
-            </p>
+            <p className="mt-1 text-sm text-gray-600">Manage user accounts and permissions ({total} total)</p>
           </div>
           <Link
             href="/users/new"
@@ -100,9 +92,7 @@ export default async function UsersPage({
                   {page > 1 && (
                     <Link
                       href={`/users?${new URLSearchParams(
-                        searchQuery
-                          ? { q: searchQuery, page: String(page - 1) }
-                          : { page: String(page - 1) }
+                        searchQuery ? { q: searchQuery, page: String(page - 1) } : { page: String(page - 1) },
                       )}`}
                       className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
                     >
@@ -112,9 +102,7 @@ export default async function UsersPage({
                   {page < totalPages && (
                     <Link
                       href={`/users?${new URLSearchParams(
-                        searchQuery
-                          ? { q: searchQuery, page: String(page + 1) }
-                          : { page: String(page + 1) }
+                        searchQuery ? { q: searchQuery, page: String(page + 1) } : { page: String(page + 1) },
                       )}`}
                       className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                     >
