@@ -205,6 +205,7 @@ export const auth = betterAuth({
     "https://safee.dev",
     "https://app.safee.dev",
     "https://admin.safee.dev",
+    "https://admin-dev.safee.dev",
   ],
 });
 

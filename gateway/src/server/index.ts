@@ -91,6 +91,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
         "http://api.localhost:8080",
         "http://admin.localhost:8080",
         "http://localhost:3003",
+        "https://admin-dev.safee.dev",
       ],
       credentials: true,
     }),
