@@ -1,16 +1,6 @@
 "use client";
 
-import {
-  Pencil,
-  Trash2,
-  Building2,
-  Database,
-  RefreshCw,
-  CheckCircle,
-  XCircle,
-  Loader2,
-  Server,
-} from "lucide-react";
+import { Pencil, Trash2, Building2, Database, RefreshCw, CheckCircle, Loader2, Server } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
@@ -23,8 +13,8 @@ type Organization = {
   updatedAt: Date;
   odooDatabase: {
     id: string;
-    dbName: string;
-    status: string;
+    databaseName: string;
+    isActive: Date;
     createdAt: Date;
   } | null;
 };
@@ -110,8 +100,8 @@ export function OrganizationsTable({ organizations }: { organizations: Organizat
     }
   };
 
-  const getStatusBadge = (status: string | undefined) => {
-    if (!status) {
+  const getStatusBadge = (isActive: Date | undefined) => {
+    if (!isActive) {
       return (
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
           No Database
@@ -119,35 +109,13 @@ export function OrganizationsTable({ organizations }: { organizations: Organizat
       );
     }
 
-    switch (status) {
-      case "active":
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-            <CheckCircle className="h-3 w-3" />
-            Active
-          </span>
-        );
-      case "provisioning":
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            <Loader2 className="h-3 w-3 animate-spin" />
-            Provisioning
-          </span>
-        );
-      case "failed":
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
-            <XCircle className="h-3 w-3" />
-            Failed
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
-            {status}
-          </span>
-        );
-    }
+    // Check if timestamp is set (database is active)
+    return (
+      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+        <CheckCircle className="h-3 w-3" />
+        Active
+      </span>
+    );
   };
 
   if (organizations.length === 0) {
@@ -207,13 +175,13 @@ export function OrganizationsTable({ organizations }: { organizations: Organizat
                 {org.odooDatabase ? (
                   <div className="flex items-center gap-2">
                     <Database className="h-4 w-4 text-purple-500" />
-                    <span className="text-sm text-gray-900">{org.odooDatabase.dbName}</span>
+                    <span className="text-sm text-gray-900">{org.odooDatabase.databaseName}</span>
                   </div>
                 ) : (
                   <span className="text-sm text-gray-400">—</span>
                 )}
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(org.odooDatabase?.status)}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(org.odooDatabase?.isActive)}</td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {format(new Date(org.createdAt), "MMM d, yyyy")}
               </td>
@@ -221,7 +189,7 @@ export function OrganizationsTable({ organizations }: { organizations: Organizat
                 <div className="flex items-center justify-end gap-2">
                   {!org.odooDatabase ? (
                     <button
-                      onClick={() => handleProvisionOdoo(org.id, org.name)}
+                      onClick={() => void handleProvisionOdoo(org.id, org.name)}
                       disabled={provisioningId === org.id}
                       className="inline-flex items-center gap-1 text-purple-600 hover:text-purple-900 px-2 py-1 rounded hover:bg-purple-50 disabled:opacity-50"
                       title="Provision Odoo"
@@ -233,9 +201,9 @@ export function OrganizationsTable({ organizations }: { organizations: Organizat
                       )}
                       <span className="text-xs">Provision</span>
                     </button>
-                  ) : org.odooDatabase.status === "active" ? (
+                  ) : org.odooDatabase.isActive ? (
                     <button
-                      onClick={() => handleSyncOdoo(org.id, org.odooDatabase!.id)}
+                      onClick={() => void handleSyncOdoo(org.id, org.odooDatabase!.id)}
                       disabled={syncingId === org.odooDatabase.id}
                       className="text-green-600 hover:text-green-900 p-1 rounded hover:bg-green-50 disabled:opacity-50"
                       title="Sync Odoo"
@@ -255,7 +223,7 @@ export function OrganizationsTable({ organizations }: { organizations: Organizat
                     <Pencil className="h-4 w-4" />
                   </button>
                   <button
-                    onClick={() => handleDelete(org.id, org.name)}
+                    onClick={() => void handleDelete(org.id, org.name)}
                     disabled={deletingId === org.id}
                     className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 disabled:opacity-50"
                     title="Delete organization"

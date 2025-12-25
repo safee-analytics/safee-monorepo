@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { schema, eq } from "@safee/database";
 import { getDbClient } from "@/lib/db";
-import { odooSyncQueue } from "@safee/jobs/queues";
+import { queueManager } from "@safee/jobs/queues";
 
 export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
@@ -19,29 +19,28 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       return NextResponse.json({ error: "No Odoo database found for this organization" }, { status: 404 });
     }
 
-    if (odooDb.status !== "active") {
+    if (!odooDb.isActive) {
       return NextResponse.json({ error: "Odoo database is not active" }, { status: 400 });
     }
 
-    // Queue sync job
-    const syncJob = await odooSyncQueue.add(
-      "full-sync",
+    // Queue sync job using QueueManager
+    const { bullmqJobId, pgJobId } = await queueManager.addJob(
+      "odoo-sync",
       {
         organizationId,
+        syncType: "full",
       },
       {
-        attempts: 3,
-        backoff: {
-          type: "exponential",
-          delay: 5000,
-        },
+        organizationId,
+        priority: "normal",
       },
     );
 
     return NextResponse.json({
       success: true,
       message: "Odoo sync job queued successfully",
-      jobId: syncJob.id,
+      jobId: pgJobId,
+      bullmqJobId,
     });
   } catch (error) {
     console.error("Error syncing Odoo:", error);

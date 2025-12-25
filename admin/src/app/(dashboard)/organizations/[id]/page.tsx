@@ -1,4 +1,3 @@
-import { schema, eq } from "@safee/database";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
@@ -6,58 +5,36 @@ import { getDbClient } from "@/lib/db";
 import { OrganizationDetails } from "@/components/organizations/OrganizationDetails";
 
 async function getOrganization(id: string) {
-  const drizzle = getDbClient();
+  const db = getDbClient();
 
-  const [org] = await drizzle
-    .select({
-      id: schema.organizations.id,
-      name: schema.organizations.name,
-      slug: schema.organizations.slug,
-      createdAt: schema.organizations.createdAt,
-      updatedAt: schema.organizations.updatedAt,
-    })
-    .from(schema.organizations)
-    .where(eq(schema.organizations.id, id))
-    .limit(1);
-
-  if (!org) return null;
-
-  // Get Odoo database
-  const [odooDb] = await drizzle
-    .select()
-    .from(schema.odooDatabases)
-    .where(eq(schema.odooDatabases.organizationId, id))
-    .limit(1);
-
-  // Get members count
-  const members = await drizzle
-    .select({
-      id: schema.members.id,
-      userId: schema.members.userId,
-      role: schema.members.role,
-      user: {
-        name: schema.users.name,
-        email: schema.users.email,
+  const organization = await db.query.organizations.findFirst({
+    where: (org, { eq }) => eq(org.id, id),
+    with: {
+      odooDatabase: {
+        with: {
+          odooUsers: true,
+        },
       },
-    })
-    .from(schema.members)
-    .innerJoin(schema.users, eq(schema.members.userId, schema.users.id))
-    .where(eq(schema.members.organizationId, id));
+      members: {
+        with: {
+          user: true,
+        },
+      },
+    },
+  });
 
-  // Get Odoo users if database exists
-  let odooUsers: typeof schema.odooUsers.$inferSelect[] = [];
-  if (odooDb) {
-    odooUsers = await drizzle
-      .select()
-      .from(schema.odooUsers)
-      .where(eq(schema.odooUsers.odooDatabaseId, odooDb.id));
-  }
+  if (!organization) return null;
 
+  // Flatten the structure to match component expectations
   return {
-    ...org,
-    odooDatabase: odooDb,
-    members,
-    odooUsers,
+    id: organization.id,
+    name: organization.name,
+    slug: organization.slug,
+    createdAt: organization.createdAt,
+    updatedAt: organization.updatedAt,
+    odooDatabase: organization.odooDatabase ?? null,
+    members: organization.members,
+    odooUsers: organization.odooDatabase?.odooUsers ?? [],
   };
 }
 

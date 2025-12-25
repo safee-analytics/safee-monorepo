@@ -7,7 +7,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: monorepoRoot,
   output: "standalone",
-  serverExternalPackages: ["@safee/database"],
+  serverExternalPackages: ["@safee/database", "pino", "pino-*", "thread-stream"],
 };
 
 export default withSentryConfig(nextConfig, {

@@ -1,15 +1,28 @@
-import { schema, desc, ilike, or, count, eq } from "@safee/database";
+import { schema, ilike, or, count } from "@safee/database";
 import { Search, Plus } from "lucide-react";
 import { OrganizationsTable } from "@/components/organizations/OrganizationsTable";
 import Link from "next/link";
 import { getDbClient } from "@/lib/db";
 
 async function getOrganizations(searchQuery?: string, page: number = 1, limit: number = 50) {
-  const drizzle = getDbClient();
+  const db = getDbClient();
   const offset = (page - 1) * limit;
 
   try {
-    // Build where clause for search
+    // Get organizations with related Odoo databases using relational query
+    const organizations = await db.query.organizations.findMany({
+      where: searchQuery
+        ? (org, { or, ilike }) => or(ilike(org.name, `%${searchQuery}%`), ilike(org.slug, `%${searchQuery}%`))
+        : undefined,
+      with: {
+        odooDatabase: true,
+      },
+      orderBy: (org, { desc }) => [desc(org.createdAt)],
+      limit,
+      offset,
+    });
+
+    // Get total count
     const whereClause = searchQuery
       ? or(
           ilike(schema.organizations.name, `%${searchQuery}%`),
@@ -17,73 +30,24 @@ async function getOrganizations(searchQuery?: string, page: number = 1, limit: n
         )
       : undefined;
 
-    // Get organizations
-    const orgsResult = await drizzle
-      .select({
-        id: schema.organizations.id,
-        name: schema.organizations.name,
-        slug: schema.organizations.slug,
-        createdAt: schema.organizations.createdAt,
-        updatedAt: schema.organizations.updatedAt,
-      })
-      .from(schema.organizations)
-      .where(whereClause)
-      .orderBy(desc(schema.organizations.createdAt))
-      .limit(limit)
-      .offset(offset);
-
-    // Get Odoo databases separately to avoid join issues
-    const organizations = await Promise.all(
-      (orgsResult || []).map(async (org) => {
-        try {
-          const [odooDb] = await drizzle
-            .select({
-              id: schema.odooDatabases.id,
-              dbName: schema.odooDatabases.dbName,
-              status: schema.odooDatabases.status,
-              createdAt: schema.odooDatabases.createdAt,
-            })
-            .from(schema.odooDatabases)
-            .where(eq(schema.odooDatabases.organizationId, org.id))
-            .limit(1);
-
-          return {
-            id: org.id || "",
-            name: org.name || "",
-            slug: org.slug || "",
-            createdAt: org.createdAt || new Date(),
-            updatedAt: org.updatedAt || new Date(),
-            odooDatabase: odooDb
-              ? {
-                  id: odooDb.id || "",
-                  dbName: odooDb.dbName || "",
-                  status: odooDb.status || "",
-                  createdAt: odooDb.createdAt || new Date(),
-                }
-              : null,
-          };
-        } catch (error) {
-          console.error("Error fetching Odoo database for org:", org.id, error);
-          return {
-            id: org.id || "",
-            name: org.name || "",
-            slug: org.slug || "",
-            createdAt: org.createdAt || new Date(),
-            updatedAt: org.updatedAt || new Date(),
-            odooDatabase: null,
-          };
-        }
-      }),
-    );
-
-    // Get total count
-    const [totalResult] = await drizzle
-      .select({ count: count() })
-      .from(schema.organizations)
-      .where(whereClause);
+    const [totalResult] = await db.select({ count: count() }).from(schema.organizations).where(whereClause);
 
     return {
-      organizations: organizations || [],
+      organizations: organizations.map((org) => ({
+        id: org.id,
+        name: org.name,
+        slug: org.slug,
+        createdAt: org.createdAt,
+        updatedAt: org.updatedAt,
+        odooDatabase: org.odooDatabase
+          ? {
+              id: org.odooDatabase.id,
+              databaseName: org.odooDatabase.databaseName,
+              isActive: org.odooDatabase.isActive,
+              createdAt: org.odooDatabase.createdAt,
+            }
+          : null,
+      })),
       total: Number(totalResult?.count ?? 0),
       page,
       limit,

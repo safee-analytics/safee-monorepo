@@ -3,25 +3,19 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Save, Loader2 } from "lucide-react";
+import { schema } from "@safee/database";
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  banned: boolean;
-  banReason: string | null;
-};
+type User = typeof schema.users.$inferSelect;
 
 export function UserEditForm({ user }: { user: User }) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    name: user.name,
+    name: user.name || "",
     email: user.email,
-    role: user.role,
-    banned: user.banned,
+    role: user.role || "user",
+    banned: user.banned || false,
     banReason: user.banReason || "",
   });
 
@@ -54,7 +48,7 @@ export function UserEditForm({ user }: { user: User }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={(e) => void handleSubmit(e)} className="space-y-6">
       {error && (
         <div className="rounded-lg bg-red-50 border border-red-200 p-4">
           <p className="text-sm text-red-800">{error}</p>

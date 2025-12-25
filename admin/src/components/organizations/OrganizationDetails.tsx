@@ -4,34 +4,23 @@ import { Building2, Database, Users, Calendar, Server, RefreshCw, Loader2 } from
 import { format } from "date-fns";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { schema } from "@safee/database";
 
-type Organization = {
-  id: string;
-  name: string;
-  slug: string;
-  createdAt: Date;
-  updatedAt: Date;
-  odooDatabase: {
-    id: string;
-    dbName: string;
-    status: string;
-    createdAt: Date;
-  } | null;
-  members: Array<{
-    id: string;
-    userId: string;
-    role: string;
-    user: {
-      name: string;
-      email: string;
-    };
-  }>;
-  odooUsers: Array<{
-    id: string;
-    odooUid: number;
-    odooLogin: string;
-    userId: string;
-  }>;
+type Organization = Pick<
+  typeof schema.organizations.$inferSelect,
+  "id" | "name" | "slug" | "createdAt" | "updatedAt"
+> & {
+  odooDatabase:
+    | (typeof schema.odooDatabases.$inferSelect & {
+        odooUsers: Array<typeof schema.odooUsers.$inferSelect>;
+      })
+    | null;
+  members: Array<
+    typeof schema.members.$inferSelect & {
+      user: typeof schema.users.$inferSelect;
+    }
+  >;
+  odooUsers: Array<typeof schema.odooUsers.$inferSelect>;
 };
 
 export function OrganizationDetails({ organization }: { organization: Organization }) {
@@ -140,28 +129,26 @@ export function OrganizationDetails({ organization }: { organization: Organizati
             <h3 className="text-lg font-semibold text-gray-900">Odoo Database</h3>
           </div>
           {organization.odooDatabase ? (
-            organization.odooDatabase.status === "active" && (
-              <button
-                onClick={handleSyncOdoo}
-                disabled={isSyncing}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
-              >
-                {isSyncing ? (
-                  <>
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    Syncing...
-                  </>
-                ) : (
-                  <>
-                    <RefreshCw className="h-4 w-4" />
-                    Sync Now
-                  </>
-                )}
-              </button>
-            )
+            <button
+              onClick={() => void handleSyncOdoo()}
+              disabled={isSyncing}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
+            >
+              {isSyncing ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Syncing...
+                </>
+              ) : (
+                <>
+                  <RefreshCw className="h-4 w-4" />
+                  Sync Now
+                </>
+              )}
+            </button>
           ) : (
             <button
-              onClick={handleProvisionOdoo}
+              onClick={() => void handleProvisionOdoo()}
               disabled={isProvisioning}
               className="inline-flex items-center gap-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
             >
@@ -185,21 +172,13 @@ export function OrganizationDetails({ organization }: { organization: Organizati
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="text-sm font-medium text-gray-600">Database Name</label>
-                <p className="text-sm text-gray-900 font-mono">{organization.odooDatabase.dbName}</p>
+                <p className="text-sm text-gray-900 font-mono">{organization.odooDatabase.databaseName}</p>
               </div>
               <div>
                 <label className="text-sm font-medium text-gray-600">Status</label>
                 <p className="text-sm">
-                  <span
-                    className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      organization.odooDatabase.status === "active"
-                        ? "bg-green-100 text-green-800"
-                        : organization.odooDatabase.status === "provisioning"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-red-100 text-red-800"
-                    }`}
-                  >
-                    {organization.odooDatabase.status}
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    Active
                   </span>
                 </p>
               </div>
@@ -215,7 +194,9 @@ export function OrganizationDetails({ organization }: { organization: Organizati
           <div className="text-center py-8">
             <Database className="h-12 w-12 text-gray-300 mx-auto mb-3" />
             <p className="text-gray-600">No Odoo database provisioned yet</p>
-            <p className="text-sm text-gray-500 mt-1">Click &quot;Provision Odoo&quot; to create a new database</p>
+            <p className="text-sm text-gray-500 mt-1">
+              Click &quot;Provision Odoo&quot; to create a new database
+            </p>
           </div>
         )}
       </div>

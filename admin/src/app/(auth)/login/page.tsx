@@ -24,17 +24,13 @@ export default function LoginPage() {
         password,
       });
 
-      console.log("Sign in result:", { data, error });
-
       if (error) {
         setError(error.message || "Invalid email or password");
       } else if (data) {
         // Successfully signed in
-        console.log("Sign in successful, redirecting...");
         setSuccess(true);
         // Use router.push for client-side navigation
         setTimeout(() => {
-          console.log("Executing redirect now...");
           router.push("/");
           router.refresh(); // Force a refresh to pick up the new session
         }, 1000);
@@ -90,7 +86,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={(e) => void handleSubmit(e)} className="space-y-5">
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">

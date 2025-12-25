@@ -60,12 +60,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
       .returning();
 
     // Call gateway provision endpoint
-    console.log("Calling gateway provision endpoint:", {
-      url: `${GATEWAY_URL}/api/v1/odoo/provision`,
-      organizationId,
-      sessionToken: session.token.substring(0, 8) + "...",
-    });
-
     const response = await fetch(`${GATEWAY_URL}/api/v1/odoo/provision`, {
       method: "POST",
       headers: {
@@ -77,8 +71,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
         demo: "false",
       }),
     });
-
-    console.log("Gateway response status:", response.status);
 
     // Clean up temporary session
     await drizzle.delete(schema.sessions).where(eq(schema.sessions.id, session.id));
@@ -104,7 +96,6 @@ export async function POST(request: NextRequest, { params }: { params: Promise<{
     }
 
     const result = await response.json();
-    console.log("Gateway provision result:", result);
     return NextResponse.json(result);
   } catch (error) {
     console.error("Error provisioning Odoo:", error);

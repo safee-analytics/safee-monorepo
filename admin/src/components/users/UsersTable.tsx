@@ -4,17 +4,9 @@ import { Pencil, Trash2, Mail, Shield, Ban, CheckCircle } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
+import { schema } from "@safee/database";
 
-type User = {
-  id: string;
-  name: string;
-  email: string;
-  role: string;
-  banned: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  emailVerified: boolean;
-};
+type User = typeof schema.users.$inferSelect;
 
 export function UsersTable({ users }: { users: User[] }) {
   const router = useRouter();
@@ -86,11 +78,11 @@ export function UsersTable({ users }: { users: User[] }) {
                 <div className="flex items-center">
                   <div className="h-10 w-10 flex-shrink-0">
                     <div className="h-10 w-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-medium">
-                      {user.name.charAt(0).toUpperCase()}
+                      {(user.name || user.email).charAt(0).toUpperCase()}
                     </div>
                   </div>
                   <div className="ml-4">
-                    <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                    <div className="text-sm font-medium text-gray-900">{user.name || "Unnamed User"}</div>
                   </div>
                 </div>
               </td>
@@ -98,7 +90,9 @@ export function UsersTable({ users }: { users: User[] }) {
                 <div className="flex items-center gap-2">
                   <div className="text-sm text-gray-900">{user.email}</div>
                   {user.emailVerified && (
-                    <CheckCircle className="h-4 w-4 text-green-500" title="Email verified" />
+                    <span title="Email verified">
+                      <CheckCircle className="h-4 w-4 text-green-500" />
+                    </span>
                   )}
                 </div>
               </td>
@@ -113,7 +107,7 @@ export function UsersTable({ users }: { users: User[] }) {
                   }`}
                 >
                   {user.role === "super_admin" && <Shield className="h-3 w-3" />}
-                  {user.role}
+                  {user.role || "user"}
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap">
@@ -141,7 +135,7 @@ export function UsersTable({ users }: { users: User[] }) {
                     <Pencil className="h-4 w-4" />
                   </button>
                   <button
-                    onClick={() => handleDelete(user.id, user.email)}
+                    onClick={() => void handleDelete(user.id, user.email)}
                     disabled={deletingId === user.id}
                     className="text-red-600 hover:text-red-900 p-1 rounded hover:bg-red-50 disabled:opacity-50"
                     title="Delete user"
