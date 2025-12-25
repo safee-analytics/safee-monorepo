@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { authClient } from "@/lib/auth-client";
 
-export async function proxy(request: NextRequest) {
+const GATEWAY_URL = process.env.NEXT_PUBLIC_GATEWAY_URL ?? "http://localhost:3000";
+
+export default async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Allow access to login page and public assets
@@ -17,21 +18,46 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Get session using Better Auth client
+  // Get the session token from cookies
+  const sessionToken = request.cookies.get("safee-auth.session_token")?.value;
+
+  if (!sessionToken) {
+    // No session token, redirect to login
+    const loginUrl = new URL("/login", request.url);
+    loginUrl.searchParams.set("from", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // Validate the session by calling the gateway
   try {
-    const session = await authClient.getSession({
-      fetchOptions: {
-        headers: {
-          cookie: request.headers.get("cookie") ?? "",
-        },
+    const response = await fetch(`${GATEWAY_URL}/api/v1/get-session`, {
+      headers: {
+        cookie: `safee-auth.session_token=${sessionToken}`,
       },
+      cache: "no-store",
     });
 
-    if (!session?.data?.user) {
-      // No valid session, redirect to login
+    if (!response.ok) {
+      // Invalid session, redirect to login
       const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("from", pathname);
       return NextResponse.redirect(loginUrl);
     }
+
+    const session = await response.json();
+
+    if (!session?.user) {
+      // No user in session, redirect to login
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("from", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
+
+    // Optional: Check if user has admin role
+    // Uncomment to restrict to admin users only:
+    // if (session.user.role !== "admin" && session.user.role !== "super_admin") {
+    //   return NextResponse.redirect(new URL("/unauthorized", request.url));
+    // }
 
     // User is authenticated, allow access
     return NextResponse.next();

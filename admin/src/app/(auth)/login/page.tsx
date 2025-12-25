@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "@/lib/auth-client";
 import { Sparkles, Mail, Lock, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const from = searchParams.get("from") ?? "/";
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -29,11 +32,10 @@ export default function LoginPage() {
       } else if (data) {
         // Successfully signed in
         setSuccess(true);
-        // Use router.push for client-side navigation
+        // Redirect to the page they were trying to access, or dashboard
         setTimeout(() => {
-          router.push("/");
-          router.refresh(); // Force a refresh to pick up the new session
-        }, 1000);
+          window.location.href = from;
+        }, 500);
       }
     } catch (err) {
       console.error("Login error:", err);
