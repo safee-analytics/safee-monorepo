@@ -21,8 +21,13 @@ export default async function proxy(request: NextRequest) {
   // Get the session token from cookies
   const sessionToken = request.cookies.get("safee-auth.session_token")?.value;
 
+  console.log("[Proxy] Path:", pathname);
+  console.log("[Proxy] Session token present:", !!sessionToken);
+  console.log("[Proxy] All cookies:", request.cookies.getAll().map(c => c.name));
+
   if (!sessionToken) {
     // No session token, redirect to login
+    console.log("[Proxy] No session token, redirecting to login");
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("from", pathname);
     return NextResponse.redirect(loginUrl);

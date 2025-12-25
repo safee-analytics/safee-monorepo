@@ -32,10 +32,13 @@ export default function LoginPage() {
       } else if (data) {
         // Successfully signed in
         setSuccess(true);
-        // Redirect to the page they were trying to access, or dashboard
+
+        // Wait a bit longer to ensure cookie is set, then do a hard refresh
         setTimeout(() => {
+          console.log("Redirecting to:", from);
+          console.log("Cookies:", document.cookie);
           window.location.href = from;
-        }, 500);
+        }, 1500);
       }
     } catch (err) {
       console.error("Login error:", err);

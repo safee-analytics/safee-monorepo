@@ -197,15 +197,16 @@ export const auth = betterAuth({
     corsOrigin,
     frontendUrl,
     landingUrl,
+    process.env.ADMIN_URL ?? "http://localhost:3003",
     "http://localhost:3000",
+    "http://localhost:3003",
     "http://localhost:8080",
     "http://app.localhost:8080",
+    "http://api.localhost:8080",
     "http://admin.localhost:8080",
-    "http://localhost:3003",
     "https://safee.dev",
     "https://app.safee.dev",
     "https://admin.safee.dev",
-    "https://admin-dev.safee.dev",
   ],
 });
 
