@@ -4,6 +4,8 @@ import { UsersTable } from "@/components/users/UsersTable";
 import Link from "next/link";
 import { getDbClient } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 async function getUsers(searchQuery?: string, page: number = 1, limit: number = 50) {
   const drizzle = getDbClient();
   const offset = (page - 1) * limit;

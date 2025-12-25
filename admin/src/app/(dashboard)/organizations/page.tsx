@@ -4,6 +4,8 @@ import { OrganizationsTable } from "@/components/organizations/OrganizationsTabl
 import Link from "next/link";
 import { getDbClient } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 async function getOrganizations(searchQuery?: string, page: number = 1, limit: number = 50) {
   const db = getDbClient();
   const offset = (page - 1) * limit;

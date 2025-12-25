@@ -4,6 +4,8 @@ import Link from "next/link";
 import { getDbClient } from "@/lib/db";
 import { OrganizationDetails } from "@/components/organizations/OrganizationDetails";
 
+export const dynamic = "force-dynamic";
+
 async function getOrganization(id: string) {
   const db = getDbClient();
 

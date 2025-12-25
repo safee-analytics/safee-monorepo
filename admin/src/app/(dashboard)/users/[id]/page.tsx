@@ -5,6 +5,8 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { getDbClient } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 async function getUser(id: string) {
   const drizzle = getDbClient();
 

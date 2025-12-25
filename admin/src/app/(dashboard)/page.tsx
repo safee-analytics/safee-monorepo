@@ -3,6 +3,8 @@ import { redisConnect, schema, count } from "@safee/database";
 import { Queue } from "bullmq";
 import { getDbClient } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 async function getDashboardStats() {
   const drizzle = getDbClient();
 
