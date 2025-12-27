@@ -1,4 +1,5 @@
 import { DrizzleClient, RedisClient, Storage, PubSub, JobScheduler, odoo } from "@safee/database";
+import type { QueueManager } from "@safee/jobs";
 import { Logger } from "pino";
 import { OperationFailed } from "./errors.js";
 
@@ -9,6 +10,7 @@ export interface ServerContext {
   storage: Storage;
   pubsub: PubSub;
   scheduler: JobScheduler;
+  queueManager: QueueManager;
   odoo: odoo.OdooClientManager;
 }
 
@@ -19,4 +21,7 @@ export function initServerContext(context: ServerContext) {
 export function getServerContext() {
   if (instance === undefined) throw new OperationFailed("No previous call to 'initServerContext'");
   return instance;
+}
+export function getQueueManager() {
+  return getServerContext().queueManager;
 }

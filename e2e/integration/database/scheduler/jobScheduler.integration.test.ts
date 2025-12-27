@@ -1,9 +1,8 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach, vi } from "vitest";
 import {
   connectTest,
   createTestDeps,
   JobScheduler,
-  InMemoryPubSub,
   createJobSchedule,
   createJob,
   getJobById,
@@ -18,7 +17,7 @@ describe("JobScheduler Integration Tests", () => {
   let db: DrizzleClient;
   let close: () => Promise<void>;
   let scheduler: JobScheduler;
-  let pubsub: InMemoryPubSub;
+  let mockQueueManager: any;
   let testOrgId: string;
 
   beforeAll(async () => {
@@ -39,19 +38,16 @@ describe("JobScheduler Integration Tests", () => {
       .returning();
     testOrgId = org.id;
 
-    pubsub = new InMemoryPubSub({});
+    mockQueueManager = {
+      addJobByName: vi.fn().mockResolvedValue({ bullmqJobId: "mock-job-id", pgJobId: "mock-pg-id" }),
+    };
     scheduler = new JobScheduler({
-      pubsub,
-      topics: {
-        jobQueue: "test-job-queue",
-        jobEvents: "test-job-events",
-      },
+      queueManager: mockQueueManager,
     });
   });
 
   afterEach(async () => {
     await scheduler.stop();
-    await pubsub.close();
   });
 
   describe("start and stop", () => {
@@ -191,7 +187,7 @@ describe("JobScheduler Integration Tests", () => {
         maxRetries: 3,
       });
 
-      await scheduler.queueJob(job.id);
+      await scheduler.queueJob(job.id, "send_email");
 
       // If no error is thrown, the job was queued successfully
     });
@@ -212,13 +208,10 @@ describe("JobScheduler Integration Tests", () => {
         maxRetries: 3,
       });
 
-      await scheduler.queueJob(job.id);
+      await scheduler.queueJob(job.id, "send_email");
 
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      const updatedJob = await getJobById(deps, job.id);
-      expect(updatedJob).toBeDefined();
-      expect(["running", "completed"]).toContain(updatedJob?.status);
+      // Verify QueueManager was called
+      expect(mockQueueManager.addJobByName).toHaveBeenCalledWith("send_email", { jobId: job.id }, {});
     });
 
     it("should handle job processing errors", async () => {
@@ -235,12 +228,10 @@ describe("JobScheduler Integration Tests", () => {
         maxRetries: 3,
       });
 
-      await scheduler.queueJob(job.id);
+      await scheduler.queueJob(job.id, "send_email");
 
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      const updatedJob = await getJobById(deps, job.id);
-      expect(updatedJob).toBeDefined();
+      // Verify QueueManager was called
+      expect(mockQueueManager.addJobByName).toHaveBeenCalled();
     });
   });
 

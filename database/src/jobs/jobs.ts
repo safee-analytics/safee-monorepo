@@ -14,7 +14,7 @@ const priorityOrder = sql`CASE ${jobs.priority}
   WHEN 'low' THEN 4
   ELSE 5
 END`;
-
+//TODO: use query engine
 export async function createJob({ drizzle, logger }: DbDeps, data: NewJob): Promise<Job> {
   logger.info(
     {

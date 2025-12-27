@@ -98,13 +98,12 @@ export const auth = betterAuth({
         await emailConfig.deleteAccount.sendDeleteAccountVerification({
           email: user.email,
           name: user.name,
-          verificationUrl: url, // URL already includes the token
+          verificationUrl: url,
         });
       },
     },
   },
 
-  // Session configuration
   session: {
     modelName: "session",
     expiresIn: sessionConfig.expiresIn,
@@ -119,7 +118,6 @@ export const auth = betterAuth({
     },
   },
 
-  // Email and password configuration
   emailAndPassword: {
     enabled: true,
     requireEmailVerification: false, // TODO: Enable in production
@@ -158,7 +156,6 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          // Auto-create free subscription for new users
           try {
             await autoCreateFreeSubscription({ drizzle, logger }, user.id);
             logger.info({ userId: user.id }, "Free subscription created for new user");
@@ -166,7 +163,6 @@ export const auth = betterAuth({
             logger.error({ error: err, userId: user.id }, "Failed to create free subscription for new user");
           }
 
-          // Send welcome email to new users
           if (emailService && user.email) {
             try {
               const emailConfig = createEmailConfig(emailService, logger);
@@ -210,7 +206,6 @@ export const auth = betterAuth({
   ],
 });
 
-// Export types for client inference
 export type Auth = typeof auth;
 export type Session = typeof auth.$Infer.Session;
 export type AuthUser = Session["user"];

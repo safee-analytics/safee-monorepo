@@ -36,7 +36,6 @@ export const ruleSchema = z.object({
   logic: z.enum(["AND", "OR"]).optional().default("AND"),
 });
 
-// Workflow-level configuration and rules
 export const workflowRulesSchema = z
   .object({
     autoApprove: z.boolean().optional(), // Auto-approve if conditions met

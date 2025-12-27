@@ -1,29 +1,31 @@
 import { eq, and, isNotNull } from "drizzle-orm";
 import { CronJob } from "cron";
-import type { PubSub } from "../pubsub/index.js";
 import type { DbDeps } from "../deps.js";
 import { jobSchedules, type JobName } from "../drizzle/index.js";
 import { createJob, updateJobStatus } from "../jobs/jobs.js";
 import { logJobEvent } from "../jobs/auditEvents.js";
 import { logger } from "../logger.js";
 
+// QueueManager type - will be injected from gateway
+interface QueueManager {
+  addJobByName(
+    jobName: JobName,
+    data: Record<string, unknown>,
+    options?: { priority?: string; organizationId?: string },
+  ): Promise<{ bullmqJobId: string; pgJobId: string }>;
+}
+
 export interface JobSchedulerConfig {
-  pubsub: PubSub;
-  topics: {
-    jobQueue: string;
-    jobEvents: string;
-  };
+  queueManager: QueueManager;
 }
 
 export class JobScheduler {
-  private pubsub: PubSub;
-  private topics: JobSchedulerConfig["topics"];
+  private queueManager: QueueManager;
   private cronJobs = new Map<string, CronJob>();
   private isRunning = false;
 
   constructor(private config: JobSchedulerConfig) {
-    this.pubsub = config.pubsub;
-    this.topics = config.topics;
+    this.queueManager = config.queueManager;
   }
 
   async start(deps: DbDeps): Promise<void> {
@@ -34,12 +36,7 @@ export class JobScheduler {
 
     logger.info("Starting job scheduler");
 
-    await this.pubsub.createTopic(this.topics.jobQueue);
-    await this.pubsub.createTopic(this.topics.jobEvents);
-
     await this.loadSchedules(deps);
-
-    await this.subscribeToJobQueue(deps);
 
     this.isRunning = true;
     logger.info("Job scheduler started");
@@ -58,8 +55,6 @@ export class JobScheduler {
     }
 
     this.cronJobs.clear();
-
-    await this.pubsub.close();
 
     this.isRunning = false;
     logger.info("Job scheduler stopped");
@@ -128,13 +123,13 @@ export class JobScheduler {
     }
   }
 
-  async queueJob(jobId: string): Promise<void> {
+  async queueJob(jobId: string, jobName: JobName): Promise<void> {
     this.assertValidJobId(jobId);
-    logger.debug({ jobId }, "Queueing job for execution");
+    logger.debug({ jobId, jobName }, "Queueing job for execution via BullMQ");
 
-    await this.pubsub.publish(this.topics.jobQueue, JSON.stringify({ jobId }));
+    await this.queueManager.addJobByName(jobName, { jobId }, {});
 
-    logger.debug({ jobId }, "Job queued successfully");
+    logger.debug({ jobId, jobName }, "Job queued successfully in BullMQ");
   }
 
   private async loadSchedules(deps: DbDeps): Promise<void> {
@@ -174,87 +169,13 @@ export class JobScheduler {
         })
         .where(eq(jobSchedules.id, schedule.id));
 
-      await this.queueJob(job.id);
+      await this.queueJob(job.id, schedule.jobName);
 
       await logJobEvent(deps, job.id, "created");
 
       logger.info({ scheduleId: schedule.id, jobId: job.id }, "Cron job executed and queued");
     } catch (err) {
       logger.error({ error: err, scheduleId: schedule.id }, "Error executing cron job");
-    }
-  }
-
-  private async subscribeToJobQueue(deps: DbDeps): Promise<void> {
-    const subscription = `${this.topics.jobQueue}-worker`;
-
-    await this.pubsub.createSubscription(this.topics.jobQueue, subscription);
-
-    await this.pubsub.subscribe(subscription, async (message) => {
-      logger.debug({ messageId: message.id }, "Processing job queue message");
-
-      try {
-        const { jobId } = JSON.parse(message.data.toString()) as { jobId: string };
-        this.assertValidJobId(jobId);
-        await this.processJob(deps, jobId);
-      } catch (err) {
-        logger.error({ error: err, messageId: message.id }, "Error processing job queue message");
-        throw err;
-      }
-    });
-  }
-
-  private async processJob(deps: DbDeps, jobId: string): Promise<void> {
-    logger.debug({ jobId }, "Processing job");
-
-    try {
-      await updateJobStatus(deps, jobId, "running", { startedAt: new Date() });
-      await logJobEvent(deps, jobId, "started");
-
-      await this.pubsub.publish(
-        this.topics.jobEvents,
-        JSON.stringify({
-          type: "job.started",
-          jobId,
-          timestamp: new Date().toISOString(),
-        }),
-      );
-
-      // Here you would implement the actual job execution logic
-      // For now, we'll just simulate success
-      logger.info({ jobId }, "Job processing completed successfully");
-
-      await updateJobStatus(deps, jobId, "completed", { completedAt: new Date() });
-      await logJobEvent(deps, jobId, "completed");
-
-      // Publish job completed event
-      await this.pubsub.publish(
-        this.topics.jobEvents,
-        JSON.stringify({
-          type: "job.completed",
-          jobId,
-          timestamp: new Date().toISOString(),
-        }),
-      );
-    } catch (err) {
-      logger.error({ error: err, jobId }, "Job processing failed");
-
-      const errorMessage = err instanceof Error ? err.message : String(err);
-      await updateJobStatus(deps, jobId, "failed", {
-        error: errorMessage,
-        completedAt: new Date(),
-      });
-      await logJobEvent(deps, jobId, "failed");
-
-      // Publish job failed event
-      await this.pubsub.publish(
-        this.topics.jobEvents,
-        JSON.stringify({
-          type: "job.failed",
-          jobId,
-          error: errorMessage,
-          timestamp: new Date().toISOString(),
-        }),
-      );
     }
   }
 

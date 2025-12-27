@@ -18,14 +18,10 @@ interface LogObject {
   };
 }
 
-/**
- * Pino transport that sends error logs to Slack
- */
 export default async function (opts: SlackOptions) {
   return build(async function (source) {
     for await (const obj of source) {
       const logObj = obj as LogObject;
-      // Only process error and fatal levels
       if (logObj.level < 50) continue; // 50 = error, 60 = fatal
 
       try {

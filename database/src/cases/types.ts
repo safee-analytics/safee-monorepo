@@ -20,11 +20,6 @@ import type {
   NewCaseHistory,
 } from "../drizzle/index.js";
 
-/**
- * Zod schemas for JSONB fields
- */
-
-// Custom field validation schema
 export const customFieldValidationSchema = z.object({
   min: z.number().optional(),
   max: z.number().optional(),
@@ -33,7 +28,6 @@ export const customFieldValidationSchema = z.object({
   pattern: z.string().optional(),
 });
 
-// Custom field schema
 export const customFieldSchema = z.object({
   name: z.string(),
   type: z.enum(["text", "number", "date", "select", "textarea", "checkbox", "file"]),
@@ -43,7 +37,6 @@ export const customFieldSchema = z.object({
   helpText: z.string().optional(),
 });
 
-// Procedure requirements schema
 export const procedureRequirementsSchema = z.object({
   isRequired: z.boolean().optional(),
   minAttachments: z.number().optional(),
@@ -64,7 +57,6 @@ export const procedureRequirementsSchema = z.object({
 export type ProcedureRequirements = z.infer<typeof procedureRequirementsSchema>;
 export type CustomField = z.infer<typeof customFieldSchema>;
 
-// Section settings schema (defined before template section)
 export const sectionSettingsSchema = z.object({
   canAddProcedures: z.boolean().optional(),
   canRemoveProcedures: z.boolean().optional(),
@@ -75,7 +67,6 @@ export const sectionSettingsSchema = z.object({
 
 export type SectionSettings = z.infer<typeof sectionSettingsSchema>;
 
-// Template procedure schema (for structure JSONB)
 export const templateProcedureSchema = z.object({
   referenceNumber: z.string(),
   title: z.string(),
@@ -84,7 +75,6 @@ export const templateProcedureSchema = z.object({
   sortOrder: z.number(),
 });
 
-// Template section schema (for structure JSONB)
 export const templateSectionSchema = z.object({
   name: z.string(),
   description: z.string().optional(),
@@ -93,10 +83,8 @@ export const templateSectionSchema = z.object({
   procedures: z.array(templateProcedureSchema),
 });
 
-// Template settings schema (for template structure)
 export const templateSettingsSchema = z.record(z.string(), z.unknown());
 
-// Template structure schema
 export const templateStructureSchema = z.object({
   sections: z.array(templateSectionSchema),
   settings: templateSettingsSchema.optional(),
@@ -106,19 +94,14 @@ export type TemplateStructure = z.infer<typeof templateStructureSchema>;
 export type TemplateSection = z.infer<typeof templateSectionSchema>;
 export type TemplateProcedure = z.infer<typeof templateProcedureSchema>;
 
-// Procedure field data schema (dynamic, validates at runtime)
 export const procedureFieldDataSchema = z.record(z.string(), z.unknown());
 
 export type ProcedureFieldData = z.infer<typeof procedureFieldDataSchema>;
 
-// Scope metadata schema
 export const scopeMetadataSchema = z.record(z.string(), z.unknown());
 
 export type ScopeMetadata = z.infer<typeof scopeMetadataSchema>;
 
-/**
- * Use Drizzle's infer types for inputs
- */
 export type CreateCaseInput = NewCase;
 export type UpdateCaseInput = Partial<Omit<NewCase, "organizationId" | "createdBy">>;
 
@@ -139,9 +122,6 @@ export type CreateNoteInput = Omit<NewCaseNote, "isEdited">;
 export type UpdateNoteInput = Pick<NewCaseNote, "content">;
 export type CreateAssignmentInput = NewCaseAssignment;
 
-/**
- * Re-export database types for convenience
- */
 export type {
   Case,
   NewCase,

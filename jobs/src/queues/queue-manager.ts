@@ -33,10 +33,13 @@ export class QueueManager {
     for (const queueName of [
       "analytics",
       "email",
+      "email-jobs",
       "odoo-sync",
       "reports",
       "odoo-provisioning",
       "install-modules",
+      "encryption",
+      "key-rotation",
     ]) {
       this.queues.set(queueName, new Queue(queueName, DEFAULT_QUEUE_OPTIONS));
       logger.info({ queueName }, "Queue initialized");
@@ -48,7 +51,16 @@ export class QueueManager {
    * BullMQ handles processing, PostgreSQL provides audit trail
    */
   async addJob(
-    queueName: "analytics" | "email" | "odoo-sync" | "reports" | "odoo-provisioning" | "install-modules",
+    queueName:
+      | "analytics"
+      | "email"
+      | "email-jobs"
+      | "odoo-sync"
+      | "reports"
+      | "odoo-provisioning"
+      | "install-modules"
+      | "encryption"
+      | "key-rotation",
     data: Record<string, unknown>,
     options: { priority?: Priority; organizationId?: string } = {},
   ): Promise<{ bullmqJobId: string; pgJobId: string }> {
@@ -56,6 +68,8 @@ export class QueueManager {
     if (!queue) throw new Error(`Queue ${queueName} not found`);
 
     // Map queue name to job name using type-safe switch
+    // Note: For queues with multiple job types (encryption, email-jobs),
+    // the actual job name should be in the data payload
     let jobName: JobName;
     switch (queueName) {
       case "analytics":
@@ -63,6 +77,9 @@ export class QueueManager {
         break;
       case "email":
         jobName = "send_bulk_email";
+        break;
+      case "email-jobs":
+        jobName = "send_email";
         break;
       case "odoo-sync":
         jobName = "sync_odoo";
@@ -75,6 +92,13 @@ export class QueueManager {
         break;
       case "install-modules":
         jobName = "install_odoo_modules";
+        break;
+      case "encryption":
+        // Default to encrypt_file, but could be reencrypt_files based on payload
+        jobName = "encrypt_file";
+        break;
+      case "key-rotation":
+        jobName = "rotate_encryption_key";
         break;
       default:
         throw new Error("Unknown queue");
@@ -116,6 +140,63 @@ export class QueueManager {
     logger.info({ bullmqJobId: bullmqJob.id, pgJobId: pgJob.id, queueName }, "Job enqueued");
 
     return { bullmqJobId: bullmqJob.id!, pgJobId: pgJob.id };
+  }
+
+  /**
+   * Add job by job name (automatically routes to correct queue)
+   * Provides single entry point for all job types
+   */
+  async addJobByName(
+    jobName: JobName,
+    data: Record<string, unknown>,
+    options: { priority?: Priority; organizationId?: string } = {},
+  ): Promise<{ bullmqJobId: string; pgJobId: string }> {
+    // Map job name to queue name
+    let queueName:
+      | "analytics"
+      | "email"
+      | "email-jobs"
+      | "odoo-sync"
+      | "reports"
+      | "odoo-provisioning"
+      | "install-modules"
+      | "encryption"
+      | "key-rotation";
+
+    switch (jobName) {
+      case "calculate_analytics":
+        queueName = "analytics";
+        break;
+      case "send_bulk_email":
+        queueName = "email";
+        break;
+      case "send_email":
+        queueName = "email-jobs";
+        break;
+      case "sync_odoo":
+        queueName = "odoo-sync";
+        break;
+      case "generate_report":
+        queueName = "reports";
+        break;
+      case "odoo_provisioning":
+        queueName = "odoo-provisioning";
+        break;
+      case "install_odoo_modules":
+        queueName = "install-modules";
+        break;
+      case "encrypt_file":
+      case "reencrypt_files":
+        queueName = "encryption";
+        break;
+      case "rotate_encryption_key":
+        queueName = "key-rotation";
+        break;
+      default:
+        throw new Error(`Unknown job name: ${jobName}`);
+    }
+
+    return this.addJob(queueName, data, options);
   }
 
   async close() {

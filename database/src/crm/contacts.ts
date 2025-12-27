@@ -20,7 +20,7 @@ export async function getContactByOdooId(
   organizationId: string,
 ): Promise<Contact | undefined> {
   return deps.drizzle.query.crmContacts.findFirst({
-    where: and(eq(crmContacts.odooPartnerId, odooPartnerId), eq(crmContacts.organizationId, organizationId)),
+    where: (t, { eq, and }) => and(eq(t.odooPartnerId, odooPartnerId), eq(t.organizationId, organizationId)),
   });
 }
 

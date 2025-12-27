@@ -13,7 +13,7 @@ export async function getLeaveBalanceByEmployee(
   });
 
   const balances: LeaveBalance[] = [];
-
+  //TODO: use query engine and do it in 1 query with inarray
   for (const leaveType of leaveTypes) {
     const allocations = await deps.drizzle
       .select({

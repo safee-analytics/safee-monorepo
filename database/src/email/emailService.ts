@@ -29,7 +29,6 @@ export class EmailService {
       return;
     }
 
-    // Check for bounces before sending
     for (const recipient of message.to) {
       const canSend = await shouldSendEmail({ drizzle, logger }, recipient.email);
       if (!canSend) {

@@ -11,11 +11,6 @@ export interface NotificationTemplate {
 
 export type TemplateVariables = Record<string, string | number | undefined>;
 
-/**
- * Replace template variables with actual values
- * Example: "{{userName}} completed case {{caseNumber}}" + {userName: "John", caseNumber: "CASE-001"}
- * Result: "John completed case CASE-001"
- */
 export function interpolateTemplate(template: string, variables: TemplateVariables): string {
   return template.replace(/\{\{(\w+)\}\}/g, (match, key: string) => {
     const value = variables[key];
@@ -60,7 +55,6 @@ export const NOTIFICATION_TEMPLATES: Record<string, NotificationTemplate> = {
     relatedEntityType: "case",
   },
 
-  // Deadline notifications
   DEADLINE_APPROACHING: {
     type: "deadline",
     title: "Case deadline approaching",
@@ -79,7 +73,6 @@ export const NOTIFICATION_TEMPLATES: Record<string, NotificationTemplate> = {
     relatedEntityType: "case",
   },
 
-  // Review notifications
   REVIEW_REQUIRED: {
     type: "review",
     title: "Review required",
@@ -98,7 +91,6 @@ export const NOTIFICATION_TEMPLATES: Record<string, NotificationTemplate> = {
     relatedEntityType: "case",
   },
 
-  // Document notifications
   DOCUMENT_UPLOADED: {
     type: "document",
     title: "Document uploaded",
@@ -108,7 +100,6 @@ export const NOTIFICATION_TEMPLATES: Record<string, NotificationTemplate> = {
     relatedEntityType: "document",
   },
 
-  // Team notifications
   TEAM_MEMBER_ADDED: {
     type: "team",
     title: "New team member",
@@ -118,7 +109,6 @@ export const NOTIFICATION_TEMPLATES: Record<string, NotificationTemplate> = {
     relatedEntityType: "user",
   },
 
-  // Approval notifications
   APPROVAL_PENDING: {
     type: "approval_requested",
     title: "Approval required",

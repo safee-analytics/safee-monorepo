@@ -1,5 +1,5 @@
 import { odoo, createJob } from "@safee/database";
-import { odooProvisioningQueue } from "@safee/jobs/queues";
+import { getQueueManager } from "../serverContext.js";
 import {
   Controller,
   Get,
@@ -200,11 +200,10 @@ export class OdooController extends Controller {
 
     // Queue entire provisioning process as background job (database creation + module installation)
     // This will take 5-20 minutes total
-    // Use the PostgreSQL job ID as the BullMQ job ID for tracking
-    const provisioningJob = await odooProvisioningQueue.add(
-      "odoo-provisioning",
+    const queueManager = getQueueManager();
+    const provisioningJob = await queueManager.addJobByName(
+      "odoo_provisioning",
       {
-        type: "odoo-provisioning",
         organizationId,
         lang: body?.lang,
         demo: body?.demo,
@@ -213,12 +212,8 @@ export class OdooController extends Controller {
         timeoutMs: body?.timeoutMs,
       },
       {
-        jobId: pgJob.id,
-        attempts: 3,
-        backoff: {
-          type: "exponential",
-          delay: 10000,
-        },
+        priority: "high",
+        organizationId,
       },
     );
 
@@ -227,7 +222,7 @@ export class OdooController extends Controller {
       success: true,
       message:
         "Odoo database provisioning started. This will take 5-20 minutes. You will be notified when complete.",
-      jobId: provisioningJob.id!,
+      jobId: provisioningJob.bullmqJobId,
     };
   }
 

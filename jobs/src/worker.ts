@@ -1,14 +1,28 @@
 import { Worker, Job } from "bullmq";
 import { Redis } from "ioredis";
 import { z } from "zod";
-import { connect, startJob, completeJob, failJob, type JobName, redisConnect, odoo } from "@safee/database";
+import {
+  connect,
+  startJob,
+  completeJob,
+  failJob,
+  type JobName,
+  redisConnect,
+  odoo,
+  EmailService,
+  ResendEmailProvider,
+} from "@safee/database";
 import { createLogger } from "./logger.js";
 import {
   AnalyticsJobSchema,
   EmailJobSchema,
   OdooSyncJobSchema,
   ReportsJobSchema,
+  SendEmailJobSchema,
+  EncryptFileJobSchema,
+  RotateEncryptionKeyJobSchema,
 } from "./queues/job-schemas.js";
+import { renderTemplate } from "./emailTemplates/index.js";
 import { JWT_SECRET, ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD } from "./env.js";
 
 // Schema for basic job data structure
@@ -30,11 +44,56 @@ const connection = new Redis(process.env.REDIS_URL ?? "redis://localhost:6379", 
 const jobProcessors = {
   // Existing job types
   send_email: async (payload: Record<string, unknown>) => {
-    logger.info({ payload }, "Processing send_email job");
-    // TODO: Implement email sending
-    // - Load email template
-    // - Render with data
-    // - Send via email service (SendGrid, AWS SES, etc.)
+    const data = SendEmailJobSchema.parse(payload);
+    logger.info({ to: data.to, template: data.template?.name }, "Processing send_email job");
+
+    // Render template if provided
+    let subject: string;
+    let html: string | undefined;
+    let text: string | undefined;
+
+    if (data.template) {
+      const rendered = renderTemplate(data.template.name, {
+        locale: data.locale,
+        variables: data.template.variables,
+      });
+      subject = rendered.subject;
+      html = rendered.html;
+      text = rendered.text;
+    } else {
+      subject = data.subject!;
+      html = data.html;
+      text = data.text;
+    }
+
+    // Initialize Resend email provider
+    const emailProvider = new ResendEmailProvider({
+      apiKey: process.env.RESEND_API_KEY ?? "",
+      senderAddress: process.env.EMAIL_FROM_ADDRESS ?? "noreply@safee.local",
+      senderName: process.env.EMAIL_FROM_NAME ?? "Safee Analytics",
+    });
+
+    // Send via EmailService
+    const emailService = new EmailService({
+      drizzle,
+      logger,
+      emailProvider,
+    });
+
+    await emailService.sendEmail({
+      to: data.to,
+      cc: data.cc,
+      bcc: data.bcc,
+      from: {
+        email: process.env.EMAIL_FROM_ADDRESS ?? "noreply@safee.local",
+        name: process.env.EMAIL_FROM_NAME ?? "Safee Analytics",
+      },
+      subject,
+      html,
+      text,
+    });
+
+    logger.info({ to: data.to }, "Email sent successfully");
   },
 
   encrypt_file: async (payload: Record<string, unknown>) => {
@@ -47,12 +106,12 @@ const jobProcessors = {
   },
 
   rotate_encryption_key: async (payload: Record<string, unknown>) => {
-    logger.info({ payload }, "Processing rotate_encryption_key job");
-    // TODO: Implement key rotation
-    // - Generate new encryption key
-    // - Re-encrypt all files with new key
-    // - Update organization key record
-    // - Archive old key
+    const data = RotateEncryptionKeyJobSchema.parse(payload);
+    logger.info({ payload: data }, "rotate_encryption_key job called (stubbed - not implemented)");
+    // TODO: Implement key rotation logic
+    // 1. Generate new encryption key
+    // 2. Deactivate old key, insert new key
+    // 3. Queue re-encryption jobs for all encrypted files
   },
 
   reencrypt_files: async (payload: Record<string, unknown>) => {
@@ -196,6 +255,8 @@ async function processJob(job: Job): Promise<void> {
       processor = jobProcessors.calculate_analytics;
     } else if (jobName === "email") {
       processor = jobProcessors.send_bulk_email;
+    } else if (jobName === "email-jobs") {
+      processor = jobProcessors.send_email;
     } else if (jobName === "odoo-sync") {
       processor = jobProcessors.sync_odoo;
     } else if (jobName === "reports") {
@@ -204,6 +265,17 @@ async function processJob(job: Job): Promise<void> {
       processor = jobProcessors.odoo_provisioning;
     } else if (jobName === "install-modules") {
       processor = jobProcessors.install_odoo_modules;
+    } else if (jobName === "encryption") {
+      // Route based on job type in payload
+      if (jobData.type === "encrypt_file") {
+        processor = jobProcessors.encrypt_file;
+      } else if (jobData.type === "reencrypt_files") {
+        processor = jobProcessors.reencrypt_files;
+      } else {
+        throw new Error(`Unknown job type in encryption queue: ${jobData.type}`);
+      }
+    } else if (jobName === "key-rotation") {
+      processor = jobProcessors.rotate_encryption_key;
     } else {
       throw new Error(`Unknown job name: ${jobName}`);
     }
@@ -236,7 +308,17 @@ async function startWorkers() {
   const workers: Worker[] = [];
 
   // Create a worker for each queue
-  const queues = ["analytics", "email", "odoo-sync", "reports", "odoo-provisioning", "install-modules"];
+  const queues = [
+    "analytics",
+    "email",
+    "email-jobs",
+    "odoo-sync",
+    "reports",
+    "odoo-provisioning",
+    "install-modules",
+    "encryption",
+    "key-rotation",
+  ];
 
   for (const queueName of queues) {
     const worker = new Worker(queueName, processJob, {

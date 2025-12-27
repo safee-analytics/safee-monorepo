@@ -2,7 +2,6 @@
 
 import Watcher from "watcher";
 import ignore from "ignore";
-import { readFileSync } from "node:fs";
 import { relative } from "node:path";
 import { spawn, type ChildProcess } from "node:child_process";
 import { pino } from "pino";
@@ -11,7 +10,6 @@ const logger = pino({
   transport: { target: "pino-pretty" },
 });
 
-// Start nodemon for the gateway
 let nodemonProcess: ChildProcess | null = null;
 
 function startNodemon() {
@@ -31,7 +29,6 @@ function startNodemon() {
   });
 }
 
-// Watch for source file changes
 const filter = ignore().add(["node_modules", "build", "dist", "coverage", ".git", "*.log", "*.md"]);
 
 const watchers: Watcher[] = [];
@@ -54,10 +51,8 @@ watcher.on("all", (event, targetPath) => {
 
 watchers.push(watcher);
 
-// Start nodemon
 startNodemon();
 
-// Handle shutdown
 process.on("SIGINT", () => {
   logger.info("Shutting down watchers");
   for (const w of watchers) {

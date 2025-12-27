@@ -13,7 +13,6 @@ export function mergeBetterAuthSpec(
 
   const authPaths: OpenAPIV3.PathsObject = {};
   for (const [path, pathItem] of Object.entries(betterAuthSpec.paths)) {
-    // No /auth prefix - Better Auth is mounted directly at /api/v1/
     const updatedPathItem: OpenAPIV3.PathItemObject = { ...pathItem };
 
     for (const method of ["get", "post", "put", "delete", "patch", "options"] as const) {

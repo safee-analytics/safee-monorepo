@@ -21,19 +21,13 @@ interface LogObject {
   [key: string]: unknown;
 }
 
-/**
- * Pino transport that sends error logs to Sentry
- * Uses Sentry's HTTP API directly (no SDK needed)
- */
 export default async function (opts: SentryOptions) {
-  // Parse DSN to get project info
   const dsnMatch = /https:\/\/([^@]+)@([^/]+)\/(\d+)/.exec(opts.dsn);
   if (!dsnMatch) {
     // eslint-disable-next-line no-console
     console.error("Invalid Sentry DSN format");
     return build(async function (source) {
       for await (const _ of source) {
-        // Do nothing if DSN is invalid
       }
     });
   }
@@ -67,7 +61,6 @@ export default async function (opts: SentryOptions) {
           },
           extra: {
             ...logObj,
-            // Don't duplicate these fields
             msg: undefined,
             level: undefined,
             time: undefined,
@@ -103,9 +96,6 @@ export default async function (opts: SentryOptions) {
   });
 }
 
-/**
- * Parse stack trace string into Sentry frame format
- */
 function parseStackTrace(stack?: string): { filename: string; function: string; lineno: number }[] {
   if (!stack) return [];
 

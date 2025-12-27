@@ -127,3 +127,58 @@ export const ReportsJobSchema = z.discriminatedUnion("type", [
   }),
 ]);
 export type ReportsJob = z.infer<typeof ReportsJobSchema>;
+
+// Email Jobs Queue (transactional emails)
+const EmailAddressSchema = z.object({
+  email: z.string().email(),
+  name: z.string().optional(),
+});
+
+export const SendEmailJobSchema = z
+  .object({
+    type: z.literal("send_email"),
+    to: z.array(EmailAddressSchema).min(1),
+    cc: z.array(EmailAddressSchema).optional(),
+    bcc: z.array(EmailAddressSchema).optional(),
+    template: z
+      .object({
+        name: z.enum([
+          "welcome",
+          "passwordReset",
+          "otp",
+          "magicLink",
+          "invitation",
+          "changeEmail",
+          "deleteAccount",
+          "emailVerification",
+        ]),
+        variables: z.record(z.string(), z.string()),
+      })
+      .optional(),
+    subject: z.string().optional(),
+    html: z.string().optional(),
+    text: z.string().optional(),
+    locale: z.enum(["en", "ar"]).default("en"),
+    organizationId: z.uuid().optional(),
+  })
+  .refine((data) => data.template || (data.subject && (data.html || data.text)), {
+    message: "Must provide either template or subject+content",
+  });
+export type SendEmailJob = z.infer<typeof SendEmailJobSchema>;
+
+// Encryption Queue
+export const EncryptFileJobSchema = z.object({
+  type: z.literal("encrypt_file"),
+  fileId: z.uuid(),
+  organizationId: z.uuid(),
+  encryptedBy: z.uuid(), // userId
+});
+export type EncryptFileJob = z.infer<typeof EncryptFileJobSchema>;
+
+// Key Rotation Queue
+export const RotateEncryptionKeyJobSchema = z.object({
+  type: z.literal("rotate_encryption_key"),
+  organizationId: z.uuid(),
+  rotatedBy: z.uuid(), // userId
+});
+export type RotateEncryptionKeyJob = z.infer<typeof RotateEncryptionKeyJobSchema>;

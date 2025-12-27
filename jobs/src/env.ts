@@ -1,28 +1,19 @@
-/**
- * Environment configuration for Safee Jobs
- * Includes LLM provider API keys and telemetry settings
- */
-
 function required(name: string) {
   const value = process.env[name];
   if (!value) throw new Error(`Environment variable ${name} is required`);
   return value;
 }
 
-// Environment
 export const IS_LOCAL = process.env.NODE_ENV === "local" || process.env.NODE_ENV === "development";
 export const IS_DEV = process.env.NODE_ENV === "development";
 export const IS_PROD = process.env.NODE_ENV === "production";
 
-// Encryption & Security
 export const JWT_SECRET = required("JWT_SECRET");
 
-// Odoo Configuration
 export const ODOO_URL = process.env.ODOO_URL ?? "http://localhost:8069";
 export const ODOO_PORT = parseInt(process.env.ODOO_PORT ?? "8069", 10);
 export const ODOO_ADMIN_PASSWORD = required("ODOO_ADMIN_PASSWORD");
 
-// LLM Provider API Keys
 export const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY ?? "";
 export const ANTHROPIC_API_URL = process.env.ANTHROPIC_API_URL; // Optional custom endpoint
 
@@ -34,13 +25,10 @@ export const GEMINI_API_KEY = process.env.GEMINI_API_KEY ?? "";
 
 export const GROK_API_KEY = process.env.GROK_API_KEY ?? "";
 
-// BigQuery Telemetry
 export const BQ_ENABLED = process.env.BQ_ENABLED === "true";
 export const BQ_DATASET = process.env.BQ_DATASET ?? "safee_analytics";
 
-// LangSmith Debugging
 export const LANGSMITH_TRACING_V2 = process.env.LANGSMITH_TRACING_V2 === "true";
 export const LANGSMITH_PROJECT = process.env.LANGSMITH_PROJECT ?? "safee-analytics";
 
-// Debug logging
 export const LLM_DEBUG_FILEPATH = process.env.LLM_DEBUG_FILEPATH;

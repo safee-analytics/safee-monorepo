@@ -41,6 +41,7 @@ export async function getActivitiesByOrganization(
   organizationId: string,
   limit = 100,
 ): Promise<CaseActivityWithUser[]> {
+  // TODO:make the find many use org id
   return deps.drizzle.query.caseActivities.findMany({
     orderBy: [desc(caseActivities.createdAt)],
     limit,
@@ -69,6 +70,7 @@ export async function markActivitiesAsRead(
   userId: string,
   activityIds: string[],
 ): Promise<void> {
+  //TODO: Use inarray
   for (const activityId of activityIds) {
     const activity = await deps.drizzle.query.caseActivities.findFirst({
       where: eq(caseActivities.id, activityId),

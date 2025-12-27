@@ -13,7 +13,6 @@ export interface CaseStats {
 export async function getCaseStats(deps: DbDeps, organizationId: string): Promise<CaseStats> {
   const { drizzle } = deps;
 
-  // Get counts for different statuses
   const [activeCasesResult] = await drizzle
     .select({ count: count() })
     .from(cases)

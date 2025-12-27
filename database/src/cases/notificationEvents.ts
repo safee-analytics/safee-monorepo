@@ -7,9 +7,6 @@ import {
   type NotificationServiceDeps,
 } from "./notificationService.js";
 
-/**
- * Event types that trigger notifications
- */
 export type CaseEventType = "case.created" | "case.assigned" | "case.completed" | "case.status_changed";
 
 export interface CaseEvent {
@@ -25,17 +22,11 @@ export interface CaseEvent {
   userName?: string; // For completed events
 }
 
-/**
- * Initialize case event subscribers
- * This sets up pubsub listeners for case-related events
- */
 export async function initializeCaseEventHandlers(pubsub: PubSub, deps: DbDeps): Promise<void> {
   const { logger } = deps;
 
-  // Create topics if they don't exist
   await pubsub.createTopic("case.events");
 
-  // Subscribe to case events
   await pubsub.subscribe("case-events-subscription", async (message: PubSubMessage) => {
     try {
       const event = JSON.parse(message.data.toString()) as CaseEvent;
@@ -97,9 +88,6 @@ export async function initializeCaseEventHandlers(pubsub: PubSub, deps: DbDeps):
   logger.info("Case event handlers initialized");
 }
 
-/**
- * Publish a case event to trigger notifications
- */
 export async function publishCaseEvent(pubsub: PubSub, event: CaseEvent): Promise<void> {
   await pubsub.publish("case.events", event, {
     eventType: event.type,

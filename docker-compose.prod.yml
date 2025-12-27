@@ -1,12 +1,11 @@
 services:
-  # Caddy reverse proxy - handles all external traffic
   caddy:
     image: ghcr.io/${IMAGE_PREFIX:-safee}/safee-caddy:${TAG:-dev}
     restart: unless-stopped
     ports:
       - "80:80"
       - "443:443"
-      - "443:443/udp"  # HTTP/3
+      - "443:443/udp" # HTTP/3
     volumes:
       - caddy-data:/data
       - caddy-config:/config
@@ -19,9 +18,7 @@ services:
     depends_on:
       - frontend
       - landing
-    # Note: api-blue and api-green are started via profiles, not dependencies
 
-  # Redis cache and queue
   redis:
     image: redis:7-alpine
     restart: unless-stopped
@@ -36,7 +33,6 @@ services:
       retries: 5
 
   # Database migrations (one-shot)
-  # Uses external database provider (Neon, Supabase, RDS, etc.)
   migrations:
     image: ghcr.io/${IMAGE_PREFIX:-safee}/safee-backend:${TAG:-dev}
     environment:
@@ -78,7 +74,8 @@ services:
     networks:
       - safee-network
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/api/v1/health"]
+      test:
+        ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/api/v1/health"]
       interval: 10s
       timeout: 5s
       retries: 3
@@ -111,13 +108,13 @@ services:
     networks:
       - safee-network
     healthcheck:
-      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/api/v1/health"]
+      test:
+        ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:3000/api/v1/health"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 40s
 
-  # Frontend application
   frontend:
     image: ghcr.io/${IMAGE_PREFIX:-safee}/safee-frontend:${TAG:-dev}
     restart: unless-stopped
@@ -131,7 +128,6 @@ services:
       timeout: 5s
       retries: 3
 
-  # Landing page
   landing:
     image: ghcr.io/${IMAGE_PREFIX:-safee}/safee-landing:${TAG:-dev}
     restart: unless-stopped
@@ -145,7 +141,6 @@ services:
       timeout: 5s
       retries: 3
 
-  # Background job worker
   jobs-worker:
     image: ghcr.io/${IMAGE_PREFIX:-safee}/safee-jobs-worker:${TAG:-dev}
     restart: unless-stopped
@@ -162,9 +157,6 @@ services:
         condition: service_healthy
     networks:
       - safee-network
-
-  # Note: Odoo runs on a separate server (deployed via Terraform)
-  # Access via ODOO_URL environment variable
 
 networks:
   safee-network:

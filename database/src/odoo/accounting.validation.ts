@@ -1,7 +1,3 @@
-/**
- * Zod validation schemas for Odoo accounting API responses
- */
-
 import { z } from "zod";
 
 // Odoo's many2one field format: [id, "Display Name"] or just id

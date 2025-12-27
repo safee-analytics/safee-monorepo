@@ -8,10 +8,6 @@ import { createHash } from "node:crypto";
 
 const { odooAuditLogs, odooIdempotencyKeys } = schema;
 
-/**
- * Audit log service for tracking all Odoo operations
- * Provides comprehensive logging and idempotency support
- */
 export class OdooAuditLogService {
   private logger: Logger;
   private drizzle: DrizzleClient;
@@ -21,9 +17,6 @@ export class OdooAuditLogService {
     this.drizzle = drizzle;
   }
 
-  /**
-   * Generate idempotency key from operation parameters
-   */
   generateIdempotencyKey(
     operationType: string,
     model: string | undefined,
@@ -41,14 +34,10 @@ export class OdooAuditLogService {
     return `${operationType}-${model ?? "none"}-${hash.substring(0, 16)}`;
   }
 
-  /**
-   * Check if operation with idempotency key exists and return cached result
-   */
   async checkIdempotencyKey(idempotencyKey: string): Promise<OdooIdempotencyKey | null> {
     try {
       const now = new Date();
 
-      // Find non-expired idempotency key
       const results = await this.drizzle
         .select()
         .from(odooIdempotencyKeys)
@@ -57,7 +46,6 @@ export class OdooAuditLogService {
         )
         .limit(1);
 
-      // result is always defined from query, log if found
       if (results.length > 0) {
         const result = results[0];
         this.logger.info(
@@ -84,9 +72,6 @@ export class OdooAuditLogService {
     }
   }
 
-  /**
-   * Create idempotency key for operation
-   */
   async createIdempotencyKey(
     data: Omit<NewOdooIdempotencyKey, "id" | "createdAt" | "updatedAt">,
   ): Promise<void> {
@@ -105,9 +90,6 @@ export class OdooAuditLogService {
     }
   }
 
-  /**
-   * Update idempotency key with result
-   */
   async updateIdempotencyKey(
     idempotencyKey: string,
     status: "success" | "failed",
@@ -138,9 +120,6 @@ export class OdooAuditLogService {
     }
   }
 
-  /**
-   * Log operation start
-   */
   async logOperationStart(data: Omit<NewOdooAuditLog, "id" | "createdAt">): Promise<void> {
     try {
       await this.drizzle.insert(odooAuditLogs).values(data);
@@ -158,9 +137,6 @@ export class OdooAuditLogService {
     }
   }
 
-  /**
-   * Update operation with result
-   */
   async updateOperation(
     operationId: string,
     updates: {
@@ -187,9 +163,6 @@ export class OdooAuditLogService {
     }
   }
 
-  /**
-   * Get operation by ID
-   */
   async getOperation(operationId: string) {
     try {
       const results = await this.drizzle
@@ -198,7 +171,6 @@ export class OdooAuditLogService {
         .where(eq(odooAuditLogs.operationId, operationId))
         .limit(1);
 
-      // result is always defined, return null if empty
       return results[0] ?? null;
     } catch (err) {
       this.logger.error({ error: err, operationId }, "Failed to get operation");
@@ -206,9 +178,6 @@ export class OdooAuditLogService {
     }
   }
 
-  /**
-   * Cleanup expired idempotency keys (should be run periodically)
-   */
   async cleanupExpiredKeys(): Promise<number> {
     try {
       const now = new Date();

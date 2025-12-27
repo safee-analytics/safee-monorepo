@@ -9,6 +9,7 @@ import type { Logger } from "pino";
 import { ValidateError } from "tsoa";
 
 import type { RedisClient, DrizzleClient, Storage, PubSub, JobScheduler } from "@safee/database";
+import type { QueueManager } from "@safee/jobs";
 import { SessionStore } from "./SessionStore.js";
 import { RegisterRoutes } from "./routes.js";
 import { localeMiddleware } from "./middleware/localeMiddleware.js";
@@ -43,9 +44,10 @@ type Dependencies = {
   storage: Storage;
   pubsub: PubSub;
   scheduler: JobScheduler;
+  queueManager: QueueManager;
 };
 
-export async function server({ logger, redis, drizzle, storage, pubsub, scheduler }: Dependencies) {
+export async function server({ logger, redis, drizzle, storage, pubsub, scheduler, queueManager }: Dependencies) {
   logger.info("Configuring Safee Analytics API server");
 
   const app: Application = express();
@@ -57,7 +59,6 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
   }
   app.set("trust proxy", 1);
 
-  // Initialize Odoo user provisioning service
   const odooUserProvisioningService = new odoo.OdooUserProvisioningService({
     drizzle,
     logger: logger as unknown as Logger,
@@ -65,7 +66,6 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
     odooUrl: ODOO_URL,
   });
 
-  // Initialize Odoo client manager
   const odooClientManager = odoo.initOdooClientManager({
     drizzle,
     logger: logger as unknown as Logger,
@@ -113,6 +113,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
     storage,
     pubsub,
     scheduler,
+    queueManager,
     odoo: odooClientManager,
   });
 
@@ -200,11 +201,9 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
   app.all("/api/v1/*", toNodeHandler(auth));
   logger.info("Better Auth mounted at /api/v1/auth/*");
 
-  // Setup Bull Board for queue monitoring with relaxed CSP
   const bullBoardAdapter = setupBullBoard(logger as unknown as Logger, redis);
   app.use(
     "/admin/queues",
-    // Relax CSP for Bull Board since it uses inline scripts/styles
     helmet({
       contentSecurityPolicy: {
         directives: {
@@ -317,15 +316,12 @@ export async function startServer(deps: Dependencies) {
     deps.logger.info("WebSocket server available at: ws://%s:%s/ws", HOST, PORT);
   });
 
-  // Initialize WebSocket server with Better Auth security
   const wsService = new WebSocketService(httpServer);
 
-  // Connect WebSocket service to ChunkedUploadService for progress tracking
   const chunkedUploadService = getChunkedUploadServiceInstance();
   chunkedUploadService.setWebSocketService(wsService);
   deps.logger.info("WebSocket service connected to ChunkedUploadService");
 
-  // Graceful shutdown
   async function shutdown() {
     deps.logger.info("Starting graceful shutdown...");
     await wsService.shutdown();

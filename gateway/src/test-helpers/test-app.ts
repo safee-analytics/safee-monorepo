@@ -1,5 +1,6 @@
 import { Application } from "express";
 import { connect, redisConnect, InMemoryPubSub, JobScheduler, FileSystemStorage } from "@safee/database";
+import { QueueManager } from "@safee/jobs";
 import { pino, type Logger } from "pino";
 import { server } from "../server/index.js";
 
@@ -30,13 +31,12 @@ export async function createTestApp(): Promise<TestApp> {
   // Create test pubsub
   const pubsub = new InMemoryPubSub({});
 
+  // Create QueueManager
+  const queueManager = new QueueManager();
+
   // Create test scheduler
   const scheduler = new JobScheduler({
-    pubsub,
-    topics: {
-      jobQueue: "test-job-queue",
-      jobEvents: "test-job-events",
-    },
+    queueManager,
   });
 
   // Initialize the server
@@ -47,10 +47,12 @@ export async function createTestApp(): Promise<TestApp> {
     storage,
     pubsub,
     scheduler,
+    queueManager,
   });
 
   async function cleanup() {
     await scheduler.stop();
+    await queueManager.close();
     await pubsub.close();
     await redis.quit();
     await closeDb();

@@ -300,10 +300,6 @@ export class OdooAccountingService {
     return Buffer.from(pdfBase64, "base64");
   }
 
-  /**
-   * Get available report templates from Odoo
-   * @param model - The model to get reports for (e.g., 'account.move', 'hr.payslip')
-   */
   async getAvailableReportTemplates(model?: string): Promise<
     {
       id: number;
@@ -636,9 +632,6 @@ export class OdooAccountingService {
     return Array.from(accountMap.values()).sort((a, b) => a.account_code.localeCompare(b.account_code));
   }
 
-  /**
-   * Get partner ledger (customer/supplier statement)
-   */
   async getPartnerLedger(query: PartnerLedgerQuery): Promise<OdooPartnerLedgerReport | null> {
     const entries = await this.getGLEntries({
       partnerId: query.partnerId,
@@ -680,10 +673,6 @@ export class OdooAccountingService {
     };
   }
 
-  /**
-   * Get profit & loss statement
-   * Simplified version - Odoo has complex P&L report generation
-   */
   async getProfitLoss(
     dateFrom?: string,
     dateTo?: string,
@@ -692,21 +681,17 @@ export class OdooAccountingService {
     expenses: number;
     netProfit: number;
   }> {
-    // Get all income accounts
     const incomeAccounts = await this.getAccounts({
       accountType: "income",
     });
 
-    // Get all expense accounts
     const expenseAccounts = await this.getAccounts({
       accountType: "expense",
     });
 
-    // Calculate totals
     let totalIncome = 0;
     let totalExpenses = 0;
 
-    // Sum income
     for (const account of incomeAccounts) {
       const entries = await this.getGLEntries({
         accountId: account.id,
@@ -716,7 +701,6 @@ export class OdooAccountingService {
       totalIncome += entries.reduce((sum, entry) => sum + entry.credit - entry.debit, 0);
     }
 
-    // Sum expenses
     for (const account of expenseAccounts) {
       const entries = await this.getGLEntries({
         accountId: account.id,
@@ -733,11 +717,6 @@ export class OdooAccountingService {
     };
   }
 
-  // ==================== Payment Terms ====================
-
-  /**
-   * Get payment terms
-   */
   async getPaymentTerms(): Promise<
     {
       id: number;
@@ -754,9 +733,6 @@ export class OdooAccountingService {
     return results;
   }
 
-  /**
-   * Get a single payment term by ID
-   */
   async getPaymentTerm(paymentTermId: number): Promise<{
     id: number;
     name: string;
@@ -770,11 +746,6 @@ export class OdooAccountingService {
     return results[0] || null;
   }
 
-  // ==================== Aged Reports ====================
-
-  /**
-   * Get aged receivables report (customer invoices aging)
-   */
   async getAgedReceivables(asOfDate?: string): Promise<
     {
       partnerId: number;
@@ -789,14 +760,12 @@ export class OdooAccountingService {
   > {
     const today = asOfDate ?? new Date().toISOString().split("T")[0];
 
-    // Get all unpaid customer invoices
     const invoices = await this.getInvoices({
       moveType: "out_invoice",
       state: "posted",
       paymentState: "not_paid",
     });
 
-    // Group by partner and calculate aging
     const partnerMap = new Map<
       number,
       {
@@ -812,7 +781,6 @@ export class OdooAccountingService {
     >();
 
     for (const invoice of invoices) {
-      // Extract partner ID and name from Odoo's many2one format
       let partnerId: number;
       let partnerName: string;
 
@@ -821,9 +789,9 @@ export class OdooAccountingService {
         partnerName = invoice.partner_id[1];
       } else if (typeof invoice.partner_id === "number") {
         partnerId = invoice.partner_id;
+        //TODO: get partner name
         partnerName = "";
       } else {
-        // Skip invoices without a valid partner (null or false)
         continue;
       }
 
@@ -866,9 +834,6 @@ export class OdooAccountingService {
     return Array.from(partnerMap.values()).sort((a, b) => b.total - a.total);
   }
 
-  /**
-   * Get aged payables report (vendor bills aging)
-   */
   async getAgedPayables(asOfDate?: string): Promise<
     {
       partnerId: number;
@@ -883,14 +848,12 @@ export class OdooAccountingService {
   > {
     const today = asOfDate ?? new Date().toISOString().split("T")[0];
 
-    // Get all unpaid vendor bills
     const bills = await this.getInvoices({
       moveType: "in_invoice",
       state: "posted",
       paymentState: "not_paid",
     });
 
-    // Group by partner and calculate aging
     const partnerMap = new Map<
       number,
       {
@@ -906,7 +869,6 @@ export class OdooAccountingService {
     >();
 
     for (const bill of bills) {
-      // Extract partner ID and name from Odoo's many2one format
       let partnerId: number;
       let partnerName: string;
 
@@ -960,11 +922,6 @@ export class OdooAccountingService {
     return Array.from(partnerMap.values()).sort((a, b) => b.total - a.total);
   }
 
-  // ==================== Bank Reconciliation ====================
-
-  /**
-   * Get bank statements
-   */
   async getBankStatements(filters?: {
     journalId?: number;
     dateFrom?: string;
@@ -1030,9 +987,6 @@ export class OdooAccountingService {
     }));
   }
 
-  /**
-   * Get bank statement lines (transactions)
-   */
   async getBankStatementLines(statementId: number): Promise<
     {
       id: number;
@@ -1066,9 +1020,6 @@ export class OdooAccountingService {
     }));
   }
 
-  /**
-   * Get reconciliation suggestions for a bank statement line
-   */
   async getReconciliationSuggestions(lineId: number): Promise<
     {
       moveId: number;
@@ -1078,7 +1029,6 @@ export class OdooAccountingService {
       amount: number;
     }[]
   > {
-    // Call Odoo's reconciliation widget data method
     const suggestions = await this.client.executeKw<
       {
         id: number;
@@ -1098,15 +1048,11 @@ export class OdooAccountingService {
     }));
   }
 
-  /**
-   * Reconcile bank statement line with invoices/moves
-   */
   async reconcileBankStatementLine(
     lineId: number,
     moveIds: number[],
   ): Promise<{ success: boolean; message?: string }> {
     try {
-      // Odoo's reconciliation process for bank statement lines
       await this.client.executeKw("account.bank.statement.line", "reconcile", [
         [lineId],
         {
@@ -1123,11 +1069,6 @@ export class OdooAccountingService {
     }
   }
 
-  // ==================== Multi-Currency ====================
-
-  /**
-   * Get currencies
-   */
   async getCurrencies(onlyActive = true): Promise<
     {
       id: number;
@@ -1153,9 +1094,6 @@ export class OdooAccountingService {
     }>("res.currency", domain, ["name", "symbol", "position", "rounding", "active"]);
   }
 
-  /**
-   * Get currency rates
-   */
   async getCurrencyRates(
     currencyId?: number,
     dateFrom?: string,
@@ -1200,9 +1138,6 @@ export class OdooAccountingService {
     }));
   }
 
-  /**
-   * Convert amount between currencies
-   */
   async convertCurrency(
     amount: number,
     fromCurrencyId: number,
@@ -1222,11 +1157,6 @@ export class OdooAccountingService {
     };
   }
 
-  // ==================== Batch Operations ====================
-
-  /**
-   * Batch validate invoices
-   */
   async batchValidateInvoices(invoiceIds: number[]): Promise<{
     success: number[];
     failed: { id: number; error: string }[];
@@ -1249,9 +1179,6 @@ export class OdooAccountingService {
     return { success, failed };
   }
 
-  /**
-   * Batch cancel invoices
-   */
   async batchCancelInvoices(invoiceIds: number[]): Promise<{
     success: number[];
     failed: { id: number; error: string }[];
@@ -1274,9 +1201,6 @@ export class OdooAccountingService {
     return { success, failed };
   }
 
-  /**
-   * Batch create invoices
-   */
   async batchCreateInvoices(invoices: CreateInvoiceDTO[]): Promise<{
     success: { index: number; id: number }[];
     failed: { index: number; error: string }[];
@@ -1299,9 +1223,6 @@ export class OdooAccountingService {
     return { success, failed };
   }
 
-  /**
-   * Batch create payments
-   */
   async batchCreatePayments(payments: CreatePaymentDTO[]): Promise<{
     success: { index: number; id: number }[];
     failed: { index: number; error: string }[];
@@ -1324,9 +1245,6 @@ export class OdooAccountingService {
     return { success, failed };
   }
 
-  /**
-   * Batch confirm payments
-   */
   async batchConfirmPayments(paymentIds: number[]): Promise<{
     success: number[];
     failed: { id: number; error: string }[];

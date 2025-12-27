@@ -18,7 +18,7 @@ export class PlanNotFoundError extends Error {
 
 export interface CreateSubscriptionData {
   userId: string;
-  organizationId?: string; // Optional - might be set after org creation
+  organizationId?: string;
   planId: string;
   seats: number;
 }
@@ -29,9 +29,6 @@ export interface UpdateSubscriptionData {
   status?: string;
 }
 
-/**
- * Get all available subscription plans
- */
 export async function getSubscriptionPlans(deps: DbDeps) {
   const { drizzle } = deps;
   return await drizzle.query.subscriptionPlans.findMany({
@@ -39,9 +36,6 @@ export async function getSubscriptionPlans(deps: DbDeps) {
   });
 }
 
-/**
- * Get a subscription plan by ID
- */
 export async function getSubscriptionPlanById(deps: DbDeps, planId: string) {
   const { drizzle } = deps;
   return await drizzle.query.subscriptionPlans.findFirst({
@@ -49,9 +43,6 @@ export async function getSubscriptionPlanById(deps: DbDeps, planId: string) {
   });
 }
 
-/**
- * Get a subscription plan by slug
- */
 export async function getSubscriptionPlanBySlug(deps: DbDeps, slug: string) {
   const { drizzle } = deps;
   return await drizzle.query.subscriptionPlans.findFirst({
@@ -59,19 +50,14 @@ export async function getSubscriptionPlanBySlug(deps: DbDeps, slug: string) {
   });
 }
 
-/**
- * Create a new subscription
- */
 export async function createSubscription(deps: DbDeps, data: CreateSubscriptionData) {
   const { drizzle, logger } = deps;
 
-  // Verify plan exists
   const plan = await getSubscriptionPlanById(deps, data.planId);
   if (!plan) {
     throw new PlanNotFoundError(`Plan ${data.planId} not found`);
   }
 
-  // Validate seats against plan limits
   if (plan.maxSeats && data.seats > plan.maxSeats) {
     throw new Error(
       `Cannot purchase ${data.seats} seats. Plan ${plan.name} has a maximum of ${plan.maxSeats} seats`,
@@ -95,9 +81,6 @@ export async function createSubscription(deps: DbDeps, data: CreateSubscriptionD
   return subscription;
 }
 
-/**
- * Get subscription for a user
- */
 export async function getSubscriptionByUserId(deps: DbDeps, userId: string) {
   const { drizzle } = deps;
   return await drizzle.query.organizationSubscriptions.findFirst({
@@ -109,9 +92,6 @@ export async function getSubscriptionByUserId(deps: DbDeps, userId: string) {
   });
 }
 
-/**
- * Get subscription for an organization
- */
 export async function getSubscriptionByOrgId(deps: DbDeps, organizationId: string) {
   const { drizzle } = deps;
   return await drizzle.query.organizationSubscriptions.findFirst({
@@ -122,20 +102,15 @@ export async function getSubscriptionByOrgId(deps: DbDeps, organizationId: strin
   });
 }
 
-/**
- * Update a subscription
- */
 export async function updateSubscription(deps: DbDeps, subscriptionId: string, data: UpdateSubscriptionData) {
   const { drizzle, logger } = deps;
 
-  // If changing plan, verify it exists
   if (data.planId) {
     const plan = await getSubscriptionPlanById(deps, data.planId);
     if (!plan) {
       throw new PlanNotFoundError(`Plan ${data.planId} not found`);
     }
 
-    // Validate seats against new plan limits
     if (plan.maxSeats && data.seats && data.seats > plan.maxSeats) {
       throw new Error(
         `Cannot purchase ${data.seats} seats. Plan ${plan.name} has a maximum of ${plan.maxSeats} seats`,
@@ -163,9 +138,6 @@ export async function updateSubscription(deps: DbDeps, subscriptionId: string, d
   return updated;
 }
 
-/**
- * Link subscription to organization (called after org creation)
- */
 export async function linkSubscriptionToOrg(deps: DbDeps, userId: string, organizationId: string) {
   const { drizzle, logger } = deps;
 
@@ -188,9 +160,6 @@ export async function linkSubscriptionToOrg(deps: DbDeps, userId: string, organi
   return updated;
 }
 
-/**
- * Cancel a subscription
- */
 export async function cancelSubscription(deps: DbDeps, subscriptionId: string) {
   const { drizzle, logger } = deps;
 
@@ -210,9 +179,6 @@ export async function cancelSubscription(deps: DbDeps, subscriptionId: string) {
   return cancelled;
 }
 
-/**
- * Check if user has an active subscription
- */
 export async function hasActiveSubscription(deps: DbDeps, userId: string): Promise<boolean> {
   const { drizzle } = deps;
 
@@ -223,9 +189,6 @@ export async function hasActiveSubscription(deps: DbDeps, userId: string): Promi
   return !!subscription;
 }
 
-/**
- * Get seat usage for an organization
- */
 export async function getSeatUsage(deps: DbDeps, organizationId: string) {
   const { drizzle } = deps;
 
@@ -234,7 +197,6 @@ export async function getSeatUsage(deps: DbDeps, organizationId: string) {
     return { purchased: 0, used: 0, available: 0, unlimited: false };
   }
 
-  // Count active members in the organization
   const activeMembers = await drizzle.query.members.findMany({
     where: (m, { eq }) => eq(m.organizationId, organizationId),
   });
@@ -251,9 +213,6 @@ export async function getSeatUsage(deps: DbDeps, organizationId: string) {
   };
 }
 
-/**
- * Check if organization can invite more members
- */
 export async function canInviteMember(deps: DbDeps, organizationId: string): Promise<boolean> {
   const subscription = await getSubscriptionByOrgId(deps, organizationId);
   if (!subscription) {
@@ -261,26 +220,19 @@ export async function canInviteMember(deps: DbDeps, organizationId: string): Pro
     return false;
   }
 
-  // Grandfathered orgs have unlimited seats
   if (subscription.isGrandfathered) {
     return true;
   }
 
-  // Check seat availability
   const usage = await getSeatUsage(deps, organizationId);
 
-  // Unlimited seats
   if (usage.unlimited) {
     return true;
   }
 
-  // Has available seats
   return usage.available > 0;
 }
 
-/**
- * Mark existing organizations as grandfathered
- */
 export async function markExistingOrgsAsGrandfathered(deps: DbDeps) {
   const { drizzle, logger } = deps;
 
@@ -295,28 +247,21 @@ export async function markExistingOrgsAsGrandfathered(deps: DbDeps) {
   return result;
 }
 
-/**
- * Auto-create free subscription for new users
- * Called during signup to ensure all users have a default subscription
- */
 export async function autoCreateFreeSubscription(deps: DbDeps, userId: string) {
   const { logger } = deps;
 
-  // Check if user already has a subscription
   const existing = await getSubscriptionByUserId(deps, userId);
   if (existing) {
     logger.info({ userId }, "User already has a subscription, skipping auto-creation");
     return existing;
   }
 
-  // Get the free plan
   const freePlan = await getSubscriptionPlanBySlug(deps, "free");
   if (!freePlan) {
     logger.warn("Free plan not found, cannot auto-create subscription");
     throw new PlanNotFoundError("Free plan not found in database");
   }
 
-  // Create free subscription
   logger.info({ userId, planId: freePlan.id }, "Auto-creating free subscription for new user");
 
   return createSubscription(deps, {

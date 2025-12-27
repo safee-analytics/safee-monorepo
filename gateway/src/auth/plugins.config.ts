@@ -1,8 +1,3 @@
-/**
- * Better Auth Plugins Configuration
- * Configures all authentication plugins for Safee Analytics
- */
-
 import {
   organization,
   openAPI,

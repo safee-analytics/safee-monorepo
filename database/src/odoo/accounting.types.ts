@@ -1,9 +1,3 @@
-/**
- * Odoo Accounting Type Definitions
- *
- * These types map to Odoo's accounting models for type-safe operations
- */
-
 export interface OdooAccount {
   id: number;
   code: string;

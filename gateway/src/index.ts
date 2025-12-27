@@ -1,4 +1,5 @@
 import { connect, redisConnect, getStorage, getDefaultPubSub, JobScheduler } from "@safee/database";
+import { QueueManager } from "@safee/jobs";
 import { startServer } from "./server/index.js";
 import { createLogger } from "./logger.js";
 
@@ -16,15 +17,14 @@ async function main() {
   const storage = getStorage("safee-storage");
   const pubsub = getDefaultPubSub();
 
+  // Initialize QueueManager for BullMQ job processing
+  const queueManager = new QueueManager();
+
   const scheduler = new JobScheduler({
-    pubsub,
-    topics: {
-      jobQueue: "safee-job-queue",
-      jobEvents: "safee-job-events",
-    },
+    queueManager,
   });
 
-  const { httpServer, wsService } = await startServer({ logger, drizzle, redis, storage, pubsub, scheduler });
+  const { httpServer, wsService } = await startServer({ logger, drizzle, redis, storage, pubsub, scheduler, queueManager });
 
   return async () => {
     logger.info("Cleaning up resources");
@@ -41,6 +41,9 @@ async function main() {
 
     await scheduler.stop();
     logger.info("Job scheduler stopped");
+
+    await queueManager.close();
+    logger.info("Queue manager closed");
 
     await redis.quit();
     logger.info("Redis connection closed");
