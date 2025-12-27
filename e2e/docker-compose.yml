@@ -30,8 +30,33 @@ services:
     networks:
       - safee_net
 
+  odoo:
+    image: safee-odoo:local
+    build:
+      context: ..
+      dockerfile: odoo/Dockerfile
+    profiles:
+      - odoo
+    ports:
+      - "28069:8069"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=safee
+      - DB_PASSWORD=safee
+      - ADMIN_PASSWORD=admin123
+    volumes:
+      - ../infra/config/odoo.conf:/etc/odoo/odoo.conf:ro
+      - odoo-data:/var/lib/odoo
+    networks:
+      - safee_net
+
 volumes:
   postgres-data:
+  odoo-data:
 
 networks:
   safee_net:
