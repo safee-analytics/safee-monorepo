@@ -16,6 +16,7 @@ export default defineConfig({
       NODE_ENV: "test",
       DATABASE_URL: "postgresql://safee:safee@localhost:25432/safee",
       REDIS_URL: "redis://localhost:26379",
+      JWT_SECRET: "test-jwt-secret-for-e2e",
       ODOO_URL: "http://localhost:18069",
       ODOO_DB: "safee",
       PUBSUB_EMULATOR_HOST: "localhost:48085",

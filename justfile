@@ -582,7 +582,7 @@ clean-admin:
 
 [group('admin')]
 test-admin:
-    npm -w admin test
+    npm -w admin test --if-present
 
 [group('admin')]
 dev-admin:
