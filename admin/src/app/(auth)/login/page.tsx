@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { signIn } from "@/lib/auth-client";
 import { Sparkles, Mail, Lock, AlertCircle } from "lucide-react";
 
-export default function LoginPage() {
+function LoginForm() {
   const searchParams = useSearchParams();
   const from = searchParams.get("from") ?? "/";
 
@@ -163,5 +163,13 @@ export default function LoginPage() {
         <p className="mt-8 text-center text-xs text-gray-500">&copy; 2025 Safee. All rights reserved.</p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   );
 }

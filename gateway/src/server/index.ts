@@ -142,7 +142,8 @@ export async function server({
           upgradeInsecureRequests: [],
         },
       },
-      frameguard: false, // Disable X-Frame-Options, use CSP frame-ancestors instead
+      // Keep frameguard enabled for defense in depth (CSP frameAncestors is primary protection)
+      frameguard: { action: "sameorigin" },
     }),
   );
 
