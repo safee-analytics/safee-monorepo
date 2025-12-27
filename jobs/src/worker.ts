@@ -19,7 +19,6 @@ import {
   OdooSyncJobSchema,
   ReportsJobSchema,
   SendEmailJobSchema,
-  EncryptFileJobSchema,
   RotateEncryptionKeyJobSchema,
 } from "./queues/job-schemas.js";
 import { renderTemplate } from "./emailTemplates/index.js";

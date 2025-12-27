@@ -47,6 +47,11 @@ void describe("EncryptionController", () => {
       pubsub: {} as PubSub,
       scheduler: {} as JobScheduler,
       odoo: {} as OdooClientManager,
+      queueManager: {
+        addJobByName: vi.fn(),
+        addJob: vi.fn(),
+        close: vi.fn(),
+      } as never,
     };
 
     initServerContext(mockContext);

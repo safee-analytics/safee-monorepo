@@ -70,7 +70,7 @@ export async function markActivitiesAsRead(
   userId: string,
   activityIds: string[],
 ): Promise<void> {
-  //TODO: Use inarray
+  // TODO: Use inarray
   for (const activityId of activityIds) {
     const activity = await deps.drizzle.query.caseActivities.findFirst({
       where: eq(caseActivities.id, activityId),

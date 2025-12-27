@@ -789,7 +789,7 @@ export class OdooAccountingService {
         partnerName = invoice.partner_id[1];
       } else if (typeof invoice.partner_id === "number") {
         partnerId = invoice.partner_id;
-        //TODO: get partner name
+        // TODO: get partner name
         partnerName = "";
       } else {
         continue;

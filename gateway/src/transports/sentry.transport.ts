@@ -28,6 +28,7 @@ export default async function (opts: SentryOptions) {
     console.error("Invalid Sentry DSN format");
     return build(async function (source) {
       for await (const _ of source) {
+        // Drain the source iterator (no-op transport on invalid DSN)
       }
     });
   }

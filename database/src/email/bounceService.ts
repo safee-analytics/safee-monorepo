@@ -1,7 +1,6 @@
-import { eq, and, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import type { DbDeps } from "../deps.js";
 import { emailBounces } from "../drizzle/emailBounces.js";
-import { users } from "../drizzle/users.js";
 import { now } from "../drizzle.js";
 
 export interface RecordBounceInput {

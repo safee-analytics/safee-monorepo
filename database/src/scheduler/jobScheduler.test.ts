@@ -1,4 +1,4 @@
-import { describe, it, beforeAll, afterAll, beforeEach, expect, vi } from "vitest";
+import { describe, it, beforeAll, afterAll, beforeEach, expect, vi, type Mock } from "vitest";
 import { pino } from "pino";
 import { testConnect } from "../drizzle/testConnect.js";
 import type { DrizzleClient } from "../drizzle.js";
@@ -11,12 +11,22 @@ import { eq } from "../index.js";
 import { randomUUID } from "node:crypto";
 import type { JobName } from "../drizzle/index.js";
 
+interface MockQueueManager {
+  addJobByName: Mock<
+    (
+      jobName: string,
+      data: Record<string, unknown>,
+      options: Record<string, unknown>,
+    ) => Promise<{ bullmqJobId: string; pgJobId: string }>
+  >;
+}
+
 describe("Job Scheduler", async () => {
   let drizzle: DrizzleClient;
   let close: () => Promise<void>;
   const logger = pino({ level: "silent" });
   let deps: DbDeps;
-  let mockQueueManager: any;
+  let mockQueueManager: MockQueueManager;
   let scheduler: JobScheduler;
 
   beforeAll(async () => {
@@ -37,7 +47,7 @@ describe("Job Scheduler", async () => {
     };
 
     scheduler = new JobScheduler({
-      queueManager: mockQueueManager,
+      queueManager: mockQueueManager as never,
     });
   });
 
@@ -82,7 +92,7 @@ describe("Job Scheduler", async () => {
     });
 
     it("loads schedules on start", async () => {
-      const schedule = await createJobSchedule(deps, {
+      await createJobSchedule(deps, {
         name: "Test Email Schedule",
         jobName: "send_email" as const,
         cronExpression: "*/5 * * * *",
@@ -121,7 +131,7 @@ describe("Job Scheduler", async () => {
     });
 
     it("queues job to BullMQ when cron fires", async () => {
-      const schedule = await createJobSchedule(deps, {
+      await createJobSchedule(deps, {
         name: "Every Second Email Schedule",
         jobName: "send_email" as const,
         cronExpression: "* * * * * *",
@@ -137,8 +147,8 @@ describe("Job Scheduler", async () => {
       expect(mockQueueManager.addJobByName).toHaveBeenCalled();
       const calls = mockQueueManager.addJobByName.mock.calls;
       expect(calls.length).toBeGreaterThan(0);
-      expect(calls[0][0]).toBe("send_email"); // jobName
-      expect(calls[0][1]).toHaveProperty("jobId"); // data with jobId
+      expect(calls[0]?.[0]).toBe("send_email"); // jobName
+      expect(calls[0]?.[1]).toHaveProperty("jobId"); // data with jobId
 
       await scheduler.stop();
     });

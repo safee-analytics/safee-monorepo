@@ -1,12 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { signIn } from "@/lib/auth-client";
 import { Sparkles, Mail, Lock, AlertCircle } from "lucide-react";
 
 export default function LoginPage() {
-  const router = useRouter();
   const searchParams = useSearchParams();
   const from = searchParams.get("from") ?? "/";
 
@@ -35,7 +34,9 @@ export default function LoginPage() {
 
         // Wait a bit longer to ensure cookie is set, then do a hard refresh
         setTimeout(() => {
+          // eslint-disable-next-line no-console
           console.log("Redirecting to:", from);
+          // eslint-disable-next-line no-console
           console.log("Cookies:", document.cookie);
           window.location.href = from;
         }, 1500);

@@ -47,7 +47,15 @@ type Dependencies = {
   queueManager: QueueManager;
 };
 
-export async function server({ logger, redis, drizzle, storage, pubsub, scheduler, queueManager }: Dependencies) {
+export async function server({
+  logger,
+  redis,
+  drizzle,
+  storage,
+  pubsub,
+  scheduler,
+  queueManager,
+}: Dependencies) {
   logger.info("Configuring Safee Analytics API server");
 
   const app: Application = express();
@@ -217,7 +225,7 @@ export async function server({ logger, redis, drizzle, storage, pubsub, schedule
         },
       },
     }),
-    bullBoardAdapter.getRouter(),
+    bullBoardAdapter.getRouter() as never,
   );
   logger.info("Bull Board mounted at /admin/queues");
 

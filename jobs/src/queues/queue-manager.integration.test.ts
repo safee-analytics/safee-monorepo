@@ -48,7 +48,11 @@ describe("QueueManager Integration Tests", () => {
 
   describe("Dual Persistence", () => {
     it("creates job in both PostgreSQL and BullMQ", async () => {
-      const result = await queueManager.addJob("email-jobs", { type: "send_email", test: "data" }, { priority: "high" });
+      const result = await queueManager.addJob(
+        "email-jobs",
+        { type: "send_email", test: "data" },
+        { priority: "high" },
+      );
 
       // Verify PostgreSQL record
       expect(result.pgJobId).toBeTruthy();
@@ -279,11 +283,13 @@ describe("QueueManager Integration Tests", () => {
 
   describe("Error Handling", () => {
     it("throws error for unknown job name", async () => {
-      await expect(queueManager.addJobByName("unknown_job" as any, {})).rejects.toThrow(/Unknown job name/);
+      await expect(queueManager.addJobByName("unknown_job" as never, {})).rejects.toThrow(/Unknown job name/);
     });
 
     it("throws error for unknown queue name", async () => {
-      await expect(queueManager.addJob("unknown-queue" as any, {})).rejects.toThrow(/Queue unknown-queue not found/);
+      await expect(queueManager.addJob("unknown-queue" as never, {})).rejects.toThrow(
+        /Queue unknown-queue not found/,
+      );
     });
 
     it("handles BullMQ connection errors gracefully", async () => {

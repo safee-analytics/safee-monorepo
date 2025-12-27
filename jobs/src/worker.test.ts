@@ -1,16 +1,27 @@
 import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
-import { Queue, Worker } from "bullmq";
 import { Redis } from "ioredis";
 import { pino } from "pino";
 import { connectTest, nukeDatabase } from "@safee/database/test-helpers";
 import { createJob, getJobById, EmailService } from "@safee/database";
 import type { DrizzleClient, DbDeps } from "@safee/database";
 
+interface EmailAddress {
+  email: string;
+  name?: string;
+}
+
+interface EmailMessage {
+  to: EmailAddress[];
+  from: EmailAddress;
+  subject: string;
+  html: string;
+  text?: string;
+}
+
 describe("Job Worker Integration Tests", () => {
   let drizzle: DrizzleClient;
   let closeDb: () => Promise<void>;
   let redis: Redis;
-  let testQueue: Queue;
   const logger = pino({ level: "silent" });
   let deps: DbDeps;
 
@@ -37,13 +48,13 @@ describe("Job Worker Integration Tests", () => {
   describe("send_email job", () => {
     it("processes send_email job successfully with direct content", async () => {
       // Create a mock email provider that tracks calls
-      const sentEmails: any[] = [];
+      const sentEmails: EmailMessage[] = [];
       const mockEmailProvider = {
-        sendEmail: async (message: any) => {
+        sendEmail: async (message: EmailMessage) => {
           sentEmails.push(message);
           return {
             messageId: "test-message-id",
-            accepted: message.to.map((addr: any) => addr.email),
+            accepted: message.to.map((addr) => addr.email),
             rejected: [],
           };
         },
@@ -82,13 +93,13 @@ describe("Job Worker Integration Tests", () => {
     });
 
     it("processes send_email job with template rendering", async () => {
-      const sentEmails: any[] = [];
+      const sentEmails: EmailMessage[] = [];
       const mockEmailProvider = {
-        sendEmail: async (message: any) => {
+        sendEmail: async (message: EmailMessage) => {
           sentEmails.push(message);
           return {
             messageId: "test-message-id",
-            accepted: message.to.map((addr: any) => addr.email),
+            accepted: message.to.map((addr) => addr.email),
             rejected: [],
           };
         },
@@ -108,18 +119,18 @@ describe("Job Worker Integration Tests", () => {
         type: "send_email",
         to: [{ email: "test@example.com", name: "Test User" }],
         template: {
-          name: "welcome",
+          name: "welcome" as const,
           variables: {
             userName: "John Doe",
             companyName: "Acme Corp",
             loginUrl: "https://example.com/login",
           },
         },
-        locale: "en",
+        locale: "en" as const,
       };
 
-      const rendered = renderTemplate(jobData.template.name as any, {
-        locale: jobData.locale as any,
+      const rendered = renderTemplate(jobData.template.name, {
+        locale: jobData.locale,
         variables: jobData.template.variables,
       });
 
@@ -157,7 +168,9 @@ describe("Job Worker Integration Tests", () => {
         // Missing both template and subject/content
       };
 
-      expect(() => SendEmailJobSchema.parse(invalidJobData)).toThrow(/Must provide either template or subject/);
+      expect(() => SendEmailJobSchema.parse(invalidJobData)).toThrow(
+        /Must provide either template or subject/,
+      );
     });
   });
 

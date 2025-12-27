@@ -130,7 +130,7 @@ export type ReportsJob = z.infer<typeof ReportsJobSchema>;
 
 // Email Jobs Queue (transactional emails)
 const EmailAddressSchema = z.object({
-  email: z.string().email(),
+  email: z.email(),
   name: z.string().optional(),
 });
 
@@ -161,7 +161,7 @@ export const SendEmailJobSchema = z
     locale: z.enum(["en", "ar"]).default("en"),
     organizationId: z.uuid().optional(),
   })
-  .refine((data) => data.template || (data.subject && (data.html || data.text)), {
+  .refine((data) => data.template ?? (data.subject && (data.html ?? data.text)), {
     message: "Must provide either template or subject+content",
   });
 export type SendEmailJob = z.infer<typeof SendEmailJobSchema>;

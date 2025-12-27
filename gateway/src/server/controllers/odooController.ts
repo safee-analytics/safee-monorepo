@@ -1,5 +1,5 @@
-import { odoo, createJob } from "@safee/database";
-import { getQueueManager } from "../serverContext.js";
+import { odoo } from "@safee/database";
+import { getQueueManager, getServerContext } from "../serverContext.js";
 import {
   Controller,
   Get,
@@ -23,7 +23,6 @@ import { getOdooDevCredentials as getOdooDevCredentialsOp } from "../operations/
 import { installOdooModules as installOdooModulesOp } from "../operations/installOdooModules.js";
 import { getOdooModelFields as getOdooModelFieldsOp } from "../operations/getOdooModelFields.js";
 import { getOdooDatabaseInfo as getOdooDatabaseInfoOp } from "../operations/getOdooDatabaseInfo.js";
-import { getServerContext } from "../serverContext.js";
 import { ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.js";
 
 enum OdooLanguage {
@@ -177,29 +176,9 @@ export class OdooController extends Controller {
       });
     }
 
-    // Create PostgreSQL job entry first for tracking
-    const ctx = getServerContext();
-    const pgJob = await createJob(
-      { drizzle: ctx.drizzle, logger: ctx.logger },
-      {
-        jobName: "odoo_provisioning",
-        organizationId,
-        status: "pending",
-        type: "immediate",
-        priority: "high",
-        payload: {
-          lang: body?.lang,
-          demo: body?.demo,
-          countryCode: body?.countryCode,
-          phone: body?.phone,
-          timeoutMs: body?.timeoutMs,
-        },
-        maxRetries: 3,
-      },
-    );
-
     // Queue entire provisioning process as background job (database creation + module installation)
     // This will take 5-20 minutes total
+    // Note: queueManager.addJobByName() will create the PostgreSQL job entry internally
     const queueManager = getQueueManager();
     const provisioningJob = await queueManager.addJobByName(
       "odoo_provisioning",

@@ -24,7 +24,15 @@ async function main() {
     queueManager,
   });
 
-  const { httpServer, wsService } = await startServer({ logger, drizzle, redis, storage, pubsub, scheduler, queueManager });
+  const { httpServer, wsService } = await startServer({
+    logger,
+    drizzle,
+    redis,
+    storage,
+    pubsub,
+    scheduler,
+    queueManager,
+  });
 
   return async () => {
     logger.info("Cleaning up resources");

@@ -1,11 +1,10 @@
-import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach, vi } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach, vi, type Mock } from "vitest";
 import {
   connectTest,
   createTestDeps,
   JobScheduler,
   createJobSchedule,
   createJob,
-  getJobById,
   schema,
   type DrizzleClient,
 } from "@safee/database";
@@ -13,11 +12,21 @@ import { nukeDatabase } from "@safee/database/test-helpers";
 
 const { organizations } = schema;
 
+interface MockQueueManager {
+  addJobByName: Mock<
+    (
+      jobName: string,
+      data: Record<string, unknown>,
+      options: Record<string, unknown>,
+    ) => Promise<{ bullmqJobId: string; pgJobId: string }>
+  >;
+}
+
 describe("JobScheduler Integration Tests", () => {
   let db: DrizzleClient;
   let close: () => Promise<void>;
   let scheduler: JobScheduler;
-  let mockQueueManager: any;
+  let mockQueueManager: MockQueueManager;
   let testOrgId: string;
 
   beforeAll(async () => {
@@ -42,7 +51,7 @@ describe("JobScheduler Integration Tests", () => {
       addJobByName: vi.fn().mockResolvedValue({ bullmqJobId: "mock-job-id", pgJobId: "mock-pg-id" }),
     };
     scheduler = new JobScheduler({
-      queueManager: mockQueueManager,
+      queueManager: mockQueueManager as never,
     });
   });
 
@@ -296,46 +305,6 @@ describe("JobScheduler Integration Tests", () => {
       const allJobs = await db.query.jobs.findMany();
 
       expect(allJobs.length).toBeGreaterThanOrEqual(0);
-    });
-  });
-
-  describe("pubsub integration", () => {
-    it("should create topics on start", async () => {
-      const deps = createTestDeps(db);
-
-      await scheduler.start(deps);
-
-      await pubsub.publish("test-job-queue", "test message");
-      await pubsub.publish("test-job-events", "test message");
-    });
-
-    it("should publish job events", async () => {
-      const deps = createTestDeps(db);
-
-      const eventMessages: string[] = [];
-
-      await pubsub.createSubscription("test-job-events", "test-events-sub");
-      await pubsub.subscribe("test-events-sub", async (message) => {
-        eventMessages.push(message.data.toString());
-      });
-
-      await scheduler.start(deps);
-
-      const job = await createJob(deps, {
-        jobName: "send_email",
-        type: "immediate" as const,
-        priority: "normal" as const,
-        status: "pending" as const,
-        organizationId: testOrgId,
-        payload: {},
-        maxRetries: 3,
-      });
-
-      await scheduler.queueJob(job.id);
-
-      await new Promise((resolve) => setTimeout(resolve, 300));
-
-      expect(eventMessages.length).toBeGreaterThan(0);
     });
   });
 

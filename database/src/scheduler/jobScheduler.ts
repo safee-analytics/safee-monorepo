@@ -2,7 +2,7 @@ import { eq, and, isNotNull } from "drizzle-orm";
 import { CronJob } from "cron";
 import type { DbDeps } from "../deps.js";
 import { jobSchedules, type JobName } from "../drizzle/index.js";
-import { createJob, updateJobStatus } from "../jobs/jobs.js";
+import { createJob } from "../jobs/jobs.js";
 import { logJobEvent } from "../jobs/auditEvents.js";
 import { logger } from "../logger.js";
 

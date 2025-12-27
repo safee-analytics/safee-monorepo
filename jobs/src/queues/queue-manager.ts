@@ -193,7 +193,7 @@ export class QueueManager {
         queueName = "key-rotation";
         break;
       default:
-        throw new Error(`Unknown job name: ${jobName}`);
+        throw new Error(`Unknown job name: ${jobName as string}`);
     }
 
     return this.addJob(queueName, data, options);

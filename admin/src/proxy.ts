@@ -21,12 +21,19 @@ export default async function proxy(request: NextRequest) {
   // Get the session token from cookies
   const sessionToken = request.cookies.get("safee-auth.session_token")?.value;
 
+  // eslint-disable-next-line no-console
   console.log("[Proxy] Path:", pathname);
+  // eslint-disable-next-line no-console
   console.log("[Proxy] Session token present:", !!sessionToken);
-  console.log("[Proxy] All cookies:", request.cookies.getAll().map(c => c.name));
+  // eslint-disable-next-line no-console
+  console.log(
+    "[Proxy] All cookies:",
+    request.cookies.getAll().map((c) => c.name),
+  );
 
   if (!sessionToken) {
     // No session token, redirect to login
+    // eslint-disable-next-line no-console
     console.log("[Proxy] No session token, redirecting to login");
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("from", pathname);

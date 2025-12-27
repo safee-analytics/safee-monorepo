@@ -42,13 +42,13 @@ describe.sequential("Worker End-to-End Integration Tests", () => {
       const testQueue = new Queue("email-jobs", { connection: redis });
 
       // Track processed jobs
-      const processedJobs: any[] = [];
+      const processedJobs: Record<string, unknown>[] = [];
 
       // Create a test worker
       const worker = new Worker(
         "email-jobs",
         async (job) => {
-          processedJobs.push(job.data);
+          processedJobs.push(job.data as Record<string, unknown>);
 
           // Simulate the actual processor logic
           const JobDataSchema = z.object({ type: z.string() }).catchall(z.unknown());
@@ -102,7 +102,7 @@ describe.sequential("Worker End-to-End Integration Tests", () => {
 
       // Verify job was processed
       expect(processedJobs.length).toBe(1);
-      expect(processedJobs[0].type).toBe("send_email");
+      expect(processedJobs[0]?.type).toBe("send_email");
 
       // Verify PostgreSQL job status
       const updatedJob = await getJobById(deps, pgJob.id);
@@ -202,7 +202,11 @@ describe.sequential("Worker End-to-End Integration Tests", () => {
         payload: { type: "send_email" },
       });
 
-      await analyticsQueue.add("analytics", { type: "calculate_dashboard_metrics" }, { jobId: analyticsJob.id });
+      await analyticsQueue.add(
+        "analytics",
+        { type: "calculate_dashboard_metrics" },
+        { jobId: analyticsJob.id },
+      );
 
       await emailQueue.add("email-jobs", { type: "send_email" }, { jobId: emailJob.id });
 
@@ -250,16 +254,24 @@ describe.sequential("Worker End-to-End Integration Tests", () => {
       });
 
       // Add normal priority job first
-      await testQueue.add("email-jobs", { type: "send_email", priority: "normal" }, { jobId: normalJob.id, priority: 5 });
+      await testQueue.add(
+        "email-jobs",
+        { type: "send_email", priority: "normal" },
+        { jobId: normalJob.id, priority: 5 },
+      );
 
       // Add high priority job second (should be processed first)
-      await testQueue.add("email-jobs", { type: "send_email", priority: "high" }, { jobId: highJob.id, priority: 3 });
+      await testQueue.add(
+        "email-jobs",
+        { type: "send_email", priority: "high" },
+        { jobId: highJob.id, priority: 3 },
+      );
 
       // Now create worker - it will process high priority first
       const worker = new Worker(
         "email-jobs",
         async (job) => {
-          processOrder.push(job.data.priority);
+          processOrder.push((job.data as Record<string, unknown>).priority as string);
           await startJob(deps, job.id!);
           await completeJob(deps, job.id!, { completedAt: new Date().toISOString(), jobType: "email" });
           // Add small delay to ensure sequential processing
@@ -353,7 +365,7 @@ describe.sequential("Worker End-to-End Integration Tests", () => {
       const worker1 = new Worker(
         "email-jobs",
         async (job) => {
-          queue1Jobs.push(job.data.type);
+          queue1Jobs.push((job.data as Record<string, unknown>).type as string);
           await startJob(deps, job.id!);
           await completeJob(deps, job.id!, { completedAt: new Date().toISOString(), jobType: "email" });
         },
@@ -363,7 +375,7 @@ describe.sequential("Worker End-to-End Integration Tests", () => {
       const worker2 = new Worker(
         "analytics",
         async (job) => {
-          queue2Jobs.push(job.data.type);
+          queue2Jobs.push((job.data as Record<string, unknown>).type as string);
           await startJob(deps, job.id!);
           await completeJob(deps, job.id!, { completedAt: new Date().toISOString(), jobType: "analytics" });
         },
