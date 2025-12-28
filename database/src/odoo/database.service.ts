@@ -488,7 +488,7 @@ export class OdooDatabaseService {
         "✅ Company information updated successfully",
       );
 
-      // Save database credentials before module installation
+      // Save database credentials to database
       const encryptedPassword = this.encryptionService.encrypt(adminPassword);
 
       await this.drizzle.insert(schema.odooDatabases).values({
@@ -499,16 +499,12 @@ export class OdooDatabaseService {
         odooUrl: this.odooConfig.url,
       });
 
-      // Install essential modules (core business + safee + API framework)
-      // This takes 5-7 minutes but is necessary for basic functionality
-      await this.installEssentialModules(databaseName, adminLogin, adminPassword, organizationId);
-
       this.logger.info(
-        { organizationId, databaseName, provisioningTime: "~5-7 minutes (base + essential modules)" },
-        "✅ Odoo database provisioned successfully - extended modules will install in background",
+        { organizationId, databaseName, provisioningTime: "~2 minutes (database created with base modules)" },
+        "✅ Odoo database created successfully - all modules will install in background job",
       );
 
-      // Note: Extended OCA modules will be installed via background job
+      // Note: ALL modules (essential + extended) will be installed via background job
       // queued in the controller after this method returns
 
       return {
@@ -925,7 +921,7 @@ export class OdooDatabaseService {
   }
 
   /**
-   * Background job entry point: Install extended modules only
+   * Background job entry point: Install ALL modules (essential + extended)
    * Called after initial provisioning completes
    */
   async installModulesForOrganization(organizationId: string): Promise<void> {
@@ -935,11 +931,33 @@ export class OdooDatabaseService {
       throw new OdooDatabaseNotFound(organizationId);
     }
 
+    // Install essential modules first (core business + safee + API framework)
+    this.logger.info(
+      { organizationId, databaseName: credentials.databaseName },
+      "Installing essential modules in background job",
+    );
+    await this.installEssentialModules(
+      credentials.databaseName,
+      credentials.adminLogin,
+      credentials.adminPassword,
+      organizationId,
+    );
+
+    // Then install extended OCA modules
+    this.logger.info(
+      { organizationId, databaseName: credentials.databaseName },
+      "Installing extended OCA modules in background job",
+    );
     await this.installExtendedModules(
       credentials.databaseName,
       credentials.adminLogin,
       credentials.adminPassword,
       organizationId,
+    );
+
+    this.logger.info(
+      { organizationId, databaseName: credentials.databaseName },
+      "✅ All modules (essential + extended) installed successfully",
     );
   }
 }
