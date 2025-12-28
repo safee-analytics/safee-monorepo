@@ -119,6 +119,9 @@ export class QueueManager {
     );
 
     // 2. Add to BullMQ with PostgreSQL job ID as reference
+    // Add 'type' field to payload for worker validation
+    const payloadWithType = { ...data, type: jobName };
+
     // Map priority to BullMQ numeric priority (lower = higher priority)
     let bullmqPriority = 5; // default
     if (options.priority === "critical") {
@@ -127,7 +130,7 @@ export class QueueManager {
       bullmqPriority = 3;
     }
 
-    const bullmqJob = await queue.add(queueName, data, {
+    const bullmqJob = await queue.add(queueName, payloadWithType, {
       priority: bullmqPriority,
       jobId: pgJob.id, // Use PostgreSQL ID as BullMQ job ID for correlation
     });

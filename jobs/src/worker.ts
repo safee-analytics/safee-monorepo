@@ -97,6 +97,7 @@ const jobProcessors = {
 
   encrypt_file: async (payload: Record<string, unknown>) => {
     logger.info({ payload }, "Processing encrypt_file job");
+    logger.warn({ payload }, "encrypt_file job not yet implemented - skipping");
     // TODO: Implement file encryption
     // - Fetch file from storage
     // - Encrypt using organization's key
@@ -107,6 +108,10 @@ const jobProcessors = {
   rotate_encryption_key: async (payload: Record<string, unknown>) => {
     const data = RotateEncryptionKeyJobSchema.parse(payload);
     logger.info({ payload: data }, "rotate_encryption_key job called (stubbed - not implemented)");
+    logger.warn(
+      { organizationId: data.organizationId, rotatedBy: data.rotatedBy },
+      "rotate_encryption_key not yet implemented - skipping",
+    );
     // TODO: Implement key rotation logic
     // 1. Generate new encryption key
     // 2. Deactivate old key, insert new key
@@ -115,6 +120,7 @@ const jobProcessors = {
 
   reencrypt_files: async (payload: Record<string, unknown>) => {
     logger.info({ payload }, "Processing reencrypt_files job");
+    logger.warn({ payload }, "reencrypt_files job not yet implemented - skipping");
     // TODO: Implement file re-encryption
     // - Fetch all files for organization
     // - Decrypt with old key
@@ -125,7 +131,11 @@ const jobProcessors = {
   // NEW - Job types from BullMQ migration
   calculate_analytics: async (payload: Record<string, unknown>) => {
     const data = AnalyticsJobSchema.parse(payload);
-    logger.info({ payload: data }, "Processing calculate_analytics job");
+    logger.info(
+      { type: data.type, organizationId: data.organizationId },
+      "Processing calculate_analytics job",
+    );
+    logger.warn({ type: data.type }, "calculate_analytics job not yet implemented - skipping");
     // TODO: Implementation based on data.type
     // - calculate_dashboard_metrics: Aggregate dashboard stats
     // - aggregate_case_statistics: Calculate case metrics
@@ -134,7 +144,8 @@ const jobProcessors = {
 
   send_bulk_email: async (payload: Record<string, unknown>) => {
     const data = EmailJobSchema.parse(payload);
-    logger.info({ payload: data }, "Processing send_bulk_email job");
+    logger.info({ type: data.type, organizationId: data.organizationId }, "Processing send_bulk_email job");
+    logger.warn({ type: data.type }, "send_bulk_email job not yet implemented - skipping");
     // TODO: Implementation based on data.type
     // - send_transactional: Single email with template
     // - send_notification: User notification email
@@ -143,7 +154,11 @@ const jobProcessors = {
 
   sync_odoo: async (payload: Record<string, unknown>) => {
     const data = OdooSyncJobSchema.parse(payload);
-    logger.info({ payload: data }, "Processing sync_odoo job");
+    logger.info(
+      { type: data.type, organizationId: data.organizationId, direction: data.direction },
+      "Processing sync_odoo job",
+    );
+    logger.warn({ type: data.type }, "sync_odoo job not yet implemented - skipping");
     // TODO: Implementation based on data.type
     // - sync_employee: Bidirectional employee sync
     // - sync_invoice: Invoice sync to/from Odoo
@@ -153,7 +168,8 @@ const jobProcessors = {
 
   generate_report: async (payload: Record<string, unknown>) => {
     const data = ReportsJobSchema.parse(payload);
-    logger.info({ payload: data }, "Processing generate_report job");
+    logger.info({ type: data.type, organizationId: data.organizationId }, "Processing generate_report job");
+    logger.warn({ type: data.type }, "generate_report job not yet implemented - skipping");
     // TODO: Implementation based on data.type
     // - generate_pdf: Create PDF report
     // - generate_excel: Create Excel workbook
@@ -171,13 +187,15 @@ const jobProcessors = {
     };
     logger.info(
       { organizationId, lang, demo, countryCode, phone, timeoutMs },
-      "Processing odoo_provisioning job",
+      "Starting odoo_provisioning job",
     );
 
     // Get Redis client from database package
+    logger.info({ organizationId }, "Connecting to Redis");
     const redis = await redisConnect();
 
     // Create Odoo database service with all required dependencies
+    logger.info({ organizationId, odooUrl: ODOO_URL }, "Initializing Odoo database service");
     const odooDatabaseService = new odoo.OdooDatabaseService({
       logger,
       drizzle,
@@ -191,6 +209,7 @@ const jobProcessors = {
       },
     });
 
+    logger.info({ organizationId }, "Provisioning Odoo database");
     await odooDatabaseService.provisionDatabase(organizationId, {
       lang,
       demo,
@@ -198,15 +217,18 @@ const jobProcessors = {
       phone,
       timeoutMs,
     });
+    logger.info({ organizationId }, "✅ Odoo database provisioned successfully");
   },
   install_odoo_modules: async (payload: Record<string, unknown>) => {
     const { organizationId } = payload as { organizationId: string };
-    logger.info({ organizationId }, "Processing install_odoo_modules job (background)");
+    logger.info({ organizationId }, "Starting install_odoo_modules job (background)");
 
     // Get Redis client from database package
+    logger.info({ organizationId }, "Connecting to Redis");
     const redis = await redisConnect();
 
     // Create Odoo database service with all required dependencies
+    logger.info({ organizationId, odooUrl: ODOO_URL }, "Initializing Odoo database service");
     const odooDatabaseService = new odoo.OdooDatabaseService({
       logger,
       drizzle,
@@ -233,19 +255,26 @@ const jobProcessors = {
  * Unified job processor for all BullMQ queues
  */
 async function processJob(job: Job): Promise<void> {
+  const startTime = Date.now();
+  logger.info(
+    { jobId: job.id, queue: job.queueName, attemptsMade: job.attemptsMade },
+    "Received job from BullMQ",
+  );
+
   // Validate basic job structure with Zod
   const jobData = JobDataSchema.parse(job.data);
 
-  logger.info({ jobId: job.id, data: jobData }, "Processing job from BullMQ");
+  logger.info({ jobId: job.id, type: jobData.type, queue: job.queueName }, "Job data validated");
 
   // Update PostgreSQL job status to running
+  logger.info({ jobId: job.id }, "Marking job as running in PostgreSQL");
   await startJob({ drizzle, logger }, job.id!);
 
   try {
     const jobType = jobData.type;
     const jobName = job.name;
 
-    logger.info({ jobId: job.id, jobName, jobType }, "Executing job processor");
+    logger.info({ jobId: job.id, jobName, jobType, queue: job.queueName }, "Executing job processor");
 
     // Find the appropriate processor based on queue name using type-safe switch
     let processor: (payload: Record<string, unknown>) => Promise<void>;
@@ -280,20 +309,42 @@ async function processJob(job: Job): Promise<void> {
     }
 
     // Execute job processor (further Zod validation happens inside each processor)
+    logger.info({ jobId: job.id, processor: jobName }, "Starting job processor execution");
     await processor(jobData);
 
+    const duration = Date.now() - startTime;
+    logger.info({ jobId: job.id, durationMs: duration }, "Job processor completed successfully");
+
     // Mark as completed in PostgreSQL
+    logger.info({ jobId: job.id }, "Marking job as completed in PostgreSQL");
     await completeJob({ drizzle, logger }, job.id!, {
       completedAt: new Date().toISOString(),
       jobType,
     });
 
-    logger.info({ jobId: job.id }, "Job completed successfully");
+    logger.info(
+      { jobId: job.id, durationMs: duration, queue: job.queueName },
+      "✅ Job completed successfully",
+    );
   } catch (err: unknown) {
+    const duration = Date.now() - startTime;
     const errorMessage = err instanceof Error ? err.message : String(err);
-    logger.error({ jobId: job.id, error: errorMessage }, "Job failed");
+    const errorStack = err instanceof Error ? err.stack : undefined;
+
+    logger.error(
+      {
+        jobId: job.id,
+        error: errorMessage,
+        stack: errorStack,
+        durationMs: duration,
+        attemptsMade: job.attemptsMade,
+        queue: job.queueName,
+      },
+      "❌ Job failed",
+    );
 
     // Mark as failed in PostgreSQL (BullMQ will handle retries)
+    logger.info({ jobId: job.id }, "Marking job as failed in PostgreSQL");
     await failJob({ drizzle, logger }, job.id!, errorMessage, true);
 
     throw err; // Re-throw so BullMQ knows it failed

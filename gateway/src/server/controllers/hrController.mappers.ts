@@ -20,8 +20,8 @@ import type {
   LeaveAllocationResponse,
   PayslipResponse,
   PayslipLineResponse,
-} from "./hrController.types.js";
-import type { OdooRelation } from "./shared.types.js";
+  OdooRelation,
+} from "../dtos/hr.js";
 
 function mapRelation(tuple: [number, string] | undefined): OdooRelation | undefined {
   if (!tuple) return undefined;
