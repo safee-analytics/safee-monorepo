@@ -31,7 +31,7 @@ import type {
   CreateContactRequest,
   UpdateContactRequest,
   CreateActivityRequest,
-} from "./crmController.types.js";
+} from "../dtos/crm.js";
 import {
   mapLead,
   mapStage,

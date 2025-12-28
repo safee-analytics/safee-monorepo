@@ -1,4 +1,5 @@
-import type { OdooRelation } from "./shared.types.js";
+// CRM Controller DTOs - Odoo API Types
+import type { OdooRelation } from "./shared.js";
 
 export interface LeadResponse {
   id: number;
@@ -167,8 +168,6 @@ export interface UpdateContactRequest {
   zip?: string;
 }
 
-export { OdooRelation };
-
 export interface CreateActivityRequest {
   leadId: number;
   activityTypeId: number;
@@ -177,3 +176,5 @@ export interface CreateActivityRequest {
   dateDeadline: string;
   userId?: number;
 }
+
+export { OdooRelation };

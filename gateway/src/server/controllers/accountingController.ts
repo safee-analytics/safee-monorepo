@@ -13,7 +13,7 @@ import {
   OperationId,
   Request,
 } from "tsoa";
-import type { Invoice, InvoiceCreateRequest } from "../types/invoice.js";
+import type { Invoice, InvoiceCreateRequest } from "../dtos/invoice.js";
 import { odoo } from "@safee/database";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import type { CreatePaymentDTO, AccountBalanceQuery, PartnerLedgerQuery } from "../dtos/accounting.js";
@@ -26,7 +26,7 @@ import type {
   AccountBalanceReportResponse,
   PartnerLedgerReportResponse,
   ProfitLossResponse,
-} from "../types/hisabiq.js";
+} from "../dtos/hisabiq.js";
 import { DocumentTemplateService } from "../services/documentTemplate.service.js";
 import { getServerContext } from "../serverContext.js";
 

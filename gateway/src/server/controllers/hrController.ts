@@ -12,7 +12,7 @@ import type {
   LeaveAllocationResponse,
   PayslipResponse,
   PayslipLineResponse,
-} from "./hrController.types.js";
+} from "../dtos/hr.js";
 import {
   mapEmployee,
   mapDepartment,

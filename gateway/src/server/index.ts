@@ -3,14 +3,12 @@ import cors from "cors";
 import helmet from "helmet";
 import { config as dotenvConfig } from "dotenv";
 import { serve as swaggerServe, setup as swaggerSetup } from "swagger-ui-express";
-import session from "express-session";
 import { pinoHttp } from "pino-http";
 import type { Logger } from "pino";
 import { ValidateError } from "tsoa";
 
 import type { RedisClient, DrizzleClient, Storage, PubSub, JobScheduler } from "@safee/database";
 import type { QueueManager } from "@safee/jobs";
-import { SessionStore } from "./SessionStore.js";
 import { RegisterRoutes } from "./routes.js";
 import { localeMiddleware } from "./middleware/localeMiddleware.js";
 import { loggingMiddleware } from "./middleware/logging.js";
@@ -20,7 +18,6 @@ import swaggerDocument from "./swagger.json" with { type: "json" };
 import { initServerContext } from "./serverContext.js";
 import { odoo } from "@safee/database";
 import { ODOO_URL, ODOO_PORT, JWT_SECRET } from "../env.js";
-import { hoursToMilliseconds } from "date-fns";
 import { toNodeHandler } from "better-auth/node";
 import { auth } from "../auth/index.js";
 import { mergeBetterAuthSpec } from "./mergeOpenApiSpecs.js";
@@ -157,28 +154,6 @@ export async function server({
       }
       next();
     });
-  }
-
-  logger.info("Cookie authorization: %s", COOKIE_KEY ? "Enabled" : "Disabled");
-  if (COOKIE_KEY) {
-    app.use(
-      session({
-        secret: [COOKIE_KEY],
-        resave: true,
-        rolling: false,
-        name: "safee-session",
-        unset: "destroy",
-        saveUninitialized: false,
-        cookie: {
-          maxAge: hoursToMilliseconds(24),
-          httpOnly: true,
-          signed: true,
-          secure: !IS_LOCAL,
-          sameSite: IS_LOCAL ? "lax" : "none",
-        },
-        store: new SessionStore(redis),
-      }),
-    );
   }
 
   app.use(loggingMiddleware(logger as unknown as Logger));

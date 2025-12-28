@@ -1,4 +1,7 @@
-import type { OdooRelation } from "./shared.types.js";
+// HR Controller DTOs - Odoo API Response Types
+import type { OdooRelation } from "./shared.js";
+
+export { OdooRelation };
 
 export interface EmployeeResponse {
   id: number;

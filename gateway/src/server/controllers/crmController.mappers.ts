@@ -12,8 +12,8 @@ import type {
   ActivityResponse,
   TeamResponse,
   LostReasonResponse,
-} from "./crmController.types.js";
-import type { OdooRelation } from "./shared.types.js";
+  OdooRelation,
+} from "../dtos/crm.js";
 
 function mapRelation(tuple: [number, string] | undefined): OdooRelation | undefined {
   if (!tuple) return undefined;
