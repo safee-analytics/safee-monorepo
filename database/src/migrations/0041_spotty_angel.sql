@@ -53,56 +53,56 @@ CREATE INDEX "resource_assignments_org_idx" ON "identity"."resource_assignments"
 -- Insert default global module access rules (organizationId = NULL means global default)
 -- Owner and Admin: Full access to all modules
 INSERT INTO identity.module_access_rules (organization_id, module_key, role, has_access) VALUES
-  (NULL, 'hisabiq', 'owner', true),
-  (NULL, 'kanz', 'owner', true),
-  (NULL, 'nisbah', 'owner', true),
+  (NULL, 'accounting', 'owner', true),
+  (NULL, 'hr', 'owner', true),
+  (NULL, 'crm', 'owner', true),
   (NULL, 'audit', 'owner', true),
-  (NULL, 'hisabiq', 'admin', true),
-  (NULL, 'kanz', 'admin', true),
-  (NULL, 'nisbah', 'admin', true),
+  (NULL, 'accounting', 'admin', true),
+  (NULL, 'hr', 'admin', true),
+  (NULL, 'crm', 'admin', true),
   (NULL, 'audit', 'admin', true)
 ON CONFLICT DO NOTHING;
 
 -- Audit roles: audit module + HR self-service
 INSERT INTO identity.module_access_rules (organization_id, module_key, role, has_access) VALUES
   (NULL, 'audit', 'audit_manager', true),
-  (NULL, 'kanz', 'audit_manager', true),
+  (NULL, 'hr', 'audit_manager', true),
   (NULL, 'audit', 'senior_auditor', true),
-  (NULL, 'kanz', 'senior_auditor', true),
+  (NULL, 'hr', 'senior_auditor', true),
   (NULL, 'audit', 'auditor', true),
-  (NULL, 'kanz', 'auditor', true)
+  (NULL, 'hr', 'auditor', true)
 ON CONFLICT DO NOTHING;
 
 -- Accounting roles: accounting module + HR self-service
 INSERT INTO identity.module_access_rules (organization_id, module_key, role, has_access) VALUES
-  (NULL, 'hisabiq', 'accounting_manager', true),
-  (NULL, 'kanz', 'accounting_manager', true),
-  (NULL, 'hisabiq', 'senior_accountant', true),
-  (NULL, 'kanz', 'senior_accountant', true),
-  (NULL, 'hisabiq', 'accountant', true),
-  (NULL, 'kanz', 'accountant', true)
+  (NULL, 'accounting', 'accounting_manager', true),
+  (NULL, 'hr', 'accounting_manager', true),
+  (NULL, 'accounting', 'senior_accountant', true),
+  (NULL, 'hr', 'senior_accountant', true),
+  (NULL, 'accounting', 'accountant', true),
+  (NULL, 'hr', 'accountant', true)
 ON CONFLICT DO NOTHING;
 
 -- HR roles: full HR access
 INSERT INTO identity.module_access_rules (organization_id, module_key, role, has_access) VALUES
-  (NULL, 'kanz', 'hr_manager', true),
-  (NULL, 'kanz', 'hr_coordinator', true)
+  (NULL, 'hr', 'hr_manager', true),
+  (NULL, 'hr', 'hr_coordinator', true)
 ON CONFLICT DO NOTHING;
 
 -- Sales/CRM roles: CRM module + HR self-service
 INSERT INTO identity.module_access_rules (organization_id, module_key, role, has_access) VALUES
-  (NULL, 'nisbah', 'sales_manager', true),
-  (NULL, 'kanz', 'sales_manager', true),
-  (NULL, 'nisbah', 'sales_rep', true),
-  (NULL, 'kanz', 'sales_rep', true)
+  (NULL, 'crm', 'sales_manager', true),
+  (NULL, 'hr', 'sales_manager', true),
+  (NULL, 'crm', 'sales_rep', true),
+  (NULL, 'hr', 'sales_rep', true)
 ON CONFLICT DO NOTHING;
 
 -- Generic roles: HR self-service only
 INSERT INTO identity.module_access_rules (organization_id, module_key, role, has_access) VALUES
-  (NULL, 'kanz', 'manager', true),
-  (NULL, 'kanz', 'senior_member', true),
-  (NULL, 'kanz', 'member', true),
-  (NULL, 'kanz', 'viewer', true)
+  (NULL, 'hr', 'manager', true),
+  (NULL, 'hr', 'senior_member', true),
+  (NULL, 'hr', 'member', true),
+  (NULL, 'hr', 'viewer', true)
 ON CONFLICT DO NOTHING;
 
 -- Insert default HR module sections

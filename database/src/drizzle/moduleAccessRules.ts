@@ -25,5 +25,5 @@ export const moduleAccessRules = identitySchema.table(
     index("module_access_org_idx").on(table.organizationId),
     index("module_access_module_idx").on(table.moduleKey),
     index("module_access_role_idx").on(table.role),
-  ]
+  ],
 );

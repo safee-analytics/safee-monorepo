@@ -1,15 +1,7 @@
 import { uuid, varchar, timestamp, unique, index } from "drizzle-orm/pg-core";
-import { identitySchema, idpk } from "./_common.js";
+import { identitySchema, idpk, resourceTypeEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
-
-export const resourceTypeEnum = identitySchema.enum("resource_type", [
-  "audit_case",
-  "accounting_client",
-  "crm_lead",
-  "crm_deal",
-  "hr_department",
-]);
 
 export const resourceAssignments = identitySchema.table(
   "resource_assignments",
@@ -35,5 +27,5 @@ export const resourceAssignments = identitySchema.table(
     index("resource_assignments_user_idx").on(table.userId),
     index("resource_assignments_resource_idx").on(table.resourceType, table.resourceId),
     index("resource_assignments_org_idx").on(table.organizationId),
-  ]
+  ],
 );

@@ -1,7 +1,5 @@
 import { varchar, text, integer, boolean } from "drizzle-orm/pg-core";
-import { hrSchema, idpk } from "./_common.js";
-
-export const hrSectionTypeEnum = hrSchema.enum("section_type", ["self_service", "management"]);
+import { hrSchema, idpk, hrSectionTypeEnum } from "./_common.js";
 
 export const hrModuleSections = hrSchema.table("module_sections", {
   id: idpk("id"),

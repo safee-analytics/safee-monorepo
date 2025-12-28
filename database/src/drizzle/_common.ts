@@ -448,6 +448,8 @@ export type Theme = (typeof themeEnum.enumValues)[number];
 export type ColorScheme = (typeof colorSchemeEnum.enumValues)[number];
 export type FontSize = (typeof fontSizeEnum.enumValues)[number];
 export type Density = (typeof densityEnum.enumValues)[number];
+export type ResourceType = (typeof resourceTypeEnum.enumValues)[number];
+export type HRSectionType = (typeof hrSectionTypeEnum.enumValues)[number];
 
 export const employeeTypeEnum = hrSchema.enum("employee_type", [
   "employee",
