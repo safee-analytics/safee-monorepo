@@ -108,7 +108,10 @@ const jobProcessors = {
   rotate_encryption_key: async (payload: Record<string, unknown>) => {
     const data = RotateEncryptionKeyJobSchema.parse(payload);
     logger.info({ payload: data }, "rotate_encryption_key job called (stubbed - not implemented)");
-    logger.warn({ organizationId: data.organizationId, rotatedBy: data.rotatedBy }, "rotate_encryption_key not yet implemented - skipping");
+    logger.warn(
+      { organizationId: data.organizationId, rotatedBy: data.rotatedBy },
+      "rotate_encryption_key not yet implemented - skipping",
+    );
     // TODO: Implement key rotation logic
     // 1. Generate new encryption key
     // 2. Deactivate old key, insert new key
@@ -128,7 +131,10 @@ const jobProcessors = {
   // NEW - Job types from BullMQ migration
   calculate_analytics: async (payload: Record<string, unknown>) => {
     const data = AnalyticsJobSchema.parse(payload);
-    logger.info({ type: data.type, organizationId: data.organizationId }, "Processing calculate_analytics job");
+    logger.info(
+      { type: data.type, organizationId: data.organizationId },
+      "Processing calculate_analytics job",
+    );
     logger.warn({ type: data.type }, "calculate_analytics job not yet implemented - skipping");
     // TODO: Implementation based on data.type
     // - calculate_dashboard_metrics: Aggregate dashboard stats
@@ -148,7 +154,10 @@ const jobProcessors = {
 
   sync_odoo: async (payload: Record<string, unknown>) => {
     const data = OdooSyncJobSchema.parse(payload);
-    logger.info({ type: data.type, organizationId: data.organizationId, direction: data.direction }, "Processing sync_odoo job");
+    logger.info(
+      { type: data.type, organizationId: data.organizationId, direction: data.direction },
+      "Processing sync_odoo job",
+    );
     logger.warn({ type: data.type }, "sync_odoo job not yet implemented - skipping");
     // TODO: Implementation based on data.type
     // - sync_employee: Bidirectional employee sync
@@ -247,7 +256,10 @@ const jobProcessors = {
  */
 async function processJob(job: Job): Promise<void> {
   const startTime = Date.now();
-  logger.info({ jobId: job.id, queue: job.queueName, attemptsMade: job.attemptsMade }, "Received job from BullMQ");
+  logger.info(
+    { jobId: job.id, queue: job.queueName, attemptsMade: job.attemptsMade },
+    "Received job from BullMQ",
+  );
 
   // Validate basic job structure with Zod
   const jobData = JobDataSchema.parse(job.data);
@@ -310,7 +322,10 @@ async function processJob(job: Job): Promise<void> {
       jobType,
     });
 
-    logger.info({ jobId: job.id, durationMs: duration, queue: job.queueName }, "✅ Job completed successfully");
+    logger.info(
+      { jobId: job.id, durationMs: duration, queue: job.queueName },
+      "✅ Job completed successfully",
+    );
   } catch (err: unknown) {
     const duration = Date.now() - startTime;
     const errorMessage = err instanceof Error ? err.message : String(err);
@@ -323,9 +338,9 @@ async function processJob(job: Job): Promise<void> {
         stack: errorStack,
         durationMs: duration,
         attemptsMade: job.attemptsMade,
-        queue: job.queueName
+        queue: job.queueName,
       },
-      "❌ Job failed"
+      "❌ Job failed",
     );
 
     // Mark as failed in PostgreSQL (BullMQ will handle retries)

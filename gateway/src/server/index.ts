@@ -31,7 +31,6 @@ dotenvConfig();
 const HOST = process.env.HOST ?? "localhost";
 const PORT = Number(process.env.PORT) || 3000;
 const IS_LOCAL = process.env.NODE_ENV !== "production";
-const COOKIE_KEY = process.env.COOKIE_KEY;
 const API_SECRET_KEY = process.env.API_SECRET_KEY;
 
 type Dependencies = {
