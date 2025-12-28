@@ -503,6 +503,16 @@ export const payslipLineCategoryEnum = hrSchema.enum("payslip_line_category", [
   "NET",
 ]);
 
+export const hrSectionTypeEnum = hrSchema.enum("section_type", ["self_service", "management"]);
+
+export const resourceTypeEnum = identitySchema.enum("resource_type", [
+  "audit_case",
+  "accounting_client",
+  "crm_lead",
+  "crm_deal",
+  "hr_department",
+]);
+
 export const taxAmountTypeEnum = financeSchema.enum("tax_amount_type", ["percent", "division", "fixed"]);
 
 export const taxScopeEnum = financeSchema.enum("tax_scope", ["sale", "purchase", "none"]);
