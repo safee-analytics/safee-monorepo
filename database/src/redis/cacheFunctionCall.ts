@@ -27,6 +27,7 @@ export async function cacheFunctionCall<T>(
   }
 
   const newRes = await actualFunction();
-  await redis.set(key, JSON.stringify(newRes));
+  // Set 1 hour TTL on cache to prevent unbounded growth with noeviction policy
+  await redis.set(key, JSON.stringify(newRes), { EX: 3600 });
   return newRes;
 }

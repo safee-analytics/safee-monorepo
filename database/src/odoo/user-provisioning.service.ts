@@ -60,51 +60,65 @@ export class OdooUserProvisioningService {
     login: string,
     password: string,
   ): Promise<{ uid: number; sessionId: string; cookies: string[] }> {
-    const response = await fetch(`${this.odooUrl}/web/session/authenticate`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "call",
-        params: {
-          db: databaseName,
-          login,
-          password,
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+
+    try {
+      const response = await fetch(`${this.odooUrl}/web/session/authenticate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        id: null,
-      }),
-    });
+        body: JSON.stringify({
+          jsonrpc: "2.0",
+          method: "call",
+          params: {
+            db: databaseName,
+            login,
+            password,
+          },
+          id: null,
+        }),
+        signal: controller.signal,
+      });
 
-    if (!response.ok) {
-      throw new OperationFailed(`Odoo authentication failed: ${response.status}`);
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        throw new OperationFailed(`Odoo authentication failed: ${response.status}`);
+      }
+
+      const rawData: unknown = await response.json();
+      const parseResult = odooAuthResponseSchema.safeParse(rawData);
+
+      if (!parseResult.success) {
+        throw new OperationFailed(`Invalid Odoo authentication response: ${parseResult.error.message}`);
+      }
+
+      const data = parseResult.data;
+
+      if (data.error) {
+        throw new OperationFailed(`Odoo authentication error: ${JSON.stringify(data.error)}`);
+      }
+
+      if (!data.result?.uid) {
+        throw new OperationFailed("Failed to authenticate with Odoo");
+      }
+
+      const getSetCookie = response.headers.getSetCookie.bind(response.headers);
+      const setCookieHeaders = getSetCookie();
+      const cookies = setCookieHeaders.map((cookie) => cookie.split(";")[0] ?? cookie);
+
+      this.logger.debug({ cookieCount: cookies.length }, "Captured cookies from Odoo user provisioning auth");
+
+      return { uid: data.result.uid, sessionId: data.result.session_id, cookies };
+    } catch (err) {
+      clearTimeout(timeoutId);
+      if (err instanceof Error && err.name === "AbortError") {
+        throw new OperationFailed("Odoo authentication timed out after 30 seconds");
+      }
+      throw err;
     }
-
-    const rawData: unknown = await response.json();
-    const parseResult = odooAuthResponseSchema.safeParse(rawData);
-
-    if (!parseResult.success) {
-      throw new OperationFailed(`Invalid Odoo authentication response: ${parseResult.error.message}`);
-    }
-
-    const data = parseResult.data;
-
-    if (data.error) {
-      throw new OperationFailed(`Odoo authentication error: ${JSON.stringify(data.error)}`);
-    }
-
-    if (!data.result?.uid) {
-      throw new OperationFailed("Failed to authenticate with Odoo");
-    }
-
-    const getSetCookie = response.headers.getSetCookie.bind(response.headers);
-    const setCookieHeaders = getSetCookie();
-    const cookies = setCookieHeaders.map((cookie) => cookie.split(";")[0] ?? cookie);
-
-    this.logger.debug({ cookieCount: cookies.length }, "Captured cookies from Odoo user provisioning auth");
-
-    return { uid: data.result.uid, sessionId: data.result.session_id, cookies };
   }
 
   private isSessionExpiredError(error: unknown): boolean {
@@ -129,6 +143,9 @@ export class OdooUserProvisioningService {
     adminCredentials?: { databaseName: string; adminLogin: string; adminPassword: string },
     retryCount = 0,
   ): Promise<T> {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout for RPC calls
+
     try {
       const cookieHeader = cookies.length > 0 ? cookies.join("; ") : `session_id=${sessionId}`;
 
@@ -149,7 +166,10 @@ export class OdooUserProvisioningService {
           },
           id: null,
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new OperationFailed(`Odoo ${method} failed: ${response.status}`);
@@ -175,6 +195,12 @@ export class OdooUserProvisioningService {
 
       return data.result;
     } catch (err) {
+      clearTimeout(timeoutId);
+
+      if (err instanceof Error && err.name === "AbortError") {
+        throw new OperationFailed(`Odoo ${method} timed out after 60 seconds`);
+      }
+
       if (this.isSessionExpiredError(err) && adminCredentials && retryCount === 0) {
         this.logger.info({ model, method }, "Odoo session expired in user provisioning, re-authenticating");
 
@@ -482,6 +508,9 @@ export class OdooUserProvisioningService {
   ): Promise<string> {
     this.logger.info({ targetUserLogin, keyName }, "Generating API key for Odoo user via HTTP endpoint");
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout for API key generation
+
     try {
       const response = await fetch(`${this.odooUrl}/api/generate_key`, {
         method: "POST",
@@ -500,7 +529,10 @@ export class OdooUserProvisioningService {
             scope: "rpc",
           },
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new OperationFailed(`HTTP ${response.status}: ${response.statusText}`);
@@ -545,6 +577,13 @@ export class OdooUserProvisioningService {
 
       return data.token;
     } catch (err) {
+      clearTimeout(timeoutId);
+
+      if (err instanceof Error && err.name === "AbortError") {
+        this.logger.error({ targetUserLogin, keyName }, "API key generation timed out after 60 seconds");
+        throw new OperationFailed("API key generation timed out after 60 seconds");
+      }
+
       this.logger.error(
         { targetUserLogin, keyName, error: err },
         "Failed to generate API key via HTTP endpoint",
