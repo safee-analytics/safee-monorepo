@@ -61,7 +61,9 @@ export class OdooUserProvisioningService {
     password: string,
   ): Promise<{ uid: number; sessionId: string; cookies: string[] }> {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 30000); // 30s timeout
 
     try {
       const response = await fetch(`${this.odooUrl}/web/session/authenticate`, {
@@ -144,7 +146,9 @@ export class OdooUserProvisioningService {
     retryCount = 0,
   ): Promise<T> {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout for RPC calls
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 60000); // 60s timeout for RPC calls
 
     try {
       const cookieHeader = cookies.length > 0 ? cookies.join("; ") : `session_id=${sessionId}`;
@@ -509,7 +513,9 @@ export class OdooUserProvisioningService {
     this.logger.info({ targetUserLogin, keyName }, "Generating API key for Odoo user via HTTP endpoint");
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000); // 60s timeout for API key generation
+    const timeoutId = setTimeout(() => {
+      controller.abort();
+    }, 60000); // 60s timeout for API key generation
 
     try {
       const response = await fetch(`${this.odooUrl}/api/generate_key`, {
