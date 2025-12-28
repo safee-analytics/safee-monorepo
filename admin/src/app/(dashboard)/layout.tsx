@@ -1,6 +1,9 @@
 import { Sidebar } from "@/components/Sidebar";
+import { requireAuth } from "@/lib/auth-server";
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  await requireAuth();
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
       <Sidebar />

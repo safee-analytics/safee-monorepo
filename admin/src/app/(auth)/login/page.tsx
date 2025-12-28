@@ -29,15 +29,8 @@ function LoginForm() {
       if (error) {
         setError(error.message || "Invalid email or password");
       } else if (data) {
-        // Successfully signed in
         setSuccess(true);
-
-        // Wait a bit longer to ensure cookie is set, then do a hard refresh
         setTimeout(() => {
-          // eslint-disable-next-line no-console
-          console.log("Redirecting to:", from);
-          // eslint-disable-next-line no-console
-          console.log("Cookies:", document.cookie);
           window.location.href = from;
         }, 1500);
       }
