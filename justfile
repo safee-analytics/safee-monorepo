@@ -238,9 +238,8 @@ start-e2e service="" $DATABASE_URL=test_database_url $REDIS_URL="redis://localho
     #!/usr/bin/env bash
     set -euo pipefail
     echo "Starting e2e services..."
-    # Check if odoo submodule is actually populated (not just initialized)
-    # by verifying if the Dockerfile exists
-    if [ "{{service}}" = "odoo" ] && [ -f "odoo/Dockerfile" ]; then
+    # Start Odoo if requested (will pull from ghcr.io if Dockerfile doesn't exist)
+    if [ "{{service}}" = "odoo" ]; then
       echo "Starting with Odoo..."
       docker compose -f e2e/docker-compose.yml --profile odoo up -d --wait postgres redis odoo
     else

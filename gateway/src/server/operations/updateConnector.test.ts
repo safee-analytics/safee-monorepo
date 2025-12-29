@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { type DrizzleClient, schema, eq, odoo } from "@safee/database";
-import { connectTest, nukeDatabase } from "@safee/database/test-helpers";
+import { connectTest, cleanTestData } from "@safee/database/test-helpers";
 import { updateConnector } from "./updateConnector.js";
 const encryptionService = new odoo.EncryptionService(
   process.env.JWT_SECRET ?? "development-encryption-key-change-in-production",
@@ -18,7 +18,7 @@ void describe("updateConnector", async () => {
   });
 
   beforeEach(async () => {
-    await nukeDatabase(drizzle);
+    await cleanTestData(drizzle);
   });
 
   afterAll(async () => {

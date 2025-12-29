@@ -274,10 +274,14 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
         userId: user.id,
         memberRole: member.role,
       })
-      .catch((err) => {
+      .catch((err: unknown) => {
         // If queueing fails, log but don't block org creation
         logger.error(
-          { error: err, userId: user.id, organizationId: organization.id },
+          {
+            error: err instanceof Error ? err.message : String(err),
+            userId: user.id,
+            organizationId: organization.id,
+          },
           "Failed to queue Odoo provisioning job - provisioning will need to be triggered manually",
         );
       });

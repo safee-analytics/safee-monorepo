@@ -150,9 +150,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        with:
-          submodules: true
-          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Install just
         uses: extractions/setup-just@v3
         with: 

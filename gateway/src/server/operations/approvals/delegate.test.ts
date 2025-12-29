@@ -5,7 +5,7 @@ import {
   createTestOrganization,
   createTestUser,
   createTestApprovalWorkflow,
-  nukeDatabase,
+  cleanTestData,
   type TestOrganization,
   type TestUser,
 } from "@safee/database/test-helpers";
@@ -30,7 +30,7 @@ void describe("delegate operation", async () => {
   });
 
   beforeEach(async () => {
-    await nukeDatabase(drizzle);
+    await cleanTestData(drizzle);
 
     testOrg = await createTestOrganization(drizzle);
     testUser = await createTestUser(drizzle, { email: "requester@test.com", name: "Requester" });

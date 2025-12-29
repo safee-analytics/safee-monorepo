@@ -48,13 +48,13 @@ export class HealthController extends Controller {
         accessible: true,
         databaseCount: databases.length,
       };
-    } catch (error) {
+    } catch (err) {
       return {
         status: "error",
         timestamp,
         odooUrl: ODOO_URL,
         accessible: false,
-        error: error instanceof Error ? error.message : String(error),
+        error: err instanceof Error ? err.message : String(err),
       };
     }
   }
