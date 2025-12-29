@@ -3,7 +3,7 @@ import { type DrizzleClient, schema, eq, connectTest } from "../index.js";
 import { pino } from "pino";
 import { createTestOrganization, type TestOrganization } from "../test-helpers/organizations.js";
 import { createTestUser, type TestUser } from "../test-helpers/users.js";
-import { nukeDatabase } from "../test-helpers/cleanup.js";
+import { cleanTestData } from "../test-helpers/cleanup.js";
 import {
   createNotification,
   createNotificationsForUsers,
@@ -32,7 +32,7 @@ describe("Notification Service", async () => {
   });
 
   beforeEach(async () => {
-    await nukeDatabase(drizzle);
+    await cleanTestData(drizzle);
     testOrg = await createTestOrganization(drizzle);
     testUser = await createTestUser(drizzle);
     testUser2 = await createTestUser(drizzle);

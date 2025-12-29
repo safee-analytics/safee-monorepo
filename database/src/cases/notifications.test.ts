@@ -4,7 +4,7 @@ import { pino } from "pino";
 import { randomUUID } from "node:crypto";
 import { createTestOrganization, type TestOrganization } from "../test-helpers/organizations.js";
 import { createTestUser, type TestUser } from "../test-helpers/users.js";
-import { nukeDatabase } from "../test-helpers/cleanup.js";
+import { cleanTestData } from "../test-helpers/cleanup.js";
 import {
   getRecentNotifications,
   markNotificationAsRead,
@@ -28,7 +28,7 @@ describe("Notification CRUD Functions", async () => {
   });
 
   beforeEach(async () => {
-    await nukeDatabase(drizzle);
+    await cleanTestData(drizzle);
     testOrg = await createTestOrganization(drizzle);
     testUser = await createTestUser(drizzle);
     testUser2 = await createTestUser(drizzle);

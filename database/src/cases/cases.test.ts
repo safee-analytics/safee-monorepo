@@ -5,7 +5,7 @@ import type { DrizzleClient } from "../drizzle.js";
 import type { DbDeps } from "../deps.js";
 import { createTestOrganization, type TestOrganization } from "../test-helpers/organizations.js";
 import { createTestUser, type TestUser } from "../test-helpers/users.js";
-import { nukeDatabase } from "../test-helpers/cleanup.js";
+import { cleanTestData } from "../test-helpers/cleanup.js";
 import {
   createCase,
   getCaseById,
@@ -55,7 +55,7 @@ describe("Cases Module", async () => {
   });
 
   beforeEach(async () => {
-    await nukeDatabase(drizzle);
+    await cleanTestData(drizzle);
 
     testOrg = await createTestOrganization(drizzle);
     testUser = await createTestUser(drizzle);

@@ -12,10 +12,8 @@ export async function cleanupTestOdooDatabases(
   failed: string[];
   totalDeleted: number;
 }> {
-  const testDbPattern = /^odoo_test_org_/;
-
   const databases = await odooClient.listDatabases();
-  const testDatabases = databases.filter((db) => testDbPattern.test(db));
+  const testDatabases = databases.filter((db) => db.startsWith("odoo_test_org_"));
 
   const deleted: string[] = [];
   const failed: string[] = [];
@@ -24,7 +22,7 @@ export async function cleanupTestOdooDatabases(
     try {
       await odooClient.dropDatabase(adminPassword, db);
       deleted.push(db);
-    } catch (err) {
+    } catch {
       failed.push(db);
     }
   }

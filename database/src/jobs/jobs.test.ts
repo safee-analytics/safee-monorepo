@@ -1,7 +1,7 @@
 import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { pino } from "pino";
 import { testConnect } from "../drizzle/testConnect.js";
-import { nukeDatabase } from "../test-helpers/cleanup.js";
+import { cleanTestData } from "../test-helpers/cleanup.js";
 import type { DrizzleClient } from "../drizzle.js";
 import {
   createJob,
@@ -35,7 +35,7 @@ describe("Jobs", async () => {
 
   describe("createJob", async () => {
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
     });
 
     it("creates job successfully", async () => {
@@ -63,7 +63,7 @@ describe("Jobs", async () => {
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       testJob = await createJob(deps, {
         jobName: "send_email" as const,
@@ -91,7 +91,7 @@ describe("Jobs", async () => {
     let testJob: typeof schema.jobs.$inferSelect;
 
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       testJob = await createJob(deps, {
         jobName: "send_email" as const,
@@ -156,7 +156,7 @@ describe("Jobs", async () => {
 
   describe("getPendingJobs", async () => {
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       await createJob(deps, {
         jobName: "send_email" as const,
@@ -208,7 +208,7 @@ describe("Jobs", async () => {
 
   describe("getRetryableJobs", async () => {
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
     });
 
     it("finds failed jobs with remaining retries", async () => {
@@ -250,7 +250,7 @@ describe("Jobs", async () => {
 
   describe("getJobStats", async () => {
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       const job1 = await createJob(deps, {
         jobName: "send_email" as const,
@@ -283,7 +283,7 @@ describe("Jobs", async () => {
     });
 
     it("returns empty stats for empty database", async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       const stats = await getJobStats(deps);
 

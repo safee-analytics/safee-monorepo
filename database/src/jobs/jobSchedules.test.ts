@@ -15,7 +15,7 @@ import {
 } from "./jobSchedules.js";
 import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";
-import { nukeDatabase } from "../test-helpers/index.js";
+import { cleanTestData } from "../test-helpers/index.js";
 
 describe("Job Schedules", async () => {
   let drizzle: DrizzleClient;
@@ -34,7 +34,7 @@ describe("Job Schedules", async () => {
 
   describe("createJobSchedule", async () => {
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
     });
 
     it("creates job schedule successfully", async () => {
@@ -95,7 +95,7 @@ describe("Job Schedules", async () => {
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
@@ -121,7 +121,7 @@ describe("Job Schedules", async () => {
 
   describe("listActiveJobSchedules", async () => {
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       await createJobSchedule(deps, {
         name: "ActiveSchedule1",
@@ -160,7 +160,7 @@ describe("Job Schedules", async () => {
 
   describe("getSchedulesReadyToRun", async () => {
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       const now = new Date();
       const pastTime = new Date(now.getTime() - 60000); // 1 minute ago
@@ -228,7 +228,7 @@ describe("Job Schedules", async () => {
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
@@ -274,7 +274,7 @@ describe("Job Schedules", async () => {
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
@@ -307,7 +307,7 @@ describe("Job Schedules", async () => {
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
@@ -328,7 +328,7 @@ describe("Job Schedules", async () => {
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
@@ -349,7 +349,7 @@ describe("Job Schedules", async () => {
     let testSchedule: typeof schema.jobSchedules.$inferSelect;
 
     beforeEach(async () => {
-      await nukeDatabase(drizzle);
+      await cleanTestData(drizzle);
 
       testSchedule = await createJobSchedule(deps, {
         name: "TestSchedule",
