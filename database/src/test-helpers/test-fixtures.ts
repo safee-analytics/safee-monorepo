@@ -42,6 +42,7 @@ import { crmContacts } from "../drizzle/crmContacts.js";
 import { crmTeams } from "../drizzle/crmTeams.js";
 import { crmLostReasons } from "../drizzle/crmLostReasons.js";
 import { documentTemplates } from "../drizzle/documentTemplates.js";
+import { resourceAssignments } from "../drizzle/resourceAssignments.js";
 
 export type TestOrganization = InferSelectModel<typeof organizations>;
 export type TestUser = InferSelectModel<typeof users>;
@@ -146,6 +147,7 @@ export async function cleanTestData(db: DrizzleClient): Promise<void> {
   await db.delete(fileEncryptionMetadata);
   await db.delete(auditorAccess);
   await db.delete(userKeypairs);
+  await db.delete(resourceAssignments);
   await db.delete(cases);
   await db.delete(auditProcedures);
   await db.delete(auditSections);
@@ -257,6 +259,7 @@ export async function nukeDatabase(db: DrizzleClient): Promise<void> {
   await db.delete(fileEncryptionMetadata);
   await db.delete(auditorAccess);
   await db.delete(userKeypairs);
+  await db.delete(resourceAssignments);
   await db.delete(cases);
   await db.delete(auditProcedures);
   await db.delete(auditSections);

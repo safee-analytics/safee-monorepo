@@ -80,4 +80,105 @@ void describe("getOdooDevCredentials", async () => {
 
     expect(credentials).toBeNull();
   });
+
+  it("should return null if user has no odoo account", async () => {
+    const credentials = await getOdooDevCredentials(drizzle, user.id, org.id);
+
+    expect(credentials).toBeNull();
+  });
+
+  it("should construct web URL with correct database parameter", async () => {
+    const [odooDb] = await drizzle
+      .insert(schema.odooDatabases)
+      .values({
+        organizationId: org.id,
+        databaseName: "custom_db_name",
+        adminLogin: "admin",
+        adminPassword: encryptionService.encrypt("admin-pass"),
+        odooUrl: "https://odoo.example.com",
+      })
+      .returning();
+
+    const testPassword = "dev-password";
+
+    await drizzle.insert(schema.odooUsers).values({
+      userId: user.id,
+      odooDatabaseId: odooDb.id,
+      odooUid: 5,
+      odooLogin: "dev@example.com",
+      password: encryptionService.encrypt(testPassword),
+      apiKey: null,
+    });
+
+    const credentials = await getOdooDevCredentials(drizzle, user.id, org.id);
+
+    expect(credentials?.webUrl).toContain("https://odoo.example.com/web/login");
+    expect(credentials?.webUrl).toContain("db=custom_db_name");
+  });
+
+  it("should handle password with special characters", async () => {
+    const timestamp = Date.now();
+    const [odooDb] = await drizzle
+      .insert(schema.odooDatabases)
+      .values({
+        organizationId: org.id,
+        databaseName: `odoo_special_${timestamp}`,
+        adminLogin: "admin",
+        adminPassword: encryptionService.encrypt("admin-pass"),
+        odooUrl: "http://localhost:8069",
+      })
+      .returning();
+
+    const complexPassword = "Dev!P@ss#2024$%^&*()";
+    const encryptedPassword = encryptionService.encrypt(complexPassword);
+
+    await drizzle.insert(schema.odooUsers).values({
+      userId: user.id,
+      odooDatabaseId: odooDb.id,
+      odooUid: 10,
+      odooLogin: "complex@example.com",
+      password: encryptedPassword,
+      apiKey: null,
+    });
+
+    const credentials = await getOdooDevCredentials(drizzle, user.id, org.id);
+
+    expect(credentials?.password).toBe(complexPassword);
+  });
+
+  it("should not return credentials for wrong organization", async () => {
+    const timestamp = Date.now();
+    const [otherOrg] = await drizzle
+      .insert(schema.organizations)
+      .values({
+        name: `Other Org ${timestamp}`,
+        slug: `other-org-${timestamp}`,
+      })
+      .returning();
+
+    const [odooDb] = await drizzle
+      .insert(schema.odooDatabases)
+      .values({
+        organizationId: org.id, // Different org
+        databaseName: `odoo_wrong_org_${timestamp}`,
+        adminLogin: "admin",
+        adminPassword: encryptionService.encrypt("admin-pass"),
+        odooUrl: "http://localhost:8069",
+      })
+      .returning();
+
+    await drizzle.insert(schema.odooUsers).values({
+      userId: user.id,
+      odooDatabaseId: odooDb.id,
+      odooUid: 15,
+      odooLogin: "test@example.com",
+      password: encryptionService.encrypt("password"),
+      apiKey: null,
+    });
+
+    // Try to get credentials with wrong organization ID
+    const credentials = await getOdooDevCredentials(drizzle, user.id, otherOrg.id);
+
+    expect(credentials).toBeNull();
+  });
 });

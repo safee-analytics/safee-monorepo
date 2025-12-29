@@ -17,6 +17,7 @@ import {
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import { BadRequest, NotFound } from "../errors.js";
 import type { ServerContext } from "../serverContext.js";
+import { ResourceAssignmentService } from "../services/resourceAssignment.service.js";
 import {
   createEmployee,
   getEmployeeById,
@@ -805,6 +806,32 @@ export class HRManagementController extends Controller {
       );
     }
 
+    // Apply resource assignment filtering
+    const assignmentService = new ResourceAssignmentService({ drizzle: ctx.drizzle, logger: ctx.logger });
+    const assignedDepartmentIds = await assignmentService.getAssignedResources(
+      ctx.userId,
+      ctx.organizationId,
+      "hr_department",
+    );
+
+    // Empty array for owner/admin means access all, otherwise filter
+    if (assignedDepartmentIds.length === 0) {
+      // Check if user is owner/admin
+      const member = await ctx.drizzle.query.members.findFirst({
+        where: (members, { and, eq }) =>
+          and(eq(members.userId, ctx.userId), eq(members.organizationId, ctx.organizationId)),
+      });
+
+      if (member?.role !== "owner" && member?.role !== "admin") {
+        // Non-owner/admin with no assignments sees nothing
+        return [];
+      }
+      // Owner/admin sees all
+    } else {
+      // Filter to assigned departments only
+      departments = departments.filter((dept) => assignedDepartmentIds.includes(dept.id));
+    }
+
     return departments.map(mapDepartmentToResponse);
   }
 
@@ -823,6 +850,19 @@ export class HRManagementController extends Controller {
     const department = await getDepartmentById({ drizzle: ctx.drizzle, logger: ctx.logger }, departmentId);
 
     if (!department) {
+      throw new NotFound(`Department with ID ${departmentId} not found`);
+    }
+
+    // Check resource access
+    const assignmentService = new ResourceAssignmentService({ drizzle: ctx.drizzle, logger: ctx.logger });
+    const hasAccess = await assignmentService.hasResourceAccess(
+      ctx.userId,
+      ctx.organizationId,
+      "hr_department",
+      departmentId,
+    );
+
+    if (!hasAccess) {
       throw new NotFound(`Department with ID ${departmentId} not found`);
     }
 

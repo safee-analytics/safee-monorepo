@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, type RedisClient, schema } from "@safee/database";
+import { type DrizzleClient, schema } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import { getConnector } from "./getConnector.js";
 import { odoo } from "@safee/database";
@@ -11,21 +11,21 @@ import { getServerContext } from "../serverContext.js";
 
 void describe("getConnector", async () => {
   let drizzle: DrizzleClient;
-  let redis: RedisClient;
   let close: () => Promise<void>;
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "get-connector-test" }));
-    redis = await initTestServerContext(drizzle);
+    await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
+    await drizzle.delete(schema.fileEncryptionMetadata);
+    await drizzle.delete(schema.approvalRequests);
     await drizzle.delete(schema.connectors);
     await drizzle.delete(schema.organizations);
   });
 
   afterAll(async () => {
-    await redis.quit();
     await close();
   });
 

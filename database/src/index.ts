@@ -69,3 +69,5 @@ export * as generalUtils from "./general-utils/index.js";
 export * from "./test-helpers/integration-setup.js";
 
 export * from "./types/websocket.js";
+
+export { EncryptionService, encryptionService } from "./encryption.js";

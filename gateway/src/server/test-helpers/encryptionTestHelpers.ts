@@ -123,6 +123,9 @@ export async function cleanupEncryptionTables(drizzle: DrizzleClient): Promise<v
   await drizzle.delete(schema.auditorAccess);
   await drizzle.delete(schema.userKeypairs);
   await drizzle.delete(schema.encryptionKeys);
+  await drizzle.delete(schema.approvalRequests);
+  // Delete cases before users since cases reference users
+  await drizzle.delete(schema.cases);
   await drizzle.delete(schema.users);
   await drizzle.delete(schema.organizations);
 }

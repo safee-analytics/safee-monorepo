@@ -32,6 +32,7 @@ import { motion, AnimatePresence, Reorder } from "framer-motion";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useOrgStore } from "@/stores/useOrgStore";
 import { getAllModules } from "@/lib/config/modules";
+import { useAccessibleModules } from "@/lib/api/hooks";
 
 export const SidebarLayout = () => {
   return (
@@ -69,6 +70,14 @@ const moduleColors: Record<string, string> = {
   audit: "from-orange-500 to-orange-600",
 };
 
+// Mapping between generic module IDs (from backend) and branded keys (in frontend)
+const moduleIdToKey: Record<string, string> = {
+  accounting: "hisabiq",
+  hr: "kanz",
+  crm: "nisbah",
+  audit: "audit",
+};
+
 export const Sidebar = () => {
   const { t, locale } = useTranslation();
   const { setModule, sidebarAutoClose, setSidebarAutoClose, sidebarCollapsed, setSidebarCollapsed } =
@@ -79,7 +88,20 @@ export const Sidebar = () => {
   const [showCustomizeMenu, setShowCustomizeMenu] = useState(false);
   const [showMyApps, setShowMyApps] = useState(false);
 
-  const modules = getAllModules();
+  // Get accessible modules for current user
+  const { data: accessibleModuleIds, isLoading: modulesLoading } = useAccessibleModules();
+
+  const allModules = getAllModules();
+
+  // Filter modules based on user access
+  const modules = React.useMemo(() => {
+    if (!accessibleModuleIds) return allModules;
+
+    // Convert accessible module IDs to branded keys
+    const accessibleKeys = accessibleModuleIds.map((id) => moduleIdToKey[id] || id);
+
+    return allModules.filter((module) => accessibleKeys.includes(module.key));
+  }, [accessibleModuleIds, allModules]);
 
   const defaultApps: AppItem[] = modules.map((module) => ({
     id: module.key,
@@ -360,9 +382,24 @@ export const Sidebar = () => {
 
         {/* Pinned Modules */}
         <div className="space-y-2 flex-1 overflow-y-auto">
-          {apps
-            .filter((app) => app.pinned)
-            .map((app) => {
+          {modulesLoading ? (
+            // Loading skeleton
+            <>
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="relative flex h-10 w-full items-center rounded-lg">
+                  <div className="w-10 flex items-center justify-center shrink-0">
+                    <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 animate-pulse" />
+                  </div>
+                  {isExpanded && (
+                    <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse flex-1 mr-4" />
+                  )}
+                </div>
+              ))}
+            </>
+          ) : (
+            apps
+              .filter((app) => app.pinned)
+              .map((app) => {
               const Icon = app.icon;
               const moduleData = modules.find((m) => m.key === app.id);
               if (!moduleData) return null;
@@ -404,7 +441,8 @@ export const Sidebar = () => {
                   </div>
                 </Link>
               );
-            })}
+            })
+          )}
         </div>
 
         {/* Bottom Section - Settings */}

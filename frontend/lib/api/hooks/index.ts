@@ -58,3 +58,9 @@ export * from "./integrations";
 
 // Re-export CRM hooks
 export * from "./crm";
+
+// Re-export module access hooks
+export * from "./moduleAccess";
+
+// Re-export filtered data hooks
+export * from "./filteredData";

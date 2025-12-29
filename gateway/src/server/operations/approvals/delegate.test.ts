@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, type RedisClient, schema, eq } from "@safee/database";
+import { type DrizzleClient, schema, eq } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import {
   createTestOrganization,
@@ -17,7 +17,6 @@ import { getServerContext, type ServerContext } from "../../serverContext.js";
 
 void describe("delegate operation", async () => {
   let drizzle: DrizzleClient;
-  let redis: RedisClient;
   let close: () => Promise<void>;
   let testOrg: TestOrganization;
   let testUser: TestUser;
@@ -27,7 +26,7 @@ void describe("delegate operation", async () => {
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "delegate-test" }));
-    redis = await initTestServerContext(drizzle);
+    await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
@@ -48,7 +47,6 @@ void describe("delegate operation", async () => {
   });
 
   afterAll(async () => {
-    await redis.quit();
     await close();
   });
 

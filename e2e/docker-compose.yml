@@ -47,7 +47,7 @@ services:
       - DB_PORT=5432
       - DB_USER=safee
       - DB_PASSWORD=safee
-      - ADMIN_PASSWORD=admin123
+      - ADMIN_PASSWORD=admin
     volumes:
       - ../infra/config/odoo.conf:/etc/odoo/odoo.conf:ro
       - odoo-data:/var/lib/odoo
