@@ -8,7 +8,7 @@ import {
   schema,
   type DrizzleClient,
 } from "@safee/database";
-import { nukeDatabase } from "@safee/database/test-helpers";
+import { cleanTestData } from "@safee/database/test-helpers";
 
 const { organizations } = schema;
 
@@ -40,7 +40,7 @@ describe("JobScheduler Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    await nukeDatabase(db);
+    await cleanTestData(db);
     const [org] = await db
       .insert(organizations)
       .values({ name: "Test Org", slug: "test-org-scheduler" })

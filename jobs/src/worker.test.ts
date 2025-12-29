@@ -1,7 +1,7 @@
 import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { Redis } from "ioredis";
 import { pino } from "pino";
-import { connectTest, nukeDatabase } from "@safee/database/test-helpers";
+import { connectTest, cleanTestData } from "@safee/database/test-helpers";
 import { createJob, getJobById, EmailService } from "@safee/database";
 import type { DrizzleClient, DbDeps } from "@safee/database";
 
@@ -42,7 +42,7 @@ describe("Job Worker Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    await nukeDatabase(drizzle);
+    await cleanTestData(drizzle);
   });
 
   describe("send_email job", () => {
