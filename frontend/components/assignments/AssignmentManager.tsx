@@ -20,7 +20,10 @@ export function AssignmentManager({ resourceType, resourceId }: AssignmentManage
   const [selectedRole, setSelectedRole] = useState("");
 
   const { data: members } = useOrganizationMembers("");
-  const { data: assignments, isLoading: assignmentsLoading } = useResourceAssignments(resourceType, resourceId);
+  const { data: assignments, isLoading: assignmentsLoading } = useResourceAssignments(
+    resourceType,
+    resourceId,
+  );
   const assignMutation = useAssignResource();
   const unassignMutation = useUnassignResource();
 
@@ -99,7 +102,9 @@ export function AssignmentManager({ resourceType, resourceId }: AssignmentManage
                   </div>
                 </div>
                 <button
-                  onClick={() => { void handleUnassign(assignment.userId); }}
+                  onClick={() => {
+                    void handleUnassign(assignment.userId);
+                  }}
                   disabled={unassignMutation.isPending}
                   className="p-1.5 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   title="Remove assignment"
@@ -146,7 +151,9 @@ export function AssignmentManager({ resourceType, resourceId }: AssignmentManage
             />
 
             <button
-              onClick={() => { void handleAssign(); }}
+              onClick={() => {
+                void handleAssign();
+              }}
               disabled={!selectedUserId || assignMutation.isPending}
               className="px-4 py-2 bg-safee-600 dark:bg-safee-500 text-white rounded-lg hover:bg-safee-700 dark:hover:bg-safee-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-sm font-medium"
             >

@@ -558,10 +558,7 @@ void describe("Odoo Integration Tests", async () => {
     expect(ids).toContain(partnerId);
 
     // SEARCH_READ: Search and read in one call
-    const results = await client.searchRead("res.partner", [["id", "=", partnerId]], [
-      "name",
-      "email",
-    ]);
+    const results = await client.searchRead("res.partner", [["id", "=", partnerId]], ["name", "email"]);
     expect(results.length).toBe(1);
     expect(results[0].name).toBe("Test Partner");
 

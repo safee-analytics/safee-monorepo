@@ -1,7 +1,7 @@
 import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { pino } from "pino";
 import { testConnect } from "../drizzle/testConnect.js";
-import { nukeDatabase } from "../test-helpers/test-fixtures.js";
+import { nukeDatabase } from "../test-helpers/cleanup.js";
 import type { DrizzleClient } from "../drizzle.js";
 import {
   createJob,

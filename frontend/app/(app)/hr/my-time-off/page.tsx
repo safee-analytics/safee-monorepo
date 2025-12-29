@@ -111,9 +111,7 @@ export default function MyTimeOffPage() {
       {/* Time Off Balance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">
-            Vacation Days
-          </h3>
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Vacation Days</h3>
           <div className="flex items-end gap-2 mb-2">
             <span className="text-3xl font-bold text-safee-600 dark:text-safee-400">
               {balance.vacation.available}
@@ -131,7 +129,9 @@ export default function MyTimeOffPage() {
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-4">Sick Leave</h3>
           <div className="flex items-end gap-2 mb-2">
-            <span className="text-3xl font-bold text-blue-600 dark:text-blue-400">{balance.sick.available}</span>
+            <span className="text-3xl font-bold text-blue-600 dark:text-blue-400">
+              {balance.sick.available}
+            </span>
             <span className="text-gray-500 dark:text-gray-400 mb-1">/ {balance.sick.total} days</span>
           </div>
           <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
@@ -149,7 +149,12 @@ export default function MyTimeOffPage() {
           <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">
             New Time Off Request
           </h2>
-          <form onSubmit={(e) => { void handleSubmit(e); }} className="space-y-4">
+          <form
+            onSubmit={(e) => {
+              void handleSubmit(e);
+            }}
+            className="space-y-4"
+          >
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
@@ -245,7 +250,10 @@ export default function MyTimeOffPage() {
           {requests.map((request) => {
             const StatusIcon = statusConfig[request.status].icon;
             return (
-              <div key={request.id} className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+              <div
+                key={request.id}
+                className="p-6 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+              >
                 <div className="flex items-start justify-between">
                   <div className="flex items-start gap-4">
                     <div

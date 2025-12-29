@@ -400,48 +400,48 @@ export const Sidebar = () => {
             apps
               .filter((app) => app.pinned)
               .map((app) => {
-              const Icon = app.icon;
-              const moduleData = modules.find((m) => m.key === app.id);
-              if (!moduleData) return null;
+                const Icon = app.icon;
+                const moduleData = modules.find((m) => m.key === app.id);
+                if (!moduleData) return null;
 
-              const isSelected = pathname?.startsWith(moduleData.path);
+                const isSelected = pathname?.startsWith(moduleData.path);
 
-              return (
-                <Link
-                  key={app.id}
-                  href={moduleData.path}
-                  onClick={() => {
-                    setModule(app.id as "hisabiq" | "kanz" | "nisbah" | "audit");
-                  }}
-                >
-                  <div
-                    className={`relative flex h-10 w-full items-center rounded-lg transition-all ${
-                      isSelected
-                        ? "bg-safee-50 dark:bg-safee-900/20"
-                        : "hover:bg-gray-50 dark:hover:bg-gray-800"
-                    }`}
+                return (
+                  <Link
+                    key={app.id}
+                    href={moduleData.path}
+                    onClick={() => {
+                      setModule(app.id as "hisabiq" | "kanz" | "nisbah" | "audit");
+                    }}
                   >
-                    {/* Logo Circle - fixed position */}
-                    <div className="w-10 flex items-center justify-center shrink-0">
-                      <div
-                        className={`grid w-8 h-8 place-content-center rounded-full bg-gradient-to-br ${app.gradient} shadow-sm hover:shadow-md transition-shadow`}
-                      >
-                        <Icon className="w-4 h-4 text-white" />
-                      </div>
-                    </div>
-
-                    {/* Module Name */}
-                    <span
-                      className={`text-xs font-medium transition-opacity overflow-hidden whitespace-nowrap ${
-                        isExpanded ? "opacity-100" : "opacity-0 w-0"
-                      } ${isSelected ? "text-safee-700 dark:text-safee-300" : "text-gray-700 dark:text-gray-300"}`}
+                    <div
+                      className={`relative flex h-10 w-full items-center rounded-lg transition-all ${
+                        isSelected
+                          ? "bg-safee-50 dark:bg-safee-900/20"
+                          : "hover:bg-gray-50 dark:hover:bg-gray-800"
+                      }`}
                     >
-                      {app.name}
-                    </span>
-                  </div>
-                </Link>
-              );
-            })
+                      {/* Logo Circle - fixed position */}
+                      <div className="w-10 flex items-center justify-center shrink-0">
+                        <div
+                          className={`grid w-8 h-8 place-content-center rounded-full bg-gradient-to-br ${app.gradient} shadow-sm hover:shadow-md transition-shadow`}
+                        >
+                          <Icon className="w-4 h-4 text-white" />
+                        </div>
+                      </div>
+
+                      {/* Module Name */}
+                      <span
+                        className={`text-xs font-medium transition-opacity overflow-hidden whitespace-nowrap ${
+                          isExpanded ? "opacity-100" : "opacity-0 w-0"
+                        } ${isSelected ? "text-safee-700 dark:text-safee-300" : "text-gray-700 dark:text-gray-300"}`}
+                      >
+                        {app.name}
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })
           )}
         </div>
 

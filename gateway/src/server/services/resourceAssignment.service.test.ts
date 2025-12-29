@@ -1,6 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { type DrizzleClient } from "@safee/database";
-import { connectTest, createTestOrganization, createTestUser, addMemberToOrganization, cleanTestData } from "@safee/database/test-helpers";
+import {
+  connectTest,
+  createTestOrganization,
+  createTestUser,
+  addMemberToOrganization,
+  cleanTestData,
+} from "@safee/database/test-helpers";
 import { pino } from "pino";
 import { ResourceAssignmentService } from "./resourceAssignment.service.js";
 
@@ -74,7 +80,7 @@ void describe("ResourceAssignmentService", async () => {
           resourceId,
           role: "reviewer",
           assignedBy: user.id,
-        })
+        }),
       ).rejects.toThrow();
     });
 
@@ -106,8 +112,7 @@ void describe("ResourceAssignmentService", async () => {
       });
 
       const assignments = await drizzle.query.resourceAssignments.findMany({
-        where: (t, { eq, and }) =>
-          and(eq(t.resourceType, "audit_case"), eq(t.resourceId, resourceId)),
+        where: (t, { eq, and }) => and(eq(t.resourceType, "audit_case"), eq(t.resourceId, resourceId)),
       });
 
       expect(assignments).toHaveLength(2);
@@ -120,11 +125,7 @@ void describe("ResourceAssignmentService", async () => {
       const owner = await createTestUser(drizzle, { email: "owner@test.com" });
       await addMemberToOrganization(drizzle, owner.id, org.id, "owner");
 
-      const resourceIds = await service.getAssignedResources(
-        owner.id,
-        org.id,
-        "audit_case"
-      );
+      const resourceIds = await service.getAssignedResources(owner.id, org.id, "audit_case");
 
       expect(resourceIds).toEqual([]);
     });
@@ -153,11 +154,7 @@ void describe("ResourceAssignmentService", async () => {
         assignedBy: user.id,
       });
 
-      const resourceIds = await service.getAssignedResources(
-        user.id,
-        org.id,
-        "audit_case"
-      );
+      const resourceIds = await service.getAssignedResources(user.id, org.id, "audit_case");
 
       expect(resourceIds).toHaveLength(2);
       expect(resourceIds).toContain(resourceId1);
@@ -188,16 +185,8 @@ void describe("ResourceAssignmentService", async () => {
         assignedBy: user.id,
       });
 
-      const auditCases = await service.getAssignedResources(
-        user.id,
-        org.id,
-        "audit_case"
-      );
-      const clients = await service.getAssignedResources(
-        user.id,
-        org.id,
-        "accounting_client"
-      );
+      const auditCases = await service.getAssignedResources(user.id, org.id, "audit_case");
+      const clients = await service.getAssignedResources(user.id, org.id, "accounting_client");
 
       expect(auditCases).toEqual([auditCaseId]);
       expect(clients).toEqual([clientId]);
@@ -208,11 +197,7 @@ void describe("ResourceAssignmentService", async () => {
       const user = await createTestUser(drizzle);
       await addMemberToOrganization(drizzle, user.id, org.id, "member");
 
-      const resourceIds = await service.getAssignedResources(
-        user.id,
-        org.id,
-        "audit_case"
-      );
+      const resourceIds = await service.getAssignedResources(user.id, org.id, "audit_case");
 
       expect(resourceIds).toEqual([]);
     });
@@ -226,12 +211,7 @@ void describe("ResourceAssignmentService", async () => {
 
       const resourceId = crypto.randomUUID();
 
-      const hasAccess = await service.hasResourceAccess(
-        owner.id,
-        org.id,
-        "audit_case",
-        resourceId
-      );
+      const hasAccess = await service.hasResourceAccess(owner.id, org.id, "audit_case", resourceId);
 
       expect(hasAccess).toBe(true);
     });
@@ -251,12 +231,7 @@ void describe("ResourceAssignmentService", async () => {
         assignedBy: user.id,
       });
 
-      const hasAccess = await service.hasResourceAccess(
-        user.id,
-        org.id,
-        "audit_case",
-        resourceId
-      );
+      const hasAccess = await service.hasResourceAccess(user.id, org.id, "audit_case", resourceId);
 
       expect(hasAccess).toBe(true);
     });
@@ -268,12 +243,7 @@ void describe("ResourceAssignmentService", async () => {
 
       const resourceId = crypto.randomUUID();
 
-      const hasAccess = await service.hasResourceAccess(
-        user.id,
-        org.id,
-        "audit_case",
-        resourceId
-      );
+      const hasAccess = await service.hasResourceAccess(user.id, org.id, "audit_case", resourceId);
 
       expect(hasAccess).toBe(false);
     });
@@ -297,12 +267,7 @@ void describe("ResourceAssignmentService", async () => {
 
       await service.unassignResource(user.id, "audit_case", resourceId);
 
-      const hasAccess = await service.hasResourceAccess(
-        user.id,
-        org.id,
-        "audit_case",
-        resourceId
-      );
+      const hasAccess = await service.hasResourceAccess(user.id, org.id, "audit_case", resourceId);
 
       expect(hasAccess).toBe(false);
     });
@@ -311,9 +276,7 @@ void describe("ResourceAssignmentService", async () => {
       const user = await createTestUser(drizzle);
       const resourceId = crypto.randomUUID();
 
-      await expect(
-        service.unassignResource(user.id, "audit_case", resourceId)
-      ).resolves.not.toThrow();
+      await expect(service.unassignResource(user.id, "audit_case", resourceId)).resolves.not.toThrow();
     });
   });
 

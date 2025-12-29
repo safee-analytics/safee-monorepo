@@ -56,6 +56,7 @@ export const jobNameEnum = jobsSchema.enum("job_name", [
   "generate_report",
   "odoo_provisioning",
   "install_odoo_modules",
+  "odoo_provision_organization",
 ]);
 
 export const priorityEnum = jobsSchema.enum("priority", ["low", "normal", "high", "critical"]);

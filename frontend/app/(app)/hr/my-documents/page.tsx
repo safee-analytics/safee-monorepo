@@ -1,15 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  FileText,
-  Download,
-  Eye,
-  FolderOpen,
-  Calendar,
-  File,
-  Shield,
-} from "lucide-react";
+import { FileText, Download, Eye, FolderOpen, Calendar, File, Shield } from "lucide-react";
 
 interface Document {
   id: string;
@@ -22,10 +14,10 @@ interface Document {
 }
 
 const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  "Contracts": Shield,
-  "Policies": FileText,
-  "Forms": File,
-  "Other": FolderOpen,
+  Contracts: Shield,
+  Policies: FileText,
+  Forms: File,
+  Other: FolderOpen,
 };
 
 export default function MyDocumentsPage() {
@@ -74,19 +66,15 @@ export default function MyDocumentsPage() {
   const categories = ["all", ...Array.from(new Set(documents.map((d) => d.category)))];
 
   const filteredDocuments =
-    selectedCategory === "all"
-      ? documents
-      : documents.filter((d) => d.category === selectedCategory);
+    selectedCategory === "all" ? documents : documents.filter((d) => d.category === selectedCategory);
 
   const documentsByCategory = categories.reduce(
     (acc, category) => {
       acc[category] =
-        category === "all"
-          ? documents.length
-          : documents.filter((d) => d.category === category).length;
+        category === "all" ? documents.length : documents.filter((d) => d.category === category).length;
       return acc;
     },
-    {} as Record<string, number>
+    {} as Record<string, number>,
   );
 
   function handleDownload(_documentId: string) {
@@ -173,9 +161,7 @@ export default function MyDocumentsPage() {
 
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-semibold text-gray-900 dark:text-gray-100">
-                          {document.name}
-                        </h3>
+                        <h3 className="font-semibold text-gray-900 dark:text-gray-100">{document.name}</h3>
                         {document.isConfidential && (
                           <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 text-xs font-medium rounded-full flex items-center gap-1">
                             <Shield className="w-3 h-3" />
@@ -231,12 +217,10 @@ export default function MyDocumentsPage() {
         <div className="flex items-start gap-3">
           <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100">
-              Document Security
-            </h4>
+            <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100">Document Security</h4>
             <p className="text-sm text-blue-700 dark:text-blue-300 mt-1">
-              All documents are securely stored and encrypted. Confidential documents are only
-              accessible to you and authorized HR personnel.
+              All documents are securely stored and encrypted. Confidential documents are only accessible to
+              you and authorized HR personnel.
             </p>
           </div>
         </div>

@@ -23,9 +23,7 @@ export async function initTestServerContext(drizzle: DrizzleClient): Promise<Ser
     fileExists: async () => {
       return false;
     },
-    deleteFile: async () => {
-      
-    },
+    deleteFile: async () => {},
     getFileMetadata: async () => {
       return {
         key: "test-key",
@@ -51,18 +49,10 @@ export async function initTestServerContext(drizzle: DrizzleClient): Promise<Ser
     publish: async () => {
       return "test-message-id";
     },
-    subscribe: async () => {
-      
-    },
-    createTopic: async () => {
-      
-    },
-    createSubscription: async () => {
-      
-    },
-    close: async () => {
-      
-    },
+    subscribe: async () => {},
+    createTopic: async () => {},
+    createSubscription: async () => {},
+    close: async () => {},
   };
 
   // Test scheduler implementation

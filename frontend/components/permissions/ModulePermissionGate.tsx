@@ -27,8 +27,8 @@ export function ModulePermissionGate({ moduleKey, children, fallback }: ModulePe
             </div>
             <h2 className="text-2xl font-bold text-red-900 dark:text-red-100 mb-2">Access Denied</h2>
             <p className="text-red-700 dark:text-red-300 mb-6">
-              You don&apos;t have permission to access this module. Please contact your administrator if
-              you believe this is an error.
+              You don&apos;t have permission to access this module. Please contact your administrator if you
+              believe this is an error.
             </p>
             <div className="flex gap-3 w-full">
               <button

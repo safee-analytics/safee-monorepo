@@ -53,7 +53,9 @@ export default function MyInfoPage() {
               Cancel
             </button>
             <button
-              onClick={() => { void handleSave(); }}
+              onClick={() => {
+                void handleSave();
+              }}
               disabled={isSaving}
               className="px-4 py-2 bg-safee-600 text-white rounded-lg hover:bg-safee-700 transition-colors text-sm font-medium flex items-center gap-2 disabled:opacity-50"
             >
@@ -105,9 +107,7 @@ export default function MyInfoPage() {
                 disabled
                 className="w-full px-4 py-2 bg-gray-50 dark:bg-gray-900 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-gray-100 opacity-60 cursor-not-allowed"
               />
-              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                Email cannot be changed here
-              </p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">Email cannot be changed here</p>
             </div>
 
             <div>

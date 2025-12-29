@@ -3,7 +3,18 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Users, Search, Plus, Mail, Phone, Building2, Filter, UserCheck, UserX, ShieldAlert } from "lucide-react";
+import {
+  Users,
+  Search,
+  Plus,
+  Mail,
+  Phone,
+  Building2,
+  Filter,
+  UserCheck,
+  UserX,
+  ShieldAlert,
+} from "lucide-react";
 import { useEmployees, useDepartments } from "@/lib/api/hooks/hrManagement";
 import { useHasHRSectionAccess } from "@/lib/api/hooks";
 
@@ -34,7 +45,8 @@ export default function EmployeesPage() {
             </div>
             <h2 className="text-2xl font-bold text-red-900 dark:text-red-100 mb-2">Access Denied</h2>
             <p className="text-red-700 dark:text-red-300 mb-6">
-              You don&apos;t have permission to access employee management. This section is only available to HR roles.
+              You don&apos;t have permission to access employee management. This section is only available to
+              HR roles.
             </p>
             <button
               onClick={() => router.push("/hr")}

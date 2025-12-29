@@ -3,7 +3,7 @@ import { pino } from "pino";
 import { testConnect } from "../drizzle/testConnect.js";
 import type { DrizzleClient } from "../drizzle.js";
 import { JobScheduler } from "./jobScheduler.js";
-import { nukeDatabase } from "../test-helpers/test-fixtures.js";
+import { nukeDatabase } from "../test-helpers/cleanup.js";
 import { createJobSchedule } from "../jobs/jobSchedules.js";
 import * as schema from "../drizzle/index.js";
 import type { DbDeps } from "../deps.js";

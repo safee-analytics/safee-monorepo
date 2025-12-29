@@ -7,7 +7,7 @@ export function useFilteredData<T>(
   queryKey: unknown[],
   fetchFn: (assignedIds?: string[]) => Promise<T[]>,
   resourceType: ResourceType,
-  options?: Omit<UseQueryOptions<T[], Error>, "queryKey" | "queryFn">
+  options?: Omit<UseQueryOptions<T[], Error>, "queryKey" | "queryFn">,
 ) {
   const { data: session } = authClient.useSession();
   const activeOrgId = session?.session?.activeOrganizationId;

@@ -421,6 +421,17 @@ export class OdooDatabaseService {
       "Creating fresh Odoo database (fast - 2-3 minutes)",
     );
 
+    // Create placeholder record with 'provisioning' status
+    await this.drizzle.insert(schema.odooDatabases).values({
+      organizationId,
+      databaseName,
+      adminLogin,
+      adminPassword: this.encryptionService.encrypt(adminPassword),
+      odooUrl: this.odooConfig.url,
+      provisioningStatus: "provisioning",
+      provisioningStartedAt: new Date(),
+    });
+
     let dbCreated = false;
 
     try {
@@ -488,16 +499,15 @@ export class OdooDatabaseService {
         "✅ Company information updated successfully",
       );
 
-      // Save database credentials to database
-      const encryptedPassword = this.encryptionService.encrypt(adminPassword);
-
-      await this.drizzle.insert(schema.odooDatabases).values({
-        organizationId,
-        databaseName,
-        adminLogin,
-        adminPassword: encryptedPassword,
-        odooUrl: this.odooConfig.url,
-      });
+      // Update status to 'active'
+      await this.drizzle
+        .update(schema.odooDatabases)
+        .set({
+          provisioningStatus: "active",
+          provisioningCompletedAt: new Date(),
+          provisioningError: null,
+        })
+        .where(eq(schema.odooDatabases.organizationId, organizationId));
 
       this.logger.info(
         { organizationId, databaseName, provisioningTime: "~2 minutes (database created with base modules)" },
@@ -514,10 +524,21 @@ export class OdooDatabaseService {
         odooUrl: this.odooConfig.url,
       };
     } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+
       this.logger.error(
         { organizationId, databaseName, error: err, dbCreated },
         "❌ Failed to provision Odoo database, rolling back",
       );
+
+      // Update status to 'failed' with error message
+      await this.drizzle
+        .update(schema.odooDatabases)
+        .set({
+          provisioningStatus: "failed",
+          provisioningError: errorMessage,
+        })
+        .where(eq(schema.odooDatabases.organizationId, organizationId));
 
       // Rollback: Delete the Odoo database if it was created
       if (dbCreated) {

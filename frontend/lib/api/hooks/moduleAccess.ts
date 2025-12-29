@@ -107,7 +107,7 @@ export function useAccessibleHRSections() {
 
 export function useHasHRSectionAccess(sectionKey: string): boolean {
   const { data: sections } = useAccessibleHRSections();
-  return sections?.some(section => section.sectionKey === sectionKey) ?? false;
+  return sections?.some((section) => section.sectionKey === sectionKey) ?? false;
 }
 
 export function useAssignedResources(resourceType: ResourceType) {
@@ -169,7 +169,7 @@ export function useAssignResource() {
         queryKey: moduleAccessQueryKeys.resourceAssignments(
           activeOrgId,
           variables.resourceType,
-          variables.resourceId
+          variables.resourceId,
         ),
       });
     },
@@ -196,7 +196,7 @@ export function useUnassignResource() {
               resourceId: params.resourceId,
             },
           },
-        }
+        },
       );
       if (error) throw new Error(handleApiError(error));
       return data;
@@ -214,7 +214,7 @@ export function useUnassignResource() {
         queryKey: moduleAccessQueryKeys.resourceAssignments(
           activeOrgId,
           variables.resourceType,
-          variables.resourceId
+          variables.resourceId,
         ),
       });
     },
@@ -230,12 +230,9 @@ export function useResourceAssignments(resourceType: ResourceType, resourceId: s
     queryFn: async () => {
       if (!activeOrgId) return [];
 
-      const { data, error } = await apiClient.GET(
-        "/module-access/assignments/{resourceType}/{resourceId}",
-        {
-          params: { path: { resourceType, resourceId } },
-        }
-      );
+      const { data, error } = await apiClient.GET("/module-access/assignments/{resourceType}/{resourceId}", {
+        params: { path: { resourceType, resourceId } },
+      });
       if (error) throw new Error(handleApiError(error));
 
       return (data?.assignments ?? []) as ResourceAssignment[];

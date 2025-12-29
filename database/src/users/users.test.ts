@@ -3,7 +3,7 @@ import { pino } from "pino";
 import type { DrizzleClient } from "../drizzle.js";
 import { testConnect } from "../drizzle/testConnect.js";
 import type { DbDeps } from "../deps.js";
-import { nukeDatabase } from "../test-helpers/test-fixtures.js";
+import { nukeDatabase } from "../test-helpers/cleanup.js";
 import {
   createOrganization,
   createUser,

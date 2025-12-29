@@ -1,6 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
 import { type DrizzleClient, schema } from "@safee/database";
-import { connectTest, createTestOrganization, createTestUser, addMemberToOrganization, cleanTestData } from "@safee/database/test-helpers";
+import {
+  connectTest,
+  createTestOrganization,
+  createTestUser,
+  addMemberToOrganization,
+  cleanTestData,
+} from "@safee/database/test-helpers";
 import { initTestServerContext } from "../test-helpers/testServerContext.js";
 import type { ServerContext } from "../serverContext.js";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
@@ -68,21 +74,27 @@ void describe("HRManagementController - Resource Filtering", async () => {
       await addMemberToOrganization(drizzle, member.id, org.id, "member");
 
       // Create departments
-      const [dept1, _dept2] = await drizzle.insert(schema.hrDepartments).values([
-        {
-          organizationId: org.id,
-          name: "Engineering",
-          note: "Engineering department",
-        },
-        {
-          organizationId: org.id,
-          name: "Sales",
-          note: "Sales department",
-        },
-      ]).returning();
+      const [dept1, _dept2] = await drizzle
+        .insert(schema.hrDepartments)
+        .values([
+          {
+            organizationId: org.id,
+            name: "Engineering",
+            note: "Engineering department",
+          },
+          {
+            organizationId: org.id,
+            name: "Sales",
+            note: "Sales department",
+          },
+        ])
+        .returning();
 
       // Assign member to only Engineering department
-      const assignmentService = new ResourceAssignmentService({ drizzle: context.drizzle, logger: context.logger });
+      const assignmentService = new ResourceAssignmentService({
+        drizzle: context.drizzle,
+        logger: context.logger,
+      });
       await assignmentService.assignResource({
         userId: member.id,
         organizationId: org.id,
@@ -142,11 +154,14 @@ void describe("HRManagementController - Resource Filtering", async () => {
       const owner = await createTestUser(drizzle, { email: "owner@test.com" });
       await addMemberToOrganization(drizzle, owner.id, org.id, "owner");
 
-      const [dept] = await drizzle.insert(schema.hrDepartments).values({
-        organizationId: org.id,
-        name: "Engineering",
-        note: "Engineering department",
-      }).returning();
+      const [dept] = await drizzle
+        .insert(schema.hrDepartments)
+        .values({
+          organizationId: org.id,
+          name: "Engineering",
+          note: "Engineering department",
+        })
+        .returning();
 
       const mockRequest = {
         betterAuthSession: {
@@ -168,14 +183,20 @@ void describe("HRManagementController - Resource Filtering", async () => {
       const member = await createTestUser(drizzle, { email: "member@test.com" });
       await addMemberToOrganization(drizzle, member.id, org.id, "member");
 
-      const [dept] = await drizzle.insert(schema.hrDepartments).values({
-        organizationId: org.id,
-        name: "Engineering",
-        note: "Engineering department",
-      }).returning();
+      const [dept] = await drizzle
+        .insert(schema.hrDepartments)
+        .values({
+          organizationId: org.id,
+          name: "Engineering",
+          note: "Engineering department",
+        })
+        .returning();
 
       // Assign member to department
-      const assignmentService = new ResourceAssignmentService({ drizzle: context.drizzle, logger: context.logger });
+      const assignmentService = new ResourceAssignmentService({
+        drizzle: context.drizzle,
+        logger: context.logger,
+      });
       await assignmentService.assignResource({
         userId: member.id,
         organizationId: org.id,
@@ -204,11 +225,14 @@ void describe("HRManagementController - Resource Filtering", async () => {
       const member = await createTestUser(drizzle, { email: "member@test.com" });
       await addMemberToOrganization(drizzle, member.id, org.id, "member");
 
-      const [dept] = await drizzle.insert(schema.hrDepartments).values({
-        organizationId: org.id,
-        name: "Engineering",
-        note: "Engineering department",
-      }).returning();
+      const [dept] = await drizzle
+        .insert(schema.hrDepartments)
+        .values({
+          organizationId: org.id,
+          name: "Engineering",
+          note: "Engineering department",
+        })
+        .returning();
 
       const mockRequest = {
         betterAuthSession: {
@@ -219,9 +243,7 @@ void describe("HRManagementController - Resource Filtering", async () => {
         logger: context.logger,
       } as unknown as AuthenticatedRequest;
 
-      await expect(
-        controller.getDepartment(mockRequest, dept.id)
-      ).rejects.toThrow("not found");
+      await expect(controller.getDepartment(mockRequest, dept.id)).rejects.toThrow("not found");
     });
   });
 });

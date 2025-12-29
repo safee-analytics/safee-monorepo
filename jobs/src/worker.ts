@@ -249,6 +249,63 @@ const jobProcessors = {
     await odooDatabaseService.installModulesForOrganization(organizationId);
     logger.info({ organizationId }, "✅ All Odoo modules installed successfully");
   },
+  odoo_provision_organization: async (payload: Record<string, unknown>) => {
+    const { organizationId, userId, memberRole } = payload as {
+      organizationId: string;
+      userId: string;
+      memberRole: string;
+    };
+
+    logger.info({ organizationId, userId }, "Starting full Odoo organization provisioning");
+
+    const redis = await redisConnect();
+    const odooDatabaseService = new odoo.OdooDatabaseService({
+      logger,
+      drizzle,
+      redis,
+      odooClient: new odoo.OdooClient(ODOO_URL),
+      encryptionService: new odoo.EncryptionService(JWT_SECRET),
+      odooConfig: {
+        url: ODOO_URL,
+        port: ODOO_PORT,
+        adminPassword: ODOO_ADMIN_PASSWORD,
+      },
+    });
+
+    const odooUserProvisioningService = new odoo.OdooUserProvisioningService({
+      drizzle,
+      logger,
+      encryptionService: new odoo.EncryptionService(JWT_SECRET),
+      odooUrl: ODOO_URL,
+    });
+
+    // Check if database already exists
+    const existingCreds = await odooDatabaseService.getCredentials(organizationId);
+
+    if (!existingCreds) {
+      logger.info({ organizationId }, "Provisioning Odoo database");
+      await odooDatabaseService.provisionDatabase(organizationId);
+      logger.info({ organizationId }, "Odoo database provisioned");
+    } else {
+      logger.info({ organizationId }, "Odoo database already exists, skipping creation");
+    }
+
+    // Provision user
+    const userExists = await odooUserProvisioningService.userExists(userId, organizationId);
+
+    if (!userExists) {
+      logger.info({ userId, organizationId }, "Provisioning Odoo user");
+      await odooUserProvisioningService.provisionUser(userId, organizationId, memberRole);
+      logger.info({ userId }, "Odoo user provisioned");
+    } else {
+      logger.info({ userId, organizationId }, "Odoo user already exists, skipping creation");
+    }
+
+    // Configure webhooks
+    logger.info({ organizationId }, "Configuring Odoo webhooks");
+    await odoo.configureOdooWebhooks(logger, userId, organizationId);
+    logger.info({ organizationId }, "✅ Full Odoo organization provisioning completed");
+  },
 } satisfies Record<JobName, (payload: Record<string, unknown>) => Promise<void>>;
 
 /**
