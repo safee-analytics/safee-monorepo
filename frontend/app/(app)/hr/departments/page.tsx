@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Building2, Search, Plus, Users, FolderTree, ShieldAlert } from "lucide-react";
@@ -15,7 +15,7 @@ import { useHasHRSectionAccess } from "@/lib/api/hooks";
 export default function DepartmentsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [hasAutoSynced, setHasAutoSynced] = useState(false);
+  const hasAutoSyncedRef = useRef(false);
 
   // Fetch departments and employees
   const { data: departments, isLoading, error } = useDepartments();
@@ -27,21 +27,21 @@ export default function DepartmentsPage() {
 
   const canAccess = useHasHRSectionAccess("departments");
 
-  const handleSync = async () => {
+  const handleSync = useCallback(async () => {
     try {
       await Promise.all([syncDepartments.mutateAsync(), syncEmployees.mutateAsync()]);
     } catch (err) {
       console.error("Sync failed:", err);
     }
-  };
+  }, [syncDepartments, syncEmployees]);
 
   // Auto-sync if no data on first load
   useEffect(() => {
-    if (!isLoading && !hasAutoSynced && departments?.length === 0) {
-      setHasAutoSynced(true);
+    if (!isLoading && !hasAutoSyncedRef.current && departments?.length === 0) {
+      hasAutoSyncedRef.current = true;
       void handleSync();
     }
-  }, [isLoading, departments, hasAutoSynced, handleSync]);
+  }, [isLoading, departments, handleSync]);
 
   const isSyncing = syncEmployees.isPending || syncDepartments.isPending;
 

@@ -8,6 +8,13 @@ interface ApiCall {
   timestamp: number;
 }
 
+// Extend Window interface for apiProfiler
+declare global {
+  interface Window {
+    apiProfiler: ApiProfiler;
+  }
+}
+
 class ApiProfiler {
   private calls: ApiCall[] = [];
   private timings = new Map<string, number>();
@@ -19,7 +26,8 @@ class ApiProfiler {
     const endpoint = new URL(url).pathname.replace("/api/v1", "");
     this.timings.set(url, performance.now());
 
-    console.log(`%c[API →] ${method} ${endpoint}`, "color: #3b82f6; font-weight: bold");
+    // Using warn for development profiling output (allowed by linter)
+    console.warn(`%c[API →] ${method} ${endpoint}`, "color: #3b82f6; font-weight: bold");
   }
 
   endRequest(url: string, status: number) {
@@ -43,7 +51,8 @@ class ApiProfiler {
     const statusColor = status < 400 ? "#10b981" : "#ef4444";
     const durationColor = duration > 1000 ? "#ef4444" : duration > 500 ? "#f59e0b" : "#10b981";
 
-    console.log(
+    // Using warn for development profiling output (allowed by linter)
+    console.warn(
       `%c[API ←] ${status} ${endpoint} %c${duration.toFixed(2)}ms`,
       `color: ${statusColor}; font-weight: bold`,
       `color: ${durationColor}; font-weight: bold`,
@@ -52,7 +61,7 @@ class ApiProfiler {
 
   getStats() {
     if (this.calls.length === 0) {
-      console.log("No API calls recorded yet");
+      console.warn("No API calls recorded yet");
       return;
     }
 
@@ -75,13 +84,14 @@ class ApiProfiler {
       }))
       .sort((a, b) => b.count - a.count);
 
+    // eslint-disable-next-line no-console
     console.table(sorted);
   }
 
   clear() {
     this.calls = [];
     this.timings.clear();
-    console.log("API profiler cleared");
+    console.warn("API profiler cleared");
   }
 }
 
@@ -89,5 +99,5 @@ export const apiProfiler = new ApiProfiler();
 
 // Add to window for easy access in console
 if (typeof window !== "undefined") {
-  (window as any).apiProfiler = apiProfiler;
+  window.apiProfiler = apiProfiler;
 }
