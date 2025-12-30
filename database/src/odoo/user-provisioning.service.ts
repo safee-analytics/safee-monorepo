@@ -5,7 +5,7 @@ import { z } from "zod";
 import type { EncryptionService } from "../encryption.js";
 import { NotFound, OperationFailed } from "./errors.js";
 import type { Logger } from "pino";
-import { odooAuthResponseSchema, odooApiKeyResultSchema } from "./schemas.js";
+import { odooAuthResponseSchema } from "./schemas.js";
 
 export interface OdooUserProvisionResult {
   odooUid: number;

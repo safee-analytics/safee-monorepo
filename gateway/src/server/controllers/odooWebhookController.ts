@@ -649,7 +649,6 @@ export class OdooWebhookController extends Controller {
           countryId: odooLead.country_id?.[0],
           zip: odooValue(odooLead.zip),
           partnerId: odooLead.partner_id?.[0],
-          commercialPartnerId: odooLead.commercial_partner_id?.[0],
           stageId: odooLead.stage_id?.[0],
           teamId: odooLead.team_id?.[0],
           userId: odooLead.user_id?.[0],

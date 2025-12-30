@@ -27,14 +27,6 @@ export default function DepartmentsPage() {
 
   const canAccess = useHasHRSectionAccess("departments");
 
-  // Auto-sync if no data on first load
-  useEffect(() => {
-    if (!isLoading && !hasAutoSynced && departments?.length === 0) {
-      setHasAutoSynced(true);
-      handleSync();
-    }
-  }, [isLoading, departments, hasAutoSynced]);
-
   const handleSync = async () => {
     try {
       await Promise.all([syncDepartments.mutateAsync(), syncEmployees.mutateAsync()]);
@@ -42,6 +34,14 @@ export default function DepartmentsPage() {
       console.error("Sync failed:", err);
     }
   };
+
+  // Auto-sync if no data on first load
+  useEffect(() => {
+    if (!isLoading && !hasAutoSynced && departments?.length === 0) {
+      setHasAutoSynced(true);
+      void handleSync();
+    }
+  }, [isLoading, departments, hasAutoSynced, handleSync]);
 
   const isSyncing = syncEmployees.isPending || syncDepartments.isPending;
 

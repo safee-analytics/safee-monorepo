@@ -42,7 +42,7 @@ export function mapEmployee(employee: OdooEmployee): EmployeeResponse {
     work_location_id: mapRelation(employee.work_location_id),
     user_id: mapRelation(employee.user_id),
     employee_type: employee.employee_type,
-    gender: employee.sex,
+    gender: employee.gender,
     marital: employee.marital,
     birthday: employee.birthday,
     identification_id: employee.identification_id,

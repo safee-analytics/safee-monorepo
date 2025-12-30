@@ -677,7 +677,7 @@ export class HRManagementController extends Controller {
         departmentId: departmentUuid,
         managerId: managerUuid,
         employeeType: parseEmployeeType(odooEmployee.employee_type),
-        gender: parseGender(odooEmployee.sex),
+        gender: parseGender(odooEmployee.gender),
         maritalStatus: parseMaritalStatus(odooEmployee.marital),
         birthday: this.odooValueOrUndefined(odooEmployee.birthday),
         placeOfBirth: this.odooValueOrUndefined(odooEmployee.place_of_birth),
@@ -728,7 +728,7 @@ export class HRManagementController extends Controller {
             jobTitle: this.odooValueOrUndefined(odooEmployee.job_title),
             // Omit departmentId and managerId in first pass
             employeeType: parseEmployeeType(odooEmployee.employee_type),
-            gender: parseGender(odooEmployee.sex),
+            gender: parseGender(odooEmployee.gender),
             maritalStatus: parseMaritalStatus(odooEmployee.marital),
             birthday: this.odooValueOrUndefined(odooEmployee.birthday),
             placeOfBirth: this.odooValueOrUndefined(odooEmployee.place_of_birth),
