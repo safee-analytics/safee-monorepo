@@ -224,7 +224,7 @@ export class OdooWebhookController extends Controller {
           departmentId: departmentUuid,
           managerId: managerUuid,
           employeeType: parseEmployeeType(odooEmployee.employee_type),
-          gender: parseGender(odooEmployee.sex),
+          gender: parseGender(odooEmployee.gender),
           maritalStatus: parseMaritalStatus(odooEmployee.marital),
           birthday: odooValue(odooEmployee.birthday),
           placeOfBirth: odooValue(odooEmployee.place_of_birth),

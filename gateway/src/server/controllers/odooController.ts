@@ -223,7 +223,7 @@ export class OdooController extends Controller {
       success: true,
       odooUid: result.odooUid,
       odooLogin: result.odooLogin,
-      hasApiKey: result.odooPassword.includes("_"), // API keys have underscore
+      hasApiKey: result.hasApiKey,
     };
   }
 

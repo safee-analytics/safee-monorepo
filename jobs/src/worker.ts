@@ -23,6 +23,7 @@ import {
 } from "./queues/job-schemas.js";
 import { renderTemplate } from "./emailTemplates/index.js";
 import { JWT_SECRET, ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD } from "./env.js";
+import { QueueManager } from "./queues/queue-manager.js";
 
 // Schema for basic job data structure
 const JobDataSchema = z
@@ -281,11 +282,13 @@ const jobProcessors = {
 
     // Check if database already exists
     const existingCreds = await odooDatabaseService.getCredentials(organizationId);
+    let databaseCreated = false;
 
     if (!existingCreds) {
       logger.info({ organizationId }, "Provisioning Odoo database");
       await odooDatabaseService.provisionDatabase(organizationId);
       logger.info({ organizationId }, "Odoo database provisioned");
+      databaseCreated = true;
     } else {
       logger.info({ organizationId }, "Odoo database already exists, skipping creation");
     }
@@ -304,6 +307,15 @@ const jobProcessors = {
     // Configure webhooks
     logger.info({ organizationId }, "Configuring Odoo webhooks");
     await odoo.configureOdooWebhooks(logger, userId, organizationId);
+
+    // Queue module installation job if database was just created
+    if (databaseCreated) {
+      logger.info({ organizationId }, "Queueing Odoo module installation job (10-15 minutes)");
+      const queueManager = new QueueManager();
+      await queueManager.addJob("install-modules", { organizationId }, { organizationId });
+      logger.info({ organizationId }, "Module installation job queued successfully");
+    }
+
     logger.info({ organizationId }, "✅ Full Odoo organization provisioning completed");
   },
 } satisfies Record<JobName, (payload: Record<string, unknown>) => Promise<void>>;
@@ -348,6 +360,8 @@ async function processJob(job: Job): Promise<void> {
       processor = jobProcessors.generate_report;
     } else if (jobName === "odoo-provisioning") {
       processor = jobProcessors.odoo_provisioning;
+    } else if (jobName === "odoo-provision-organization") {
+      processor = jobProcessors.odoo_provision_organization;
     } else if (jobName === "install-modules") {
       processor = jobProcessors.install_odoo_modules;
     } else if (jobName === "encryption") {
@@ -422,6 +436,7 @@ async function startWorkers() {
     "odoo-sync",
     "reports",
     "odoo-provisioning",
+    "odoo-provision-organization",
     "install-modules",
     "encryption",
     "key-rotation",

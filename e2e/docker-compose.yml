@@ -42,14 +42,19 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    env_file:
+      - ../odoo/.env
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_USER=safee
       - DB_PASSWORD=safee
-      - ADMIN_PASSWORD=admin
+      - ODOO_ADMIN_PASSWORD=admin
+    # Local dev/test override: single-threaded mode (safe for laptops)
+    # workers=0 uses ~500MB RAM instead of 20GB
+    command: odoo --workers=0 --max-cron-threads=0
     volumes:
-      - ../infra/config/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ../odoo/odoo.conf:/etc/odoo/odoo.conf:ro
       - odoo-data:/var/lib/odoo
     networks:
       - safee_net

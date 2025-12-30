@@ -20,7 +20,6 @@ export interface OdooLead {
   zip?: string;
 
   partner_id?: [number, string];
-  commercial_partner_id?: [number, string];
   stage_id?: [number, string];
   team_id?: [number, string];
   user_id?: [number, string];
@@ -60,10 +59,8 @@ export interface OdooStage {
   sequence?: number;
   fold?: boolean;
   is_won?: boolean;
-  rotting_threshold_days?: number;
   requirements?: string;
-  team_ids?: number[];
-  color?: number;
+  team_id?: [number, string];
 }
 
 export interface OdooContact {
@@ -169,7 +166,6 @@ export class OdooCRMService {
       "country_id",
       "zip",
       "partner_id",
-      "commercial_partner_id",
       "stage_id",
       "team_id",
       "user_id",
@@ -219,7 +215,6 @@ export class OdooCRMService {
         "country_id",
         "zip",
         "partner_id",
-        "commercial_partner_id",
         "stage_id",
         "team_id",
         "user_id",
@@ -361,7 +356,7 @@ export class OdooCRMService {
     const domain: [string, string, unknown][] = [];
 
     if (filters?.teamId) {
-      domain.push(["team_ids", "in", [filters.teamId]]);
+      domain.push(["team_id", "=", filters.teamId]);
     }
     if (filters?.isWon !== undefined) {
       domain.push(["is_won", "=", filters.isWon]);
@@ -372,10 +367,8 @@ export class OdooCRMService {
       "sequence",
       "fold",
       "is_won",
-      "rotting_threshold_days",
       "requirements",
-      "team_ids",
-      "color",
+      "team_id",
     ]);
   }
 
@@ -383,7 +376,7 @@ export class OdooCRMService {
     const stages = await this.client.read<OdooStage>(
       "crm.stage",
       [stageId],
-      ["name", "sequence", "fold", "is_won", "rotting_threshold_days", "requirements", "team_ids", "color"],
+      ["name", "sequence", "fold", "is_won", "requirements", "team_id"],
     );
 
     return stages.length > 0 ? stages[0] : null;

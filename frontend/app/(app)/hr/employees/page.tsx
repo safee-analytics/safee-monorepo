@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -15,7 +15,7 @@ import {
   UserX,
   ShieldAlert,
 } from "lucide-react";
-import { useEmployees, useDepartments } from "@/lib/api/hooks/hrManagement";
+import { useEmployees, useDepartments, useSyncAllEmployees, useSyncAllDepartments } from "@/lib/api/hooks/hrManagement";
 import { useHasHRSectionAccess } from "@/lib/api/hooks";
 
 export default function EmployeesPage() {
@@ -23,6 +23,7 @@ export default function EmployeesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
+  const [hasAutoSynced, setHasAutoSynced] = useState(false);
 
   // Fetch employees and departments
   const {
@@ -32,7 +33,32 @@ export default function EmployeesPage() {
   } = useEmployees(selectedDepartment ? { departmentId: selectedDepartment } : undefined);
   const { data: departments } = useDepartments();
 
+  // Sync mutations
+  const syncEmployees = useSyncAllEmployees();
+  const syncDepartments = useSyncAllDepartments();
+
   const canAccess = useHasHRSectionAccess("employees");
+
+  // Auto-sync if no data on first load
+  useEffect(() => {
+    if (!isLoading && !hasAutoSynced && employees?.length === 0) {
+      setHasAutoSynced(true);
+      handleSync();
+    }
+  }, [isLoading, employees, hasAutoSynced]);
+
+  const handleSync = async () => {
+    try {
+      await Promise.all([
+        syncDepartments.mutateAsync(),
+        syncEmployees.mutateAsync(),
+      ]);
+    } catch (err) {
+      console.error("Sync failed:", err);
+    }
+  };
+
+  const isSyncing = syncEmployees.isPending || syncDepartments.isPending;
 
   // Check permission
   if (!canAccess) {
@@ -253,7 +279,7 @@ export default function EmployeesPage() {
 
       {/* Table */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        {isLoading ? (
+        {isLoading || isSyncing ? (
           <div className="p-12 text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             <p className="mt-4 text-gray-600">Loading employees...</p>

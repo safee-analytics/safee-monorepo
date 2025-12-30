@@ -229,3 +229,35 @@ export function useLeaveBalance(employeeId: string, leaveTypeId: string) {
     enabled: !!employeeId && !!leaveTypeId,
   });
 }
+
+// ==================== Sync Operations ====================
+
+export function useSyncAllEmployees() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const { data, error } = await apiClient.POST("/hr-management/employees/sync-all");
+      if (error) throw new Error(handleApiError(error));
+      return data as { synced: number; created: number; updated: number; errors: string[] };
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hr.employees() });
+    },
+  });
+}
+
+export function useSyncAllDepartments() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const { data, error } = await apiClient.POST("/hr-management/departments/sync-all");
+      if (error) throw new Error(handleApiError(error));
+      return data as { synced: number; created: number; updated: number; errors: string[] };
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.hr.departments() });
+    },
+  });
+}

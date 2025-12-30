@@ -64,12 +64,20 @@ export class AccountingController extends Controller {
     if (type === "SALES") moveType = "out_invoice";
     if (type === "PURCHASE") moveType = "in_invoice";
 
-    const odooInvoices = await service.getInvoices({
-      moveType,
-      state,
-      dateFrom,
-      dateTo,
-    });
+    const offset = (page - 1) * limit;
+
+    const odooInvoices = await service.getInvoices(
+      {
+        moveType,
+        state,
+        dateFrom,
+        dateTo,
+      },
+      {
+        limit,
+        offset,
+      },
+    );
 
     const invoices: Invoice[] = odooInvoices.map((inv) => ({
       id: inv.id ? inv.id.toString() : "",
@@ -234,12 +242,20 @@ export class AccountingController extends Controller {
   }> {
     const service = await this.getAccountingService(request);
 
-    const odooBills = await service.getInvoices({
-      moveType: "in_invoice",
-      state,
-      dateFrom,
-      dateTo,
-    });
+    const offset = (page - 1) * limit;
+
+    const odooBills = await service.getInvoices(
+      {
+        moveType: "in_invoice",
+        state,
+        dateFrom,
+        dateTo,
+      },
+      {
+        limit,
+        offset,
+      },
+    );
 
     const bills: Invoice[] = odooBills.map((bill) => ({
       id: bill.id ? bill.id.toString() : "",
@@ -435,18 +451,29 @@ export class AccountingController extends Controller {
   @OperationId("GetAccountingPayments")
   public async getPayments(
     @Request() request: AuthenticatedRequest,
+    @Query() page = 1,
+    @Query() limit = 20,
     @Query() type?: "inbound" | "outbound" | "transfer",
     @Query() state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled",
     @Query() dateFrom?: string,
     @Query() dateTo?: string,
   ): Promise<PaymentResponse[]> {
     const service = await this.getAccountingService(request);
-    const payments = await service.getPayments({
-      paymentType: type,
-      state,
-      dateFrom,
-      dateTo,
-    });
+
+    const offset = (page - 1) * limit;
+
+    const payments = await service.getPayments(
+      {
+        paymentType: type,
+        state,
+        dateFrom,
+        dateTo,
+      },
+      {
+        limit,
+        offset,
+      },
+    );
 
     // Map Odoo tuples to camelCase objects
     return payments.map((p) => ({

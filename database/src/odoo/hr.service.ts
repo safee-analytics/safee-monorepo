@@ -19,7 +19,7 @@ export interface OdooEmployee {
   work_location_id?: [number, string];
   user_id?: [number, string];
   employee_type?: string;
-  sex?: string; // Odoo uses 'sex' not 'gender'
+  gender?: string;
   marital?: string;
   birthday?: string;
   identification_id?: string;
@@ -188,7 +188,7 @@ export class OdooHRService {
       "work_location_id",
       "user_id",
       "employee_type",
-      "sex",
+      "gender",
       "marital",
       "birthday",
       "identification_id",
@@ -224,7 +224,7 @@ export class OdooHRService {
         "work_location_id",
         "user_id",
         "employee_type",
-        "sex",
+        "gender",
         "marital",
         "birthday",
         "identification_id",
@@ -605,7 +605,7 @@ export class OdooHRService {
       mobile_phone: data.mobilePhone,
       job_title: data.jobTitle,
       employee_type: data.employeeType,
-      sex: data.gender,
+      gender: data.gender,
       marital: data.maritalStatus,
       birthday: data.birthday,
       identification_id: data.identificationId,

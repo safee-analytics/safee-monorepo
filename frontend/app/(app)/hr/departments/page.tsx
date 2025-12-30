@@ -1,21 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Building2, Search, Plus, Users, FolderTree, ShieldAlert } from "lucide-react";
-import { useDepartments, useEmployees } from "@/lib/api/hooks/hrManagement";
+import { useDepartments, useEmployees, useSyncAllEmployees, useSyncAllDepartments } from "@/lib/api/hooks/hrManagement";
 import { useHasHRSectionAccess } from "@/lib/api/hooks";
 
 export default function DepartmentsPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [hasAutoSynced, setHasAutoSynced] = useState(false);
 
   // Fetch departments and employees
   const { data: departments, isLoading, error } = useDepartments();
   const { data: employees } = useEmployees();
 
+  // Sync mutations
+  const syncEmployees = useSyncAllEmployees();
+  const syncDepartments = useSyncAllDepartments();
+
   const canAccess = useHasHRSectionAccess("departments");
+
+  // Auto-sync if no data on first load
+  useEffect(() => {
+    if (!isLoading && !hasAutoSynced && departments?.length === 0) {
+      setHasAutoSynced(true);
+      handleSync();
+    }
+  }, [isLoading, departments, hasAutoSynced]);
+
+  const handleSync = async () => {
+    try {
+      await Promise.all([
+        syncDepartments.mutateAsync(),
+        syncEmployees.mutateAsync(),
+      ]);
+    } catch (err) {
+      console.error("Sync failed:", err);
+    }
+  };
+
+  const isSyncing = syncEmployees.isPending || syncDepartments.isPending;
 
   // Check permission
   if (!canAccess) {
@@ -157,7 +183,7 @@ export default function DepartmentsPage() {
 
       {/* Table */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        {isLoading ? (
+        {isLoading || isSyncing ? (
           <div className="p-12 text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             <p className="mt-4 text-gray-600">Loading departments...</p>

@@ -184,10 +184,10 @@ export class OdooDatabaseService {
       // ========================================
 
       // Safee Custom Modules
-      "api_key_service",
+      // "api_key_service", // Replaced by OCA auth_api_key module
       "safee_webhooks",
 
-      // Server Tools
+      // Server Tools - Core
       "auditlog",
       "auto_backup",
       "base_name_search_improved",
@@ -195,50 +195,84 @@ export class OdooDatabaseService {
       "database_cleanup",
       "module_auto_update",
       "scheduler_error_mailer",
+      "base_exception",
+
+      // Server Tools - SaaS Critical Infrastructure
+      "dbfilter_from_header", // HTTP header-based database routing for multi-tenant
+      "session_db", // Store sessions in PostgreSQL for horizontal scaling
+      "bus_alt_connection", // PgBouncer connection pooling support
+      "sentry", // Error monitoring integration
+
+      // Server Tools - Security & Access Control
+      "base_model_restrict_update", // Restrict model update operations
+
+      // Server Tools - Tracking & Audit
+      "tracking_manager", // Enhanced field-level change tracking
+      "tracking_manager_domain", // Conditional field tracking
+
+      // Server Tools - Attachment Management
+      "attachment_queue", // Async attachment processing
+      "attachment_synchronize", // S3/external storage sync
+      "autovacuum_message_attachment", // Auto-cleanup old messages/attachments
+
+      // Server Tools - Performance & Maintenance
+      "onchange_helper", // Python onchange execution support
+      "rpc_helper", // RPC call management
+      "mail_cleanup", // Mail message retention management
+      "database_size", // Database size monitoring
+      "base_cron_exclusion", // Prevent cron conflicts
+      "base_search_fuzzy", // PostgreSQL trigram-based fuzzy search
+
+      // Server Tools - Data Management
+      "excel_import_export", // Excel file integration
+      "jsonifier", // JSON-ify data for all models
+      "html_text", // HTML content extraction utility
 
       // Queue/Background Jobs
       "queue_job",
       "queue_job_cron",
 
-      // Document Management
-      "dms",
-      "dms_auto_classification",
-      "dms_field",
+      // Document Management (commented out - add when needed)
+      // "dms",
+      // "dms_auto_classification",
+      // "dms_field",
 
-      // Reporting
-      "report_xlsx",
-      "report_csv",
-      "report_qr",
-      "report_xml",
-      "report_py3o",
-      "report_qweb_parameter",
-      "report_qweb_encrypt",
-      "report_qweb_pdf_watermark",
-      "bi_sql_editor",
-      "sql_export",
-      "sql_export_excel",
+      // Reporting - Basic
+      "report_xlsx", // Excel export
+      "report_csv", // CSV export
 
-      // Mail/Communication
-      "mail_tracking",
-      "mail_tracking_mass_mailing",
-      "mail_debrand",
-      "mail_optional_autofollow",
-      "mail_activity_board",
+      // Reporting - Advanced (commented out - add when needed)
+      // "report_qr",
+      // "report_xml",
+      // "report_py3o",
+      // "report_qweb_parameter",
+      // "report_qweb_encrypt",
+      // "report_qweb_pdf_watermark",
+      // "bi_sql_editor",
+      // "sql_export",
+      // "sql_export_excel",
 
-      // Partner/Contact
-      "partner_firstname",
-      "partner_second_lastname",
-      "partner_statement",
-      "partner_multi_relation",
-      "partner_identification",
-      "partner_company_group",
-      "partner_external_map",
+      // Mail/Communication (commented out - add when needed)
+      // "mail_tracking",
+      // "mail_tracking_mass_mailing",
+      // "mail_debrand",
+      // "mail_optional_autofollow",
+      // "mail_activity_board",
 
-      // Contract
-      "contract",
-      "contract_sale",
-      "contract_payment_mode",
-      "contract_variable_quantity",
+      // Partner/Contact (commented out - add when needed)
+      // "partner_firstname",
+      // "partner_second_lastname",
+      // "partner_statement",
+      // "partner_multi_relation",
+      // "partner_identification",
+      // "partner_company_group",
+      // "partner_external_map",
+
+      // Contract (commented out - add when needed)
+      // "contract",
+      // "contract_sale",
+      // "contract_payment_mode",
+      // "contract_variable_quantity",
 
       // Account - OCA Extensions
       "account_asset_management",
@@ -261,25 +295,25 @@ export class OdooDatabaseService {
       // Analytics
       "analytic_base_department",
 
-      // Sale - OCA Extensions
-      "sale_automatic_workflow",
-      "sale_exception",
-      "sale_global_discount",
-      "sale_order_invoicing_grouping_criteria",
-      "sale_order_type",
-      "sale_product_set",
-      "sale_quotation_number",
-      "sale_stock_picking_invoicing",
-      "sale_tier_validation",
+      // Sale - OCA Extensions (commented out - add when needed)
+      // "sale_automatic_workflow",
+      // "sale_exception",
+      // "sale_global_discount",
+      // "sale_order_invoicing_grouping_criteria",
+      // "sale_order_type",
+      // "sale_product_set",
+      // "sale_quotation_number",
+      // "sale_stock_picking_invoicing",
+      // "sale_tier_validation",
 
-      // Project - OCA Extensions
-      "project_department",
-      "project_hr",
-      "project_key",
-      "project_task_code",
-      "project_task_parent_completion_blocking",
-      "project_template",
-      "project_timeline",
+      // Project - OCA Extensions (commented out - add when needed)
+      // "project_department",
+      // "project_hr",
+      // "project_key",
+      // "project_task_code",
+      // "project_task_parent_completion_blocking",
+      // "project_template",
+      // "project_timeline",
 
       // HR - OCA Extensions
       "hr_contract_reference",
@@ -296,38 +330,48 @@ export class OdooDatabaseService {
       "hr_timesheet_analytic_tag",
       "hr_timesheet_sheet",
 
-      // Helpdesk
-      "helpdesk_mgmt",
-      "helpdesk_mgmt_rating",
-      "helpdesk_mgmt_sla",
-      "helpdesk_mgmt_timesheet",
+      // Helpdesk (commented out - add when needed)
+      // "helpdesk_mgmt",
+      // "helpdesk_mgmt_rating",
+      // "helpdesk_mgmt_sla",
+      // "helpdesk_mgmt_timesheet",
 
-      // MIS Builder (Financial Reports)
-      "mis_builder",
+      // MIS Builder (commented out - add when needed)
+      // "mis_builder",
 
-      // Web UI Improvements
-      "web_responsive",
-      "web_m2x_options",
-      "web_notify",
-      "web_timeline",
-      "web_environment_ribbon",
-      "web_dialog_size",
+      // Web UI Improvements (commented out - add when needed)
+      // "web_responsive",
+      // "web_m2x_options",
+      // "web_notify",
+      // "web_timeline",
+      // "web_environment_ribbon",
+      // "web_dialog_size",
 
-      // API/Integration - REST Framework
-      "component", // Required for base_rest
+      // Component Framework (required for storage modules)
+      "component",
       "component_event",
-      "extendable", // Required for component
-      "pydantic", // Pydantic utility addon
-      "base_rest", // REST API framework
-      "base_rest_pydantic", // Pydantic integration for REST
-      "base_rest_auth_api_key", // API key auth for REST
-      "rest_log", // REST API call logging
-      "endpoint_route_handler", // Route handling
-      "fastapi", // FastAPI integration
-      "fastapi_auth_api_key", // API key auth for FastAPI
+      "extendable",
+
+      // API/Integration - REST Framework (commented out - gateway handles external APIs)
+      // "pydantic",
+      // "base_rest",
+      // "base_rest_pydantic",
+      // "base_rest_auth_api_key",
+      // "rest_log",
+      // "endpoint_route_handler",
+      // "fastapi",
+      // "fastapi_auth_api_key",
+
+      // Storage & File Management
+      "server_environment", // Environment-based configuration (required for storage_backend)
+      "storage_backend", // Storage backend framework (S3, SFTP, local, etc.)
+      "fs_storage", // Filesystem/external storage abstraction
+      "fs_attachment", // Store attachments in external storage (not PostgreSQL)
+      "storage_backend_s3", // S3-compatible storage backend (AWS, MinIO, DigitalOcean, etc.)
+      "fs_image", // Image processing and thumbnails
 
       // Security & Auth
-      "auth_api_key",
+      "auth_api_key", // OCA API key authentication (programmatic creation via XML-RPC)
       "password_security",
       "base_user_show_email",
 
@@ -805,45 +849,47 @@ export class OdooDatabaseService {
       "queue_job",
       "queue_job_cron",
 
-      // Document Management
-      "dms",
-      "dms_auto_classification",
-      "dms_field",
+      // Document Management (commented out - add when needed)
+      // "dms",
+      // "dms_auto_classification",
+      // "dms_field",
 
-      // Reporting
-      "report_xlsx",
-      "report_csv",
-      "report_qr",
-      "report_xml",
-      "report_py3o",
-      "report_qweb_parameter",
-      "report_qweb_encrypt",
-      "report_qweb_pdf_watermark",
-      "bi_sql_editor",
-      "sql_export",
-      "sql_export_excel",
+      // Reporting - Basic
+      "report_xlsx", // Excel export
+      "report_csv", // CSV export
 
-      // Mail/Communication
-      "mail_tracking",
-      "mail_tracking_mass_mailing",
-      "mail_debrand",
-      "mail_optional_autofollow",
-      "mail_activity_board",
+      // Reporting - Advanced (commented out - add when needed)
+      // "report_qr",
+      // "report_xml",
+      // "report_py3o",
+      // "report_qweb_parameter",
+      // "report_qweb_encrypt",
+      // "report_qweb_pdf_watermark",
+      // "bi_sql_editor",
+      // "sql_export",
+      // "sql_export_excel",
 
-      // Partner/Contact
-      "partner_firstname",
-      "partner_second_lastname",
-      "partner_statement",
-      "partner_multi_relation",
-      "partner_identification",
-      "partner_company_group",
-      "partner_external_map",
+      // Mail/Communication (commented out - add when needed)
+      // "mail_tracking",
+      // "mail_tracking_mass_mailing",
+      // "mail_debrand",
+      // "mail_optional_autofollow",
+      // "mail_activity_board",
 
-      // Contract
-      "contract",
-      "contract_sale",
-      "contract_payment_mode",
-      "contract_variable_quantity",
+      // Partner/Contact (commented out - add when needed)
+      // "partner_firstname",
+      // "partner_second_lastname",
+      // "partner_statement",
+      // "partner_multi_relation",
+      // "partner_identification",
+      // "partner_company_group",
+      // "partner_external_map",
+
+      // Contract (commented out - add when needed)
+      // "contract",
+      // "contract_sale",
+      // "contract_payment_mode",
+      // "contract_variable_quantity",
 
       // Account - OCA Extensions
       "account_asset_management",
@@ -903,22 +949,22 @@ export class OdooDatabaseService {
       "hr_timesheet_analytic_tag",
       "hr_timesheet_sheet",
 
-      // Helpdesk
-      "helpdesk_mgmt",
-      "helpdesk_mgmt_rating",
-      "helpdesk_mgmt_sla",
-      "helpdesk_mgmt_timesheet",
+      // Helpdesk (commented out - add when needed)
+      // "helpdesk_mgmt",
+      // "helpdesk_mgmt_rating",
+      // "helpdesk_mgmt_sla",
+      // "helpdesk_mgmt_timesheet",
 
-      // MIS Builder (Financial Reports)
-      "mis_builder",
+      // MIS Builder (commented out - add when needed)
+      // "mis_builder",
 
-      // Web UI Improvements
-      "web_responsive",
-      "web_m2x_options",
-      "web_notify",
-      "web_timeline",
-      "web_environment_ribbon",
-      "web_dialog_size",
+      // Web UI Improvements (commented out - add when needed)
+      // "web_responsive",
+      // "web_m2x_options",
+      // "web_notify",
+      // "web_timeline",
+      // "web_environment_ribbon",
+      // "web_dialog_size",
 
       // Security
       "password_security",

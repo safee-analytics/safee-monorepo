@@ -21,7 +21,7 @@ export const odooAuthResponseSchema = z.object({
   result: z
     .object({
       uid: z.number(),
-      session_id: z.string(),
+      session_id: z.string().optional(), // Odoo 18: session_id moved to cookies, not in JSON response
     })
     .optional(),
 });

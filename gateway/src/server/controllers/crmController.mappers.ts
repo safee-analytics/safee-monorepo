@@ -38,7 +38,6 @@ export function mapLead(lead: OdooLead): LeadResponse {
     country: mapRelation(lead.country_id),
     zip: lead.zip,
     partner: mapRelation(lead.partner_id),
-    commercialPartner: mapRelation(lead.commercial_partner_id),
     stage: mapRelation(lead.stage_id),
     team: mapRelation(lead.team_id),
     user: mapRelation(lead.user_id),
@@ -75,10 +74,8 @@ export function mapStage(stage: OdooStage): StageResponse {
     sequence: stage.sequence,
     fold: stage.fold,
     isWon: stage.is_won,
-    rottingThresholdDays: stage.rotting_threshold_days,
     requirements: stage.requirements,
-    teamIds: stage.team_ids,
-    color: stage.color,
+    team: mapRelation(stage.team_id),
   };
 }
 

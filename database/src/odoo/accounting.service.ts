@@ -52,21 +52,16 @@ export class OdooAccountingService {
     if (filters?.accountType) {
       domain.push(["account_type", "=", filters.accountType]);
     }
-    if (filters?.onlyActive !== false) {
-      domain.push(["active", "=", true]);
-    }
 
     return this.client.searchRead<OdooAccount>("account.account", domain, [
       "code",
       "name",
-      "description",
       "account_type",
       "internal_group",
       "currency_id",
       "company_currency_id",
       "group_id",
       "root_id",
-      "active",
       "used",
       "reconcile",
       "current_balance",
@@ -88,14 +83,12 @@ export class OdooAccountingService {
       [
         "code",
         "name",
-        "description",
         "account_type",
         "internal_group",
         "currency_id",
         "company_currency_id",
         "group_id",
         "root_id",
-        "active",
         "used",
         "reconcile",
         "current_balance",
@@ -115,15 +108,13 @@ export class OdooAccountingService {
   async searchAccounts(query: string): Promise<OdooAccount[]> {
     return this.client.searchRead<OdooAccount>(
       "account.account",
-      ["&", ["active", "=", true], "|", ["code", "ilike", query], ["name", "ilike", query]],
+      ["|", ["code", "ilike", query], ["name", "ilike", query]],
       [
         "code",
         "name",
-        "description",
         "account_type",
         "currency_id",
         "group_id",
-        "active",
         "current_balance",
         "reconcile",
         "tax_ids",
@@ -132,14 +123,20 @@ export class OdooAccountingService {
     );
   }
 
-  async getInvoices(filters?: {
-    moveType?: "out_invoice" | "out_refund" | "in_invoice" | "in_refund";
-    partnerId?: number;
-    state?: "draft" | "posted" | "cancel";
-    paymentState?: "not_paid" | "in_payment" | "paid" | "partial" | "reversed";
-    dateFrom?: string;
-    dateTo?: string;
-  }): Promise<OdooInvoiceRead[]> {
+  async getInvoices(
+    filters?: {
+      moveType?: "out_invoice" | "out_refund" | "in_invoice" | "in_refund";
+      partnerId?: number;
+      state?: "draft" | "posted" | "cancel";
+      paymentState?: "not_paid" | "in_payment" | "paid" | "partial" | "reversed";
+      dateFrom?: string;
+      dateTo?: string;
+    },
+    options?: {
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<OdooInvoiceRead[]> {
     const domain: (string | [string, string, unknown])[] = [];
 
     if (filters?.moveType) {
@@ -198,7 +195,11 @@ export class OdooAccountingService {
         "tax_totals",
         "is_move_sent",
       ],
-      { order: "invoice_date desc" },
+      {
+        order: "invoice_date desc",
+        limit: options?.limit,
+        offset: options?.offset,
+      },
     );
   }
 
@@ -335,13 +336,19 @@ export class OdooAccountingService {
     await this.client.executeKw("account.move", "button_draft", [[invoiceId]]);
   }
 
-  async getPayments(filters?: {
-    paymentType?: "inbound" | "outbound" | "transfer";
-    partnerId?: number;
-    state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
-    dateFrom?: string;
-    dateTo?: string;
-  }): Promise<OdooPayment[]> {
+  async getPayments(
+    filters?: {
+      paymentType?: "inbound" | "outbound" | "transfer";
+      partnerId?: number;
+      state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
+      dateFrom?: string;
+      dateTo?: string;
+    },
+    options?: {
+      limit?: number;
+      offset?: number;
+    },
+  ): Promise<OdooPayment[]> {
     const domain: [string, string, unknown][] = [];
 
     if (filters?.paymentType) {
@@ -391,7 +398,11 @@ export class OdooAccountingService {
         "reconciled_invoices_count",
         "qr_code",
       ],
-      { order: "date desc" },
+      {
+        order: "date desc",
+        limit: options?.limit,
+        offset: options?.offset,
+      },
     );
   }
 
@@ -559,15 +570,19 @@ export class OdooAccountingService {
   }
 
   async getGLEntries(filters?: {
-    accountId?: number;
+    accountId?: number | number[];
     partnerId?: number;
     dateFrom?: string;
     dateTo?: string;
   }): Promise<OdooGLEntry[]> {
     const domain: [string, string, unknown][] = [];
 
-    if (filters?.accountId) {
-      domain.push(["account_id", "=", filters.accountId]);
+    if (filters?.accountId !== undefined) {
+      if (Array.isArray(filters.accountId)) {
+        domain.push(["account_id", "in", filters.accountId]);
+      } else {
+        domain.push(["account_id", "=", filters.accountId]);
+      }
     }
     if (filters?.partnerId) {
       domain.push(["partner_id", "=", filters.partnerId]);
@@ -681,33 +696,51 @@ export class OdooAccountingService {
     expenses: number;
     netProfit: number;
   }> {
-    const incomeAccounts = await this.getAccounts({
-      accountType: "income",
+    // Query 1: Get all income and expense account IDs
+    const accounts = await this.client.searchRead<{ id: number; account_type: string }>(
+      "account.account",
+      [["account_type", "in", ["income", "expense"]]],
+      ["account_type"],
+    );
+
+    const incomeAccountIds: number[] = [];
+    const expenseAccountIds: number[] = [];
+
+    for (const account of accounts) {
+      if (account.account_type === "income") {
+        incomeAccountIds.push(account.id);
+      } else if (account.account_type === "expense") {
+        expenseAccountIds.push(account.id);
+      }
+    }
+
+    // Query 2: Get all GL entries for all accounts at once
+    const allAccountIds = [...incomeAccountIds, ...expenseAccountIds];
+    if (allAccountIds.length === 0) {
+      return { income: 0, expenses: 0, netProfit: 0 };
+    }
+
+    const entries = await this.getGLEntries({
+      accountId: allAccountIds,
+      dateFrom,
+      dateTo,
     });
 
-    const expenseAccounts = await this.getAccounts({
-      accountType: "expense",
-    });
+    // Build lookup set for income accounts
+    const incomeIds = new Set(incomeAccountIds);
 
+    // Calculate totals
     let totalIncome = 0;
     let totalExpenses = 0;
 
-    for (const account of incomeAccounts) {
-      const entries = await this.getGLEntries({
-        accountId: account.id,
-        dateFrom,
-        dateTo,
-      });
-      totalIncome += entries.reduce((sum, entry) => sum + entry.credit - entry.debit, 0);
-    }
+    for (const entry of entries) {
+      const accountId = typeof entry.account_id === "number" ? entry.account_id : entry.account_id[0];
 
-    for (const account of expenseAccounts) {
-      const entries = await this.getGLEntries({
-        accountId: account.id,
-        dateFrom,
-        dateTo,
-      });
-      totalExpenses += entries.reduce((sum, entry) => sum + entry.debit - entry.credit, 0);
+      if (incomeIds.has(accountId)) {
+        totalIncome += entry.credit - entry.debit;
+      } else {
+        totalExpenses += entry.debit - entry.credit;
+      }
     }
 
     return {
@@ -760,11 +793,22 @@ export class OdooAccountingService {
   > {
     const today = asOfDate ?? new Date().toISOString().split("T")[0];
 
-    const invoices = await this.getInvoices({
-      moveType: "out_invoice",
-      state: "posted",
-      paymentState: "not_paid",
-    });
+    // Optimized query: only fetch fields needed for aging report
+    const invoices = await this.client.searchRead<{
+      id: number;
+      partner_id: [number, string];
+      invoice_date?: string;
+      invoice_date_due?: string;
+      amount_residual?: number;
+    }>(
+      "account.move",
+      [
+        ["move_type", "=", "out_invoice"],
+        ["state", "=", "posted"],
+        ["payment_state", "=", "not_paid"],
+      ],
+      ["partner_id", "invoice_date", "invoice_date_due", "amount_residual"],
+    );
 
     const partnerMap = new Map<
       number,
@@ -848,11 +892,22 @@ export class OdooAccountingService {
   > {
     const today = asOfDate ?? new Date().toISOString().split("T")[0];
 
-    const bills = await this.getInvoices({
-      moveType: "in_invoice",
-      state: "posted",
-      paymentState: "not_paid",
-    });
+    // Optimized query: only fetch fields needed for aging report
+    const bills = await this.client.searchRead<{
+      id: number;
+      partner_id: [number, string];
+      invoice_date?: string;
+      invoice_date_due?: string;
+      amount_residual?: number;
+    }>(
+      "account.move",
+      [
+        ["move_type", "=", "in_invoice"],
+        ["state", "=", "posted"],
+        ["payment_state", "=", "not_paid"],
+      ],
+      ["partner_id", "invoice_date", "invoice_date_due", "amount_residual"],
+    );
 
     const partnerMap = new Map<
       number,

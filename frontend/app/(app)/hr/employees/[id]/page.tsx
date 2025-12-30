@@ -43,9 +43,13 @@ export default function EmployeeDetailPage() {
   const { data: manager } = useEmployee(employee?.managerId || "");
 
   // Fetch related data
-  const { data: contracts } = useContracts({ employeeId: employee?.odooEmployeeId });
+  const { data: contracts, error: contractsError } = useContracts({ employeeId: employee?.odooEmployeeId });
   const { data: leaveBalances } = useLeaveBalances(employeeId);
-  const { data: payslips } = usePayslips({ employeeId: employee?.odooEmployeeId });
+  const { data: payslips, error: payslipsError } = usePayslips({ employeeId: employee?.odooEmployeeId });
+
+  // Check if user has access to contracts/payslips (403/500 errors indicate no permission)
+  const hasContractsAccess = !contractsError;
+  const hasPayslipsAccess = !payslipsError;
 
   // Deactivate mutation
   const deactivateEmployee = useDeactivateEmployee();
@@ -126,9 +130,9 @@ export default function EmployeeDetailPage() {
 
   const tabs = [
     { id: "overview" as const, label: "Overview", icon: User },
-    { id: "contracts" as const, label: "Contracts", icon: FileText, count: contracts?.length },
+    ...(hasContractsAccess ? [{ id: "contracts" as const, label: "Contracts", icon: FileText, count: contracts?.length }] : []),
     { id: "leave" as const, label: "Leave", icon: Palmtree, count: leaveBalances?.length },
-    { id: "payslips" as const, label: "Payslips", icon: DollarSign, count: payslips?.length },
+    ...(hasPayslipsAccess ? [{ id: "payslips" as const, label: "Payslips", icon: DollarSign, count: payslips?.length }] : []),
   ];
 
   return (

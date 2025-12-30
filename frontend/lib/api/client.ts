@@ -1,5 +1,6 @@
 import createClient, { type Middleware } from "openapi-fetch";
 import type { paths } from "./types/paths";
+import { apiProfiler } from "../utils/api-profiler";
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || "http://app.localhost:8080"}/api/v1`;
 
@@ -30,15 +31,11 @@ const errorMiddleware: Middleware = {
 
 const loggingMiddleware: Middleware = {
   async onRequest({ request }) {
-    if (process.env.NODE_ENV === "development") {
-      console.warn(`[API] ${request.method} ${request.url}`);
-    }
+    apiProfiler.startRequest(request.url, request.method);
     return request;
   },
   async onResponse({ response }) {
-    if (process.env.NODE_ENV === "development") {
-      console.warn(`[API] ${response.status} ${response.url}`);
-    }
+    apiProfiler.endRequest(response.url, response.status);
     return response;
   },
 };

@@ -17,7 +17,7 @@ interface OdooGroup {
   id: number;
   name: string;
   full_name: string;
-  user_ids: number[];
+  users: number[]; // Odoo 18: field name is 'users', not 'user_ids'
 }
 
 interface OdooModule {
@@ -99,7 +99,7 @@ export async function getOdooDatabaseInfo(
   const odooGroups = await client.searchRead<OdooGroup>(
     "res.groups",
     [],
-    ["id", "name", "full_name", "user_ids"],
+    ["id", "name", "full_name", "users"],
   );
 
   const installedModules = await client.searchRead<OdooModule>(
@@ -138,7 +138,7 @@ export async function getOdooDatabaseInfo(
     name: group.name,
     fullName: group.full_name,
     category: "Access Rights",
-    users: group.user_ids,
+    users: group.users,
   }));
 
   const modules = installedModules.map((module: OdooModule) => ({

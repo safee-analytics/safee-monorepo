@@ -11,12 +11,14 @@ export interface OdooUserProvisionResult {
   odooUid: number;
   odooLogin: string;
   odooPassword: string;
+  hasApiKey: boolean;
 }
 
 export interface OdooUserCredentials {
   databaseName: string;
   odooUid: number;
   odooPassword: string;
+  isApiKey: boolean;
 }
 
 export interface OdooUserProvisioningServiceDependencies {
@@ -113,7 +115,21 @@ export class OdooUserProvisioningService {
 
       this.logger.debug({ cookieCount: cookies.length }, "Captured cookies from Odoo user provisioning auth");
 
-      return { uid: data.result.uid, sessionId: data.result.session_id, cookies };
+      // Odoo 18: session_id is in cookies, not in JSON response
+      let sessionId = data.result.session_id;
+      if (!sessionId) {
+        // Extract session_id from cookies
+        const sessionCookie = cookies.find((c) => c.startsWith("session_id="));
+        if (sessionCookie) {
+          sessionId = sessionCookie.split("=")[1];
+        }
+      }
+
+      if (!sessionId) {
+        throw new OperationFailed("No session_id found in response or cookies");
+      }
+
+      return { uid: data.result.uid, sessionId, cookies };
     } catch (err) {
       clearTimeout(timeoutId);
       if (err instanceof Error && err.name === "AbortError") {
@@ -255,6 +271,11 @@ export class OdooUserProvisioningService {
     return crypto.randomBytes(32).toString("base64url");
   }
 
+  private generateSecureApiKey(): string {
+    // Generate a secure 64-character API key using base64url encoding
+    return crypto.randomBytes(48).toString("base64url");
+  }
+
   private async getGroupIds(
     sessionId: string,
     cookies: string[],
@@ -318,6 +339,7 @@ export class OdooUserProvisioningService {
 
       // === Kanz (HR & Payroll) ===
       "hr.group_hr_user", // HR employee data access
+      "hr_contract.group_hr_contract_user", // Contract access (view own and manage)
       "hr_payroll.group_hr_payroll_user", // Payroll user access
       "hr_attendance.group_hr_attendance_user", // Attendance tracking
       "hr_expense.group_hr_expense_user", // Expense management
@@ -338,6 +360,7 @@ export class OdooUserProvisioningService {
         "account.group_account_manager", // Full accounting admin
         "sales_team.group_sale_manager", // Full CRM/Sales admin
         "hr.group_hr_manager", // Full HR admin
+        "hr_contract.group_hr_contract_manager", // Full contract admin (view all)
         "hr_payroll.group_hr_payroll_manager", // Full payroll admin
         "project.group_project_manager", // Project management admin
         "purchase.group_purchase_manager", // Purchase management admin
@@ -351,6 +374,7 @@ export class OdooUserProvisioningService {
       manager: [
         "sales_team.group_sale_manager", // CRM/Sales manager
         "hr.group_hr_manager", // HR manager
+        "hr_contract.group_hr_contract_manager", // Contract manager (view all)
         "hr_payroll.group_hr_payroll_manager", // Payroll manager
         "project.group_project_manager", // Project manager
       ],
@@ -510,89 +534,77 @@ export class OdooUserProvisioningService {
     targetUserLogin: string,
     keyName: string,
   ): Promise<string> {
-    this.logger.info({ targetUserLogin, keyName }, "Generating API key for Odoo user via HTTP endpoint");
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => {
-      controller.abort();
-    }, 60000); // 60s timeout for API key generation
+    this.logger.info({ targetUserLogin, keyName }, "Generating API key using Odoo native res.users.apikeys");
 
     try {
-      const response = await fetch(`${this.odooUrl}/api/generate_key`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          method: "call",
-          params: {
-            db: databaseName,
-            admin_login: adminLogin,
-            admin_password: adminPassword,
-            target_user_login: targetUserLogin,
-            name: keyName,
-            scope: "rpc",
-          },
-        }),
-        signal: controller.signal,
-      });
+      // Authenticate as admin
+      const { sessionId, cookies } = await this.authenticate(databaseName, adminLogin, adminPassword);
+      const adminCredentials = { databaseName, adminLogin, adminPassword };
 
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        throw new OperationFailed(`HTTP ${response.status}: ${response.statusText}`);
-      }
-
-      const rawData: unknown = await response.json();
-      const responseSchema = odooApiResponseSchema(odooApiKeyResultSchema);
-      const parseResult = responseSchema.safeParse(rawData);
-
-      if (!parseResult.success) {
-        throw new OperationFailed(`Invalid Odoo API key response: ${parseResult.error.message}`);
-      }
-
-      const result = parseResult.data;
-
-      if (result.error) {
-        const errorMessage =
-          typeof result.error === "object" && "message" in result.error
-            ? String(result.error.message)
-            : JSON.stringify(result.error);
-        throw new OperationFailed(`Odoo error: ${errorMessage}`);
-      }
-
-      if (!result.result) {
-        throw new OperationFailed("API key generation returned no result");
-      }
-
-      const data = result.result;
-
-      if (!data.ok) {
-        throw new OperationFailed(`Failed to generate API key: ${data.error ?? "Unknown error"}`);
-      }
-
-      if (!data.token) {
-        throw new OperationFailed("API key token not returned from endpoint");
-      }
-
-      this.logger.info(
-        { targetUserLogin, keyName, apiKeyId: data.id },
-        "API key generated successfully via HTTP endpoint",
+      // Get the target user's ID
+      const userIds = await this.callOdooExecuteKw(
+        sessionId,
+        cookies,
+        "res.users",
+        "search",
+        [[["login", "=", targetUserLogin]]],
+        {},
+        z.array(z.number()),
+        adminCredentials,
       );
 
-      return data.token;
-    } catch (err) {
-      clearTimeout(timeoutId);
-
-      if (err instanceof Error && err.name === "AbortError") {
-        this.logger.error({ targetUserLogin, keyName }, "API key generation timed out after 60 seconds");
-        throw new OperationFailed("API key generation timed out after 60 seconds");
+      if (userIds.length === 0) {
+        throw new OperationFailed(`User with login ${targetUserLogin} not found`);
       }
 
+      const targetUserId = userIds[0];
+
+      // Create the API key record using Odoo's native res.users.apikeys model
+      // The key is auto-generated by Odoo
+      const apiKeyId = await this.callOdooExecuteKw(
+        sessionId,
+        cookies,
+        "res.users.apikeys",
+        "create",
+        [
+          {
+            name: keyName,
+            user_id: targetUserId,
+          },
+        ],
+        {},
+        z.number(),
+        adminCredentials,
+      );
+
+      // Read the generated API key
+      const apiKeyRecords = await this.callOdooExecuteKw(
+        sessionId,
+        cookies,
+        "res.users.apikeys",
+        "read",
+        [[apiKeyId], ["key"]],
+        {},
+        z.array(z.object({ key: z.string() })),
+        adminCredentials,
+      );
+
+      if (apiKeyRecords.length === 0 || !apiKeyRecords[0].key) {
+        throw new OperationFailed("Failed to retrieve generated API key");
+      }
+
+      const apiKeyToken = apiKeyRecords[0].key;
+
+      this.logger.info(
+        { targetUserLogin, keyName, apiKeyId, targetUserId },
+        "✅ API key generated successfully using Odoo native res.users.apikeys",
+      );
+
+      return apiKeyToken;
+    } catch (err) {
       this.logger.error(
         { targetUserLogin, keyName, error: err },
-        "Failed to generate API key via HTTP endpoint",
+        "Failed to generate API key using Odoo native res.users.apikeys",
       );
       throw new OperationFailed(
         `Failed to generate API key: ${err instanceof Error ? err.message : "Unknown error"}`,
@@ -635,7 +647,43 @@ export class OdooUserProvisioningService {
     });
 
     if (existingOdooUser) {
-      this.logger.info({ userId }, "Odoo user already exists");
+      this.logger.info({ userId }, "Odoo user already exists, updating groups");
+
+      // Update groups for existing user
+      try {
+        const { databaseName, adminLogin, adminPassword } = await this.getAdminCredentials(organizationId);
+        const { sessionId, cookies } = await this.authenticate(databaseName, adminLogin, adminPassword);
+        const adminCredentials = { databaseName, adminLogin, adminPassword };
+
+        const role = safeeRole ?? user.role ?? "user";
+        const groupXmlIds = this.getDefaultGroupsForUser(role);
+        const groupIds = await this.getGroupIds(sessionId, cookies, groupXmlIds, adminCredentials);
+
+        if (groupIds.length > 0) {
+          this.logger.info(
+            { userId, odooUid: existingOdooUser.odooUid, role, groupCount: groupIds.length },
+            "Updating groups for existing Odoo user",
+          );
+
+          await this.callOdooExecuteKw(
+            sessionId,
+            cookies,
+            "res.users",
+            "write",
+            [[existingOdooUser.odooUid], { groups_id: [[6, 0, groupIds]] }],
+            {},
+            z.boolean(),
+            adminCredentials,
+          );
+
+          this.logger.info({ userId, odooUid: existingOdooUser.odooUid }, "Groups updated successfully");
+        }
+      } catch (err) {
+        this.logger.warn(
+          { userId, error: err instanceof Error ? err.message : "Unknown error" },
+          "Failed to update groups for existing user, continuing with existing permissions",
+        );
+      }
 
       if (!existingOdooUser.apiKey) {
         this.logger.info({ userId }, "Existing user has no API key, attempting to generate one");
@@ -666,6 +714,7 @@ export class OdooUserProvisioningService {
             odooUid: existingOdooUser.odooUid,
             odooLogin: existingOdooUser.odooLogin,
             odooPassword: apiKey,
+            hasApiKey: true,
           };
         } catch (err) {
           this.logger.warn(
@@ -683,6 +732,7 @@ export class OdooUserProvisioningService {
         odooUid: existingOdooUser.odooUid,
         odooLogin: existingOdooUser.odooLogin,
         odooPassword: authCredential,
+        hasApiKey: !!existingOdooUser.apiKey,
       };
     }
 
@@ -761,6 +811,7 @@ export class OdooUserProvisioningService {
         odooUid,
         odooLogin: user.email,
         odooPassword: authCredential,
+        hasApiKey: !!apiKey,
       };
     } catch (err) {
       this.logger.error(
@@ -849,6 +900,7 @@ export class OdooUserProvisioningService {
           databaseName: odooDb.databaseName,
           odooUid: odooUser.odooUid,
           odooPassword: apiKey,
+          isApiKey: true,
         };
       } catch (err) {
         this.logger.warn(
@@ -858,14 +910,16 @@ export class OdooUserProvisioningService {
       }
     }
 
-    const authCredential = odooUser.apiKey
-      ? this.encryptionService.decrypt(odooUser.apiKey)
+    const hasApiKey = !!odooUser.apiKey;
+    const authCredential = hasApiKey
+      ? this.encryptionService.decrypt(odooUser.apiKey!)
       : this.encryptionService.decrypt(odooUser.password);
 
     return {
       databaseName: odooDb.databaseName,
       odooUid: odooUser.odooUid,
       odooPassword: authCredential,
+      isApiKey: hasApiKey,
     };
   }
 
