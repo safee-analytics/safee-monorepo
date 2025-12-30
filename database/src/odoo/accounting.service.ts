@@ -109,16 +109,7 @@ export class OdooAccountingService {
     return this.client.searchRead<OdooAccount>(
       "account.account",
       ["|", ["code", "ilike", query], ["name", "ilike", query]],
-      [
-        "code",
-        "name",
-        "account_type",
-        "currency_id",
-        "group_id",
-        "current_balance",
-        "reconcile",
-        "tax_ids",
-      ],
+      ["code", "name", "account_type", "currency_id", "group_id", "current_balance", "reconcile", "tax_ids"],
       { limit: 50 },
     );
   }

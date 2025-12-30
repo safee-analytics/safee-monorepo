@@ -4,7 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Building2, Search, Plus, Users, FolderTree, ShieldAlert } from "lucide-react";
-import { useDepartments, useEmployees, useSyncAllEmployees, useSyncAllDepartments } from "@/lib/api/hooks/hrManagement";
+import {
+  useDepartments,
+  useEmployees,
+  useSyncAllEmployees,
+  useSyncAllDepartments,
+} from "@/lib/api/hooks/hrManagement";
 import { useHasHRSectionAccess } from "@/lib/api/hooks";
 
 export default function DepartmentsPage() {
@@ -32,10 +37,7 @@ export default function DepartmentsPage() {
 
   const handleSync = async () => {
     try {
-      await Promise.all([
-        syncDepartments.mutateAsync(),
-        syncEmployees.mutateAsync(),
-      ]);
+      await Promise.all([syncDepartments.mutateAsync(), syncEmployees.mutateAsync()]);
     } catch (err) {
       console.error("Sync failed:", err);
     }

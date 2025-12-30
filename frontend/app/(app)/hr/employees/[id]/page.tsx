@@ -130,9 +130,13 @@ export default function EmployeeDetailPage() {
 
   const tabs = [
     { id: "overview" as const, label: "Overview", icon: User },
-    ...(hasContractsAccess ? [{ id: "contracts" as const, label: "Contracts", icon: FileText, count: contracts?.length }] : []),
+    ...(hasContractsAccess
+      ? [{ id: "contracts" as const, label: "Contracts", icon: FileText, count: contracts?.length }]
+      : []),
     { id: "leave" as const, label: "Leave", icon: Palmtree, count: leaveBalances?.length },
-    ...(hasPayslipsAccess ? [{ id: "payslips" as const, label: "Payslips", icon: DollarSign, count: payslips?.length }] : []),
+    ...(hasPayslipsAccess
+      ? [{ id: "payslips" as const, label: "Payslips", icon: DollarSign, count: payslips?.length }]
+      : []),
   ];
 
   return (

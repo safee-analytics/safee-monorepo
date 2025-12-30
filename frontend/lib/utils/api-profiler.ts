@@ -19,10 +19,7 @@ class ApiProfiler {
     const endpoint = new URL(url).pathname.replace("/api/v1", "");
     this.timings.set(url, performance.now());
 
-    console.log(
-      `%c[API →] ${method} ${endpoint}`,
-      "color: #3b82f6; font-weight: bold"
-    );
+    console.log(`%c[API →] ${method} ${endpoint}`, "color: #3b82f6; font-weight: bold");
   }
 
   endRequest(url: string, status: number) {
@@ -49,7 +46,7 @@ class ApiProfiler {
     console.log(
       `%c[API ←] ${status} ${endpoint} %c${duration.toFixed(2)}ms`,
       `color: ${statusColor}; font-weight: bold`,
-      `color: ${durationColor}; font-weight: bold`
+      `color: ${durationColor}; font-weight: bold`,
     );
   }
 

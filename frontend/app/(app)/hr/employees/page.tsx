@@ -15,7 +15,12 @@ import {
   UserX,
   ShieldAlert,
 } from "lucide-react";
-import { useEmployees, useDepartments, useSyncAllEmployees, useSyncAllDepartments } from "@/lib/api/hooks/hrManagement";
+import {
+  useEmployees,
+  useDepartments,
+  useSyncAllEmployees,
+  useSyncAllDepartments,
+} from "@/lib/api/hooks/hrManagement";
 import { useHasHRSectionAccess } from "@/lib/api/hooks";
 
 export default function EmployeesPage() {
@@ -49,10 +54,7 @@ export default function EmployeesPage() {
 
   const handleSync = async () => {
     try {
-      await Promise.all([
-        syncDepartments.mutateAsync(),
-        syncEmployees.mutateAsync(),
-      ]);
+      await Promise.all([syncDepartments.mutateAsync(), syncEmployees.mutateAsync()]);
     } catch (err) {
       console.error("Sync failed:", err);
     }
