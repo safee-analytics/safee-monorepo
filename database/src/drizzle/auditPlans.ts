@@ -1,11 +1,11 @@
 import { uuid, varchar, timestamp, jsonb, index, integer, decimal, date } from "drizzle-orm/pg-core";
-import { auditSchema, idpk, auditTypeEnum } from "./_common.js";
+import { casesSchema, idpk, caseTypeEnum } from "./_common.js";
 import { cases } from "./cases.js";
 import { users } from "./users.js";
 import { organizations } from "./organizations.js";
 
-export const planTypeEnum = auditSchema.enum("plan_type", ["standalone", "case_integrated"]);
-export const planStatusEnum = auditSchema.enum("plan_status", [
+export const planTypeEnum = casesSchema.enum("plan_type", ["standalone", "case_integrated"]);
+export const planStatusEnum = casesSchema.enum("plan_status", [
   "draft",
   "in_review",
   "approved",
@@ -13,7 +13,7 @@ export const planStatusEnum = auditSchema.enum("plan_status", [
   "archived",
 ]);
 
-export const auditPlans = auditSchema.table(
+export const auditPlans = casesSchema.table(
   "audit_plans",
   {
     id: idpk("id"),
@@ -21,7 +21,7 @@ export const auditPlans = auditSchema.table(
     planType: planTypeEnum("plan_type").notNull().default("standalone"),
     title: varchar("title", { length: 500 }).notNull(),
     clientName: varchar("client_name", { length: 255 }),
-    auditType: auditTypeEnum("audit_type"),
+    caseType: caseTypeEnum("case_type"),
     auditYear: integer("audit_year"),
     startDate: date("start_date"),
     targetCompletion: date("target_completion"),
@@ -64,7 +64,7 @@ export const auditPlans = auditSchema.table(
     index("audit_plans_case_id_idx").on(table.caseId),
     index("audit_plans_status_idx").on(table.status),
     index("audit_plans_created_by_idx").on(table.createdBy),
-    index("audit_plans_audit_type_idx").on(table.auditType),
+    index("audit_plans_case_type_idx").on(table.caseType),
     index("audit_plans_org_idx").on(table.organizationId),
   ],
 );

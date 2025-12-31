@@ -1,6 +1,6 @@
 import { relations } from "drizzle-orm";
 import { cases } from "./cases.js";
-import { auditScopes } from "./auditScopes.js";
+import { templateInstances } from "./templateInstances.js";
 import { auditPlans } from "./auditPlans.js";
 import { auditReports } from "./auditReports.js";
 import { caseDocuments } from "./caseDocuments.js";
@@ -22,7 +22,7 @@ export const casesRelations = relations(cases, ({ one, many }) => ({
     references: [users.id],
     relationName: "caseCreator",
   }),
-  auditScopes: many(auditScopes),
+  templateInstances: many(templateInstances),
   auditPlans: many(auditPlans),
   auditReports: many(auditReports),
   documents: many(caseDocuments),

@@ -226,9 +226,9 @@ describe("Notification Service", async () => {
         .values({
           organizationId: testOrg.id,
           caseNumber: "CASE-001",
-          clientName: "Test Client",
-          auditType: "ICV",
-          status: "pending",
+          title: "Test Client",
+          caseType: "ICV_AUDIT",
+          status: "draft",
           priority: "medium",
           createdBy: testUser.id,
         })
@@ -324,9 +324,9 @@ describe("Notification Service", async () => {
         .values({
           organizationId: testOrg.id,
           caseNumber: "CASE-001",
-          clientName: "Test Client",
-          auditType: "ICV",
-          status: "pending",
+          title: "Test Client",
+          caseType: "ICV_AUDIT",
+          status: "draft",
           priority: "medium",
           createdBy: testUser.id,
         })
@@ -362,9 +362,9 @@ describe("Notification Service", async () => {
         .values({
           organizationId: testOrg.id,
           caseNumber: "CASE-001",
-          clientName: "Test Client",
-          auditType: "ICV",
-          status: "pending",
+          title: "Test Client",
+          caseType: "ICV_AUDIT",
+          status: "draft",
           priority: "medium",
           createdBy: testUser.id,
         })
@@ -400,9 +400,9 @@ describe("Notification Service", async () => {
         .values({
           organizationId: testOrg.id,
           caseNumber: "CASE-001",
-          clientName: "Test Client",
-          auditType: "ICV",
-          status: "pending",
+          title: "Test Client",
+          caseType: "ICV_AUDIT",
+          status: "draft",
           priority: "medium",
           createdBy: testUser.id,
         })
@@ -439,9 +439,9 @@ describe("Notification Service", async () => {
         .values({
           organizationId: testOrg.id,
           caseNumber: "CASE-001",
-          clientName: "Test Client",
-          auditType: "ICV",
-          status: "pending",
+          title: "Test Client",
+          caseType: "ICV_AUDIT",
+          status: "draft",
           priority: "medium",
           createdBy: testUser.id,
         })

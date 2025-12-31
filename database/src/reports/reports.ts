@@ -67,7 +67,7 @@ export async function getAuditReportsByStatus(
         columns: {
           id: true,
           caseNumber: true,
-          clientName: true,
+          title: true,
           organizationId: true,
         },
       },

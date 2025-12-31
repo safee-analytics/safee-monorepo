@@ -19,6 +19,11 @@ export interface OdooConfig {
   url: string;
   port?: number;
   adminPassword: string;
+  webhook?: {
+    url: string;
+    masterSecret: string; // Master secret for deriving per-org secrets
+    enabled: boolean;
+  };
 }
 
 export interface OdooDatabaseServiceDependencies {
@@ -348,6 +353,58 @@ export class OdooDatabaseService {
     );
   }
 
+  /**
+   * Derive per-organization webhook secret from master secret
+   * Uses HMAC-SHA256(masterSecret, organizationId)
+   */
+  private deriveWebhookSecret(organizationId: string): string {
+    if (!this.odooConfig.webhook?.masterSecret) {
+      throw new Error("Webhook master secret not configured");
+    }
+    return crypto
+      .createHmac("sha256", this.odooConfig.webhook.masterSecret)
+      .update(organizationId)
+      .digest("hex");
+  }
+
+  /**
+   * Configure webhook settings in Odoo database
+   * Sets ir.config_parameter values for safee_webhooks module
+   */
+  private async configureWebhooks(
+    databaseName: string,
+    adminLogin: string,
+    adminPassword: string,
+    organizationId: string,
+    uid: number,
+  ): Promise<void> {
+    const webhookConfig = this.odooConfig.webhook;
+
+    if (!webhookConfig?.enabled) {
+      this.logger.debug({ databaseName }, "Webhooks disabled, skipping configuration");
+      return;
+    }
+
+    this.logger.info({ databaseName, organizationId }, "Configuring webhook settings");
+
+    // Derive per-org secret
+    const orgSecret = this.deriveWebhookSecret(organizationId);
+
+    // Set webhook configuration parameters in Odoo
+    const params = [
+      { key: "safee.webhook_url", value: webhookConfig.url },
+      { key: "safee.webhook_secret", value: orgSecret },
+      { key: "safee.organization_id", value: organizationId },
+      { key: "safee.webhooks_enabled", value: "True" },
+    ];
+
+    for (const param of params) {
+      await this.odooClient.createExternal(databaseName, uid, adminPassword, "ir.config_parameter", param);
+    }
+
+    this.logger.info({ databaseName, organizationId }, "✅ Webhook configuration complete");
+  }
+
   async provisionDatabase(
     organizationId: string,
     options?: {
@@ -487,6 +544,9 @@ export class OdooDatabaseService {
         { databaseName, companyName: org.name },
         "✅ Company information updated successfully",
       );
+
+      // Configure webhooks (if enabled)
+      await this.configureWebhooks(databaseName, adminLogin, adminPassword, organizationId, auth.uid);
 
       // Save database credentials to database
       const encryptedPassword = this.encryptionService.encrypt(adminPassword);
@@ -770,6 +830,17 @@ export class OdooDatabaseService {
     };
 
     const extendedModules = [
+      // ========================================
+      // CRITICAL: Core Odoo Dependencies (must be installed FIRST)
+      // ========================================
+      "stock", // Inventory/Warehouse - required by stock_*, sale_stock, purchase_stock, project_stock
+      "purchase", // Purchase Management - required by purchase_*, sale_purchase, project_purchase
+      "mass_mailing", // Mass Mailing - required by mass_mailing_*, mail_tracking_mass_mailing
+      "board", // Dashboards - required by various modules
+      "hr_contract", // HR Contracts - required by hr_contract_*, hr_holidays_contract
+      "sale_management", // Advanced Sales - required by sale_* extensions
+      "product_set", // Product Sets - required by sale_product_set
+
       // API/Integration - REST Framework (background install)
       "component", // Required for base_rest
       "component_event",

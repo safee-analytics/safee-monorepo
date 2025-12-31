@@ -288,6 +288,13 @@
       "when": 1766447029274,
       "tag": "0040_smooth_gideon",
       "breakpoints": false
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1767206551804,
+      "tag": "0041_skinny_vertigo",
+      "breakpoints": false
     }
   ]
 }

@@ -7,7 +7,7 @@ export interface RecentCaseUpdate {
   type: "case_update";
   caseId: string;
   caseNumber: string;
-  clientName: string;
+  title: string;
   status: string;
   updatedAt: string;
   updatedBy: {
@@ -37,7 +37,7 @@ export async function getRecentCaseActivity(
     type: "case_update" as const,
     caseId: c.id,
     caseNumber: c.caseNumber,
-    clientName: c.clientName,
+    title: c.title,
     status: c.status,
     updatedAt: c.updatedAt.toISOString(),
     updatedBy: {

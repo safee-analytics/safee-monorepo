@@ -1,12 +1,12 @@
 import { uuid, varchar, timestamp, text, jsonb, index } from "drizzle-orm/pg-core";
-import { auditSchema, idpk } from "./_common.js";
+import { casesSchema, idpk } from "./_common.js";
 import { cases } from "./cases.js";
 import { auditReportTemplates } from "./auditReportTemplates.js";
 import { users } from "./users.js";
 
-export const reportStatusEnum = auditSchema.enum("report_status", ["generating", "ready", "failed"]);
+export const reportStatusEnum = casesSchema.enum("report_status", ["generating", "ready", "failed"]);
 
-export const auditReports = auditSchema.table(
+export const auditReports = casesSchema.table(
   "audit_reports",
   {
     id: idpk("id"),

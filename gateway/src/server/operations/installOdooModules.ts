@@ -1,6 +1,14 @@
 import { odoo } from "@safee/database";
 import type { ServerContext } from "../serverContext.js";
-import { ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.js";
+import {
+  ODOO_URL,
+  ODOO_PORT,
+  ODOO_ADMIN_PASSWORD,
+  ODOO_WEBHOOK_URL,
+  ODOO_WEBHOOK_SECRET,
+  ODOO_WEBHOOKS_ENABLED,
+  JWT_SECRET,
+} from "../../env.js";
 
 export async function installOdooModules(
   organizationId: string,
@@ -17,6 +25,14 @@ export async function installOdooModules(
         url: ODOO_URL,
         port: ODOO_PORT,
         adminPassword: ODOO_ADMIN_PASSWORD,
+        webhook:
+          ODOO_WEBHOOK_URL && ODOO_WEBHOOK_SECRET
+            ? {
+                url: ODOO_WEBHOOK_URL,
+                masterSecret: ODOO_WEBHOOK_SECRET,
+                enabled: ODOO_WEBHOOKS_ENABLED,
+              }
+            : undefined,
       },
     });
     await odooDatabaseService.installModulesForOrganization(organizationId);

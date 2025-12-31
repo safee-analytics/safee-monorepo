@@ -1,8 +1,8 @@
 import { eq, and, desc, asc, sql } from "drizzle-orm";
 import {
   cases,
-  auditTemplates,
-  auditScopes,
+  templates,
+  templateInstances,
   auditSections,
   auditProcedures,
   caseDocuments,
@@ -25,8 +25,8 @@ import type {
   UpdateNoteInput,
   CreateAssignmentInput,
   Case,
-  AuditTemplate,
-  AuditScope,
+  Template,
+  TemplateInstance,
   AuditSection,
   AuditProcedure,
   CaseDocument,
@@ -85,36 +85,33 @@ export async function deleteCase(deps: DbDeps, caseId: string): Promise<void> {
   await deps.drizzle.delete(cases).where(eq(cases.id, caseId));
 }
 
-export async function createTemplate(deps: DbDeps, input: CreateTemplateInput): Promise<AuditTemplate> {
-  const [template] = await deps.drizzle.insert(auditTemplates).values(input).returning();
+export async function createTemplate(deps: DbDeps, input: CreateTemplateInput): Promise<Template> {
+  const [template] = await deps.drizzle.insert(templates).values(input).returning();
   return template;
 }
 
-export async function getTemplateById(deps: DbDeps, templateId: string): Promise<AuditTemplate | undefined> {
-  return deps.drizzle.query.auditTemplates.findFirst({
-    where: eq(auditTemplates.id, templateId),
+export async function getTemplateById(deps: DbDeps, templateId: string): Promise<Template | undefined> {
+  return deps.drizzle.query.templates.findFirst({
+    where: eq(templates.id, templateId),
   });
 }
 
-export async function getTemplatesByOrganization(
-  deps: DbDeps,
-  organizationId: string,
-): Promise<AuditTemplate[]> {
-  return deps.drizzle.query.auditTemplates.findMany({
-    where: eq(auditTemplates.organizationId, organizationId),
-    orderBy: [desc(auditTemplates.createdAt)],
+export async function getTemplatesByOrganization(deps: DbDeps, organizationId: string): Promise<Template[]> {
+  return deps.drizzle.query.templates.findMany({
+    where: eq(templates.organizationId, organizationId),
+    orderBy: [desc(templates.createdAt)],
   });
 }
 
-export async function getPublicTemplates(deps: DbDeps): Promise<AuditTemplate[]> {
-  return deps.drizzle.query.auditTemplates.findMany({
-    where: and(eq(auditTemplates.isPublic, true), eq(auditTemplates.isActive, true)),
-    orderBy: [asc(auditTemplates.name)],
+export async function getPublicTemplates(deps: DbDeps): Promise<Template[]> {
+  return deps.drizzle.query.templates.findMany({
+    where: and(eq(templates.isSystemTemplate, true), eq(templates.isActive, true)),
+    orderBy: [asc(templates.name)],
   });
 }
 
-export async function createScope(deps: DbDeps, input: CreateScopeInput): Promise<AuditScope> {
-  const [scope] = await deps.drizzle.insert(auditScopes).values(input).returning();
+export async function createScope(deps: DbDeps, input: CreateScopeInput): Promise<TemplateInstance> {
+  const [scope] = await deps.drizzle.insert(templateInstances).values(input).returning();
   return scope;
 }
 
@@ -123,20 +120,20 @@ export async function createScopeFromTemplate(
   caseId: string,
   templateId: string,
   createdBy: string,
-): Promise<AuditScope> {
+): Promise<TemplateInstance> {
   const template = await getTemplateById(deps, templateId);
   if (!template) {
     throw new Error(`Template ${templateId} not found`);
   }
   const [scope] = await deps.drizzle
-    .insert(auditScopes)
+    .insert(templateInstances)
     .values({
       caseId,
       templateId,
       name: template.name,
       description: template.description ?? undefined,
       status: "draft",
-      metadata: template.structure.settings ?? {},
+      data: template.structure.settings ?? {},
       createdBy,
     })
     .returning();
@@ -170,25 +167,25 @@ export async function createScopeFromTemplate(
   return scope;
 }
 
-export async function getScopeById(deps: DbDeps, scopeId: string): Promise<AuditScope | undefined> {
-  return deps.drizzle.query.auditScopes.findFirst({
-    where: eq(auditScopes.id, scopeId),
+export async function getScopeById(deps: DbDeps, scopeId: string): Promise<TemplateInstance | undefined> {
+  return deps.drizzle.query.templateInstances.findFirst({
+    where: eq(templateInstances.id, scopeId),
   });
 }
 
-export async function getScopesByCase(deps: DbDeps, caseId: string): Promise<AuditScope[]> {
-  return deps.drizzle.query.auditScopes.findMany({
-    where: eq(auditScopes.caseId, caseId),
-    orderBy: [asc(auditScopes.createdAt)],
+export async function getScopesByCase(deps: DbDeps, caseId: string): Promise<TemplateInstance[]> {
+  return deps.drizzle.query.templateInstances.findMany({
+    where: eq(templateInstances.caseId, caseId),
+    orderBy: [asc(templateInstances.createdAt)],
   });
 }
 
 export async function updateScopeStatus(
   deps: DbDeps,
   scopeId: string,
-  status: "draft" | "in-progress" | "under-review" | "completed" | "archived",
+  status: "draft" | "in_progress" | "under_review" | "completed" | "archived",
   userId: string,
-): Promise<AuditScope> {
+): Promise<TemplateInstance> {
   const updateData: Record<string, unknown> = {
     status,
     updatedAt: new Date(),
@@ -203,9 +200,9 @@ export async function updateScopeStatus(
   }
 
   const [updatedScope] = await deps.drizzle
-    .update(auditScopes)
+    .update(templateInstances)
     .set(updateData)
-    .where(eq(auditScopes.id, scopeId))
+    .where(eq(templateInstances.id, scopeId))
     .returning();
 
   return updatedScope;

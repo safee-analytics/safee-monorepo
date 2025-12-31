@@ -362,6 +362,24 @@ export class OdooClient {
   }
 
   /**
+   * Create a record using external API with execute_kw (for database provisioning)
+   */
+  async createExternal(
+    database: string,
+    uid: number,
+    password: string,
+    model: string,
+    values: Record<string, unknown>,
+  ): Promise<number> {
+    const result = await this.callJsonRpc("/jsonrpc", {
+      service: "object",
+      method: "execute_kw",
+      args: [database, uid, password, model, "create", [values]],
+    });
+    return result as number;
+  }
+
+  /**
    * Update records using external API with execute_kw (for database provisioning)
    */
   async writeExternal(
