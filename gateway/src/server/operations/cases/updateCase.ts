@@ -40,11 +40,11 @@ export async function updateCase(
     throw new InvalidInput("Case number must be between 3 and 50 characters");
   }
 
-  const clientName = request.clientName ?? undefined;
+  const title = request.title ?? undefined;
+  const description = request.description ?? undefined;
 
-  // Validation: Client name
-  if (clientName !== undefined && clientName.trim().length === 0) {
-    throw new InvalidInput("Client name cannot be empty");
+  if (title !== undefined && title.trim().length === 0) {
+    throw new InvalidInput("Title cannot be empty");
   }
 
   // Validation: Due date
@@ -81,9 +81,13 @@ export async function updateCase(
       changesBefore.caseNumber = existingCase.caseNumber;
       changesAfter.caseNumber = request.caseNumber;
     }
-    if (request.clientName && request.clientName !== existingCase.clientName) {
-      changesBefore.clientName = existingCase.clientName;
-      changesAfter.clientName = request.clientName;
+    if (title && title.trim() !== existingCase.title) {
+      changesBefore.title = existingCase.title;
+      changesAfter.title = title.trim();
+    }
+    if (description !== undefined && description.trim() !== (existingCase.description ?? "")) {
+      changesBefore.description = existingCase.description;
+      changesAfter.description = description.trim() || null;
     }
     if (request.status && request.status !== existingCase.status) {
       changesBefore.status = existingCase.status;
@@ -93,13 +97,18 @@ export async function updateCase(
       changesBefore.priority = existingCase.priority;
       changesAfter.priority = request.priority;
     }
+    if (request.caseType && request.caseType !== existingCase.caseType) {
+      changesBefore.caseType = existingCase.caseType;
+      changesAfter.caseType = request.caseType;
+    }
 
     const updated = await dbUpdateCase(deps, caseId, {
       status: request.status ?? undefined,
       priority: request.priority ?? undefined,
       caseNumber: request.caseNumber?.trim(),
-      clientName: clientName?.trim(),
-      auditType: request.auditType ?? undefined,
+      title: title?.trim(),
+      description: description?.trim(),
+      caseType: request.caseType ?? undefined,
       dueDate: request.dueDate ? new Date(request.dueDate) : undefined,
       completedDate: request.completedDate ? new Date(request.completedDate) : undefined,
     });
@@ -129,8 +138,9 @@ export async function updateCase(
       id: updated.id,
       organizationId: updated.organizationId,
       caseNumber: updated.caseNumber,
-      clientName: updated.clientName,
-      auditType: updated.auditType,
+      title: updated.title,
+      description: updated.description,
+      caseType: updated.caseType,
       status: updated.status,
       priority: updated.priority,
       dueDate: updated.dueDate?.toISOString(),

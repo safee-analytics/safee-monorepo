@@ -61,8 +61,8 @@ export async function generateReport(
           try {
             const aggregatedData = {
               caseNumber: caseData.caseNumber,
-              clientName: caseData.clientName,
-              auditType: caseData.auditType,
+              title: caseData.title,
+              caseType: caseData.caseType,
               status: caseData.status,
               generatedAt: new Date().toISOString(),
               locale: request.settings?.locale ?? "en",

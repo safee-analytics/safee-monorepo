@@ -46,27 +46,14 @@ export async function createScopeFromTemplate(
     throw new NotFound("Template not found");
   }
 
-  // Validation: Template must be public OR belong to the same organization
-  if (!template.isPublic && template.organizationId !== organizationId) {
+  // Validation: Template must be system-level or belong to the same organization
+  if (!template.isSystemTemplate && template.organizationId !== organizationId) {
     throw new InsufficientPermissions("You don't have permission to use this template");
   }
 
   // Validation: Template must be active
   if (!template.isActive) {
     throw new InvalidInput("Cannot create scope from inactive template");
-  }
-
-  // Validation: Audit types should match (optional warning, not blocking)
-  if (template.auditType !== existingCase.auditType) {
-    logger.warn(
-      {
-        templateAuditType: template.auditType,
-        caseAuditType: existingCase.auditType,
-        caseId,
-        templateId,
-      },
-      "Template audit type does not match case audit type",
-    );
   }
 
   try {
@@ -104,7 +91,7 @@ export async function createScopeFromTemplate(
       name: scope.name,
       description: scope.description,
       status: scope.status,
-      metadata: scope.metadata!,
+      data: scope.data,
       createdBy: scope.createdBy,
       completedBy: scope.completedBy,
       archivedBy: scope.archivedBy,

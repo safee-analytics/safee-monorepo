@@ -34,6 +34,12 @@ import type {
   CaseAssignment,
   CaseHistory,
 } from "./types.js";
+import {
+  templateStructureSchema,
+  sectionSettingsSchema,
+  procedureRequirementsSchema,
+  procedureFieldDataSchema,
+} from "./types.js";
 
 export async function createCase(deps: DbDeps, input: CreateCaseInput): Promise<Case> {
   const [newCase] = await deps.drizzle
@@ -86,7 +92,15 @@ export async function deleteCase(deps: DbDeps, caseId: string): Promise<void> {
 }
 
 export async function createTemplate(deps: DbDeps, input: CreateTemplateInput): Promise<Template> {
-  const [template] = await deps.drizzle.insert(templates).values(input).returning();
+  // Validate structure JSONB field
+  const validatedStructure = templateStructureSchema.parse(input.structure);
+  const [template] = await deps.drizzle
+    .insert(templates)
+    .values({
+      ...input,
+      structure: validatedStructure,
+    })
+    .returning();
   return template;
 }
 
@@ -140,6 +154,8 @@ export async function createScopeFromTemplate(
 
   // Create sections and procedures from template
   for (const sectionData of template.structure.sections) {
+    // Validate section settings JSONB field
+    const validatedSettings = sectionSettingsSchema.parse(sectionData.settings ?? {});
     const [section] = await deps.drizzle
       .insert(auditSections)
       .values({
@@ -147,18 +163,20 @@ export async function createScopeFromTemplate(
         name: sectionData.name,
         description: sectionData.description,
         sortOrder: sectionData.sortOrder,
-        settings: sectionData.settings ?? {},
+        settings: validatedSettings,
       })
       .returning();
 
     // Create procedures for this section
     for (const procedureData of sectionData.procedures) {
+      // Validate procedure requirements JSONB field
+      const validatedRequirements = procedureRequirementsSchema.parse(procedureData.requirements ?? {});
       await deps.drizzle.insert(auditProcedures).values({
         sectionId: section.id,
         referenceNumber: procedureData.referenceNumber,
         title: procedureData.title,
         description: procedureData.description,
-        requirements: (procedureData.requirements ?? {}) as Record<string, unknown>,
+        requirements: validatedRequirements,
         sortOrder: procedureData.sortOrder,
       });
     }
@@ -213,7 +231,15 @@ export async function updateScopeStatus(
  */
 
 export async function createSection(deps: DbDeps, input: CreateSectionInput): Promise<AuditSection> {
-  const [section] = await deps.drizzle.insert(auditSections).values(input).returning();
+  // Validate settings JSONB field
+  const validatedSettings = sectionSettingsSchema.parse(input.settings ?? {});
+  const [section] = await deps.drizzle
+    .insert(auditSections)
+    .values({
+      ...input,
+      settings: validatedSettings,
+    })
+    .returning();
   return section;
 }
 
@@ -229,7 +255,15 @@ export async function getSectionsByScopeId(deps: DbDeps, scopeId: string): Promi
  */
 
 export async function createProcedure(deps: DbDeps, input: CreateProcedureInput): Promise<AuditProcedure> {
-  const [procedure] = await deps.drizzle.insert(auditProcedures).values(input).returning();
+  // Validate requirements JSONB field
+  const validatedRequirements = procedureRequirementsSchema.parse(input.requirements ?? {});
+  const [procedure] = await deps.drizzle
+    .insert(auditProcedures)
+    .values({
+      ...input,
+      requirements: validatedRequirements,
+    })
+    .returning();
   return procedure;
 }
 
@@ -254,13 +288,15 @@ export async function completeProcedure(
   procedureId: string,
   input: CompleteProcedureInput,
 ): Promise<AuditProcedure> {
+  // Validate fieldData JSONB field if provided
+  const validatedFieldData = input.fieldData ? procedureFieldDataSchema.parse(input.fieldData) : undefined;
   const [completed] = await deps.drizzle
     .update(auditProcedures)
     .set({
       isCompleted: true,
       completedBy: input.completedBy,
       completedAt: new Date(),
-      fieldData: input.fieldData,
+      fieldData: validatedFieldData,
       memo: input.memo,
       updatedAt: new Date(),
     })
@@ -275,10 +311,12 @@ export async function updateProcedureFieldData(
   procedureId: string,
   fieldData: Record<string, unknown>,
 ): Promise<AuditProcedure> {
+  // Validate fieldData JSONB field
+  const validatedFieldData = procedureFieldDataSchema.parse(fieldData);
   const [updated] = await deps.drizzle
     .update(auditProcedures)
     .set({
-      fieldData,
+      fieldData: validatedFieldData,
       updatedAt: new Date(),
     })
     .where(eq(auditProcedures.id, procedureId))

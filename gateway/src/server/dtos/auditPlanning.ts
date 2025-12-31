@@ -1,4 +1,4 @@
-import type { AuditType } from "./cases.js";
+import type { CaseType } from "./cases.js";
 
 export type PlanType = "standalone" | "case_integrated";
 export type PlanStatus = "draft" | "in_review" | "approved" | "converted" | "archived";
@@ -9,7 +9,7 @@ export interface AuditPlanResponse {
   planType: PlanType;
   title: string;
   clientName?: string | null;
-  auditType?: AuditType | null;
+  caseType?: CaseType | null;
   auditYear?: number | null;
   startDate?: string | null;
   targetCompletion?: string | null;
@@ -46,7 +46,7 @@ export interface CreateAuditPlanRequest {
   planType?: PlanType | null;
   title: string;
   clientName?: string | null;
-  auditType?: AuditType | null;
+  caseType?: CaseType | null;
   auditYear?: number | null;
   startDate?: string | null;
   targetCompletion?: string | null;
@@ -77,7 +77,7 @@ export interface UpdateAuditPlanRequest {
   planType?: PlanType | null;
   title?: string | null;
   clientName?: string | null;
-  auditType?: AuditType | null;
+  caseType?: CaseType | null;
   auditYear?: number | null;
   startDate?: string | null;
   targetCompletion?: string | null;
@@ -110,7 +110,7 @@ export interface ConvertPlanToCaseRequest {
 export interface AuditPlanTemplateResponse {
   id: string;
   name: string;
-  auditType?: AuditType | null;
+  caseType?: CaseType | null;
   description?: string | null;
   defaultObjectives?: { id: string | null; description: string; priority?: string }[] | null;
   defaultScope?: Record<string, unknown> | null;
@@ -129,7 +129,7 @@ export interface AuditPlanTemplateResponse {
 
 export interface CreateAuditPlanTemplateRequest {
   name: string;
-  auditType?: AuditType | null;
+  caseType?: CaseType | null;
   description?: string | null;
   defaultObjectives?: { id?: string | null; description: string; priority?: string }[];
   defaultScope?: Record<string, unknown> | null;

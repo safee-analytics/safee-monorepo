@@ -35,15 +35,15 @@ void describe("createCase operation", async () => {
   it("should create a case successfully", async () => {
     const result = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-001",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     expect(result.id).toBeDefined();
     expect(result.caseNumber).toBe("CASE-001");
-    expect(result.clientName).toBe("Test Client");
-    expect(result.auditType).toBe("ICV");
-    expect(result.status).toBe("pending");
+    expect(result.title).toBe("Test Case");
+    expect(result.caseType).toBe("ICV_AUDIT");
+    expect(result.status).toBe("draft");
     expect(result.priority).toBe("medium");
     expect(result.organizationId).toBe(testOrg.id);
     expect(result.createdBy).toBe(testUser.id);
@@ -55,14 +55,14 @@ void describe("createCase operation", async () => {
 
     const result = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-002",
-      clientName: "Test Client 2",
-      auditType: "ISO_9001",
-      status: "in-progress",
+      title: "Test Case 2",
+      caseType: "ISO_9001_AUDIT",
+      status: "in_progress",
       priority: "high",
       dueDate: tomorrow.toISOString(),
     });
 
-    expect(result.status).toBe("in-progress");
+    expect(result.status).toBe("in_progress");
     expect(result.priority).toBe("high");
     expect(result.dueDate).toBeDefined();
   });
@@ -70,8 +70,8 @@ void describe("createCase operation", async () => {
   it("should create history entry on case creation", async () => {
     const result = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-003",
-      clientName: "Test Client 3",
-      auditType: "ICV",
+      title: "Test Case 3",
+      caseType: "ICV_AUDIT",
     });
 
     const history = await drizzle
@@ -84,35 +84,36 @@ void describe("createCase operation", async () => {
     expect(history[0].changedBy).toBe(testUser.id);
     expect(history[0].changesAfter).toMatchObject({
       caseNumber: "CASE-003",
-      clientName: "Test Client 3",
+      title: "Test Case 3",
+      caseType: "ICV_AUDIT",
     });
   });
 
-  it("should trim whitespace from client name", async () => {
+  it("should trim whitespace from title", async () => {
     const result = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-004",
-      clientName: "  Test Client  ",
-      auditType: "ICV",
+      title: "  Test Case  ",
+      caseType: "ICV_AUDIT",
     });
 
-    expect(result.clientName).toBe("Test Client");
-    expect(result.auditType).toBe("ICV");
+    expect(result.title).toBe("Test Case");
+    expect(result.caseType).toBe("ICV_AUDIT");
   });
 
   it("should reject invalid case number format", async () => {
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "case-001", // lowercase
-        clientName: "Test Client",
-        auditType: "ICV",
+        title: "Test Case",
+        caseType: "ICV_AUDIT",
       }),
     ).rejects.toThrow(InvalidInput);
 
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "CASE 001", // space
-        clientName: "Test Client",
-        auditType: "ICV",
+        title: "Test Case",
+        caseType: "ICV_AUDIT",
       }),
     ).rejects.toThrow(InvalidInput);
   });
@@ -121,8 +122,8 @@ void describe("createCase operation", async () => {
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "C1",
-        clientName: "Test Client",
-        auditType: "ICV",
+        title: "Test Case",
+        caseType: "ICV_AUDIT",
       }),
     ).rejects.toThrow("Case number must be between 3 and 50 characters");
   });
@@ -131,30 +132,30 @@ void describe("createCase operation", async () => {
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "C".repeat(51),
-        clientName: "Test Client",
-        auditType: "ICV",
+        title: "Test Case",
+        caseType: "ICV_AUDIT",
       }),
     ).rejects.toThrow("Case number must be between 3 and 50 characters");
   });
 
-  it("should reject empty client name", async () => {
+  it("should reject empty title", async () => {
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "CASE-005",
-        clientName: "",
-        auditType: "ICV",
+        title: "",
+        caseType: "ICV_AUDIT",
       }),
-    ).rejects.toThrow("Client name cannot be empty");
+    ).rejects.toThrow("Title cannot be empty");
   });
 
-  it("should reject empty client name with whitespace", async () => {
+  it("should reject empty title with whitespace", async () => {
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "CASE-007",
-        clientName: "   ",
-        auditType: "ICV",
+        title: "   ",
+        caseType: "ICV_AUDIT",
       }),
-    ).rejects.toThrow("Client name cannot be empty");
+    ).rejects.toThrow("Title cannot be empty");
   });
 
   it("should reject due date in the past", async () => {
@@ -164,8 +165,8 @@ void describe("createCase operation", async () => {
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "CASE-008",
-        clientName: "Test Client",
-        auditType: "ICV",
+        title: "Test Case",
+        caseType: "ICV_AUDIT",
         dueDate: yesterday.toISOString(),
       }),
     ).rejects.toThrow("Due date cannot be in the past");
@@ -174,15 +175,15 @@ void describe("createCase operation", async () => {
   it("should reject duplicate case number", async () => {
     await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-009",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     await expect(
       createCase(drizzle, testOrg.id, testUser.id, {
         caseNumber: "CASE-009",
-        clientName: "Another Client",
-        auditType: "ISO_9001",
+        title: "Another Case",
+        caseType: "ISO_9001_AUDIT",
       }),
     ).rejects.toThrow("A case with this case number already exists");
   });
@@ -192,14 +193,14 @@ void describe("createCase operation", async () => {
 
     await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-010",
-      clientName: "Test Client Org 1",
-      auditType: "ICV",
+      title: "Org1 Case",
+      caseType: "ICV_AUDIT",
     });
 
     const result = await createCase(drizzle, testOrg2.id, testUser.id, {
       caseNumber: "CASE-010",
-      clientName: "Test Client Org 2",
-      auditType: "ICV",
+      title: "Org2 Case",
+      caseType: "ICV_AUDIT",
     });
 
     expect(result.caseNumber).toBe("CASE-010");

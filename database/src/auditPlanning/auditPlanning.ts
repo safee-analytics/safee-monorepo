@@ -8,9 +8,48 @@ import type {
   UpdateAuditPlanInput,
   CreateAuditPlanTemplateInput,
 } from "./types.js";
+import {
+  auditPlanObjectiveSchema,
+  auditPlanTeamMemberSchema,
+  auditPlanPhaseSchema,
+  auditPlanRiskAssessmentSchema,
+  auditPlanBusinessUnitsSchema,
+  auditPlanFinancialAreasSchema,
+} from "../cases/types.js";
 
 export async function createAuditPlan(deps: DbDeps, input: CreateAuditPlanInput): Promise<AuditPlan> {
-  const [newPlan] = await deps.drizzle.insert(auditPlans).values(input).returning();
+  // Validate JSONB fields
+  const validatedObjectives = input.objectives
+    ? auditPlanObjectiveSchema.array().parse(input.objectives)
+    : undefined;
+  const validatedBusinessUnits = input.businessUnits
+    ? auditPlanBusinessUnitsSchema.parse(input.businessUnits)
+    : undefined;
+  const validatedFinancialAreas = input.financialAreas
+    ? auditPlanFinancialAreasSchema.parse(input.financialAreas)
+    : undefined;
+  const validatedTeamMembers = input.teamMembers
+    ? auditPlanTeamMemberSchema.array().parse(input.teamMembers)
+    : undefined;
+  const validatedPhaseBreakdown = input.phaseBreakdown
+    ? auditPlanPhaseSchema.array().parse(input.phaseBreakdown)
+    : undefined;
+  const validatedRiskAssessment = input.riskAssessment
+    ? auditPlanRiskAssessmentSchema.parse(input.riskAssessment)
+    : undefined;
+
+  const [newPlan] = await deps.drizzle
+    .insert(auditPlans)
+    .values({
+      ...input,
+      objectives: validatedObjectives,
+      businessUnits: validatedBusinessUnits,
+      financialAreas: validatedFinancialAreas,
+      teamMembers: validatedTeamMembers,
+      phaseBreakdown: validatedPhaseBreakdown,
+      riskAssessment: validatedRiskAssessment,
+    })
+    .returning();
   return newPlan;
 }
 
@@ -35,10 +74,36 @@ export async function updateAuditPlan(
   planId: string,
   input: UpdateAuditPlanInput,
 ): Promise<AuditPlan> {
+  // Validate JSONB fields if they are being updated
+  const validatedObjectives = input.objectives
+    ? auditPlanObjectiveSchema.array().parse(input.objectives)
+    : undefined;
+  const validatedBusinessUnits = input.businessUnits
+    ? auditPlanBusinessUnitsSchema.parse(input.businessUnits)
+    : undefined;
+  const validatedFinancialAreas = input.financialAreas
+    ? auditPlanFinancialAreasSchema.parse(input.financialAreas)
+    : undefined;
+  const validatedTeamMembers = input.teamMembers
+    ? auditPlanTeamMemberSchema.array().parse(input.teamMembers)
+    : undefined;
+  const validatedPhaseBreakdown = input.phaseBreakdown
+    ? auditPlanPhaseSchema.array().parse(input.phaseBreakdown)
+    : undefined;
+  const validatedRiskAssessment = input.riskAssessment
+    ? auditPlanRiskAssessmentSchema.parse(input.riskAssessment)
+    : undefined;
+
   const [updatedPlan] = await deps.drizzle
     .update(auditPlans)
     .set({
       ...input,
+      objectives: validatedObjectives ?? input.objectives,
+      businessUnits: validatedBusinessUnits ?? input.businessUnits,
+      financialAreas: validatedFinancialAreas ?? input.financialAreas,
+      teamMembers: validatedTeamMembers ?? input.teamMembers,
+      phaseBreakdown: validatedPhaseBreakdown ?? input.phaseBreakdown,
+      riskAssessment: validatedRiskAssessment ?? input.riskAssessment,
       updatedAt: new Date(),
     })
     .where(eq(auditPlans.id, planId))

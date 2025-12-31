@@ -164,7 +164,7 @@ export class ReportsController extends Controller {
     return templates.map((t) => ({
       id: t.id,
       name: t.name,
-      auditType: t.auditType,
+      caseType: t.caseType,
       description: t.description,
       templateStructure: t.templateStructure,
       isDefault: t.isDefault,
@@ -203,7 +203,7 @@ export class ReportsController extends Controller {
 
     const template = await createAuditReportTemplate(deps, {
       name: request.name,
-      auditType: request.auditType ?? undefined,
+      caseType: request.caseType ?? undefined,
       description: request.description ?? undefined,
       templateStructure: sanitizedStructure,
       isDefault: request.isDefault ?? undefined,
@@ -214,7 +214,7 @@ export class ReportsController extends Controller {
     return {
       id: template.id,
       name: template.name,
-      auditType: template.auditType,
+      caseType: template.caseType,
       description: template.description,
       templateStructure: template.templateStructure,
       isDefault: template.isDefault,
@@ -243,7 +243,7 @@ export class ReportsController extends Controller {
     return {
       id: template.id,
       name: template.name,
-      auditType: template.auditType,
+      caseType: template.caseType,
       description: template.description,
       templateStructure: template.templateStructure,
       isDefault: template.isDefault,

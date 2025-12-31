@@ -1,18 +1,18 @@
 // TSOA explicit types - cannot import from @safee/database
 // These must match the database enums exactly
-export type AuditType =
-  | "ICV"
-  | "ISO_9001"
-  | "ISO_14001"
-  | "ISO_45001"
-  | "financial_audit"
-  | "internal_audit"
-  | "compliance_audit"
-  | "operational_audit";
+export type CaseType =
+  | "ICV_AUDIT"
+  | "ISO_9001_AUDIT"
+  | "ISO_14001_AUDIT"
+  | "ISO_45001_AUDIT"
+  | "FINANCIAL_AUDIT"
+  | "INTERNAL_AUDIT"
+  | "COMPLIANCE_AUDIT"
+  | "OPERATIONAL_AUDIT";
 
-export type AuditCategory = "certification" | "financial" | "operational" | "compliance";
+export type CaseCategory = "certification" | "financial" | "operational" | "compliance";
 
-export type CaseStatus = "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
+export type CaseStatus = "draft" | "in_progress" | "under_review" | "completed" | "overdue" | "archived";
 
 export type CasePriority = "low" | "medium" | "high" | "critical";
 
@@ -23,8 +23,9 @@ export interface CaseResponse {
   id: string;
   organizationId: string;
   caseNumber: string;
-  clientName: string;
-  auditType: AuditType;
+  title: string;
+  description?: string | null;
+  caseType: CaseType;
   status: CaseStatus;
   priority: CasePriority;
   dueDate?: string | null;
@@ -45,8 +46,9 @@ export interface CaseResponse {
 
 export interface CreateCaseRequest {
   caseNumber?: string | null; // Optional - will be auto-generated if not provided
-  clientName: string;
-  auditType: AuditType;
+  title: string;
+  description?: string | null;
+  caseType: CaseType;
   status?: CaseStatus | null;
   priority?: CasePriority | null;
   dueDate?: string | null;
@@ -54,8 +56,9 @@ export interface CreateCaseRequest {
 
 export interface UpdateCaseRequest {
   caseNumber?: string | null;
-  clientName?: string | null;
-  auditType?: AuditType | null;
+  title?: string | null;
+  description?: string | null;
+  caseType?: CaseType | null;
   status?: CaseStatus | null;
   priority?: CasePriority | null;
   dueDate?: string | null;
@@ -80,16 +83,18 @@ export type TemplateStructure = {
   settings?: Record<string, unknown>;
 };
 
+export type TemplateType = "scope" | "form" | "checklist" | "report" | "plan";
+
 export interface TemplateResponse {
   id: string;
   organizationId?: string | null;
   name: string;
   description?: string | null;
-  auditType: AuditType;
-  category?: AuditCategory | null;
+  templateType: TemplateType;
+  category?: CaseCategory | null;
   version: string;
   isActive: boolean;
-  isPublic: boolean;
+  isSystemTemplate: boolean;
   structure: TemplateStructure;
   createdBy: string;
   createdAt: string;
@@ -100,15 +105,15 @@ export interface CreateTemplateRequest {
   organizationId?: string | null;
   name: string;
   description?: string | null;
-  auditType: AuditType;
-  category?: AuditCategory | null;
+  templateType: TemplateType;
+  category?: CaseCategory | null;
   version?: string;
   isActive?: boolean;
-  isPublic?: boolean;
+  isSystemTemplate?: boolean;
   structure: TemplateStructure;
 }
 
-export type AuditStatus = "draft" | "in-progress" | "under-review" | "completed" | "archived";
+export type AuditStatus = "draft" | "in_progress" | "under_review" | "completed" | "archived";
 
 // Scope DTOs
 export interface ScopeResponse {
@@ -118,7 +123,7 @@ export interface ScopeResponse {
   name: string;
   description?: string | null;
   status: AuditStatus;
-  metadata: Record<string, unknown>;
+  data: Record<string, unknown>;
   createdBy: string;
   completedBy?: string | null;
   archivedBy?: string | null;
@@ -132,7 +137,7 @@ export interface CreateScopeRequest {
   name: string;
   description?: string | null;
   status?: AuditStatus | null;
-  metadata?: Record<string, unknown> | null;
+  data?: Record<string, unknown> | null;
 }
 
 export interface CreateScopeFromTemplateRequest {

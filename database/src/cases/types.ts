@@ -159,11 +159,17 @@ export const auditPlanRiskAssessmentSchema = z.object({
   score: z.number().optional(),
 });
 
+export const auditPlanBusinessUnitsSchema = z.record(z.string(), z.boolean());
+
+export const auditPlanFinancialAreasSchema = z.record(z.string(), z.boolean());
+
 export type AuditPlanObjective = z.infer<typeof auditPlanObjectiveSchema>;
 export type AuditPlanTeamMember = z.infer<typeof auditPlanTeamMemberSchema>;
 export type AuditPlanPhase = z.infer<typeof auditPlanPhaseSchema>;
 export type AuditPlanRisk = z.infer<typeof auditPlanRiskSchema>;
 export type AuditPlanRiskAssessment = z.infer<typeof auditPlanRiskAssessmentSchema>;
+export type AuditPlanBusinessUnits = z.infer<typeof auditPlanBusinessUnitsSchema>;
+export type AuditPlanFinancialAreas = z.infer<typeof auditPlanFinancialAreasSchema>;
 
 // Audit Report schemas
 export const auditReportSettingsSchema = z.object({
