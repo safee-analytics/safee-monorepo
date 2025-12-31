@@ -679,6 +679,18 @@ export class OdooDatabaseService {
     };
 
     const essentialModules = [
+      // ========================================
+      // CRITICAL: Base Dependencies (must be installed FIRST)
+      // ========================================
+      "mail", // Required by almost all modules
+      "calendar", // Required by HR modules
+      "resource", // Required by HR scheduling/calendar
+      "sms", // Required by CRM/Sales/HR SMS features
+      "phone_validation", // Required by CRM
+      "iap", // Internet Account Protocol (required by CRM IAP features)
+      "snailmail", // Required for postal mail features
+      "digest", // Required by various modules
+
       // Core business modules
       "account",
       "crm",
