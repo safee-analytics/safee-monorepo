@@ -352,7 +352,13 @@ integration: build-database build-gateway start-e2e
 start-e2e service="" $DATABASE_URL=TEST_DB_URL $REDIS_URL="redis://localhost:26379":
     #!/usr/bin/env bash
     set -euo pipefail
-    [ "{{service}}" = "odoo" ] && docker compose -f e2e/docker-compose.yml --profile odoo up -d --wait postgres redis odoo || docker compose -f e2e/docker-compose.yml up -d --wait postgres redis
+    if [ "{{service}}" = "odoo" ]; then
+        echo "Starting E2E environment with Odoo..."
+        docker compose -f e2e/docker-compose.yml --profile odoo up -d --build --wait postgres redis odoo
+    else
+        echo "Starting E2E environment (no Odoo)..."
+        docker compose -f e2e/docker-compose.yml up -d --wait postgres redis
+    fi
     sleep 1
     docker compose -f e2e/docker-compose.yml exec postgres psql -U safee -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'safee' AND pid <> pg_backend_pid();" > /dev/null 2>&1 || true
     docker compose -f e2e/docker-compose.yml exec postgres dropdb -U safee --if-exists safee
