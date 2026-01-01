@@ -2,20 +2,17 @@
 import { useState, useRef, useEffect, useLayoutEffect } from "react";
 import { z } from "zod";
 import { useUpdateCase, useAssignCase, useRemoveCaseAssignment } from "@/lib/api/hooks";
-import type { components } from "@/lib/api/types";
+import type { CaseStatus, CasePriority } from "@/lib/types/cases";
 import { StatusBadge } from "@/components/audit/ui/StatusBadge";
 import { PriorityBadge } from "@/components/audit/ui/PriorityBadge";
-
-type CaseStatus = components["schemas"]["CaseResponse"]["status"];
-type CasePriority = components["schemas"]["CaseResponse"]["priority"];
 
 // Zod schemas for validation
 const StatusBadgeStatusSchema = z.enum([
   "completed",
-  "in-progress",
-  "pending",
+  "in_progress",
+  "draft",
   "overdue",
-  "under-review",
+  "under_review",
   "archived",
 ]);
 
@@ -42,9 +39,9 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
   }, [isOpen]);
 
   const statuses: { value: CaseStatus; label: string; color: string }[] = [
-    { value: "pending", label: "Pending", color: "bg-ray-100 text-gray-700" },
-    { value: "in-progress", label: "In Progress", color: "bg-blue-100 text-blue-700" },
-    { value: "under-review", label: "Under Review", color: "bg-yellow-100 text-yellow-700" },
+    { value: "draft", label: "Draft", color: "bg-gray-100 text-gray-700" },
+    { value: "in_progress", label: "In Progress", color: "bg-blue-100 text-blue-700" },
+    { value: "under_review", label: "Under Review", color: "bg-yellow-100 text-yellow-700" },
     { value: "completed", label: "Completed", color: "bg-green-100 text-green-700" },
     { value: "overdue", label: "Overdue", color: "bg-red-100 text-red-700" },
     { value: "archived", label: "Archived", color: "bg-gray-100 text-gray-500" },
@@ -81,7 +78,7 @@ export function InlineStatus({ caseId, currentStatus, onUpdate }: InlineStatusPr
 
   // Validate status for StatusBadge component
   const validatedStatus = StatusBadgeStatusSchema.safeParse(status);
-  const badgeStatus = validatedStatus.success ? validatedStatus.data : "pending";
+  const badgeStatus = validatedStatus.success ? validatedStatus.data : "draft";
 
   return (
     <div className="relative" ref={dropdownRef}>

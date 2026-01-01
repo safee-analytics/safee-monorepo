@@ -41,9 +41,9 @@ export default function EmployeeDetailPage() {
   const { data: manager } = useEmployee(employee?.managerId || "");
 
   // Fetch related data
-  const { data: contracts } = useContracts({ employeeId: employee?.odooEmployeeId });
+  const { data: contracts } = useContracts({ employeeId: employee?.odooEmployeeId ?? undefined });
   const { data: leaveBalances } = useLeaveBalances(employeeId);
-  const { data: payslips } = usePayslips({ employeeId: employee?.odooEmployeeId });
+  const { data: payslips } = usePayslips({ employeeId: employee?.odooEmployeeId ?? undefined });
 
   // Deactivate mutation
   const deactivateEmployee = useDeactivateEmployee();

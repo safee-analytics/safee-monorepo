@@ -40,7 +40,7 @@ export function CaseGrid({ cases, onCaseClick, availableUsers = [], onUpdate }: 
               </div>
               <div>
                 <h3 className="font-semibold text-gray-900 text-sm">{caseItem.caseId}</h3>
-                <p className="text-xs text-gray-500">{caseItem.auditType}</p>
+                <p className="text-xs text-gray-500">{caseItem.caseType}</p>
               </div>
             </div>
           </div>

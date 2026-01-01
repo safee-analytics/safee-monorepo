@@ -168,7 +168,7 @@ export function ClientAutocomplete({
                         </div>
                         <div className="flex items-center space-x-1">
                           <TrendingUp className="h-3 w-3" />
-                          <span>{getAuditTypeLabel(client.lastCase.auditType)}</span>
+                          <span>{getAuditTypeLabel(client.lastCase.caseType)}</span>
                         </div>
                         <span className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs">
                           {client.lastCase.status}

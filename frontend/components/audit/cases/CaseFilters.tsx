@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, startTransition } from "react";
-import { CaseStatus, CasePriority } from "@/types/audit";
+import { CaseStatus, CasePriority } from "@/lib/types/cases";
 
 export interface FilterToken {
   type: "status" | "priority" | "assignee" | "text";
@@ -100,9 +100,9 @@ export function CaseFilters({
   }, []);
 
   const statusOptions: { value: CaseStatus; label: string; color: string }[] = [
-    { value: "pending", label: "Pending", color: "bg-gray-100 text-gray-700" },
-    { value: "in-progress", label: "In Progress", color: "bg-blue-100 text-blue-700" },
-    { value: "under-review", label: "Under Review", color: "bg-yellow-100 text-yellow-700" },
+    { value: "draft", label: "Draft", color: "bg-gray-100 text-gray-700" },
+    { value: "in_progress", label: "In Progress", color: "bg-blue-100 text-blue-700" },
+    { value: "under_review", label: "Under Review", color: "bg-yellow-100 text-yellow-700" },
     { value: "completed", label: "Completed", color: "bg-green-100 text-green-700" },
     { value: "overdue", label: "Overdue", color: "bg-red-100 text-red-700" },
     { value: "archived", label: "Archived", color: "bg-gray-100 text-gray-500" },

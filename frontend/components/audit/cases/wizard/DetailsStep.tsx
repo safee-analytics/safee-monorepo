@@ -2,11 +2,12 @@
 
 import type { WizardStepProps } from "./types";
 import { FileText, DollarSign, Clock } from "lucide-react";
+import type { CaseStatus } from "@/lib/types/cases";
 
 const STATUSES = [
-  { value: "pending", label: "Pending", color: "bg-gray-100 text-gray-700" },
-  { value: "in-progress", label: "In Progress", color: "bg-blue-100 text-blue-700" },
-  { value: "under-review", label: "Under Review", color: "bg-yellow-100 text-yellow-700" },
+  { value: "draft", label: "Pending", color: "bg-gray-100 text-gray-700" },
+  { value: "in_progress", label: "In Progress", color: "bg-blue-100 text-blue-700" },
+  { value: "under_review", label: "Under Review", color: "bg-yellow-100 text-yellow-700" },
   { value: "completed", label: "Completed", color: "bg-green-100 text-green-700" },
 ];
 
@@ -30,7 +31,7 @@ export function DetailsStep({ data, onChange }: WizardStepProps) {
               <button
                 key={status.value}
                 onClick={() => {
-                  onChange({ status: status.value });
+                  onChange({ status: status.value as CaseStatus });
                 }}
                 className={`p-3 rounded-lg border-2 transition-all ${
                   isSelected

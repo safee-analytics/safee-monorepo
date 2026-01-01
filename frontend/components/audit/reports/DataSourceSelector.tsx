@@ -48,7 +48,7 @@ export function DataSourceSelector({ caseId, value, onChange }: DataSourceSelect
           {caseId ? (
             <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-800">
-                Pre-selected case: {cases.find((c: CaseData) => c.id === caseId)?.clientName}
+                Pre-selected case: {cases.find((c: CaseData) => c.id === caseId)?.title}
               </p>
             </div>
           ) : isLoading ? (
@@ -70,7 +70,7 @@ export function DataSourceSelector({ caseId, value, onChange }: DataSourceSelect
               <option value="">Select a case...</option>
               {cases.map((c: CaseData) => (
                 <option key={c.id} value={c.id}>
-                  {c.caseNumber} - {c.clientName}
+                  {c.caseNumber} - {c.title}
                 </option>
               ))}
             </select>

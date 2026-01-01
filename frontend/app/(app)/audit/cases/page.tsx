@@ -18,7 +18,7 @@ import { useAuditStore } from "@/stores/useAuditStore";
 import { useKeyboardShortcuts, COMMON_SHORTCUTS } from "@/lib/hooks/useKeyboardShortcuts";
 import { isValidCaseStatus, isValidCasePriority } from "@/lib/api/schemas";
 import { useToast } from "@safee/ui";
-import type { CaseStatus, CasePriority } from "@/types/audit";
+import type { CaseStatus, CasePriority } from "@/lib/types/cases";
 
 export default function CaseManagement() {
   const searchParams = useSearchParams();
@@ -128,7 +128,7 @@ export default function CaseManagement() {
 
   useEffect(() => {
     const statusParam = searchParams.get("status");
-    if (statusParam === "in-progress") {
+    if (statusParam === "in_progress") {
       startTransition(() => {
         setActiveStatusTab("active");
       });
@@ -136,10 +136,10 @@ export default function CaseManagement() {
       startTransition(() => {
         setActiveStatusTab("completed");
       });
-    } else if (statusParam === "under-review") {
-      // Add filter token for under-review since it's not a tab
+    } else if (statusParam === "under_review") {
+      // Add filter token for under_review since it's not a tab
       startTransition(() => {
-        setFilters([{ type: "status", value: "under-review", display: "Under Review" }]);
+        setFilters([{ type: "status", value: "under_review", display: "Under Review" }]);
       });
     } else {
       startTransition(() => {
@@ -178,9 +178,9 @@ export default function CaseManagement() {
   const handleQuickCreate = async (title: string) => {
     try {
       await createCaseMutation.mutateAsync({
-        clientName: title,
-        auditType: "financial_audit",
-        status: "pending",
+        title: title,
+        caseType: "FINANCIAL_AUDIT",
+        status: "draft",
         priority: "medium",
         dueDate: undefined,
       });
@@ -206,8 +206,8 @@ export default function CaseManagement() {
       return {
         id: caseData.id,
         caseId: caseData.caseNumber,
-        auditType: caseData.auditType,
-        companyName: caseData.clientName,
+        caseType: caseData.caseType,
+        companyName: caseData.title,
         industry: "General",
         assignee: {
           name: assigneeName,
@@ -220,9 +220,9 @@ export default function CaseManagement() {
         progress:
           caseData.status === "completed"
             ? 100
-            : caseData.status === "under-review"
+            : caseData.status === "under_review"
               ? 80
-              : caseData.status === "in-progress"
+              : caseData.status === "in_progress"
                 ? 50
                 : 10,
         icon: "📋",
@@ -249,7 +249,7 @@ export default function CaseManagement() {
           (c) =>
             c.caseId.toLowerCase().includes(searchText) ||
             c.companyName.toLowerCase().includes(searchText) ||
-            c.auditType.toLowerCase().includes(searchText) ||
+            c.caseType.toLowerCase().includes(searchText) ||
             c.assignee.name.toLowerCase().includes(searchText),
         );
       }
@@ -258,7 +258,7 @@ export default function CaseManagement() {
     // Calculate stats from all cases (not filtered)
     const calculatedStats = {
       totalCases: (apiCases ?? []).length,
-      activeCases: (apiCases ?? []).filter((c: CaseData) => c.status === "in-progress").length,
+      activeCases: (apiCases ?? []).filter((c: CaseData) => c.status === "in_progress").length,
       completedCases: (apiCases ?? []).filter((c: CaseData) => c.status === "completed").length,
       overdueCases: (apiCases ?? []).filter((c: CaseData) => c.status === "overdue").length,
     };
@@ -323,7 +323,7 @@ export default function CaseManagement() {
           <button
             onClick={() => {
               setActiveStatusTab("active");
-              router.push("/audit/cases?status=in-progress");
+              router.push("/audit/cases?status=in_progress");
             }}
             className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
               activeStatusTab === "active"
@@ -535,8 +535,8 @@ export default function CaseManagement() {
             ? {
                 id: previewCase.id,
                 caseNumber: previewCase.caseId,
-                clientName: previewCase.companyName,
-                auditType: previewCase.auditType,
+                title: previewCase.companyName,
+                caseType: previewCase.caseType,
                 status: previewCase.status,
                 priority: previewCase.priority,
                 dueDate: previewCase.dueDate,

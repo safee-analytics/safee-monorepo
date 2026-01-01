@@ -114,6 +114,8 @@ export default function CaseDetailPage() {
               router.push("/audit/cases");
             }}
             variant="primary"
+            icon={undefined}
+            disabled={false}
           >
             Back to Cases
           </AnimatedButton>
@@ -142,7 +144,7 @@ export default function CaseDetailPage() {
             </button>
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-2">
-                <h1 className="text-2xl font-bold text-gray-900">{caseData.clientName || "Unnamed Case"}</h1>
+                <h1 className="text-2xl font-bold text-gray-900">{caseData.title || "Unnamed Case"}</h1>
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-medium ${statusBadge.bg} ${statusBadge.text} flex items-center space-x-1`}
                 >
@@ -158,7 +160,7 @@ export default function CaseDetailPage() {
               <div className="flex items-center space-x-4 text-sm text-gray-600">
                 <span>{caseData.caseNumber}</span>
                 <span>•</span>
-                <span>{caseData.auditType?.replace(/_/g, " ")}</span>
+                <span>{caseData.caseType?.replace(/_/g, " ")}</span>
                 {caseData.dueDate && (
                   <>
                     <span>•</span>
@@ -169,9 +171,15 @@ export default function CaseDetailPage() {
             </div>
             <div className="flex items-center space-x-2">
               <ActiveViewers caseId={caseId} enableRealtime={true} variant="compact" />
-              <AnimatedButton variant="outline" size="md" className="flex items-center space-x-2">
-                <Edit2 className="h-4 w-4" />
-                <span>Edit</span>
+              <AnimatedButton
+                variant="outline"
+                size="md"
+                className="flex items-center space-x-2"
+                icon={<Edit2 className="h-4 w-4" />}
+                iconPosition="left"
+                disabled={false}
+              >
+                Edit
               </AnimatedButton>
               <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <MoreVertical className="h-5 w-5 text-gray-600" />
@@ -247,12 +255,12 @@ export default function CaseDetailPage() {
                 <dl className="grid grid-cols-2 gap-4">
                   <div>
                     <dt className="text-sm text-gray-500">Client Name</dt>
-                    <dd className="text-sm font-medium text-gray-900 mt-1">{caseData.clientName}</dd>
+                    <dd className="text-sm font-medium text-gray-900 mt-1">{caseData.title}</dd>
                   </div>
                   <div>
                     <dt className="text-sm text-gray-500">Audit Type</dt>
                     <dd className="text-sm font-medium text-gray-900 mt-1">
-                      {caseData.auditType?.replace(/_/g, " ")}
+                      {caseData.caseType?.replace(/_/g, " ")}
                     </dd>
                   </div>
                   <div>

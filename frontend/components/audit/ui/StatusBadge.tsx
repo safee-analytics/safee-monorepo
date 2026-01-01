@@ -2,10 +2,10 @@ import { cn } from "@/lib/utils";
 
 type StatusType =
   | "completed"
-  | "in-progress"
-  | "pending"
+  | "in_progress"
+  | "draft"
   | "overdue"
-  | "under-review"
+  | "under_review"
   | "archived"
   | "active"
   | "away";
@@ -22,17 +22,17 @@ const statusConfig = {
     dot: "bg-green-600",
     label: "Completed",
   },
-  "in-progress": {
+  in_progress: {
     bg: "bg-yellow-100",
     text: "text-yellow-700",
     dot: "bg-yellow-600",
     label: "In Progress",
   },
-  pending: {
+  draft: {
     bg: "bg-gray-100",
     text: "text-gray-700",
     dot: "bg-gray-600",
-    label: "Pending",
+    label: "Draft",
   },
   overdue: {
     bg: "bg-red-100",
@@ -40,7 +40,7 @@ const statusConfig = {
     dot: "bg-red-600",
     label: "Overdue",
   },
-  "under-review": {
+  under_review: {
     bg: "bg-blue-100",
     text: "text-blue-700",
     dot: "bg-blue-600",

@@ -5,14 +5,15 @@ import type { WizardStepProps } from "./types";
 import { Building2, Calendar, Flag, Sparkles } from "lucide-react";
 import { ClientAutocomplete } from "../ClientAutocomplete";
 import { useAutofill, type AutofillClientHistory } from "@/lib/hooks/useAutofill";
+import type { CaseType, CasePriority } from "@/lib/types/cases";
 
 const AUDIT_TYPES = [
-  { value: "financial_audit", label: "Financial Audit", icon: "💰" },
-  { value: "compliance_audit", label: "Compliance Audit", icon: "✅" },
-  { value: "icv_audit", label: "ICV Audit", icon: "🇦🇪" },
-  { value: "operational_audit", label: "Operational Audit", icon: "⚙️" },
-  { value: "it_audit", label: "IT Audit", icon: "💻" },
-  { value: "general_audit", label: "General Audit", icon: "📋" },
+  { value: "FINANCIAL_AUDIT", label: "Financial Audit", icon: "💰" },
+  { value: "COMPLIANCE_AUDIT", label: "Compliance Audit", icon: "✅" },
+  { value: "ICV_AUDIT", label: "ICV Audit", icon: "🇦🇪" },
+  { value: "OPERATIONAL_AUDIT", label: "Operational Audit", icon: "⚙️" },
+  { value: "INTERNAL_AUDIT", label: "Internal Audit", icon: "💻" },
+  { value: "ISO_9001_AUDIT", label: "ISO 9001 Audit", icon: "📋" },
 ];
 
 const PRIORITIES = [
@@ -52,11 +53,11 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
 
   // Pre-fill from template if selected
   useEffect(() => {
-    if (data.selectedTemplate && !data.clientName) {
+    if (data.selectedTemplate && !data.title) {
       // Template is selected but fields not yet filled
       // Fields were already set in TemplateSelector, just ensure they're present
     }
-  }, [data.selectedTemplate, data.clientName]);
+  }, [data.selectedTemplate, data.title]);
 
   // Handle client selection with autofill
   const handleClientSelect = (clientHistory: AutofillClientHistory) => {
@@ -69,18 +70,18 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
       const updates: Partial<WizardStepProps["data"]> = {};
 
       // Suggest audit type based on history
-      if (!data.auditType && clientHistory.mostCommonAuditType) {
-        updates.auditType = clientHistory.mostCommonAuditType;
+      if (!data.caseType && clientHistory.mostCommonAuditType) {
+        updates.caseType = clientHistory.mostCommonAuditType as CaseType;
       }
 
       // Suggest priority based on history
       if (clientHistory.commonPriority) {
-        updates.priority = clientHistory.commonPriority;
+        updates.priority = clientHistory.commonPriority as CasePriority;
       }
 
       // Suggest due date based on audit type
-      if (updates.auditType) {
-        const suggestedDate = suggestDueDate(updates.auditType);
+      if (updates.caseType) {
+        const suggestedDate = suggestDueDate(updates.caseType);
         updates.dueDate = suggestedDate.toISOString().split("T")[0];
       }
 
@@ -116,9 +117,9 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
           </div>
         </label>
         <ClientAutocomplete
-          value={data.clientName || ""}
+          value={data.title || ""}
           onChange={(value) => {
-            onChange({ clientName: value });
+            onChange({ title: value });
           }}
           onClientSelect={handleClientSelect}
           placeholder="Enter client or company name"
@@ -133,14 +134,14 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
         <label className="block text-sm font-medium text-gray-700 mb-2">Audit Type *</label>
         <div className="grid grid-cols-2 gap-3">
           {AUDIT_TYPES.map((type) => {
-            const isSelected = data.auditType === type.value;
+            const isSelected = data.caseType === type.value;
             const isFromTemplate = data.selectedTemplate?.auditType === type.value;
 
             return (
               <button
                 key={type.value}
                 onClick={() => {
-                  onChange({ auditType: type.value });
+                  onChange({ caseType: type.value as CaseType });
                 }}
                 disabled={isFromTemplate}
                 className={`p-4 rounded-lg border-2 text-left transition-all ${
@@ -193,7 +194,7 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
               <button
                 key={priority.value}
                 onClick={() => {
-                  onChange({ priority: priority.value });
+                  onChange({ priority: priority.value as CasePriority });
                 }}
                 className={`p-4 rounded-lg border-2 text-left transition-all ${
                   isSelected
@@ -255,11 +256,11 @@ export function QuickStartStep({ data, onChange }: WizardStepProps) {
       </div>
 
       {/* Summary Box */}
-      {data.clientName && data.auditType && (
+      {data.title && data.caseType && (
         <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
           <h4 className="text-sm font-semibold text-green-900 mb-2">Ready to Continue</h4>
           <p className="text-sm text-green-700">
-            Creating {data.auditType.replace(/_/g, " ")} for <strong>{data.clientName}</strong>
+            Creating {data.caseType.replace(/_/g, " ")} for <strong>{data.title}</strong>
             {data.dueDate && ` - Due ${new Date(data.dueDate).toLocaleDateString()}`}
           </p>
         </div>

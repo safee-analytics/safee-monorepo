@@ -2,28 +2,10 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient, handleApiError } from "../client";
 import type { paths } from "../types";
 import { queryKeys } from "./queryKeys";
+import type { CaseData, CaseResponse, CaseAssignment } from "@/lib/types/cases";
 
-export type CaseAssignment = {
-  role?: string;
-  userId?: string;
-  user?: {
-    name?: string;
-    email: string;
-  };
-};
-
-export type CaseData = {
-  id: string;
-  caseNumber: string;
-  auditType: string;
-  clientName: string;
-  status: string;
-  priority: string;
-  dueDate?: string;
-  createdBy: string;
-  createdAt: string;
-  assignments?: CaseAssignment[];
-};
+// Re-export for backwards compatibility
+export type { CaseData, CaseAssignment } from "@/lib/types/cases";
 
 export function useCases(filters?: { status?: string; priority?: string; assignedTo?: string }) {
   return useQuery<CaseData[]>({

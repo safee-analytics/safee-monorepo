@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient, handleApiError } from "../client";
 import { queryKeys } from "./queryKeys";
-import type { components } from "../types";
+import type { components } from "../types/settings";
 
 type DocumentTemplateResponse = components["schemas"]["DocumentTemplateResponse"];
 

@@ -66,7 +66,7 @@ export default function AuditReports() {
     return frameworks.map((framework) => {
       // Calculate score based on completed cases
       const frameworkCases = cases.filter((c: CaseData) =>
-        c.auditType.toLowerCase().includes(framework.toLowerCase().replace(/\s+/g, "")),
+        c.caseType.toLowerCase().includes(framework.toLowerCase().replace(/\s+/g, "")),
       );
 
       const completedCases = frameworkCases.filter((c: CaseData) => c.status === "completed").length;

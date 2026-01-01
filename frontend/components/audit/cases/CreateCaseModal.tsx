@@ -3,11 +3,7 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import { useCreateCase } from "@/lib/api/hooks";
-import type { components } from "@/lib/api/types";
-
-type CaseStatus = components["schemas"]["CreateCaseRequest"]["status"];
-type CasePriority = components["schemas"]["CreateCaseRequest"]["priority"];
-type AuditType = components["schemas"]["AuditType"];
+import type { CaseType, CaseStatus, CasePriority } from "@/lib/types/cases";
 
 interface CreateCaseModalProps {
   isOpen: boolean;
@@ -19,9 +15,9 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
   const createCase = useCreateCase();
 
   const [formData, setFormData] = useState({
-    clientName: "",
-    auditType: "" as AuditType | "",
-    status: "pending" as CaseStatus,
+    title: "",
+    caseType: "" as CaseType | "",
+    status: "draft" as CaseStatus,
     priority: "medium" as CasePriority,
     dueDate: "",
   });
@@ -31,11 +27,11 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
   const validate = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!formData.clientName.trim()) {
-      newErrors.clientName = "Client name is required";
+    if (!formData.title.trim()) {
+      newErrors.title = "Client name is required";
     }
-    if (!formData.auditType.trim()) {
-      newErrors.auditType = "Audit type is required";
+    if (!formData.caseType.trim()) {
+      newErrors.caseType = "Audit type is required";
     }
 
     setErrors(newErrors);
@@ -52,8 +48,8 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
     try {
       // Backend will auto-generate the case number sequentially
       await createCase.mutateAsync({
-        clientName: formData.clientName,
-        auditType: formData.auditType as AuditType,
+        title: formData.title,
+        caseType: formData.caseType as CaseType,
         status: formData.status,
         priority: formData.priority,
         dueDate: formData.dueDate || undefined,
@@ -61,9 +57,9 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
 
       // Reset form
       setFormData({
-        clientName: "",
-        auditType: "",
-        status: "pending",
+        title: "",
+        caseType: "",
+        status: "draft",
         priority: "medium",
         dueDate: "",
       });
@@ -81,9 +77,9 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
   const handleClose = () => {
     if (!createCase.isPending) {
       setFormData({
-        clientName: "",
-        auditType: "",
-        status: "pending",
+        title: "",
+        caseType: "",
+        status: "draft",
         priority: "medium",
         dueDate: "",
       });
@@ -134,43 +130,43 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
         >
           {/* Client Name */}
           <div>
-            <label htmlFor="clientName" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">
               Client Name <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              id="clientName"
-              value={formData.clientName}
+              id="title"
+              value={formData.title}
               onChange={(e) => {
-                setFormData({ ...formData, clientName: e.target.value });
+                setFormData({ ...formData, title: e.target.value });
               }}
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.clientName ? "border-red-500" : "border-gray-300"
+                errors.title ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="e.g., ABC Corporation"
               autoFocus
             />
-            {errors.clientName && <p className="text-red-500 text-sm mt-1">{errors.clientName}</p>}
+            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
           </div>
 
           {/* Audit Type */}
           <div>
-            <label htmlFor="auditType" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="caseType" className="block text-sm font-medium text-gray-700 mb-2">
               Audit Type <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
-              id="auditType"
-              value={formData.auditType}
+              id="caseType"
+              value={formData.caseType}
               onChange={(e) => {
-                setFormData({ ...formData, auditType: e.target.value as AuditType | "" });
+                setFormData({ ...formData, caseType: e.target.value as CaseType | "" });
               }}
               className={`w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                errors.auditType ? "border-red-500" : "border-gray-300"
+                errors.caseType ? "border-red-500" : "border-gray-300"
               }`}
               placeholder="e.g., Financial Audit"
             />
-            {errors.auditType && <p className="text-red-500 text-sm mt-1">{errors.auditType}</p>}
+            {errors.caseType && <p className="text-red-500 text-sm mt-1">{errors.caseType}</p>}
           </div>
 
           {/* Status, Priority and Due Date Row */}
@@ -188,9 +184,9 @@ export function CreateCaseModal({ isOpen, onClose, onSuccess }: CreateCaseModalP
                 }}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="pending">Pending</option>
-                <option value="in-progress">In Progress</option>
-                <option value="under-review">Under Review</option>
+                <option value="draft">Pending</option>
+                <option value="in_progress">In Progress</option>
+                <option value="under_review">Under Review</option>
                 <option value="completed">Completed</option>
               </select>
             </div>

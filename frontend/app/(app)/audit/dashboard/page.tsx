@@ -56,9 +56,9 @@ export default function AuditDashboard() {
       };
     }
 
-    const activeCases = apiCases.filter((c: CaseData) => c.status === "in-progress").length;
+    const activeCases = apiCases.filter((c: CaseData) => c.status === "in_progress").length;
     const completedAudits = apiCases.filter((c: CaseData) => c.status === "completed").length;
-    const pendingReviews = apiCases.filter((c: CaseData) => c.status === "under-review").length;
+    const pendingReviews = apiCases.filter((c: CaseData) => c.status === "under_review").length;
     const totalCases = apiCases.length;
     const completionRate = totalCases > 0 ? Math.round((completedAudits / totalCases) * 100) : 0;
 
@@ -99,7 +99,7 @@ export default function AuditDashboard() {
       id: string;
       companyName: string;
       auditType: string;
-      status: "in-progress" | "completed" | "overdue";
+      status: "in_progress" | "completed" | "overdue";
       dueDate: string;
       completedDate?: string;
       icon: string;
@@ -110,9 +110,9 @@ export default function AuditDashboard() {
 
     return apiCases.slice(0, 3).map((caseData: CaseData) => ({
       id: caseData.id,
-      companyName: caseData.clientName,
-      auditType: caseData.auditType,
-      status: caseData.status as "in-progress" | "completed" | "overdue",
+      companyName: caseData.title,
+      auditType: caseData.caseType,
+      status: caseData.status as "in_progress" | "completed" | "overdue",
       dueDate: caseData.dueDate
         ? new Date(caseData.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })
         : "No date",
@@ -139,7 +139,7 @@ export default function AuditDashboard() {
       userName: item.updatedBy.name,
       userAvatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.updatedBy.name}`,
       action: `Updated case ${item.caseNumber}`,
-      description: `Changed status to ${item.status} for ${item.clientName}`,
+      description: `Changed status to ${item.status} for ${item.title}`,
       timestamp: new Date(item.updatedAt).toLocaleString("en-US", {
         hour: "numeric",
         minute: "numeric",
@@ -165,9 +165,8 @@ export default function AuditDashboard() {
       return {
         month,
         completed: casesInMonth.filter((c: CaseData) => c.status === "completed").length,
-        inProgress: casesInMonth.filter((c: CaseData) => c.status === "in-progress").length,
-        pending: casesInMonth.filter((c: CaseData) => c.status === "pending" || c.status === "under-review")
-          .length,
+        inProgress: casesInMonth.filter((c: CaseData) => c.status === "in_progress").length,
+        pending: casesInMonth.filter((c: CaseData) => c.status === "draft" || c.status === "under_review").length,
       };
     });
   }, [apiCases]);
@@ -217,9 +216,9 @@ export default function AuditDashboard() {
         >
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
             <Link
-              href="/audit/cases?status=in-progress"
+              href="/audit/cases?status=in_progress"
               onClick={() => {
-                trackNavigation("stat_card_clicked", { cardName: "Active Cases", status: "in-progress" });
+                trackNavigation("stat_card_clicked", { cardName: "Active Cases", status: "in_progress" });
               }}
               className="block cursor-pointer transition-transform hover:scale-105"
             >
@@ -236,9 +235,9 @@ export default function AuditDashboard() {
           </motion.div>
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
             <Link
-              href="/audit/cases?status=under-review"
+              href="/audit/cases?status=under_review"
               onClick={() => {
-                trackNavigation("stat_card_clicked", { cardName: "Pending Reviews", status: "under-review" });
+                trackNavigation("stat_card_clicked", { cardName: "Pending Reviews", status: "under_review" });
               }}
               className="block cursor-pointer transition-transform hover:scale-105"
             >
