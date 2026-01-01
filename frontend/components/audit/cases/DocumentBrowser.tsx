@@ -19,17 +19,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DocumentPreviewDrawer } from "./DocumentPreviewDrawer";
-
-interface Document {
-  id: string;
-  name: string;
-  type: string;
-  size: number;
-  category: string;
-  status: "pending" | "approved" | "rejected";
-  uploadedAt: string;
-  uploadedBy: string;
-}
+import { type Document, documentSchema } from "@/lib/validation";
 
 interface DocumentBrowserProps {
   caseId: string;
@@ -154,7 +144,7 @@ export function DocumentBrowser({
 
   const handleStatusChange = (documentId: string, status: string) => {
     // Update document status - this would typically call an API
-    console.warn(`Updating document ${documentId} status to ${status}`);
+
   };
 
   return (

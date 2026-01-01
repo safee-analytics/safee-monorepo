@@ -45,3 +45,42 @@ export const createTemplateRequestSchema = z.object({
 
 export type CreateTemplateRequestType = z.infer<typeof createTemplateRequestSchema>;
 
+export const fileUploadItemSchema = z.object({
+  file: z.instanceof(File),
+  status: z.enum(["pending", "uploading", "success", "error"]),
+  progress: z.number().min(0).max(100),
+  category: z.string().optional(),
+  error: z.string().optional(),
+});
+
+export type FileUploadItem = z.infer<typeof fileUploadItemSchema>;
+
+export const documentSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  type: z.string(),
+  size: z.number(),
+  category: z.string(),
+  status: z.enum(["pending", "approved", "rejected"]),
+  uploadedAt: z.string(),
+  uploadedBy: z.string(),
+});
+
+export type Document = z.infer<typeof documentSchema>;
+
+export const statCardPropsSchema = z.object({
+  title: z.string(),
+  value: z.number(),
+  subtitle: z.string(),
+  icon: z.unknown(),
+  iconBgColor: z.string(),
+  iconColor: z.string(),
+  trend: z.object({
+    value: z.string(),
+    positive: z.boolean(),
+  }).optional(),
+});
+
+export type StatCardProps = z.infer<typeof statCardPropsSchema>;
+
+

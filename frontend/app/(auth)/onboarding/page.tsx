@@ -21,6 +21,7 @@ import { authClient } from "@/lib/auth/client";
 import { apiClient } from "@/lib/api/client";
 import { twMerge } from "tailwind-merge";
 import { SafeeLogo as SafeeLogoComponent } from "@/components/common/SafeeLogo";
+import { type Module, moduleSchema, type PendingInvitation, pendingInvitationSchema, type SubscriptionPlan, subscriptionPlanSchema, type CurrentSubscription, currentSubscriptionSchema, type TeamMember, teamMemberSchema } from "@/lib/validation";
 
 // Multi-step onboarding types
 type OnboardingStep =
@@ -32,34 +33,7 @@ type OnboardingStep =
   | "modules"
   | "complete";
 
-interface TeamMember {
-  email: string;
-  role: "admin" | "member" | "owner";
-}
-
-interface PendingInvitation {
-  id: string;
-  organizationId: string;
-  organizationName?: string;
-  inviterName?: string;
-  email: string;
-  role: "admin" | "member" | "owner";
-  status: string;
-  inviterId: string;
-  expiresAt: Date;
-  createdAt: Date;
-  teamId?: string;
-}
-
-interface Module {
-  id: string;
-  name: string;
-  description: string;
-  icon: React.ComponentType<{ className?: string }>;
-  color: string;
-}
-
-const AVAILABLE_MODULES: Module[] = [
+const AVAILABLE_MODULES: Module[] = moduleSchema.array().parse([
   {
     id: "accounting",
     name: "Hisabiq - Accounting",
@@ -88,23 +62,7 @@ const AVAILABLE_MODULES: Module[] = [
     icon: UserCircle,
     color: "from-indigo-500 to-indigo-600",
   },
-];
-
-interface SubscriptionPlan {
-  id: string;
-  name: string;
-  slug: string;
-  pricePerSeat: string;
-  maxSeats: number | null;
-  features: Record<string, unknown> | null;
-}
-
-interface CurrentSubscription {
-  isFree: boolean;
-  seats: number;
-  planSlug: string;
-  planName: string;
-}
+]);
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -140,18 +98,18 @@ export default function OnboardingPage() {
         // Load available plans
         const { data: plansData } = await apiClient.GET("/subscriptions/plans", {});
         if (plansData) {
-          setPlans(plansData);
+          setPlans(subscriptionPlanSchema.array().parse(plansData));
         }
 
         // Load current status
         const { data: statusData } = await apiClient.GET("/onboarding/status", {});
         if (statusData) {
-          setCurrentPlan(statusData.subscription);
+          setCurrentPlan(currentSubscriptionSchema.parse(statusData.subscription));
 
           // Check for pending invitations using Better Auth client
           const { data: invitationsData } = await authClient.organization.listUserInvitations();
           if (invitationsData && invitationsData.length > 0) {
-            setPendingInvitations(invitationsData);
+            setPendingInvitations(pendingInvitationSchema.array().parse(invitationsData));
           }
 
           // Navigate to appropriate step based on backend status
@@ -219,7 +177,7 @@ export default function OnboardingPage() {
   // Add team member
   const handleAddTeamMember = () => {
     if (newMemberEmail && !teamMembers.find((m) => m.email === newMemberEmail)) {
-      setTeamMembers([...teamMembers, { email: newMemberEmail, role: "member" }]);
+      setTeamMembers([...teamMembers, teamMemberSchema.parse({ email: newMemberEmail, role: "member" })]);
       setNewMemberEmail("");
     }
   };
@@ -376,7 +334,9 @@ export default function OnboardingPage() {
               role: member.role,
             });
           } catch (err) {
-            console.warn(`Failed to invite ${member.email}:`, err);
+// TODO: [Backend/Frontend] - Handle individual invitation failures during onboarding
+//   Details: When inviting multiple team members, some invitations might fail (e.g., invalid email). This `console.warn` needs to be replaced with a robust error handling mechanism, potentially showing user-specific feedback without blocking the entire onboarding process.
+//   Priority: Medium
             // Continue even if some invites fail
           }
         }

@@ -66,3 +66,43 @@ export const encryptionDataSchema = z.object({
 });
 
 export type EncryptionData = z.infer<typeof encryptionDataSchema>;
+
+export const invoiceStyleSchema = z.object({
+  id: z.string().optional(),
+  organizationId: z.string(),
+
+  // Logo
+  logoUrl: z.string().optional(),
+  logoPosition: z.enum(["left", "center", "right"]),
+
+  // Colors
+  primaryColor: z.string(),
+  accentColor: z.string(),
+  textColor: z.string(),
+  backgroundColor: z.string(),
+
+  // Fonts
+  headingFont: z.string(),
+  bodyFont: z.string(),
+  fontSize: z.enum(["small", "medium", "large"]),
+
+  // Layout
+  showLogo: z.boolean(),
+  showCompanyDetails: z.boolean(),
+  showFooter: z.boolean(),
+  footerText: z.string(),
+
+  // Labels
+  invoiceLabel: z.string(),
+  dateLabel: z.string(),
+  dueLabel: z.string(),
+  billToLabel: z.string(),
+  itemLabel: z.string(),
+  quantityLabel: z.string(),
+  rateLabel: z.string(),
+  amountLabel: z.string(),
+  totalLabel: z.string(),
+});
+
+export type InvoiceStyle = z.infer<typeof invoiceStyleSchema>;
+

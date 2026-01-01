@@ -14,6 +14,7 @@ import { ActivityFeed } from "@/components/collaboration/ActivityFeed";
 import { ActiveViewers } from "@/components/collaboration/ActiveViewers";
 import { AnimatedButton } from "@safee/ui";
 import { ScopesTab } from "@/components/audit/scopes/ScopesTab";
+import { type Document, documentSchema } from "@/lib/validation";
 
 type TabType = "overview" | "scopes" | "documents" | "activity" | "team";
 
@@ -24,14 +25,16 @@ export default function CaseDetailPage() {
 
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [previewDocument, setPreviewDocument] = useState<DocumentType | null>(null);
+  const [previewDocument, setPreviewDocument] = useState<Document | null>(null);
 
   // Fetch case data
   const { data: caseData, isLoading } = useCase(caseId);
   const { data: scopes } = useCaseScopes(caseId);
 
-  // Mock documents - replace with actual API call
-  const mockDocuments = [
+// TODO: [Backend/Frontend] - Fetch documents from API
+//   Details: The `mockDocuments` are currently hardcoded. Implement a backend API endpoint to fetch documents for a given case and integrate it here.
+//   Priority: High
+  const mockDocuments: Document[] = documentSchema.array().parse([
     {
       id: "1",
       name: "Financial_Statement_2024.pdf",
@@ -68,11 +71,12 @@ export default function CaseDetailPage() {
       url: "/api/documents/3",
       version: 1,
     },
-  ];
+  ]);
 
   const handleUpload = async (_files: { file: File; category: string }[]) => {
-    // Implement actual upload logic here
-    console.warn("Uploading files:", _files);
+// TODO: [Backend/Frontend] - Implement file upload logic
+//   Details: The `handleUpload` function currently has a placeholder. Implement the actual file upload logic, which should involve calling a backend API to store the files.
+//   Priority: High
     await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
@@ -358,10 +362,14 @@ export default function CaseDetailPage() {
               setPreviewDocument(doc);
             }}
             onDownload={(docIds) => {
-              console.warn("Download documents:", docIds);
+// TODO: [Backend/Frontend] - Implement document download logic
+//   Details: This action currently has a placeholder. Implement the backend API for downloading documents and integrate it here.
+//   Priority: High
             }}
             onDelete={(docIds) => {
-              console.warn("Delete documents:", docIds);
+// TODO: [Backend/Frontend] - Implement document deletion logic
+//   Details: This action currently has a placeholder. Implement the backend API for deleting documents and integrate it here.
+//   Priority: High
             }}
           />
         )}

@@ -51,11 +51,15 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
         return;
       }
       if (path === "#export") {
-        console.warn("Export data triggered - implementation pending");
+// TODO: [Backend/Frontend] - Implement export data logic for command palette
+//   Details: The export data action currently has a placeholder. Implement the actual data export logic, potentially by calling a backend API, and integrate it here.
+//   Priority: Medium
         return;
       }
       if (path === "#theme") {
-        console.warn("Theme toggle triggered - implementation pending");
+// TODO: [Frontend] - Implement theme toggle logic for command palette
+//   Details: The theme toggle action currently has a placeholder. Implement the actual theme switching logic and integrate it here.
+//   Priority: Medium
         return;
       }
     }

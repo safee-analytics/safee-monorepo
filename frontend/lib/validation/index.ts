@@ -9,3 +9,4 @@ export * from "./schemas/encryption.schema";
 export * from "./schemas/accounting.schema";
 export * from "./schemas/ui.schema";
 export * from "./schemas/team.schema";
+export * from "./schemas/onboarding.schema";
