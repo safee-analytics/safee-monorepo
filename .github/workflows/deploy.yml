@@ -101,6 +101,8 @@ jobs:
     needs: build-and-push
     runs-on: ubuntu-latest
     if: success() && github.ref == 'refs/heads/main'
+    permissions:
+      contents: none
     environment:
       name: dev
       url: https://dev.safee.dev

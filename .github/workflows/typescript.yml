@@ -17,6 +17,8 @@ jobs:
   custom-lint:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -28,6 +30,8 @@ jobs:
   fmt:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -43,6 +47,8 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
     outputs:
       lint: ${{ steps.list.outputs.lint }}
       check: ${{ steps.list.outputs.check }}
@@ -66,6 +72,8 @@ jobs:
   lint-each:
     runs-on: ubuntu-latest
     needs: prepare
+    permissions:
+      contents: read
     strategy:
       matrix:
         package: ${{ fromJson(needs.prepare.outputs.lint) }}
@@ -92,6 +100,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: lint-each
     if: ${{ always() }}
+    permissions:
+      contents: none
     steps:
       - name: Verify all lint-each runs succeeded
         run: |
@@ -103,6 +113,8 @@ jobs:
   check-each:
     runs-on: ubuntu-latest
     needs: prepare
+    permissions:
+      contents: read
     strategy:
       matrix:
         package: ${{ fromJson(needs.prepare.outputs.check) }}
@@ -129,6 +141,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: check-each
     if: ${{ always() }}
+    permissions:
+      contents: none
     steps:
       - name: Verify all check-each runs succeeded
         run: |
@@ -181,6 +195,8 @@ jobs:
     runs-on: ubuntu-latest
     needs: test-each
     if: ${{ always() }}
+    permissions:
+      contents: none
     steps:
       - name: Verify all test-each runs succeeded
         run: |

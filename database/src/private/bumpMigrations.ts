@@ -10,20 +10,26 @@ const __dirname = path.dirname(__filename);
 const migrationsDir = path.join(__dirname, "..", "..", "migrations");
 
 function getMigrationFiles(branch: string): string[] {
-  const command = `git ls-tree -r --name-only ${branch} -- ${migrationsDir}/*`;
+  // Safely quote branch and directory for shell execution
+  const safeBranch = JSON.stringify(branch);
+  const safeMigrationsDir = JSON.stringify(`${migrationsDir}/*`);
+  const command = `git ls-tree -r --name-only ${safeBranch} -- ${safeMigrationsDir}`;
   const output = execSync(command).toString();
   return output.split("\n").filter((file) => file.endsWith(".sql"));
 }
 
 function getNewMigrationFiles(): string[] {
   const currentBranch = execSync("git rev-parse --abbrev-ref HEAD").toString().trim();
-  const baseCommand = `git diff --name-only origin/main...${currentBranch} -- ${migrationsDir}/*`;
+  // Safely quote branch and directory for shell execution
+  const safeBranch = JSON.stringify(currentBranch);
+  const safeMigrationsDir = JSON.stringify(`${migrationsDir}/*`);
+  const baseCommand = `git diff --name-only origin/main...${safeBranch} -- ${safeMigrationsDir}`;
   const stagedAndCommittedFiles = execSync(baseCommand)
     .toString()
     .split("\n")
     .map((x) => x.replace("database/", ""));
 
-  const uncommittedCommand = `git ls-files --others --exclude-standard --modified ${migrationsDir}/*`;
+  const uncommittedCommand = `git ls-files --others --exclude-standard --modified ${safeMigrationsDir}`;
   const uncommittedFiles = execSync(uncommittedCommand).toString().split("\n");
 
   const allFiles = [...stagedAndCommittedFiles, ...uncommittedFiles];

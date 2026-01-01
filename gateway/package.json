@@ -54,7 +54,7 @@
     "@types/multer": "^2.0.0",
     "@vitest/ui": "4.0.15",
     "bcryptjs": "^3.0.2",
-    "better-auth": "^1.4.2",
+    "better-auth": "^1.4.10",
     "bullmq": "^5.66.2",
     "cors": "^2.8.5",
     "date-fns": "^4.1.0",

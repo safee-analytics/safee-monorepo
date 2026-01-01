@@ -102,7 +102,10 @@ for (const [moduleName, tags] of Object.entries(MODULE_GROUPS)) {
   // Generate types using openapi-typescript
   const outputPath = path.join(OUTPUT_DIR, `${moduleName}.ts`);
   try {
-    execSync(`npx openapi-typescript ${tempSpecPath} -o ${outputPath}`, { stdio: "inherit" });
+    // Use JSON.stringify to safely quote paths for shell execution
+    const safeSpecPath = JSON.stringify(tempSpecPath);
+    const safeOutputPath = JSON.stringify(outputPath);
+    execSync(`npx openapi-typescript ${safeSpecPath} -o ${safeOutputPath}`, { stdio: "inherit" });
     console.log(`   ✅ Generated ${moduleName}.ts\n`);
 
     // Add to index exports

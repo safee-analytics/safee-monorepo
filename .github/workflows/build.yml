@@ -17,6 +17,8 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
     outputs:
       packages: ${{ steps.list.outputs.packages }}
     steps:
@@ -38,6 +40,8 @@ jobs:
   build-each:
     needs: prepare
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         package: ${{ fromJson(needs.prepare.outputs.packages) }}
@@ -64,6 +68,8 @@ jobs:
   docker-build:
     runs-on: ubuntu-latest
     if: github.event.pull_request.draft == false
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -86,6 +92,8 @@ jobs:
       - build-each
       - docker-build
     if: ${{ always() }}
+    permissions:
+      contents: none
     steps:
       - name: Verify all build jobs succeeded
         run: |

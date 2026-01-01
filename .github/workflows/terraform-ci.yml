@@ -24,6 +24,8 @@ jobs:
     name: Terraform Format Check
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event.pull_request.draft == false
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -44,6 +46,8 @@ jobs:
     name: Terraform Validate
     runs-on: ubuntu-latest
     if: github.event_name == 'push' || github.event.pull_request.draft == false
+    permissions:
+      contents: read
     strategy:
       matrix:
         environment: [dev]
