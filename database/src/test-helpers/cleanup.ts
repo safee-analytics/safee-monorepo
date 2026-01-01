@@ -13,8 +13,8 @@ import {
   cases,
   auditProcedures,
   auditSections,
-  auditScopes,
-  auditTemplates,
+  templateInstances,
+  templates,
   approvalWorkflowSteps,
   approvalRules,
   approvalWorkflows,
@@ -68,8 +68,8 @@ export async function cleanTestData(db: DrizzleClient): Promise<void> {
   await db.delete(cases);
   await db.delete(auditProcedures);
   await db.delete(auditSections);
-  await db.delete(auditScopes);
-  await db.delete(auditTemplates);
+  await db.delete(templateInstances);
+  await db.delete(templates);
   await db.delete(approvalWorkflowSteps);
   await db.delete(approvalRules);
   await db.delete(approvalWorkflows);

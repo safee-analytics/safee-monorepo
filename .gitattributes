@@ -1,0 +1,5 @@
+
+# Mark Drizzle migration snapshots as generated (collapses in GitHub PRs)
+# Keep _journal.json visible for tracking migration order
+database/src/migrations/meta/*_snapshot.json linguist-generated=true
+database/src/migrations/meta/*_snapshot.json -diff

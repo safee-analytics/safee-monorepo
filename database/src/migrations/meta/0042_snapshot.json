@@ -1,6 +1,6 @@
 {
-  "id": "d00300f8-418e-42ce-951c-ecfdaa0a1172",
-  "prevId": "99e26d08-4345-4381-89c8-92b25acf9440",
+  "id": "9c518224-5200-461d-9195-8fb5decd93fc",
+  "prevId": "7864a6fa-12ae-41ec-aeb9-1592d08b43a7",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -80,7 +80,9 @@
         "subscription_plans_slug_unique": {
           "name": "subscription_plans_slug_unique",
           "nullsNotDistinct": false,
-          "columns": ["slug"]
+          "columns": [
+            "slug"
+          ]
         }
       },
       "policies": {},
@@ -368,7 +370,9 @@
         "organizations_slug_unique": {
           "name": "organizations_slug_unique",
           "nullsNotDistinct": false,
-          "columns": ["slug"]
+          "columns": [
+            "slug"
+          ]
         }
       },
       "policies": {},
@@ -490,8 +494,12 @@
           "tableFrom": "encryption_keys",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -587,8 +595,12 @@
           "tableFrom": "user_keypairs",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -598,7 +610,9 @@
         "user_keypairs_user_id_unique": {
           "name": "user_keypairs_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["user_id"]
+          "columns": [
+            "user_id"
+          ]
         }
       },
       "policies": {},
@@ -732,8 +746,12 @@
           "tableFrom": "auditor_access",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -742,8 +760,12 @@
           "tableFrom": "auditor_access",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["auditor_user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "auditor_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -752,8 +774,12 @@
           "tableFrom": "auditor_access",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["granted_by_user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "granted_by_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -762,8 +788,12 @@
           "tableFrom": "auditor_access",
           "tableTo": "encryption_keys",
           "schemaTo": "identity",
-          "columnsFrom": ["encryption_key_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "encryption_key_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -772,8 +802,12 @@
           "tableFrom": "auditor_access",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["revoked_by_user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "revoked_by_user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "cascade"
         }
@@ -898,8 +932,12 @@
           "tableFrom": "file_encryption_metadata",
           "tableTo": "encryption_keys",
           "schemaTo": "identity",
-          "columnsFrom": ["encryption_key_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "encryption_key_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -909,7 +947,9 @@
         "file_encryption_metadata_file_id_unique": {
           "name": "file_encryption_metadata_file_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["file_id"]
+          "columns": [
+            "file_id"
+          ]
         }
       },
       "policies": {},
@@ -961,8 +1001,12 @@
           "tableFrom": "members",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -971,8 +1015,12 @@
           "tableFrom": "members",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -980,7 +1028,10 @@
       "compositePrimaryKeys": {
         "members_organization_id_user_id_pk": {
           "name": "members_organization_id_user_id_pk",
-          "columns": ["organization_id", "user_id"]
+          "columns": [
+            "organization_id",
+            "user_id"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -1058,8 +1109,12 @@
           "tableFrom": "invitations",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1068,8 +1123,12 @@
           "tableFrom": "invitations",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["inviter_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "inviter_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1176,8 +1235,12 @@
           "tableFrom": "databases",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1187,12 +1250,16 @@
         "databases_organization_id_unique": {
           "name": "databases_organization_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["organization_id"]
+          "columns": [
+            "organization_id"
+          ]
         },
         "databases_database_name_unique": {
           "name": "databases_database_name_unique",
           "nullsNotDistinct": false,
-          "columns": ["database_name"]
+          "columns": [
+            "database_name"
+          ]
         }
       },
       "policies": {},
@@ -1281,8 +1348,12 @@
           "tableFrom": "odoo_users",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1291,8 +1362,12 @@
           "tableFrom": "odoo_users",
           "tableTo": "databases",
           "schemaTo": "odoo",
-          "columnsFrom": ["odoo_database_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "odoo_database_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -1587,8 +1662,12 @@
           "tableFrom": "audit_logs",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1597,8 +1676,12 @@
           "tableFrom": "audit_logs",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1608,7 +1691,9 @@
         "audit_logs_operation_id_unique": {
           "name": "audit_logs_operation_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["operation_id"]
+          "columns": [
+            "operation_id"
+          ]
         }
       },
       "policies": {},
@@ -1783,8 +1868,12 @@
           "tableFrom": "idempotency_keys",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1793,8 +1882,12 @@
           "tableFrom": "idempotency_keys",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1804,7 +1897,9 @@
         "idempotency_keys_idempotency_key_unique": {
           "name": "idempotency_keys_idempotency_key_unique",
           "nullsNotDistinct": false,
-          "columns": ["idempotency_key"]
+          "columns": [
+            "idempotency_key"
+          ]
         }
       },
       "policies": {},
@@ -1928,8 +2023,12 @@
           "tableFrom": "connectors",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -1938,8 +2037,12 @@
           "tableFrom": "connectors",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["created_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "cascade"
         },
@@ -1948,8 +2051,12 @@
           "tableFrom": "connectors",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["updated_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "updated_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "cascade"
         }
@@ -2183,17 +2290,23 @@
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         },
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": ["username"]
+          "columns": [
+            "username"
+          ]
         },
         "users_phone_number_unique": {
           "name": "users_phone_number_unique",
           "nullsNotDistinct": false,
-          "columns": ["phone_number"]
+          "columns": [
+            "phone_number"
+          ]
         }
       },
       "policies": {},
@@ -2278,7 +2391,9 @@
         "services_name_unique": {
           "name": "services_name_unique",
           "nullsNotDistinct": false,
-          "columns": ["name"]
+          "columns": [
+            "name"
+          ]
         }
       },
       "policies": {},
@@ -2389,8 +2504,12 @@
           "tableFrom": "organization_services",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2399,8 +2518,12 @@
           "tableFrom": "organization_services",
           "tableTo": "services",
           "schemaTo": "system",
-          "columnsFrom": ["service_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "service_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2408,7 +2531,10 @@
       "compositePrimaryKeys": {
         "organization_services_organization_id_service_id_pk": {
           "name": "organization_services_organization_id_service_id_pk",
-          "columns": ["organization_id", "service_id"]
+          "columns": [
+            "organization_id",
+            "service_id"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -2520,8 +2646,12 @@
           "tableFrom": "user_services",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -2530,8 +2660,12 @@
           "tableFrom": "user_services",
           "tableTo": "services",
           "schemaTo": "system",
-          "columnsFrom": ["service_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "service_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2539,7 +2673,10 @@
       "compositePrimaryKeys": {
         "user_services_user_id_service_id_pk": {
           "name": "user_services_user_id_service_id_pk",
-          "columns": ["user_id", "service_id"]
+          "columns": [
+            "user_id",
+            "service_id"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -2693,8 +2830,12 @@
           "tableFrom": "accounts",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -2853,8 +2994,12 @@
           "tableFrom": "taxes",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3039,8 +3184,12 @@
           "tableFrom": "invoices",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -3201,8 +3350,12 @@
           "tableFrom": "payments",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -3570,8 +3723,12 @@
           "tableFrom": "jobs",
           "tableTo": "job_schedules",
           "schemaTo": "jobs",
-          "columnsFrom": ["schedule_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "schedule_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3580,8 +3737,12 @@
           "tableFrom": "jobs",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3689,8 +3850,12 @@
           "tableFrom": "job_logs",
           "tableTo": "jobs",
           "schemaTo": "jobs",
-          "columnsFrom": ["job_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "job_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3859,8 +4024,12 @@
           "tableFrom": "audit_events",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -3869,8 +4038,12 @@
           "tableFrom": "audit_events",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -3957,8 +4130,12 @@
           "tableFrom": "login_attempts",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4064,8 +4241,12 @@
           "tableFrom": "security_events",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -4074,8 +4255,12 @@
           "tableFrom": "security_events",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4167,8 +4352,12 @@
           "tableFrom": "sessions",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4178,7 +4367,9 @@
         "sessions_token_unique": {
           "name": "sessions_token_unique",
           "nullsNotDistinct": false,
-          "columns": ["token"]
+          "columns": [
+            "token"
+          ]
         }
       },
       "policies": {},
@@ -4278,8 +4469,12 @@
           "tableFrom": "oauth_accounts",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4361,8 +4556,12 @@
           "tableFrom": "email_bounces",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -4462,8 +4661,12 @@
           "tableFrom": "two_factors",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4620,8 +4823,12 @@
           "tableFrom": "apikeys",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4788,8 +4995,12 @@
           "tableFrom": "notifications",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -4798,8 +5009,12 @@
           "tableFrom": "notifications",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4947,8 +5162,12 @@
           "tableFrom": "notification_settings",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -4958,7 +5177,9 @@
         "notification_settings_user_id_unique": {
           "name": "notification_settings_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["user_id"]
+          "columns": [
+            "user_id"
+          ]
         }
       },
       "policies": {},
@@ -5052,8 +5273,12 @@
           "tableFrom": "appearance_settings",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5063,7 +5288,9 @@
         "appearance_settings_user_id_unique": {
           "name": "appearance_settings_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["user_id"]
+          "columns": [
+            "user_id"
+          ]
         }
       },
       "policies": {},
@@ -5152,8 +5379,12 @@
           "tableFrom": "organization_roles",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5240,8 +5471,12 @@
           "tableFrom": "teams",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5321,8 +5556,12 @@
           "tableFrom": "team_members",
           "tableTo": "teams",
           "schemaTo": "identity",
-          "columnsFrom": ["team_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "team_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -5331,8 +5570,12 @@
           "tableFrom": "team_members",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5340,7 +5583,10 @@
       "compositePrimaryKeys": {
         "team_members_team_id_user_id_pk": {
           "name": "team_members_team_id_user_id_pk",
-          "columns": ["team_id", "user_id"]
+          "columns": [
+            "team_id",
+            "user_id"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -5459,8 +5705,12 @@
           "tableFrom": "approval_workflows",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5568,8 +5818,12 @@
           "tableFrom": "approval_workflow_steps",
           "tableTo": "approval_workflows",
           "schemaTo": "system",
-          "columnsFrom": ["workflow_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "workflow_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -5712,8 +5966,12 @@
           "tableFrom": "approval_requests",
           "tableTo": "approval_workflows",
           "schemaTo": "system",
-          "columnsFrom": ["workflow_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "workflow_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
@@ -5722,8 +5980,12 @@
           "tableFrom": "approval_requests",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["requested_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "requested_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -5858,8 +6120,12 @@
           "tableFrom": "approval_steps",
           "tableTo": "approval_requests",
           "schemaTo": "system",
-          "columnsFrom": ["request_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "request_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -5868,8 +6134,12 @@
           "tableFrom": "approval_steps",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["approver_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "approver_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
@@ -5878,8 +6148,12 @@
           "tableFrom": "approval_steps",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["delegated_to"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "delegated_to"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "cascade"
         }
@@ -6008,8 +6282,12 @@
           "tableFrom": "approval_rules",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -6018,8 +6296,12 @@
           "tableFrom": "approval_rules",
           "tableTo": "approval_workflows",
           "schemaTo": "system",
-          "columnsFrom": ["workflow_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "workflow_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -6030,9 +6312,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.cases": {
+    "cases.cases": {
       "name": "cases",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -6053,34 +6335,46 @@
           "primaryKey": false,
           "notNull": true
         },
-        "client_name": {
-          "name": "client_name",
+        "title": {
+          "name": "title",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
-        "audit_type": {
-          "name": "audit_type",
-          "type": "audit_type",
-          "typeSchema": "audit",
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "case_type": {
+          "name": "case_type",
+          "type": "case_type",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
         "status": {
           "name": "status",
           "type": "case_status",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true,
-          "default": "'pending'"
+          "default": "'draft'"
         },
         "priority": {
           "name": "priority",
           "type": "case_priority",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true,
           "default": "'medium'"
+        },
+        "workflow_template_id": {
+          "name": "workflow_template_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
         },
         "due_date": {
           "name": "due_date",
@@ -6146,11 +6440,26 @@
           "method": "btree",
           "with": {}
         },
-        "cases_audit_type_idx": {
-          "name": "cases_audit_type_idx",
+        "cases_case_type_idx": {
+          "name": "cases_case_type_idx",
           "columns": [
             {
-              "expression": "audit_type",
+              "expression": "case_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "cases_workflow_template_id_idx": {
+          "name": "cases_workflow_template_id_idx",
+          "columns": [
+            {
+              "expression": "workflow_template_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -6183,9 +6492,27 @@
           "tableFrom": "cases",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "cases_workflow_template_id_workflow_templates_id_fk": {
+          "name": "cases_workflow_template_id_workflow_templates_id_fk",
+          "tableFrom": "cases",
+          "tableTo": "workflow_templates",
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "workflow_template_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
           "onUpdate": "no action"
         },
         "cases_created_by_users_id_fk": {
@@ -6193,8 +6520,12 @@
           "tableFrom": "cases",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["created_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -6204,16 +6535,19 @@
         "cases_org_case_number_unique": {
           "name": "cases_org_case_number_unique",
           "nullsNotDistinct": false,
-          "columns": ["organization_id", "case_number"]
+          "columns": [
+            "organization_id",
+            "case_number"
+          ]
         }
       },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_templates": {
-      "name": "audit_templates",
-      "schema": "audit",
+    "cases.templates": {
+      "name": "templates",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -6240,17 +6574,17 @@
           "primaryKey": false,
           "notNull": false
         },
-        "audit_type": {
-          "name": "audit_type",
-          "type": "audit_type",
-          "typeSchema": "audit",
+        "template_type": {
+          "name": "template_type",
+          "type": "template_type",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
         "category": {
           "name": "category",
-          "type": "audit_category",
-          "typeSchema": "audit",
+          "type": "case_category",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": false
         },
@@ -6268,8 +6602,8 @@
           "notNull": true,
           "default": true
         },
-        "is_public": {
-          "name": "is_public",
+        "is_system_template": {
+          "name": "is_system_template",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
@@ -6303,8 +6637,8 @@
         }
       },
       "indexes": {
-        "audit_templates_organization_id_idx": {
-          "name": "audit_templates_organization_id_idx",
+        "templates_organization_id_idx": {
+          "name": "templates_organization_id_idx",
           "columns": [
             {
               "expression": "organization_id",
@@ -6318,11 +6652,11 @@
           "method": "btree",
           "with": {}
         },
-        "audit_templates_audit_type_idx": {
-          "name": "audit_templates_audit_type_idx",
+        "templates_template_type_idx": {
+          "name": "templates_template_type_idx",
           "columns": [
             {
-              "expression": "audit_type",
+              "expression": "template_type",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -6333,8 +6667,8 @@
           "method": "btree",
           "with": {}
         },
-        "audit_templates_is_active_idx": {
-          "name": "audit_templates_is_active_idx",
+        "templates_is_active_idx": {
+          "name": "templates_is_active_idx",
           "columns": [
             {
               "expression": "is_active",
@@ -6348,11 +6682,11 @@
           "method": "btree",
           "with": {}
         },
-        "audit_templates_is_public_idx": {
-          "name": "audit_templates_is_public_idx",
+        "templates_is_system_template_idx": {
+          "name": "templates_is_system_template_idx",
           "columns": [
             {
-              "expression": "is_public",
+              "expression": "is_system_template",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -6365,23 +6699,31 @@
         }
       },
       "foreignKeys": {
-        "audit_templates_organization_id_organizations_id_fk": {
-          "name": "audit_templates_organization_id_organizations_id_fk",
-          "tableFrom": "audit_templates",
+        "templates_organization_id_organizations_id_fk": {
+          "name": "templates_organization_id_organizations_id_fk",
+          "tableFrom": "templates",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "audit_templates_created_by_users_id_fk": {
-          "name": "audit_templates_created_by_users_id_fk",
-          "tableFrom": "audit_templates",
+        "templates_created_by_users_id_fk": {
+          "name": "templates_created_by_users_id_fk",
+          "tableFrom": "templates",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["created_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -6392,9 +6734,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_scopes": {
-      "name": "audit_scopes",
-      "schema": "audit",
+    "cases.template_instances": {
+      "name": "template_instances",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -6415,6 +6757,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "step_execution_id": {
+          "name": "step_execution_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -6429,18 +6777,17 @@
         },
         "status": {
           "name": "status",
-          "type": "audit_status",
-          "typeSchema": "audit",
+          "type": "template_status",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true,
           "default": "'draft'"
         },
-        "metadata": {
-          "name": "metadata",
+        "data": {
+          "name": "data",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'{}'::jsonb"
+          "notNull": true
         },
         "created_by": {
           "name": "created_by",
@@ -6488,8 +6835,8 @@
         }
       },
       "indexes": {
-        "audit_scopes_case_id_idx": {
-          "name": "audit_scopes_case_id_idx",
+        "template_instances_case_id_idx": {
+          "name": "template_instances_case_id_idx",
           "columns": [
             {
               "expression": "case_id",
@@ -6503,8 +6850,8 @@
           "method": "btree",
           "with": {}
         },
-        "audit_scopes_template_id_idx": {
-          "name": "audit_scopes_template_id_idx",
+        "template_instances_template_id_idx": {
+          "name": "template_instances_template_id_idx",
           "columns": [
             {
               "expression": "template_id",
@@ -6518,8 +6865,23 @@
           "method": "btree",
           "with": {}
         },
-        "audit_scopes_status_idx": {
-          "name": "audit_scopes_status_idx",
+        "template_instances_step_execution_id_idx": {
+          "name": "template_instances_step_execution_id_idx",
+          "columns": [
+            {
+              "expression": "step_execution_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "template_instances_status_idx": {
+          "name": "template_instances_status_idx",
           "columns": [
             {
               "expression": "status",
@@ -6535,53 +6897,73 @@
         }
       },
       "foreignKeys": {
-        "audit_scopes_case_id_cases_id_fk": {
-          "name": "audit_scopes_case_id_cases_id_fk",
-          "tableFrom": "audit_scopes",
+        "template_instances_case_id_cases_id_fk": {
+          "name": "template_instances_case_id_cases_id_fk",
+          "tableFrom": "template_instances",
           "tableTo": "cases",
-          "schemaTo": "audit",
-          "columnsFrom": ["case_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "audit_scopes_template_id_audit_templates_id_fk": {
-          "name": "audit_scopes_template_id_audit_templates_id_fk",
-          "tableFrom": "audit_scopes",
-          "tableTo": "audit_templates",
-          "schemaTo": "audit",
-          "columnsFrom": ["template_id"],
-          "columnsTo": ["id"],
+        "template_instances_template_id_templates_id_fk": {
+          "name": "template_instances_template_id_templates_id_fk",
+          "tableFrom": "template_instances",
+          "tableTo": "templates",
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "template_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "audit_scopes_created_by_users_id_fk": {
-          "name": "audit_scopes_created_by_users_id_fk",
-          "tableFrom": "audit_scopes",
+        "template_instances_created_by_users_id_fk": {
+          "name": "template_instances_created_by_users_id_fk",
+          "tableFrom": "template_instances",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["created_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
-        "audit_scopes_completed_by_users_id_fk": {
-          "name": "audit_scopes_completed_by_users_id_fk",
-          "tableFrom": "audit_scopes",
+        "template_instances_completed_by_users_id_fk": {
+          "name": "template_instances_completed_by_users_id_fk",
+          "tableFrom": "template_instances",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["completed_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "completed_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
-        "audit_scopes_archived_by_users_id_fk": {
-          "name": "audit_scopes_archived_by_users_id_fk",
-          "tableFrom": "audit_scopes",
+        "template_instances_archived_by_users_id_fk": {
+          "name": "template_instances_archived_by_users_id_fk",
+          "tableFrom": "template_instances",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["archived_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "archived_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -6592,9 +6974,786 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_sections": {
+    "cases.workflow_templates": {
+      "name": "workflow_templates",
+      "schema": "cases",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "organization_id": {
+          "name": "organization_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "case_type": {
+          "name": "case_type",
+          "type": "case_type",
+          "typeSchema": "cases",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'1.0'"
+        },
+        "is_system_template": {
+          "name": "is_system_template",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "config": {
+          "name": "config",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_by": {
+          "name": "created_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "workflow_templates_organization_id_idx": {
+          "name": "workflow_templates_organization_id_idx",
+          "columns": [
+            {
+              "expression": "organization_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "workflow_templates_case_type_idx": {
+          "name": "workflow_templates_case_type_idx",
+          "columns": [
+            {
+              "expression": "case_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "workflow_templates_is_active_idx": {
+          "name": "workflow_templates_is_active_idx",
+          "columns": [
+            {
+              "expression": "is_active",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "workflow_templates_is_system_template_idx": {
+          "name": "workflow_templates_is_system_template_idx",
+          "columns": [
+            {
+              "expression": "is_system_template",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "workflow_templates_organization_id_organizations_id_fk": {
+          "name": "workflow_templates_organization_id_organizations_id_fk",
+          "tableFrom": "workflow_templates",
+          "tableTo": "organizations",
+          "schemaTo": "identity",
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "workflow_templates_created_by_users_id_fk": {
+          "name": "workflow_templates_created_by_users_id_fk",
+          "tableFrom": "workflow_templates",
+          "tableTo": "users",
+          "schemaTo": "identity",
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "cases.workflow_steps": {
+      "name": "workflow_steps",
+      "schema": "cases",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "workflow_template_id": {
+          "name": "workflow_template_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "step_id": {
+          "name": "step_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "step_order": {
+          "name": "step_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "step_type": {
+          "name": "step_type",
+          "type": "step_type",
+          "typeSchema": "cases",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "config": {
+          "name": "config",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{}'::jsonb"
+        },
+        "conditions": {
+          "name": "conditions",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'[]'::jsonb"
+        },
+        "is_required": {
+          "name": "is_required",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "can_skip": {
+          "name": "can_skip",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "approval_workflow_id": {
+          "name": "approval_workflow_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "template_id": {
+          "name": "template_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "workflow_steps_workflow_template_id_idx": {
+          "name": "workflow_steps_workflow_template_id_idx",
+          "columns": [
+            {
+              "expression": "workflow_template_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "workflow_steps_step_order_idx": {
+          "name": "workflow_steps_step_order_idx",
+          "columns": [
+            {
+              "expression": "step_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "workflow_steps_approval_workflow_id_idx": {
+          "name": "workflow_steps_approval_workflow_id_idx",
+          "columns": [
+            {
+              "expression": "approval_workflow_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "workflow_steps_workflow_template_id_workflow_templates_id_fk": {
+          "name": "workflow_steps_workflow_template_id_workflow_templates_id_fk",
+          "tableFrom": "workflow_steps",
+          "tableTo": "workflow_templates",
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "workflow_template_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "workflow_steps_approval_workflow_id_approval_workflows_id_fk": {
+          "name": "workflow_steps_approval_workflow_id_approval_workflows_id_fk",
+          "tableFrom": "workflow_steps",
+          "tableTo": "approval_workflows",
+          "schemaTo": "system",
+          "columnsFrom": [
+            "approval_workflow_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "workflow_steps_template_id_templates_id_fk": {
+          "name": "workflow_steps_template_id_templates_id_fk",
+          "tableFrom": "workflow_steps",
+          "tableTo": "templates",
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "template_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "workflow_steps_template_step_unique": {
+          "name": "workflow_steps_template_step_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "workflow_template_id",
+            "step_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "cases.workflow_instances": {
+      "name": "workflow_instances",
+      "schema": "cases",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "case_id": {
+          "name": "case_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "workflow_template_id": {
+          "name": "workflow_template_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "current_step_index": {
+          "name": "current_step_index",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "current_step_id": {
+          "name": "current_step_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "state": {
+          "name": "state",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{\"completedSteps\":[],\"stepData\":{},\"variables\":{}}'::jsonb"
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "last_activity_at": {
+          "name": "last_activity_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "workflow_instances_workflow_template_id_idx": {
+          "name": "workflow_instances_workflow_template_id_idx",
+          "columns": [
+            {
+              "expression": "workflow_template_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "workflow_instances_current_step_id_idx": {
+          "name": "workflow_instances_current_step_id_idx",
+          "columns": [
+            {
+              "expression": "current_step_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "workflow_instances_case_id_cases_id_fk": {
+          "name": "workflow_instances_case_id_cases_id_fk",
+          "tableFrom": "workflow_instances",
+          "tableTo": "cases",
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "workflow_instances_workflow_template_id_workflow_templates_id_fk": {
+          "name": "workflow_instances_workflow_template_id_workflow_templates_id_fk",
+          "tableFrom": "workflow_instances",
+          "tableTo": "workflow_templates",
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "workflow_template_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "workflow_instances_case_id_unique": {
+          "name": "workflow_instances_case_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "case_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "cases.step_executions": {
+      "name": "step_executions",
+      "schema": "cases",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "case_id": {
+          "name": "case_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "workflow_instance_id": {
+          "name": "workflow_instance_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "workflow_step_id": {
+          "name": "workflow_step_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "step_id": {
+          "name": "step_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "step_status",
+          "typeSchema": "cases",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "data": {
+          "name": "data",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{}'::jsonb"
+        },
+        "approval_request_id": {
+          "name": "approval_request_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completed_by": {
+          "name": "completed_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "step_executions_case_id_idx": {
+          "name": "step_executions_case_id_idx",
+          "columns": [
+            {
+              "expression": "case_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "step_executions_workflow_instance_id_idx": {
+          "name": "step_executions_workflow_instance_id_idx",
+          "columns": [
+            {
+              "expression": "workflow_instance_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "step_executions_workflow_step_id_idx": {
+          "name": "step_executions_workflow_step_id_idx",
+          "columns": [
+            {
+              "expression": "workflow_step_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "step_executions_status_idx": {
+          "name": "step_executions_status_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "step_executions_approval_request_id_idx": {
+          "name": "step_executions_approval_request_id_idx",
+          "columns": [
+            {
+              "expression": "approval_request_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "step_executions_case_id_cases_id_fk": {
+          "name": "step_executions_case_id_cases_id_fk",
+          "tableFrom": "step_executions",
+          "tableTo": "cases",
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "step_executions_workflow_instance_id_workflow_instances_id_fk": {
+          "name": "step_executions_workflow_instance_id_workflow_instances_id_fk",
+          "tableFrom": "step_executions",
+          "tableTo": "workflow_instances",
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "workflow_instance_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "step_executions_workflow_step_id_workflow_steps_id_fk": {
+          "name": "step_executions_workflow_step_id_workflow_steps_id_fk",
+          "tableFrom": "step_executions",
+          "tableTo": "workflow_steps",
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "workflow_step_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "step_executions_approval_request_id_approval_requests_id_fk": {
+          "name": "step_executions_approval_request_id_approval_requests_id_fk",
+          "tableFrom": "step_executions",
+          "tableTo": "approval_requests",
+          "schemaTo": "system",
+          "columnsFrom": [
+            "approval_request_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "step_executions_completed_by_users_id_fk": {
+          "name": "step_executions_completed_by_users_id_fk",
+          "tableFrom": "step_executions",
+          "tableTo": "users",
+          "schemaTo": "identity",
+          "columnsFrom": [
+            "completed_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "step_executions_case_step_unique": {
+          "name": "step_executions_case_step_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "case_id",
+            "step_id"
+          ]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "cases.audit_sections": {
       "name": "audit_sections",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -6690,13 +7849,17 @@
         }
       },
       "foreignKeys": {
-        "audit_sections_scope_id_audit_scopes_id_fk": {
-          "name": "audit_sections_scope_id_audit_scopes_id_fk",
+        "audit_sections_scope_id_template_instances_id_fk": {
+          "name": "audit_sections_scope_id_template_instances_id_fk",
           "tableFrom": "audit_sections",
-          "tableTo": "audit_scopes",
-          "schemaTo": "audit",
-          "columnsFrom": ["scope_id"],
-          "columnsTo": ["id"],
+          "tableTo": "template_instances",
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "scope_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -6707,9 +7870,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_procedures": {
+    "cases.audit_procedures": {
       "name": "audit_procedures",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -6862,9 +8025,13 @@
           "name": "audit_procedures_section_id_audit_sections_id_fk",
           "tableFrom": "audit_procedures",
           "tableTo": "audit_sections",
-          "schemaTo": "audit",
-          "columnsFrom": ["section_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "section_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -6873,8 +8040,12 @@
           "tableFrom": "audit_procedures",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["completed_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "completed_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -6885,9 +8056,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_plans": {
+    "cases.audit_plans": {
       "name": "audit_plans",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -6905,7 +8076,7 @@
         "plan_type": {
           "name": "plan_type",
           "type": "plan_type",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true,
           "default": "'standalone'"
@@ -6922,10 +8093,10 @@
           "primaryKey": false,
           "notNull": false
         },
-        "audit_type": {
-          "name": "audit_type",
-          "type": "audit_type",
-          "typeSchema": "audit",
+        "case_type": {
+          "name": "case_type",
+          "type": "case_type",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": false
         },
@@ -7009,7 +8180,7 @@
         "status": {
           "name": "status",
           "type": "plan_status",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true,
           "default": "'draft'"
@@ -7093,11 +8264,11 @@
           "method": "btree",
           "with": {}
         },
-        "audit_plans_audit_type_idx": {
-          "name": "audit_plans_audit_type_idx",
+        "audit_plans_case_type_idx": {
+          "name": "audit_plans_case_type_idx",
           "columns": [
             {
-              "expression": "audit_type",
+              "expression": "case_type",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -7129,9 +8300,13 @@
           "name": "audit_plans_case_id_cases_id_fk",
           "tableFrom": "audit_plans",
           "tableTo": "cases",
-          "schemaTo": "audit",
-          "columnsFrom": ["case_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -7140,8 +8315,12 @@
           "tableFrom": "audit_plans",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -7150,8 +8329,12 @@
           "tableFrom": "audit_plans",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["created_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -7162,9 +8345,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_plan_templates": {
+    "cases.audit_plan_templates": {
       "name": "audit_plan_templates",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -7179,10 +8362,10 @@
           "primaryKey": false,
           "notNull": true
         },
-        "audit_type": {
-          "name": "audit_type",
-          "type": "audit_type",
-          "typeSchema": "audit",
+        "case_type": {
+          "name": "case_type",
+          "type": "case_type",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": false
         },
@@ -7281,11 +8464,11 @@
         }
       },
       "indexes": {
-        "audit_plan_templates_audit_type_idx": {
-          "name": "audit_plan_templates_audit_type_idx",
+        "audit_plan_templates_case_type_idx": {
+          "name": "audit_plan_templates_case_type_idx",
           "columns": [
             {
-              "expression": "audit_type",
+              "expression": "case_type",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -7333,8 +8516,12 @@
           "tableFrom": "audit_plan_templates",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -7345,9 +8532,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.case_documents": {
+    "cases.case_documents": {
       "name": "case_documents",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -7505,9 +8692,13 @@
           "name": "case_documents_case_id_cases_id_fk",
           "tableFrom": "case_documents",
           "tableTo": "cases",
-          "schemaTo": "audit",
-          "columnsFrom": ["case_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -7515,9 +8706,13 @@
           "name": "case_documents_procedure_id_audit_procedures_id_fk",
           "tableFrom": "case_documents",
           "tableTo": "audit_procedures",
-          "schemaTo": "audit",
-          "columnsFrom": ["procedure_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "procedure_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -7525,9 +8720,13 @@
           "name": "case_documents_parent_document_id_case_documents_id_fk",
           "tableFrom": "case_documents",
           "tableTo": "case_documents",
-          "schemaTo": "audit",
-          "columnsFrom": ["parent_document_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "parent_document_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -7536,8 +8735,12 @@
           "tableFrom": "case_documents",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["uploaded_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "uploaded_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -7548,9 +8751,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.case_notes": {
+    "cases.case_notes": {
       "name": "case_notes",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -7574,7 +8777,7 @@
         "note_type": {
           "name": "note_type",
           "type": "note_type",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
@@ -7679,9 +8882,13 @@
           "name": "case_notes_case_id_cases_id_fk",
           "tableFrom": "case_notes",
           "tableTo": "cases",
-          "schemaTo": "audit",
-          "columnsFrom": ["case_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -7689,9 +8896,13 @@
           "name": "case_notes_procedure_id_audit_procedures_id_fk",
           "tableFrom": "case_notes",
           "tableTo": "audit_procedures",
-          "schemaTo": "audit",
-          "columnsFrom": ["procedure_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "procedure_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -7700,8 +8911,12 @@
           "tableFrom": "case_notes",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["created_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "created_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -7712,9 +8927,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.case_assignments": {
+    "cases.case_assignments": {
       "name": "case_assignments",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "case_id": {
           "name": "case_id",
@@ -7731,7 +8946,7 @@
         "role": {
           "name": "role",
           "type": "assignment_role",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
@@ -7786,9 +9001,13 @@
           "name": "case_assignments_case_id_cases_id_fk",
           "tableFrom": "case_assignments",
           "tableTo": "cases",
-          "schemaTo": "audit",
-          "columnsFrom": ["case_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -7797,8 +9016,12 @@
           "tableFrom": "case_assignments",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -7807,8 +9030,12 @@
           "tableFrom": "case_assignments",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["assigned_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "assigned_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -7816,7 +9043,10 @@
       "compositePrimaryKeys": {
         "case_assignments_case_id_user_id_pk": {
           "name": "case_assignments_case_id_user_id_pk",
-          "columns": ["case_id", "user_id"]
+          "columns": [
+            "case_id",
+            "user_id"
+          ]
         }
       },
       "uniqueConstraints": {},
@@ -7824,9 +9054,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.case_history": {
+    "cases.case_history": {
       "name": "case_history",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -7844,7 +9074,7 @@
         "entity_type": {
           "name": "entity_type",
           "type": "case_entity_type",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
@@ -7857,7 +9087,7 @@
         "action": {
           "name": "action",
           "type": "case_action",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
@@ -7954,9 +9184,13 @@
           "name": "case_history_case_id_cases_id_fk",
           "tableFrom": "case_history",
           "tableTo": "cases",
-          "schemaTo": "audit",
-          "columnsFrom": ["case_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -7965,8 +9199,12 @@
           "tableFrom": "case_history",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["changed_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "changed_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -7977,9 +9215,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_reports": {
+    "cases.audit_reports": {
       "name": "audit_reports",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -8009,7 +9247,7 @@
         "status": {
           "name": "status",
           "type": "report_status",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true,
           "default": "'generating'"
@@ -8111,9 +9349,13 @@
           "name": "audit_reports_case_id_cases_id_fk",
           "tableFrom": "audit_reports",
           "tableTo": "cases",
-          "schemaTo": "audit",
-          "columnsFrom": ["case_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -8121,9 +9363,13 @@
           "name": "audit_reports_template_id_audit_report_templates_id_fk",
           "tableFrom": "audit_reports",
           "tableTo": "audit_report_templates",
-          "schemaTo": "audit",
-          "columnsFrom": ["template_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "template_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "no action"
         },
@@ -8132,8 +9378,12 @@
           "tableFrom": "audit_reports",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["generated_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "generated_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "cascade"
         }
@@ -8144,9 +9394,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_report_templates": {
+    "cases.audit_report_templates": {
       "name": "audit_report_templates",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -8161,10 +9411,10 @@
           "primaryKey": false,
           "notNull": true
         },
-        "audit_type": {
-          "name": "audit_type",
-          "type": "audit_type",
-          "typeSchema": "audit",
+        "case_type": {
+          "name": "case_type",
+          "type": "case_type",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": false
         },
@@ -8216,11 +9466,11 @@
         }
       },
       "indexes": {
-        "audit_report_templates_audit_type_idx": {
-          "name": "audit_report_templates_audit_type_idx",
+        "audit_report_templates_case_type_idx": {
+          "name": "audit_report_templates_case_type_idx",
           "columns": [
             {
-              "expression": "audit_type",
+              "expression": "case_type",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -8268,8 +9518,12 @@
           "tableFrom": "audit_report_templates",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -8280,9 +9534,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.case_activities": {
+    "cases.case_activities": {
       "name": "case_activities",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -8300,7 +9554,7 @@
         "activity_type": {
           "name": "activity_type",
           "type": "activity_type",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
@@ -8398,9 +9652,13 @@
           "name": "case_activities_case_id_cases_id_fk",
           "tableFrom": "case_activities",
           "tableTo": "cases",
-          "schemaTo": "audit",
-          "columnsFrom": ["case_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -8409,8 +9667,12 @@
           "tableFrom": "case_activities",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -8421,9 +9683,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.case_presence": {
+    "cases.case_presence": {
       "name": "case_presence",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -8504,9 +9766,13 @@
           "name": "case_presence_case_id_cases_id_fk",
           "tableFrom": "case_presence",
           "tableTo": "cases",
-          "schemaTo": "audit",
-          "columnsFrom": ["case_id"],
-          "columnsTo": ["id"],
+          "schemaTo": "cases",
+          "columnsFrom": [
+            "case_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -8515,8 +9781,12 @@
           "tableFrom": "case_presence",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -8787,8 +10057,12 @@
           "tableFrom": "employees",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -8797,8 +10071,12 @@
           "tableFrom": "employees",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -8807,8 +10085,12 @@
           "tableFrom": "employees",
           "tableTo": "employees",
           "schemaTo": "hr",
-          "columnsFrom": ["manager_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "manager_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -8818,7 +10100,9 @@
         "employees_employee_number_unique": {
           "name": "employees_employee_number_unique",
           "nullsNotDistinct": false,
-          "columns": ["employee_number"]
+          "columns": [
+            "employee_number"
+          ]
         }
       },
       "policies": {},
@@ -8912,8 +10196,12 @@
           "tableFrom": "departments",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
@@ -8922,8 +10210,12 @@
           "tableFrom": "departments",
           "tableTo": "departments",
           "schemaTo": "hr",
-          "columnsFrom": ["parent_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -9060,8 +10352,12 @@
           "tableFrom": "payslips",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -9168,8 +10464,12 @@
           "tableFrom": "payslip_lines",
           "tableTo": "payslips",
           "schemaTo": "hr",
-          "columnsFrom": ["payslip_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "payslip_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -9300,8 +10600,12 @@
           "tableFrom": "leave_types",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -9451,8 +10755,12 @@
           "tableFrom": "leave_requests",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -9570,8 +10878,12 @@
           "tableFrom": "leave_allocations",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -9715,8 +11027,12 @@
           "tableFrom": "contracts",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "cascade"
         }
@@ -9832,8 +11148,12 @@
           "tableFrom": "document_templates",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -10149,8 +11469,12 @@
           "tableFrom": "leads",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -10263,8 +11587,12 @@
           "tableFrom": "stages",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -10450,8 +11778,12 @@
           "tableFrom": "contacts",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -10556,8 +11888,12 @@
           "tableFrom": "activities",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -10566,8 +11902,12 @@
           "tableFrom": "activities",
           "tableTo": "leads",
           "schemaTo": "sales",
-          "columnsFrom": ["lead_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "lead_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -10648,8 +11988,12 @@
           "tableFrom": "teams",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -10717,8 +12061,12 @@
           "tableFrom": "lost_reasons",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -10839,8 +12187,12 @@
           "tableFrom": "module_access_rules",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -10850,7 +12202,11 @@
         "module_access_rules_organization_id_module_key_role_unique": {
           "name": "module_access_rules_organization_id_module_key_role_unique",
           "nullsNotDistinct": false,
-          "columns": ["organization_id", "module_key", "role"]
+          "columns": [
+            "organization_id",
+            "module_key",
+            "role"
+          ]
         }
       },
       "policies": {},
@@ -10978,8 +12334,12 @@
           "tableFrom": "resource_assignments",
           "tableTo": "organizations",
           "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "organization_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -10988,8 +12348,12 @@
           "tableFrom": "resource_assignments",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -10998,8 +12362,12 @@
           "tableFrom": "resource_assignments",
           "tableTo": "users",
           "schemaTo": "identity",
-          "columnsFrom": ["assigned_by"],
-          "columnsTo": ["id"],
+          "columnsFrom": [
+            "assigned_by"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "restrict",
           "onUpdate": "no action"
         }
@@ -11009,7 +12377,11 @@
         "resource_assignments_user_id_resource_type_resource_id_unique": {
           "name": "resource_assignments_user_id_resource_type_resource_id_unique",
           "nullsNotDistinct": false,
-          "columns": ["user_id", "resource_type", "resource_id"]
+          "columns": [
+            "user_id",
+            "resource_type",
+            "resource_id"
+          ]
         }
       },
       "policies": {},
@@ -11092,7 +12464,9 @@
         "module_sections_section_key_unique": {
           "name": "module_sections_section_key_unique",
           "nullsNotDistinct": false,
-          "columns": ["section_key"]
+          "columns": [
+            "section_key"
+          ]
         }
       },
       "policies": {},
@@ -11104,106 +12478,198 @@
     "finance.account_internal_type": {
       "name": "account_internal_type",
       "schema": "finance",
-      "values": ["receivable", "payable", "liquidity", "other"]
+      "values": [
+        "receivable",
+        "payable",
+        "liquidity",
+        "other"
+      ]
     },
     "finance.account_type": {
       "name": "account_type",
       "schema": "finance",
-      "values": ["asset", "liability", "equity", "income", "expense"]
+      "values": [
+        "asset",
+        "liability",
+        "equity",
+        "income",
+        "expense"
+      ]
     },
     "system.action": {
       "name": "action",
       "schema": "system",
-      "values": ["created", "updated", "deleted", "completed", "failed", "started", "cancelled", "retrying"]
+      "values": [
+        "created",
+        "updated",
+        "deleted",
+        "completed",
+        "failed",
+        "started",
+        "cancelled",
+        "retrying"
+      ]
     },
     "sales.activity_state": {
       "name": "activity_state",
       "schema": "sales",
-      "values": ["planned", "today", "overdue", "done"]
+      "values": [
+        "planned",
+        "today",
+        "overdue",
+        "done"
+      ]
     },
     "hr.allocation_unit": {
       "name": "allocation_unit",
       "schema": "hr",
-      "values": ["day", "hour"]
+      "values": [
+        "day",
+        "hour"
+      ]
     },
     "system.approval_status": {
       "name": "approval_status",
       "schema": "system",
-      "values": ["pending", "approved", "rejected", "cancelled"]
-    },
-    "audit.assignment_role": {
-      "name": "assignment_role",
-      "schema": "audit",
-      "values": ["lead", "reviewer", "team_member"]
-    },
-    "audit.audit_category": {
-      "name": "audit_category",
-      "schema": "audit",
-      "values": ["certification", "financial", "operational", "compliance"]
-    },
-    "audit.audit_status": {
-      "name": "audit_status",
-      "schema": "audit",
-      "values": ["draft", "in-progress", "under-review", "completed", "archived"]
-    },
-    "audit.audit_type": {
-      "name": "audit_type",
-      "schema": "audit",
       "values": [
-        "ICV",
-        "ISO_9001",
-        "ISO_14001",
-        "ISO_45001",
-        "financial_audit",
-        "internal_audit",
-        "compliance_audit",
-        "operational_audit"
+        "pending",
+        "approved",
+        "rejected",
+        "cancelled"
       ]
     },
-    "audit.case_action": {
+    "cases.assignment_role": {
+      "name": "assignment_role",
+      "schema": "cases",
+      "values": [
+        "lead",
+        "reviewer",
+        "team_member"
+      ]
+    },
+    "cases.case_action": {
       "name": "case_action",
-      "schema": "audit",
-      "values": ["created", "updated", "deleted", "completed", "archived", "assigned", "unassigned"]
+      "schema": "cases",
+      "values": [
+        "created",
+        "updated",
+        "deleted",
+        "completed",
+        "archived",
+        "assigned",
+        "unassigned"
+      ]
     },
-    "audit.case_entity_type": {
+    "cases.case_category": {
+      "name": "case_category",
+      "schema": "cases",
+      "values": [
+        "certification",
+        "financial",
+        "operational",
+        "compliance"
+      ]
+    },
+    "cases.case_entity_type": {
       "name": "case_entity_type",
-      "schema": "audit",
-      "values": ["case", "scope", "section", "procedure", "document", "note"]
+      "schema": "cases",
+      "values": [
+        "case",
+        "scope",
+        "section",
+        "procedure",
+        "document",
+        "note"
+      ]
     },
-    "audit.case_priority": {
+    "cases.case_priority": {
       "name": "case_priority",
-      "schema": "audit",
-      "values": ["low", "medium", "high", "critical"]
+      "schema": "cases",
+      "values": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
     },
-    "audit.case_status": {
+    "cases.case_status": {
       "name": "case_status",
-      "schema": "audit",
-      "values": ["pending", "in-progress", "under-review", "completed", "overdue", "archived"]
+      "schema": "cases",
+      "values": [
+        "draft",
+        "in_progress",
+        "under_review",
+        "completed",
+        "overdue",
+        "archived"
+      ]
+    },
+    "cases.case_type": {
+      "name": "case_type",
+      "schema": "cases",
+      "values": [
+        "ICV_AUDIT",
+        "ISO_9001_AUDIT",
+        "ISO_14001_AUDIT",
+        "ISO_45001_AUDIT",
+        "FINANCIAL_AUDIT",
+        "INTERNAL_AUDIT",
+        "COMPLIANCE_AUDIT",
+        "OPERATIONAL_AUDIT"
+      ]
     },
     "identity.color_scheme": {
       "name": "color_scheme",
       "schema": "identity",
-      "values": ["blue", "purple", "green", "orange", "red", "teal"]
+      "values": [
+        "blue",
+        "purple",
+        "green",
+        "orange",
+        "red",
+        "teal"
+      ]
     },
     "sales.contact_type": {
       "name": "contact_type",
       "schema": "sales",
-      "values": ["LEAD", "PROSPECT", "CUSTOMER", "SUPPLIER"]
+      "values": [
+        "LEAD",
+        "PROSPECT",
+        "CUSTOMER",
+        "SUPPLIER"
+      ]
     },
     "hr.contract_state": {
       "name": "contract_state",
       "schema": "hr",
-      "values": ["draft", "open", "close", "cancel"]
+      "values": [
+        "draft",
+        "open",
+        "close",
+        "cancel"
+      ]
     },
     "sales.deal_stage": {
       "name": "deal_stage",
       "schema": "sales",
-      "values": ["LEAD", "QUALIFIED", "PROPOSAL", "NEGOTIATION", "CLOSED_WON", "CLOSED_LOST"]
+      "values": [
+        "LEAD",
+        "QUALIFIED",
+        "PROPOSAL",
+        "NEGOTIATION",
+        "CLOSED_WON",
+        "CLOSED_LOST"
+      ]
     },
     "identity.density": {
       "name": "density",
       "schema": "identity",
-      "values": ["compact", "comfortable", "spacious"]
+      "values": [
+        "compact",
+        "comfortable",
+        "spacious"
+      ]
     },
     "system.document_type": {
       "name": "document_type",
@@ -11226,12 +12692,26 @@
     "hr.employee_type": {
       "name": "employee_type",
       "schema": "hr",
-      "values": ["employee", "student", "trainee", "contractor", "freelance"]
+      "values": [
+        "employee",
+        "student",
+        "trainee",
+        "contractor",
+        "freelance"
+      ]
     },
     "system.entity_type": {
       "name": "entity_type",
       "schema": "system",
-      "values": ["job", "invoice", "user", "organization", "employee", "contact", "deal"]
+      "values": [
+        "job",
+        "invoice",
+        "user",
+        "organization",
+        "employee",
+        "contact",
+        "deal"
+      ]
     },
     "identity.event_type": {
       "name": "event_type",
@@ -11253,32 +12733,55 @@
     "identity.font_size": {
       "name": "font_size",
       "schema": "identity",
-      "values": ["small", "medium", "large"]
+      "values": [
+        "small",
+        "medium",
+        "large"
+      ]
     },
     "hr.gender": {
       "name": "gender",
       "schema": "hr",
-      "values": ["male", "female", "other"]
+      "values": [
+        "male",
+        "female",
+        "other"
+      ]
     },
     "hr.section_type": {
       "name": "section_type",
       "schema": "hr",
-      "values": ["self_service", "management"]
+      "values": [
+        "self_service",
+        "management"
+      ]
     },
     "identity.identifier_type": {
       "name": "identifier_type",
       "schema": "identity",
-      "values": ["email", "ip"]
+      "values": [
+        "email",
+        "ip"
+      ]
     },
     "identity.invitation_status": {
       "name": "invitation_status",
       "schema": "identity",
-      "values": ["pending", "accepted", "rejected", "expired", "canceled"]
+      "values": [
+        "pending",
+        "accepted",
+        "rejected",
+        "expired",
+        "canceled"
+      ]
     },
     "finance.invoice_type": {
       "name": "invoice_type",
       "schema": "finance",
-      "values": ["SALES", "PURCHASE"]
+      "values": [
+        "SALES",
+        "PURCHASE"
+      ]
     },
     "jobs.job_name": {
       "name": "job_name",
@@ -11300,42 +12803,84 @@
     "jobs.job_status": {
       "name": "job_status",
       "schema": "jobs",
-      "values": ["pending", "running", "completed", "failed", "cancelled", "retrying"]
+      "values": [
+        "pending",
+        "running",
+        "completed",
+        "failed",
+        "cancelled",
+        "retrying"
+      ]
     },
     "jobs.job_type": {
       "name": "job_type",
       "schema": "jobs",
-      "values": ["cron", "scheduled", "immediate", "recurring"]
+      "values": [
+        "cron",
+        "scheduled",
+        "immediate",
+        "recurring"
+      ]
     },
     "hr.leave_state": {
       "name": "leave_state",
       "schema": "hr",
-      "values": ["draft", "confirm", "refuse", "validate1", "validate", "cancel"]
+      "values": [
+        "draft",
+        "confirm",
+        "refuse",
+        "validate1",
+        "validate",
+        "cancel"
+      ]
     },
     "identity.locale": {
       "name": "locale",
       "schema": "identity",
-      "values": ["en", "ar"]
+      "values": [
+        "en",
+        "ar"
+      ]
     },
     "jobs.log_level": {
       "name": "log_level",
       "schema": "jobs",
-      "values": ["debug", "info", "warn", "error"]
+      "values": [
+        "debug",
+        "info",
+        "warn",
+        "error"
+      ]
     },
     "identity.login_method": {
       "name": "login_method",
       "schema": "identity",
-      "values": ["password", "sso", "mfa"]
+      "values": [
+        "password",
+        "sso",
+        "mfa"
+      ]
     },
     "hr.marital_status": {
       "name": "marital_status",
       "schema": "hr",
-      "values": ["single", "married", "cohabitant", "widower", "divorced"]
+      "values": [
+        "single",
+        "married",
+        "cohabitant",
+        "widower",
+        "divorced"
+      ]
     },
-    "audit.note_type": {
+    "cases.note_type": {
       "name": "note_type",
-      "schema": "audit",
-      "values": ["observation", "review_comment", "general", "memo"]
+      "schema": "cases",
+      "values": [
+        "observation",
+        "review_comment",
+        "general",
+        "memo"
+      ]
     },
     "system.notification_type": {
       "name": "notification_type",
@@ -11431,47 +12976,90 @@
     "odoo.circuit_state": {
       "name": "circuit_state",
       "schema": "odoo",
-      "values": ["CLOSED", "OPEN", "HALF_OPEN"]
+      "values": [
+        "CLOSED",
+        "OPEN",
+        "HALF_OPEN"
+      ]
     },
     "finance.odoo_invoice_state": {
       "name": "odoo_invoice_state",
       "schema": "finance",
-      "values": ["draft", "posted", "cancel"]
+      "values": [
+        "draft",
+        "posted",
+        "cancel"
+      ]
     },
     "finance.odoo_move_type": {
       "name": "odoo_move_type",
       "schema": "finance",
-      "values": ["out_invoice", "out_refund", "in_invoice", "in_refund", "entry"]
+      "values": [
+        "out_invoice",
+        "out_refund",
+        "in_invoice",
+        "in_refund",
+        "entry"
+      ]
     },
     "odoo.operation_status": {
       "name": "operation_status",
       "schema": "odoo",
-      "values": ["processing", "success", "failed", "retrying"]
+      "values": [
+        "processing",
+        "success",
+        "failed",
+        "retrying"
+      ]
     },
     "finance.odoo_partner_type": {
       "name": "odoo_partner_type",
       "schema": "finance",
-      "values": ["customer", "supplier"]
+      "values": [
+        "customer",
+        "supplier"
+      ]
     },
     "finance.odoo_payment_state": {
       "name": "odoo_payment_state",
       "schema": "finance",
-      "values": ["not_paid", "in_payment", "paid", "partial", "reversed"]
+      "values": [
+        "not_paid",
+        "in_payment",
+        "paid",
+        "partial",
+        "reversed"
+      ]
     },
     "finance.odoo_payment_type": {
       "name": "odoo_payment_type",
       "schema": "finance",
-      "values": ["inbound", "outbound", "transfer"]
+      "values": [
+        "inbound",
+        "outbound",
+        "transfer"
+      ]
     },
     "hr.payslip_line_category": {
       "name": "payslip_line_category",
       "schema": "hr",
-      "values": ["ALW", "DED", "BASIC", "GROSS", "NET"]
+      "values": [
+        "ALW",
+        "DED",
+        "BASIC",
+        "GROSS",
+        "NET"
+      ]
     },
     "hr.payslip_state": {
       "name": "payslip_state",
       "schema": "hr",
-      "values": ["draft", "verify", "done", "cancel"]
+      "values": [
+        "draft",
+        "verify",
+        "done",
+        "cancel"
+      ]
     },
     "identity.permission_action": {
       "name": "permission_action",
@@ -11511,7 +13099,12 @@
     "jobs.priority": {
       "name": "priority",
       "schema": "jobs",
-      "values": ["low", "normal", "high", "critical"]
+      "values": [
+        "low",
+        "normal",
+        "high",
+        "critical"
+      ]
     },
     "system.related_entity_type": {
       "name": "related_entity_type",
@@ -11547,72 +13140,182 @@
     "hr.request_unit": {
       "name": "request_unit",
       "schema": "hr",
-      "values": ["day", "hour"]
+      "values": [
+        "day",
+        "hour"
+      ]
     },
     "identity.resource_type": {
       "name": "resource_type",
       "schema": "identity",
-      "values": ["audit_case", "accounting_client", "crm_lead", "crm_deal", "hr_department"]
+      "values": [
+        "audit_case",
+        "accounting_client",
+        "crm_lead",
+        "crm_deal",
+        "hr_department"
+      ]
     },
     "identity.revoked_reason": {
       "name": "revoked_reason",
       "schema": "identity",
-      "values": ["logout", "timeout", "admin", "security", "new_device"]
+      "values": [
+        "logout",
+        "timeout",
+        "admin",
+        "security",
+        "new_device"
+      ]
     },
     "identity.risk_level": {
       "name": "risk_level",
       "schema": "identity",
-      "values": ["low", "medium", "high", "critical"]
+      "values": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ]
+    },
+    "cases.step_status": {
+      "name": "step_status",
+      "schema": "cases",
+      "values": [
+        "pending",
+        "in_progress",
+        "completed",
+        "skipped",
+        "blocked"
+      ]
+    },
+    "cases.step_type": {
+      "name": "step_type",
+      "schema": "cases",
+      "values": [
+        "form_input",
+        "document_upload",
+        "document_collection",
+        "scope_editor",
+        "calculation_review",
+        "approval_stage",
+        "review_stage",
+        "checklist",
+        "report_generation",
+        "custom"
+      ]
     },
     "finance.tax_amount_type": {
       "name": "tax_amount_type",
       "schema": "finance",
-      "values": ["percent", "division", "fixed"]
+      "values": [
+        "percent",
+        "division",
+        "fixed"
+      ]
     },
     "finance.tax_scope": {
       "name": "tax_scope",
       "schema": "finance",
-      "values": ["sale", "purchase", "none"]
+      "values": [
+        "sale",
+        "purchase",
+        "none"
+      ]
     },
     "finance.tax_type": {
       "name": "tax_type",
       "schema": "finance",
-      "values": ["sale", "purchase", "none"]
+      "values": [
+        "sale",
+        "purchase",
+        "none"
+      ]
+    },
+    "cases.template_status": {
+      "name": "template_status",
+      "schema": "cases",
+      "values": [
+        "draft",
+        "in_progress",
+        "under_review",
+        "completed",
+        "archived"
+      ]
+    },
+    "cases.template_type": {
+      "name": "template_type",
+      "schema": "cases",
+      "values": [
+        "scope",
+        "form",
+        "checklist",
+        "report",
+        "plan"
+      ]
     },
     "identity.theme": {
       "name": "theme",
       "schema": "identity",
-      "values": ["light", "dark", "auto"]
+      "values": [
+        "light",
+        "dark",
+        "auto"
+      ]
     },
     "hr.time_type": {
       "name": "time_type",
       "schema": "hr",
-      "values": ["leave", "other"]
+      "values": [
+        "leave",
+        "other"
+      ]
     },
     "identity.user_role": {
       "name": "user_role",
       "schema": "identity",
-      "values": ["ADMIN", "MANAGER", "EMPLOYEE", "ACCOUNTANT"]
+      "values": [
+        "ADMIN",
+        "MANAGER",
+        "EMPLOYEE",
+        "ACCOUNTANT"
+      ]
     },
     "hr.validation_type": {
       "name": "validation_type",
       "schema": "hr",
-      "values": ["no_validation", "hr", "manager", "both"]
+      "values": [
+        "no_validation",
+        "hr",
+        "manager",
+        "both"
+      ]
     },
     "hr.wage_type": {
       "name": "wage_type",
       "schema": "hr",
-      "values": ["monthly", "hourly"]
+      "values": [
+        "monthly",
+        "hourly"
+      ]
     },
     "odoo.provisioning_status": {
       "name": "provisioning_status",
       "schema": "odoo",
-      "values": ["pending", "provisioning", "active", "failed"]
+      "values": [
+        "pending",
+        "provisioning",
+        "active",
+        "failed"
+      ]
     },
     "identity.connection_status": {
       "name": "connection_status",
       "schema": "identity",
-      "values": ["success", "failed", "untested"]
+      "values": [
+        "success",
+        "failed",
+        "untested"
+      ]
     },
     "identity.connector_type": {
       "name": "connector_type",
@@ -11656,36 +13359,62 @@
     "identity.email_bounce_type": {
       "name": "email_bounce_type",
       "schema": "identity",
-      "values": ["hard", "soft", "complaint", "unsubscribe"]
-    },
-    "system.approver_type": {
-      "name": "approver_type",
-      "schema": "system",
-      "values": ["role", "team", "user"]
+      "values": [
+        "hard",
+        "soft",
+        "complaint",
+        "unsubscribe"
+      ]
     },
     "system.step_type": {
       "name": "step_type",
       "schema": "system",
-      "values": ["single", "parallel", "any"]
+      "values": [
+        "single",
+        "parallel",
+        "any"
+      ]
     },
-    "audit.plan_status": {
+    "system.approver_type": {
+      "name": "approver_type",
+      "schema": "system",
+      "values": [
+        "role",
+        "team",
+        "user"
+      ]
+    },
+    "cases.plan_status": {
       "name": "plan_status",
-      "schema": "audit",
-      "values": ["draft", "in_review", "approved", "converted", "archived"]
+      "schema": "cases",
+      "values": [
+        "draft",
+        "in_review",
+        "approved",
+        "converted",
+        "archived"
+      ]
     },
-    "audit.plan_type": {
+    "cases.plan_type": {
       "name": "plan_type",
-      "schema": "audit",
-      "values": ["standalone", "case_integrated"]
+      "schema": "cases",
+      "values": [
+        "standalone",
+        "case_integrated"
+      ]
     },
-    "audit.report_status": {
+    "cases.report_status": {
       "name": "report_status",
-      "schema": "audit",
-      "values": ["generating", "ready", "failed"]
+      "schema": "cases",
+      "values": [
+        "generating",
+        "ready",
+        "failed"
+      ]
     },
-    "audit.activity_type": {
+    "cases.activity_type": {
       "name": "activity_type",
-      "schema": "audit",
+      "schema": "cases",
       "values": [
         "case_created",
         "status_changed",
@@ -11706,7 +13435,7 @@
     }
   },
   "schemas": {
-    "audit": "audit",
+    "cases": "cases",
     "finance": "finance",
     "hr": "hr",
     "identity": "identity",

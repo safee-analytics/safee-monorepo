@@ -1,5 +1,5 @@
 {
-  "id": "99e26d08-4345-4381-89c8-92b25acf9440",
+  "id": "7864a6fa-12ae-41ec-aeb9-1592d08b43a7",
   "prevId": "b94c9168-ffa0-49ab-89a1-0584bfc7489e",
   "version": "7",
   "dialect": "postgresql",
@@ -6004,9 +6004,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.cases": {
+    "cases.cases": {
       "name": "cases",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -6027,34 +6027,46 @@
           "primaryKey": false,
           "notNull": true
         },
-        "client_name": {
-          "name": "client_name",
+        "title": {
+          "name": "title",
           "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
-        "audit_type": {
-          "name": "audit_type",
-          "type": "audit_type",
-          "typeSchema": "audit",
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "case_type": {
+          "name": "case_type",
+          "type": "case_type",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
         "status": {
           "name": "status",
           "type": "case_status",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true,
-          "default": "'pending'"
+          "default": "'draft'"
         },
         "priority": {
           "name": "priority",
           "type": "case_priority",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true,
           "default": "'medium'"
+        },
+        "workflow_template_id": {
+          "name": "workflow_template_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
         },
         "due_date": {
           "name": "due_date",
@@ -6120,11 +6132,26 @@
           "method": "btree",
           "with": {}
         },
-        "cases_audit_type_idx": {
-          "name": "cases_audit_type_idx",
+        "cases_case_type_idx": {
+          "name": "cases_case_type_idx",
           "columns": [
             {
-              "expression": "audit_type",
+              "expression": "case_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "cases_workflow_template_id_idx": {
+          "name": "cases_workflow_template_id_idx",
+          "columns": [
+            {
+              "expression": "workflow_template_id",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -6162,6 +6189,16 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
+        "cases_workflow_template_id_workflow_templates_id_fk": {
+          "name": "cases_workflow_template_id_workflow_templates_id_fk",
+          "tableFrom": "cases",
+          "tableTo": "workflow_templates",
+          "schemaTo": "cases",
+          "columnsFrom": ["workflow_template_id"],
+          "columnsTo": ["id"],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
         "cases_created_by_users_id_fk": {
           "name": "cases_created_by_users_id_fk",
           "tableFrom": "cases",
@@ -6185,9 +6222,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_templates": {
-      "name": "audit_templates",
-      "schema": "audit",
+    "cases.templates": {
+      "name": "templates",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -6214,17 +6251,17 @@
           "primaryKey": false,
           "notNull": false
         },
-        "audit_type": {
-          "name": "audit_type",
-          "type": "audit_type",
-          "typeSchema": "audit",
+        "template_type": {
+          "name": "template_type",
+          "type": "template_type",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
         "category": {
           "name": "category",
-          "type": "audit_category",
-          "typeSchema": "audit",
+          "type": "case_category",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": false
         },
@@ -6242,8 +6279,8 @@
           "notNull": true,
           "default": true
         },
-        "is_public": {
-          "name": "is_public",
+        "is_system_template": {
+          "name": "is_system_template",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
@@ -6277,8 +6314,8 @@
         }
       },
       "indexes": {
-        "audit_templates_organization_id_idx": {
-          "name": "audit_templates_organization_id_idx",
+        "templates_organization_id_idx": {
+          "name": "templates_organization_id_idx",
           "columns": [
             {
               "expression": "organization_id",
@@ -6292,11 +6329,11 @@
           "method": "btree",
           "with": {}
         },
-        "audit_templates_audit_type_idx": {
-          "name": "audit_templates_audit_type_idx",
+        "templates_template_type_idx": {
+          "name": "templates_template_type_idx",
           "columns": [
             {
-              "expression": "audit_type",
+              "expression": "template_type",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -6307,8 +6344,8 @@
           "method": "btree",
           "with": {}
         },
-        "audit_templates_is_active_idx": {
-          "name": "audit_templates_is_active_idx",
+        "templates_is_active_idx": {
+          "name": "templates_is_active_idx",
           "columns": [
             {
               "expression": "is_active",
@@ -6322,11 +6359,11 @@
           "method": "btree",
           "with": {}
         },
-        "audit_templates_is_public_idx": {
-          "name": "audit_templates_is_public_idx",
+        "templates_is_system_template_idx": {
+          "name": "templates_is_system_template_idx",
           "columns": [
             {
-              "expression": "is_public",
+              "expression": "is_system_template",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -6339,9 +6376,9 @@
         }
       },
       "foreignKeys": {
-        "audit_templates_organization_id_organizations_id_fk": {
-          "name": "audit_templates_organization_id_organizations_id_fk",
-          "tableFrom": "audit_templates",
+        "templates_organization_id_organizations_id_fk": {
+          "name": "templates_organization_id_organizations_id_fk",
+          "tableFrom": "templates",
           "tableTo": "organizations",
           "schemaTo": "identity",
           "columnsFrom": ["organization_id"],
@@ -6349,9 +6386,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "audit_templates_created_by_users_id_fk": {
-          "name": "audit_templates_created_by_users_id_fk",
-          "tableFrom": "audit_templates",
+        "templates_created_by_users_id_fk": {
+          "name": "templates_created_by_users_id_fk",
+          "tableFrom": "templates",
           "tableTo": "users",
           "schemaTo": "identity",
           "columnsFrom": ["created_by"],
@@ -6366,9 +6403,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_scopes": {
-      "name": "audit_scopes",
-      "schema": "audit",
+    "cases.template_instances": {
+      "name": "template_instances",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -6389,6 +6426,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "step_execution_id": {
+          "name": "step_execution_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
         "name": {
           "name": "name",
           "type": "varchar(255)",
@@ -6403,18 +6446,17 @@
         },
         "status": {
           "name": "status",
-          "type": "audit_status",
-          "typeSchema": "audit",
+          "type": "template_status",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true,
           "default": "'draft'"
         },
-        "metadata": {
-          "name": "metadata",
+        "data": {
+          "name": "data",
           "type": "jsonb",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'{}'::jsonb"
+          "notNull": true
         },
         "created_by": {
           "name": "created_by",
@@ -6462,8 +6504,8 @@
         }
       },
       "indexes": {
-        "audit_scopes_case_id_idx": {
-          "name": "audit_scopes_case_id_idx",
+        "template_instances_case_id_idx": {
+          "name": "template_instances_case_id_idx",
           "columns": [
             {
               "expression": "case_id",
@@ -6477,8 +6519,8 @@
           "method": "btree",
           "with": {}
         },
-        "audit_scopes_template_id_idx": {
-          "name": "audit_scopes_template_id_idx",
+        "template_instances_template_id_idx": {
+          "name": "template_instances_template_id_idx",
           "columns": [
             {
               "expression": "template_id",
@@ -6492,8 +6534,23 @@
           "method": "btree",
           "with": {}
         },
-        "audit_scopes_status_idx": {
-          "name": "audit_scopes_status_idx",
+        "template_instances_step_execution_id_idx": {
+          "name": "template_instances_step_execution_id_idx",
+          "columns": [
+            {
+              "expression": "step_execution_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "template_instances_status_idx": {
+          "name": "template_instances_status_idx",
           "columns": [
             {
               "expression": "status",
@@ -6509,29 +6566,29 @@
         }
       },
       "foreignKeys": {
-        "audit_scopes_case_id_cases_id_fk": {
-          "name": "audit_scopes_case_id_cases_id_fk",
-          "tableFrom": "audit_scopes",
+        "template_instances_case_id_cases_id_fk": {
+          "name": "template_instances_case_id_cases_id_fk",
+          "tableFrom": "template_instances",
           "tableTo": "cases",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["case_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "audit_scopes_template_id_audit_templates_id_fk": {
-          "name": "audit_scopes_template_id_audit_templates_id_fk",
-          "tableFrom": "audit_scopes",
-          "tableTo": "audit_templates",
-          "schemaTo": "audit",
+        "template_instances_template_id_templates_id_fk": {
+          "name": "template_instances_template_id_templates_id_fk",
+          "tableFrom": "template_instances",
+          "tableTo": "templates",
+          "schemaTo": "cases",
           "columnsFrom": ["template_id"],
           "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
-        "audit_scopes_created_by_users_id_fk": {
-          "name": "audit_scopes_created_by_users_id_fk",
-          "tableFrom": "audit_scopes",
+        "template_instances_created_by_users_id_fk": {
+          "name": "template_instances_created_by_users_id_fk",
+          "tableFrom": "template_instances",
           "tableTo": "users",
           "schemaTo": "identity",
           "columnsFrom": ["created_by"],
@@ -6539,9 +6596,9 @@
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
-        "audit_scopes_completed_by_users_id_fk": {
-          "name": "audit_scopes_completed_by_users_id_fk",
-          "tableFrom": "audit_scopes",
+        "template_instances_completed_by_users_id_fk": {
+          "name": "template_instances_completed_by_users_id_fk",
+          "tableFrom": "template_instances",
           "tableTo": "users",
           "schemaTo": "identity",
           "columnsFrom": ["completed_by"],
@@ -6549,9 +6606,9 @@
           "onDelete": "restrict",
           "onUpdate": "cascade"
         },
-        "audit_scopes_archived_by_users_id_fk": {
-          "name": "audit_scopes_archived_by_users_id_fk",
-          "tableFrom": "audit_scopes",
+        "template_instances_archived_by_users_id_fk": {
+          "name": "template_instances_archived_by_users_id_fk",
+          "tableFrom": "template_instances",
           "tableTo": "users",
           "schemaTo": "identity",
           "columnsFrom": ["archived_by"],
@@ -6566,9 +6623,730 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_sections": {
+    "cases.workflow_templates": {
+      "name": "workflow_templates",
+      "schema": "cases",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "organization_id": {
+          "name": "organization_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "case_type": {
+          "name": "case_type",
+          "type": "case_type",
+          "typeSchema": "cases",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'1.0'"
+        },
+        "is_system_template": {
+          "name": "is_system_template",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "config": {
+          "name": "config",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_by": {
+          "name": "created_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "workflow_templates_organization_id_idx": {
+          "name": "workflow_templates_organization_id_idx",
+          "columns": [
+            {
+              "expression": "organization_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "workflow_templates_case_type_idx": {
+          "name": "workflow_templates_case_type_idx",
+          "columns": [
+            {
+              "expression": "case_type",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "workflow_templates_is_active_idx": {
+          "name": "workflow_templates_is_active_idx",
+          "columns": [
+            {
+              "expression": "is_active",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "workflow_templates_is_system_template_idx": {
+          "name": "workflow_templates_is_system_template_idx",
+          "columns": [
+            {
+              "expression": "is_system_template",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "workflow_templates_organization_id_organizations_id_fk": {
+          "name": "workflow_templates_organization_id_organizations_id_fk",
+          "tableFrom": "workflow_templates",
+          "tableTo": "organizations",
+          "schemaTo": "identity",
+          "columnsFrom": ["organization_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "workflow_templates_created_by_users_id_fk": {
+          "name": "workflow_templates_created_by_users_id_fk",
+          "tableFrom": "workflow_templates",
+          "tableTo": "users",
+          "schemaTo": "identity",
+          "columnsFrom": ["created_by"],
+          "columnsTo": ["id"],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "cases.workflow_steps": {
+      "name": "workflow_steps",
+      "schema": "cases",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "workflow_template_id": {
+          "name": "workflow_template_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "step_id": {
+          "name": "step_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "step_order": {
+          "name": "step_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "step_type": {
+          "name": "step_type",
+          "type": "step_type",
+          "typeSchema": "cases",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "config": {
+          "name": "config",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{}'::jsonb"
+        },
+        "conditions": {
+          "name": "conditions",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'[]'::jsonb"
+        },
+        "is_required": {
+          "name": "is_required",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "can_skip": {
+          "name": "can_skip",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "approval_workflow_id": {
+          "name": "approval_workflow_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "template_id": {
+          "name": "template_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "workflow_steps_workflow_template_id_idx": {
+          "name": "workflow_steps_workflow_template_id_idx",
+          "columns": [
+            {
+              "expression": "workflow_template_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "workflow_steps_step_order_idx": {
+          "name": "workflow_steps_step_order_idx",
+          "columns": [
+            {
+              "expression": "step_order",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "workflow_steps_approval_workflow_id_idx": {
+          "name": "workflow_steps_approval_workflow_id_idx",
+          "columns": [
+            {
+              "expression": "approval_workflow_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "workflow_steps_workflow_template_id_workflow_templates_id_fk": {
+          "name": "workflow_steps_workflow_template_id_workflow_templates_id_fk",
+          "tableFrom": "workflow_steps",
+          "tableTo": "workflow_templates",
+          "schemaTo": "cases",
+          "columnsFrom": ["workflow_template_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "workflow_steps_approval_workflow_id_approval_workflows_id_fk": {
+          "name": "workflow_steps_approval_workflow_id_approval_workflows_id_fk",
+          "tableFrom": "workflow_steps",
+          "tableTo": "approval_workflows",
+          "schemaTo": "system",
+          "columnsFrom": ["approval_workflow_id"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "workflow_steps_template_id_templates_id_fk": {
+          "name": "workflow_steps_template_id_templates_id_fk",
+          "tableFrom": "workflow_steps",
+          "tableTo": "templates",
+          "schemaTo": "cases",
+          "columnsFrom": ["template_id"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "workflow_steps_template_step_unique": {
+          "name": "workflow_steps_template_step_unique",
+          "nullsNotDistinct": false,
+          "columns": ["workflow_template_id", "step_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "cases.workflow_instances": {
+      "name": "workflow_instances",
+      "schema": "cases",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "case_id": {
+          "name": "case_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "workflow_template_id": {
+          "name": "workflow_template_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "current_step_index": {
+          "name": "current_step_index",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "current_step_id": {
+          "name": "current_step_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "state": {
+          "name": "state",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'{\"completedSteps\":[],\"stepData\":{},\"variables\":{}}'::jsonb"
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "last_activity_at": {
+          "name": "last_activity_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "workflow_instances_workflow_template_id_idx": {
+          "name": "workflow_instances_workflow_template_id_idx",
+          "columns": [
+            {
+              "expression": "workflow_template_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "workflow_instances_current_step_id_idx": {
+          "name": "workflow_instances_current_step_id_idx",
+          "columns": [
+            {
+              "expression": "current_step_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "workflow_instances_case_id_cases_id_fk": {
+          "name": "workflow_instances_case_id_cases_id_fk",
+          "tableFrom": "workflow_instances",
+          "tableTo": "cases",
+          "schemaTo": "cases",
+          "columnsFrom": ["case_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "workflow_instances_workflow_template_id_workflow_templates_id_fk": {
+          "name": "workflow_instances_workflow_template_id_workflow_templates_id_fk",
+          "tableFrom": "workflow_instances",
+          "tableTo": "workflow_templates",
+          "schemaTo": "cases",
+          "columnsFrom": ["workflow_template_id"],
+          "columnsTo": ["id"],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "workflow_instances_case_id_unique": {
+          "name": "workflow_instances_case_id_unique",
+          "nullsNotDistinct": false,
+          "columns": ["case_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "cases.step_executions": {
+      "name": "step_executions",
+      "schema": "cases",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "case_id": {
+          "name": "case_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "workflow_instance_id": {
+          "name": "workflow_instance_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "workflow_step_id": {
+          "name": "workflow_step_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "step_id": {
+          "name": "step_id",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "step_status",
+          "typeSchema": "cases",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'pending'"
+        },
+        "data": {
+          "name": "data",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "'{}'::jsonb"
+        },
+        "approval_request_id": {
+          "name": "approval_request_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "completed_by": {
+          "name": "completed_by",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {
+        "step_executions_case_id_idx": {
+          "name": "step_executions_case_id_idx",
+          "columns": [
+            {
+              "expression": "case_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "step_executions_workflow_instance_id_idx": {
+          "name": "step_executions_workflow_instance_id_idx",
+          "columns": [
+            {
+              "expression": "workflow_instance_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "step_executions_workflow_step_id_idx": {
+          "name": "step_executions_workflow_step_id_idx",
+          "columns": [
+            {
+              "expression": "workflow_step_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "step_executions_status_idx": {
+          "name": "step_executions_status_idx",
+          "columns": [
+            {
+              "expression": "status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "step_executions_approval_request_id_idx": {
+          "name": "step_executions_approval_request_id_idx",
+          "columns": [
+            {
+              "expression": "approval_request_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
+      "foreignKeys": {
+        "step_executions_case_id_cases_id_fk": {
+          "name": "step_executions_case_id_cases_id_fk",
+          "tableFrom": "step_executions",
+          "tableTo": "cases",
+          "schemaTo": "cases",
+          "columnsFrom": ["case_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "step_executions_workflow_instance_id_workflow_instances_id_fk": {
+          "name": "step_executions_workflow_instance_id_workflow_instances_id_fk",
+          "tableFrom": "step_executions",
+          "tableTo": "workflow_instances",
+          "schemaTo": "cases",
+          "columnsFrom": ["workflow_instance_id"],
+          "columnsTo": ["id"],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "step_executions_workflow_step_id_workflow_steps_id_fk": {
+          "name": "step_executions_workflow_step_id_workflow_steps_id_fk",
+          "tableFrom": "step_executions",
+          "tableTo": "workflow_steps",
+          "schemaTo": "cases",
+          "columnsFrom": ["workflow_step_id"],
+          "columnsTo": ["id"],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "step_executions_approval_request_id_approval_requests_id_fk": {
+          "name": "step_executions_approval_request_id_approval_requests_id_fk",
+          "tableFrom": "step_executions",
+          "tableTo": "approval_requests",
+          "schemaTo": "system",
+          "columnsFrom": ["approval_request_id"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "step_executions_completed_by_users_id_fk": {
+          "name": "step_executions_completed_by_users_id_fk",
+          "tableFrom": "step_executions",
+          "tableTo": "users",
+          "schemaTo": "identity",
+          "columnsFrom": ["completed_by"],
+          "columnsTo": ["id"],
+          "onDelete": "restrict",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "step_executions_case_step_unique": {
+          "name": "step_executions_case_step_unique",
+          "nullsNotDistinct": false,
+          "columns": ["case_id", "step_id"]
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "cases.audit_sections": {
       "name": "audit_sections",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -6664,11 +7442,11 @@
         }
       },
       "foreignKeys": {
-        "audit_sections_scope_id_audit_scopes_id_fk": {
-          "name": "audit_sections_scope_id_audit_scopes_id_fk",
+        "audit_sections_scope_id_template_instances_id_fk": {
+          "name": "audit_sections_scope_id_template_instances_id_fk",
           "tableFrom": "audit_sections",
-          "tableTo": "audit_scopes",
-          "schemaTo": "audit",
+          "tableTo": "template_instances",
+          "schemaTo": "cases",
           "columnsFrom": ["scope_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -6681,9 +7459,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_procedures": {
+    "cases.audit_procedures": {
       "name": "audit_procedures",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -6836,7 +7614,7 @@
           "name": "audit_procedures_section_id_audit_sections_id_fk",
           "tableFrom": "audit_procedures",
           "tableTo": "audit_sections",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["section_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -6859,9 +7637,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_plans": {
+    "cases.audit_plans": {
       "name": "audit_plans",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -6879,7 +7657,7 @@
         "plan_type": {
           "name": "plan_type",
           "type": "plan_type",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true,
           "default": "'standalone'"
@@ -6896,10 +7674,10 @@
           "primaryKey": false,
           "notNull": false
         },
-        "audit_type": {
-          "name": "audit_type",
-          "type": "audit_type",
-          "typeSchema": "audit",
+        "case_type": {
+          "name": "case_type",
+          "type": "case_type",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": false
         },
@@ -6983,7 +7761,7 @@
         "status": {
           "name": "status",
           "type": "plan_status",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true,
           "default": "'draft'"
@@ -7067,11 +7845,11 @@
           "method": "btree",
           "with": {}
         },
-        "audit_plans_audit_type_idx": {
-          "name": "audit_plans_audit_type_idx",
+        "audit_plans_case_type_idx": {
+          "name": "audit_plans_case_type_idx",
           "columns": [
             {
-              "expression": "audit_type",
+              "expression": "case_type",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -7103,7 +7881,7 @@
           "name": "audit_plans_case_id_cases_id_fk",
           "tableFrom": "audit_plans",
           "tableTo": "cases",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["case_id"],
           "columnsTo": ["id"],
           "onDelete": "set null",
@@ -7136,9 +7914,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_plan_templates": {
+    "cases.audit_plan_templates": {
       "name": "audit_plan_templates",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -7153,10 +7931,10 @@
           "primaryKey": false,
           "notNull": true
         },
-        "audit_type": {
-          "name": "audit_type",
-          "type": "audit_type",
-          "typeSchema": "audit",
+        "case_type": {
+          "name": "case_type",
+          "type": "case_type",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": false
         },
@@ -7255,11 +8033,11 @@
         }
       },
       "indexes": {
-        "audit_plan_templates_audit_type_idx": {
-          "name": "audit_plan_templates_audit_type_idx",
+        "audit_plan_templates_case_type_idx": {
+          "name": "audit_plan_templates_case_type_idx",
           "columns": [
             {
-              "expression": "audit_type",
+              "expression": "case_type",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -7319,9 +8097,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.case_documents": {
+    "cases.case_documents": {
       "name": "case_documents",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -7479,7 +8257,7 @@
           "name": "case_documents_case_id_cases_id_fk",
           "tableFrom": "case_documents",
           "tableTo": "cases",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["case_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -7489,7 +8267,7 @@
           "name": "case_documents_procedure_id_audit_procedures_id_fk",
           "tableFrom": "case_documents",
           "tableTo": "audit_procedures",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["procedure_id"],
           "columnsTo": ["id"],
           "onDelete": "set null",
@@ -7499,7 +8277,7 @@
           "name": "case_documents_parent_document_id_case_documents_id_fk",
           "tableFrom": "case_documents",
           "tableTo": "case_documents",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["parent_document_id"],
           "columnsTo": ["id"],
           "onDelete": "set null",
@@ -7522,9 +8300,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.case_notes": {
+    "cases.case_notes": {
       "name": "case_notes",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -7548,7 +8326,7 @@
         "note_type": {
           "name": "note_type",
           "type": "note_type",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
@@ -7653,7 +8431,7 @@
           "name": "case_notes_case_id_cases_id_fk",
           "tableFrom": "case_notes",
           "tableTo": "cases",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["case_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -7663,7 +8441,7 @@
           "name": "case_notes_procedure_id_audit_procedures_id_fk",
           "tableFrom": "case_notes",
           "tableTo": "audit_procedures",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["procedure_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -7686,9 +8464,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.case_assignments": {
+    "cases.case_assignments": {
       "name": "case_assignments",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "case_id": {
           "name": "case_id",
@@ -7705,7 +8483,7 @@
         "role": {
           "name": "role",
           "type": "assignment_role",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
@@ -7760,7 +8538,7 @@
           "name": "case_assignments_case_id_cases_id_fk",
           "tableFrom": "case_assignments",
           "tableTo": "cases",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["case_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -7798,9 +8576,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.case_history": {
+    "cases.case_history": {
       "name": "case_history",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -7818,7 +8596,7 @@
         "entity_type": {
           "name": "entity_type",
           "type": "case_entity_type",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
@@ -7831,7 +8609,7 @@
         "action": {
           "name": "action",
           "type": "case_action",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
@@ -7928,7 +8706,7 @@
           "name": "case_history_case_id_cases_id_fk",
           "tableFrom": "case_history",
           "tableTo": "cases",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["case_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -7951,9 +8729,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_reports": {
+    "cases.audit_reports": {
       "name": "audit_reports",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -7983,7 +8761,7 @@
         "status": {
           "name": "status",
           "type": "report_status",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true,
           "default": "'generating'"
@@ -8085,7 +8863,7 @@
           "name": "audit_reports_case_id_cases_id_fk",
           "tableFrom": "audit_reports",
           "tableTo": "cases",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["case_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -8095,7 +8873,7 @@
           "name": "audit_reports_template_id_audit_report_templates_id_fk",
           "tableFrom": "audit_reports",
           "tableTo": "audit_report_templates",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["template_id"],
           "columnsTo": ["id"],
           "onDelete": "restrict",
@@ -8118,9 +8896,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.audit_report_templates": {
+    "cases.audit_report_templates": {
       "name": "audit_report_templates",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -8135,10 +8913,10 @@
           "primaryKey": false,
           "notNull": true
         },
-        "audit_type": {
-          "name": "audit_type",
-          "type": "audit_type",
-          "typeSchema": "audit",
+        "case_type": {
+          "name": "case_type",
+          "type": "case_type",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": false
         },
@@ -8190,11 +8968,11 @@
         }
       },
       "indexes": {
-        "audit_report_templates_audit_type_idx": {
-          "name": "audit_report_templates_audit_type_idx",
+        "audit_report_templates_case_type_idx": {
+          "name": "audit_report_templates_case_type_idx",
           "columns": [
             {
-              "expression": "audit_type",
+              "expression": "case_type",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
@@ -8254,9 +9032,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.case_activities": {
+    "cases.case_activities": {
       "name": "case_activities",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -8274,7 +9052,7 @@
         "activity_type": {
           "name": "activity_type",
           "type": "activity_type",
-          "typeSchema": "audit",
+          "typeSchema": "cases",
           "primaryKey": false,
           "notNull": true
         },
@@ -8372,7 +9150,7 @@
           "name": "case_activities_case_id_cases_id_fk",
           "tableFrom": "case_activities",
           "tableTo": "cases",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["case_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -8395,9 +9173,9 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "audit.case_presence": {
+    "cases.case_presence": {
       "name": "case_presence",
-      "schema": "audit",
+      "schema": "cases",
       "columns": {
         "id": {
           "name": "id",
@@ -8478,7 +9256,7 @@
           "name": "case_presence_case_id_cases_id_fk",
           "tableFrom": "case_presence",
           "tableTo": "cases",
-          "schemaTo": "audit",
+          "schemaTo": "cases",
           "columnsFrom": ["case_id"],
           "columnsTo": ["id"],
           "onDelete": "cascade",
@@ -10702,376 +11480,6 @@
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
-    },
-    "identity.module_access_rules": {
-      "name": "module_access_rules",
-      "schema": "identity",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "uuid_generate_v4()"
-        },
-        "organization_id": {
-          "name": "organization_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "module_key": {
-          "name": "module_key",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "role": {
-          "name": "role",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "has_access": {
-          "name": "has_access",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": true
-        },
-        "allowed_sections": {
-          "name": "allowed_sections",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "module_access_org_idx": {
-          "name": "module_access_org_idx",
-          "columns": [
-            {
-              "expression": "organization_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "module_access_module_idx": {
-          "name": "module_access_module_idx",
-          "columns": [
-            {
-              "expression": "module_key",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "module_access_role_idx": {
-          "name": "module_access_role_idx",
-          "columns": [
-            {
-              "expression": "role",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "module_access_rules_organization_id_organizations_id_fk": {
-          "name": "module_access_rules_organization_id_organizations_id_fk",
-          "tableFrom": "module_access_rules",
-          "tableTo": "organizations",
-          "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "module_access_rules_organization_id_module_key_role_unique": {
-          "name": "module_access_rules_organization_id_module_key_role_unique",
-          "nullsNotDistinct": false,
-          "columns": ["organization_id", "module_key", "role"]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "identity.resource_assignments": {
-      "name": "resource_assignments",
-      "schema": "identity",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "uuid_generate_v4()"
-        },
-        "organization_id": {
-          "name": "organization_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "resource_type": {
-          "name": "resource_type",
-          "type": "resource_type",
-          "typeSchema": "identity",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "resource_id": {
-          "name": "resource_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "role": {
-          "name": "role",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "assigned_by": {
-          "name": "assigned_by",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "assigned_at": {
-          "name": "assigned_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "expires_at": {
-          "name": "expires_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "resource_assignments_user_idx": {
-          "name": "resource_assignments_user_idx",
-          "columns": [
-            {
-              "expression": "user_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "resource_assignments_resource_idx": {
-          "name": "resource_assignments_resource_idx",
-          "columns": [
-            {
-              "expression": "resource_type",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "resource_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        },
-        "resource_assignments_org_idx": {
-          "name": "resource_assignments_org_idx",
-          "columns": [
-            {
-              "expression": "organization_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": false,
-          "concurrently": false,
-          "method": "btree",
-          "with": {}
-        }
-      },
-      "foreignKeys": {
-        "resource_assignments_organization_id_organizations_id_fk": {
-          "name": "resource_assignments_organization_id_organizations_id_fk",
-          "tableFrom": "resource_assignments",
-          "tableTo": "organizations",
-          "schemaTo": "identity",
-          "columnsFrom": ["organization_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "resource_assignments_user_id_users_id_fk": {
-          "name": "resource_assignments_user_id_users_id_fk",
-          "tableFrom": "resource_assignments",
-          "tableTo": "users",
-          "schemaTo": "identity",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "resource_assignments_assigned_by_users_id_fk": {
-          "name": "resource_assignments_assigned_by_users_id_fk",
-          "tableFrom": "resource_assignments",
-          "tableTo": "users",
-          "schemaTo": "identity",
-          "columnsFrom": ["assigned_by"],
-          "columnsTo": ["id"],
-          "onDelete": "restrict",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "resource_assignments_user_id_resource_type_resource_id_unique": {
-          "name": "resource_assignments_user_id_resource_type_resource_id_unique",
-          "nullsNotDistinct": false,
-          "columns": ["user_id", "resource_type", "resource_id"]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "hr.module_sections": {
-      "name": "module_sections",
-      "schema": "hr",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "uuid_generate_v4()"
-        },
-        "section_key": {
-          "name": "section_key",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "section_type": {
-          "name": "section_type",
-          "type": "section_type",
-          "typeSchema": "hr",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "display_name": {
-          "name": "display_name",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "description": {
-          "name": "description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "path": {
-          "name": "path",
-          "type": "varchar(255)",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "required_permissions": {
-          "name": "required_permissions",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "minimum_role": {
-          "name": "minimum_role",
-          "type": "varchar(50)",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "sort_order": {
-          "name": "sort_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false,
-          "default": 0
-        },
-        "is_active": {
-          "name": "is_active",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": false,
-          "default": true
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "module_sections_section_key_unique": {
-          "name": "module_sections_section_key_unique",
-          "nullsNotDistinct": false,
-          "columns": ["section_key"]
-        }
-      },
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
     }
   },
   "enums": {
@@ -11105,54 +11513,49 @@
       "schema": "system",
       "values": ["pending", "approved", "rejected", "cancelled"]
     },
-    "audit.assignment_role": {
+    "cases.assignment_role": {
       "name": "assignment_role",
-      "schema": "audit",
+      "schema": "cases",
       "values": ["lead", "reviewer", "team_member"]
     },
-    "audit.audit_category": {
-      "name": "audit_category",
-      "schema": "audit",
-      "values": ["certification", "financial", "operational", "compliance"]
-    },
-    "audit.audit_status": {
-      "name": "audit_status",
-      "schema": "audit",
-      "values": ["draft", "in-progress", "under-review", "completed", "archived"]
-    },
-    "audit.audit_type": {
-      "name": "audit_type",
-      "schema": "audit",
-      "values": [
-        "ICV",
-        "ISO_9001",
-        "ISO_14001",
-        "ISO_45001",
-        "financial_audit",
-        "internal_audit",
-        "compliance_audit",
-        "operational_audit"
-      ]
-    },
-    "audit.case_action": {
+    "cases.case_action": {
       "name": "case_action",
-      "schema": "audit",
+      "schema": "cases",
       "values": ["created", "updated", "deleted", "completed", "archived", "assigned", "unassigned"]
     },
-    "audit.case_entity_type": {
+    "cases.case_category": {
+      "name": "case_category",
+      "schema": "cases",
+      "values": ["certification", "financial", "operational", "compliance"]
+    },
+    "cases.case_entity_type": {
       "name": "case_entity_type",
-      "schema": "audit",
+      "schema": "cases",
       "values": ["case", "scope", "section", "procedure", "document", "note"]
     },
-    "audit.case_priority": {
+    "cases.case_priority": {
       "name": "case_priority",
-      "schema": "audit",
+      "schema": "cases",
       "values": ["low", "medium", "high", "critical"]
     },
-    "audit.case_status": {
+    "cases.case_status": {
       "name": "case_status",
-      "schema": "audit",
-      "values": ["pending", "in-progress", "under-review", "completed", "overdue", "archived"]
+      "schema": "cases",
+      "values": ["draft", "in_progress", "under_review", "completed", "overdue", "archived"]
+    },
+    "cases.case_type": {
+      "name": "case_type",
+      "schema": "cases",
+      "values": [
+        "ICV_AUDIT",
+        "ISO_9001_AUDIT",
+        "ISO_14001_AUDIT",
+        "ISO_45001_AUDIT",
+        "FINANCIAL_AUDIT",
+        "INTERNAL_AUDIT",
+        "COMPLIANCE_AUDIT",
+        "OPERATIONAL_AUDIT"
+      ]
     },
     "identity.color_scheme": {
       "name": "color_scheme",
@@ -11300,9 +11703,9 @@
       "schema": "hr",
       "values": ["single", "married", "cohabitant", "widower", "divorced"]
     },
-    "audit.note_type": {
+    "cases.note_type": {
       "name": "note_type",
-      "schema": "audit",
+      "schema": "cases",
       "values": ["observation", "review_comment", "general", "memo"]
     },
     "system.notification_type": {
@@ -11527,6 +11930,27 @@
       "schema": "identity",
       "values": ["low", "medium", "high", "critical"]
     },
+    "cases.step_status": {
+      "name": "step_status",
+      "schema": "cases",
+      "values": ["pending", "in_progress", "completed", "skipped", "blocked"]
+    },
+    "cases.step_type": {
+      "name": "step_type",
+      "schema": "cases",
+      "values": [
+        "form_input",
+        "document_upload",
+        "document_collection",
+        "scope_editor",
+        "calculation_review",
+        "approval_stage",
+        "review_stage",
+        "checklist",
+        "report_generation",
+        "custom"
+      ]
+    },
     "finance.tax_amount_type": {
       "name": "tax_amount_type",
       "schema": "finance",
@@ -11541,6 +11965,16 @@
       "name": "tax_type",
       "schema": "finance",
       "values": ["sale", "purchase", "none"]
+    },
+    "cases.template_status": {
+      "name": "template_status",
+      "schema": "cases",
+      "values": ["draft", "in_progress", "under_review", "completed", "archived"]
+    },
+    "cases.template_type": {
+      "name": "template_type",
+      "schema": "cases",
+      "values": ["scope", "form", "checklist", "report", "plan"]
     },
     "identity.theme": {
       "name": "theme",
@@ -11616,34 +12050,34 @@
       "schema": "identity",
       "values": ["hard", "soft", "complaint", "unsubscribe"]
     },
-    "system.approver_type": {
-      "name": "approver_type",
-      "schema": "system",
-      "values": ["role", "team", "user"]
-    },
     "system.step_type": {
       "name": "step_type",
       "schema": "system",
       "values": ["single", "parallel", "any"]
     },
-    "audit.plan_status": {
+    "system.approver_type": {
+      "name": "approver_type",
+      "schema": "system",
+      "values": ["role", "team", "user"]
+    },
+    "cases.plan_status": {
       "name": "plan_status",
-      "schema": "audit",
+      "schema": "cases",
       "values": ["draft", "in_review", "approved", "converted", "archived"]
     },
-    "audit.plan_type": {
+    "cases.plan_type": {
       "name": "plan_type",
-      "schema": "audit",
+      "schema": "cases",
       "values": ["standalone", "case_integrated"]
     },
-    "audit.report_status": {
+    "cases.report_status": {
       "name": "report_status",
-      "schema": "audit",
+      "schema": "cases",
       "values": ["generating", "ready", "failed"]
     },
-    "audit.activity_type": {
+    "cases.activity_type": {
       "name": "activity_type",
-      "schema": "audit",
+      "schema": "cases",
       "values": [
         "case_created",
         "status_changed",
@@ -11661,20 +12095,10 @@
         "plan_created",
         "report_generated"
       ]
-    },
-    "identity.resource_type": {
-      "name": "resource_type",
-      "schema": "identity",
-      "values": ["audit_case", "accounting_client", "crm_lead", "crm_deal", "hr_department"]
-    },
-    "hr.section_type": {
-      "name": "section_type",
-      "schema": "hr",
-      "values": ["self_service", "management"]
     }
   },
   "schemas": {
-    "audit": "audit",
+    "cases": "cases",
     "finance": "finance",
     "hr": "hr",
     "identity": "identity",

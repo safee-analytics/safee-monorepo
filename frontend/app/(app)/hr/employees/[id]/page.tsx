@@ -47,7 +47,9 @@ export default function EmployeeDetailPage() {
     employeeId: employee?.odooEmployeeId ?? undefined,
   });
   const { data: leaveBalances } = useLeaveBalances(employeeId);
-  const { data: payslips, error: payslipsError } = usePayslips({ employeeId: employee?.odooEmployeeId ?? undefined });
+  const { data: payslips, error: payslipsError } = usePayslips({
+    employeeId: employee?.odooEmployeeId ?? undefined,
+  });
 
   // Check if user has access to contracts/payslips (403/500 errors indicate no permission)
   const hasContractsAccess = !contractsError;
