@@ -30,7 +30,7 @@ export default defineConfig({
       JWT_SECRET: "test-jwt-secret",
       LOG_LEVEL: "info",
     },
-    testTimeout: 55000,
+    testTimeout: 30000,
     // Exclude e2e tests that require full server setup
     exclude: ["**/e2e/**", "node_modules/**", "build/**"],
   },
