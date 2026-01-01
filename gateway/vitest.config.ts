@@ -31,6 +31,7 @@ export default defineConfig({
       LOG_LEVEL: "info",
     },
     testTimeout: 30000,
+    hookTimeout: 30000,
     // Exclude e2e tests that require full server setup
     exclude: ["**/e2e/**", "node_modules/**", "build/**"],
   },

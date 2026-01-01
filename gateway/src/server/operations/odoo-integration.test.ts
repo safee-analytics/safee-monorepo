@@ -106,7 +106,7 @@ void describe("Odoo Integration Tests", async () => {
       organizationId: orgId,
       databaseName: sharedOdooDatabase.databaseName,
       adminLogin: sharedOdooDatabase.adminLogin,
-      adminPassword: await encryptionService.encrypt(sharedOdooDatabase.adminPassword),
+      adminPassword: encryptionService.encrypt(sharedOdooDatabase.adminPassword),
       odooUrl: ODOO_URL,
       provisioningStatus: "active",
       provisioningCompletedAt: new Date(),
