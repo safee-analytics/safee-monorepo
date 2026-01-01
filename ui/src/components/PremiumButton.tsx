@@ -5,11 +5,10 @@ import { ReactNode, ButtonHTMLAttributes, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { springs } from "../utils/animations";
 
-export interface PremiumButtonProps
-  extends Omit<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    "style" | "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart" | "onAnimationEnd"
-  > {
+export interface PremiumButtonProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  "style" | "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart" | "onAnimationEnd"
+> {
   children: ReactNode;
   variant?: "primary" | "secondary" | "ghost" | "danger" | "success";
   size?: "sm" | "md" | "lg";
@@ -210,11 +209,10 @@ export function PremiumButton({
 /**
  * Floating Action Button - Monday.com style
  */
-export interface FABProps
-  extends Omit<
-    ButtonHTMLAttributes<HTMLButtonElement>,
-    "style" | "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart" | "onAnimationEnd"
-  > {
+export interface FABProps extends Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  "style" | "onDrag" | "onDragStart" | "onDragEnd" | "onAnimationStart" | "onAnimationEnd"
+> {
   icon: ReactNode;
   label?: string;
   position?: "bottom-right" | "bottom-left" | "top-right" | "top-left";

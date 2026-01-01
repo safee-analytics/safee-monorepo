@@ -22,8 +22,12 @@ import type {
 
 const logger = pino({ name: "socket.io" });
 
-interface AuthenticatedSocket
-  extends Socket<ClientToServerEvents, ServerToClientEvents, Record<string, never>, SocketData> {
+interface AuthenticatedSocket extends Socket<
+  ClientToServerEvents,
+  ServerToClientEvents,
+  Record<string, never>,
+  SocketData
+> {
   data: SocketData;
 }
 

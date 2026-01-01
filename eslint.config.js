@@ -80,9 +80,6 @@ const baseConfig = tsEslint.config(
       ecmaVersion: 2024,
       sourceType: "module",
       globals: { ...globals.node },
-      parserOptions: {
-        project: true,
-      },
     },
   },
   /*
