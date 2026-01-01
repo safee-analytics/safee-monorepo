@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { UserCheck, Shield, Trash2, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
-import { useEncryptionStore } from "@/stores/useEncryptionStore";
 import {
   type AuditorAccess,
   type AvailableAuditor,

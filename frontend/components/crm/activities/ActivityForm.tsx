@@ -8,7 +8,7 @@ import { useLeads, useCrmTeams } from "@/lib/api/hooks";
 import { activityFormSchema, type ActivityFormData } from "@/lib/api/schemas";
 import { AnimatedButton } from "@safee/ui";
 import type { paths } from "@/lib/api/types";
-import { type ActivityType, leadSchema } from "@/lib/validation";
+import { type ActivityType } from "@/lib/validation";
 
 type ActivityResponse =
   paths["/crm/activities/{activityId}"]["get"]["responses"]["200"]["content"]["application/json"];

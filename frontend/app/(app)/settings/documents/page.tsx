@@ -21,7 +21,6 @@ import { useToast, SafeeToastContainer } from "@/components/feedback/SafeeToast"
 import {
   type DocumentSettings,
   type EncryptionData,
-  documentSettingsSchema,
   encryptionDataSchema,
 } from "@/lib/validation";
 

@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { EncryptionBadge } from "@/components/ui/EncryptionBadge";
 import { Button } from "@safee/ui";
-import { type FileItem, fileItemSchema } from "@/lib/validation";
+import { type FileItem } from "@/lib/validation";
 
 interface FileListProps {
   files: FileItem[];

@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useDepartments } from "@/lib/api/hooks/hrManagement";
 import { Button } from "@safee/ui";
-import { type DepartmentDbResponse, departmentDbResponseSchema } from "@/lib/validation";
+import { type DepartmentDbResponse, departmentDbResponseSchema as _departmentDbResponseSchema } from "@/lib/validation";
 
 // Zod schema for department form validation
 const departmentFormSchema = z.object({
@@ -19,6 +19,9 @@ const departmentFormSchema = z.object({
 export type DepartmentFormValues = z.infer<typeof departmentFormSchema>;
 
 interface DepartmentFormProps {
+  // TODO: [Frontend] - Validate defaultValues with departmentDbResponseSchema
+  //   Details: The defaultValues prop receives API response data that should be validated with departmentDbResponseSchema.parse() to ensure data integrity before using it in the form.
+  //   Priority: Medium
   defaultValues?: Partial<DepartmentDbResponse>;
   onSubmit: (data: DepartmentFormValues) => Promise<void>;
   isSubmitting?: boolean;

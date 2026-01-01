@@ -20,6 +20,7 @@ import {
 import { authClient } from "@/lib/auth/client";
 import { apiClient } from "@/lib/api/client";
 import { twMerge } from "tailwind-merge";
+import { logError } from "@/lib/utils/logger";
 import { SafeeLogo as SafeeLogoComponent } from "@/components/common/SafeeLogo";
 import {
   type Module,
@@ -348,6 +349,7 @@ export default function OnboardingPage() {
             // TODO: [Backend/Frontend] - Handle individual invitation failures during onboarding
             //   Details: When inviting multiple team members, some invitations might fail (e.g., invalid email). This `console.warn` needs to be replaced with a robust error handling mechanism, potentially showing user-specific feedback without blocking the entire onboarding process.
             //   Priority: Medium
+            logError("Failed to invite team member during onboarding", err, { email: member.email });
             // Continue even if some invites fail
           }
         }

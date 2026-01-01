@@ -8,7 +8,7 @@ import {
   type FileToEncrypt,
   type MigrationStats,
   fileToEncryptSchema,
-  migrationStatsSchema,
+  migrationStatsSchema as _migrationStatsSchema,
 } from "@/lib/validation";
 import { deriveKeyFromPassword, unwrapOrgKey } from "@/lib/crypto/cryptoService";
 import { encryptedStorageService } from "@/lib/services/encryptedStorageService";
@@ -46,14 +46,14 @@ export function ReencryptionProgress({
   const { setOrgKey, setMasterKey } = useEncryptionStore();
 
   // TODO: [Backend/Frontend] - Fetch migration status on mount
-  //   Details: This useEffect block is commented out and needs to be implemented. It should fetch the current re-encryption status from the backend API (e.g., `/encryption/reencryption-status`) on component mount and update the `stats` and `files` state accordingly.
+  //   Details: This useEffect block is commented out and needs to be implemented. It should fetch the current re-encryption status from the backend API (e.g., `/encryption/reencryption-status`) on component mount and update the `stats` and `files` state accordingly. When implemented, use migrationStatsSchema.parse(data.stats) to validate the response data.
   //   Priority: High
   // Load migration status on mount
   // useEffect(() => {
   //   const fetchStatus = async () => {
   //     // const { data } = await apiClient.GET("/encryption/reencryption-status");
   //     // if (data) {
-  //     //   setStats(data.stats);
+  //     //   setStats(migrationStatsSchema.parse(data.stats));
   //     // }
   //   };
   //   // fetchStatus();
