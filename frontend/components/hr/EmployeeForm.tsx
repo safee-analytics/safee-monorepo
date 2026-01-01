@@ -5,7 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useDepartments } from "@/lib/api/hooks/hrManagement";
 import { Button } from "@safee/ui";
-import { type EmployeeDbResponse, employeeDbResponseSchema as _employeeDbResponseSchema } from "@/lib/validation";
+import {
+  type EmployeeDbResponse,
+  employeeDbResponseSchema as _employeeDbResponseSchema,
+} from "@/lib/validation";
 
 // TODO: [Frontend] - Validate defaultValues with employeeDbResponseSchema
 //   Details: The defaultValues prop receives API response data that should be validated with employeeDbResponseSchema.parse() to ensure data integrity before using it in the form.

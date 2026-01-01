@@ -18,11 +18,7 @@ import { AuditorAccessManager } from "@/components/settings/AuditorAccessManager
 import { ReencryptionProgress } from "@/components/settings/ReencryptionProgress";
 import { KeyRotation } from "@/components/settings/KeyRotation";
 import { useToast, SafeeToastContainer } from "@/components/feedback/SafeeToast";
-import {
-  type DocumentSettings,
-  type EncryptionData,
-  encryptionDataSchema,
-} from "@/lib/validation";
+import { type DocumentSettings, type EncryptionData, encryptionDataSchema } from "@/lib/validation";
 
 export default function DocumentSettingsPage() {
   const { t } = useTranslation();

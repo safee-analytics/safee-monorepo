@@ -5,7 +5,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useDepartments } from "@/lib/api/hooks/hrManagement";
 import { Button } from "@safee/ui";
-import { type DepartmentDbResponse, departmentDbResponseSchema as _departmentDbResponseSchema } from "@/lib/validation";
+import {
+  type DepartmentDbResponse,
+  departmentDbResponseSchema as _departmentDbResponseSchema,
+} from "@/lib/validation";
 
 // Zod schema for department form validation
 const departmentFormSchema = z.object({
