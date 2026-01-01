@@ -1,11 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { X, CheckCircle2, Clock, Calendar, User, FileText, MessageSquare } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import { Button } from "@safee/ui";
 import type { components } from "@/lib/api/types/audit";
-import { procedureRequirementsSchema, fieldDataSchema } from "@/lib/validation";
+import { procedureRequirementsSchema, fieldDataSchema, type CustomField } from "@/lib/validation";
 
 type ProcedureResponse = components["schemas"]["ProcedureResponse"];
 
@@ -220,9 +221,9 @@ export function ProcedureDetailDrawer({
                 }`}
               >
                 Attachments
-// TODO: [Frontend] - Display attachment count
-//   Details: Implement logic to show the actual number of attachments for the procedure in the Attachments tab.
-//   Priority: Medium
+                {/* TODO: [Frontend] - Display attachment count
+                Details: Implement logic to show the actual number of attachments for the procedure in the Attachments tab.
+                Priority: Medium */}
               </button>
               <button
                 onClick={() => setActiveTab("history")}

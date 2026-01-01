@@ -1,8 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 import { apiClient, handleApiError } from "../client";
 import { queryKeys } from "./queryKeys";
+import { invoiceSchema } from "@/lib/validation";
 
-
+const invoicesResponseSchema = z.object({
+  invoices: z.array(invoiceSchema),
+  total: z.number().optional(),
+  page: z.number().optional(),
+  limit: z.number().optional(),
+});
 
 export function useInvoices(params?: {
   page?: number;
@@ -19,7 +26,7 @@ export function useInvoices(params?: {
         params: { query: params },
       });
       if (error) throw new Error(handleApiError(error));
-      return data;
+      return invoicesResponseSchema.parse(data);
     },
   });
 }

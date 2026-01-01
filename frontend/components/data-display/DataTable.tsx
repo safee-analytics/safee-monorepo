@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { FiAward, FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { Button } from "@safee/ui";
-import { type User, userSchema } from "@/lib/validation";
+import { type DisplayUser, displayUserSchema } from "@/lib/validation";
 
 const ShuffleSortTable = () => {
   return (
@@ -17,7 +17,7 @@ const ShuffleSortTable = () => {
 // TODO: [Backend/Frontend] - Fetch user data from API
 //   Details: The `userData` is currently mocked. Implement a backend API endpoint to fetch the user data and integrate it here.
 //   Priority: High
-const userData: User[] = userSchema.array().parse([
+const userData: DisplayUser[] = displayUserSchema.array().parse([
   {
     id: 1,
     name: "Andrea Thompson",
@@ -103,7 +103,7 @@ const Table = () => {
 };
 
 interface TableRowsProps {
-  user: User;
+  user: DisplayUser;
   index: number;
   shift: (id: number, direction: "up" | "down") => void;
 }

@@ -19,6 +19,8 @@ export const customFieldSchema = z.object({
   validation: customFieldValidationSchema.optional(),
 });
 
+export type CustomField = z.infer<typeof customFieldSchema>;
+
 export const procedureRequirementsSchema = z.object({
   customFields: z.array(customFieldSchema).optional(),
   minAttachments: z.number().optional(),

@@ -1,4 +1,4 @@
-import { InvoiceStyle } from "../api/hooks/invoiceStyles";
+import { type InvoiceStyle } from "@/lib/validation";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 

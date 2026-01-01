@@ -35,13 +35,15 @@ export const auditorAccessSchema = z.object({
   isRevoked: z.boolean(),
 });
 
+export type AuditorAccess = z.infer<typeof auditorAccessSchema>;
+
 export const availableAuditorSchema = z.object({
   id: z.string(),
   name: z.string(),
   email: z.string(),
 });
 
-export type KeyRotationRequest = z.infer<typeof keyRotationRequestSchema>;
+export type AvailableAuditor = z.infer<typeof availableAuditorSchema>;
 
 export const documentSettingsSchema = z.object({
   encryptionEnabled: z.boolean(),

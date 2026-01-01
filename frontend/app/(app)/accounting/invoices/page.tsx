@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   FileText,
@@ -14,7 +16,7 @@ import {
   Clock,
 } from "lucide-react";
 import { useInvoices } from "@/lib/api/hooks";
-import { type Invoice, type InvoiceStatus, type InvoiceType, invoiceStatusSchema, invoiceTypeSchema } from "@/lib/validation";
+import { type Invoice, type InvoiceStatus, type InvoiceType } from "@/lib/validation";
 
 export default function InvoicesPage() {
   const router = useRouter();

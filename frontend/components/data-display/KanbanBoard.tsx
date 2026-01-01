@@ -3,9 +3,7 @@ import React, { Dispatch, SetStateAction, useState, DragEvent, FormEvent } from 
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaFire } from "react-icons/fa";
-import { type ColumnType, type CardType } from "@/lib/validation";
-
-import { type ColumnType, type CardType } from "@/lib/validation";
+import { type ColumnType, type CardType, cardSchema } from "@/lib/validation";
 
 // TODO: [Backend] - Implement API for Kanban board persistence
 //   Details: The Kanban board currently uses mock data. A backend API is needed to handle CRUD operations for cards and columns, including their ordering and persistence.

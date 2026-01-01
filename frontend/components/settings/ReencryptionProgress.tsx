@@ -1,7 +1,12 @@
 "use client";
 
+import { useState } from "react";
+import { Lock, CheckCircle, XCircle, RefreshCw, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
 import { useEncryptionStore } from "@/stores/useEncryptionStore";
 import { type FileToEncrypt, type MigrationStats, fileToEncryptSchema, migrationStatsSchema } from "@/lib/validation";
+import { deriveKeyFromPassword, unwrapOrgKey } from "@/lib/crypto/cryptoService";
+import { encryptedStorageService } from "@/lib/services/encryptedStorageService";
 
 interface ReencryptionProgressProps {
   organizationId: string;

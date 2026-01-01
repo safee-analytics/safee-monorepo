@@ -67,12 +67,16 @@ export function BulkUploadModal({
   };
 
   const addFiles = (newFiles: File[]) => {
-    const uploadItems: FileUploadItem[] = newFiles.map((file) => ({
-      file,
-      status: "pending",
-      progress: 0,
-      category: defaultCategory,
-    }));
+    const uploadItems: FileUploadItem[] = newFiles.map((file) => {
+      const item = {
+        file,
+        status: "pending" as const,
+        progress: 0,
+        category: defaultCategory,
+      };
+      const validated = fileUploadItemSchema.parse(item);
+      return validated;
+    });
     setFiles((prev) => [...prev, ...uploadItems]);
   };
 

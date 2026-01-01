@@ -53,13 +53,13 @@ export function LeadCard({ lead, isDragging = false }: LeadCardProps) {
         </button>
       </div>
 
-      {lead.expectedRevenue !== undefined && lead.expectedRevenue > 0 && (
+      {lead.expectedRevenue !== undefined && lead.expectedRevenue !== null && lead.expectedRevenue > 0 && (
         <div className="flex items-center space-x-2 mb-3">
           <div className="flex items-center text-green-600 font-semibold">
             <DollarSign className="h-4 w-4" />
             <span>{lead.expectedRevenue.toLocaleString()}</span>
           </div>
-          {lead.probability !== undefined && (
+          {lead.probability !== undefined && lead.probability !== null && (
             <span className="text-xs text-gray-500">• {lead.probability}%</span>
           )}
         </div>
@@ -110,7 +110,7 @@ export function LeadCard({ lead, isDragging = false }: LeadCardProps) {
         )}
       </div>
 
-      {lead.user && (
+      {lead.user && lead.user.name && (
         <div className="mt-3 pt-3 border-t border-gray-100">
           <div className="flex items-center space-x-2">
             <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center text-xs font-medium text-blue-700">

@@ -5,10 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Edit2, MoreVertical, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { useCase, useCaseScopes } from "@/lib/api/hooks";
 import { DocumentBrowser } from "@/components/audit/cases/DocumentBrowser";
-import {
-  DocumentPreviewDrawer,
-  type Document as DocumentType,
-} from "@/components/audit/cases/DocumentPreviewDrawer";
+import { DocumentPreviewDrawer } from "@/components/audit/cases/DocumentPreviewDrawer";
 import { BulkUploadModal } from "@/components/audit/cases/BulkUploadModal";
 import { ActivityFeed } from "@/components/collaboration/ActivityFeed";
 import { ActiveViewers } from "@/components/collaboration/ActiveViewers";
@@ -361,12 +358,12 @@ export default function CaseDetailPage() {
             onDocumentClick={(doc) => {
               setPreviewDocument(doc);
             }}
-            onDownload={(docIds) => {
+            onDownload={(_docIds) => {
 // TODO: [Backend/Frontend] - Implement document download logic
 //   Details: This action currently has a placeholder. Implement the backend API for downloading documents and integrate it here.
 //   Priority: High
             }}
-            onDelete={(docIds) => {
+            onDelete={(_docIds) => {
 // TODO: [Backend/Frontend] - Implement document deletion logic
 //   Details: This action currently has a placeholder. Implement the backend API for deleting documents and integrate it here.
 //   Priority: High
