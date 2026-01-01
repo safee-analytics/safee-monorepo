@@ -4,10 +4,11 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useDepartments } from "@/lib/api/hooks/hrManagement";
-import type { paths } from "@/lib/api/types";
-
-type DepartmentDbResponse =
-  paths["/hr-management/departments"]["get"]["responses"]["200"]["content"]["application/json"][number];
+import { Button } from "@safee/ui";
+import {
+  type DepartmentDbResponse,
+  departmentDbResponseSchema as _departmentDbResponseSchema,
+} from "@/lib/validation";
 
 // Zod schema for department form validation
 const departmentFormSchema = z.object({
@@ -21,6 +22,9 @@ const departmentFormSchema = z.object({
 export type DepartmentFormValues = z.infer<typeof departmentFormSchema>;
 
 interface DepartmentFormProps {
+  // TODO: [Frontend] - Validate defaultValues with departmentDbResponseSchema
+  //   Details: The defaultValues prop receives API response data that should be validated with departmentDbResponseSchema.parse() to ensure data integrity before using it in the form.
+  //   Priority: Medium
   defaultValues?: Partial<DepartmentDbResponse>;
   onSubmit: (data: DepartmentFormValues) => Promise<void>;
   isSubmitting?: boolean;
@@ -135,8 +139,8 @@ export function DepartmentForm({
                 value={`#${colorValue || "3b82f6"}`}
                 onChange={(e) => {
                   const hex = e.target.value.replace("#", "");
-                  const colorInput = document.getElementById("color") as HTMLInputElement;
-                  if (colorInput) colorInput.value = hex;
+                  const colorInput = document.getElementById("color");
+                  if (colorInput instanceof HTMLInputElement) colorInput.value = hex;
                 }}
                 className="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer"
               />
@@ -164,22 +168,18 @@ export function DepartmentForm({
 
       {/* Form Actions */}
       <div className="flex items-center justify-end gap-3">
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={() => {
             window.history.back();
           }}
-          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
         >
           Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        </Button>
+        <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Saving..." : submitLabel}
-        </button>
+        </Button>
       </div>
     </form>
   );

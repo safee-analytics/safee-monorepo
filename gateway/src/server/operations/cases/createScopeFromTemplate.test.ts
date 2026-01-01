@@ -41,8 +41,8 @@ void describe("createScopeFromTemplate operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-001",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const structure: TemplateStructure = {
@@ -64,9 +64,9 @@ void describe("createScopeFromTemplate operation", async () => {
     const template = await dbCreateTemplate(deps, {
       organizationId: testOrg.id,
       name: "Test Template",
-      auditType: "ICV",
+      templateType: "scope",
       structure,
-      isPublic: false,
+      isSystemTemplate: false,
       isActive: true,
       createdBy: testUser.id,
     });
@@ -85,8 +85,8 @@ void describe("createScopeFromTemplate operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-002",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const structure: TemplateStructure = {
@@ -108,9 +108,9 @@ void describe("createScopeFromTemplate operation", async () => {
     const template = await dbCreateTemplate(deps, {
       organizationId: testOrg.id,
       name: "Test Template",
-      auditType: "ICV",
+      templateType: "scope",
       structure,
-      isPublic: true,
+      isSystemTemplate: true,
       isActive: true,
       createdBy: testUser.id,
     });
@@ -137,9 +137,9 @@ void describe("createScopeFromTemplate operation", async () => {
     const template = await dbCreateTemplate(deps, {
       organizationId: testOrg.id,
       name: "Test Template",
-      auditType: "ICV",
+      templateType: "scope",
       structure,
-      isPublic: true,
+      isSystemTemplate: true,
       isActive: true,
       createdBy: testUser.id,
     });
@@ -152,8 +152,8 @@ void describe("createScopeFromTemplate operation", async () => {
   it("should throw NotFound for non-existent template", async () => {
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-003",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     await expect(
@@ -168,8 +168,8 @@ void describe("createScopeFromTemplate operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-004",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const structure: TemplateStructure = {
@@ -179,9 +179,9 @@ void describe("createScopeFromTemplate operation", async () => {
     const template = await dbCreateTemplate(deps, {
       organizationId: testOrg.id,
       name: "Test Template",
-      auditType: "ICV",
+      templateType: "scope",
       structure,
-      isPublic: true,
+      isSystemTemplate: true,
       isActive: true,
       createdBy: testUser.id,
     });
@@ -199,8 +199,8 @@ void describe("createScopeFromTemplate operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg2.id, testUser2.id, {
       caseNumber: "CASE-005",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const structure: TemplateStructure = {
@@ -210,9 +210,9 @@ void describe("createScopeFromTemplate operation", async () => {
     const template = await dbCreateTemplate(deps, {
       organizationId: testOrg.id,
       name: "Private Template",
-      auditType: "ICV",
+      templateType: "scope",
       structure,
-      isPublic: false,
+      isSystemTemplate: false,
       isActive: true,
       createdBy: testUser.id,
     });
@@ -230,8 +230,8 @@ void describe("createScopeFromTemplate operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg2.id, testUser2.id, {
       caseNumber: "CASE-006",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const structure: TemplateStructure = {
@@ -247,9 +247,9 @@ void describe("createScopeFromTemplate operation", async () => {
     const template = await dbCreateTemplate(deps, {
       organizationId: testOrg.id,
       name: "Public Template",
-      auditType: "ICV",
+      templateType: "scope",
       structure,
-      isPublic: true,
+      isSystemTemplate: true,
       isActive: true,
       createdBy: testUser.id,
     });
@@ -271,8 +271,8 @@ void describe("createScopeFromTemplate operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-007",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const structure: TemplateStructure = {
@@ -282,9 +282,9 @@ void describe("createScopeFromTemplate operation", async () => {
     const template = await dbCreateTemplate(deps, {
       organizationId: testOrg.id,
       name: "Inactive Template",
-      auditType: "ICV",
+      templateType: "scope",
       structure,
-      isPublic: true,
+      isSystemTemplate: true,
       isActive: false,
       createdBy: testUser.id,
     });

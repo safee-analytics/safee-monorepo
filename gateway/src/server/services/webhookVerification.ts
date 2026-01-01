@@ -2,41 +2,64 @@ import crypto from "node:crypto";
 import type { Request } from "express";
 
 export interface WebhookConfig {
-  secret: string;
+  masterSecret: string;
+}
+
+export interface WebhookPayload {
+  event: string;
+  model: string;
+  record_id: number;
+  organization_id: string;
+  user_id: string;
+  timestamp: string;
 }
 
 /**
  * Verify webhook signature from Odoo
  *
- * Odoo should send a signature in the X-Odoo-Signature header
- * computed as: HMAC-SHA256(webhook_secret, request_body)
+ * Uses derived per-org secrets for security:
+ * - Master secret stored in gateway (ODOO_WEBHOOK_SECRET)
+ * - Per-org secret derived as: HMAC-SHA256(masterSecret, organizationId)
+ * - Odoo signs webhook with derived secret
+ * - Gateway derives same secret to verify
  */
 export class WebhookVerification {
-  private secret: string;
+  private masterSecret: string;
 
   constructor(config: WebhookConfig) {
-    this.secret = config.secret;
+    this.masterSecret = config.masterSecret;
   }
 
   /**
-   * Verify the webhook signature
+   * Derive per-organization webhook secret from master secret
+   * Must match the derivation in database.service.ts
    */
-  public verify(request: Request, body: string): boolean {
+  public deriveOrgSecret(organizationId: string): string {
+    return crypto.createHmac("sha256", this.masterSecret).update(organizationId).digest("hex");
+  }
+
+  /**
+   * Verify the webhook signature using derived per-org secret
+   */
+  public verify(request: Request, body: string, organizationId: string): boolean {
     const signature = request.headers["x-odoo-signature"] as string;
 
     if (!signature) {
       return false;
     }
 
-    const expectedSignature = this.computeSignature(body);
+    // Derive the expected secret for this organization
+    const orgSecret = this.deriveOrgSecret(organizationId);
+    const expectedSignature = this.computeSignature(body, orgSecret);
+
     return this.secureCompare(signature, expectedSignature);
   }
 
   /**
-   * Compute HMAC-SHA256 signature
+   * Compute HMAC-SHA256 signature using provided secret
    */
-  private computeSignature(body: string): string {
-    return crypto.createHmac("sha256", this.secret).update(body).digest("hex");
+  private computeSignature(body: string, secret: string): string {
+    return crypto.createHmac("sha256", secret).update(body).digest("hex");
   }
 
   /**
@@ -63,13 +86,13 @@ let webhookVerification: WebhookVerification | null = null;
 
 export function getWebhookVerification(): WebhookVerification {
   if (!webhookVerification) {
-    const secret = process.env.ODOO_WEBHOOK_SECRET;
+    const masterSecret = process.env.ODOO_WEBHOOK_SECRET;
 
-    if (!secret) {
+    if (!masterSecret) {
       throw new Error("ODOO_WEBHOOK_SECRET environment variable is required");
     }
 
-    webhookVerification = new WebhookVerification({ secret });
+    webhookVerification = new WebhookVerification({ masterSecret });
   }
 
   return webhookVerification;

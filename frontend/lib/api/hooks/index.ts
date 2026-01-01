@@ -20,6 +20,9 @@ export * from "./storage";
 // Re-export case hooks
 export * from "./cases";
 
+// Re-export template hooks
+export * from "./templates";
+
 // Re-export workflow and approval hooks
 export * from "./workflows";
 

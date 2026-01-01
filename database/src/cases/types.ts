@@ -2,10 +2,10 @@ import { z } from "zod";
 import type {
   Case,
   NewCase,
-  AuditTemplate,
-  NewAuditTemplate,
-  AuditScope,
-  NewAuditScope,
+  Template,
+  NewTemplate,
+  TemplateInstance,
+  NewTemplateInstance,
   AuditSection,
   NewAuditSection,
   AuditProcedure,
@@ -102,12 +102,139 @@ export const scopeMetadataSchema = z.record(z.string(), z.unknown());
 
 export type ScopeMetadata = z.infer<typeof scopeMetadataSchema>;
 
+// Case Activity schemas
+export const activityMetadataSchema = z
+  .object({
+    caseName: z.string().optional(),
+    oldValue: z.string().optional(),
+    newValue: z.string().optional(),
+    documentName: z.string().optional(),
+    documentId: z.string().optional(),
+    userName: z.string().optional(),
+    assignedUserId: z.string().optional(),
+    assignedUserName: z.string().optional(),
+    commentId: z.string().optional(),
+    scopeId: z.string().optional(),
+    planId: z.string().optional(),
+    reportId: z.string().optional(),
+  })
+  .catchall(z.unknown());
+
+export const activityIsReadSchema = z.record(z.string(), z.boolean());
+
+export type ActivityMetadata = z.infer<typeof activityMetadataSchema>;
+export type ActivityIsRead = z.infer<typeof activityIsReadSchema>;
+
+// Audit Plan schemas
+export const auditPlanObjectiveSchema = z.object({
+  id: z.string(),
+  description: z.string(),
+  priority: z.string().optional(),
+});
+
+export const auditPlanTeamMemberSchema = z.object({
+  userId: z.string(),
+  name: z.string(),
+  role: z.string(),
+  hours: z.number().optional(),
+});
+
+export const auditPlanPhaseSchema = z.object({
+  name: z.string(),
+  duration: z.number(),
+  description: z.string().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
+});
+
+export const auditPlanRiskSchema = z.object({
+  type: z.string(),
+  severity: z.string(),
+  message: z.string(),
+});
+
+export const auditPlanRiskAssessmentSchema = z.object({
+  risks: z.array(auditPlanRiskSchema).optional(),
+  overallRisk: z.string().optional(),
+  score: z.number().optional(),
+});
+
+export const auditPlanBusinessUnitsSchema = z.record(z.string(), z.boolean());
+
+export const auditPlanFinancialAreasSchema = z.record(z.string(), z.boolean());
+
+export type AuditPlanObjective = z.infer<typeof auditPlanObjectiveSchema>;
+export type AuditPlanTeamMember = z.infer<typeof auditPlanTeamMemberSchema>;
+export type AuditPlanPhase = z.infer<typeof auditPlanPhaseSchema>;
+export type AuditPlanRisk = z.infer<typeof auditPlanRiskSchema>;
+export type AuditPlanRiskAssessment = z.infer<typeof auditPlanRiskAssessmentSchema>;
+export type AuditPlanBusinessUnits = z.infer<typeof auditPlanBusinessUnitsSchema>;
+export type AuditPlanFinancialAreas = z.infer<typeof auditPlanFinancialAreasSchema>;
+
+// Audit Report schemas
+export const auditReportSettingsSchema = z.object({
+  dateRange: z
+    .object({
+      start: z.string(),
+      end: z.string(),
+    })
+    .optional(),
+  includeSections: z.array(z.string()).optional(),
+  customizations: z.record(z.string(), z.unknown()).optional(),
+});
+
+export type AuditReportSettings = z.infer<typeof auditReportSettingsSchema>;
+
+// Audit Report Template schemas
+export const reportTemplateSectionSchema = z.object({
+  id: z.string(),
+  type: z.enum(["cover_page", "text", "metrics_table", "findings_list", "chart", "appendix"]),
+  title: z.string().optional(),
+  dataSource: z.string().optional(),
+  config: z.record(z.string(), z.unknown()).optional(),
+});
+
+export const reportTemplateStructureSchema = z.object({
+  sections: z.array(reportTemplateSectionSchema),
+  styles: z.record(z.string(), z.unknown()).optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+});
+
+export type ReportTemplateSection = z.infer<typeof reportTemplateSectionSchema>;
+export type ReportTemplateStructure = z.infer<typeof reportTemplateStructureSchema>;
+
+// Workflow Template schemas
+export const workflowTemplateConfigSchema = z.object({
+  settings: z.record(z.string(), z.unknown()).optional(),
+  variables: z.record(z.string(), z.unknown()).optional(),
+});
+
+export type WorkflowTemplateConfig = z.infer<typeof workflowTemplateConfigSchema>;
+
+// Workflow Step schemas
+export const workflowStepConditionSchema = z.object({
+  type: z.string(),
+  field: z.string().optional(),
+  operator: z.string().optional(),
+  value: z.unknown().optional(),
+});
+
+export const workflowStepConditionsSchema = z.array(workflowStepConditionSchema);
+
+export type WorkflowStepCondition = z.infer<typeof workflowStepConditionSchema>;
+export type WorkflowStepConditions = z.infer<typeof workflowStepConditionsSchema>;
+
+// Case History schemas (generic records for before/after changes)
+export const caseHistoryChangesSchema = z.record(z.string(), z.unknown());
+
+export type CaseHistoryChanges = z.infer<typeof caseHistoryChangesSchema>;
+
 export type CreateCaseInput = NewCase;
 export type UpdateCaseInput = Partial<Omit<NewCase, "organizationId" | "createdBy">>;
 
-export type CreateTemplateInput = NewAuditTemplate;
+export type CreateTemplateInput = NewTemplate;
 export type CreateScopeInput = Omit<
-  NewAuditScope,
+  NewTemplateInstance,
   "completedBy" | "archivedBy" | "completedAt" | "archivedAt"
 >;
 export type CreateSectionInput = NewAuditSection;
@@ -125,10 +252,10 @@ export type CreateAssignmentInput = NewCaseAssignment;
 export type {
   Case,
   NewCase,
-  AuditTemplate,
-  NewAuditTemplate,
-  AuditScope,
-  NewAuditScope,
+  Template,
+  NewTemplate,
+  TemplateInstance,
+  NewTemplateInstance,
   AuditSection,
   NewAuditSection,
   AuditProcedure,
@@ -147,21 +274,21 @@ export type {
  * Extended types with relations
  */
 export interface CaseWithRelations extends Case {
-  auditScopes?: AuditScope[] | null;
+  templateInstances?: TemplateInstance[] | null;
   documents?: CaseDocument[] | null;
   notes?: CaseNote[] | null;
   assignments?: CaseAssignment[] | null;
   history?: CaseHistory[] | null;
 }
 
-export interface AuditScopeWithRelations extends AuditScope {
+export interface TemplateInstanceWithRelations extends TemplateInstance {
   case?: Case | null;
-  template?: AuditTemplate | null;
+  template?: Template | null;
   sections?: AuditSection[] | null;
 }
 
 export interface AuditSectionWithRelations extends AuditSection {
-  scope?: AuditScope | null;
+  scope?: TemplateInstance | null;
   procedures?: AuditProcedure[] | null;
 }
 

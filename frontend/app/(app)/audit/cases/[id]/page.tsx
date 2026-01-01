@@ -3,18 +3,17 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Edit2, MoreVertical, CheckCircle, Clock, AlertCircle } from "lucide-react";
-import { useCase } from "@/lib/api/hooks";
+import { useCase, useCaseScopes } from "@/lib/api/hooks";
 import { DocumentBrowser } from "@/components/audit/cases/DocumentBrowser";
-import {
-  DocumentPreviewDrawer,
-  type Document as DocumentType,
-} from "@/components/audit/cases/DocumentPreviewDrawer";
+import { DocumentPreviewDrawer } from "@/components/audit/cases/DocumentPreviewDrawer";
 import { BulkUploadModal } from "@/components/audit/cases/BulkUploadModal";
 import { ActivityFeed } from "@/components/collaboration/ActivityFeed";
 import { ActiveViewers } from "@/components/collaboration/ActiveViewers";
 import { AnimatedButton } from "@safee/ui";
+import { ScopesTab } from "@/components/audit/scopes/ScopesTab";
+import { type Document, documentSchema } from "@/lib/validation";
 
-type TabType = "overview" | "documents" | "activity" | "team";
+type TabType = "overview" | "scopes" | "documents" | "activity" | "team";
 
 export default function CaseDetailPage() {
   const params = useParams();
@@ -23,13 +22,16 @@ export default function CaseDetailPage() {
 
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [showUploadModal, setShowUploadModal] = useState(false);
-  const [previewDocument, setPreviewDocument] = useState<DocumentType | null>(null);
+  const [previewDocument, setPreviewDocument] = useState<Document | null>(null);
 
   // Fetch case data
   const { data: caseData, isLoading } = useCase(caseId);
+  const { data: scopes } = useCaseScopes(caseId);
 
-  // Mock documents - replace with actual API call
-  const mockDocuments = [
+  // TODO: [Backend/Frontend] - Fetch documents from API
+  //   Details: The `mockDocuments` are currently hardcoded. Implement a backend API endpoint to fetch documents for a given case and integrate it here.
+  //   Priority: High
+  const mockDocuments: Document[] = documentSchema.array().parse([
     {
       id: "1",
       name: "Financial_Statement_2024.pdf",
@@ -66,11 +68,12 @@ export default function CaseDetailPage() {
       url: "/api/documents/3",
       version: 1,
     },
-  ];
+  ]);
 
   const handleUpload = async (_files: { file: File; category: string }[]) => {
-    // Implement actual upload logic here
-    console.warn("Uploading files:", _files);
+    // TODO: [Backend/Frontend] - Implement file upload logic
+    //   Details: The `handleUpload` function currently has a placeholder. Implement the actual file upload logic, which should involve calling a backend API to store the files.
+    //   Priority: High
     await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
@@ -114,6 +117,8 @@ export default function CaseDetailPage() {
               router.push("/audit/cases");
             }}
             variant="primary"
+            icon={undefined}
+            disabled={false}
           >
             Back to Cases
           </AnimatedButton>
@@ -142,7 +147,7 @@ export default function CaseDetailPage() {
             </button>
             <div className="flex-1">
               <div className="flex items-center space-x-3 mb-2">
-                <h1 className="text-2xl font-bold text-gray-900">{caseData.clientName || "Unnamed Case"}</h1>
+                <h1 className="text-2xl font-bold text-gray-900">{caseData.title || "Unnamed Case"}</h1>
                 <span
                   className={`px-3 py-1 rounded-full text-xs font-medium ${statusBadge.bg} ${statusBadge.text} flex items-center space-x-1`}
                 >
@@ -158,7 +163,7 @@ export default function CaseDetailPage() {
               <div className="flex items-center space-x-4 text-sm text-gray-600">
                 <span>{caseData.caseNumber}</span>
                 <span>•</span>
-                <span>{caseData.auditType?.replace(/_/g, " ")}</span>
+                <span>{caseData.caseType?.replace(/_/g, " ")}</span>
                 {caseData.dueDate && (
                   <>
                     <span>•</span>
@@ -169,9 +174,15 @@ export default function CaseDetailPage() {
             </div>
             <div className="flex items-center space-x-2">
               <ActiveViewers caseId={caseId} enableRealtime={true} variant="compact" />
-              <AnimatedButton variant="outline" size="md" className="flex items-center space-x-2">
-                <Edit2 className="h-4 w-4" />
-                <span>Edit</span>
+              <AnimatedButton
+                variant="outline"
+                size="md"
+                className="flex items-center space-x-2"
+                icon={<Edit2 className="h-4 w-4" />}
+                iconPosition="left"
+                disabled={false}
+              >
+                Edit
               </AnimatedButton>
               <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <MoreVertical className="h-5 w-5 text-gray-600" />
@@ -192,6 +203,23 @@ export default function CaseDetailPage() {
               }`}
             >
               Overview
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab("scopes");
+              }}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "scopes"
+                  ? "border-blue-600 text-blue-600"
+                  : "border-transparent text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Scopes
+              {scopes && scopes.length > 0 && (
+                <span className="ml-2 px-2 py-0.5 bg-gray-200 text-gray-700 text-xs rounded-full">
+                  {scopes.length}
+                </span>
+              )}
             </button>
             <button
               onClick={() => {
@@ -247,12 +275,12 @@ export default function CaseDetailPage() {
                 <dl className="grid grid-cols-2 gap-4">
                   <div>
                     <dt className="text-sm text-gray-500">Client Name</dt>
-                    <dd className="text-sm font-medium text-gray-900 mt-1">{caseData.clientName}</dd>
+                    <dd className="text-sm font-medium text-gray-900 mt-1">{caseData.title}</dd>
                   </div>
                   <div>
                     <dt className="text-sm text-gray-500">Audit Type</dt>
                     <dd className="text-sm font-medium text-gray-900 mt-1">
-                      {caseData.auditType?.replace(/_/g, " ")}
+                      {caseData.caseType?.replace(/_/g, " ")}
                     </dd>
                   </div>
                   <div>
@@ -317,6 +345,8 @@ export default function CaseDetailPage() {
           </div>
         )}
 
+        {activeTab === "scopes" && <ScopesTab caseId={caseId} scopes={scopes || []} />}
+
         {activeTab === "documents" && (
           <DocumentBrowser
             caseId={caseId}
@@ -328,11 +358,15 @@ export default function CaseDetailPage() {
             onDocumentClick={(doc) => {
               setPreviewDocument(doc);
             }}
-            onDownload={(docIds) => {
-              console.warn("Download documents:", docIds);
+            onDownload={(_docIds) => {
+              // TODO: [Backend/Frontend] - Implement document download logic
+              //   Details: This action currently has a placeholder. Implement the backend API for downloading documents and integrate it here.
+              //   Priority: High
             }}
-            onDelete={(docIds) => {
-              console.warn("Delete documents:", docIds);
+            onDelete={(_docIds) => {
+              // TODO: [Backend/Frontend] - Implement document deletion logic
+              //   Details: This action currently has a placeholder. Implement the backend API for deleting documents and integrate it here.
+              //   Priority: High
             }}
           />
         )}

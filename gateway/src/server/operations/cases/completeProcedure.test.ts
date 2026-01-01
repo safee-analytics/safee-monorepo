@@ -48,14 +48,15 @@ void describe("completeProcedure operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-001",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const scope = await dbCreateScope(deps, {
       caseId: testCase.id,
       name: "Test Scope",
       status: "draft",
+      data: {},
       createdBy: testUser.id,
     });
 
@@ -90,14 +91,15 @@ void describe("completeProcedure operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-002",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const scope = await dbCreateScope(deps, {
       caseId: testCase.id,
       name: "Test Scope",
       status: "draft",
+      data: {},
       createdBy: testUser.id,
     });
 
@@ -130,8 +132,8 @@ void describe("completeProcedure operation", async () => {
   it("should throw NotFound for non-existent procedure", async () => {
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-003",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     await expect(
@@ -147,14 +149,15 @@ void describe("completeProcedure operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-004",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const scope = await dbCreateScope(deps, {
       caseId: testCase.id,
       name: "Test Scope",
       status: "draft",
+      data: {},
       createdBy: testUser.id,
     });
 
@@ -187,14 +190,15 @@ void describe("completeProcedure operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-005",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const scope = await dbCreateScope(deps, {
       caseId: testCase.id,
       name: "Test Scope",
       status: "draft",
+      data: {},
       createdBy: testUser.id,
     });
 
@@ -228,14 +232,15 @@ void describe("completeProcedure operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-006",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const scope = await dbCreateScope(deps, {
       caseId: testCase.id,
       name: "Test Scope",
       status: "draft",
+      data: {},
       createdBy: testUser.id,
     });
 
@@ -269,14 +274,15 @@ void describe("completeProcedure operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-007",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const scope = await dbCreateScope(deps, {
       caseId: testCase.id,
       name: "Test Scope",
       status: "draft",
+      data: {},
       createdBy: testUser.id,
     });
 
@@ -310,14 +316,15 @@ void describe("completeProcedure operation", async () => {
 
     const testCase = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-008",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const scope = await dbCreateScope(deps, {
       caseId: testCase.id,
       name: "Test Scope",
       status: "draft",
+      data: {},
       createdBy: testUser.id,
     });
 

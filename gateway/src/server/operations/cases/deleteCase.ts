@@ -56,7 +56,8 @@ export async function deleteCase(
       action: "deleted",
       changesBefore: {
         caseNumber: existingCase.caseNumber,
-        clientName: existingCase.clientName,
+        title: existingCase.title,
+        caseType: existingCase.caseType,
         status: existingCase.status,
       },
       changedBy: userId,

@@ -1,8 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { z } from "zod";
 import { apiClient, handleApiError } from "../client";
 import { queryKeys } from "./queryKeys";
+import { invoiceSchema } from "@/lib/validation";
 
-// ==================== Invoices ====================
+const invoicesResponseSchema = z.object({
+  invoices: z.array(invoiceSchema),
+  total: z.number().optional(),
+  page: z.number().optional(),
+  limit: z.number().optional(),
+});
 
 export function useInvoices(params?: {
   page?: number;
@@ -19,7 +26,7 @@ export function useInvoices(params?: {
         params: { query: params },
       });
       if (error) throw new Error(handleApiError(error));
-      return data;
+      return invoicesResponseSchema.parse(data);
     },
   });
 }
@@ -151,8 +158,6 @@ export function useInvoicePDF(invoiceId: string) {
   });
 }
 
-// ==================== Bills ====================
-
 export function useBills(params?: {
   page?: number;
   limit?: number;
@@ -249,8 +254,6 @@ export function useCancelBill() {
   });
 }
 
-// ==================== Payments ====================
-
 export function usePayments(params?: {
   type?: "inbound" | "outbound" | "transfer";
   state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
@@ -311,8 +314,6 @@ export function useConfirmPayment() {
     },
   });
 }
-
-// ==================== Master Data ====================
 
 export function useAccounts(accountType?: string) {
   return useQuery({
@@ -376,8 +377,6 @@ export function usePaymentTerms() {
     },
   });
 }
-
-// ==================== Reports ====================
 
 export function useTrialBalance(params: { accountIds?: number[]; dateFrom?: string; dateTo?: string }) {
   return useQuery({
@@ -463,8 +462,6 @@ export function useAgedPayable(asOfDate?: string) {
   });
 }
 
-// ==================== Bank Reconciliation ====================
-
 export function useBankStatements(params?: {
   journalId?: number;
   dateFrom?: string;
@@ -529,8 +526,6 @@ export function useReconcileBankLine() {
   });
 }
 
-// ==================== Multi-Currency ====================
-
 export function useCurrencies(onlyActive = true) {
   return useQuery({
     queryKey: queryKeys.accounting.currencies(onlyActive),
@@ -573,8 +568,6 @@ export function useConvertCurrency() {
     },
   });
 }
-
-// ==================== Batch Operations ====================
 
 export function useBatchValidateInvoices() {
   const queryClient = useQueryClient();

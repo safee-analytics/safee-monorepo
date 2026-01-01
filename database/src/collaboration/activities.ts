@@ -50,7 +50,7 @@ export async function getActivitiesByOrganization(
         columns: {
           id: true,
           caseNumber: true,
-          clientName: true,
+          title: true,
           organizationId: true,
         },
       },

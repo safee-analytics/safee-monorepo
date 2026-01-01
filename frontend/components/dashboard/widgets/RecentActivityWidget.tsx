@@ -1,6 +1,11 @@
 "use client";
 
+import { Button } from "@safee/ui";
+
 export const RecentActivityWidget = () => {
+  // TODO: [Backend/Frontend] - Fetch recent activities from API
+  //   Details: The `activities` array is currently mocked. Implement a backend API endpoint to fetch recent activities and integrate it here.
+  //   Priority: High
   const activities = [
     { name: "Invoice #1234", amount: "+$1,250", color: "text-green-600" },
     { name: "Office Supplies", amount: "-$89", color: "text-red-600" },
@@ -27,9 +32,9 @@ export const RecentActivityWidget = () => {
         ))}
       </div>
 
-      <button className="w-full py-2.5 mt-4 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-lg transition-colors">
+      <Button variant="outline" className="w-full mt-4">
         View All Transactions
-      </button>
+      </Button>
     </div>
   );
 };

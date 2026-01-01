@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { Calendar, FileText, Filter } from "lucide-react";
 import type { DataSourceConfig } from "@/lib/types/reports";
-import { useCases, type CaseData } from "@/lib/api/hooks/cases";
+import { useCases } from "@/lib/api/hooks/cases";
+import { type Case } from "@/lib/validation";
 
 interface DataSourceSelectorProps {
   caseId?: string;
@@ -48,7 +49,7 @@ export function DataSourceSelector({ caseId, value, onChange }: DataSourceSelect
           {caseId ? (
             <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
               <p className="text-sm text-blue-800">
-                Pre-selected case: {cases.find((c: CaseData) => c.id === caseId)?.clientName}
+                Pre-selected case: {cases.find((c: Case) => c.id === caseId)?.title}
               </p>
             </div>
           ) : isLoading ? (
@@ -68,9 +69,9 @@ export function DataSourceSelector({ caseId, value, onChange }: DataSourceSelect
               className="w-full border border-gray-300 rounded-lg px-3 py-2"
             >
               <option value="">Select a case...</option>
-              {cases.map((c: CaseData) => (
+              {cases.map((c: Case) => (
                 <option key={c.id} value={c.id}>
-                  {c.caseNumber} - {c.clientName}
+                  {c.caseNumber} - {c.title}
                 </option>
               ))}
             </select>

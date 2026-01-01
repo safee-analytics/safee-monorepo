@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { CasePriority } from "@/types/audit";
+import { CasePriority } from "@/lib/types/cases";
 
 interface PriorityBadgeProps {
   priority: CasePriority;

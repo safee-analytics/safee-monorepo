@@ -1,19 +1,13 @@
-export type CaseStatus = "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
-export type CasePriority = "low" | "medium" | "high" | "critical";
-export type NotificationType = "deadline" | "review" | "completed" | "team" | "warning";
+/**
+ * DEPRECATED: Use centralized types from @/lib/types/cases for case-related types
+ * This file contains only non-case types for backwards compatibility
+ */
 
-export interface AuditCase {
-  id: string;
-  companyName: string;
-  auditType: string;
-  status: CaseStatus;
-  priority: CasePriority;
-  dueDate: string;
-  assignedTo: string[];
-  completedDate?: string;
-  icon?: string;
-  color?: string;
-}
+// Re-export case types from centralized location
+export type { CaseStatus, CasePriority, CaseType } from "@/lib/types/cases";
+
+// Non-case types (kept here for backwards compatibility)
+export type NotificationType = "deadline" | "review" | "completed" | "team" | "warning";
 
 export interface Notification {
   id: string;

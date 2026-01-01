@@ -29,8 +29,8 @@ export async function convertPlanToCase(
     throw new InvalidInput("Plan has already been converted to a case");
   }
 
-  if (!plan.auditType) {
-    throw new InvalidInput("Audit type is required to convert to case");
+  if (!plan.caseType) {
+    throw new InvalidInput("Case type is required to convert to case");
   }
 
   try {
@@ -52,9 +52,9 @@ export async function convertPlanToCase(
     const newCase = await createCase(deps, {
       organizationId,
       caseNumber,
-      clientName: plan.clientName ?? "Unknown Client",
-      auditType: plan.auditType,
-      status: "pending",
+      title: plan.title,
+      caseType: plan.caseType,
+      status: "draft",
       priority: "medium",
       dueDate: plan.targetCompletion ? new Date(plan.targetCompletion) : undefined,
       createdBy: userId,

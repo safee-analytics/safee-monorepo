@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { LeadCard } from "./LeadCard";
 import { useUpdateLead } from "@/lib/api/hooks";
 import type { paths } from "@/lib/api/types";
+import { leadSchema, type Lead } from "@/lib/validation";
 
 type LeadResponse = paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];
 type StageResponse = paths["/crm/stages"]["get"]["responses"]["200"]["content"]["application/json"][number];
@@ -16,7 +17,7 @@ interface LeadKanbanBoardProps {
 
 interface CardType {
   id: string;
-  lead: LeadResponse;
+  lead: Lead;
   stageId: number;
 }
 
@@ -28,7 +29,7 @@ export function LeadKanbanBoard({ leads, stages }: LeadKanbanBoardProps) {
     () =>
       leads.map((lead) => ({
         id: lead.id.toString(),
-        lead,
+        lead: leadSchema.parse(lead),
         stageId: lead.stage?.id || 0,
       })),
     [leads],
@@ -187,7 +188,9 @@ const Column = ({ stage, cards, setCards, color, onCardMove }: ColumnProps) => {
   };
 
   const getIndicators = () => {
-    return Array.from(document.querySelectorAll(`[data-column="${stage.id}"]`) as unknown as HTMLElement[]);
+    return Array.from(document.querySelectorAll(`[data-column="${stage.id}"]`)).filter(
+      (el): el is HTMLElement => el instanceof HTMLElement,
+    );
   };
 
   const handleDragLeave = () => {

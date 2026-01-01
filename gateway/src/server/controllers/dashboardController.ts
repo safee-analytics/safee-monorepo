@@ -28,7 +28,7 @@ export interface RecentCaseUpdateResponse {
   type: "case_update";
   caseId: string;
   caseNumber: string;
-  clientName: string;
+  title: string;
   status: string;
   updatedAt: string;
   updatedBy: {

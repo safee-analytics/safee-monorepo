@@ -3,16 +3,18 @@
 import { AnimatePresence, useAnimate, usePresence, motion } from "framer-motion";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FiClock, FiPlus, FiTrash2, FiCheck } from "react-icons/fi";
+import { type Todo } from "@/lib/validation";
 
-type TODO = {
-  id: number;
-  text: string;
-  checked: boolean;
-  priority: "low" | "medium" | "high";
-};
+// TODO: [Backend] - Implement API for Todo management
+//   Details: The TodoWidget currently uses mock data. A backend API is needed to handle CRUD operations for todos, including user association and persistence.
+//   Priority: High
+
+// TODO: [Frontend] - Implement local storage persistence for Todos (interim)
+//   Details: Until the backend API is ready, implement local storage to persist user-specific todos across sessions.
+//   Priority: Medium
 
 export const TodoWidget = () => {
-  const [todos, setTodos] = useState<TODO[]>([
+  const [todos, setTodos] = useState<Todo[]>([
     {
       id: 1,
       text: "Review quarterly financial reports",
@@ -71,7 +73,7 @@ const Header = ({ todosCount }: { todosCount: number }) => {
   );
 };
 
-const Form = ({ setTodos }: { setTodos: Dispatch<SetStateAction<TODO[]>> }) => {
+const Form = ({ setTodos }: { setTodos: Dispatch<SetStateAction<Todo[]>> }) => {
   const [visible, setVisible] = useState(false);
   const [text, setText] = useState("");
   const [priority, setPriority] = useState<"low" | "medium" | "high">("medium");
@@ -191,7 +193,7 @@ const Todos = ({
   handleCheck,
   removeElement,
 }: {
-  todos: TODO[];
+  todos: Todo[];
   handleCheck: (id: number) => void;
   removeElement: (id: number) => void;
 }) => {

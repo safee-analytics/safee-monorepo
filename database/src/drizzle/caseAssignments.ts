@@ -1,9 +1,9 @@
 import { uuid, timestamp, primaryKey, index } from "drizzle-orm/pg-core";
-import { auditSchema, assignmentRoleEnum } from "./_common.js";
+import { casesSchema, assignmentRoleEnum } from "./_common.js";
 import { cases } from "./cases.js";
 import { users } from "./users.js";
 
-export const caseAssignments = auditSchema.table(
+export const caseAssignments = casesSchema.table(
   "case_assignments",
   {
     caseId: uuid("case_id")

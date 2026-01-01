@@ -163,8 +163,6 @@ export function useCancelInvitation() {
 
   return useMutation({
     mutationFn: async ({ orgId, invitationId }: { orgId: string; invitationId: string }) => {
-      console.warn(`Canceling invitation ${invitationId} for organization ${orgId}`);
-
       const { data, error } = await authClient.organization.cancelInvitation({
         invitationId,
       });
@@ -173,7 +171,6 @@ export function useCancelInvitation() {
         throw new Error(error.message);
       }
 
-      console.warn(`Successfully canceled invitation ${invitationId} for organization ${orgId}`);
       return data;
     },
     onSuccess: (_, variables) => {

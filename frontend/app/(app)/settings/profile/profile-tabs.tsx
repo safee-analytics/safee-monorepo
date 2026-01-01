@@ -30,7 +30,7 @@ import {
   useVerifyPhoneNumber,
   useUpdatePhoneNumber,
 } from "@/lib/api/hooks";
-import { useUpdateUserProfile } from "@/lib/api/hooks/user";
+import { useUpdateUserProfile, useUserProfile } from "@/lib/api/hooks/user";
 import { logError } from "@/lib/utils/logger";
 import { TwoFactorSetup } from "@/components/auth/TwoFactorSetup";
 import PhoneInput from "react-phone-number-input";
@@ -40,21 +40,6 @@ import { useTranslation } from "@/lib/providers/TranslationProvider";
 import { useToast, useConfirm, SafeeToastContainer } from "@/components/feedback";
 import { AvatarUpload } from "@/components/common";
 import { useQueryClient } from "@tanstack/react-query";
-
-// Extended user type with custom profile fields
-interface ExtendedUser {
-  id: string;
-  name?: string | null;
-  email: string;
-  image?: string | null;
-  username?: string | null;
-  phone?: string | null;
-  jobTitle?: string | null;
-  department?: string | null;
-  company?: string | null;
-  location?: string | null;
-  bio?: string | null;
-}
 
 export function ProfileTabs() {
   const { t } = useTranslation();
@@ -113,12 +98,13 @@ export function ProfileTabs() {
   );
 }
 
+// ... (rest of the imports)
+
 function ProfileTab() {
   const { t } = useTranslation();
   const toast = useToast();
   const queryClient = useQueryClient();
-  const { data: session } = useSession();
-  const user = session?.user as ExtendedUser | undefined;
+  const { data: user } = useUserProfile();
 
   const updateUserMutation = useUpdateUser();
   const updateUsernameMutation = useUpdateUsername();

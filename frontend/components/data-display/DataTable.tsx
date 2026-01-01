@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { FiAward, FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { Button } from "@safee/ui";
+import { type DisplayUser, displayUserSchema } from "@/lib/validation";
 
 const ShuffleSortTable = () => {
   return (
@@ -11,6 +13,53 @@ const ShuffleSortTable = () => {
     </div>
   );
 };
+
+// TODO: [Backend/Frontend] - Fetch user data from API
+//   Details: The `userData` is currently mocked. Implement a backend API endpoint to fetch the user data and integrate it here.
+//   Priority: High
+const userData: DisplayUser[] = displayUserSchema.array().parse([
+  {
+    id: 1,
+    name: "Andrea Thompson",
+    contact: "andythompson@example.com",
+    photoURL: "/imgs/head-shots/1.jpg",
+    maxRank: 112,
+    status: "online",
+  },
+  {
+    id: 2,
+    name: "Thomas Smith",
+    contact: "tsmith@example.com",
+    photoURL: "/imgs/head-shots/5.jpg",
+    maxRank: 41,
+    status: "online",
+  },
+  {
+    id: 3,
+    name: "John Anderson",
+    contact: "john.a@example.com",
+    photoURL: "/imgs/head-shots/2.jpg",
+    maxRank: 9,
+    status: "offline",
+  },
+
+  {
+    id: 4,
+    name: "Craig Peterson",
+    contact: "craigpeterson@example.com",
+    photoURL: "/imgs/head-shots/6.jpg",
+    maxRank: 1,
+    status: "online",
+  },
+  {
+    id: 5,
+    name: "Jen Horowitz",
+    contact: "j.horowitz@example.com",
+    photoURL: "/imgs/head-shots/3.jpg",
+    maxRank: 9999,
+    status: "pending",
+  },
+]);
 
 const Table = () => {
   const [users, setUsers] = useState(userData);
@@ -54,7 +103,7 @@ const Table = () => {
 };
 
 interface TableRowsProps {
-  user: User;
+  user: DisplayUser;
   index: number;
   shift: (id: number, direction: "up" | "down") => void;
 }
@@ -66,22 +115,26 @@ const TableRows = ({ user, index, shift }: TableRowsProps) => {
   return (
     <motion.tr layoutId={`row-${user.id}`} className={`text-sm ${user.id % 2 ? "bg-slate-100" : "bg-white"}`}>
       <td className="pl-4 w-8 text-lg">
-        <button
+        <Button
+          variant="ghost"
+          size="icon"
           className="hover:text-violet-600"
           onClick={() => {
             shift(user.id, "up");
           }}
         >
           <FiChevronUp />
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon"
           className="hover:text-violet-600"
           onClick={() => {
             shift(user.id, "down");
           }}
         >
           <FiChevronDown />
-        </button>
+        </Button>
       </td>
 
       <td className="p-4 flex items-center gap-3 overflow-hidden">
@@ -137,56 +190,3 @@ const numberToOrdinal = (n: number) => {
 
   return n + ord;
 };
-
-interface User {
-  id: number;
-  name: string;
-  contact: string;
-  photoURL: string;
-  maxRank: number;
-  status: string;
-}
-
-const userData: User[] = [
-  {
-    id: 1,
-    name: "Andrea Thompson",
-    contact: "andythompson@example.com",
-    photoURL: "/imgs/head-shots/1.jpg",
-    maxRank: 112,
-    status: "online",
-  },
-  {
-    id: 2,
-    name: "Thomas Smith",
-    contact: "tsmith@example.com",
-    photoURL: "/imgs/head-shots/5.jpg",
-    maxRank: 41,
-    status: "online",
-  },
-  {
-    id: 3,
-    name: "John Anderson",
-    contact: "john.a@example.com",
-    photoURL: "/imgs/head-shots/2.jpg",
-    maxRank: 9,
-    status: "offline",
-  },
-
-  {
-    id: 4,
-    name: "Craig Peterson",
-    contact: "craigpeterson@example.com",
-    photoURL: "/imgs/head-shots/6.jpg",
-    maxRank: 1,
-    status: "online",
-  },
-  {
-    id: 5,
-    name: "Jen Horowitz",
-    contact: "j.horowitz@example.com",
-    photoURL: "/imgs/head-shots/3.jpg",
-    maxRank: 9999,
-    status: "pending",
-  },
-];

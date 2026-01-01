@@ -52,14 +52,14 @@ export const MODULES = {
     id: "audit",
     key: "audit" as const,
     name: {
-      en: "Audit",
-      ar: "التدقيق",
+      en: "Cases",
+      ar: "القضايا",
     },
-    icon: "🔍",
+    icon: "📋",
     path: "/audit",
     description: {
-      en: "Audit Case Management",
-      ar: "إدارة قضايا التدقيق",
+      en: "Case Management & Workflows",
+      ar: "إدارة القضايا وسير العمل",
     },
   },
 } as const;

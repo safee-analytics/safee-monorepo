@@ -1,8 +1,8 @@
 import { eq, and, desc, asc, sql } from "drizzle-orm";
 import {
   cases,
-  auditTemplates,
-  auditScopes,
+  templates,
+  templateInstances,
   auditSections,
   auditProcedures,
   caseDocuments,
@@ -25,14 +25,20 @@ import type {
   UpdateNoteInput,
   CreateAssignmentInput,
   Case,
-  AuditTemplate,
-  AuditScope,
+  Template,
+  TemplateInstance,
   AuditSection,
   AuditProcedure,
   CaseDocument,
   CaseNote,
   CaseAssignment,
   CaseHistory,
+} from "./types.js";
+import {
+  templateStructureSchema,
+  sectionSettingsSchema,
+  procedureRequirementsSchema,
+  procedureFieldDataSchema,
 } from "./types.js";
 
 export async function createCase(deps: DbDeps, input: CreateCaseInput): Promise<Case> {
@@ -85,36 +91,41 @@ export async function deleteCase(deps: DbDeps, caseId: string): Promise<void> {
   await deps.drizzle.delete(cases).where(eq(cases.id, caseId));
 }
 
-export async function createTemplate(deps: DbDeps, input: CreateTemplateInput): Promise<AuditTemplate> {
-  const [template] = await deps.drizzle.insert(auditTemplates).values(input).returning();
+export async function createTemplate(deps: DbDeps, input: CreateTemplateInput): Promise<Template> {
+  // Validate structure JSONB field
+  const validatedStructure = templateStructureSchema.parse(input.structure);
+  const [template] = await deps.drizzle
+    .insert(templates)
+    .values({
+      ...input,
+      structure: validatedStructure,
+    })
+    .returning();
   return template;
 }
 
-export async function getTemplateById(deps: DbDeps, templateId: string): Promise<AuditTemplate | undefined> {
-  return deps.drizzle.query.auditTemplates.findFirst({
-    where: eq(auditTemplates.id, templateId),
+export async function getTemplateById(deps: DbDeps, templateId: string): Promise<Template | undefined> {
+  return deps.drizzle.query.templates.findFirst({
+    where: eq(templates.id, templateId),
   });
 }
 
-export async function getTemplatesByOrganization(
-  deps: DbDeps,
-  organizationId: string,
-): Promise<AuditTemplate[]> {
-  return deps.drizzle.query.auditTemplates.findMany({
-    where: eq(auditTemplates.organizationId, organizationId),
-    orderBy: [desc(auditTemplates.createdAt)],
+export async function getTemplatesByOrganization(deps: DbDeps, organizationId: string): Promise<Template[]> {
+  return deps.drizzle.query.templates.findMany({
+    where: eq(templates.organizationId, organizationId),
+    orderBy: [desc(templates.createdAt)],
   });
 }
 
-export async function getPublicTemplates(deps: DbDeps): Promise<AuditTemplate[]> {
-  return deps.drizzle.query.auditTemplates.findMany({
-    where: and(eq(auditTemplates.isPublic, true), eq(auditTemplates.isActive, true)),
-    orderBy: [asc(auditTemplates.name)],
+export async function getPublicTemplates(deps: DbDeps): Promise<Template[]> {
+  return deps.drizzle.query.templates.findMany({
+    where: and(eq(templates.isSystemTemplate, true), eq(templates.isActive, true)),
+    orderBy: [asc(templates.name)],
   });
 }
 
-export async function createScope(deps: DbDeps, input: CreateScopeInput): Promise<AuditScope> {
-  const [scope] = await deps.drizzle.insert(auditScopes).values(input).returning();
+export async function createScope(deps: DbDeps, input: CreateScopeInput): Promise<TemplateInstance> {
+  const [scope] = await deps.drizzle.insert(templateInstances).values(input).returning();
   return scope;
 }
 
@@ -123,26 +134,28 @@ export async function createScopeFromTemplate(
   caseId: string,
   templateId: string,
   createdBy: string,
-): Promise<AuditScope> {
+): Promise<TemplateInstance> {
   const template = await getTemplateById(deps, templateId);
   if (!template) {
     throw new Error(`Template ${templateId} not found`);
   }
   const [scope] = await deps.drizzle
-    .insert(auditScopes)
+    .insert(templateInstances)
     .values({
       caseId,
       templateId,
       name: template.name,
       description: template.description ?? undefined,
       status: "draft",
-      metadata: template.structure.settings ?? {},
+      data: template.structure.settings ?? {},
       createdBy,
     })
     .returning();
 
   // Create sections and procedures from template
   for (const sectionData of template.structure.sections) {
+    // Validate section settings JSONB field
+    const validatedSettings = sectionSettingsSchema.parse(sectionData.settings ?? {});
     const [section] = await deps.drizzle
       .insert(auditSections)
       .values({
@@ -150,18 +163,20 @@ export async function createScopeFromTemplate(
         name: sectionData.name,
         description: sectionData.description,
         sortOrder: sectionData.sortOrder,
-        settings: sectionData.settings ?? {},
+        settings: validatedSettings,
       })
       .returning();
 
     // Create procedures for this section
     for (const procedureData of sectionData.procedures) {
+      // Validate procedure requirements JSONB field
+      const validatedRequirements = procedureRequirementsSchema.parse(procedureData.requirements ?? {});
       await deps.drizzle.insert(auditProcedures).values({
         sectionId: section.id,
         referenceNumber: procedureData.referenceNumber,
         title: procedureData.title,
         description: procedureData.description,
-        requirements: (procedureData.requirements ?? {}) as Record<string, unknown>,
+        requirements: validatedRequirements,
         sortOrder: procedureData.sortOrder,
       });
     }
@@ -170,25 +185,25 @@ export async function createScopeFromTemplate(
   return scope;
 }
 
-export async function getScopeById(deps: DbDeps, scopeId: string): Promise<AuditScope | undefined> {
-  return deps.drizzle.query.auditScopes.findFirst({
-    where: eq(auditScopes.id, scopeId),
+export async function getScopeById(deps: DbDeps, scopeId: string): Promise<TemplateInstance | undefined> {
+  return deps.drizzle.query.templateInstances.findFirst({
+    where: eq(templateInstances.id, scopeId),
   });
 }
 
-export async function getScopesByCase(deps: DbDeps, caseId: string): Promise<AuditScope[]> {
-  return deps.drizzle.query.auditScopes.findMany({
-    where: eq(auditScopes.caseId, caseId),
-    orderBy: [asc(auditScopes.createdAt)],
+export async function getScopesByCase(deps: DbDeps, caseId: string): Promise<TemplateInstance[]> {
+  return deps.drizzle.query.templateInstances.findMany({
+    where: eq(templateInstances.caseId, caseId),
+    orderBy: [asc(templateInstances.createdAt)],
   });
 }
 
 export async function updateScopeStatus(
   deps: DbDeps,
   scopeId: string,
-  status: "draft" | "in-progress" | "under-review" | "completed" | "archived",
+  status: "draft" | "in_progress" | "under_review" | "completed" | "archived",
   userId: string,
-): Promise<AuditScope> {
+): Promise<TemplateInstance> {
   const updateData: Record<string, unknown> = {
     status,
     updatedAt: new Date(),
@@ -203,9 +218,9 @@ export async function updateScopeStatus(
   }
 
   const [updatedScope] = await deps.drizzle
-    .update(auditScopes)
+    .update(templateInstances)
     .set(updateData)
-    .where(eq(auditScopes.id, scopeId))
+    .where(eq(templateInstances.id, scopeId))
     .returning();
 
   return updatedScope;
@@ -216,7 +231,15 @@ export async function updateScopeStatus(
  */
 
 export async function createSection(deps: DbDeps, input: CreateSectionInput): Promise<AuditSection> {
-  const [section] = await deps.drizzle.insert(auditSections).values(input).returning();
+  // Validate settings JSONB field
+  const validatedSettings = sectionSettingsSchema.parse(input.settings ?? {});
+  const [section] = await deps.drizzle
+    .insert(auditSections)
+    .values({
+      ...input,
+      settings: validatedSettings,
+    })
+    .returning();
   return section;
 }
 
@@ -232,7 +255,15 @@ export async function getSectionsByScopeId(deps: DbDeps, scopeId: string): Promi
  */
 
 export async function createProcedure(deps: DbDeps, input: CreateProcedureInput): Promise<AuditProcedure> {
-  const [procedure] = await deps.drizzle.insert(auditProcedures).values(input).returning();
+  // Validate requirements JSONB field
+  const validatedRequirements = procedureRequirementsSchema.parse(input.requirements ?? {});
+  const [procedure] = await deps.drizzle
+    .insert(auditProcedures)
+    .values({
+      ...input,
+      requirements: validatedRequirements,
+    })
+    .returning();
   return procedure;
 }
 
@@ -257,13 +288,15 @@ export async function completeProcedure(
   procedureId: string,
   input: CompleteProcedureInput,
 ): Promise<AuditProcedure> {
+  // Validate fieldData JSONB field if provided
+  const validatedFieldData = input.fieldData ? procedureFieldDataSchema.parse(input.fieldData) : undefined;
   const [completed] = await deps.drizzle
     .update(auditProcedures)
     .set({
       isCompleted: true,
       completedBy: input.completedBy,
       completedAt: new Date(),
-      fieldData: input.fieldData,
+      fieldData: validatedFieldData,
       memo: input.memo,
       updatedAt: new Date(),
     })
@@ -278,10 +311,12 @@ export async function updateProcedureFieldData(
   procedureId: string,
   fieldData: Record<string, unknown>,
 ): Promise<AuditProcedure> {
+  // Validate fieldData JSONB field
+  const validatedFieldData = procedureFieldDataSchema.parse(fieldData);
   const [updated] = await deps.drizzle
     .update(auditProcedures)
     .set({
-      fieldData,
+      fieldData: validatedFieldData,
       updatedAt: new Date(),
     })
     .where(eq(auditProcedures.id, procedureId))

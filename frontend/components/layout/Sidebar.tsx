@@ -27,6 +27,7 @@ import {
   FiActivity,
   FiCheckCircle,
   FiTrendingUp,
+  FiLayers,
 } from "react-icons/fi";
 import { motion, AnimatePresence, Reorder } from "framer-motion";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
@@ -162,9 +163,9 @@ export const Sidebar = () => {
     audit: [
       { icon: FiActivity, title: t.nav.dashboard, href: "/audit/dashboard" },
       { icon: FiClipboard, title: t.audit.caseManagement, href: "/audit/cases" },
+      { icon: FiLayers, title: "Templates", href: "/audit/templates" },
       { icon: FiFileText, title: t.audit.documentRepository, href: "/audit/documents" },
       { icon: FiBarChart, title: t.audit.auditReports, href: "/audit/reports" },
-      { icon: FiClipboard, title: t.audit.auditPlanning, href: "/audit/planning" },
     ],
     hisabiq: [
       { icon: FiActivity, title: t.nav.dashboard, href: "/accounting" },

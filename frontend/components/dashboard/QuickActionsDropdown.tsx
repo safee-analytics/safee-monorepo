@@ -4,20 +4,17 @@ import { motion } from "framer-motion";
 import { useState } from "react";
 import { FiChevronDown, FiFileText, FiDollarSign, FiUsers, FiPlus } from "react-icons/fi";
 import { useRouter } from "next/navigation";
-
-interface QuickAction {
-  id: string;
-  label: string;
-  icon: typeof FiFileText;
-  href: string;
-  color: string;
-}
+import { Button } from "@safee/ui";
+import { type QuickAction, quickActionSchema } from "@/lib/validation";
 
 export const QuickActionsDropdown = () => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  const actions: QuickAction[] = [
+  // TODO: [Backend/Frontend] - Fetch quick actions from API
+  //   Details: The `actions` array is currently mocked. Implement a backend API endpoint to fetch a list of quick actions, potentially based on user role or preferences, and integrate it here.
+  //   Priority: Medium
+  const actions: QuickAction[] = quickActionSchema.array().parse([
     {
       id: "invoice",
       label: "Create Invoice",
@@ -46,26 +43,23 @@ export const QuickActionsDropdown = () => {
       href: "/accounting/bills/new",
       color: "text-orange-600",
     },
-  ];
+  ]);
 
   return (
     <div className="relative">
-      <motion.button
+      <Button
         onClick={() => {
           setOpen((pv) => !pv);
         }}
-        className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white border-2 border-safee-500 text-safee-700 hover:bg-safee-50 transition-colors shadow-sm font-medium"
+        variant="primary"
+        className="flex items-center gap-2"
       >
         <FiPlus className="w-4 h-4" />
         <span className="text-sm">Quick Actions</span>
-        <motion.span
-          animate={{ rotate: open ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-          className="text-safee-600"
-        >
+        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
           <FiChevronDown className="w-4 h-4" />
         </motion.span>
-      </motion.button>
+      </Button>
 
       <motion.ul
         initial={{ scaleY: 0, opacity: 0 }}
@@ -92,30 +86,32 @@ export const QuickActionsDropdown = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.05 }}
                   >
-                    <button
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start gap-3 p-3 text-sm"
                       onClick={() => {
                         router.push(action.href);
                         setOpen(false);
                       }}
-                      className="flex items-center gap-3 w-full p-3 text-sm font-medium rounded-md hover:bg-gray-50 text-gray-700 hover:text-safee-700 transition-colors"
                     >
                       <Icon className={`w-4 h-4 ${action.color}`} />
                       <span>{action.label}</span>
-                    </button>
+                    </Button>
                   </motion.li>
                 );
               })}
             </div>
             <div className="border-t border-gray-100 p-2">
-              <button
+              <Button
+                variant="ghost"
+                className="w-full text-xs"
                 onClick={() => {
                   router.push("/accounting");
                   setOpen(false);
                 }}
-                className="w-full p-2 text-xs text-center text-gray-600 hover:text-safee-700 font-medium rounded hover:bg-gray-50 transition-colors"
               >
                 View All Modules →
-              </button>
+              </Button>
             </div>
           </>
         )}

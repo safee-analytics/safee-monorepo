@@ -7,7 +7,8 @@ import { NotificationCard } from "@/components/audit/ui/NotificationCard";
 import { CaseCard } from "@/components/audit/ui/CaseCard";
 import { ActivityItem } from "@/components/audit/ui/ActivityItem";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
-import { useCases, useNotifications, useActivity, type CaseData, type CaseAssignment } from "@/lib/api/hooks";
+import { useCases, useNotifications, useActivity } from "@/lib/api/hooks";
+import { type Case, type CaseAssignment } from "@/lib/validation";
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -35,7 +36,9 @@ export default function AuditDashboard() {
     const hasPermission = true;
 
     if (requiresPermission && !hasPermission) {
-      console.warn("Navigation blocked: Insufficient permissions", { path, requiresPermission });
+      // TODO: [Backend/Frontend] - Implement permission check for navigation
+      //   Details: The `hasPermission` check is currently hardcoded to `true`. Implement a proper permission check, likely involving an API call, to determine if the user has the required permission to navigate to the path.
+      //   Priority: High
       return;
     }
 
@@ -56,15 +59,15 @@ export default function AuditDashboard() {
       };
     }
 
-    const activeCases = apiCases.filter((c: CaseData) => c.status === "in-progress").length;
-    const completedAudits = apiCases.filter((c: CaseData) => c.status === "completed").length;
-    const pendingReviews = apiCases.filter((c: CaseData) => c.status === "under-review").length;
+    const activeCases = apiCases.filter((c: Case) => c.status === "in_progress").length;
+    const completedAudits = apiCases.filter((c: Case) => c.status === "completed").length;
+    const pendingReviews = apiCases.filter((c: Case) => c.status === "under_review").length;
     const totalCases = apiCases.length;
     const completionRate = totalCases > 0 ? Math.round((completedAudits / totalCases) * 100) : 0;
 
     // Get unique team members from assignments
     const uniqueMembers = new Set<string>();
-    apiCases.forEach((c: CaseData) => {
+    apiCases.forEach((c: Case) => {
       c.assignments?.forEach((a: CaseAssignment) => {
         if (a.userId) uniqueMembers.add(a.userId);
       });
@@ -72,12 +75,12 @@ export default function AuditDashboard() {
 
     return {
       activeCases,
-      activeCasesChange: "from last month",
+      activeCasesChange: "from last month", // TODO: [Backend] - Implement calculation for active cases change
       pendingReviews,
       completedAudits,
       completionRate: `${completionRate}% completion rate`,
       teamMembers: uniqueMembers.size,
-      activeToday: `${uniqueMembers.size} active today`,
+      activeToday: `${uniqueMembers.size} active today`, // TODO: [Backend] - Implement calculation for active users today
     };
   }, [apiCases]);
 
@@ -99,7 +102,7 @@ export default function AuditDashboard() {
       id: string;
       companyName: string;
       auditType: string;
-      status: "in-progress" | "completed" | "overdue";
+      status: "in_progress" | "completed" | "overdue";
       dueDate: string;
       completedDate?: string;
       icon: string;
@@ -108,11 +111,14 @@ export default function AuditDashboard() {
   >(() => {
     if (!apiCases) return [];
 
-    return apiCases.slice(0, 3).map((caseData: CaseData) => ({
+    // TODO: [Backend] - Enhance `recentCases` data with real icons and completed dates
+    //   Details: The `icon` and `completedDate` in `recentCases` are currently hardcoded. The backend should provide this data so the frontend can display it accurately.
+    //   Priority: Medium
+    return apiCases.slice(0, 3).map((caseData: Case) => ({
       id: caseData.id,
-      companyName: caseData.clientName,
-      auditType: caseData.auditType,
-      status: caseData.status as "in-progress" | "completed" | "overdue",
+      companyName: caseData.title,
+      auditType: caseData.caseType,
+      status: caseData.status as "in_progress" | "completed" | "overdue",
       dueDate: caseData.dueDate
         ? new Date(caseData.dueDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })
         : "No date",
@@ -139,7 +145,7 @@ export default function AuditDashboard() {
       userName: item.updatedBy.name,
       userAvatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${item.updatedBy.name}`,
       action: `Updated case ${item.caseNumber}`,
-      description: `Changed status to ${item.status} for ${item.clientName}`,
+      description: `Changed status to ${item.status} for ${item.title}`,
       timestamp: new Date(item.updatedAt).toLocaleString("en-US", {
         hour: "numeric",
         minute: "numeric",
@@ -156,18 +162,17 @@ export default function AuditDashboard() {
     const currentYear = new Date().getFullYear();
 
     return months.map((month, index) => {
-      const casesInMonth = apiCases.filter((c: CaseData) => {
-        if (!(c as CaseData & { createdAt?: string }).createdAt) return false;
-        const caseDate = new Date((c as CaseData & { createdAt?: string }).createdAt);
+      const casesInMonth = apiCases.filter((c: Case) => {
+        if (!(c as Case & { createdAt?: string }).createdAt) return false;
+        const caseDate = new Date((c as Case & { createdAt?: string }).createdAt);
         return caseDate.getMonth() === index && caseDate.getFullYear() === currentYear;
       });
 
       return {
         month,
-        completed: casesInMonth.filter((c: CaseData) => c.status === "completed").length,
-        inProgress: casesInMonth.filter((c: CaseData) => c.status === "in-progress").length,
-        pending: casesInMonth.filter((c: CaseData) => c.status === "pending" || c.status === "under-review")
-          .length,
+        completed: casesInMonth.filter((c: Case) => c.status === "completed").length,
+        inProgress: casesInMonth.filter((c: Case) => c.status === "in_progress").length,
+        pending: casesInMonth.filter((c: Case) => c.status === "draft" || c.status === "under_review").length,
       };
     });
   }, [apiCases]);
@@ -217,9 +222,9 @@ export default function AuditDashboard() {
         >
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
             <Link
-              href="/audit/cases?status=in-progress"
+              href="/audit/cases?status=in_progress"
               onClick={() => {
-                trackNavigation("stat_card_clicked", { cardName: "Active Cases", status: "in-progress" });
+                trackNavigation("stat_card_clicked", { cardName: "Active Cases", status: "in_progress" });
               }}
               className="block cursor-pointer transition-transform hover:scale-105"
             >
@@ -236,9 +241,9 @@ export default function AuditDashboard() {
           </motion.div>
           <motion.div variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}>
             <Link
-              href="/audit/cases?status=under-review"
+              href="/audit/cases?status=under_review"
               onClick={() => {
-                trackNavigation("stat_card_clicked", { cardName: "Pending Reviews", status: "under-review" });
+                trackNavigation("stat_card_clicked", { cardName: "Pending Reviews", status: "under_review" });
               }}
               className="block cursor-pointer transition-transform hover:scale-105"
             >

@@ -65,13 +65,21 @@ export class OdooWebhookController extends Controller {
   }
 
   /**
-   * Verify webhook signature
+   * Verify webhook signature using per-org derived secret
    */
   private verifyWebhook(request: AuthenticatedRequest, body: OdooWebhookPayload): void {
     const webhookVerification = getWebhookVerification();
 
+    // Extract organization_id from payload for secret derivation
+    const organizationId = body.organization_id;
+
+    if (!organizationId) {
+      throw new Unauthorized("Missing organization_id in webhook payload");
+    }
+
     // Verify using the parsed body with sorted keys (matching Odoo's json.dumps(sort_keys=True))
-    const isValid = webhookVerification.verify(request, this.stringifyWithSortedKeys(body));
+    // and the derived per-org secret
+    const isValid = webhookVerification.verify(request, this.stringifyWithSortedKeys(body), organizationId);
 
     if (!isValid) {
       throw new Unauthorized("Invalid webhook signature");

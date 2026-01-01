@@ -9,12 +9,12 @@ import {
   index,
   type AnyPgColumn,
 } from "drizzle-orm/pg-core";
-import { auditSchema, idpk } from "./_common.js";
+import { casesSchema, idpk } from "./_common.js";
 import { cases } from "./cases.js";
 import { auditProcedures } from "./auditProcedures.js";
 import { users } from "./users.js";
 
-export const caseDocuments = auditSchema.table(
+export const caseDocuments = casesSchema.table(
   "case_documents",
   {
     id: idpk("id"),

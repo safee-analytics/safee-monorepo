@@ -1,20 +1,20 @@
 import { uuid, varchar, timestamp, boolean, text, jsonb, index } from "drizzle-orm/pg-core";
-import { auditSchema, idpk, auditTypeEnum, auditCategoryEnum } from "./_common.js";
+import { casesSchema, idpk, templateTypeEnum, caseCategoryEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 import { users } from "./users.js";
 
-export const auditTemplates = auditSchema.table(
-  "audit_templates",
+export const templates = casesSchema.table(
+  "templates",
   {
     id: idpk("id"),
     organizationId: uuid("organization_id").references(() => organizations.id, { onDelete: "cascade" }),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description"),
-    auditType: auditTypeEnum("audit_type").notNull(),
-    category: auditCategoryEnum("category"),
+    templateType: templateTypeEnum("template_type").notNull(),
+    category: caseCategoryEnum("category"),
     version: varchar("version", { length: 50 }).notNull().default("1.0"),
     isActive: boolean("is_active").notNull().default(true),
-    isPublic: boolean("is_public").notNull().default(false),
+    isSystemTemplate: boolean("is_system_template").notNull().default(false),
     structure: jsonb("structure").notNull().$type<{
       sections: {
         name: string;
@@ -55,12 +55,12 @@ export const auditTemplates = auditSchema.table(
       .notNull(),
   },
   (table) => [
-    index("audit_templates_organization_id_idx").on(table.organizationId),
-    index("audit_templates_audit_type_idx").on(table.auditType),
-    index("audit_templates_is_active_idx").on(table.isActive),
-    index("audit_templates_is_public_idx").on(table.isPublic),
+    index("templates_organization_id_idx").on(table.organizationId),
+    index("templates_template_type_idx").on(table.templateType),
+    index("templates_is_active_idx").on(table.isActive),
+    index("templates_is_system_template_idx").on(table.isSystemTemplate),
   ],
 );
 
-export type AuditTemplate = typeof auditTemplates.$inferSelect;
-export type NewAuditTemplate = typeof auditTemplates.$inferInsert;
+export type Template = typeof templates.$inferSelect;
+export type NewTemplate = typeof templates.$inferInsert;

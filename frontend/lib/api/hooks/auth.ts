@@ -11,19 +11,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth/client";
 
-// ============================================================================
-// Query Keys
-// ============================================================================
-
 export const authQueryKeys = {
   session: ["auth", "session"] as const,
   sessions: ["auth", "sessions"] as const,
   user: ["auth", "user"] as const,
 } as const;
-
-// ============================================================================
-// Core Authentication Hooks
-// ============================================================================
 
 /**
  * Get current session (includes user and session data)
@@ -150,10 +142,6 @@ export function useCheckUsernameAvailability() {
   });
 }
 
-// ============================================================================
-// Password Management Hooks
-// ============================================================================
-
 /**
  * Request password reset (sends email)
  */
@@ -213,10 +201,6 @@ export function useChangePassword() {
   });
 }
 
-// ============================================================================
-// Email Management Hooks
-// ============================================================================
-
 /**
  * Send email verification
  */
@@ -272,10 +256,6 @@ export function useChangeEmail() {
     },
   });
 }
-
-// ============================================================================
-// User Management Hooks
-// ============================================================================
 
 /**
  * Update current user profile
@@ -334,10 +314,6 @@ export function useDeleteUser() {
     },
   });
 }
-
-// ============================================================================
-// Session Management Hooks
-// ============================================================================
 
 /**
  * List all active sessions for current user
@@ -411,10 +387,6 @@ export function useRevokeAllSessions() {
   });
 }
 
-// ============================================================================
-// Social Account Linking
-// ============================================================================
-
 /**
  * Link a social account (Google, GitHub, etc.) to current user
  */
@@ -479,10 +451,6 @@ export function useUnlinkSocialAccount() {
   });
 }
 
-// ============================================================================
-// Token Management
-// ============================================================================
-
 /**
  * Refresh access token
  * Note: better-auth refreshToken doesn't exist as a direct method, sessions are automatically refreshed
@@ -511,10 +479,6 @@ export function useGetAccessToken() {
     },
   });
 }
-
-// ============================================================================
-// Two-Factor Authentication (2FA)
-// ============================================================================
 
 /**
  * Enable 2FA for the current user
@@ -594,10 +558,6 @@ export function useGet2FAStatus() {
   });
 }
 
-// ============================================================================
-// Magic Link Authentication
-// ============================================================================
-
 /**
  * Send magic link to email for passwordless login
  */
@@ -634,10 +594,6 @@ export function useVerifyMagicLink() {
     },
   });
 }
-
-// ============================================================================
-// Phone Authentication
-// ============================================================================
 
 /**
  * Send phone verification code via SMS

@@ -1,23 +1,14 @@
-/**
- * Zod schemas for API validation
- * Note: These enums are duplicated from the database package to avoid importing server-side code
- * Keep in sync with database/src/drizzle/_common.ts
- */
 import { z } from "zod";
 
-// Case enum values - synced with database package
 const CASE_STATUSES = ["new", "in-progress", "pending", "completed", "overdue", "archived"] as const;
 const CASE_PRIORITIES = ["low", "medium", "high", "critical"] as const;
 
-// Case validation schemas
 export const CaseStatusSchema = z.enum(CASE_STATUSES);
 export const CasePrioritySchema = z.enum(CASE_PRIORITIES);
 
-// Infer TypeScript types from schemas
 export type CaseStatus = z.infer<typeof CaseStatusSchema>;
 export type CasePriority = z.infer<typeof CasePrioritySchema>;
 
-// Helper functions for validation
 export function isValidCaseStatus(value: unknown): value is CaseStatus {
   return CaseStatusSchema.safeParse(value).success;
 }
@@ -26,7 +17,6 @@ export function isValidCasePriority(value: unknown): value is CasePriority {
   return CasePrioritySchema.safeParse(value).success;
 }
 
-// CRM Lead form schema
 export const leadFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   type: z.enum(["lead", "opportunity"]).default("lead"),
@@ -60,7 +50,6 @@ export const leadFormSchema = z.object({
 
 export type LeadFormData = z.infer<typeof leadFormSchema>;
 
-// CRM Contact form schema
 export const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   isCompany: z.boolean().default(false),
@@ -81,7 +70,6 @@ export const contactFormSchema = z.object({
 
 export type ContactFormData = z.infer<typeof contactFormSchema>;
 
-// CRM Activity form schema
 export const activityFormSchema = z.object({
   leadId: z.number({ message: "Lead is required" }),
   activityTypeId: z.number({ message: "Activity type is required" }),
@@ -93,7 +81,6 @@ export const activityFormSchema = z.object({
 
 export type ActivityFormData = z.infer<typeof activityFormSchema>;
 
-// Quick lead creation schema (minimal fields)
 export const quickLeadFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   contactName: z.string().optional(),

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { WizardStepProps } from "./types";
 import { Users, X } from "lucide-react";
+import type { AssignmentRole } from "@/lib/types/cases";
 
 // Mock users - in real implementation, fetch from API
 const AVAILABLE_USERS = [
@@ -32,7 +33,7 @@ export function TeamStep({ data, onChange }: WizardStepProps) {
   );
 
   const handleAddMember = (userId: string, role: string) => {
-    const newAssignments = [...currentAssignments, { userId, role }];
+    const newAssignments = [...currentAssignments, { userId, role: role as AssignmentRole }];
     onChange({ assignments: newAssignments });
   };
 
@@ -42,7 +43,9 @@ export function TeamStep({ data, onChange }: WizardStepProps) {
   };
 
   const handleChangeRole = (userId: string, newRole: string) => {
-    const newAssignments = currentAssignments.map((a) => (a.userId === userId ? { ...a, role: newRole } : a));
+    const newAssignments = currentAssignments.map((a) =>
+      a.userId === userId ? { ...a, role: newRole as AssignmentRole } : a,
+    );
     onChange({ assignments: newAssignments });
   };
 

@@ -45,7 +45,7 @@ export const commonEn = {
     hisabiq: "Hisabiq",
     kanz: "Kanz",
     nisbah: "Nisbah",
-    audit: "Audit",
+    audit: "Cases",
   },
   dashboard: {
     goodMorning: "Good morning",

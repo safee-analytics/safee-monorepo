@@ -1,9 +1,9 @@
 import { uuid, varchar, timestamp, text, boolean, integer, jsonb, index } from "drizzle-orm/pg-core";
-import { auditSchema, idpk } from "./_common.js";
+import { casesSchema, idpk } from "./_common.js";
 import { auditSections } from "./auditSections.js";
 import { users } from "./users.js";
 
-export const auditProcedures = auditSchema.table(
+export const auditProcedures = casesSchema.table(
   "audit_procedures",
   {
     id: idpk("id"),

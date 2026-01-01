@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { WizardStepProps } from "./types";
 import { SAMPLE_TEMPLATES, getSuggestedDueDate } from "@/lib/data/caseTemplates";
 import { FileText, Clock, CheckCircle } from "lucide-react";
+import type { CaseType, CasePriority, CaseStatus } from "@/lib/types/cases";
 
 export function TemplateSelector({ data, onChange }: WizardStepProps) {
   const [hoveredTemplate, setHoveredTemplate] = useState<string | null>(null);
@@ -13,10 +14,10 @@ export function TemplateSelector({ data, onChange }: WizardStepProps) {
     onChange({
       selectedTemplate: template,
       useTemplate: true,
-      auditType: template.auditType,
-      priority: template.priority,
+      caseType: template.auditType as CaseType,
+      priority: template.priority as CasePriority,
       dueDate: dueDate.toISOString().split("T")[0],
-      status: template.defaultFields.status,
+      status: template.defaultFields.status as CaseStatus,
     });
   };
 

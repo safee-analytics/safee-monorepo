@@ -81,8 +81,11 @@ export function useKeyboardShortcuts({
 
     const handleKeyDown = (event: KeyboardEvent) => {
       // Don't trigger shortcuts when typing in inputs, textareas, or contenteditable
-      const target = event.target as HTMLElement;
-      if (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable) {
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.tagName === "INPUT" || target.tagName === "TEXTAREA" || target.isContentEditable)
+      ) {
         // Exception: Allow Cmd+K to work everywhere
         if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
           // Let this through (handled by QuickActions hook)

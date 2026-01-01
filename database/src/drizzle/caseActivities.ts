@@ -1,9 +1,9 @@
 import { uuid, timestamp, jsonb, index } from "drizzle-orm/pg-core";
-import { auditSchema, idpk } from "./_common.js";
+import { casesSchema, idpk } from "./_common.js";
 import { cases } from "./cases.js";
 import { users } from "./users.js";
 
-export const activityTypeEnum = auditSchema.enum("activity_type", [
+export const activityTypeEnum = casesSchema.enum("activity_type", [
   "case_created",
   "status_changed",
   "priority_updated",
@@ -21,7 +21,7 @@ export const activityTypeEnum = auditSchema.enum("activity_type", [
   "report_generated",
 ]);
 
-export const caseActivities = auditSchema.table(
+export const caseActivities = casesSchema.table(
   "case_activities",
   {
     id: idpk("id"),
