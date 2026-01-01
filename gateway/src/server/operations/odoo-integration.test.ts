@@ -52,9 +52,7 @@ void describe("Odoo Integration Tests", async () => {
       console.log(`✅ Odoo is reachable! Found ${databases.length} existing databases`);
     } catch (err) {
       console.error("❌ Failed to connect to Odoo:", err);
-      throw new Error(
-        `Cannot connect to Odoo at ${ODOO_URL}. Make sure Odoo is running and accessible.`,
-      );
+      throw new Error(`Cannot connect to Odoo at ${ODOO_URL}. Make sure Odoo is running and accessible.`);
     }
 
     // Provision ONE shared Odoo database for all tests
