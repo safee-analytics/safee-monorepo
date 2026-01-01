@@ -58,7 +58,7 @@ services:
     # workers=0 uses ~500MB RAM instead of 20GB
     command: odoo --workers=0 --max-cron-threads=0
     volumes:
-      - ../odoo/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
       - odoo-data:/var/lib/odoo
     networks:
       - safee_net
