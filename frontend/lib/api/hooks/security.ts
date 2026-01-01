@@ -4,7 +4,11 @@ import { apiClient } from "../client";
 import { queryKeys } from "./queryKeys";
 import { useChangePassword, useListSessions, useRevokeSession, useSession } from "./auth";
 import { z } from "zod";
-import { securitySettingsSchema, sessionSchema, changePasswordRequestSchema } from "@/lib/validation/schemas/settings.schema";
+import {
+  securitySettingsSchema,
+  sessionSchema,
+  changePasswordRequestSchema,
+} from "@/lib/validation/schemas/settings.schema";
 
 export type SecuritySettings = z.infer<typeof securitySettingsSchema>;
 export type Session = z.infer<typeof sessionSchema>;
@@ -21,15 +25,14 @@ export function useGetSecuritySettings() {
   });
 }
 
-
 export function useUpdateSecuritySettings() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (_settings: SecuritySettings) => {
       // TODO: [Backend] - Implement PUT /security/settings endpoint
-//   Details: The backend needs an API endpoint to handle updates to security settings. Once implemented, update this hook to call the new endpoint.
-//   Priority: High
+      //   Details: The backend needs an API endpoint to handle updates to security settings. Once implemented, update this hook to call the new endpoint.
+      //   Priority: High
       throw new Error("Not yet implemented");
     },
     onSuccess: () => {
@@ -37,7 +40,6 @@ export function useUpdateSecuritySettings() {
     },
   });
 }
-
 
 export { useChangePassword, useRevokeSession };
 

@@ -19,13 +19,19 @@ export const leadSchema = z.object({
   emailFrom: z.string().nullable().optional(),
   phone: z.string().nullable().optional(),
   dateDeadline: z.string().nullable().optional(),
-  stage: z.object({
-    name: z.string(),
-  }).nullable().optional(),
-  user: z.object({
-    id: z.number(),
-    name: z.string().nullable().optional(),
-  }).nullable().optional(),
+  stage: z
+    .object({
+      name: z.string(),
+    })
+    .nullable()
+    .optional(),
+  user: z
+    .object({
+      id: z.number(),
+      name: z.string().nullable().optional(),
+    })
+    .nullable()
+    .optional(),
 });
 
 export type Lead = z.infer<typeof leadSchema>;

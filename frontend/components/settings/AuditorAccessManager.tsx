@@ -4,12 +4,17 @@ import { useState } from "react";
 import { UserCheck, Shield, Trash2, AlertCircle, Eye, EyeOff } from "lucide-react";
 import { motion } from "framer-motion";
 import { useEncryptionStore } from "@/stores/useEncryptionStore";
-import { type AuditorAccess, type AvailableAuditor, auditorAccessSchema, availableAuditorSchema } from "@/lib/validation";
+import {
+  type AuditorAccess,
+  type AvailableAuditor,
+  auditorAccessSchema,
+  availableAuditorSchema,
+} from "@/lib/validation";
 import {
   deriveKeyFromPassword,
   unwrapOrgKey,
   importPublicKeyFromPEM,
-  wrapOrgKeyWithRSA
+  wrapOrgKeyWithRSA,
 } from "@/lib/crypto/cryptoService";
 
 interface AuditorAccessManagerProps {
@@ -37,8 +42,8 @@ export function AuditorAccessManager({
   const [error, setError] = useState("");
 
   // TODO: [Backend/Frontend] - Fetch available auditors from API
-//   Details: The `availableAuditors` list is currently mocked. Implement a backend API endpoint to fetch a real list of auditors and integrate it here.
-//   Priority: High
+  //   Details: The `availableAuditors` list is currently mocked. Implement a backend API endpoint to fetch a real list of auditors and integrate it here.
+  //   Priority: High
   const availableAuditors: AvailableAuditor[] = availableAuditorSchema.array().parse([
     { id: "1", name: "John Auditor", email: "john@audit.com" },
     { id: "2", name: "Jane Auditor", email: "jane@audit.com" },
@@ -68,8 +73,8 @@ export function AuditorAccessManager({
       }
 
       // TODO: [Backend] - Fetch real public key from backend for the selected auditor
-//   Details: The `publicKeyPEM` is currently mocked. Implement a backend API endpoint (e.g., `/api/v1/users/${selectedAuditor}/public-key`) to retrieve the actual RSA public key of the selected auditor.
-//   Priority: High
+      //   Details: The `publicKeyPEM` is currently mocked. Implement a backend API endpoint (e.g., `/api/v1/users/${selectedAuditor}/public-key`) to retrieve the actual RSA public key of the selected auditor.
+      //   Priority: High
       // const response = await fetch(`/api/v1/users/${selectedAuditor}/public-key`);
       // const { publicKey: publicKeyPEM } = await response.json();
       const publicKeyPEM = "-----BEGIN PUBLIC KEY-----\nMOCK_KEY\n-----END PUBLIC KEY-----";
@@ -85,8 +90,8 @@ export function AuditorAccessManager({
 
       // 6. Send to backend
       // TODO: [Backend/Frontend] - Implement API call to grant auditor access
-//   Details: Implement the backend API endpoint (e.g., `POST /api/v1/encryption/auditor-access`) to persist the granted auditor access. This involves sending the `organizationId`, `auditorUserId`, `encryptionKeyId`, `wrappedOrgKey` (for the auditor), and `expiresAt`.
-//   Priority: High
+      //   Details: Implement the backend API endpoint (e.g., `POST /api/v1/encryption/auditor-access`) to persist the granted auditor access. This involves sending the `organizationId`, `auditorUserId`, `encryptionKeyId`, `wrappedOrgKey` (for the auditor), and `expiresAt`.
+      //   Priority: High
       // await fetch('/api/v1/encryption/auditor-access', {
       //   method: 'POST',
       //   body: JSON.stringify({
@@ -129,8 +134,8 @@ export function AuditorAccessManager({
 
     try {
       // TODO: [Backend/Frontend] - Implement API call to revoke auditor access
-//   Details: Implement the backend API endpoint (e.g., `DELETE /api/v1/encryption/auditor-access/${accessId}`) to revoke an auditor's access. Update this frontend logic to call the actual API.
-//   Priority: High
+      //   Details: Implement the backend API endpoint (e.g., `DELETE /api/v1/encryption/auditor-access/${accessId}`) to revoke an auditor's access. Update this frontend logic to call the actual API.
+      //   Priority: High
       // await fetch(`/api/v1/encryption/auditor-access/${accessId}`, {
       //   method: 'DELETE',
       // });

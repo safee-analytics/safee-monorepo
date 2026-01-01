@@ -93,12 +93,12 @@ export const statCardPropsSchema = z.object({
   icon: z.unknown(),
   iconBgColor: z.string(),
   iconColor: z.string(),
-  trend: z.object({
-    value: z.string(),
-    positive: z.boolean(),
-  }).optional(),
+  trend: z
+    .object({
+      value: z.string(),
+      positive: z.boolean(),
+    })
+    .optional(),
 });
 
 export type StatCardProps = z.infer<typeof statCardPropsSchema>;
-
-

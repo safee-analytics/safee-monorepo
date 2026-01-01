@@ -27,11 +27,7 @@ export default function TemplatePage({ params }: TemplatePageProps) {
 
   return (
     <div className="h-full">
-      <TemplateBuilder
-        templateId={templateId}
-        onSave={handleSave}
-        onCancel={handleCancel}
-      />
+      <TemplateBuilder templateId={templateId} onSave={handleSave} onCancel={handleCancel} />
     </div>
   );
 }

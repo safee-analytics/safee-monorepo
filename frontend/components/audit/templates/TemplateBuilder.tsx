@@ -5,7 +5,19 @@ import { useForm, useFieldArray, FormProvider, Controller } from "react-hook-for
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@safee/ui";
-import { Save, Plus, Eye, EyeOff, Download, Upload, FileText, Tag, FolderTree, FileCheck2, Layers } from "lucide-react";
+import {
+  Save,
+  Plus,
+  Eye,
+  EyeOff,
+  Download,
+  Upload,
+  FileText,
+  Tag,
+  FolderTree,
+  FileCheck2,
+  Layers,
+} from "lucide-react";
 import { useToast } from "@safee/ui";
 import { logError } from "@/lib/utils/logger";
 import { motion } from "framer-motion";
@@ -74,12 +86,7 @@ const CATEGORY_OPTIONS: SelectOption[] = [
   { value: "compliance", label: "Compliance" },
 ];
 
-export function TemplateBuilder({
-  templateId,
-  onSave,
-  onCancel,
-  initialData,
-}: TemplateBuilderProps) {
+export function TemplateBuilder({ templateId, onSave, onCancel, initialData }: TemplateBuilderProps) {
   const [showPreview, setShowPreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
@@ -148,7 +155,12 @@ export function TemplateBuilder({
     }
   }, [existingTemplate, isEditMode, reset]);
 
-  const { fields: sections, append, remove, move } = useFieldArray({
+  const {
+    fields: sections,
+    append,
+    remove,
+    move,
+  } = useFieldArray({
     control,
     name: "structure.sections",
   });
@@ -181,8 +193,8 @@ export function TemplateBuilder({
   const handleMoveSection = (from: number, to: number) => {
     move(from, to);
     // TODO: [Frontend] - Update sort orders after section move
-//   Details: After moving a section, the `sortOrder` property of all affected sections should be updated to reflect their new positions.
-//   Priority: Medium
+    //   Details: After moving a section, the `sortOrder` property of all affected sections should be updated to reflect their new positions.
+    //   Priority: Medium
   };
 
   const onSubmit = async (data: TemplateFormData) => {
@@ -313,12 +325,7 @@ export function TemplateBuilder({
             </button>
 
             <label>
-              <input
-                type="file"
-                accept=".json"
-                onChange={handleImportJson}
-                className="hidden"
-              />
+              <input type="file" accept=".json" onChange={handleImportJson} className="hidden" />
               <button
                 onClick={() => {
                   document.querySelector<HTMLInputElement>('input[type="file"]')?.click();
@@ -479,9 +486,7 @@ export function TemplateBuilder({
                           disabled
                           className="w-5 h-5 rounded border-2 border-gray-300 text-blue-600 focus:ring-blue-500"
                         />
-                        <span className="text-sm font-medium text-gray-500">
-                          System Template (read-only)
-                        </span>
+                        <span className="text-sm font-medium text-gray-500">System Template (read-only)</span>
                       </label>
                     )}
                   </div>
@@ -498,20 +503,13 @@ export function TemplateBuilder({
                   <div className="flex items-center gap-2">
                     <Layers className="h-5 w-5 text-blue-600" />
                     <div>
-                      <h3 className="text-lg font-semibold text-gray-900">
-                        Template Structure
-                      </h3>
+                      <h3 className="text-lg font-semibold text-gray-900">Template Structure</h3>
                       <p className="text-sm text-gray-600">
-                        {sections.length} {sections.length === 1 ? 'section' : 'sections'}
+                        {sections.length} {sections.length === 1 ? "section" : "sections"}
                       </p>
                     </div>
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={handleAddSection}
-                  >
+                  <Button type="button" variant="outline" size="sm" onClick={handleAddSection}>
                     <Plus className="h-4 w-4 mr-2" />
                     Add Section
                   </Button>
@@ -536,9 +534,7 @@ export function TemplateBuilder({
                         onRemove={() => handleRemoveSection(index)}
                         onMoveUp={index > 0 ? () => handleMoveSection(index, index - 1) : undefined}
                         onMoveDown={
-                          index < sections.length - 1
-                            ? () => handleMoveSection(index, index + 1)
-                            : undefined
+                          index < sections.length - 1 ? () => handleMoveSection(index, index + 1) : undefined
                         }
                       />
                     </motion.div>

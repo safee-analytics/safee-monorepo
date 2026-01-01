@@ -47,8 +47,8 @@ export function EncryptionUnlockPrompt({
   const { unlock } = useEncryptionStore();
 
   // TODO: [Backend/Frontend] - Implement fetching auditor access on mount
-//   Details: This useEffect block is commented out and needs to be implemented. It should fetch auditor access details from the backend (`/encryption/auditor-access`) using the `organizationId` and `encryptionKeyId` on component mount. The fetched data should then be used to set `auditorAccess` and `isAuditor` states.
-//   Priority: High
+  //   Details: This useEffect block is commented out and needs to be implemented. It should fetch auditor access details from the backend (`/encryption/auditor-access`) using the `organizationId` and `encryptionKeyId` on component mount. The fetched data should then be used to set `auditorAccess` and `isAuditor` states.
+  //   Priority: High
   useEffect(() => {
     const checkAuditorAccess = async () => {
       // const { data, error } = await apiClient.GET("/encryption/auditor-access", {

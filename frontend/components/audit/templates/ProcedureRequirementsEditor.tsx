@@ -104,10 +104,7 @@ export function ProcedureRequirementsEditor({
               Set requirements and custom fields for this procedure
             </p>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <X className="h-5 w-5 text-gray-500" />
           </button>
         </div>
@@ -123,9 +120,7 @@ export function ProcedureRequirementsEditor({
                 <input
                   type="checkbox"
                   checked={requirements.isRequired}
-                  onChange={(e) =>
-                    setRequirements({ ...requirements, isRequired: e.target.checked })
-                  }
+                  onChange={(e) => setRequirements({ ...requirements, isRequired: e.target.checked })}
                   className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <div>
@@ -172,9 +167,7 @@ export function ProcedureRequirementsEditor({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Minimum Attachments
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Minimum Attachments</label>
                 <input
                   type="number"
                   min="0"
@@ -190,9 +183,7 @@ export function ProcedureRequirementsEditor({
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Maximum Attachments
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Maximum Attachments</label>
                 <input
                   type="number"
                   min="0"
@@ -208,9 +199,7 @@ export function ProcedureRequirementsEditor({
               </div>
 
               <div className="col-span-2">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Allowed File Types
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Allowed File Types</label>
                 <div className="flex flex-wrap gap-2">
                   {fileTypes.map((type) => (
                     <label
@@ -265,13 +254,9 @@ export function ProcedureRequirementsEditor({
                           {field.type}
                         </span>
                       </div>
-                      {field.description && (
-                        <p className="text-sm text-gray-600">{field.description}</p>
-                      )}
+                      {field.description && <p className="text-sm text-gray-600">{field.description}</p>}
                       {field.type === "select" && field.options && (
-                        <p className="text-xs text-gray-500 mt-1">
-                          Options: {field.options.join(", ")}
-                        </p>
+                        <p className="text-xs text-gray-500 mt-1">Options: {field.options.join(", ")}</p>
                       )}
                       {field.validation && (
                         <div className="text-xs text-gray-500 mt-1">

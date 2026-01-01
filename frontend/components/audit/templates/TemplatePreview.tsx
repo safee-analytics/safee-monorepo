@@ -35,12 +35,8 @@ export function TemplatePreview({ data }: TemplatePreviewProps) {
                 {getCategoryLabel(data.category)}
               </span>
             )}
-            <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded">
-              v{data.version}
-            </span>
-            {data.isActive && (
-              <span className="px-2 py-1 bg-green-100 text-green-700 rounded">Active</span>
-            )}
+            <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded">v{data.version}</span>
+            {data.isActive && <span className="px-2 py-1 bg-green-100 text-green-700 rounded">Active</span>}
           </div>
           <div className="flex gap-4 text-sm text-gray-600 pt-2 border-t">
             <span>{data.structure.sections.length} sections</span>
@@ -51,17 +47,12 @@ export function TemplatePreview({ data }: TemplatePreviewProps) {
 
       <div className="space-y-3">
         {data.structure.sections.map((section, sectionIndex) => (
-          <div
-            key={sectionIndex}
-            className="bg-white rounded-lg border border-gray-200 overflow-hidden"
-          >
+          <div key={sectionIndex} className="bg-white rounded-lg border border-gray-200 overflow-hidden">
             <div className="bg-gray-50 px-4 py-2 border-b border-gray-200">
               <h5 className="font-medium text-gray-900">
                 {sectionIndex + 1}. {section.name}
               </h5>
-              {section.description && (
-                <p className="text-sm text-gray-600 mt-1">{section.description}</p>
-              )}
+              {section.description && <p className="text-sm text-gray-600 mt-1">{section.description}</p>}
               <p className="text-xs text-gray-500 mt-1">
                 {section.procedures.length} procedure{section.procedures.length !== 1 ? "s" : ""}
               </p>
@@ -74,13 +65,9 @@ export function TemplatePreview({ data }: TemplatePreviewProps) {
                     <FileText className="h-4 w-4 text-gray-400 mt-0.5 flex-shrink-0" />
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-xs font-mono text-gray-500">
-                          {procedure.referenceNumber}
-                        </span>
+                        <span className="text-xs font-mono text-gray-500">{procedure.referenceNumber}</span>
                         <ChevronRight className="h-3 w-3 text-gray-300" />
-                        <span className="text-sm font-medium text-gray-900 truncate">
-                          {procedure.title}
-                        </span>
+                        <span className="text-sm font-medium text-gray-900 truncate">{procedure.title}</span>
                       </div>
                       {procedure.description && (
                         <p className="text-xs text-gray-600 mt-1">{procedure.description}</p>

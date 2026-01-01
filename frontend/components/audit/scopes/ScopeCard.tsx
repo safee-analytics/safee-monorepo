@@ -43,19 +43,18 @@ function SectionProcedureCounts({
 
 export function ScopeCard({ scope, onClick }: ScopeCardProps) {
   const [showActions, setShowActions] = useState(false);
-  const [procedureCounts, setProcedureCounts] = useState<Map<string, { total: number; completed: number }>>(new Map());
+  const [procedureCounts, setProcedureCounts] = useState<Map<string, { total: number; completed: number }>>(
+    new Map(),
+  );
 
   const toast = useToast();
   const updateStatus = useUpdateScopeStatus();
 
   // Fetch sections to calculate progress
-  const { data: sections } = useCaseSections(
-    scope.caseId,
-    scope.id
-  );
+  const { data: sections } = useCaseSections(scope.caseId, scope.id);
 
   const handleSectionCountsReady = (sectionId: string, total: number, completed: number) => {
-    setProcedureCounts(prev => {
+    setProcedureCounts((prev) => {
       const newMap = new Map(prev);
       newMap.set(sectionId, { total, completed });
       return newMap;
@@ -64,12 +63,13 @@ export function ScopeCard({ scope, onClick }: ScopeCardProps) {
 
   // Calculate totals from aggregated procedure counts
   const totalProcedures = Array.from(procedureCounts.values()).reduce((sum, counts) => sum + counts.total, 0);
-  const completedProcedures = Array.from(procedureCounts.values()).reduce((sum, counts) => sum + counts.completed, 0);
+  const completedProcedures = Array.from(procedureCounts.values()).reduce(
+    (sum, counts) => sum + counts.completed,
+    0,
+  );
 
   // Calculate progress based on procedures
-  const progress = totalProcedures > 0
-    ? Math.round((completedProcedures / totalProcedures) * 100)
-    : 0;
+  const progress = totalProcedures > 0 ? Math.round((completedProcedures / totalProcedures) * 100) : 0;
 
   const totalSections = sections?.length || 0;
   const completedSections = sections?.filter((s) => s.isCompleted).length || 0;
@@ -134,9 +134,7 @@ export function ScopeCard({ scope, onClick }: ScopeCardProps) {
                 {scope.status.replace(/_/g, " ")}
               </span>
             </div>
-            {scope.description && (
-              <p className="text-sm text-gray-600 line-clamp-2">{scope.description}</p>
-            )}
+            {scope.description && <p className="text-sm text-gray-600 line-clamp-2">{scope.description}</p>}
           </div>
 
           <div className="relative ml-4">
@@ -152,10 +150,7 @@ export function ScopeCard({ scope, onClick }: ScopeCardProps) {
 
             {showActions && (
               <>
-                <div
-                  className="fixed inset-0 z-10"
-                  onClick={() => setShowActions(false)}
-                />
+                <div className="fixed inset-0 z-10" onClick={() => setShowActions(false)} />
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-20">
                   <button
                     onClick={() => void handleChangeStatus("in_progress")}
@@ -197,11 +192,7 @@ export function ScopeCard({ scope, onClick }: ScopeCardProps) {
           <div className="w-full bg-gray-200 rounded-full h-2">
             <div
               className={`h-2 rounded-full transition-all ${
-                progress === 100
-                  ? "bg-green-600"
-                  : progress > 50
-                    ? "bg-blue-600"
-                    : "bg-blue-400"
+                progress === 100 ? "bg-green-600" : progress > 50 ? "bg-blue-600" : "bg-blue-400"
               }`}
               style={{ width: `${progress}%` }}
             />

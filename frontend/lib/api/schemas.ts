@@ -1,18 +1,13 @@
-
 import { z } from "zod";
-
 
 const CASE_STATUSES = ["new", "in-progress", "pending", "completed", "overdue", "archived"] as const;
 const CASE_PRIORITIES = ["low", "medium", "high", "critical"] as const;
 
-
 export const CaseStatusSchema = z.enum(CASE_STATUSES);
 export const CasePrioritySchema = z.enum(CASE_PRIORITIES);
 
-
 export type CaseStatus = z.infer<typeof CaseStatusSchema>;
 export type CasePriority = z.infer<typeof CasePrioritySchema>;
-
 
 export function isValidCaseStatus(value: unknown): value is CaseStatus {
   return CaseStatusSchema.safeParse(value).success;
@@ -21,7 +16,6 @@ export function isValidCaseStatus(value: unknown): value is CaseStatus {
 export function isValidCasePriority(value: unknown): value is CasePriority {
   return CasePrioritySchema.safeParse(value).success;
 }
-
 
 export const leadFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -56,7 +50,6 @@ export const leadFormSchema = z.object({
 
 export type LeadFormData = z.infer<typeof leadFormSchema>;
 
-
 export const contactFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
   isCompany: z.boolean().default(false),
@@ -77,7 +70,6 @@ export const contactFormSchema = z.object({
 
 export type ContactFormData = z.infer<typeof contactFormSchema>;
 
-
 export const activityFormSchema = z.object({
   leadId: z.number({ message: "Lead is required" }),
   activityTypeId: z.number({ message: "Activity type is required" }),
@@ -88,7 +80,6 @@ export const activityFormSchema = z.object({
 });
 
 export type ActivityFormData = z.infer<typeof activityFormSchema>;
-
 
 export const quickLeadFormSchema = z.object({
   name: z.string().min(1, "Name is required"),

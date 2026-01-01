@@ -28,9 +28,9 @@ export default function CaseDetailPage() {
   const { data: caseData, isLoading } = useCase(caseId);
   const { data: scopes } = useCaseScopes(caseId);
 
-// TODO: [Backend/Frontend] - Fetch documents from API
-//   Details: The `mockDocuments` are currently hardcoded. Implement a backend API endpoint to fetch documents for a given case and integrate it here.
-//   Priority: High
+  // TODO: [Backend/Frontend] - Fetch documents from API
+  //   Details: The `mockDocuments` are currently hardcoded. Implement a backend API endpoint to fetch documents for a given case and integrate it here.
+  //   Priority: High
   const mockDocuments: Document[] = documentSchema.array().parse([
     {
       id: "1",
@@ -71,9 +71,9 @@ export default function CaseDetailPage() {
   ]);
 
   const handleUpload = async (_files: { file: File; category: string }[]) => {
-// TODO: [Backend/Frontend] - Implement file upload logic
-//   Details: The `handleUpload` function currently has a placeholder. Implement the actual file upload logic, which should involve calling a backend API to store the files.
-//   Priority: High
+    // TODO: [Backend/Frontend] - Implement file upload logic
+    //   Details: The `handleUpload` function currently has a placeholder. Implement the actual file upload logic, which should involve calling a backend API to store the files.
+    //   Priority: High
     await new Promise((resolve) => setTimeout(resolve, 1000));
   };
 
@@ -359,14 +359,14 @@ export default function CaseDetailPage() {
               setPreviewDocument(doc);
             }}
             onDownload={(_docIds) => {
-// TODO: [Backend/Frontend] - Implement document download logic
-//   Details: This action currently has a placeholder. Implement the backend API for downloading documents and integrate it here.
-//   Priority: High
+              // TODO: [Backend/Frontend] - Implement document download logic
+              //   Details: This action currently has a placeholder. Implement the backend API for downloading documents and integrate it here.
+              //   Priority: High
             }}
             onDelete={(_docIds) => {
-// TODO: [Backend/Frontend] - Implement document deletion logic
-//   Details: This action currently has a placeholder. Implement the backend API for deleting documents and integrate it here.
-//   Priority: High
+              // TODO: [Backend/Frontend] - Implement document deletion logic
+              //   Details: This action currently has a placeholder. Implement the backend API for deleting documents and integrate it here.
+              //   Priority: High
             }}
           />
         )}

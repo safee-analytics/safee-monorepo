@@ -101,12 +101,7 @@ export function CustomFieldBuilder({ onAddField }: CustomFieldBuilderProps) {
 
   if (!isOpen) {
     return (
-      <Button
-        type="button"
-        variant="outline"
-        onClick={() => setIsOpen(true)}
-        className="w-full"
-      >
+      <Button type="button" variant="outline" onClick={() => setIsOpen(true)} className="w-full">
         <Plus className="h-4 w-4 mr-2" />
         Add Custom Field
       </Button>
@@ -131,9 +126,7 @@ export function CustomFieldBuilder({ onAddField }: CustomFieldBuilderProps) {
       <div className="grid grid-cols-2 gap-4">
         {/* Field Name (internal) */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Field Name (Internal) *
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Field Name (Internal) *</label>
           <input
             type="text"
             value={fieldName}
@@ -146,9 +139,7 @@ export function CustomFieldBuilder({ onAddField }: CustomFieldBuilderProps) {
 
         {/* Field Label (display) */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Field Label (Display) *
-          </label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Field Label (Display) *</label>
           <input
             type="text"
             value={fieldLabel}
@@ -244,10 +235,7 @@ export function CustomFieldBuilder({ onAddField }: CustomFieldBuilderProps) {
                     className="inline-flex items-center gap-1 px-3 py-1 bg-white border border-gray-200 rounded-full text-sm"
                   >
                     {option}
-                    <button
-                      onClick={() => handleRemoveOption(option)}
-                      className="ml-1 hover:text-red-600"
-                    >
+                    <button onClick={() => handleRemoveOption(option)} className="ml-1 hover:text-red-600">
                       <X className="h-3 w-3" />
                     </button>
                   </span>
@@ -261,28 +249,20 @@ export function CustomFieldBuilder({ onAddField }: CustomFieldBuilderProps) {
         {(fieldType === "number" || fieldType === "date") && (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Minimum Value
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Minimum Value</label>
               <input
                 type="number"
                 value={minValue ?? ""}
-                onChange={(e) =>
-                  setMinValue(e.target.value ? parseFloat(e.target.value) : undefined)
-                }
+                onChange={(e) => setMinValue(e.target.value ? parseFloat(e.target.value) : undefined)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Maximum Value
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Maximum Value</label>
               <input
                 type="number"
                 value={maxValue ?? ""}
-                onChange={(e) =>
-                  setMaxValue(e.target.value ? parseFloat(e.target.value) : undefined)
-                }
+                onChange={(e) => setMaxValue(e.target.value ? parseFloat(e.target.value) : undefined)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -293,28 +273,20 @@ export function CustomFieldBuilder({ onAddField }: CustomFieldBuilderProps) {
         {(fieldType === "text" || fieldType === "textarea") && (
           <>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Minimum Length
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Minimum Length</label>
               <input
                 type="number"
                 value={minLength ?? ""}
-                onChange={(e) =>
-                  setMinLength(e.target.value ? parseInt(e.target.value) : undefined)
-                }
+                onChange={(e) => setMinLength(e.target.value ? parseInt(e.target.value) : undefined)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Maximum Length
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Maximum Length</label>
               <input
                 type="number"
                 value={maxLength ?? ""}
-                onChange={(e) =>
-                  setMaxLength(e.target.value ? parseInt(e.target.value) : undefined)
-                }
+                onChange={(e) => setMaxLength(e.target.value ? parseInt(e.target.value) : undefined)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>

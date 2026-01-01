@@ -19,8 +19,6 @@ type UpdateDepartmentRequest =
 export type LeaveBalanceResponse =
   paths["/hr-management/employees/{employeeId}/leave-balances"]["get"]["responses"]["200"]["content"]["application/json"][number];
 
-
-
 export function useEmployees(params?: { departmentId?: string; managerId?: string }) {
   return useQuery({
     queryKey: queryKeys.hr.employees(params),
@@ -108,8 +106,6 @@ export function useDeactivateEmployee() {
   });
 }
 
-
-
 export function useDepartments(params?: { parentId?: string }) {
   return useQuery({
     queryKey: queryKeys.hr.departments(params),
@@ -196,8 +192,6 @@ export function useDeleteDepartment() {
     },
   });
 }
-
-
 
 export function useLeaveBalances(employeeId: string) {
   return useQuery({

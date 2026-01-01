@@ -71,8 +71,8 @@ export function useAuth() {
 
   const signInWithGithub = useCallback(() => {
     // TODO: [Backend/Frontend] - Add GitHub provider to Better Auth config
-//   Details: Configure the GitHub OAuth provider in the Better Auth backend. Once configured, enable the frontend integration for GitHub sign-in.
-//   Priority: Medium
+    //   Details: Configure the GitHub OAuth provider in the Better Auth backend. Once configured, enable the frontend integration for GitHub sign-in.
+    //   Priority: Medium
     console.warn("GitHub sign in not yet configured");
   }, []);
 

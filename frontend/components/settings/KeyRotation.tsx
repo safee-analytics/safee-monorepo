@@ -95,15 +95,15 @@ export function KeyRotation({
       await unwrapOrgKey(currentWrappedKey, currentIv, masterKey);
 
       // TODO: [Backend] - Check if user has admin role via API
-//   Details: Before proceeding, call a backend API endpoint (e.g., `/users/me`) to verify that the current user has the 'admin' role. If not, throw an error.
-//   Priority: High
+      //   Details: Before proceeding, call a backend API endpoint (e.g., `/users/me`) to verify that the current user has the 'admin' role. If not, throw an error.
+      //   Priority: High
       // const { data, error } = await apiClient.GET("/users/me");
       // if (error || data.role !== 'admin') throw new Error("Admin access required");
 
       // Check if MFA is enabled
       // TODO: [Backend] - Check via API if user has MFA enabled
-//   Details: Call a backend API endpoint to determine if MFA is enabled for the current user. This will dictate whether the MFA step is presented.
-//   Priority: High
+      //   Details: Call a backend API endpoint to determine if MFA is enabled for the current user. This will dictate whether the MFA step is presented.
+      //   Priority: High
       const mfaEnabled = false; // Mock
 
       if (mfaEnabled) {
@@ -129,8 +129,8 @@ export function KeyRotation({
       }
 
       // TODO: [Backend/Frontend] - Verify MFA code via API
-//   Details: Implement a backend API endpoint (e.g., `POST /auth/verify-mfa`) to verify the provided MFA code. Update this frontend logic to call the actual API.
-//   Priority: High
+      //   Details: Implement a backend API endpoint (e.g., `POST /auth/verify-mfa`) to verify the provided MFA code. Update this frontend logic to call the actual API.
+      //   Priority: High
       // const { error } = await apiClient.POST("/auth/verify-mfa", {
       //   body: { code: mfaCode },
       // });
@@ -204,13 +204,13 @@ export function KeyRotation({
       const { wrappedKey: newWrappedKey, iv: newIv } = await wrapOrgKey(newOrgKey, newMasterKey);
 
       // 5. TODO: [Backend/Frontend] - Send to backend to initiate rotation
-//   Details: Implement a backend API endpoint (e.g., `POST /encryption/rotate-key`) to initiate the key rotation process. This endpoint should:
-//   - Store the new wrapped key (mark as pending).
-//   - Mark the old key as deprecated.
-//   - Create a key rotation audit log entry.
-//   - Queue a re-encryption job for all files.
-//   Update this frontend logic to send `KeyRotationRequest` to the backend.
-//   Priority: High
+      //   Details: Implement a backend API endpoint (e.g., `POST /encryption/rotate-key`) to initiate the key rotation process. This endpoint should:
+      //   - Store the new wrapped key (mark as pending).
+      //   - Mark the old key as deprecated.
+      //   - Create a key rotation audit log entry.
+      //   - Queue a re-encryption job for all files.
+      //   Update this frontend logic to send `KeyRotationRequest` to the backend.
+      //   Priority: High
       // const { error } = await apiClient.POST("/encryption/rotate-key", {
       //   body: {
       //     newWrappedKey,

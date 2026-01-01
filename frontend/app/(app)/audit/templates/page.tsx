@@ -17,10 +17,7 @@ export default function TemplatesPage() {
 
   return (
     <div className="h-full">
-      <TemplateLibrary
-        onCreateNew={handleCreateNew}
-        onSelectTemplate={handleSelectTemplate}
-      />
+      <TemplateLibrary onCreateNew={handleCreateNew} onSelectTemplate={handleSelectTemplate} />
     </div>
   );
 }

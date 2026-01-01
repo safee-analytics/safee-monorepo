@@ -4,3254 +4,3321 @@
  */
 
 export interface paths {
-    "/storage/upload": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Upload a file to storage */
-        post: operations["UploadFile"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+  "/storage/upload": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/upload/batch": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Upload multiple files */
-        post: operations["UploadFiles"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** @description Upload a file to storage */
+    post: operations["UploadFile"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/upload/batch": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/files/{fileId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get file metadata */
-        get: operations["GetFile"];
-        put?: never;
-        post?: never;
-        /** @description Delete file */
-        delete: operations["DeleteFile"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** @description Upload multiple files */
+    post: operations["UploadFiles"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/files/{fileId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/files/{fileId}/download": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Download file */
-        get: operations["DownloadFile"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** @description Get file metadata */
+    get: operations["GetFile"];
+    put?: never;
+    post?: never;
+    /** @description Delete file */
+    delete: operations["DeleteFile"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/files/{fileId}/download": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/files/search": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Search files */
-        get: operations["SearchFiles"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** @description Download file */
+    get: operations["DownloadFile"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/files/search": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/folders": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Create folder */
-        post: operations["CreateFolder"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** @description Search files */
+    get: operations["SearchFiles"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/folders": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/folders/{folderId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get folder contents */
-        get: operations["GetFolderContents"];
-        put?: never;
-        post?: never;
-        /** @description Delete folder */
-        delete: operations["DeleteFolder"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** @description Create folder */
+    post: operations["CreateFolder"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/folders/{folderId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/quota": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get storage quota information */
-        get: operations["GetQuota"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** @description Get folder contents */
+    get: operations["GetFolderContents"];
+    put?: never;
+    post?: never;
+    /** @description Delete folder */
+    delete: operations["DeleteFolder"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/quota": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/files/{fileId}/encryption-metadata": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get file encryption metadata */
-        get: operations["GetFileEncryptionMetadata"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** @description Get storage quota information */
+    get: operations["GetQuota"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/files/{fileId}/encryption-metadata": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/upload/chunked/init": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Initialize a chunked upload session */
-        post: operations["InitChunkedUpload"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** @description Get file encryption metadata */
+    get: operations["GetFileEncryptionMetadata"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/upload/chunked/init": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/upload/chunked/{uploadId}/chunk/{chunkNumber}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Upload a single chunk */
-        post: operations["UploadChunk"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** @description Initialize a chunked upload session */
+    post: operations["InitChunkedUpload"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/upload/chunked/{uploadId}/chunk/{chunkNumber}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/upload/chunked/{uploadId}/complete": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /** @description Complete chunked upload and save file */
-        post: operations["CompleteChunkedUpload"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** @description Upload a single chunk */
+    post: operations["UploadChunk"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/upload/chunked/{uploadId}/complete": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/upload/chunked/{uploadId}/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** @description Cancel chunked upload */
-        delete: operations["CancelChunkedUpload"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /** @description Complete chunked upload and save file */
+    post: operations["CompleteChunkedUpload"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/upload/chunked/{uploadId}/cancel": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/upload/chunked/{uploadId}/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get chunked upload status */
-        get: operations["GetChunkedUploadStatus"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post?: never;
+    /** @description Cancel chunked upload */
+    delete: operations["CancelChunkedUpload"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/upload/chunked/{uploadId}/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/signed-url/upload": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description Generate signed URL for direct upload to storage
-         *     Allows client to upload directly to MinIO, bypassing the gateway
-         */
-        post: operations["GenerateUploadUrl"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** @description Get chunked upload status */
+    get: operations["GetChunkedUploadStatus"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/signed-url/upload": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/signed-url/download": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description Generate signed URL for direct download from storage
-         *     Allows client to download directly from MinIO, bypassing the gateway
-         */
-        post: operations["GenerateDownloadUrl"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * @description Generate signed URL for direct upload to storage
+     *     Allows client to upload directly to MinIO, bypassing the gateway
+     */
+    post: operations["GenerateUploadUrl"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/signed-url/download": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/config": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetStorageConfig"];
-        put: operations["UpdateStorageConfig"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * @description Generate signed URL for direct download from storage
+     *     Allows client to download directly from MinIO, bypassing the gateway
+     */
+    post: operations["GenerateDownloadUrl"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/config": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/test-connection": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["TestStorageConnection"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["GetStorageConfig"];
+    put: operations["UpdateStorageConfig"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/test-connection": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/storage/info": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["GetStorageInfo"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post: operations["TestStorageConnection"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/storage/info": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/nas/connect": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * @description Connect to a NAS drive
-         *     Supports SMB/CIFS, NFS, and WebDAV protocols
-         */
-        post: operations["ConnectNAS"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get: operations["GetStorageInfo"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/nas/connect": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/nas/{name}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** @description Disconnect from a NAS drive */
-        delete: operations["DisconnectNAS"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    /**
+     * @description Connect to a NAS drive
+     *     Supports SMB/CIFS, NFS, and WebDAV protocols
+     */
+    post: operations["ConnectNAS"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/nas/{name}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/nas/status": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Get status of all connected NAS drives */
-        get: operations["GetAllNASStatus"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    get?: never;
+    put?: never;
+    post?: never;
+    /** @description Disconnect from a NAS drive */
+    delete: operations["DisconnectNAS"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/nas/status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    "/nas/all": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        /** @description Disconnect from all NAS drives */
-        delete: operations["DisconnectAll"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
+    /** @description Get status of all connected NAS drives */
+    get: operations["GetAllNASStatus"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/nas/all": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    get?: never;
+    put?: never;
+    post?: never;
+    /** @description Disconnect from all NAS drives */
+    delete: operations["DisconnectAll"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: {
-        WorkflowRules: {
-            autoApprove?: boolean;
-            requireComments?: boolean;
-            allowReassignment?: boolean;
-            /** Format: double */
-            timeoutHours?: number;
-            escalationUserIds?: string[];
-            notifyOnSubmit?: boolean;
-            notifyOnComplete?: boolean;
-        };
-        /** @enum {string} */
-        StepType: "single" | "parallel" | "any";
-        /** @enum {string} */
-        ApproverType: "role" | "team" | "user";
-        WorkflowStepResponse: {
-            id: string;
-            /** Format: double */
-            stepOrder: number;
-            stepType: components["schemas"]["StepType"];
-            approverType: components["schemas"]["ApproverType"];
-            approverId?: string;
-            /** Format: double */
-            minApprovals: number;
-            /** Format: double */
-            requiredApprovers: number;
-        };
-        WorkflowResponse: {
-            id: string;
-            name: string;
-            organizationId: string;
-            entityType: string;
-            isActive: boolean;
-            rules?: components["schemas"]["WorkflowRules"];
-            createdAt: string;
-            updatedAt: string;
-            steps: components["schemas"]["WorkflowStepResponse"][];
-        };
-        WorkflowStepInput: {
-            /** Format: double */
-            stepOrder: number;
-            stepType: components["schemas"]["StepType"];
-            approverType: components["schemas"]["ApproverType"];
-            approverId?: string;
-            /** Format: double */
-            minApprovals?: number;
-            /** Format: double */
-            requiredApprovers?: number;
-        };
-        CreateWorkflowRequest: {
-            name: string;
-            entityType: string;
-            rules?: components["schemas"]["WorkflowRules"];
-            steps: components["schemas"]["WorkflowStepInput"][];
-        };
-        UpdateWorkflowRequest: {
-            name?: string;
-            isActive?: boolean;
-            rules?: components["schemas"]["WorkflowRules"];
-            steps?: components["schemas"]["WorkflowStepInput"][];
-        };
-        RuleCondition: {
-            /** Format: double */
-            value: number;
-            /** @enum {string} */
-            operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq";
-            /** @enum {string} */
-            type: "amount";
-        } | {
-            value: string;
-            /** @enum {string} */
-            operator?: "eq";
-            /** @enum {string} */
-            type: "entityType";
-        } | {
-            value: string;
-            /** @enum {string} */
-            operator?: "eq";
-            /** @enum {string} */
-            type: "userRole";
-        } | {
-            /** @enum {string} */
-            type: "manual";
-        } | {
-            value: string | number | boolean;
-            /** @enum {string} */
-            operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq" | "contains";
-            field: string;
-            /** @enum {string} */
-            type: "field";
-        };
-        Rule: {
-            conditions: components["schemas"]["RuleCondition"][];
-            /** @enum {string} */
-            logic?: "AND" | "OR";
-        };
-        RuleResponse: {
-            id: string;
-            organizationId: string;
-            entityType: string;
-            ruleName: string;
-            conditions: components["schemas"]["Rule"];
-            workflowId: string;
-            /** Format: double */
-            priority: number;
-        };
-        CreateRuleRequest: {
-            entityType: string;
-            ruleName: string;
-            conditions: string;
-            workflowId: string;
-            /** Format: double */
-            priority?: number;
-        };
-        /** @description Construct a type with a set of properties K of type T */
-        "Record_string.unknown_": {
-            [key: string]: unknown;
-        };
-        FileMetadata: {
-            id: string;
-            name: string;
-            path: string;
-            /** Format: double */
-            size: number;
-            mimeType: string;
-            createdAt: string;
-            modifiedAt: string;
-            createdBy: string;
-            modifiedBy?: string;
-            folderId?: string;
-            tags?: string[];
-            metadata?: components["schemas"]["Record_string.unknown_"];
-        };
-        FolderMetadata: {
-            id: string;
-            name: string;
-            path: string;
-            parentId?: string;
-            createdAt: string;
-            modifiedAt: string;
-            createdBy: string;
-            modifiedBy?: string;
-            /** Format: double */
-            fileCount: number;
-            /** Format: double */
-            subFolderCount: number;
-        };
-        CreateFolderRequest: {
-            name: string;
-            parentId?: string;
-        };
-        /** @enum {string} */
-        Locale: "en" | "ar";
-        UserProfileResponse: {
-            id: string;
-            email: string;
-            name?: string | null;
-            image?: string | null;
-            preferredLocale: components["schemas"]["Locale"];
-            activeOrganizationId?: string | null;
-        };
-        UpdateProfileRequest: {
-            name?: string;
-            preferredLocale?: components["schemas"]["Locale"];
-        };
-        UpdateLocaleRequest: {
-            locale: components["schemas"]["Locale"];
-        };
-        SubscriptionPlanResponse: {
-            id: string;
-            name: string;
-            slug: string;
-            pricePerSeat: string;
-            /** Format: double */
-            maxSeats: number | null;
-            billingInterval: string;
-            features: components["schemas"]["Record_string.unknown_"] | null;
-        };
-        CreateSubscriptionResponse: {
-            subscriptionId: string;
-            planId: string;
-            /** Format: double */
-            seats: number;
-            status: string;
-        };
-        CreateSubscriptionRequest: {
-            planId: string;
-            /** Format: double */
-            seats: number;
-        };
-        CurrentSubscriptionResponse: {
-            hasSubscription: boolean;
-            status: string | null;
-            plan: {
-                /** Format: double */
-                maxSeats: number | null;
-                pricePerSeat: string;
-                slug: string;
-                name: string;
-                id: string;
-            } | null;
-            seats: {
-                unlimited: boolean;
-                /** Format: double */
-                available: number;
-                /** Format: double */
-                used: number;
-                /** Format: double */
-                purchased: number;
-            } | null;
-            isGrandfathered?: boolean;
-        };
-        UpdateSubscriptionResponse: {
-            subscriptionId: string;
-            planId: string;
-            /** Format: double */
-            seats: number;
-            status: string;
-        };
-        UpdateSubscriptionRequest: {
-            planId?: string;
-            /** Format: double */
-            seats?: number;
-        };
-        NASConfig: {
-            /** @enum {string} */
-            type: "smb" | "nfs" | "webdav" | "local";
-            host: string;
-            shareName: string;
-            username: string;
-            password: string;
-            domain?: string;
-            mountPoint?: string;
-            /** Format: double */
-            port?: number;
-        };
-        StorageInfo: {
-            totalSpace: string;
-            usedSpace: string;
-            availableSpace: string;
-            /** Format: double */
-            usagePercentage: number;
-        };
-        SecuritySettings: {
-            twoFactorEnabled: boolean;
-            sessionTimeout: string;
-            passwordExpiry: string;
-            requirePasswordChange: boolean;
-            allowMultipleSessions: boolean;
-            ipWhitelisting: boolean;
-            loginNotifications: boolean;
-        };
-        /** @enum {string} */
-        ReportStatus: "generating" | "ready" | "failed";
-        AuditReportResponse: {
-            id: string;
-            caseId: string;
-            templateId?: string | null;
-            title: string;
-            status: components["schemas"]["ReportStatus"];
-            generatedData?: components["schemas"]["Record_string.unknown_"] | null;
-            settings?: {
-                customizations?: components["schemas"]["Record_string.unknown_"];
-                includeSections?: string[];
-                dateRange?: {
-                    end: string;
-                    start: string;
-                };
-            } | null;
-            filePath?: string | null;
-            /** Format: date-time */
-            generatedAt?: string | null;
-            generatedBy: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        GenerateReportRequest: {
-            caseId: string;
-            templateId: string;
-            title: string;
-            titleAr?: string | null;
-            settings?: {
-                customizations?: components["schemas"]["Record_string.unknown_"];
-                /** @enum {string|null} */
-                locale?: "en" | "ar" | null;
-                includeSections?: string[];
-                dateRange?: {
-                    end: string;
-                    start: string;
-                };
-            };
-        };
-        UpdateAuditReportRequest: {
-            title?: string | null;
-            status?: components["schemas"]["ReportStatus"] | null;
-            generatedData?: components["schemas"]["Record_string.unknown_"] | null;
-            settings?: {
-                customizations?: components["schemas"]["Record_string.unknown_"];
-                includeSections?: string[];
-                dateRange?: {
-                    end: string;
-                    start: string;
-                };
-            } | null;
-            filePath?: string | null;
-            /** Format: date-time */
-            generatedAt?: string | null;
-        };
-        /** @enum {string} */
-        CaseType: "ICV_AUDIT" | "ISO_9001_AUDIT" | "ISO_14001_AUDIT" | "ISO_45001_AUDIT" | "FINANCIAL_AUDIT" | "INTERNAL_AUDIT" | "COMPLIANCE_AUDIT" | "OPERATIONAL_AUDIT";
-        AuditReportTemplateResponse: {
-            id: string;
-            name: string;
-            nameAr?: string | null;
-            caseType?: components["schemas"]["CaseType"] | null;
-            description?: string | null;
-            descriptionAr?: string | null;
-            templateStructure: {
-                metadata?: components["schemas"]["Record_string.unknown_"];
-                styles?: components["schemas"]["Record_string.unknown_"];
-                sections: {
-                    config?: components["schemas"]["Record_string.unknown_"];
-                    dataSource?: string;
-                    titleAr?: string;
-                    title?: string;
-                    /** @enum {string} */
-                    type: "cover_page" | "text" | "metrics_table" | "findings_list" | "chart" | "appendix";
-                    id: string;
-                }[];
-            };
-            isDefault: boolean;
-            isActive: boolean;
-            organizationId?: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        CreateAuditReportTemplateRequest: {
-            name: string;
-            nameAr?: string | null;
-            caseType?: components["schemas"]["CaseType"] | null;
-            description?: string | null;
-            descriptionAr?: string | null;
-            templateStructure: {
-                metadata?: components["schemas"]["Record_string.unknown_"];
-                styles?: components["schemas"]["Record_string.unknown_"];
-                sections: {
-                    config?: components["schemas"]["Record_string.unknown_"];
-                    dataSource?: string;
-                    titleAr?: string;
-                    title?: string;
-                    /** @enum {string} */
-                    type: "cover_page" | "text" | "metrics_table" | "findings_list" | "chart" | "appendix";
-                    id: string;
-                }[];
-            };
-            isDefault?: boolean | null;
-            isActive?: boolean | null;
-        };
-        SlugResponse: {
-            nextSlug: string;
-        };
-        OrganizationResponse: {
-            id: string;
-            name: string;
-            slug: string;
-            logo?: string | null;
-            industry?: string | null;
-            size?: string | null;
-            country?: string | null;
-            createdAt: string;
-            updatedAt: string;
-        };
-        OnboardingStatus: {
-            /** @enum {string} */
-            currentStep: "accept-invitation" | "select-plan" | "create-organization" | "completed";
-            hasSubscription: boolean;
-            hasOrganization: boolean;
-            hasPendingInvitations: boolean;
-            /** Format: double */
-            pendingInvitationsCount: number;
-            subscription: {
-                isFree: boolean;
-                /** Format: double */
-                seats: number;
-                planSlug: string;
-                planName: string;
-            } | null;
-            nextAction: {
-                ctaRoute: string;
-                ctaText: string;
-                description: string;
-                title: string;
-            };
-        };
-        UpgradePlanRequest: {
-            planId: string;
-            /** Format: double */
-            seats: number;
-        };
-        OdooWebhookPayload: {
-            /** @enum {string} */
-            event: "create" | "write" | "unlink";
-            model: string;
-            /** Format: double */
-            record_id: number;
-            organization_id: string;
-            user_id: string;
-            timestamp: string;
-        };
-        OdooProvisionResponse: {
-            success: boolean;
-            message: string;
-            jobId?: string;
-        };
-        /** @enum {string} */
-        OdooLanguage: "en_US" | "ar_001" | "fr_FR" | "es_ES" | "de_DE";
-        /** @enum {string} */
-        OdooDemo: "true" | "false";
-        OdooInfoResponse: {
-            databaseName: string;
-            exists: boolean;
-            loginUrl: string | null;
-        };
-        OdooDeleteResponse: {
-            success: boolean;
-            message: string;
-        };
-        OdooDuplicateResponse: {
-            success: boolean;
-            originalName: string;
-            newName: string;
-        };
-        OdooDuplicateRequest: {
-            newName: string;
-            neutralize?: boolean;
-        };
-        OdooListResponse: {
-            databases: string[];
-        };
-        OdooSearchRequest: {
-            model: string;
-            domain?: unknown[];
-            /** Format: double */
-            limit?: number;
-            /** Format: double */
-            offset?: number;
-            order?: string;
-        };
-        OdooSearchReadRequest: {
-            model: string;
-            domain?: unknown[];
-            fields?: string[];
-            /** Format: double */
-            limit?: number;
-            /** Format: double */
-            offset?: number;
-            order?: string;
-            context?: components["schemas"]["Record_string.unknown_"];
-        };
-        OdooReadRequest: {
-            model: string;
-            ids: number[];
-            fields?: string[];
-            context?: components["schemas"]["Record_string.unknown_"];
-        };
-        OdooCreateRequest: {
-            model: string;
-            values: components["schemas"]["Record_string.unknown_"];
-            context?: components["schemas"]["Record_string.unknown_"];
-        };
-        OdooWriteRequest: {
-            model: string;
-            ids: number[];
-            values: components["schemas"]["Record_string.unknown_"];
-            context?: components["schemas"]["Record_string.unknown_"];
-        };
-        OdooUnlinkRequest: {
-            model: string;
-            ids: number[];
-            context?: components["schemas"]["Record_string.unknown_"];
-        };
-        OdooExecuteRequest: {
-            model: string;
-            method: string;
-            args?: unknown[];
-            kwargs?: components["schemas"]["Record_string.unknown_"];
-        };
-        OcrResponse: {
-            documentId: string;
-            extractedText: string;
-            /** Format: date-time */
-            processedAt: string;
-        };
-        ProcessOcrRequest: {
-            documentId: string;
-            language?: string | null;
-        };
-        DocumentSearchResult: {
-            id: string;
-            fileName: string;
-            fileType: string;
-            ocrText: string | null;
-            /** Format: date-time */
-            uploadedAt: string;
-        };
-        DocumentSearchRequest: {
-            caseId: string;
-            searchText: string;
-        };
-        NASConnectionStatus: {
-            connected: boolean;
-            mountPoint?: string;
-            error?: string;
-            /** Format: double */
-            freeSpace?: number;
-            /** Format: double */
-            totalSpace?: number;
-            /** Format: double */
-            usedSpace?: number;
-        };
-        ConnectNASRequest: {
-            name: string;
-            /** @enum {string} */
-            type: "smb" | "nfs" | "webdav";
-            host: string;
-            shareName: string;
-            username?: string;
-            password?: string;
-            domain?: string;
-            mountPoint?: string;
-            /** Format: double */
-            port?: number;
-        };
-        /** @description Construct a type with a set of properties K of type T */
-        "Record_string.NASConnectionStatus_": {
-            [key: string]: components["schemas"]["NASConnectionStatus"];
-        };
-        NASStatusResponse: components["schemas"]["Record_string.NASConnectionStatus_"];
-        Integration: {
-            id: string;
-            name: string;
-            description: string;
-            logo: string;
-            connected: boolean;
-            /** @enum {string} */
-            category: "accounting" | "communication" | "storage" | "productivity";
-            configUrl?: string;
-        };
-        /** @enum {string} */
-        EmployeeType: "employee" | "student" | "trainee" | "contractor" | "freelance";
-        /** @enum {string} */
-        Gender: "male" | "female" | "other";
-        /** @enum {string} */
-        MaritalStatus: "single" | "married" | "cohabitant" | "widower" | "divorced";
-        EmployeeDbResponse: {
-            id: string;
-            organizationId: string;
-            userId?: string | null;
-            /** Format: double */
-            odooEmployeeId?: number | null;
-            name: string;
-            email?: string | null;
-            phone?: string | null;
-            mobile?: string | null;
-            workEmail?: string | null;
-            workPhone?: string | null;
-            workLocation?: string | null;
-            jobTitle?: string | null;
-            departmentId?: string | null;
-            managerId?: string | null;
-            employeeType?: components["schemas"]["EmployeeType"] | null;
-            gender?: components["schemas"]["Gender"] | null;
-            maritalStatus?: components["schemas"]["MaritalStatus"] | null;
-            birthday?: string | null;
-            placeOfBirth?: string | null;
-            countryOfBirth?: string | null;
-            nationality?: string | null;
-            identificationId?: string | null;
-            passportId?: string | null;
-            bankAccountNumber?: string | null;
-            bankName?: string | null;
-            bankIban?: string | null;
-            emergencyContact?: string | null;
-            emergencyPhone?: string | null;
-            emergencyRelation?: string | null;
-            hireDate?: string | null;
-            terminationDate?: string | null;
-            photoUrl?: string | null;
-            notes?: string | null;
-            active: boolean;
-            lastSyncedAt?: string | null;
-            createdAt: string;
-            updatedAt: string;
-        };
-        CreateEmployeeRequest: {
-            userId?: string | null;
-            /** Format: double */
-            odooEmployeeId?: number | null;
-            name: string;
-            email?: string | null;
-            phone?: string | null;
-            mobile?: string | null;
-            workEmail?: string | null;
-            workPhone?: string | null;
-            workLocation?: string | null;
-            jobTitle?: string | null;
-            departmentId?: string | null;
-            managerId?: string | null;
-            employeeType?: components["schemas"]["EmployeeType"] | null;
-            gender?: components["schemas"]["Gender"] | null;
-            maritalStatus?: components["schemas"]["MaritalStatus"] | null;
-            birthday?: string | null;
-            placeOfBirth?: string | null;
-            countryOfBirth?: string | null;
-            nationality?: string | null;
-            identificationId?: string | null;
-            passportId?: string | null;
-            bankAccountNumber?: string | null;
-            bankName?: string | null;
-            bankIban?: string | null;
-            emergencyContact?: string | null;
-            emergencyPhone?: string | null;
-            emergencyRelation?: string | null;
-            hireDate?: string | null;
-            terminationDate?: string | null;
-            photoUrl?: string | null;
-            notes?: string | null;
-            active?: boolean | null;
-        };
-        UpdateEmployeeRequest: {
-            name?: string | null;
-            email?: string | null;
-            phone?: string | null;
-            mobile?: string | null;
-            workEmail?: string | null;
-            workPhone?: string | null;
-            workLocation?: string | null;
-            jobTitle?: string | null;
-            departmentId?: string | null;
-            managerId?: string | null;
-            employeeType?: components["schemas"]["EmployeeType"] | null;
-            gender?: components["schemas"]["Gender"] | null;
-            maritalStatus?: components["schemas"]["MaritalStatus"] | null;
-            birthday?: string | null;
-            placeOfBirth?: string | null;
-            countryOfBirth?: string | null;
-            nationality?: string | null;
-            identificationId?: string | null;
-            passportId?: string | null;
-            bankAccountNumber?: string | null;
-            bankName?: string | null;
-            bankIban?: string | null;
-            emergencyContact?: string | null;
-            emergencyPhone?: string | null;
-            emergencyRelation?: string | null;
-            hireDate?: string | null;
-            terminationDate?: string | null;
-            photoUrl?: string | null;
-            notes?: string | null;
-            active?: boolean | null;
-        };
-        SyncEmployeeFromOdooRequest: {
-            /** Format: double */
-            odooEmployeeId: number;
-        };
-        SyncAllEmployeesResponse: {
-            /** Format: double */
-            synced: number;
-            /** Format: double */
-            created: number;
-            /** Format: double */
-            updated: number;
-            errors: string[];
-        };
-        DepartmentDbResponse: {
-            id: string;
-            organizationId: string;
-            /** Format: double */
-            odooDepartmentId?: number | null;
-            name: string;
-            code?: string | null;
-            parentId?: string | null;
-            managerId?: string | null;
-            /** Format: double */
-            color?: number | null;
-            note?: string | null;
-            lastSyncedAt?: string | null;
-            createdAt: string;
-            updatedAt: string;
-        };
-        CreateDepartmentRequest: {
-            /** Format: double */
-            odooDepartmentId?: number | null;
-            name: string;
-            code?: string | null;
-            parentId?: string | null;
-            managerId?: string | null;
-            /** Format: double */
-            color?: number | null;
-            note?: string | null;
-        };
-        UpdateDepartmentRequest: {
-            name?: string | null;
-            code?: string | null;
-            parentId?: string | null;
-            managerId?: string | null;
-            /** Format: double */
-            color?: number | null;
-            note?: string | null;
-        };
-        SyncDepartmentFromOdooRequest: {
-            /** Format: double */
-            odooDepartmentId: number;
-        };
-        SyncAllDepartmentsResponse: {
-            /** Format: double */
-            synced: number;
-            /** Format: double */
-            created: number;
-            /** Format: double */
-            updated: number;
-            errors: string[];
-        };
-        LeaveBalanceResponse: {
-            employeeId: string;
-            leaveTypeId: string;
-            leaveTypeName: string;
-            /** Format: double */
-            totalAllocated: number;
-            /** Format: double */
-            totalUsed: number;
-            /** Format: double */
-            totalRemaining: number;
-        };
-        OdooRelation: {
-            /** Format: double */
-            id: number;
-            name: string;
-        };
-        EmployeeResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            work_email?: string;
-            work_phone?: string;
-            mobile_phone?: string;
-            job_title?: string;
-            department_id?: components["schemas"]["OdooRelation"];
-            parent_id?: components["schemas"]["OdooRelation"];
-            address_id?: components["schemas"]["OdooRelation"];
-            work_location_id?: components["schemas"]["OdooRelation"];
-            user_id?: components["schemas"]["OdooRelation"];
-            employee_type?: string;
-            gender?: string;
-            marital?: string;
-            birthday?: string;
-            identification_id?: string;
-            passport_id?: string;
-            bank_account_id?: components["schemas"]["OdooRelation"];
-            emergency_contact?: string;
-            emergency_phone?: string;
-            visa_no?: string;
-            visa_expire?: string;
-            work_permit_no?: string;
-            work_permit_expiration_date?: string;
-            certificate?: string;
-            study_field?: string;
-            study_school?: string;
-            place_of_birth?: string;
-            country_of_birth?: components["schemas"]["OdooRelation"];
-            active?: boolean;
-        };
-        DepartmentResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            complete_name?: string;
-            manager_id?: components["schemas"]["OdooRelation"];
-            parent_id?: components["schemas"]["OdooRelation"];
-            company_id?: components["schemas"]["OdooRelation"];
-            active?: boolean;
-            /** Format: double */
-            total_employee?: number;
-            /** Format: double */
-            color?: number;
-            note?: string;
-        };
-        ContractResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            employee_id: components["schemas"]["OdooRelation"];
-            date_start: string;
-            date_end?: string;
-            state: string;
-            job_id?: components["schemas"]["OdooRelation"];
-            department_id?: components["schemas"]["OdooRelation"];
-            /** Format: double */
-            wage: number;
-            wage_type: string;
-            struct_id?: components["schemas"]["OdooRelation"];
-            resource_calendar_id?: components["schemas"]["OdooRelation"];
-            notes?: string;
-        };
-        LeaveTypeResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            request_unit: string;
-            time_type: string;
-            /** Format: double */
-            color?: number;
-            leave_validation_type?: string;
-            requires_allocation?: boolean;
-            employee_requests?: boolean;
-            allocation_validation_type?: string;
-            /** Format: double */
-            max_leaves?: number;
-            unpaid?: boolean;
-            active?: boolean;
-            support_document?: boolean;
-        };
-        LeaveRequestResponse: {
-            /** Format: double */
-            id: number;
-            employee_id: components["schemas"]["OdooRelation"];
-            holiday_status_id: components["schemas"]["OdooRelation"];
-            date_from: string;
-            date_to: string;
-            /** Format: double */
-            number_of_days: number;
-            state: string;
-            request_date_from?: string;
-            request_unit_half?: boolean;
-            request_unit_hours?: boolean;
-            request_hour_from?: string;
-            request_hour_to?: string;
-            notes?: string;
-            manager_id?: components["schemas"]["OdooRelation"];
-            department_id?: components["schemas"]["OdooRelation"];
-        };
-        LeaveAllocationResponse: {
-            /** Format: double */
-            id: number;
-            employee_id: components["schemas"]["OdooRelation"];
-            holiday_status_id: components["schemas"]["OdooRelation"];
-            /** Format: double */
-            number_of_days: number;
-            /** Format: double */
-            number_of_days_display?: number;
-            date_from?: string;
-            date_to?: string;
-            state: string;
-            name?: string;
-            notes?: string;
-        };
-        PayslipResponse: {
-            /** Format: double */
-            id: number;
-            number: string;
-            employee_id: components["schemas"]["OdooRelation"];
-            date_from: string;
-            date_to: string;
-            state: string;
-            /** Format: double */
-            basic_wage?: number;
-            /** Format: double */
-            net_wage?: number;
-            /** Format: double */
-            gross_wage?: number;
-            contract_id?: components["schemas"]["OdooRelation"];
-            struct_id?: components["schemas"]["OdooRelation"];
-            credit_note?: boolean;
-            paid_date?: string;
-        };
-        PayslipLineResponse: {
-            /** Format: double */
-            id: number;
-            slip_id: components["schemas"]["OdooRelation"];
-            name: string;
-            code: string;
-            category_id?: components["schemas"]["OdooRelation"];
-            /** Format: double */
-            sequence?: number;
-            /** Format: double */
-            quantity?: number;
-            /** Format: double */
-            rate?: number;
-            /** Format: double */
-            amount: number;
-        };
-        HealthCheck: {
-            /** @enum {string} */
-            status: "ok" | "error";
-            timestamp: string;
-            /** Format: double */
-            uptime: number;
-            version: string;
-        };
-        SetupEncryptionRequest: {
-            wrappedOrgKey: string;
-            salt: string;
-            iv: string;
-        };
-        GrantAuditorAccessRequest: {
-            auditorUserId: string;
-            wrappedOrgKey: string;
-            expiresAt?: string;
-        };
-        ResendWebhookPayload: {
-            type: string;
-            created_at: string;
-            data: {
-                complaint_type?: string;
-                bounce_subtype?: string;
-                /** @enum {string} */
-                bounce_type?: "hard" | "soft";
-                created_at?: string;
-                subject?: string;
-                to?: string[];
-                from?: string;
-                email_id?: string;
-            };
-        };
-        /** @enum {string} */
-        DocumentType: "invoice" | "bill" | "quote" | "purchase_order" | "delivery_note" | "receipt" | "credit_note" | "debit_note" | "payslip" | "contract" | "payment_receipt" | "refund";
-        DocumentTemplateResponse: {
-            id: string;
-            organizationId: string;
-            documentType: components["schemas"]["DocumentType"];
-            templateId: string;
-            templateName: string;
-            templateDescription: string | null;
-            isActive: boolean;
-            customizations: components["schemas"]["Record_string.unknown_"] | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        OdooReportTemplate: {
-            /** Format: double */
-            id: number;
-            name: string;
-            report_name: string;
-            model: string;
-            report_type: string;
-        };
-        CreateDocumentTemplateRequest: {
-            documentType: components["schemas"]["DocumentType"];
-            templateId: string;
-            templateName: string;
-            templateDescription?: string;
-            isActive?: boolean;
-            customizations?: components["schemas"]["Record_string.unknown_"];
-        };
-        UpdateTemplateRequest: {
-            templateName?: string;
-            templateDescription?: string;
-            customizations?: components["schemas"]["Record_string.unknown_"];
-        };
-        CreateCustomTemplateRequest: {
-            documentType: components["schemas"]["DocumentType"];
-            templateName: string;
-            templateDescription?: string;
-            qwebXml: string;
-            model: string;
-            isActive?: boolean;
-            customizations?: components["schemas"]["Record_string.unknown_"];
-        };
-        DatabaseStats: {
-            totalSize: string;
-            /** Format: double */
-            tableCount: number;
-            rowCount: string;
-            lastOptimized: string;
-            /** @enum {string} */
-            health: "good" | "warning" | "critical";
-        };
-        BackupSettings: {
-            autoBackup: boolean;
-            backupFrequency: string;
-            backupRetention: string;
-            backupLocation: string;
-            compressionEnabled: boolean;
-            encryptionEnabled: boolean;
-        };
-        Backup: {
-            id: string;
-            name: string;
-            size: string;
-            date: string;
-            /** @enum {string} */
-            status: "completed" | "failed" | "in-progress";
-            /** @enum {string} */
-            type: "automatic" | "manual";
-        };
-        /** @description Dashboard statistics response */
-        DashboardStatsResponse: {
-            /** Format: double */
-            activeCases: number;
-            /** Format: double */
-            pendingReviews: number;
-            /** Format: double */
-            completedAudits: number;
-            /** Format: double */
-            totalCases: number;
-            /** Format: double */
-            completionRate: number;
-        };
-        /** @description Case activity item */
-        RecentCaseUpdateResponse: {
-            id: string;
-            /** @enum {string} */
-            type: "case_update";
-            caseId: string;
-            caseNumber: string;
-            title: string;
-            status: string;
-            updatedAt: string;
-            updatedBy: {
-                name: string;
-                id: string;
-            };
-        };
-        /** @description Notification response */
-        NotificationResponse: {
-            id: string;
-            type: string;
-            title: string;
-            description: string;
-            timestamp: string;
-            isRead: boolean;
-            relatedEntityType: string | null;
-            relatedEntityId: string | null;
-            actionLabel: string | null;
-            actionUrl: string | null;
-        };
-        /** @description Unread notifications count response */
-        UnreadNotificationsCountResponse: {
-            /** Format: double */
-            count: number;
-        };
-        LeadResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            type: string;
-            contactName?: string;
-            partnerName?: string;
-            emailFrom?: string;
-            phone?: string;
-            website?: string;
-            function?: string;
-            street?: string;
-            street2?: string;
-            city?: string;
-            state?: components["schemas"]["OdooRelation"];
-            country?: components["schemas"]["OdooRelation"];
-            zip?: string;
-            partner?: components["schemas"]["OdooRelation"];
-            commercialPartner?: components["schemas"]["OdooRelation"];
-            stage?: components["schemas"]["OdooRelation"];
-            team?: components["schemas"]["OdooRelation"];
-            user?: components["schemas"]["OdooRelation"];
-            company?: components["schemas"]["OdooRelation"];
-            campaign?: components["schemas"]["OdooRelation"];
-            source?: components["schemas"]["OdooRelation"];
-            medium?: components["schemas"]["OdooRelation"];
-            language?: components["schemas"]["OdooRelation"];
-            tags?: number[];
-            /** Format: double */
-            expectedRevenue?: number;
-            /** Format: double */
-            proratedRevenue?: number;
-            /** Format: double */
-            recurringRevenue?: number;
-            recurringPlan?: components["schemas"]["OdooRelation"];
-            /** Format: double */
-            recurringRevenueMonthly?: number;
-            /** Format: double */
-            probability?: number;
-            dateOpen?: string;
-            dateDeadline?: string;
-            dateClosed?: string;
-            dateConversion?: string;
-            dateLastStageUpdate?: string;
-            priority?: string;
-            active?: boolean;
-            description?: string;
-            referred?: string;
-            /** Format: double */
-            color?: number;
-            lostReason?: components["schemas"]["OdooRelation"];
-        };
-        CreateLeadRequest: {
-            name: string;
-            /** @enum {string} */
-            type?: "lead" | "opportunity";
-            contactName?: string;
-            emailFrom?: string;
-            phone?: string;
-            /** Format: double */
-            partnerId?: number;
-            /** Format: double */
-            teamId?: number;
-            /** Format: double */
-            userId?: number;
-            /** Format: double */
-            expectedRevenue?: number;
-            description?: string;
-        };
-        UpdateLeadRequest: {
-            name?: string;
-            /** Format: double */
-            stageId?: number;
-            /** Format: double */
-            userId?: number;
-            /** Format: double */
-            expectedRevenue?: number;
-            dateDeadline?: string;
-            priority?: string;
-            description?: string;
-        };
-        StageResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            /** Format: double */
-            sequence?: number;
-            fold?: boolean;
-            isWon?: boolean;
-            /** Format: double */
-            rottingThresholdDays?: number;
-            requirements?: string;
-            teamIds?: number[];
-            /** Format: double */
-            color?: number;
-        };
-        ContactResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            isCompany?: boolean;
-            companyType?: string;
-            email?: string;
-            phone?: string;
-            mobile?: string;
-            website?: string;
-            function?: string;
-            comment?: string;
-            street?: string;
-            street2?: string;
-            city?: string;
-            state?: components["schemas"]["OdooRelation"];
-            country?: components["schemas"]["OdooRelation"];
-            zip?: string;
-            vat?: string;
-            industry?: components["schemas"]["OdooRelation"];
-            ref?: string;
-            barcode?: string;
-            isCustomer?: boolean;
-            isSupplier?: boolean;
-            active?: boolean;
-        };
-        CreateContactRequest: {
-            name: string;
-            isCompany?: boolean;
-            email?: string;
-            phone?: string;
-            mobile?: string;
-            website?: string;
-            street?: string;
-            city?: string;
-            zip?: string;
-            /** Format: double */
-            countryId?: number;
-        };
-        UpdateContactRequest: {
-            name?: string;
-            email?: string;
-            phone?: string;
-            mobile?: string;
-            website?: string;
-            street?: string;
-            city?: string;
-            zip?: string;
-        };
-        ActivityResponse: {
-            /** Format: double */
-            id: number;
-            /** Format: double */
-            leadId: number;
-            activityType: components["schemas"]["OdooRelation"];
-            summary?: string;
-            note?: string;
-            dateDeadline: string;
-            user: components["schemas"]["OdooRelation"];
-            state: string;
-        };
-        CreateActivityRequest: {
-            /** Format: double */
-            leadId: number;
-            /** Format: double */
-            activityTypeId: number;
-            summary?: string;
-            note?: string;
-            dateDeadline: string;
-            /** Format: double */
-            userId?: number;
-        };
-        TeamResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            active?: boolean;
-            leader?: components["schemas"]["OdooRelation"];
-            memberIds?: number[];
-        };
-        LostReasonResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            active?: boolean;
-        };
-        /** @enum {string} */
-        ConnectorType: "postgresql" | "mysql" | "mssql" | "storage_local" | "storage_webdav" | "storage_smb" | "storage_cloud";
-        ConnectorResponse: {
-            id: string;
-            organizationId: string;
-            name: string;
-            description?: string | null;
-            type: components["schemas"]["ConnectorType"];
-            isActive: boolean;
-            tags: string[];
-            metadata: components["schemas"]["Record_string.unknown_"];
-            lastConnectionTest?: string | null;
-            lastConnectionStatus?: string | null;
-            lastConnectionError?: string | null;
-            createdAt: string;
-            updatedAt: string;
-        };
-        ConnectorConfig: {
-            host?: string;
-            /** Format: double */
-            port?: number;
-            database?: string;
-            username?: string;
-            password?: string;
-            ssl?: boolean;
-            url?: string;
-            apiKey?: string;
-            authToken?: string;
-        } & {
-            [key: string]: unknown;
-        };
-        CreateConnectorRequest: {
-            name: string;
-            description?: string | null;
-            type: components["schemas"]["ConnectorType"];
-            config: components["schemas"]["ConnectorConfig"];
-            tags?: string[] | null;
-            metadata?: components["schemas"]["Record_string.unknown_"] | null;
-        };
-        UpdateConnectorRequest: {
-            name?: string | null;
-            description?: string | null;
-            config?: components["schemas"]["ConnectorConfig"] | null;
-            tags?: string[] | null;
-            metadata?: components["schemas"]["Record_string.unknown_"] | null;
-            isActive?: boolean | null;
-        };
-        QueryResponse: {
-            rows: unknown[];
-            /** Format: double */
-            rowCount: number;
-            /** Format: double */
-            executionTime: number;
-        };
-        QueryRequest: {
-            sql: string;
-            params?: unknown[] | null;
-        };
-        SchemaResponse: {
-            tables: {
-                /** @enum {string} */
-                type: "table" | "view";
-                name: string;
-                schema: string;
-            }[];
-        };
-        TablePreviewResponse: {
-            schema: string;
-            table: string;
-            columns: {
-                nullable: boolean;
-                type: string;
-                name: string;
-            }[];
-            sampleData: unknown[];
-            /** Format: double */
-            totalRows: number;
-        };
-        FieldMapping: {
-            sourceColumn: string;
-            targetField: string;
-            /** @enum {string|null} */
-            transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean" | null;
-            defaultValue?: unknown;
-        };
-        SuggestMappingsRequest: {
-            sourceColumns: string[];
-            /** @enum {string} */
-            targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
-        };
-        /** @enum {string} */
-        ActivityType: "case_created" | "status_changed" | "priority_updated" | "document_uploaded" | "document_approved" | "document_rejected" | "comment_added" | "team_member_assigned" | "team_member_removed" | "case_completed" | "case_archived" | "scope_created" | "procedure_completed" | "plan_created" | "report_generated";
-        /** @description Construct a type with a set of properties K of type T */
-        "Record_string.boolean_": {
-            [key: string]: boolean;
-        };
-        CaseActivityResponse: {
-            id: string;
-            caseId: string;
-            activityType: components["schemas"]["ActivityType"];
-            userId?: string | null;
-            user?: {
-                email: string;
-                name: string | null;
-                id: string | null;
-            };
-            metadata?: ({
-                reportId?: string | null;
-                planId?: string | null;
-                scopeId?: string | null;
-                commentId?: string | null;
-                assignedUserName?: string | null;
-                assignedUserId?: string | null;
-                userName?: string | null;
-                documentId?: string | null;
-                documentName?: string | null;
-                newValue?: string | null;
-                oldValue?: string | null;
-                caseName?: string | null;
-            } & {
-                [key: string]: unknown;
-            }) | null;
-            isRead?: components["schemas"]["Record_string.boolean_"] | null;
-            /** Format: date-time */
-            createdAt: string;
-        };
-        CreateCaseActivityRequest: {
-            caseId: string;
-            activityType: components["schemas"]["ActivityType"];
-            metadata?: {
-                reportId?: string | null;
-                planId?: string | null;
-                scopeId?: string | null;
-                commentId?: string | null;
-                assignedUserName?: string | null;
-                assignedUserId?: string | null;
-                userName?: string | null;
-                documentId?: string | null;
-                documentName?: string | null;
-                newValue?: string | null;
-                oldValue?: string | null;
-                caseName?: string | null;
-            } & {
-                [key: string]: unknown;
-            };
-        };
-        MarkAsReadRequest: {
-            activityIds: string[];
-        };
-        PresenceResponse: {
-            id: string;
-            caseId: string;
-            userId: string;
-            user?: {
-                email: string;
-                name: string | null;
-                id: string | null;
-            };
-            /** Format: date-time */
-            lastSeenAt: string;
-        };
-        UpdatePresenceRequest: {
-            caseId: string;
-        };
-        /** @enum {string} */
-        CaseStatus: "draft" | "in_progress" | "under_review" | "completed" | "overdue" | "archived";
-        /** @enum {string} */
-        CasePriority: "low" | "medium" | "high" | "critical";
-        /** @enum {string} */
-        AssignmentRole: "lead" | "reviewer" | "team_member";
-        CaseResponse: {
-            id: string;
-            organizationId: string;
-            caseNumber: string;
-            title: string;
-            description?: string | null;
-            caseType: components["schemas"]["CaseType"];
-            status: components["schemas"]["CaseStatus"];
-            priority: components["schemas"]["CasePriority"];
-            dueDate?: string | null;
-            completedDate?: string | null;
-            createdBy: string;
-            createdAt: string;
-            updatedAt: string;
-            assignments?: {
-                user?: {
-                    email: string;
-                    name: string | null;
-                    id: string | null;
-                };
-                role: components["schemas"]["AssignmentRole"];
-                userId: string | null;
-            }[];
-        };
-        CreateCaseRequest: {
-            caseNumber?: string | null;
-            title: string;
-            description?: string | null;
-            caseType: components["schemas"]["CaseType"];
-            status?: components["schemas"]["CaseStatus"] | null;
-            priority?: components["schemas"]["CasePriority"] | null;
-            dueDate?: string | null;
-        };
-        /** @enum {string} */
-        TemplateType: "scope" | "form" | "checklist" | "report" | "plan";
-        /** @enum {string} */
-        CaseCategory: "certification" | "financial" | "operational" | "compliance";
-        TemplateStructure: {
-            settings?: components["schemas"]["Record_string.unknown_"];
-            sections: {
-                procedures: {
-                    /** Format: double */
-                    sortOrder: number;
-                    requirements?: components["schemas"]["Record_string.unknown_"];
-                    description?: string;
-                    title: string;
-                    referenceNumber: string;
-                }[];
-                settings?: components["schemas"]["Record_string.unknown_"];
-                /** Format: double */
-                sortOrder: number;
-                description?: string;
-                name: string;
-            }[];
-        };
-        TemplateResponse: {
-            id: string;
-            organizationId?: string | null;
-            name: string;
-            description?: string | null;
-            templateType: components["schemas"]["TemplateType"];
-            category?: components["schemas"]["CaseCategory"] | null;
-            version: string;
-            isActive: boolean;
-            isSystemTemplate: boolean;
-            structure: components["schemas"]["TemplateStructure"];
-            createdBy: string;
-            createdAt: string;
-            updatedAt: string;
-        };
-        CreateTemplateRequest: {
-            organizationId?: string | null;
-            name: string;
-            description?: string | null;
-            templateType: components["schemas"]["TemplateType"];
-            category?: components["schemas"]["CaseCategory"] | null;
-            version?: string;
-            isActive?: boolean;
-            isSystemTemplate?: boolean;
-            structure: components["schemas"]["TemplateStructure"];
-        };
-        UpdateCaseRequest: {
-            caseNumber?: string | null;
-            title?: string | null;
-            description?: string | null;
-            caseType?: components["schemas"]["CaseType"] | null;
-            status?: components["schemas"]["CaseStatus"] | null;
-            priority?: components["schemas"]["CasePriority"] | null;
-            dueDate?: string | null;
-            completedDate?: string | null;
-        };
-        /** @enum {string} */
-        AuditStatus: "draft" | "in_progress" | "under_review" | "completed" | "archived";
-        ScopeResponse: {
-            id: string;
-            caseId: string;
-            templateId?: string | null;
-            name: string;
-            description?: string | null;
-            status: components["schemas"]["AuditStatus"];
-            data: components["schemas"]["Record_string.unknown_"];
-            createdBy: string;
-            completedBy?: string | null;
-            archivedBy?: string | null;
-            createdAt: string;
-            updatedAt: string;
-            completedAt?: string | null;
-            archivedAt?: string | null;
-        };
-        CreateScopeRequest: {
-            name: string;
-            description?: string | null;
-            status?: components["schemas"]["AuditStatus"] | null;
-            data?: components["schemas"]["Record_string.unknown_"] | null;
-        };
-        CreateScopeFromTemplateRequest: {
-            templateId: string;
-        };
-        UpdateScopeStatusRequest: {
-            status: components["schemas"]["AuditStatus"];
-        };
-        SectionResponse: {
-            id: string;
-            scopeId: string;
-            name: string;
-            description?: string | null;
-            /** Format: double */
-            sortOrder: number;
-            isCompleted: boolean;
-            settings: components["schemas"]["Record_string.unknown_"];
-            createdAt: string;
-            updatedAt: string;
-        };
-        ProcedureResponse: {
-            id: string;
-            sectionId: string;
-            referenceNumber: string;
-            title: string;
-            description?: string | null;
-            requirements: components["schemas"]["Record_string.unknown_"];
-            /** Format: double */
-            sortOrder: number;
-            isCompleted: boolean;
-            completedBy?: string | null;
-            completedAt?: string | null;
-            memo?: string | null;
-            fieldData: components["schemas"]["Record_string.unknown_"];
-            canEdit: boolean;
-            createdAt: string;
-            updatedAt: string;
-        };
-        CompleteProcedureRequest: {
-            fieldData?: components["schemas"]["Record_string.unknown_"] | null;
-            memo?: string | null;
-        };
-        DocumentResponse: {
-            id: string;
-            caseId: string;
-            procedureId?: string | null;
-            fileName: string;
-            /** Format: double */
-            fileSize: number;
-            fileType: string;
-            storagePath: string;
-            /** Format: double */
-            version: number;
-            parentDocumentId?: string | null;
-            uploadedBy: string;
-            uploadedAt: string;
-            isDeleted: boolean;
-        };
-        CreateDocumentRequest: {
-            procedureId?: string | null;
-            fileName: string;
-            /** Format: double */
-            fileSize: number;
-            fileType: string;
-            storagePath: string;
-            /** Format: double */
-            version?: number | null;
-            parentDocumentId?: string | null;
-        };
-        /** @enum {string} */
-        NoteType: "observation" | "review_comment" | "general" | "memo";
-        NoteResponse: {
-            id: string;
-            caseId: string;
-            procedureId?: string | null;
-            noteType: components["schemas"]["NoteType"];
-            content: string;
-            createdBy: string;
-            createdAt: string;
-            updatedAt: string;
-            isEdited: boolean;
-        };
-        CreateNoteRequest: {
-            procedureId?: string | null;
-            noteType: components["schemas"]["NoteType"];
-            content: string;
-        };
-        UpdateNoteRequest: {
-            content: string;
-        };
-        AssignmentResponse: {
-            caseId: string;
-            userId: string;
-            role: components["schemas"]["AssignmentRole"];
-            assignedBy: string;
-            assignedAt: string;
-        };
-        CreateAssignmentRequest: {
-            userId: string;
-            role: components["schemas"]["AssignmentRole"];
-        };
-        /** @enum {string} */
-        CaseEntityType: "case" | "scope" | "section" | "procedure" | "document" | "note";
-        /** @enum {string} */
-        CaseAction: "created" | "updated" | "deleted" | "completed" | "archived" | "assigned" | "unassigned";
-        HistoryResponse: {
-            id: string;
-            caseId: string;
-            entityType: components["schemas"]["CaseEntityType"];
-            entityId: string;
-            action: components["schemas"]["CaseAction"];
-            changesBefore?: components["schemas"]["Record_string.unknown_"] | null;
-            changesAfter?: components["schemas"]["Record_string.unknown_"] | null;
-            changedBy: string;
-            changedAt: string;
-        };
-        /** @enum {string} */
-        PlanType: "standalone" | "case_integrated";
-        /** @enum {string} */
-        PlanStatus: "draft" | "in_review" | "approved" | "converted" | "archived";
-        AuditPlanResponse: {
-            id: string;
-            caseId?: string | null;
-            planType: components["schemas"]["PlanType"];
-            title: string;
-            clientName?: string | null;
-            caseType?: components["schemas"]["CaseType"] | null;
-            /** Format: double */
-            auditYear?: number | null;
-            startDate?: string | null;
-            targetCompletion?: string | null;
-            objectives?: {
-                priority?: string;
-                description: string;
-                id: string | null;
-            }[] | null;
-            businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
-            financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
-            teamMembers?: {
-                /** Format: double */
-                hours?: number;
-                role: string;
-                name: string;
-                userId: string | null;
-            }[] | null;
-            phaseBreakdown?: {
-                endDate?: string | null;
-                startDate?: string | null;
-                description?: string | null;
-                /** Format: double */
-                duration: number;
-                name: string | null;
-            }[] | null;
-            totalBudget?: string | null;
-            /** Format: double */
-            totalHours?: number | null;
-            materialityThreshold?: string | null;
-            riskAssessment?: {
-                /** Format: double */
-                score?: number | null;
-                overallRisk?: string | null;
-                risks?: {
-                    message: string;
-                    severity: string;
-                    type: string | null;
-                }[];
-            } | null;
-            status: components["schemas"]["PlanStatus"];
-            organizationId: string;
-            createdBy: string;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        CreateAuditPlanRequest: {
-            caseId?: string | null;
-            planType?: components["schemas"]["PlanType"] | null;
-            title: string;
-            clientName?: string | null;
-            caseType?: components["schemas"]["CaseType"] | null;
-            /** Format: double */
-            auditYear?: number | null;
-            startDate?: string | null;
-            targetCompletion?: string | null;
-            objectives?: {
-                priority?: string;
-                description: string;
-                id: string | null;
-            }[];
-            businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
-            financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
-            teamMembers?: {
-                /** Format: double */
-                hours?: number;
-                role: string;
-                name: string;
-                userId: string | null;
-            }[];
-            phaseBreakdown?: {
-                endDate?: string | null;
-                startDate?: string | null;
-                description?: string | null;
-                /** Format: double */
-                duration: number;
-                name: string | null;
-            }[];
-            totalBudget?: string | null;
-            /** Format: double */
-            totalHours?: number | null;
-            materialityThreshold?: string | null;
-            riskAssessment?: {
-                /** Format: double */
-                score?: number | null;
-                overallRisk?: string | null;
-                risks?: {
-                    message: string;
-                    severity: string;
-                    type: string | null;
-                }[];
-            };
-            status?: components["schemas"]["PlanStatus"] | null;
-        };
-        UpdateAuditPlanRequest: {
-            caseId?: string | null;
-            planType?: components["schemas"]["PlanType"] | null;
-            title?: string | null;
-            clientName?: string | null;
-            caseType?: components["schemas"]["CaseType"] | null;
-            /** Format: double */
-            auditYear?: number | null;
-            startDate?: string | null;
-            targetCompletion?: string | null;
-            objectives?: {
-                priority?: string;
-                description: string;
-                id: string | null;
-            }[];
-            businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
-            financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
-            teamMembers?: {
-                /** Format: double */
-                hours?: number;
-                role: string;
-                name: string;
-                userId: string | null;
-            }[];
-            phaseBreakdown?: {
-                endDate?: string | null;
-                startDate?: string | null;
-                description?: string | null;
-                /** Format: double */
-                duration: number;
-                name: string | null;
-            }[];
-            totalBudget?: string | null;
-            /** Format: double */
-            totalHours?: number | null;
-            materialityThreshold?: string | null;
-            riskAssessment?: {
-                /** Format: double */
-                score?: number | null;
-                overallRisk?: string | null;
-                risks?: {
-                    message: string;
-                    severity: string;
-                    type: string | null;
-                }[];
-            };
-            status?: components["schemas"]["PlanStatus"] | null;
-        };
-        AuditPlanTemplateResponse: {
-            id: string;
-            name: string;
-            caseType?: components["schemas"]["CaseType"] | null;
-            description?: string | null;
-            defaultObjectives?: {
-                priority?: string;
-                description: string;
-                id: string | null;
-            }[] | null;
-            defaultScope?: components["schemas"]["Record_string.unknown_"] | null;
-            defaultPhases?: {
-                description?: string;
-                /** Format: double */
-                duration: number;
-                name: string | null;
-            }[] | null;
-            defaultBusinessUnits?: components["schemas"]["Record_string.boolean_"] | null;
-            defaultFinancialAreas?: components["schemas"]["Record_string.boolean_"] | null;
-            /** Format: double */
-            estimatedDuration?: number | null;
-            /** Format: double */
-            estimatedHours?: number | null;
-            estimatedBudget?: string | null;
-            isDefault: boolean;
-            isActive: boolean;
-            organizationId?: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            /** Format: date-time */
-            updatedAt: string;
-        };
-        CreateAuditPlanTemplateRequest: {
-            name: string;
-            caseType?: components["schemas"]["CaseType"] | null;
-            description?: string | null;
-            defaultObjectives?: {
-                priority?: string;
-                description: string;
-                id?: string | null;
-            }[];
-            defaultScope?: components["schemas"]["Record_string.unknown_"] | null;
-            defaultPhases?: {
-                description?: string;
-                /** Format: double */
-                duration: number;
-                name: string | null;
-            }[];
-            defaultBusinessUnits?: components["schemas"]["Record_string.boolean_"] | null;
-            defaultFinancialAreas?: components["schemas"]["Record_string.boolean_"] | null;
-            /** Format: double */
-            estimatedDuration?: number | null;
-            /** Format: double */
-            estimatedHours?: number | null;
-            estimatedBudget?: string | null;
-            isDefault?: boolean | null;
-            isActive?: boolean | null;
-        };
-        CreatePlanFromTemplateRequest: {
-            templateId: string;
-            title: string;
-            clientName?: string | null;
-            /** Format: double */
-            auditYear?: number | null;
-            startDate?: string | null;
-        };
-        /** @enum {string} */
-        EntityType: "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
-        /** @enum {string} */
-        AuditAction: "created" | "updated" | "deleted" | "completed" | "failed" | "started" | "cancelled" | "retrying";
-        AuditLogUser: {
-            id: string;
-            name: string | null;
-            email: string;
-        };
-        AuditLogResponse: {
-            id: string;
-            entityType: components["schemas"]["EntityType"];
-            entityId: string;
-            action: components["schemas"]["AuditAction"];
-            organizationId: string | null;
-            userId: string | null;
-            metadata: components["schemas"]["Record_string.unknown_"] | null;
-            ipAddress: string | null;
-            userAgent: string | null;
-            /** Format: date-time */
-            createdAt: string;
-            user?: components["schemas"]["AuditLogUser"] | null;
-        };
-        AuditLogFilters: {
-            entityType?: components["schemas"]["EntityType"];
-            entityId?: string;
-            action?: components["schemas"]["AuditAction"];
-            userId?: string;
-            startDate?: string;
-            endDate?: string;
-            /** Format: double */
-            limit?: number;
-            /** Format: double */
-            offset?: number;
-        };
-        ExportAuditLogsRequest: {
-            /** @enum {string} */
-            format: "csv" | "json";
-            filters?: components["schemas"]["AuditLogFilters"];
-        };
-        SubmitForApprovalResponse: {
-            requestId: string;
-            workflowId: string;
-            status: string;
-            message: string;
-        };
-        EntityData: {
-            entityType: components["schemas"]["EntityType"];
-            entityId: string;
-            /** Format: double */
-            amount?: number;
-            status?: string;
-            createdBy?: string;
-        } & {
-            [key: string]: unknown;
-        };
-        SubmitForApprovalRequest: {
-            entityType: string;
-            entityId: string;
-            entityData: components["schemas"]["EntityData"];
-        };
-        ApprovalStepResponse: {
-            id: string;
-            /** Format: double */
-            stepOrder: number;
-            approverId: string;
-            approverName?: string;
-            status: string;
-            comments?: string;
-            actionAt?: string;
-            delegatedTo?: string;
-            delegatedToName?: string;
-        };
-        ApprovalRequestResponse: {
-            id: string;
-            workflowId: string;
-            workflowName: string;
-            entityType: string;
-            entityId: string;
-            status: string;
-            requestedBy: string;
-            requestedByName?: string;
-            submittedAt: string;
-            completedAt?: string;
-            /** Format: double */
-            currentStep?: number;
-            /** Format: double */
-            totalSteps?: number;
-            steps: components["schemas"]["ApprovalStepResponse"][];
-        };
-        ApprovalActionResponse: {
-            success: boolean;
-            message: string;
-            requestStatus?: string;
-        };
-        ApprovalActionRequest: {
-            comments?: string;
-        };
-        DelegateApprovalRequest: {
-            delegateToUserId: string;
-            comments?: string;
-        };
-        Invoice: {
-            id: string;
-            number: string;
-            /** @enum {string} */
-            type: "SALES" | "PURCHASE";
-            date: string;
-            /** Format: double */
-            total: number;
-            status: string;
-        };
-        InvoiceCreateRequest: {
-            /** @enum {string} */
-            type: "SALES" | "PURCHASE";
-            customerId?: string;
-            supplierId?: string;
-            date: string;
-            dueDate?: string;
-            items: {
-                /** Format: double */
-                unitPrice: number;
-                /** Format: double */
-                quantity: number;
-                description: string;
-            }[];
-        };
-        /**
-         * @description Hisabiq (Accounting) API Response Types
-         *
-         *     These are simplified types for API responses that TSOA can handle.
-         *     Internal Odoo types use tuples [number, string] which TSOA doesn't support.
-         *     All fields use camelCase naming convention for JavaScript/TypeScript APIs.
-         */
-        PaymentResponse: {
-            /** Format: double */
-            id?: number;
-            /** @enum {string} */
-            paymentType: "inbound" | "outbound" | "transfer";
-            /** @enum {string} */
-            partnerType: "customer" | "supplier";
-            /** Format: double */
-            partnerId: number;
-            partnerName?: string;
-            /** Format: double */
-            amount: number;
-            /** Format: double */
-            currencyId?: number;
-            paymentDate: string;
-            /** Format: double */
-            journalId: number;
-            journalName?: string;
-            /** Format: double */
-            paymentMethodId?: number;
-            ref?: string;
-            /** @enum {string} */
-            state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
-        };
-        CreatePaymentDTO: {
-            /** @enum {string} */
-            type: "inbound" | "outbound";
-            /** Format: double */
-            partnerId: number;
-            /** @enum {string} */
-            partnerType: "customer" | "supplier";
-            /** Format: double */
-            amount: number;
-            date: string;
-            /** Format: double */
-            journalId: number;
-            reference?: string;
-            invoiceIds?: number[];
-        };
-        PartnerResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            email?: string;
-            phone?: string;
-            vat?: string;
-            /** Format: double */
-            accountReceivableId?: number;
-            /** Format: double */
-            accountPayableId?: number;
-            /** Format: double */
-            paymentTermId?: number;
-            /** Format: double */
-            customerRank?: number;
-            /** Format: double */
-            supplierRank?: number;
-        };
-        JournalResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            code: string;
-            /** @enum {string} */
-            type: "sale" | "purchase" | "cash" | "bank" | "general";
-            /** Format: double */
-            currencyId?: number;
-            currencyName?: string;
-            /** Format: double */
-            companyId: number;
-            companyName?: string;
-            /** Format: double */
-            defaultAccountId: number;
-            defaultAccountName?: string;
-        };
-        TaxResponse: {
-            /** Format: double */
-            id: number;
-            name: string;
-            /** Format: double */
-            amount: number;
-            /** @enum {string} */
-            amountType: "percent" | "division" | "fixed" | "group";
-            /** @enum {string} */
-            typeTaxUse: "sale" | "purchase" | "none";
-            active: boolean;
-        };
-        AccountBalanceReportResponse: {
-            /** Format: double */
-            accountId: number;
-            accountCode: string;
-            accountName: string;
-            /** Format: double */
-            debit: number;
-            /** Format: double */
-            credit: number;
-            /** Format: double */
-            balance: number;
-        };
-        AccountBalanceQuery: {
-            accountIds?: number[];
-            dateFrom?: string;
-            dateTo?: string;
-        };
-        PartnerLedgerEntryResponse: {
-            date: string;
-            moveName: string;
-            label: string;
-            /** Format: double */
-            debit: number;
-            /** Format: double */
-            credit: number;
-            /** Format: double */
-            balance: number;
-        };
-        PartnerLedgerReportResponse: {
-            /** Format: double */
-            partnerId: number;
-            partnerName: string;
-            /** Format: double */
-            debit: number;
-            /** Format: double */
-            credit: number;
-            /** Format: double */
-            balance: number;
-            entries: components["schemas"]["PartnerLedgerEntryResponse"][];
-        };
-        PartnerLedgerQuery: {
-            /** Format: double */
-            partnerId: number;
-            dateFrom?: string;
-            dateTo?: string;
-        };
-        ProfitLossResponse: {
-            /** Format: double */
-            income: number;
-            /** Format: double */
-            expenses: number;
-            /** Format: double */
-            netProfit: number;
-        };
-        GLEntryResponse: {
-            /** Format: double */
-            id: number;
-            /** Format: double */
-            moveId: number;
-            moveName?: string;
-            date: string;
-            /** Format: double */
-            accountId: number;
-            accountName?: string;
-            /** Format: double */
-            partnerId?: number;
-            partnerName?: string;
-            name: string;
-            /** Format: double */
-            debit: number;
-            /** Format: double */
-            credit: number;
-            /** Format: double */
-            balance: number;
-            /** Format: double */
-            amountCurrency?: number;
-            /** Format: double */
-            currencyId?: number;
-            currencyName?: string;
-            /** Format: double */
-            companyId: number;
-            companyName?: string;
-        };
+  schemas: {
+    WorkflowRules: {
+      autoApprove?: boolean;
+      requireComments?: boolean;
+      allowReassignment?: boolean;
+      /** Format: double */
+      timeoutHours?: number;
+      escalationUserIds?: string[];
+      notifyOnSubmit?: boolean;
+      notifyOnComplete?: boolean;
     };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+    /** @enum {string} */
+    StepType: "single" | "parallel" | "any";
+    /** @enum {string} */
+    ApproverType: "role" | "team" | "user";
+    WorkflowStepResponse: {
+      id: string;
+      /** Format: double */
+      stepOrder: number;
+      stepType: components["schemas"]["StepType"];
+      approverType: components["schemas"]["ApproverType"];
+      approverId?: string;
+      /** Format: double */
+      minApprovals: number;
+      /** Format: double */
+      requiredApprovers: number;
+    };
+    WorkflowResponse: {
+      id: string;
+      name: string;
+      organizationId: string;
+      entityType: string;
+      isActive: boolean;
+      rules?: components["schemas"]["WorkflowRules"];
+      createdAt: string;
+      updatedAt: string;
+      steps: components["schemas"]["WorkflowStepResponse"][];
+    };
+    WorkflowStepInput: {
+      /** Format: double */
+      stepOrder: number;
+      stepType: components["schemas"]["StepType"];
+      approverType: components["schemas"]["ApproverType"];
+      approverId?: string;
+      /** Format: double */
+      minApprovals?: number;
+      /** Format: double */
+      requiredApprovers?: number;
+    };
+    CreateWorkflowRequest: {
+      name: string;
+      entityType: string;
+      rules?: components["schemas"]["WorkflowRules"];
+      steps: components["schemas"]["WorkflowStepInput"][];
+    };
+    UpdateWorkflowRequest: {
+      name?: string;
+      isActive?: boolean;
+      rules?: components["schemas"]["WorkflowRules"];
+      steps?: components["schemas"]["WorkflowStepInput"][];
+    };
+    RuleCondition:
+      | {
+          /** Format: double */
+          value: number;
+          /** @enum {string} */
+          operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq";
+          /** @enum {string} */
+          type: "amount";
+        }
+      | {
+          value: string;
+          /** @enum {string} */
+          operator?: "eq";
+          /** @enum {string} */
+          type: "entityType";
+        }
+      | {
+          value: string;
+          /** @enum {string} */
+          operator?: "eq";
+          /** @enum {string} */
+          type: "userRole";
+        }
+      | {
+          /** @enum {string} */
+          type: "manual";
+        }
+      | {
+          value: string | number | boolean;
+          /** @enum {string} */
+          operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq" | "contains";
+          field: string;
+          /** @enum {string} */
+          type: "field";
+        };
+    Rule: {
+      conditions: components["schemas"]["RuleCondition"][];
+      /** @enum {string} */
+      logic?: "AND" | "OR";
+    };
+    RuleResponse: {
+      id: string;
+      organizationId: string;
+      entityType: string;
+      ruleName: string;
+      conditions: components["schemas"]["Rule"];
+      workflowId: string;
+      /** Format: double */
+      priority: number;
+    };
+    CreateRuleRequest: {
+      entityType: string;
+      ruleName: string;
+      conditions: string;
+      workflowId: string;
+      /** Format: double */
+      priority?: number;
+    };
+    /** @description Construct a type with a set of properties K of type T */
+    "Record_string.unknown_": {
+      [key: string]: unknown;
+    };
+    FileMetadata: {
+      id: string;
+      name: string;
+      path: string;
+      /** Format: double */
+      size: number;
+      mimeType: string;
+      createdAt: string;
+      modifiedAt: string;
+      createdBy: string;
+      modifiedBy?: string;
+      folderId?: string;
+      tags?: string[];
+      metadata?: components["schemas"]["Record_string.unknown_"];
+    };
+    FolderMetadata: {
+      id: string;
+      name: string;
+      path: string;
+      parentId?: string;
+      createdAt: string;
+      modifiedAt: string;
+      createdBy: string;
+      modifiedBy?: string;
+      /** Format: double */
+      fileCount: number;
+      /** Format: double */
+      subFolderCount: number;
+    };
+    CreateFolderRequest: {
+      name: string;
+      parentId?: string;
+    };
+    /** @enum {string} */
+    Locale: "en" | "ar";
+    UserProfileResponse: {
+      id: string;
+      email: string;
+      name?: string | null;
+      image?: string | null;
+      preferredLocale: components["schemas"]["Locale"];
+      activeOrganizationId?: string | null;
+    };
+    UpdateProfileRequest: {
+      name?: string;
+      preferredLocale?: components["schemas"]["Locale"];
+    };
+    UpdateLocaleRequest: {
+      locale: components["schemas"]["Locale"];
+    };
+    SubscriptionPlanResponse: {
+      id: string;
+      name: string;
+      slug: string;
+      pricePerSeat: string;
+      /** Format: double */
+      maxSeats: number | null;
+      billingInterval: string;
+      features: components["schemas"]["Record_string.unknown_"] | null;
+    };
+    CreateSubscriptionResponse: {
+      subscriptionId: string;
+      planId: string;
+      /** Format: double */
+      seats: number;
+      status: string;
+    };
+    CreateSubscriptionRequest: {
+      planId: string;
+      /** Format: double */
+      seats: number;
+    };
+    CurrentSubscriptionResponse: {
+      hasSubscription: boolean;
+      status: string | null;
+      plan: {
+        /** Format: double */
+        maxSeats: number | null;
+        pricePerSeat: string;
+        slug: string;
+        name: string;
+        id: string;
+      } | null;
+      seats: {
+        unlimited: boolean;
+        /** Format: double */
+        available: number;
+        /** Format: double */
+        used: number;
+        /** Format: double */
+        purchased: number;
+      } | null;
+      isGrandfathered?: boolean;
+    };
+    UpdateSubscriptionResponse: {
+      subscriptionId: string;
+      planId: string;
+      /** Format: double */
+      seats: number;
+      status: string;
+    };
+    UpdateSubscriptionRequest: {
+      planId?: string;
+      /** Format: double */
+      seats?: number;
+    };
+    NASConfig: {
+      /** @enum {string} */
+      type: "smb" | "nfs" | "webdav" | "local";
+      host: string;
+      shareName: string;
+      username: string;
+      password: string;
+      domain?: string;
+      mountPoint?: string;
+      /** Format: double */
+      port?: number;
+    };
+    StorageInfo: {
+      totalSpace: string;
+      usedSpace: string;
+      availableSpace: string;
+      /** Format: double */
+      usagePercentage: number;
+    };
+    SecuritySettings: {
+      twoFactorEnabled: boolean;
+      sessionTimeout: string;
+      passwordExpiry: string;
+      requirePasswordChange: boolean;
+      allowMultipleSessions: boolean;
+      ipWhitelisting: boolean;
+      loginNotifications: boolean;
+    };
+    /** @enum {string} */
+    ReportStatus: "generating" | "ready" | "failed";
+    AuditReportResponse: {
+      id: string;
+      caseId: string;
+      templateId?: string | null;
+      title: string;
+      status: components["schemas"]["ReportStatus"];
+      generatedData?: components["schemas"]["Record_string.unknown_"] | null;
+      settings?: {
+        customizations?: components["schemas"]["Record_string.unknown_"];
+        includeSections?: string[];
+        dateRange?: {
+          end: string;
+          start: string;
+        };
+      } | null;
+      filePath?: string | null;
+      /** Format: date-time */
+      generatedAt?: string | null;
+      generatedBy: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    GenerateReportRequest: {
+      caseId: string;
+      templateId: string;
+      title: string;
+      titleAr?: string | null;
+      settings?: {
+        customizations?: components["schemas"]["Record_string.unknown_"];
+        /** @enum {string|null} */
+        locale?: "en" | "ar" | null;
+        includeSections?: string[];
+        dateRange?: {
+          end: string;
+          start: string;
+        };
+      };
+    };
+    UpdateAuditReportRequest: {
+      title?: string | null;
+      status?: components["schemas"]["ReportStatus"] | null;
+      generatedData?: components["schemas"]["Record_string.unknown_"] | null;
+      settings?: {
+        customizations?: components["schemas"]["Record_string.unknown_"];
+        includeSections?: string[];
+        dateRange?: {
+          end: string;
+          start: string;
+        };
+      } | null;
+      filePath?: string | null;
+      /** Format: date-time */
+      generatedAt?: string | null;
+    };
+    /** @enum {string} */
+    CaseType:
+      | "ICV_AUDIT"
+      | "ISO_9001_AUDIT"
+      | "ISO_14001_AUDIT"
+      | "ISO_45001_AUDIT"
+      | "FINANCIAL_AUDIT"
+      | "INTERNAL_AUDIT"
+      | "COMPLIANCE_AUDIT"
+      | "OPERATIONAL_AUDIT";
+    AuditReportTemplateResponse: {
+      id: string;
+      name: string;
+      nameAr?: string | null;
+      caseType?: components["schemas"]["CaseType"] | null;
+      description?: string | null;
+      descriptionAr?: string | null;
+      templateStructure: {
+        metadata?: components["schemas"]["Record_string.unknown_"];
+        styles?: components["schemas"]["Record_string.unknown_"];
+        sections: {
+          config?: components["schemas"]["Record_string.unknown_"];
+          dataSource?: string;
+          titleAr?: string;
+          title?: string;
+          /** @enum {string} */
+          type: "cover_page" | "text" | "metrics_table" | "findings_list" | "chart" | "appendix";
+          id: string;
+        }[];
+      };
+      isDefault: boolean;
+      isActive: boolean;
+      organizationId?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CreateAuditReportTemplateRequest: {
+      name: string;
+      nameAr?: string | null;
+      caseType?: components["schemas"]["CaseType"] | null;
+      description?: string | null;
+      descriptionAr?: string | null;
+      templateStructure: {
+        metadata?: components["schemas"]["Record_string.unknown_"];
+        styles?: components["schemas"]["Record_string.unknown_"];
+        sections: {
+          config?: components["schemas"]["Record_string.unknown_"];
+          dataSource?: string;
+          titleAr?: string;
+          title?: string;
+          /** @enum {string} */
+          type: "cover_page" | "text" | "metrics_table" | "findings_list" | "chart" | "appendix";
+          id: string;
+        }[];
+      };
+      isDefault?: boolean | null;
+      isActive?: boolean | null;
+    };
+    SlugResponse: {
+      nextSlug: string;
+    };
+    OrganizationResponse: {
+      id: string;
+      name: string;
+      slug: string;
+      logo?: string | null;
+      industry?: string | null;
+      size?: string | null;
+      country?: string | null;
+      createdAt: string;
+      updatedAt: string;
+    };
+    OnboardingStatus: {
+      /** @enum {string} */
+      currentStep: "accept-invitation" | "select-plan" | "create-organization" | "completed";
+      hasSubscription: boolean;
+      hasOrganization: boolean;
+      hasPendingInvitations: boolean;
+      /** Format: double */
+      pendingInvitationsCount: number;
+      subscription: {
+        isFree: boolean;
+        /** Format: double */
+        seats: number;
+        planSlug: string;
+        planName: string;
+      } | null;
+      nextAction: {
+        ctaRoute: string;
+        ctaText: string;
+        description: string;
+        title: string;
+      };
+    };
+    UpgradePlanRequest: {
+      planId: string;
+      /** Format: double */
+      seats: number;
+    };
+    OdooWebhookPayload: {
+      /** @enum {string} */
+      event: "create" | "write" | "unlink";
+      model: string;
+      /** Format: double */
+      record_id: number;
+      organization_id: string;
+      user_id: string;
+      timestamp: string;
+    };
+    OdooProvisionResponse: {
+      success: boolean;
+      message: string;
+      jobId?: string;
+    };
+    /** @enum {string} */
+    OdooLanguage: "en_US" | "ar_001" | "fr_FR" | "es_ES" | "de_DE";
+    /** @enum {string} */
+    OdooDemo: "true" | "false";
+    OdooInfoResponse: {
+      databaseName: string;
+      exists: boolean;
+      loginUrl: string | null;
+    };
+    OdooDeleteResponse: {
+      success: boolean;
+      message: string;
+    };
+    OdooDuplicateResponse: {
+      success: boolean;
+      originalName: string;
+      newName: string;
+    };
+    OdooDuplicateRequest: {
+      newName: string;
+      neutralize?: boolean;
+    };
+    OdooListResponse: {
+      databases: string[];
+    };
+    OdooSearchRequest: {
+      model: string;
+      domain?: unknown[];
+      /** Format: double */
+      limit?: number;
+      /** Format: double */
+      offset?: number;
+      order?: string;
+    };
+    OdooSearchReadRequest: {
+      model: string;
+      domain?: unknown[];
+      fields?: string[];
+      /** Format: double */
+      limit?: number;
+      /** Format: double */
+      offset?: number;
+      order?: string;
+      context?: components["schemas"]["Record_string.unknown_"];
+    };
+    OdooReadRequest: {
+      model: string;
+      ids: number[];
+      fields?: string[];
+      context?: components["schemas"]["Record_string.unknown_"];
+    };
+    OdooCreateRequest: {
+      model: string;
+      values: components["schemas"]["Record_string.unknown_"];
+      context?: components["schemas"]["Record_string.unknown_"];
+    };
+    OdooWriteRequest: {
+      model: string;
+      ids: number[];
+      values: components["schemas"]["Record_string.unknown_"];
+      context?: components["schemas"]["Record_string.unknown_"];
+    };
+    OdooUnlinkRequest: {
+      model: string;
+      ids: number[];
+      context?: components["schemas"]["Record_string.unknown_"];
+    };
+    OdooExecuteRequest: {
+      model: string;
+      method: string;
+      args?: unknown[];
+      kwargs?: components["schemas"]["Record_string.unknown_"];
+    };
+    OcrResponse: {
+      documentId: string;
+      extractedText: string;
+      /** Format: date-time */
+      processedAt: string;
+    };
+    ProcessOcrRequest: {
+      documentId: string;
+      language?: string | null;
+    };
+    DocumentSearchResult: {
+      id: string;
+      fileName: string;
+      fileType: string;
+      ocrText: string | null;
+      /** Format: date-time */
+      uploadedAt: string;
+    };
+    DocumentSearchRequest: {
+      caseId: string;
+      searchText: string;
+    };
+    NASConnectionStatus: {
+      connected: boolean;
+      mountPoint?: string;
+      error?: string;
+      /** Format: double */
+      freeSpace?: number;
+      /** Format: double */
+      totalSpace?: number;
+      /** Format: double */
+      usedSpace?: number;
+    };
+    ConnectNASRequest: {
+      name: string;
+      /** @enum {string} */
+      type: "smb" | "nfs" | "webdav";
+      host: string;
+      shareName: string;
+      username?: string;
+      password?: string;
+      domain?: string;
+      mountPoint?: string;
+      /** Format: double */
+      port?: number;
+    };
+    /** @description Construct a type with a set of properties K of type T */
+    "Record_string.NASConnectionStatus_": {
+      [key: string]: components["schemas"]["NASConnectionStatus"];
+    };
+    NASStatusResponse: components["schemas"]["Record_string.NASConnectionStatus_"];
+    Integration: {
+      id: string;
+      name: string;
+      description: string;
+      logo: string;
+      connected: boolean;
+      /** @enum {string} */
+      category: "accounting" | "communication" | "storage" | "productivity";
+      configUrl?: string;
+    };
+    /** @enum {string} */
+    EmployeeType: "employee" | "student" | "trainee" | "contractor" | "freelance";
+    /** @enum {string} */
+    Gender: "male" | "female" | "other";
+    /** @enum {string} */
+    MaritalStatus: "single" | "married" | "cohabitant" | "widower" | "divorced";
+    EmployeeDbResponse: {
+      id: string;
+      organizationId: string;
+      userId?: string | null;
+      /** Format: double */
+      odooEmployeeId?: number | null;
+      name: string;
+      email?: string | null;
+      phone?: string | null;
+      mobile?: string | null;
+      workEmail?: string | null;
+      workPhone?: string | null;
+      workLocation?: string | null;
+      jobTitle?: string | null;
+      departmentId?: string | null;
+      managerId?: string | null;
+      employeeType?: components["schemas"]["EmployeeType"] | null;
+      gender?: components["schemas"]["Gender"] | null;
+      maritalStatus?: components["schemas"]["MaritalStatus"] | null;
+      birthday?: string | null;
+      placeOfBirth?: string | null;
+      countryOfBirth?: string | null;
+      nationality?: string | null;
+      identificationId?: string | null;
+      passportId?: string | null;
+      bankAccountNumber?: string | null;
+      bankName?: string | null;
+      bankIban?: string | null;
+      emergencyContact?: string | null;
+      emergencyPhone?: string | null;
+      emergencyRelation?: string | null;
+      hireDate?: string | null;
+      terminationDate?: string | null;
+      photoUrl?: string | null;
+      notes?: string | null;
+      active: boolean;
+      lastSyncedAt?: string | null;
+      createdAt: string;
+      updatedAt: string;
+    };
+    CreateEmployeeRequest: {
+      userId?: string | null;
+      /** Format: double */
+      odooEmployeeId?: number | null;
+      name: string;
+      email?: string | null;
+      phone?: string | null;
+      mobile?: string | null;
+      workEmail?: string | null;
+      workPhone?: string | null;
+      workLocation?: string | null;
+      jobTitle?: string | null;
+      departmentId?: string | null;
+      managerId?: string | null;
+      employeeType?: components["schemas"]["EmployeeType"] | null;
+      gender?: components["schemas"]["Gender"] | null;
+      maritalStatus?: components["schemas"]["MaritalStatus"] | null;
+      birthday?: string | null;
+      placeOfBirth?: string | null;
+      countryOfBirth?: string | null;
+      nationality?: string | null;
+      identificationId?: string | null;
+      passportId?: string | null;
+      bankAccountNumber?: string | null;
+      bankName?: string | null;
+      bankIban?: string | null;
+      emergencyContact?: string | null;
+      emergencyPhone?: string | null;
+      emergencyRelation?: string | null;
+      hireDate?: string | null;
+      terminationDate?: string | null;
+      photoUrl?: string | null;
+      notes?: string | null;
+      active?: boolean | null;
+    };
+    UpdateEmployeeRequest: {
+      name?: string | null;
+      email?: string | null;
+      phone?: string | null;
+      mobile?: string | null;
+      workEmail?: string | null;
+      workPhone?: string | null;
+      workLocation?: string | null;
+      jobTitle?: string | null;
+      departmentId?: string | null;
+      managerId?: string | null;
+      employeeType?: components["schemas"]["EmployeeType"] | null;
+      gender?: components["schemas"]["Gender"] | null;
+      maritalStatus?: components["schemas"]["MaritalStatus"] | null;
+      birthday?: string | null;
+      placeOfBirth?: string | null;
+      countryOfBirth?: string | null;
+      nationality?: string | null;
+      identificationId?: string | null;
+      passportId?: string | null;
+      bankAccountNumber?: string | null;
+      bankName?: string | null;
+      bankIban?: string | null;
+      emergencyContact?: string | null;
+      emergencyPhone?: string | null;
+      emergencyRelation?: string | null;
+      hireDate?: string | null;
+      terminationDate?: string | null;
+      photoUrl?: string | null;
+      notes?: string | null;
+      active?: boolean | null;
+    };
+    SyncEmployeeFromOdooRequest: {
+      /** Format: double */
+      odooEmployeeId: number;
+    };
+    SyncAllEmployeesResponse: {
+      /** Format: double */
+      synced: number;
+      /** Format: double */
+      created: number;
+      /** Format: double */
+      updated: number;
+      errors: string[];
+    };
+    DepartmentDbResponse: {
+      id: string;
+      organizationId: string;
+      /** Format: double */
+      odooDepartmentId?: number | null;
+      name: string;
+      code?: string | null;
+      parentId?: string | null;
+      managerId?: string | null;
+      /** Format: double */
+      color?: number | null;
+      note?: string | null;
+      lastSyncedAt?: string | null;
+      createdAt: string;
+      updatedAt: string;
+    };
+    CreateDepartmentRequest: {
+      /** Format: double */
+      odooDepartmentId?: number | null;
+      name: string;
+      code?: string | null;
+      parentId?: string | null;
+      managerId?: string | null;
+      /** Format: double */
+      color?: number | null;
+      note?: string | null;
+    };
+    UpdateDepartmentRequest: {
+      name?: string | null;
+      code?: string | null;
+      parentId?: string | null;
+      managerId?: string | null;
+      /** Format: double */
+      color?: number | null;
+      note?: string | null;
+    };
+    SyncDepartmentFromOdooRequest: {
+      /** Format: double */
+      odooDepartmentId: number;
+    };
+    SyncAllDepartmentsResponse: {
+      /** Format: double */
+      synced: number;
+      /** Format: double */
+      created: number;
+      /** Format: double */
+      updated: number;
+      errors: string[];
+    };
+    LeaveBalanceResponse: {
+      employeeId: string;
+      leaveTypeId: string;
+      leaveTypeName: string;
+      /** Format: double */
+      totalAllocated: number;
+      /** Format: double */
+      totalUsed: number;
+      /** Format: double */
+      totalRemaining: number;
+    };
+    OdooRelation: {
+      /** Format: double */
+      id: number;
+      name: string;
+    };
+    EmployeeResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      work_email?: string;
+      work_phone?: string;
+      mobile_phone?: string;
+      job_title?: string;
+      department_id?: components["schemas"]["OdooRelation"];
+      parent_id?: components["schemas"]["OdooRelation"];
+      address_id?: components["schemas"]["OdooRelation"];
+      work_location_id?: components["schemas"]["OdooRelation"];
+      user_id?: components["schemas"]["OdooRelation"];
+      employee_type?: string;
+      gender?: string;
+      marital?: string;
+      birthday?: string;
+      identification_id?: string;
+      passport_id?: string;
+      bank_account_id?: components["schemas"]["OdooRelation"];
+      emergency_contact?: string;
+      emergency_phone?: string;
+      visa_no?: string;
+      visa_expire?: string;
+      work_permit_no?: string;
+      work_permit_expiration_date?: string;
+      certificate?: string;
+      study_field?: string;
+      study_school?: string;
+      place_of_birth?: string;
+      country_of_birth?: components["schemas"]["OdooRelation"];
+      active?: boolean;
+    };
+    DepartmentResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      complete_name?: string;
+      manager_id?: components["schemas"]["OdooRelation"];
+      parent_id?: components["schemas"]["OdooRelation"];
+      company_id?: components["schemas"]["OdooRelation"];
+      active?: boolean;
+      /** Format: double */
+      total_employee?: number;
+      /** Format: double */
+      color?: number;
+      note?: string;
+    };
+    ContractResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      employee_id: components["schemas"]["OdooRelation"];
+      date_start: string;
+      date_end?: string;
+      state: string;
+      job_id?: components["schemas"]["OdooRelation"];
+      department_id?: components["schemas"]["OdooRelation"];
+      /** Format: double */
+      wage: number;
+      wage_type: string;
+      struct_id?: components["schemas"]["OdooRelation"];
+      resource_calendar_id?: components["schemas"]["OdooRelation"];
+      notes?: string;
+    };
+    LeaveTypeResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      request_unit: string;
+      time_type: string;
+      /** Format: double */
+      color?: number;
+      leave_validation_type?: string;
+      requires_allocation?: boolean;
+      employee_requests?: boolean;
+      allocation_validation_type?: string;
+      /** Format: double */
+      max_leaves?: number;
+      unpaid?: boolean;
+      active?: boolean;
+      support_document?: boolean;
+    };
+    LeaveRequestResponse: {
+      /** Format: double */
+      id: number;
+      employee_id: components["schemas"]["OdooRelation"];
+      holiday_status_id: components["schemas"]["OdooRelation"];
+      date_from: string;
+      date_to: string;
+      /** Format: double */
+      number_of_days: number;
+      state: string;
+      request_date_from?: string;
+      request_unit_half?: boolean;
+      request_unit_hours?: boolean;
+      request_hour_from?: string;
+      request_hour_to?: string;
+      notes?: string;
+      manager_id?: components["schemas"]["OdooRelation"];
+      department_id?: components["schemas"]["OdooRelation"];
+    };
+    LeaveAllocationResponse: {
+      /** Format: double */
+      id: number;
+      employee_id: components["schemas"]["OdooRelation"];
+      holiday_status_id: components["schemas"]["OdooRelation"];
+      /** Format: double */
+      number_of_days: number;
+      /** Format: double */
+      number_of_days_display?: number;
+      date_from?: string;
+      date_to?: string;
+      state: string;
+      name?: string;
+      notes?: string;
+    };
+    PayslipResponse: {
+      /** Format: double */
+      id: number;
+      number: string;
+      employee_id: components["schemas"]["OdooRelation"];
+      date_from: string;
+      date_to: string;
+      state: string;
+      /** Format: double */
+      basic_wage?: number;
+      /** Format: double */
+      net_wage?: number;
+      /** Format: double */
+      gross_wage?: number;
+      contract_id?: components["schemas"]["OdooRelation"];
+      struct_id?: components["schemas"]["OdooRelation"];
+      credit_note?: boolean;
+      paid_date?: string;
+    };
+    PayslipLineResponse: {
+      /** Format: double */
+      id: number;
+      slip_id: components["schemas"]["OdooRelation"];
+      name: string;
+      code: string;
+      category_id?: components["schemas"]["OdooRelation"];
+      /** Format: double */
+      sequence?: number;
+      /** Format: double */
+      quantity?: number;
+      /** Format: double */
+      rate?: number;
+      /** Format: double */
+      amount: number;
+    };
+    HealthCheck: {
+      /** @enum {string} */
+      status: "ok" | "error";
+      timestamp: string;
+      /** Format: double */
+      uptime: number;
+      version: string;
+    };
+    SetupEncryptionRequest: {
+      wrappedOrgKey: string;
+      salt: string;
+      iv: string;
+    };
+    GrantAuditorAccessRequest: {
+      auditorUserId: string;
+      wrappedOrgKey: string;
+      expiresAt?: string;
+    };
+    ResendWebhookPayload: {
+      type: string;
+      created_at: string;
+      data: {
+        complaint_type?: string;
+        bounce_subtype?: string;
+        /** @enum {string} */
+        bounce_type?: "hard" | "soft";
+        created_at?: string;
+        subject?: string;
+        to?: string[];
+        from?: string;
+        email_id?: string;
+      };
+    };
+    /** @enum {string} */
+    DocumentType:
+      | "invoice"
+      | "bill"
+      | "quote"
+      | "purchase_order"
+      | "delivery_note"
+      | "receipt"
+      | "credit_note"
+      | "debit_note"
+      | "payslip"
+      | "contract"
+      | "payment_receipt"
+      | "refund";
+    DocumentTemplateResponse: {
+      id: string;
+      organizationId: string;
+      documentType: components["schemas"]["DocumentType"];
+      templateId: string;
+      templateName: string;
+      templateDescription: string | null;
+      isActive: boolean;
+      customizations: components["schemas"]["Record_string.unknown_"] | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    OdooReportTemplate: {
+      /** Format: double */
+      id: number;
+      name: string;
+      report_name: string;
+      model: string;
+      report_type: string;
+    };
+    CreateDocumentTemplateRequest: {
+      documentType: components["schemas"]["DocumentType"];
+      templateId: string;
+      templateName: string;
+      templateDescription?: string;
+      isActive?: boolean;
+      customizations?: components["schemas"]["Record_string.unknown_"];
+    };
+    UpdateTemplateRequest: {
+      templateName?: string;
+      templateDescription?: string;
+      customizations?: components["schemas"]["Record_string.unknown_"];
+    };
+    CreateCustomTemplateRequest: {
+      documentType: components["schemas"]["DocumentType"];
+      templateName: string;
+      templateDescription?: string;
+      qwebXml: string;
+      model: string;
+      isActive?: boolean;
+      customizations?: components["schemas"]["Record_string.unknown_"];
+    };
+    DatabaseStats: {
+      totalSize: string;
+      /** Format: double */
+      tableCount: number;
+      rowCount: string;
+      lastOptimized: string;
+      /** @enum {string} */
+      health: "good" | "warning" | "critical";
+    };
+    BackupSettings: {
+      autoBackup: boolean;
+      backupFrequency: string;
+      backupRetention: string;
+      backupLocation: string;
+      compressionEnabled: boolean;
+      encryptionEnabled: boolean;
+    };
+    Backup: {
+      id: string;
+      name: string;
+      size: string;
+      date: string;
+      /** @enum {string} */
+      status: "completed" | "failed" | "in-progress";
+      /** @enum {string} */
+      type: "automatic" | "manual";
+    };
+    /** @description Dashboard statistics response */
+    DashboardStatsResponse: {
+      /** Format: double */
+      activeCases: number;
+      /** Format: double */
+      pendingReviews: number;
+      /** Format: double */
+      completedAudits: number;
+      /** Format: double */
+      totalCases: number;
+      /** Format: double */
+      completionRate: number;
+    };
+    /** @description Case activity item */
+    RecentCaseUpdateResponse: {
+      id: string;
+      /** @enum {string} */
+      type: "case_update";
+      caseId: string;
+      caseNumber: string;
+      title: string;
+      status: string;
+      updatedAt: string;
+      updatedBy: {
+        name: string;
+        id: string;
+      };
+    };
+    /** @description Notification response */
+    NotificationResponse: {
+      id: string;
+      type: string;
+      title: string;
+      description: string;
+      timestamp: string;
+      isRead: boolean;
+      relatedEntityType: string | null;
+      relatedEntityId: string | null;
+      actionLabel: string | null;
+      actionUrl: string | null;
+    };
+    /** @description Unread notifications count response */
+    UnreadNotificationsCountResponse: {
+      /** Format: double */
+      count: number;
+    };
+    LeadResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      type: string;
+      contactName?: string;
+      partnerName?: string;
+      emailFrom?: string;
+      phone?: string;
+      website?: string;
+      function?: string;
+      street?: string;
+      street2?: string;
+      city?: string;
+      state?: components["schemas"]["OdooRelation"];
+      country?: components["schemas"]["OdooRelation"];
+      zip?: string;
+      partner?: components["schemas"]["OdooRelation"];
+      commercialPartner?: components["schemas"]["OdooRelation"];
+      stage?: components["schemas"]["OdooRelation"];
+      team?: components["schemas"]["OdooRelation"];
+      user?: components["schemas"]["OdooRelation"];
+      company?: components["schemas"]["OdooRelation"];
+      campaign?: components["schemas"]["OdooRelation"];
+      source?: components["schemas"]["OdooRelation"];
+      medium?: components["schemas"]["OdooRelation"];
+      language?: components["schemas"]["OdooRelation"];
+      tags?: number[];
+      /** Format: double */
+      expectedRevenue?: number;
+      /** Format: double */
+      proratedRevenue?: number;
+      /** Format: double */
+      recurringRevenue?: number;
+      recurringPlan?: components["schemas"]["OdooRelation"];
+      /** Format: double */
+      recurringRevenueMonthly?: number;
+      /** Format: double */
+      probability?: number;
+      dateOpen?: string;
+      dateDeadline?: string;
+      dateClosed?: string;
+      dateConversion?: string;
+      dateLastStageUpdate?: string;
+      priority?: string;
+      active?: boolean;
+      description?: string;
+      referred?: string;
+      /** Format: double */
+      color?: number;
+      lostReason?: components["schemas"]["OdooRelation"];
+    };
+    CreateLeadRequest: {
+      name: string;
+      /** @enum {string} */
+      type?: "lead" | "opportunity";
+      contactName?: string;
+      emailFrom?: string;
+      phone?: string;
+      /** Format: double */
+      partnerId?: number;
+      /** Format: double */
+      teamId?: number;
+      /** Format: double */
+      userId?: number;
+      /** Format: double */
+      expectedRevenue?: number;
+      description?: string;
+    };
+    UpdateLeadRequest: {
+      name?: string;
+      /** Format: double */
+      stageId?: number;
+      /** Format: double */
+      userId?: number;
+      /** Format: double */
+      expectedRevenue?: number;
+      dateDeadline?: string;
+      priority?: string;
+      description?: string;
+    };
+    StageResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      /** Format: double */
+      sequence?: number;
+      fold?: boolean;
+      isWon?: boolean;
+      /** Format: double */
+      rottingThresholdDays?: number;
+      requirements?: string;
+      teamIds?: number[];
+      /** Format: double */
+      color?: number;
+    };
+    ContactResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      isCompany?: boolean;
+      companyType?: string;
+      email?: string;
+      phone?: string;
+      mobile?: string;
+      website?: string;
+      function?: string;
+      comment?: string;
+      street?: string;
+      street2?: string;
+      city?: string;
+      state?: components["schemas"]["OdooRelation"];
+      country?: components["schemas"]["OdooRelation"];
+      zip?: string;
+      vat?: string;
+      industry?: components["schemas"]["OdooRelation"];
+      ref?: string;
+      barcode?: string;
+      isCustomer?: boolean;
+      isSupplier?: boolean;
+      active?: boolean;
+    };
+    CreateContactRequest: {
+      name: string;
+      isCompany?: boolean;
+      email?: string;
+      phone?: string;
+      mobile?: string;
+      website?: string;
+      street?: string;
+      city?: string;
+      zip?: string;
+      /** Format: double */
+      countryId?: number;
+    };
+    UpdateContactRequest: {
+      name?: string;
+      email?: string;
+      phone?: string;
+      mobile?: string;
+      website?: string;
+      street?: string;
+      city?: string;
+      zip?: string;
+    };
+    ActivityResponse: {
+      /** Format: double */
+      id: number;
+      /** Format: double */
+      leadId: number;
+      activityType: components["schemas"]["OdooRelation"];
+      summary?: string;
+      note?: string;
+      dateDeadline: string;
+      user: components["schemas"]["OdooRelation"];
+      state: string;
+    };
+    CreateActivityRequest: {
+      /** Format: double */
+      leadId: number;
+      /** Format: double */
+      activityTypeId: number;
+      summary?: string;
+      note?: string;
+      dateDeadline: string;
+      /** Format: double */
+      userId?: number;
+    };
+    TeamResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      active?: boolean;
+      leader?: components["schemas"]["OdooRelation"];
+      memberIds?: number[];
+    };
+    LostReasonResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      active?: boolean;
+    };
+    /** @enum {string} */
+    ConnectorType:
+      | "postgresql"
+      | "mysql"
+      | "mssql"
+      | "storage_local"
+      | "storage_webdav"
+      | "storage_smb"
+      | "storage_cloud";
+    ConnectorResponse: {
+      id: string;
+      organizationId: string;
+      name: string;
+      description?: string | null;
+      type: components["schemas"]["ConnectorType"];
+      isActive: boolean;
+      tags: string[];
+      metadata: components["schemas"]["Record_string.unknown_"];
+      lastConnectionTest?: string | null;
+      lastConnectionStatus?: string | null;
+      lastConnectionError?: string | null;
+      createdAt: string;
+      updatedAt: string;
+    };
+    ConnectorConfig: {
+      host?: string;
+      /** Format: double */
+      port?: number;
+      database?: string;
+      username?: string;
+      password?: string;
+      ssl?: boolean;
+      url?: string;
+      apiKey?: string;
+      authToken?: string;
+    } & {
+      [key: string]: unknown;
+    };
+    CreateConnectorRequest: {
+      name: string;
+      description?: string | null;
+      type: components["schemas"]["ConnectorType"];
+      config: components["schemas"]["ConnectorConfig"];
+      tags?: string[] | null;
+      metadata?: components["schemas"]["Record_string.unknown_"] | null;
+    };
+    UpdateConnectorRequest: {
+      name?: string | null;
+      description?: string | null;
+      config?: components["schemas"]["ConnectorConfig"] | null;
+      tags?: string[] | null;
+      metadata?: components["schemas"]["Record_string.unknown_"] | null;
+      isActive?: boolean | null;
+    };
+    QueryResponse: {
+      rows: unknown[];
+      /** Format: double */
+      rowCount: number;
+      /** Format: double */
+      executionTime: number;
+    };
+    QueryRequest: {
+      sql: string;
+      params?: unknown[] | null;
+    };
+    SchemaResponse: {
+      tables: {
+        /** @enum {string} */
+        type: "table" | "view";
+        name: string;
+        schema: string;
+      }[];
+    };
+    TablePreviewResponse: {
+      schema: string;
+      table: string;
+      columns: {
+        nullable: boolean;
+        type: string;
+        name: string;
+      }[];
+      sampleData: unknown[];
+      /** Format: double */
+      totalRows: number;
+    };
+    FieldMapping: {
+      sourceColumn: string;
+      targetField: string;
+      /** @enum {string|null} */
+      transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean" | null;
+      defaultValue?: unknown;
+    };
+    SuggestMappingsRequest: {
+      sourceColumns: string[];
+      /** @enum {string} */
+      targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
+    };
+    /** @enum {string} */
+    ActivityType:
+      | "case_created"
+      | "status_changed"
+      | "priority_updated"
+      | "document_uploaded"
+      | "document_approved"
+      | "document_rejected"
+      | "comment_added"
+      | "team_member_assigned"
+      | "team_member_removed"
+      | "case_completed"
+      | "case_archived"
+      | "scope_created"
+      | "procedure_completed"
+      | "plan_created"
+      | "report_generated";
+    /** @description Construct a type with a set of properties K of type T */
+    "Record_string.boolean_": {
+      [key: string]: boolean;
+    };
+    CaseActivityResponse: {
+      id: string;
+      caseId: string;
+      activityType: components["schemas"]["ActivityType"];
+      userId?: string | null;
+      user?: {
+        email: string;
+        name: string | null;
+        id: string | null;
+      };
+      metadata?:
+        | ({
+            reportId?: string | null;
+            planId?: string | null;
+            scopeId?: string | null;
+            commentId?: string | null;
+            assignedUserName?: string | null;
+            assignedUserId?: string | null;
+            userName?: string | null;
+            documentId?: string | null;
+            documentName?: string | null;
+            newValue?: string | null;
+            oldValue?: string | null;
+            caseName?: string | null;
+          } & {
+            [key: string]: unknown;
+          })
+        | null;
+      isRead?: components["schemas"]["Record_string.boolean_"] | null;
+      /** Format: date-time */
+      createdAt: string;
+    };
+    CreateCaseActivityRequest: {
+      caseId: string;
+      activityType: components["schemas"]["ActivityType"];
+      metadata?: {
+        reportId?: string | null;
+        planId?: string | null;
+        scopeId?: string | null;
+        commentId?: string | null;
+        assignedUserName?: string | null;
+        assignedUserId?: string | null;
+        userName?: string | null;
+        documentId?: string | null;
+        documentName?: string | null;
+        newValue?: string | null;
+        oldValue?: string | null;
+        caseName?: string | null;
+      } & {
+        [key: string]: unknown;
+      };
+    };
+    MarkAsReadRequest: {
+      activityIds: string[];
+    };
+    PresenceResponse: {
+      id: string;
+      caseId: string;
+      userId: string;
+      user?: {
+        email: string;
+        name: string | null;
+        id: string | null;
+      };
+      /** Format: date-time */
+      lastSeenAt: string;
+    };
+    UpdatePresenceRequest: {
+      caseId: string;
+    };
+    /** @enum {string} */
+    CaseStatus: "draft" | "in_progress" | "under_review" | "completed" | "overdue" | "archived";
+    /** @enum {string} */
+    CasePriority: "low" | "medium" | "high" | "critical";
+    /** @enum {string} */
+    AssignmentRole: "lead" | "reviewer" | "team_member";
+    CaseResponse: {
+      id: string;
+      organizationId: string;
+      caseNumber: string;
+      title: string;
+      description?: string | null;
+      caseType: components["schemas"]["CaseType"];
+      status: components["schemas"]["CaseStatus"];
+      priority: components["schemas"]["CasePriority"];
+      dueDate?: string | null;
+      completedDate?: string | null;
+      createdBy: string;
+      createdAt: string;
+      updatedAt: string;
+      assignments?: {
+        user?: {
+          email: string;
+          name: string | null;
+          id: string | null;
+        };
+        role: components["schemas"]["AssignmentRole"];
+        userId: string | null;
+      }[];
+    };
+    CreateCaseRequest: {
+      caseNumber?: string | null;
+      title: string;
+      description?: string | null;
+      caseType: components["schemas"]["CaseType"];
+      status?: components["schemas"]["CaseStatus"] | null;
+      priority?: components["schemas"]["CasePriority"] | null;
+      dueDate?: string | null;
+    };
+    /** @enum {string} */
+    TemplateType: "scope" | "form" | "checklist" | "report" | "plan";
+    /** @enum {string} */
+    CaseCategory: "certification" | "financial" | "operational" | "compliance";
+    TemplateStructure: {
+      settings?: components["schemas"]["Record_string.unknown_"];
+      sections: {
+        procedures: {
+          /** Format: double */
+          sortOrder: number;
+          requirements?: components["schemas"]["Record_string.unknown_"];
+          description?: string;
+          title: string;
+          referenceNumber: string;
+        }[];
+        settings?: components["schemas"]["Record_string.unknown_"];
+        /** Format: double */
+        sortOrder: number;
+        description?: string;
+        name: string;
+      }[];
+    };
+    TemplateResponse: {
+      id: string;
+      organizationId?: string | null;
+      name: string;
+      description?: string | null;
+      templateType: components["schemas"]["TemplateType"];
+      category?: components["schemas"]["CaseCategory"] | null;
+      version: string;
+      isActive: boolean;
+      isSystemTemplate: boolean;
+      structure: components["schemas"]["TemplateStructure"];
+      createdBy: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+    CreateTemplateRequest: {
+      organizationId?: string | null;
+      name: string;
+      description?: string | null;
+      templateType: components["schemas"]["TemplateType"];
+      category?: components["schemas"]["CaseCategory"] | null;
+      version?: string;
+      isActive?: boolean;
+      isSystemTemplate?: boolean;
+      structure: components["schemas"]["TemplateStructure"];
+    };
+    UpdateCaseRequest: {
+      caseNumber?: string | null;
+      title?: string | null;
+      description?: string | null;
+      caseType?: components["schemas"]["CaseType"] | null;
+      status?: components["schemas"]["CaseStatus"] | null;
+      priority?: components["schemas"]["CasePriority"] | null;
+      dueDate?: string | null;
+      completedDate?: string | null;
+    };
+    /** @enum {string} */
+    AuditStatus: "draft" | "in_progress" | "under_review" | "completed" | "archived";
+    ScopeResponse: {
+      id: string;
+      caseId: string;
+      templateId?: string | null;
+      name: string;
+      description?: string | null;
+      status: components["schemas"]["AuditStatus"];
+      data: components["schemas"]["Record_string.unknown_"];
+      createdBy: string;
+      completedBy?: string | null;
+      archivedBy?: string | null;
+      createdAt: string;
+      updatedAt: string;
+      completedAt?: string | null;
+      archivedAt?: string | null;
+    };
+    CreateScopeRequest: {
+      name: string;
+      description?: string | null;
+      status?: components["schemas"]["AuditStatus"] | null;
+      data?: components["schemas"]["Record_string.unknown_"] | null;
+    };
+    CreateScopeFromTemplateRequest: {
+      templateId: string;
+    };
+    UpdateScopeStatusRequest: {
+      status: components["schemas"]["AuditStatus"];
+    };
+    SectionResponse: {
+      id: string;
+      scopeId: string;
+      name: string;
+      description?: string | null;
+      /** Format: double */
+      sortOrder: number;
+      isCompleted: boolean;
+      settings: components["schemas"]["Record_string.unknown_"];
+      createdAt: string;
+      updatedAt: string;
+    };
+    ProcedureResponse: {
+      id: string;
+      sectionId: string;
+      referenceNumber: string;
+      title: string;
+      description?: string | null;
+      requirements: components["schemas"]["Record_string.unknown_"];
+      /** Format: double */
+      sortOrder: number;
+      isCompleted: boolean;
+      completedBy?: string | null;
+      completedAt?: string | null;
+      memo?: string | null;
+      fieldData: components["schemas"]["Record_string.unknown_"];
+      canEdit: boolean;
+      createdAt: string;
+      updatedAt: string;
+    };
+    CompleteProcedureRequest: {
+      fieldData?: components["schemas"]["Record_string.unknown_"] | null;
+      memo?: string | null;
+    };
+    DocumentResponse: {
+      id: string;
+      caseId: string;
+      procedureId?: string | null;
+      fileName: string;
+      /** Format: double */
+      fileSize: number;
+      fileType: string;
+      storagePath: string;
+      /** Format: double */
+      version: number;
+      parentDocumentId?: string | null;
+      uploadedBy: string;
+      uploadedAt: string;
+      isDeleted: boolean;
+    };
+    CreateDocumentRequest: {
+      procedureId?: string | null;
+      fileName: string;
+      /** Format: double */
+      fileSize: number;
+      fileType: string;
+      storagePath: string;
+      /** Format: double */
+      version?: number | null;
+      parentDocumentId?: string | null;
+    };
+    /** @enum {string} */
+    NoteType: "observation" | "review_comment" | "general" | "memo";
+    NoteResponse: {
+      id: string;
+      caseId: string;
+      procedureId?: string | null;
+      noteType: components["schemas"]["NoteType"];
+      content: string;
+      createdBy: string;
+      createdAt: string;
+      updatedAt: string;
+      isEdited: boolean;
+    };
+    CreateNoteRequest: {
+      procedureId?: string | null;
+      noteType: components["schemas"]["NoteType"];
+      content: string;
+    };
+    UpdateNoteRequest: {
+      content: string;
+    };
+    AssignmentResponse: {
+      caseId: string;
+      userId: string;
+      role: components["schemas"]["AssignmentRole"];
+      assignedBy: string;
+      assignedAt: string;
+    };
+    CreateAssignmentRequest: {
+      userId: string;
+      role: components["schemas"]["AssignmentRole"];
+    };
+    /** @enum {string} */
+    CaseEntityType: "case" | "scope" | "section" | "procedure" | "document" | "note";
+    /** @enum {string} */
+    CaseAction: "created" | "updated" | "deleted" | "completed" | "archived" | "assigned" | "unassigned";
+    HistoryResponse: {
+      id: string;
+      caseId: string;
+      entityType: components["schemas"]["CaseEntityType"];
+      entityId: string;
+      action: components["schemas"]["CaseAction"];
+      changesBefore?: components["schemas"]["Record_string.unknown_"] | null;
+      changesAfter?: components["schemas"]["Record_string.unknown_"] | null;
+      changedBy: string;
+      changedAt: string;
+    };
+    /** @enum {string} */
+    PlanType: "standalone" | "case_integrated";
+    /** @enum {string} */
+    PlanStatus: "draft" | "in_review" | "approved" | "converted" | "archived";
+    AuditPlanResponse: {
+      id: string;
+      caseId?: string | null;
+      planType: components["schemas"]["PlanType"];
+      title: string;
+      clientName?: string | null;
+      caseType?: components["schemas"]["CaseType"] | null;
+      /** Format: double */
+      auditYear?: number | null;
+      startDate?: string | null;
+      targetCompletion?: string | null;
+      objectives?:
+        | {
+            priority?: string;
+            description: string;
+            id: string | null;
+          }[]
+        | null;
+      businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+      financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
+      teamMembers?:
+        | {
+            /** Format: double */
+            hours?: number;
+            role: string;
+            name: string;
+            userId: string | null;
+          }[]
+        | null;
+      phaseBreakdown?:
+        | {
+            endDate?: string | null;
+            startDate?: string | null;
+            description?: string | null;
+            /** Format: double */
+            duration: number;
+            name: string | null;
+          }[]
+        | null;
+      totalBudget?: string | null;
+      /** Format: double */
+      totalHours?: number | null;
+      materialityThreshold?: string | null;
+      riskAssessment?: {
+        /** Format: double */
+        score?: number | null;
+        overallRisk?: string | null;
+        risks?: {
+          message: string;
+          severity: string;
+          type: string | null;
+        }[];
+      } | null;
+      status: components["schemas"]["PlanStatus"];
+      organizationId: string;
+      createdBy: string;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CreateAuditPlanRequest: {
+      caseId?: string | null;
+      planType?: components["schemas"]["PlanType"] | null;
+      title: string;
+      clientName?: string | null;
+      caseType?: components["schemas"]["CaseType"] | null;
+      /** Format: double */
+      auditYear?: number | null;
+      startDate?: string | null;
+      targetCompletion?: string | null;
+      objectives?: {
+        priority?: string;
+        description: string;
+        id: string | null;
+      }[];
+      businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+      financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
+      teamMembers?: {
+        /** Format: double */
+        hours?: number;
+        role: string;
+        name: string;
+        userId: string | null;
+      }[];
+      phaseBreakdown?: {
+        endDate?: string | null;
+        startDate?: string | null;
+        description?: string | null;
+        /** Format: double */
+        duration: number;
+        name: string | null;
+      }[];
+      totalBudget?: string | null;
+      /** Format: double */
+      totalHours?: number | null;
+      materialityThreshold?: string | null;
+      riskAssessment?: {
+        /** Format: double */
+        score?: number | null;
+        overallRisk?: string | null;
+        risks?: {
+          message: string;
+          severity: string;
+          type: string | null;
+        }[];
+      };
+      status?: components["schemas"]["PlanStatus"] | null;
+    };
+    UpdateAuditPlanRequest: {
+      caseId?: string | null;
+      planType?: components["schemas"]["PlanType"] | null;
+      title?: string | null;
+      clientName?: string | null;
+      caseType?: components["schemas"]["CaseType"] | null;
+      /** Format: double */
+      auditYear?: number | null;
+      startDate?: string | null;
+      targetCompletion?: string | null;
+      objectives?: {
+        priority?: string;
+        description: string;
+        id: string | null;
+      }[];
+      businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+      financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
+      teamMembers?: {
+        /** Format: double */
+        hours?: number;
+        role: string;
+        name: string;
+        userId: string | null;
+      }[];
+      phaseBreakdown?: {
+        endDate?: string | null;
+        startDate?: string | null;
+        description?: string | null;
+        /** Format: double */
+        duration: number;
+        name: string | null;
+      }[];
+      totalBudget?: string | null;
+      /** Format: double */
+      totalHours?: number | null;
+      materialityThreshold?: string | null;
+      riskAssessment?: {
+        /** Format: double */
+        score?: number | null;
+        overallRisk?: string | null;
+        risks?: {
+          message: string;
+          severity: string;
+          type: string | null;
+        }[];
+      };
+      status?: components["schemas"]["PlanStatus"] | null;
+    };
+    AuditPlanTemplateResponse: {
+      id: string;
+      name: string;
+      caseType?: components["schemas"]["CaseType"] | null;
+      description?: string | null;
+      defaultObjectives?:
+        | {
+            priority?: string;
+            description: string;
+            id: string | null;
+          }[]
+        | null;
+      defaultScope?: components["schemas"]["Record_string.unknown_"] | null;
+      defaultPhases?:
+        | {
+            description?: string;
+            /** Format: double */
+            duration: number;
+            name: string | null;
+          }[]
+        | null;
+      defaultBusinessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+      defaultFinancialAreas?: components["schemas"]["Record_string.boolean_"] | null;
+      /** Format: double */
+      estimatedDuration?: number | null;
+      /** Format: double */
+      estimatedHours?: number | null;
+      estimatedBudget?: string | null;
+      isDefault: boolean;
+      isActive: boolean;
+      organizationId?: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      /** Format: date-time */
+      updatedAt: string;
+    };
+    CreateAuditPlanTemplateRequest: {
+      name: string;
+      caseType?: components["schemas"]["CaseType"] | null;
+      description?: string | null;
+      defaultObjectives?: {
+        priority?: string;
+        description: string;
+        id?: string | null;
+      }[];
+      defaultScope?: components["schemas"]["Record_string.unknown_"] | null;
+      defaultPhases?: {
+        description?: string;
+        /** Format: double */
+        duration: number;
+        name: string | null;
+      }[];
+      defaultBusinessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+      defaultFinancialAreas?: components["schemas"]["Record_string.boolean_"] | null;
+      /** Format: double */
+      estimatedDuration?: number | null;
+      /** Format: double */
+      estimatedHours?: number | null;
+      estimatedBudget?: string | null;
+      isDefault?: boolean | null;
+      isActive?: boolean | null;
+    };
+    CreatePlanFromTemplateRequest: {
+      templateId: string;
+      title: string;
+      clientName?: string | null;
+      /** Format: double */
+      auditYear?: number | null;
+      startDate?: string | null;
+    };
+    /** @enum {string} */
+    EntityType: "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
+    /** @enum {string} */
+    AuditAction:
+      | "created"
+      | "updated"
+      | "deleted"
+      | "completed"
+      | "failed"
+      | "started"
+      | "cancelled"
+      | "retrying";
+    AuditLogUser: {
+      id: string;
+      name: string | null;
+      email: string;
+    };
+    AuditLogResponse: {
+      id: string;
+      entityType: components["schemas"]["EntityType"];
+      entityId: string;
+      action: components["schemas"]["AuditAction"];
+      organizationId: string | null;
+      userId: string | null;
+      metadata: components["schemas"]["Record_string.unknown_"] | null;
+      ipAddress: string | null;
+      userAgent: string | null;
+      /** Format: date-time */
+      createdAt: string;
+      user?: components["schemas"]["AuditLogUser"] | null;
+    };
+    AuditLogFilters: {
+      entityType?: components["schemas"]["EntityType"];
+      entityId?: string;
+      action?: components["schemas"]["AuditAction"];
+      userId?: string;
+      startDate?: string;
+      endDate?: string;
+      /** Format: double */
+      limit?: number;
+      /** Format: double */
+      offset?: number;
+    };
+    ExportAuditLogsRequest: {
+      /** @enum {string} */
+      format: "csv" | "json";
+      filters?: components["schemas"]["AuditLogFilters"];
+    };
+    SubmitForApprovalResponse: {
+      requestId: string;
+      workflowId: string;
+      status: string;
+      message: string;
+    };
+    EntityData: {
+      entityType: components["schemas"]["EntityType"];
+      entityId: string;
+      /** Format: double */
+      amount?: number;
+      status?: string;
+      createdBy?: string;
+    } & {
+      [key: string]: unknown;
+    };
+    SubmitForApprovalRequest: {
+      entityType: string;
+      entityId: string;
+      entityData: components["schemas"]["EntityData"];
+    };
+    ApprovalStepResponse: {
+      id: string;
+      /** Format: double */
+      stepOrder: number;
+      approverId: string;
+      approverName?: string;
+      status: string;
+      comments?: string;
+      actionAt?: string;
+      delegatedTo?: string;
+      delegatedToName?: string;
+    };
+    ApprovalRequestResponse: {
+      id: string;
+      workflowId: string;
+      workflowName: string;
+      entityType: string;
+      entityId: string;
+      status: string;
+      requestedBy: string;
+      requestedByName?: string;
+      submittedAt: string;
+      completedAt?: string;
+      /** Format: double */
+      currentStep?: number;
+      /** Format: double */
+      totalSteps?: number;
+      steps: components["schemas"]["ApprovalStepResponse"][];
+    };
+    ApprovalActionResponse: {
+      success: boolean;
+      message: string;
+      requestStatus?: string;
+    };
+    ApprovalActionRequest: {
+      comments?: string;
+    };
+    DelegateApprovalRequest: {
+      delegateToUserId: string;
+      comments?: string;
+    };
+    Invoice: {
+      id: string;
+      number: string;
+      /** @enum {string} */
+      type: "SALES" | "PURCHASE";
+      date: string;
+      /** Format: double */
+      total: number;
+      status: string;
+    };
+    InvoiceCreateRequest: {
+      /** @enum {string} */
+      type: "SALES" | "PURCHASE";
+      customerId?: string;
+      supplierId?: string;
+      date: string;
+      dueDate?: string;
+      items: {
+        /** Format: double */
+        unitPrice: number;
+        /** Format: double */
+        quantity: number;
+        description: string;
+      }[];
+    };
+    /**
+     * @description Hisabiq (Accounting) API Response Types
+     *
+     *     These are simplified types for API responses that TSOA can handle.
+     *     Internal Odoo types use tuples [number, string] which TSOA doesn't support.
+     *     All fields use camelCase naming convention for JavaScript/TypeScript APIs.
+     */
+    PaymentResponse: {
+      /** Format: double */
+      id?: number;
+      /** @enum {string} */
+      paymentType: "inbound" | "outbound" | "transfer";
+      /** @enum {string} */
+      partnerType: "customer" | "supplier";
+      /** Format: double */
+      partnerId: number;
+      partnerName?: string;
+      /** Format: double */
+      amount: number;
+      /** Format: double */
+      currencyId?: number;
+      paymentDate: string;
+      /** Format: double */
+      journalId: number;
+      journalName?: string;
+      /** Format: double */
+      paymentMethodId?: number;
+      ref?: string;
+      /** @enum {string} */
+      state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
+    };
+    CreatePaymentDTO: {
+      /** @enum {string} */
+      type: "inbound" | "outbound";
+      /** Format: double */
+      partnerId: number;
+      /** @enum {string} */
+      partnerType: "customer" | "supplier";
+      /** Format: double */
+      amount: number;
+      date: string;
+      /** Format: double */
+      journalId: number;
+      reference?: string;
+      invoiceIds?: number[];
+    };
+    PartnerResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      email?: string;
+      phone?: string;
+      vat?: string;
+      /** Format: double */
+      accountReceivableId?: number;
+      /** Format: double */
+      accountPayableId?: number;
+      /** Format: double */
+      paymentTermId?: number;
+      /** Format: double */
+      customerRank?: number;
+      /** Format: double */
+      supplierRank?: number;
+    };
+    JournalResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      code: string;
+      /** @enum {string} */
+      type: "sale" | "purchase" | "cash" | "bank" | "general";
+      /** Format: double */
+      currencyId?: number;
+      currencyName?: string;
+      /** Format: double */
+      companyId: number;
+      companyName?: string;
+      /** Format: double */
+      defaultAccountId: number;
+      defaultAccountName?: string;
+    };
+    TaxResponse: {
+      /** Format: double */
+      id: number;
+      name: string;
+      /** Format: double */
+      amount: number;
+      /** @enum {string} */
+      amountType: "percent" | "division" | "fixed" | "group";
+      /** @enum {string} */
+      typeTaxUse: "sale" | "purchase" | "none";
+      active: boolean;
+    };
+    AccountBalanceReportResponse: {
+      /** Format: double */
+      accountId: number;
+      accountCode: string;
+      accountName: string;
+      /** Format: double */
+      debit: number;
+      /** Format: double */
+      credit: number;
+      /** Format: double */
+      balance: number;
+    };
+    AccountBalanceQuery: {
+      accountIds?: number[];
+      dateFrom?: string;
+      dateTo?: string;
+    };
+    PartnerLedgerEntryResponse: {
+      date: string;
+      moveName: string;
+      label: string;
+      /** Format: double */
+      debit: number;
+      /** Format: double */
+      credit: number;
+      /** Format: double */
+      balance: number;
+    };
+    PartnerLedgerReportResponse: {
+      /** Format: double */
+      partnerId: number;
+      partnerName: string;
+      /** Format: double */
+      debit: number;
+      /** Format: double */
+      credit: number;
+      /** Format: double */
+      balance: number;
+      entries: components["schemas"]["PartnerLedgerEntryResponse"][];
+    };
+    PartnerLedgerQuery: {
+      /** Format: double */
+      partnerId: number;
+      dateFrom?: string;
+      dateTo?: string;
+    };
+    ProfitLossResponse: {
+      /** Format: double */
+      income: number;
+      /** Format: double */
+      expenses: number;
+      /** Format: double */
+      netProfit: number;
+    };
+    GLEntryResponse: {
+      /** Format: double */
+      id: number;
+      /** Format: double */
+      moveId: number;
+      moveName?: string;
+      date: string;
+      /** Format: double */
+      accountId: number;
+      accountName?: string;
+      /** Format: double */
+      partnerId?: number;
+      partnerName?: string;
+      name: string;
+      /** Format: double */
+      debit: number;
+      /** Format: double */
+      credit: number;
+      /** Format: double */
+      balance: number;
+      /** Format: double */
+      amountCurrency?: number;
+      /** Format: double */
+      currencyId?: number;
+      currencyName?: string;
+      /** Format: double */
+      companyId: number;
+      companyName?: string;
+    };
+  };
+  responses: never;
+  parameters: never;
+  requestBodies: never;
+  headers: never;
+  pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    UploadFile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    /** Format: binary */
-                    file: string;
-                    folderId?: string;
-                    tags?: string;
-                    metadata?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description File uploaded successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FileMetadata"];
-                };
-            };
-        };
+  UploadFile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    UploadFiles: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody: {
+      content: {
+        "multipart/form-data": {
+          /** Format: binary */
+          file: string;
+          folderId?: string;
+          tags?: string;
+          metadata?: string;
         };
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    /** Format: binary */
-                    files: string;
-                    folderId?: string;
-                    tags?: string;
-                    metadata?: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Files uploaded successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FileMetadata"][];
-                };
-            };
-        };
+      };
     };
-    GetFile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                fileId: string;
-            };
-            cookie?: never;
+    responses: {
+      /** @description File uploaded successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FileMetadata"];
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["FileMetadata"];
         };
+      };
     };
-    DeleteFile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                fileId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description File deleted successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  UploadFiles: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    DownloadFile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                fileId: string;
-            };
-            cookie?: never;
+    requestBody: {
+      content: {
+        "multipart/form-data": {
+          /** Format: binary */
+          files: string;
+          folderId?: string;
+          tags?: string;
+          metadata?: string;
         };
-        requestBody?: never;
-        responses: {
-            /** @description No content */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+      };
     };
-    SearchFiles: {
-        parameters: {
-            query?: {
-                query?: string;
-                folderId?: string;
-                mimeTypes?: string[];
-                tags?: string[];
-                dateFrom?: string;
-                dateTo?: string;
-                createdBy?: string;
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description Files uploaded successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        hasMore: boolean;
-                        /** Format: double */
-                        total: number;
-                        files: components["schemas"]["FileMetadata"][];
-                    };
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["FileMetadata"][];
         };
+      };
     };
-    CreateFolder: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateFolderRequest"];
-            };
-        };
-        responses: {
-            /** @description Folder created successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FolderMetadata"];
-                };
-            };
-        };
+  };
+  GetFile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        fileId: string;
+      };
+      cookie?: never;
     };
-    GetFolderContents: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                folderId: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        subFolders: components["schemas"]["FolderMetadata"][];
-                        files: components["schemas"]["FileMetadata"][];
-                        folder: components["schemas"]["FolderMetadata"];
-                    };
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["FileMetadata"];
         };
+      };
     };
-    DeleteFolder: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                folderId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Folder deleted successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  DeleteFile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        fileId: string;
+      };
+      cookie?: never;
     };
-    GetQuota: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description File deleted successfully */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        unit: string;
-                        /** Format: double */
-                        remaining: number;
-                        /** Format: double */
-                        total: number;
-                        /** Format: double */
-                        used: number;
-                    };
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    GetFileEncryptionMetadata: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                fileId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: double */
-                        keyVersion: number;
-                        /** Format: double */
-                        chunkSize: number;
-                        algorithm: string;
-                        authTag: string;
-                        iv: string;
-                    } | null;
-                };
-            };
-        };
+  };
+  DownloadFile: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        fileId: string;
+      };
+      cookie?: never;
     };
-    InitChunkedUpload: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description No content */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    metadata?: components["schemas"]["Record_string.unknown_"];
-                    /** Format: double */
-                    chunkSize: number;
-                    /** Format: double */
-                    totalChunks: number;
-                    mimeType: string;
-                    /** Format: double */
-                    fileSize: number;
-                    fileName: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Chunked upload session initialized */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** Format: date-time */
-                        expiresAt: string;
-                        uploadId: string;
-                    };
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    UploadChunk: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uploadId: string;
-                chunkNumber: number;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "multipart/form-data": {
-                    /** Format: binary */
-                    chunk: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Chunk uploaded successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        remainingChunks: number[];
-                        receivedChunks: number[];
-                        success: boolean;
-                    };
-                };
-            };
-        };
+  };
+  SearchFiles: {
+    parameters: {
+      query?: {
+        query?: string;
+        folderId?: string;
+        mimeTypes?: string[];
+        tags?: string[];
+        dateFrom?: string;
+        dateTo?: string;
+        createdBy?: string;
+        limit?: number;
+        offset?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    CompleteChunkedUpload: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uploadId: string;
-            };
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: {
-            content: {
-                "application/json": {
-                    metadata?: components["schemas"]["Record_string.unknown_"];
-                    tags?: string[];
-                    folderId?: string;
-                };
-            };
+        content: {
+          "application/json": {
+            hasMore: boolean;
+            /** Format: double */
+            total: number;
+            files: components["schemas"]["FileMetadata"][];
+          };
         };
-        responses: {
-            /** @description File uploaded successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["FileMetadata"];
-                };
-            };
-        };
+      };
     };
-    CancelChunkedUpload: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uploadId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Upload cancelled */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  CreateFolder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    GetChunkedUploadStatus: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                uploadId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {string} */
-                        status: "pending" | "uploading" | "completed" | "failed" | "expired";
-                        /** Format: double */
-                        percentage: number;
-                        /** Format: double */
-                        totalChunks: number;
-                        uploadedChunks: number[];
-                        /** Format: double */
-                        uploadedBytes: number;
-                        /** Format: double */
-                        fileSize: number;
-                        fileName: string;
-                        uploadId: string;
-                    };
-                };
-            };
-        };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateFolderRequest"];
+      };
     };
-    GenerateUploadUrl: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    responses: {
+      /** @description Folder created successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": {
-                    contentType?: string;
-                    /** Format: double */
-                    expiresIn?: number;
-                    path: string;
-                };
-            };
+        content: {
+          "application/json": components["schemas"]["FolderMetadata"];
         };
-        responses: {
-            /** @description Signed URL generated */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        path: string;
-                        /** Format: date-time */
-                        expiresAt: string;
-                        url: string;
-                    };
-                };
-            };
-        };
+      };
     };
-    GenerateDownloadUrl: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** Format: double */
-                    expiresIn?: number;
-                    path: string;
-                };
-            };
-        };
-        responses: {
-            /** @description Signed URL generated */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        path: string;
-                        /** Format: date-time */
-                        expiresAt: string;
-                        url: string;
-                    };
-                };
-            };
-        };
+  };
+  GetFolderContents: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        folderId: string;
+      };
+      cookie?: never;
     };
-    GetStorageConfig: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NASConfig"];
-                };
-            };
+        content: {
+          "application/json": {
+            subFolders: components["schemas"]["FolderMetadata"][];
+            files: components["schemas"]["FileMetadata"][];
+            folder: components["schemas"]["FolderMetadata"];
+          };
         };
+      };
     };
-    UpdateStorageConfig: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["NASConfig"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NASConfig"];
-                };
-            };
-        };
+  };
+  DeleteFolder: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        folderId: string;
+      };
+      cookie?: never;
     };
-    TestStorageConnection: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Folder deleted successfully */
+      204: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["NASConfig"];
-            };
-        };
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                        success: boolean;
-                    };
-                };
-            };
-        };
+        content?: never;
+      };
     };
-    GetStorageInfo: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["StorageInfo"];
-                };
-            };
-        };
+  };
+  GetQuota: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
-    ConnectNAS: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ConnectNASRequest"];
-            };
+        content: {
+          "application/json": {
+            unit: string;
+            /** Format: double */
+            remaining: number;
+            /** Format: double */
+            total: number;
+            /** Format: double */
+            used: number;
+          };
         };
-        responses: {
-            /** @description NAS connected successfully */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NASConnectionStatus"];
-                };
-            };
-        };
+      };
     };
-    DisconnectNAS: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                name: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description NAS disconnected successfully */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
+  };
+  GetFileEncryptionMetadata: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        fileId: string;
+      };
+      cookie?: never;
     };
-    GetAllNASStatus: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
         };
-        requestBody?: never;
-        responses: {
-            /** @description Ok */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NASStatusResponse"];
-                };
-            };
+        content: {
+          "application/json": {
+            /** Format: double */
+            keyVersion: number;
+            /** Format: double */
+            chunkSize: number;
+            algorithm: string;
+            authTag: string;
+            iv: string;
+          } | null;
         };
+      };
     };
-    DisconnectAll: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description All NAS drives disconnected */
-            204: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
+  };
+  InitChunkedUpload: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
     };
+    requestBody: {
+      content: {
+        "application/json": {
+          metadata?: components["schemas"]["Record_string.unknown_"];
+          /** Format: double */
+          chunkSize: number;
+          /** Format: double */
+          totalChunks: number;
+          mimeType: string;
+          /** Format: double */
+          fileSize: number;
+          fileName: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Chunked upload session initialized */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** Format: date-time */
+            expiresAt: string;
+            uploadId: string;
+          };
+        };
+      };
+    };
+  };
+  UploadChunk: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        uploadId: string;
+        chunkNumber: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "multipart/form-data": {
+          /** Format: binary */
+          chunk: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Chunk uploaded successfully */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            remainingChunks: number[];
+            receivedChunks: number[];
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  CompleteChunkedUpload: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        uploadId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": {
+          metadata?: components["schemas"]["Record_string.unknown_"];
+          tags?: string[];
+          folderId?: string;
+        };
+      };
+    };
+    responses: {
+      /** @description File uploaded successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["FileMetadata"];
+        };
+      };
+    };
+  };
+  CancelChunkedUpload: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        uploadId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Upload cancelled */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  GetChunkedUploadStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        uploadId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            /** @enum {string} */
+            status: "pending" | "uploading" | "completed" | "failed" | "expired";
+            /** Format: double */
+            percentage: number;
+            /** Format: double */
+            totalChunks: number;
+            uploadedChunks: number[];
+            /** Format: double */
+            uploadedBytes: number;
+            /** Format: double */
+            fileSize: number;
+            fileName: string;
+            uploadId: string;
+          };
+        };
+      };
+    };
+  };
+  GenerateUploadUrl: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          contentType?: string;
+          /** Format: double */
+          expiresIn?: number;
+          path: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Signed URL generated */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            path: string;
+            /** Format: date-time */
+            expiresAt: string;
+            url: string;
+          };
+        };
+      };
+    };
+  };
+  GenerateDownloadUrl: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": {
+          /** Format: double */
+          expiresIn?: number;
+          path: string;
+        };
+      };
+    };
+    responses: {
+      /** @description Signed URL generated */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            path: string;
+            /** Format: date-time */
+            expiresAt: string;
+            url: string;
+          };
+        };
+      };
+    };
+  };
+  GetStorageConfig: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NASConfig"];
+        };
+      };
+    };
+  };
+  UpdateStorageConfig: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["NASConfig"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NASConfig"];
+        };
+      };
+    };
+  };
+  TestStorageConnection: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["NASConfig"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  GetStorageInfo: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StorageInfo"];
+        };
+      };
+    };
+  };
+  ConnectNAS: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ConnectNASRequest"];
+      };
+    };
+    responses: {
+      /** @description NAS connected successfully */
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NASConnectionStatus"];
+        };
+      };
+    };
+  };
+  DisconnectNAS: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        name: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description NAS disconnected successfully */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  GetAllNASStatus: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NASStatusResponse"];
+        };
+      };
+    };
+  };
+  DisconnectAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description All NAS drives disconnected */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            message: string;
+          };
+        };
+      };
+    };
+  };
 }

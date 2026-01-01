@@ -9,8 +9,8 @@ export const ExpensesChartWidget = () => {
   const { t } = useTranslation();
 
   // TODO: [Backend/Frontend] - Fetch expense data from API
-//   Details: The expenses chart is currently a placeholder. Implement a backend API endpoint to fetch expense data and integrate it here to display a real chart.
-//   Priority: High
+  //   Details: The expenses chart is currently a placeholder. Implement a backend API endpoint to fetch expense data and integrate it here to display a real chart.
+  //   Priority: High
   const expenses: Expense[] = expenseSchema.array().parse([]);
 
   return (

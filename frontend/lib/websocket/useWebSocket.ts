@@ -20,7 +20,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   const [isConnected, setIsConnected] = useState(false);
   const [reconnectCount, setReconnectCount] = useState(0);
   const socketRef = useRef<Socket | null>(null);
-    const eventHandlers = useRef<Map<string, Set<(data: unknown) => void>>>(new Map());
+  const eventHandlers = useRef<Map<string, Set<(data: unknown) => void>>>(new Map());
 
   const connect = useCallback(async () => {
     if (!enabled || socketRef.current?.connected) return;

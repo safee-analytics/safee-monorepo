@@ -62,8 +62,8 @@ export default function TeamManagement() {
 
   // For now, consider all members as active since we don't have lastActiveAt field
   // TODO: [Backend] - Add lastActiveAt field to member schema and filter by recent activity
-//   Details: The `lastActiveAt` field should be added to the member schema on the backend to track user activity. This will allow for more accurate calculation of active users.
-//   Priority: Medium
+  //   Details: The `lastActiveAt` field should be added to the member schema on the backend to track user activity. This will allow for more accurate calculation of active users.
+  //   Priority: Medium
   const activeUsers = totalUsers;
 
   // Calculate activity rate (active / total)
@@ -72,8 +72,8 @@ export default function TeamManagement() {
   const stats = {
     totalUsers,
     totalUsersChange: t.settings.team.stats.noHistoricalData, // TODO: [Backend] - Implement after adding member creation timestamps
-//   Details: To calculate the change in total users, a `createdAt` timestamp should be added to the member schema on the backend. This will allow for historical data analysis.
-//   Priority: Medium
+    //   Details: To calculate the change in total users, a `createdAt` timestamp should be added to the member schema on the backend. This will allow for historical data analysis.
+    //   Priority: Medium
     activeUsers,
     activityRate: `${activityRate}% ${t.settings.team.stats.active}`,
     pendingInvites: pendingInvitesCount,

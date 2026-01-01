@@ -14,7 +14,7 @@ export function useCases(filters?: { status?: string; priority?: string; assigne
       const response = await fetch(`/api/v1/cases${queryParams ? `?${queryParams}` : ""}`);
       if (!response.ok) throw new Error("Failed to fetch cases");
       const data = await response.json();
-      
+
       const validation = z.array(caseSchema).safeParse(data);
       if (!validation.success) {
         console.error("Cases validation error:", validation.error);
@@ -35,7 +35,7 @@ export function useCase(caseId: string) {
         },
       });
       if (error) throw new Error(handleApiError(error));
-      
+
       const validation = caseSchema.safeParse(data);
       if (!validation.success) {
         console.error("Case validation error:", validation.error);
@@ -110,7 +110,6 @@ export function useDeleteCase() {
   });
 }
 
-
 export function useCaseTemplates() {
   return useQuery({
     queryKey: queryKeys.cases.templates,
@@ -156,7 +155,6 @@ export function useCreateCaseTemplate() {
     },
   });
 }
-
 
 export function useCaseScopes(caseId: string) {
   return useQuery({
@@ -257,7 +255,6 @@ export function useUpdateScopeStatus() {
   });
 }
 
-
 export function useCaseSections(caseId: string, scopeId: string) {
   return useQuery({
     queryKey: queryKeys.cases.sections(caseId, scopeId),
@@ -273,7 +270,6 @@ export function useCaseSections(caseId: string, scopeId: string) {
     enabled: !!caseId && !!scopeId,
   });
 }
-
 
 export function useCaseProcedures(caseId: string, scopeId: string, sectionId: string) {
   return useQuery({
@@ -336,7 +332,6 @@ export function useCompleteProcedure() {
   });
 }
 
-
 export function useCaseDocuments(caseId: string) {
   return useQuery({
     queryKey: queryKeys.cases.documents(caseId),
@@ -397,7 +392,6 @@ export function useDeleteCaseDocument() {
     },
   });
 }
-
 
 export function useCaseNotes(caseId: string) {
   return useQuery({
@@ -469,7 +463,6 @@ export function useUpdateCaseNote() {
   });
 }
 
-
 export function useCaseAssignments(caseId: string) {
   return useQuery({
     queryKey: queryKeys.cases.assignments(caseId),
@@ -533,7 +526,6 @@ export function useRemoveCaseAssignment() {
   });
 }
 
-
 export function useCaseHistory(caseId: string) {
   return useQuery({
     queryKey: queryKeys.cases.history(caseId),
@@ -549,5 +541,3 @@ export function useCaseHistory(caseId: string) {
     enabled: !!caseId,
   });
 }
-
-

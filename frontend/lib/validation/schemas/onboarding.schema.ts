@@ -46,8 +46,14 @@ export const pendingInvitationSchema = z.object({
   role: z.enum(["admin", "member", "owner"]),
   status: z.string(),
   inviterId: z.string(),
-  expiresAt: z.preprocess((arg) => (typeof arg === "string" || arg instanceof Date ? new Date(arg) : undefined), z.date()),
-  createdAt: z.preprocess((arg) => (typeof arg === "string" || arg instanceof Date ? new Date(arg) : undefined), z.date()),
+  expiresAt: z.preprocess(
+    (arg) => (typeof arg === "string" || arg instanceof Date ? new Date(arg) : undefined),
+    z.date(),
+  ),
+  createdAt: z.preprocess(
+    (arg) => (typeof arg === "string" || arg instanceof Date ? new Date(arg) : undefined),
+    z.date(),
+  ),
   teamId: z.string().optional(),
 });
 

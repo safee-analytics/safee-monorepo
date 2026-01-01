@@ -51,15 +51,15 @@ export function CommandPalette({ open, onOpenChange }: CommandPaletteProps) {
         return;
       }
       if (path === "#export") {
-// TODO: [Backend/Frontend] - Implement export data logic for command palette
-//   Details: The export data action currently has a placeholder. Implement the actual data export logic, potentially by calling a backend API, and integrate it here.
-//   Priority: Medium
+        // TODO: [Backend/Frontend] - Implement export data logic for command palette
+        //   Details: The export data action currently has a placeholder. Implement the actual data export logic, potentially by calling a backend API, and integrate it here.
+        //   Priority: Medium
         return;
       }
       if (path === "#theme") {
-// TODO: [Frontend] - Implement theme toggle logic for command palette
-//   Details: The theme toggle action currently has a placeholder. Implement the actual theme switching logic and integrate it here.
-//   Priority: Medium
+        // TODO: [Frontend] - Implement theme toggle logic for command palette
+        //   Details: The theme toggle action currently has a placeholder. Implement the actual theme switching logic and integrate it here.
+        //   Priority: Medium
         return;
       }
     }

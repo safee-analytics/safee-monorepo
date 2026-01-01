@@ -47,7 +47,3 @@ export const quickActionSchema = z.object({
 });
 
 export type QuickAction = z.infer<typeof quickActionSchema>;
-
-
-
-

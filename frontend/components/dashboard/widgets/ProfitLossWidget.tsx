@@ -28,7 +28,10 @@ export const ProfitLossWidget = () => {
             <span className="text-lg font-semibold text-gray-900">${income.toLocaleString()}</span>
           </div>
           <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full bg-green-500 rounded-full" style={{ width: `${Math.min(100, (income / (income + expenses || 1)) * 100)}%` }}></div>
+            <div
+              className="h-full bg-green-500 rounded-full"
+              style={{ width: `${Math.min(100, (income / (income + expenses || 1)) * 100)}%` }}
+            ></div>
           </div>
         </div>
 
@@ -38,7 +41,10 @@ export const ProfitLossWidget = () => {
             <span className="text-lg font-semibold text-gray-900">${expenses.toLocaleString()}</span>
           </div>
           <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full bg-red-500 rounded-full" style={{ width: `${Math.min(100, (expenses / (income + expenses || 1)) * 100)}%` }}></div>
+            <div
+              className="h-full bg-red-500 rounded-full"
+              style={{ width: `${Math.min(100, (expenses / (income + expenses || 1)) * 100)}%` }}
+            ></div>
           </div>
         </div>
       </div>

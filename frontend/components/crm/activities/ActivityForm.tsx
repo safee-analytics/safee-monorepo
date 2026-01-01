@@ -75,8 +75,8 @@ export function ActivityForm({ activity, onSubmit, isSubmitting, defaultLeadId }
         for (const memberId of team.memberIds) {
           if (!allUsers.find((u) => u.id === memberId)) {
             // TODO: [Backend/Frontend] - Fetch user details from memberId
-//   Details: Currently, user names are mocked as `User ${memberId}`. Implement an API endpoint to fetch full user details based on `memberId` and update this logic to display actual user names.
-//   Priority: Medium
+            //   Details: Currently, user names are mocked as `User ${memberId}`. Implement an API endpoint to fetch full user details based on `memberId` and update this logic to display actual user names.
+            //   Priority: Medium
             allUsers.push({ id: memberId, name: `User ${memberId}` });
           }
         }

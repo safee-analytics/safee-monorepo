@@ -3,15 +3,7 @@
 import { useState } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import { Button } from "@safee/ui";
-import {
-  ChevronDown,
-  ChevronUp,
-  Plus,
-  Trash2,
-  GripVertical,
-  ArrowUp,
-  ArrowDown,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Trash2, GripVertical, ArrowUp, ArrowDown } from "lucide-react";
 import { ProcedureRow } from "./ProcedureRow";
 import { ProcedureRequirementsEditor } from "./ProcedureRequirementsEditor";
 
@@ -22,16 +14,15 @@ interface SectionCardProps {
   onMoveDown?: () => void;
 }
 
-export function SectionCard({
-  sectionIndex,
-  onRemove,
-  onMoveUp,
-  onMoveDown,
-}: SectionCardProps) {
+export function SectionCard({ sectionIndex, onRemove, onMoveUp, onMoveDown }: SectionCardProps) {
   const [isExpanded, setIsExpanded] = useState(true);
   const [editingProcedureIndex, setEditingProcedureIndex] = useState<number | null>(null);
 
-  const { control, register, formState: { errors } } = useFormContext<{
+  const {
+    control,
+    register,
+    formState: { errors },
+  } = useFormContext<{
     structure: {
       sections: Array<{
         name: string;
@@ -109,9 +100,7 @@ export function SectionCard({
 
           <div className="flex-1 grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">
-                Section Name *
-              </label>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Section Name *</label>
               <input
                 type="text"
                 {...register(`structure.sections.${sectionIndex}.name`)}
@@ -119,16 +108,12 @@ export function SectionCard({
                 placeholder="e.g., Initial Assessment"
               />
               {sectionErrors?.name && (
-                <p className="text-xs text-red-600 mt-1">
-                  {sectionErrors.name.message as string}
-                </p>
+                <p className="text-xs text-red-600 mt-1">{sectionErrors.name.message as string}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1">
-                Description
-              </label>
+              <label className="block text-xs font-medium text-gray-500 mb-1">Description</label>
               <input
                 type="text"
                 {...register(`structure.sections.${sectionIndex}.description`)}
@@ -177,24 +162,15 @@ export function SectionCard({
           <div className="p-4 space-y-3">
             {/* Procedures Header */}
             <div className="flex items-center justify-between">
-              <h4 className="text-sm font-medium text-gray-700">
-                Procedures ({procedures.length})
-              </h4>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={handleAddProcedure}
-              >
+              <h4 className="text-sm font-medium text-gray-700">Procedures ({procedures.length})</h4>
+              <Button type="button" variant="outline" size="sm" onClick={handleAddProcedure}>
                 <Plus className="h-3 w-3 mr-1.5" />
                 Add Procedure
               </Button>
             </div>
 
             {sectionErrors?.procedures && (
-              <p className="text-sm text-red-600">
-                {sectionErrors.procedures.message as string}
-              </p>
+              <p className="text-sm text-red-600">{sectionErrors.procedures.message as string}</p>
             )}
 
             {/* Procedures Table */}
@@ -203,21 +179,11 @@ export function SectionCard({
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
                     <th className="w-8"></th>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">
-                      Ref
-                    </th>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">
-                      Title
-                    </th>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">
-                      Description
-                    </th>
-                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">
-                      Requirements
-                    </th>
-                    <th className="w-24 px-3 py-2 text-right text-xs font-medium text-gray-500">
-                      Actions
-                    </th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">Ref</th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">Title</th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">Description</th>
+                    <th className="px-3 py-2 text-left text-xs font-medium text-gray-500">Requirements</th>
+                    <th className="w-24 px-3 py-2 text-right text-xs font-medium text-gray-500">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">

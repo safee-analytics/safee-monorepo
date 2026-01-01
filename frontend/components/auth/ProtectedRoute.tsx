@@ -49,14 +49,12 @@ export function ProtectedRoute({
 
         // If no organization or error, redirect to onboarding
         if (!data || error) {
-
           router.push("/onboarding");
           return;
         }
 
         // Additional check: ensure user is a member of the organization
         if (!data.members || data.members.length === 0) {
-
           router.push("/onboarding");
           return;
         }

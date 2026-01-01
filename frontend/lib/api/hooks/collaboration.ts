@@ -84,9 +84,6 @@ export interface UpdatePresenceRequest {
   caseId: string;
 }
 
-
-
-
 export function useCaseActivities(caseId: string, options?: { limit?: number; refetchInterval?: number }) {
   return useQuery({
     queryKey: queryKeys.collaboration.activities(caseId),
@@ -101,10 +98,9 @@ export function useCaseActivities(caseId: string, options?: { limit?: number; re
       return data as CaseActivityResponse[];
     },
     enabled: !!caseId,
-    refetchInterval: options?.refetchInterval || false, 
+    refetchInterval: options?.refetchInterval || false,
   });
 }
-
 
 export function useCreateActivity() {
   const queryClient = useQueryClient();
@@ -118,12 +114,10 @@ export function useCreateActivity() {
       return data as CaseActivityResponse;
     },
     onSuccess: (_, variables) => {
-      
       void queryClient.invalidateQueries({ queryKey: queryKeys.collaboration.activities(variables.caseId) });
     },
   });
 }
-
 
 export function useMarkActivitiesAsRead() {
   const queryClient = useQueryClient();
@@ -137,12 +131,10 @@ export function useMarkActivitiesAsRead() {
       return data as { success: boolean };
     },
     onSuccess: () => {
-      
       void queryClient.invalidateQueries({ queryKey: ["collaboration", "activities"] });
     },
   });
 }
-
 
 export function useUpdatePresence() {
   const queryClient = useQueryClient();
@@ -156,12 +148,10 @@ export function useUpdatePresence() {
       return data as PresenceResponse;
     },
     onSuccess: (_, variables) => {
-      
       void queryClient.invalidateQueries({ queryKey: queryKeys.collaboration.presence(variables.caseId) });
     },
   });
 }
-
 
 export function useActiveViewers(caseId: string, options?: { refetchInterval?: number }) {
   return useQuery({
@@ -176,10 +166,9 @@ export function useActiveViewers(caseId: string, options?: { refetchInterval?: n
       return data as PresenceResponse[];
     },
     enabled: !!caseId,
-    refetchInterval: options?.refetchInterval || false, 
+    refetchInterval: options?.refetchInterval || false,
   });
 }
-
 
 export function usePresenceTracking(caseId: string, enabled = true) {
   const updatePresence = useUpdatePresence();
@@ -193,7 +182,7 @@ export function usePresenceTracking(caseId: string, enabled = true) {
       return null;
     },
     enabled: enabled && !!caseId,
-    refetchInterval: 30000, 
+    refetchInterval: 30000,
     refetchIntervalInBackground: true,
   });
 }

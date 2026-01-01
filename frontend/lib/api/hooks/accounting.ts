@@ -158,8 +158,6 @@ export function useInvoicePDF(invoiceId: string) {
   });
 }
 
-
-
 export function useBills(params?: {
   page?: number;
   limit?: number;
@@ -256,8 +254,6 @@ export function useCancelBill() {
   });
 }
 
-
-
 export function usePayments(params?: {
   type?: "inbound" | "outbound" | "transfer";
   state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
@@ -318,8 +314,6 @@ export function useConfirmPayment() {
     },
   });
 }
-
-
 
 export function useAccounts(accountType?: string) {
   return useQuery({
@@ -383,8 +377,6 @@ export function usePaymentTerms() {
     },
   });
 }
-
-
 
 export function useTrialBalance(params: { accountIds?: number[]; dateFrom?: string; dateTo?: string }) {
   return useQuery({
@@ -470,8 +462,6 @@ export function useAgedPayable(asOfDate?: string) {
   });
 }
 
-
-
 export function useBankStatements(params?: {
   journalId?: number;
   dateFrom?: string;
@@ -536,8 +526,6 @@ export function useReconcileBankLine() {
   });
 }
 
-
-
 export function useCurrencies(onlyActive = true) {
   return useQuery({
     queryKey: queryKeys.accounting.currencies(onlyActive),
@@ -580,8 +568,6 @@ export function useConvertCurrency() {
     },
   });
 }
-
-
 
 export function useBatchValidateInvoices() {
   const queryClient = useQueryClient();

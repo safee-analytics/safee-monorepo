@@ -20,7 +20,11 @@ export function ProcedureRow({
   onMoveUp,
   onMoveDown,
 }: ProcedureRowProps) {
-  const { register, watch, formState: { errors } } = useFormContext<{
+  const {
+    register,
+    watch,
+    formState: { errors },
+  } = useFormContext<{
     structure: {
       sections: Array<{
         procedures: Array<{
@@ -54,9 +58,7 @@ export function ProcedureRow({
           placeholder="1.1"
         />
         {procedureErrors?.referenceNumber && (
-          <p className="text-xs text-red-600 mt-1">
-            {procedureErrors.referenceNumber.message as string}
-          </p>
+          <p className="text-xs text-red-600 mt-1">{procedureErrors.referenceNumber.message as string}</p>
         )}
       </td>
 
@@ -68,9 +70,7 @@ export function ProcedureRow({
           placeholder="Procedure title"
         />
         {procedureErrors?.title && (
-          <p className="text-xs text-red-600 mt-1">
-            {procedureErrors.title.message as string}
-          </p>
+          <p className="text-xs text-red-600 mt-1">{procedureErrors.title.message as string}</p>
         )}
       </td>
 

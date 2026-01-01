@@ -29,9 +29,7 @@ export function ScopesTab({ caseId, scopes }: ScopesTabProps) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">Case Scopes</h2>
-          <p className="text-sm text-gray-600 mt-1">
-            Manage scope instances for this audit case
-          </p>
+          <p className="text-sm text-gray-600 mt-1">Manage scope instances for this audit case</p>
         </div>
         <Button onClick={() => setShowAddModal(true)}>
           <Plus className="h-4 w-4 mr-2" />
@@ -43,11 +41,7 @@ export function ScopesTab({ caseId, scopes }: ScopesTabProps) {
       {scopes.length > 0 ? (
         <div className="space-y-3">
           {scopes.map((scope) => (
-            <ScopeCard
-              key={scope.id}
-              scope={scope}
-              onClick={() => handleScopeClick(scope.id)}
-            />
+            <ScopeCard key={scope.id} scope={scope} onClick={() => handleScopeClick(scope.id)} />
           ))}
         </div>
       ) : (

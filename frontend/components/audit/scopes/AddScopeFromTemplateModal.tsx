@@ -15,11 +15,7 @@ interface AddScopeFromTemplateModalProps {
   onSuccess: (scopeId: string) => void;
 }
 
-export function AddScopeFromTemplateModal({
-  caseId,
-  onClose,
-  onSuccess,
-}: AddScopeFromTemplateModalProps) {
+export function AddScopeFromTemplateModal({ caseId, onClose, onSuccess }: AddScopeFromTemplateModalProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateResponse | null>(null);
   const [isCreating, setIsCreating] = useState(false);
@@ -70,10 +66,7 @@ export function AddScopeFromTemplateModal({
               Select a template to create a new scope for this case
             </p>
           </div>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          >
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
             <X className="h-5 w-5 text-gray-500" />
           </button>
         </div>
@@ -105,9 +98,7 @@ export function AddScopeFromTemplateModal({
               </div>
               <h3 className="text-lg font-medium text-gray-900 mb-2">No Templates Found</h3>
               <p className="text-sm text-gray-600">
-                {searchQuery
-                  ? "Try adjusting your search"
-                  : "No scope templates are available"}
+                {searchQuery ? "Try adjusting your search" : "No scope templates are available"}
               </p>
             </div>
           ) : (
@@ -138,15 +129,11 @@ export function AddScopeFromTemplateModal({
                           )}
                         </div>
                       </div>
-                      {isSelected && (
-                        <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0" />
-                      )}
+                      {isSelected && <CheckCircle className="h-5 w-5 text-blue-600 flex-shrink-0" />}
                     </div>
 
                     {template.description && (
-                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">
-                        {template.description}
-                      </p>
+                      <p className="text-sm text-gray-600 mb-3 line-clamp-2">{template.description}</p>
                     )}
 
                     <div className="flex items-center gap-3 text-xs text-gray-600">

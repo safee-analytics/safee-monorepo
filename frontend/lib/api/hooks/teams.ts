@@ -12,20 +12,12 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth/client";
 
-
-
-
-
 export const teamQueryKeys = {
   all: (orgId: string) => ["teams", orgId] as const,
   team: (orgId: string, teamId: string) => ["teams", orgId, teamId] as const,
   members: (orgId: string, teamId: string) => ["teams", orgId, teamId, "members"] as const,
   activeTeam: (orgId: string) => ["teams", orgId, "active"] as const,
 } as const;
-
-
-
-
 
 /**
  * List all teams in an organization
@@ -206,7 +198,6 @@ export function useUpdateTeamMemberRole() {
     },
   });
 }
-
 
 export function useSetActiveTeam() {
   const queryClient = useQueryClient();

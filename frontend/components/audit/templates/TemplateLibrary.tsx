@@ -2,7 +2,22 @@
 
 import { useState } from "react";
 import { Button } from "@safee/ui";
-import { Plus, Search, Grid3x3, List, Eye, CheckCircle, Sparkles, Layers, FileText, ClipboardList, CheckSquare, BarChart3, Calendar, FileIcon } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Grid3x3,
+  List,
+  Eye,
+  CheckCircle,
+  Sparkles,
+  Layers,
+  FileText,
+  ClipboardList,
+  CheckSquare,
+  BarChart3,
+  Calendar,
+  FileIcon,
+} from "lucide-react";
 import { useTemplates, type TemplateResponse, getTemplateSummary } from "@/lib/api/hooks/templates";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,28 +40,29 @@ export function TemplateLibrary({ onCreateNew, onSelectTemplate }: TemplateLibra
   const { data: templates, isLoading } = useTemplates();
 
   // Filter templates
-  const filteredTemplates = templates?.filter((template) => {
-    // Search filter
-    if (searchQuery && !template.name.toLowerCase().includes(searchQuery.toLowerCase())) {
-      return false;
-    }
+  const filteredTemplates =
+    templates?.filter((template) => {
+      // Search filter
+      if (searchQuery && !template.name.toLowerCase().includes(searchQuery.toLowerCase())) {
+        return false;
+      }
 
-    // Type filter
-    if (filterType === "system" && !template.isSystemTemplate) return false;
-    if (filterType === "organization" && template.isSystemTemplate) return false;
+      // Type filter
+      if (filterType === "system" && !template.isSystemTemplate) return false;
+      if (filterType === "organization" && template.isSystemTemplate) return false;
 
-    // Template type filter
-    if (selectedTemplateType !== "all" && template.templateType !== selectedTemplateType) {
-      return false;
-    }
+      // Template type filter
+      if (selectedTemplateType !== "all" && template.templateType !== selectedTemplateType) {
+        return false;
+      }
 
-    // Category filter
-    if (selectedCategory !== "all" && template.category !== selectedCategory) {
-      return false;
-    }
+      // Category filter
+      if (selectedCategory !== "all" && template.category !== selectedCategory) {
+        return false;
+      }
 
-    return true;
-  }) || [];
+      return true;
+    }) || [];
 
   if (isLoading) {
     return (
@@ -144,9 +160,7 @@ export function TemplateLibrary({ onCreateNew, onSelectTemplate }: TemplateLibra
             <button
               onClick={() => setFilterType("all")}
               className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                filterType === "all"
-                  ? "bg-blue-100 text-blue-700"
-                  : "text-gray-600 hover:bg-gray-100"
+                filterType === "all" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
               }`}
             >
               All Templates
@@ -154,9 +168,7 @@ export function TemplateLibrary({ onCreateNew, onSelectTemplate }: TemplateLibra
             <button
               onClick={() => setFilterType("system")}
               className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                filterType === "system"
-                  ? "bg-blue-100 text-blue-700"
-                  : "text-gray-600 hover:bg-gray-100"
+                filterType === "system" ? "bg-blue-100 text-blue-700" : "text-gray-600 hover:bg-gray-100"
               }`}
             >
               System
@@ -260,11 +272,11 @@ export function TemplateLibrary({ onCreateNew, onSelectTemplate }: TemplateLibra
               </p>
 
               {onCreateNew && !searchQuery && (
-                <motion.div
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  <Button onClick={onCreateNew} className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
+                <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+                  <Button
+                    onClick={onCreateNew}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  >
                     <Plus className="h-4 w-4 mr-2" />
                     Create Your First Template
                   </Button>
@@ -286,10 +298,7 @@ export function TemplateLibrary({ onCreateNew, onSelectTemplate }: TemplateLibra
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.05, duration: 0.3 }}
                 >
-                  <TemplateCard
-                    template={template}
-                    onSelect={() => onSelectTemplate?.(template)}
-                  />
+                  <TemplateCard template={template} onSelect={() => onSelectTemplate?.(template)} />
                 </motion.div>
               ))}
             </motion.div>
@@ -308,10 +317,7 @@ export function TemplateLibrary({ onCreateNew, onSelectTemplate }: TemplateLibra
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: index * 0.03, duration: 0.3 }}
                 >
-                  <TemplateListItem
-                    template={template}
-                    onSelect={() => onSelectTemplate?.(template)}
-                  />
+                  <TemplateListItem template={template} onSelect={() => onSelectTemplate?.(template)} />
                 </motion.div>
               ))}
             </motion.div>
@@ -323,13 +329,7 @@ export function TemplateLibrary({ onCreateNew, onSelectTemplate }: TemplateLibra
 }
 
 // Template Card for grid view
-function TemplateCard({
-  template,
-  onSelect,
-}: {
-  template: TemplateResponse;
-  onSelect: () => void;
-}) {
+function TemplateCard({ template, onSelect }: { template: TemplateResponse; onSelect: () => void }) {
   const summary = getTemplateSummary(template);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -339,9 +339,17 @@ function TemplateCard({
       case "scope":
         return { bg: "from-blue-500 to-cyan-500", badge: "bg-blue-100 text-blue-700", Icon: FileText };
       case "form":
-        return { bg: "from-purple-500 to-pink-500", badge: "bg-purple-100 text-purple-700", Icon: ClipboardList };
+        return {
+          bg: "from-purple-500 to-pink-500",
+          badge: "bg-purple-100 text-purple-700",
+          Icon: ClipboardList,
+        };
       case "checklist":
-        return { bg: "from-green-500 to-emerald-500", badge: "bg-green-100 text-green-700", Icon: CheckSquare };
+        return {
+          bg: "from-green-500 to-emerald-500",
+          badge: "bg-green-100 text-green-700",
+          Icon: CheckSquare,
+        };
       case "report":
         return { bg: "from-orange-500 to-red-500", badge: "bg-orange-100 text-orange-700", Icon: BarChart3 };
       case "plan":
@@ -446,13 +454,7 @@ function TemplateCard({
 }
 
 // Template List Item for list view
-function TemplateListItem({
-  template,
-  onSelect,
-}: {
-  template: TemplateResponse;
-  onSelect: () => void;
-}) {
+function TemplateListItem({ template, onSelect }: { template: TemplateResponse; onSelect: () => void }) {
   const summary = getTemplateSummary(template);
 
   // Get color scheme based on template type
@@ -461,9 +463,17 @@ function TemplateListItem({
       case "scope":
         return { bg: "from-blue-500 to-cyan-500", badge: "bg-blue-100 text-blue-700", Icon: FileText };
       case "form":
-        return { bg: "from-purple-500 to-pink-500", badge: "bg-purple-100 text-purple-700", Icon: ClipboardList };
+        return {
+          bg: "from-purple-500 to-pink-500",
+          badge: "bg-purple-100 text-purple-700",
+          Icon: ClipboardList,
+        };
       case "checklist":
-        return { bg: "from-green-500 to-emerald-500", badge: "bg-green-100 text-green-700", Icon: CheckSquare };
+        return {
+          bg: "from-green-500 to-emerald-500",
+          badge: "bg-green-100 text-green-700",
+          Icon: CheckSquare,
+        };
       case "report":
         return { bg: "from-orange-500 to-red-500", badge: "bg-orange-100 text-orange-700", Icon: BarChart3 };
       case "plan":

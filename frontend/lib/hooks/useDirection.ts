@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 
-
 import { isDirection, type Direction } from "@/lib/utils/type-guards";
 
 /**

@@ -36,9 +36,9 @@ export default function AuditDashboard() {
     const hasPermission = true;
 
     if (requiresPermission && !hasPermission) {
-// TODO: [Backend/Frontend] - Implement permission check for navigation
-//   Details: The `hasPermission` check is currently hardcoded to `true`. Implement a proper permission check, likely involving an API call, to determine if the user has the required permission to navigate to the path.
-//   Priority: High
+      // TODO: [Backend/Frontend] - Implement permission check for navigation
+      //   Details: The `hasPermission` check is currently hardcoded to `true`. Implement a proper permission check, likely involving an API call, to determine if the user has the required permission to navigate to the path.
+      //   Priority: High
       return;
     }
 
@@ -111,9 +111,9 @@ export default function AuditDashboard() {
   >(() => {
     if (!apiCases) return [];
 
-// TODO: [Backend] - Enhance `recentCases` data with real icons and completed dates
-//   Details: The `icon` and `completedDate` in `recentCases` are currently hardcoded. The backend should provide this data so the frontend can display it accurately.
-//   Priority: Medium
+    // TODO: [Backend] - Enhance `recentCases` data with real icons and completed dates
+    //   Details: The `icon` and `completedDate` in `recentCases` are currently hardcoded. The backend should provide this data so the frontend can display it accurately.
+    //   Priority: Medium
     return apiCases.slice(0, 3).map((caseData: Case) => ({
       id: caseData.id,
       companyName: caseData.title,

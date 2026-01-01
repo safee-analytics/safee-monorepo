@@ -21,7 +21,18 @@ import { authClient } from "@/lib/auth/client";
 import { apiClient } from "@/lib/api/client";
 import { twMerge } from "tailwind-merge";
 import { SafeeLogo as SafeeLogoComponent } from "@/components/common/SafeeLogo";
-import { type Module, moduleSchema, type PendingInvitation, pendingInvitationSchema, type SubscriptionPlan, subscriptionPlanSchema, type CurrentSubscription, currentSubscriptionSchema, type TeamMember, teamMemberSchema } from "@/lib/validation";
+import {
+  type Module,
+  moduleSchema,
+  type PendingInvitation,
+  pendingInvitationSchema,
+  type SubscriptionPlan,
+  subscriptionPlanSchema,
+  type CurrentSubscription,
+  currentSubscriptionSchema,
+  type TeamMember,
+  teamMemberSchema,
+} from "@/lib/validation";
 
 // Multi-step onboarding types
 type OnboardingStep =
@@ -334,9 +345,9 @@ export default function OnboardingPage() {
               role: member.role,
             });
           } catch (err) {
-// TODO: [Backend/Frontend] - Handle individual invitation failures during onboarding
-//   Details: When inviting multiple team members, some invitations might fail (e.g., invalid email). This `console.warn` needs to be replaced with a robust error handling mechanism, potentially showing user-specific feedback without blocking the entire onboarding process.
-//   Priority: Medium
+            // TODO: [Backend/Frontend] - Handle individual invitation failures during onboarding
+            //   Details: When inviting multiple team members, some invitations might fail (e.g., invalid email). This `console.warn` needs to be replaced with a robust error handling mechanism, potentially showing user-specific feedback without blocking the entire onboarding process.
+            //   Priority: Medium
             // Continue even if some invites fail
           }
         }

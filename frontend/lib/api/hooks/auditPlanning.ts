@@ -132,8 +132,6 @@ export interface AuditPlanTemplateResponse {
   updatedAt: string | Date;
 }
 
-
-
 export function useAuditPlans() {
   return useQuery({
     queryKey: queryKeys.auditPlans.all(),

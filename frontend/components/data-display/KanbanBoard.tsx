@@ -339,10 +339,6 @@ const AddCard = ({ column, setCards }: AddCardProps) => {
   );
 };
 
-
-
-
-
 const DEFAULT_CARDS: CardType[] = cardSchema.array().parse([
   // BACKLOG
   { title: "Look into render bug in dashboard", id: "1", column: "backlog" },

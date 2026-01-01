@@ -41,9 +41,7 @@ export function ProcedureDetailDrawer({
   onComplete,
   onEdit,
 }: ProcedureDetailDrawerProps) {
-  const [activeTab, setActiveTab] = useState<"details" | "attachments" | "history" | "comments">(
-    "details"
-  );
+  const [activeTab, setActiveTab] = useState<"details" | "attachments" | "history" | "comments">("details");
   const [newComment, setNewComment] = useState("");
 
   // Mock data - replace with real API calls
@@ -129,8 +127,8 @@ export function ProcedureDetailDrawer({
     if (!newComment.trim()) return;
 
     // TODO: [Backend/Frontend] - Implement comment submission API
-//   Details: Implement the backend API endpoint for submitting comments and integrate it with this frontend component to allow users to add comments to procedures.
-//   Priority: High
+    //   Details: Implement the backend API endpoint for submitting comments and integrate it with this frontend component to allow users to add comments to procedures.
+    //   Priority: High
     setNewComment("");
   };
 
@@ -174,10 +172,7 @@ export function ProcedureDetailDrawer({
                   <p className="text-sm text-gray-600 mt-1">{procedure.description}</p>
                 )}
               </div>
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              >
+              <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
                 <X className="h-5 w-5 text-gray-500" />
               </button>
             </div>
@@ -271,15 +266,11 @@ export function ProcedureDetailDrawer({
                     <div className="bg-gray-50 rounded-lg p-4 space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-600">Reference Number</span>
-                        <span className="text-sm font-medium text-gray-900">
-                          {procedure.referenceNumber}
-                        </span>
+                        <span className="text-sm font-medium text-gray-900">{procedure.referenceNumber}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-600">Sort Order</span>
-                        <span className="text-sm font-medium text-gray-900">
-                          {procedure.sortOrder}
-                        </span>
+                        <span className="text-sm font-medium text-gray-900">{procedure.sortOrder}</span>
                       </div>
                       <div className="flex items-center justify-between">
                         <span className="text-sm text-gray-600">Status</span>
@@ -302,27 +293,16 @@ export function ProcedureDetailDrawer({
                       </h3>
                       <div className="space-y-3">
                         {requirements.customFields.map((field) => (
-                          <div
-                            key={field.name}
-                            className="bg-gray-50 rounded-lg p-4 space-y-1"
-                          >
+                          <div key={field.name} className="bg-gray-50 rounded-lg p-4 space-y-1">
                             <div className="flex items-center justify-between">
                               <span className="text-sm font-medium text-gray-700">
                                 {field.label}
-                                {field.required && (
-                                  <span className="text-red-600 ml-1">*</span>
-                                )}
+                                {field.required && <span className="text-red-600 ml-1">*</span>}
                               </span>
-                              <span className="text-xs text-gray-500 uppercase">
-                                {field.type}
-                              </span>
+                              <span className="text-xs text-gray-500 uppercase">{field.type}</span>
                             </div>
-                            <div className="text-sm text-gray-900">
-                              {renderFieldValue(field)}
-                            </div>
-                            {field.helpText && (
-                              <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>
-                            )}
+                            <div className="text-sm text-gray-900">{renderFieldValue(field)}</div>
+                            {field.helpText && <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>}
                           </div>
                         ))}
                       </div>
@@ -336,9 +316,7 @@ export function ProcedureDetailDrawer({
                         Observations / Notes
                       </h3>
                       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                        <p className="text-sm text-gray-900 whitespace-pre-wrap">
-                          {procedure.memo}
-                        </p>
+                        <p className="text-sm text-gray-900 whitespace-pre-wrap">{procedure.memo}</p>
                       </div>
                     </div>
                   )}
@@ -376,9 +354,7 @@ export function ProcedureDetailDrawer({
                       <FileText className="h-8 w-8 text-gray-400" />
                     </div>
                     <h3 className="text-lg font-medium text-gray-900 mb-2">No Attachments</h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Upload documents related to this procedure
-                    </p>
+                    <p className="text-sm text-gray-600 mb-4">Upload documents related to this procedure</p>
                     <Button variant="outline" size="sm">
                       Upload Files
                     </Button>
@@ -395,9 +371,7 @@ export function ProcedureDetailDrawer({
                         <div className="flex flex-col items-center">
                           <div
                             className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                              item.action === "Completed"
-                                ? "bg-green-100"
-                                : "bg-gray-100"
+                              item.action === "Completed" ? "bg-green-100" : "bg-gray-100"
                             }`}
                           >
                             {item.action === "Completed" ? (
@@ -406,16 +380,12 @@ export function ProcedureDetailDrawer({
                               <Clock className="h-4 w-4 text-gray-600" />
                             )}
                           </div>
-                          {index < history.length - 1 && (
-                            <div className="w-0.5 h-full bg-gray-200 mt-2" />
-                          )}
+                          {index < history.length - 1 && <div className="w-0.5 h-full bg-gray-200 mt-2" />}
                         </div>
                         <div className="flex-1 pb-8">
                           <div className="flex items-start justify-between mb-1">
                             <div>
-                              <p className="text-sm font-medium text-gray-900">
-                                {item.action}
-                              </p>
+                              <p className="text-sm font-medium text-gray-900">{item.action}</p>
                               <p className="text-xs text-gray-600">
                                 by {item.performedBy} •{" "}
                                 {formatDistanceToNow(new Date(item.performedAt), {
@@ -448,9 +418,7 @@ export function ProcedureDetailDrawer({
                           </div>
                           <div className="flex-1">
                             <div className="flex items-center justify-between mb-1">
-                              <p className="text-sm font-medium text-gray-900">
-                                {comment.author}
-                              </p>
+                              <p className="text-sm font-medium text-gray-900">{comment.author}</p>
                               <p className="text-xs text-gray-500">
                                 {formatDistanceToNow(new Date(comment.createdAt), {
                                   addSuffix: true,
@@ -466,9 +434,7 @@ export function ProcedureDetailDrawer({
                     <div className="text-center py-8 mb-6">
                       <MessageSquare className="h-12 w-12 text-gray-300 mx-auto mb-3" />
                       <p className="text-sm text-gray-500">No comments yet</p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Start a discussion about this procedure
-                      </p>
+                      <p className="text-xs text-gray-400 mt-1">Start a discussion about this procedure</p>
                     </div>
                   )}
 

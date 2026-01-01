@@ -41,8 +41,6 @@ import { useToast, useConfirm, SafeeToastContainer } from "@/components/feedback
 import { AvatarUpload } from "@/components/common";
 import { useQueryClient } from "@tanstack/react-query";
 
-
-
 export function ProfileTabs() {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<"profile" | "security" | "accounts" | "danger">("profile");
@@ -99,7 +97,6 @@ export function ProfileTabs() {
     </div>
   );
 }
-
 
 // ... (rest of the imports)
 

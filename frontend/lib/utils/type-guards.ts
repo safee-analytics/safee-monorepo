@@ -24,15 +24,15 @@ export interface ExtendedUser {
 }
 
 export function isExtendedUser(user: unknown): user is ExtendedUser {
-    if (typeof user !== 'object' || user === null) {
-        return false;
-    }
-    const u = user as Record<string, unknown>;
-    return (
-        typeof u.id === 'string' &&
-        typeof u.email === 'string' &&
-        (!u.phone || typeof u.phone === 'string') &&
-        (!u.jobTitle || typeof u.jobTitle === 'string') &&
-        (!u.department || typeof u.department === 'string')
-    );
+  if (typeof user !== "object" || user === null) {
+    return false;
+  }
+  const u = user as Record<string, unknown>;
+  return (
+    typeof u.id === "string" &&
+    typeof u.email === "string" &&
+    (!u.phone || typeof u.phone === "string") &&
+    (!u.jobTitle || typeof u.jobTitle === "string") &&
+    (!u.department || typeof u.department === "string")
+  );
 }

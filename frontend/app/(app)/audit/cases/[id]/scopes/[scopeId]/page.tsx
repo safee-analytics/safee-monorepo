@@ -65,9 +65,7 @@ export default function ScopeDetailPage() {
           Back to Case
         </button>
         <h1 className="text-2xl font-bold text-gray-900">Scope Details</h1>
-        <p className="text-sm text-gray-600 mt-1">
-          Review and complete procedures for this scope
-        </p>
+        <p className="text-sm text-gray-600 mt-1">Review and complete procedures for this scope</p>
       </div>
 
       {/* Sections List */}
@@ -168,9 +166,7 @@ function SectionCard({
           )}
           <div className="text-left">
             <h3 className="font-semibold text-gray-900">{section.name}</h3>
-            {section.description && (
-              <p className="text-sm text-gray-600 mt-0.5">{section.description}</p>
-            )}
+            {section.description && <p className="text-sm text-gray-600 mt-0.5">{section.description}</p>}
           </div>
         </div>
         <div className="flex items-center gap-4">
@@ -184,11 +180,7 @@ function SectionCard({
             <div className="w-full bg-gray-200 rounded-full h-2">
               <div
                 className={`h-2 rounded-full transition-all ${
-                  progress === 100
-                    ? "bg-green-600"
-                    : progress > 50
-                      ? "bg-blue-600"
-                      : "bg-blue-400"
+                  progress === 100 ? "bg-green-600" : progress > 50 ? "bg-blue-600" : "bg-blue-400"
                 }`}
                 style={{ width: `${progress}%` }}
               />
@@ -203,12 +195,8 @@ function SectionCard({
           <table className="w-full">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase w-20">
-                  Step
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">
-                  Procedure
-                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase w-20">Step</th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase">Procedure</th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-600 uppercase w-32">
                   Status
                 </th>
@@ -226,9 +214,7 @@ function SectionCard({
                     onClick={() => onProcedureClick(procedure)}
                   >
                     <td className="px-4 py-3">
-                      <span className="text-sm font-medium text-gray-900">
-                        {procedure.referenceNumber}
-                      </span>
+                      <span className="text-sm font-medium text-gray-900">{procedure.referenceNumber}</span>
                     </td>
                     <td className="px-4 py-3">
                       <div>

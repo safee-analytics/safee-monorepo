@@ -47,19 +47,19 @@ function buildValidationSchema(requirements: ProcedureRequirements) {
         if (field.validation?.minLength) {
           fieldSchema = (fieldSchema as z.ZodString).min(
             field.validation.minLength,
-            `${field.label} must be at least ${field.validation.minLength} characters`
+            `${field.label} must be at least ${field.validation.minLength} characters`,
           );
         }
         if (field.validation?.maxLength) {
           fieldSchema = (fieldSchema as z.ZodString).max(
             field.validation.maxLength,
-            `${field.label} must be at most ${field.validation.maxLength} characters`
+            `${field.label} must be at most ${field.validation.maxLength} characters`,
           );
         }
         if (field.validation?.pattern) {
           fieldSchema = (fieldSchema as z.ZodString).regex(
             new RegExp(field.validation.pattern),
-            `${field.label} format is invalid`
+            `${field.label} format is invalid`,
           );
         }
         break;
@@ -69,13 +69,13 @@ function buildValidationSchema(requirements: ProcedureRequirements) {
         if (field.validation?.min !== undefined) {
           fieldSchema = (fieldSchema as z.ZodNumber).min(
             field.validation.min,
-            `${field.label} must be at least ${field.validation.min}`
+            `${field.label} must be at least ${field.validation.min}`,
           );
         }
         if (field.validation?.max !== undefined) {
           fieldSchema = (fieldSchema as z.ZodNumber).max(
             field.validation.max,
-            `${field.label} must be at most ${field.validation.max}`
+            `${field.label} must be at most ${field.validation.max}`,
           );
         }
         break;
@@ -112,10 +112,7 @@ function buildValidationSchema(requirements: ProcedureRequirements) {
       } else if (field.type !== "file") {
         fieldSchema = z.preprocess(
           (val) => (val === "" ? undefined : val),
-          (fieldSchema as z.ZodString | z.ZodNumber).min(
-            1,
-            `${field.label} is required`
-          )
+          (fieldSchema as z.ZodString | z.ZodNumber).min(1, `${field.label} is required`),
         );
       }
     } else {
@@ -191,9 +188,7 @@ export function CompleteProcedureModal({
       });
 
       if (invalidFiles.length > 0) {
-        toast.error(
-          `Only ${requirements.allowedFileTypes.join(", ")} files are allowed`
-        );
+        toast.error(`Only ${requirements.allowedFileTypes.join(", ")} files are allowed`);
         return;
       }
     }
@@ -216,8 +211,8 @@ export function CompleteProcedureModal({
 
     try {
       // TODO: [Backend] - Implement attachment upload API
-//   Details: The backend needs an API endpoint to handle file uploads for attachments. Once implemented, update this hook to first upload attachments before completing the procedure.
-//   Priority: High
+      //   Details: The backend needs an API endpoint to handle file uploads for attachments. Once implemented, update this hook to first upload attachments before completing the procedure.
+      //   Priority: High
 
       await completeProcedure.mutateAsync({
         caseId,
@@ -252,7 +247,7 @@ export function CompleteProcedureModal({
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round(bytes / Math.pow(k, i) * 100) / 100 + " " + sizes[i];
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
   };
 
   const renderField = (field: CustomField) => {
@@ -271,9 +266,7 @@ export function CompleteProcedureModal({
               placeholder={field.placeholder}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {field.helpText && (
-              <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>
-            )}
+            {field.helpText && <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>}
             {error && <p className="text-sm text-red-600 mt-1">{String(error.message)}</p>}
           </div>
         );
@@ -290,9 +283,7 @@ export function CompleteProcedureModal({
               rows={3}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {field.helpText && (
-              <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>
-            )}
+            {field.helpText && <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>}
             {error && <p className="text-sm text-red-600 mt-1">{String(error.message)}</p>}
           </div>
         );
@@ -311,9 +302,7 @@ export function CompleteProcedureModal({
               max={field.validation?.max}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {field.helpText && (
-              <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>
-            )}
+            {field.helpText && <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>}
             {error && <p className="text-sm text-red-600 mt-1">{String(error.message)}</p>}
           </div>
         );
@@ -329,9 +318,7 @@ export function CompleteProcedureModal({
               {...register(`fieldData.${field.name}`)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            {field.helpText && (
-              <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>
-            )}
+            {field.helpText && <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>}
             {error && <p className="text-sm text-red-600 mt-1">{String(error.message)}</p>}
           </div>
         );
@@ -353,9 +340,7 @@ export function CompleteProcedureModal({
                 </option>
               ))}
             </select>
-            {field.helpText && (
-              <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>
-            )}
+            {field.helpText && <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>}
             {error && <p className="text-sm text-red-600 mt-1">{String(error.message)}</p>}
           </div>
         );
@@ -372,9 +357,7 @@ export function CompleteProcedureModal({
               <label className="text-sm font-medium text-gray-700">
                 {field.label} {field.required && <span className="text-red-600">*</span>}
               </label>
-              {field.helpText && (
-                <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>
-              )}
+              {field.helpText && <p className="text-xs text-gray-500 mt-1">{field.helpText}</p>}
               {error && <p className="text-sm text-red-600 mt-1">{String(error.message)}</p>}
             </div>
           </div>
@@ -429,9 +412,7 @@ export function CompleteProcedureModal({
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Observations / Notes
-                {requirements.requiresObservations && (
-                  <span className="text-red-600"> *</span>
-                )}
+                {requirements.requiresObservations && <span className="text-red-600"> *</span>}
               </label>
               <textarea
                 {...register("memo")}
@@ -439,9 +420,7 @@ export function CompleteProcedureModal({
                 placeholder="Enter your observations, findings, or additional notes..."
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
-              {errors.memo && (
-                <p className="text-sm text-red-600 mt-1">{errors.memo.message}</p>
-              )}
+              {errors.memo && <p className="text-sm text-red-600 mt-1">{errors.memo.message}</p>}
             </div>
 
             {/* Attachments */}
@@ -452,9 +431,7 @@ export function CompleteProcedureModal({
                   <span className="text-red-600"> *</span>
                 )}
                 {requirements.maxAttachments && (
-                  <span className="text-xs text-gray-500 ml-2">
-                    (Max {requirements.maxAttachments})
-                  </span>
+                  <span className="text-xs text-gray-500 ml-2">(Max {requirements.maxAttachments})</span>
                 )}
               </label>
 
@@ -473,9 +450,7 @@ export function CompleteProcedureModal({
                           </span>
                         </div>
                         <div className="min-w-0 flex-1">
-                          <p className="text-sm font-medium text-gray-900 truncate">
-                            {file.name}
-                          </p>
+                          <p className="text-sm font-medium text-gray-900 truncate">{file.name}</p>
                           <p className="text-xs text-gray-500">{formatFileSize(file.size)}</p>
                         </div>
                       </div>
@@ -503,9 +478,7 @@ export function CompleteProcedureModal({
                 />
                 <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-blue-500 hover:bg-blue-50 transition-colors cursor-pointer">
                   <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-sm text-gray-600">
-                    Click to upload or drag and drop files here
-                  </p>
+                  <p className="text-sm text-gray-600">Click to upload or drag and drop files here</p>
                   {requirements.allowedFileTypes && requirements.allowedFileTypes.length > 0 && (
                     <p className="text-xs text-gray-500 mt-1">
                       Allowed types: {requirements.allowedFileTypes.join(", ")}

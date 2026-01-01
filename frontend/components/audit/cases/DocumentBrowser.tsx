@@ -144,7 +144,6 @@ export function DocumentBrowser({
 
   const handleStatusChange = (documentId: string, status: string) => {
     // Update document status - this would typically call an API
-
   };
 
   return (

@@ -3,7 +3,6 @@ import { apiClient, handleApiError, getCurrentUser, updateUserProfile, updateUse
 import { queryKeys } from "./queryKeys";
 import { useOrgStore } from "@/stores/useOrgStore";
 
-
 import { userSchema } from "@/lib/validation";
 // ... (rest of the imports)
 export function useUserProfile() {
@@ -45,7 +44,6 @@ export function useUpdateUserProfile() {
   });
 }
 
-
 export function useUpdateUserLocale() {
   const queryClient = useQueryClient();
   const { setLocale } = useOrgStore();
@@ -55,7 +53,6 @@ export function useUpdateUserLocale() {
       const { data, error } = await updateUserLocale(locale);
       if (error) throw new Error("Failed to update locale");
 
-      
       setLocale(locale);
 
       return data;
@@ -66,7 +63,6 @@ export function useUpdateUserLocale() {
     },
   });
 }
-
 
 export function useNotifications() {
   return useQuery({
@@ -88,7 +84,7 @@ export function useUnreadNotificationsCount() {
       if (error) throw new Error(handleApiError(error));
       return data;
     },
-    refetchInterval: 30000, 
+    refetchInterval: 30000,
   });
 }
 
@@ -111,7 +107,6 @@ export function useMarkNotificationAsRead() {
     },
   });
 }
-
 
 export function useActivity() {
   return useQuery({

@@ -44,8 +44,6 @@ export function useContract(contractId: number) {
   });
 }
 
-
-
 export function useLeaveTypes() {
   return useQuery({
     queryKey: queryKeys.hr.leaveTypes(),
@@ -56,8 +54,6 @@ export function useLeaveTypes() {
     },
   });
 }
-
-
 
 export function useLeaveRequests(params?: { employeeId?: number; state?: string }) {
   return useQuery({
@@ -72,8 +68,6 @@ export function useLeaveRequests(params?: { employeeId?: number; state?: string 
   });
 }
 
-
-
 export function useLeaveAllocations(params?: { employeeId?: number }) {
   return useQuery({
     queryKey: queryKeys.hr.leaveAllocations(params),
@@ -86,8 +80,6 @@ export function useLeaveAllocations(params?: { employeeId?: number }) {
     },
   });
 }
-
-
 
 export function usePayslips(params?: { employeeId?: number; dateFrom?: string; dateTo?: string }) {
   return useQuery({

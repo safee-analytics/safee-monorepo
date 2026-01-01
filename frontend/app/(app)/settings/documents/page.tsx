@@ -18,7 +18,12 @@ import { AuditorAccessManager } from "@/components/settings/AuditorAccessManager
 import { ReencryptionProgress } from "@/components/settings/ReencryptionProgress";
 import { KeyRotation } from "@/components/settings/KeyRotation";
 import { useToast, SafeeToastContainer } from "@/components/feedback/SafeeToast";
-import { type DocumentSettings, type EncryptionData, documentSettingsSchema, encryptionDataSchema } from "@/lib/validation";
+import {
+  type DocumentSettings,
+  type EncryptionData,
+  documentSettingsSchema,
+  encryptionDataSchema,
+} from "@/lib/validation";
 
 export default function DocumentSettingsPage() {
   const { t } = useTranslation();
@@ -37,24 +42,26 @@ export default function DocumentSettingsPage() {
   });
 
   // TODO: [Backend/Frontend] - Fetch encryption data from API
-//   Details: The `encryptionData` state is currently populated with mock data. Implement a backend API endpoint to fetch the actual encryption configuration for the organization and integrate it here on component mount.
-//   Priority: High
-  const [encryptionData, setEncryptionData] = useState<EncryptionData | null>(encryptionDataSchema.parse({
-    keyVersion: 1,
-    enabledAt: new Date().toISOString(),
-    enabledBy: "Current User",
-    organizationId: "mock-org-id",
-    encryptionKeyId: "mock-key-id",
-    wrappedOrgKey: "mock-wrapped-key-base64",
-    salt: "mock-salt-base64",
-    iv: "mock-iv-base64",
-  }));
+  //   Details: The `encryptionData` state is currently populated with mock data. Implement a backend API endpoint to fetch the actual encryption configuration for the organization and integrate it here on component mount.
+  //   Priority: High
+  const [encryptionData, setEncryptionData] = useState<EncryptionData | null>(
+    encryptionDataSchema.parse({
+      keyVersion: 1,
+      enabledAt: new Date().toISOString(),
+      enabledBy: "Current User",
+      organizationId: "mock-org-id",
+      encryptionKeyId: "mock-key-id",
+      wrappedOrgKey: "mock-wrapped-key-base64",
+      salt: "mock-salt-base64",
+      iv: "mock-iv-base64",
+    }),
+  );
 
   const handleSave = async () => {
     try {
       // TODO: [Backend/Frontend] - Implement API call to save document settings
-//   Details: Implement a backend API endpoint (e.g., `PUT /settings/documents`) to persist the document management settings. Update this frontend logic to send the `settings` object to the backend.
-//   Priority: High
+      //   Details: Implement a backend API endpoint (e.g., `PUT /settings/documents`) to persist the document management settings. Update this frontend logic to send the `settings` object to the backend.
+      //   Priority: High
       success(t.settings.documents.saveChanges || "Document settings saved successfully");
     } catch (_err) {
       error(t.common.error || "Failed to save document settings");
@@ -190,16 +197,18 @@ export default function DocumentSettingsPage() {
                   setShowEncryptionWizard(false);
                   setSettings({ ...settings, encryptionEnabled: true });
                   // Set mock encryption data after setup
-                  setEncryptionData(encryptionDataSchema.parse({
-                    keyVersion: 1,
-                    enabledAt: new Date().toISOString(),
-                    enabledBy: "Current User",
-                    organizationId: "mock-org-id",
-                    encryptionKeyId: "mock-key-id",
-                    wrappedOrgKey: "mock-wrapped-key-base64",
-                    salt: "mock-salt-base64",
-                    iv: "mock-iv-base64",
-                  }));
+                  setEncryptionData(
+                    encryptionDataSchema.parse({
+                      keyVersion: 1,
+                      enabledAt: new Date().toISOString(),
+                      enabledBy: "Current User",
+                      organizationId: "mock-org-id",
+                      encryptionKeyId: "mock-key-id",
+                      wrappedOrgKey: "mock-wrapped-key-base64",
+                      salt: "mock-salt-base64",
+                      iv: "mock-iv-base64",
+                    }),
+                  );
                 }}
                 onCancel={() => {
                   setShowEncryptionWizard(false);

@@ -44,8 +44,8 @@ export function LeadCard({ lead, isDragging = false }: LeadCardProps) {
           onClick={(e) => {
             e.preventDefault();
             // TODO: [Frontend] - Implement actions menu for LeadCard
-//   Details: When the MoreVertical icon is clicked, a dropdown or modal should appear, providing options for lead-specific actions (e.g., Edit, Delete, Convert).
-//   Priority: Medium
+            //   Details: When the MoreVertical icon is clicked, a dropdown or modal should appear, providing options for lead-specific actions (e.g., Edit, Delete, Convert).
+            //   Priority: Medium
           }}
           className="text-gray-400 hover:text-gray-600"
         >

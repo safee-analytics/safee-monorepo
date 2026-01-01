@@ -69,4 +69,3 @@ export const employeeDbResponseSchema = z.object({
 });
 
 export type EmployeeDbResponse = z.infer<typeof employeeDbResponseSchema>;
-

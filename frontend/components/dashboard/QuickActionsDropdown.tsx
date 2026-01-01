@@ -12,8 +12,8 @@ export const QuickActionsDropdown = () => {
   const router = useRouter();
 
   // TODO: [Backend/Frontend] - Fetch quick actions from API
-//   Details: The `actions` array is currently mocked. Implement a backend API endpoint to fetch a list of quick actions, potentially based on user role or preferences, and integrate it here.
-//   Priority: Medium
+  //   Details: The `actions` array is currently mocked. Implement a backend API endpoint to fetch a list of quick actions, potentially based on user role or preferences, and integrate it here.
+  //   Priority: Medium
   const actions: QuickAction[] = quickActionSchema.array().parse([
     {
       id: "invoice",
@@ -56,10 +56,7 @@ export const QuickActionsDropdown = () => {
       >
         <FiPlus className="w-4 h-4" />
         <span className="text-sm">Quick Actions</span>
-        <motion.span
-          animate={{ rotate: open ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-        >
+        <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.2 }}>
           <FiChevronDown className="w-4 h-4" />
         </motion.span>
       </Button>

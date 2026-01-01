@@ -289,8 +289,8 @@ export default function InvoicesPage() {
                           onClick={(e) => {
                             e.stopPropagation();
                             // TODO: [Backend/Frontend] - Implement PDF download for invoices
-//   Details: This button currently has a TODO for downloading PDFs. Implement a backend API endpoint to generate and serve invoice PDFs, and integrate it with this frontend button to trigger the download.
-//   Priority: Medium
+                            //   Details: This button currently has a TODO for downloading PDFs. Implement a backend API endpoint to generate and serve invoice PDFs, and integrate it with this frontend button to trigger the download.
+                            //   Priority: Medium
                           }}
                           className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                           title="Download PDF"

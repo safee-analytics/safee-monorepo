@@ -163,8 +163,6 @@ export function useCancelInvitation() {
 
   return useMutation({
     mutationFn: async ({ orgId, invitationId }: { orgId: string; invitationId: string }) => {
-
-
       const { data, error } = await authClient.organization.cancelInvitation({
         invitationId,
       });
@@ -172,7 +170,6 @@ export function useCancelInvitation() {
         console.error(`Failed to cancel invitation ${invitationId} for org ${orgId}:`, error.message);
         throw new Error(error.message);
       }
-
 
       return data;
     },

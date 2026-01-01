@@ -107,4 +107,3 @@ export const invoiceStyleSchema = z.object({
 });
 
 export type InvoiceStyle = z.infer<typeof invoiceStyleSchema>;
-

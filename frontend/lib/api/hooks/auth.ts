@@ -11,19 +11,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth/client";
 
-
-
-
-
 export const authQueryKeys = {
   session: ["auth", "session"] as const,
   sessions: ["auth", "sessions"] as const,
   user: ["auth", "user"] as const,
 } as const;
-
-
-
-
 
 /**
  * Get current session (includes user and session data)
@@ -150,10 +142,6 @@ export function useCheckUsernameAvailability() {
   });
 }
 
-
-
-
-
 /**
  * Request password reset (sends email)
  */
@@ -213,10 +201,6 @@ export function useChangePassword() {
   });
 }
 
-
-
-
-
 /**
  * Send email verification
  */
@@ -272,10 +256,6 @@ export function useChangeEmail() {
     },
   });
 }
-
-
-
-
 
 /**
  * Update current user profile
@@ -334,10 +314,6 @@ export function useDeleteUser() {
     },
   });
 }
-
-
-
-
 
 /**
  * List all active sessions for current user
@@ -411,10 +387,6 @@ export function useRevokeAllSessions() {
   });
 }
 
-
-
-
-
 /**
  * Link a social account (Google, GitHub, etc.) to current user
  */
@@ -479,10 +451,6 @@ export function useUnlinkSocialAccount() {
   });
 }
 
-
-
-
-
 /**
  * Refresh access token
  * Note: better-auth refreshToken doesn't exist as a direct method, sessions are automatically refreshed
@@ -511,10 +479,6 @@ export function useGetAccessToken() {
     },
   });
 }
-
-
-
-
 
 /**
  * Enable 2FA for the current user
@@ -594,10 +558,6 @@ export function useGet2FAStatus() {
   });
 }
 
-
-
-
-
 /**
  * Send magic link to email for passwordless login
  */
@@ -634,10 +594,6 @@ export function useVerifyMagicLink() {
     },
   });
 }
-
-
-
-
 
 /**
  * Send phone verification code via SMS

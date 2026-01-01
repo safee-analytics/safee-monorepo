@@ -197,7 +197,13 @@ export function useToggleTemplateActive() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ templateId: _templateId, isActive: _isActive }: { templateId: string; isActive: boolean }) => {
+    mutationFn: async ({
+      templateId: _templateId,
+      isActive: _isActive,
+    }: {
+      templateId: string;
+      isActive: boolean;
+    }) => {
       throw new Error("Toggle template active status endpoint not yet implemented in backend");
     },
     onSuccess: (_, variables) => {
@@ -303,9 +309,7 @@ export function validateTemplateStructure(structure: TemplateStructure): {
 
     section.procedures.forEach((procedure, procIndex) => {
       if (!procedure.title || procedure.title.trim() === "") {
-        errors.push(
-          `Procedure ${procIndex + 1} in section "${section.name}" must have a title`,
-        );
+        errors.push(`Procedure ${procIndex + 1} in section "${section.name}" must have a title`);
       }
 
       if (!procedure.referenceNumber || procedure.referenceNumber.trim() === "") {

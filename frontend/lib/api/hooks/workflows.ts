@@ -3,8 +3,6 @@ import { apiClient, handleApiError } from "../client";
 import type { paths } from "../types";
 import { queryKeys } from "./queryKeys";
 
-
-
 export function useWorkflows(entityType?: string) {
   return useQuery({
     queryKey: queryKeys.workflows.list(entityType),
@@ -101,7 +99,6 @@ export function useDeleteWorkflow() {
   });
 }
 
-
 export function useApprovalRules(entityType?: string) {
   return useQuery({
     queryKey: queryKeys.approvalRules.list(entityType),
@@ -154,7 +151,6 @@ export function useDeleteApprovalRule() {
     },
   });
 }
-
 
 export function useApprovalRequests(status?: "pending" | "approved" | "rejected" | "cancelled") {
   return useQuery({

@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../client";
 import { queryKeys } from "./queryKeys";
 
-
 export interface Integration {
   id: string;
   name: string;
@@ -12,7 +11,6 @@ export interface Integration {
   category: "accounting" | "communication" | "storage" | "productivity";
   configUrl?: string;
 }
-
 
 export function useGetIntegrations() {
   return useQuery<Integration[]>({
@@ -24,7 +22,6 @@ export function useGetIntegrations() {
     },
   });
 }
-
 
 export function useConnectIntegration() {
   const queryClient = useQueryClient();
@@ -45,7 +42,6 @@ export function useConnectIntegration() {
     },
   });
 }
-
 
 export function useDisconnectIntegration() {
   const queryClient = useQueryClient();

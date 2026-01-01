@@ -89,12 +89,8 @@ export function FormSelect({
             ? "border-red-300 focus:ring-2 focus:ring-red-500 focus:border-transparent"
             : "border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         } ${
-          disabled
-            ? "bg-gray-50 cursor-not-allowed text-gray-500"
-            : "bg-white hover:bg-gray-50 text-gray-900"
-        } ${
-          !selectedOption ? "text-gray-500" : "text-gray-900"
-        } ${className}`}
+          disabled ? "bg-gray-50 cursor-not-allowed text-gray-500" : "bg-white hover:bg-gray-50 text-gray-900"
+        } ${!selectedOption ? "text-gray-500" : "text-gray-900"} ${className}`}
       >
         <span className="truncate">{displayLabel}</span>
         <ChevronDown
@@ -133,16 +129,12 @@ export function FormSelect({
                     }
                   }}
                   className={`w-full text-left px-4 py-2.5 text-sm border-b border-gray-100 last:border-b-0 flex items-center justify-between transition-colors focus:outline-none focus:bg-blue-50 ${
-                    isSelected
-                      ? "bg-blue-50 text-blue-700 font-medium"
-                      : "text-gray-700 hover:bg-gray-50"
+                    isSelected ? "bg-blue-50 text-blue-700 font-medium" : "text-gray-700 hover:bg-gray-50"
                   }`}
                   autoFocus={index === 0}
                 >
                   <span>{option.label}</span>
-                  {isSelected && (
-                    <Check className="h-4 w-4 text-blue-600 flex-shrink-0" />
-                  )}
+                  {isSelected && <Check className="h-4 w-4 text-blue-600 flex-shrink-0" />}
                 </button>
               );
             })}

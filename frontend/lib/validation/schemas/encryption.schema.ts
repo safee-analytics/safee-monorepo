@@ -52,4 +52,3 @@ export const encryptionSetupRequestSchema = z.object({
 });
 
 export type EncryptionSetupRequest = z.infer<typeof encryptionSetupRequestSchema>;
-

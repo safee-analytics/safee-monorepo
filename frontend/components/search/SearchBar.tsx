@@ -134,8 +134,8 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   const handleExport = useCallback(() => {
     console.warn("Export data triggered - implementation pending");
     // TODO: [Backend/Frontend] - Implement actual export logic
-//   Details: The export functionality is currently a placeholder. Implement the backend API for exporting data and integrate it with the frontend to enable actual data export.
-//   Priority: Medium
+    //   Details: The export functionality is currently a placeholder. Implement the backend API for exporting data and integrate it with the frontend to enable actual data export.
+    //   Priority: Medium
   }, []);
 
   const handleThemeToggle = useCallback(() => {
@@ -257,7 +257,9 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (e.target instanceof Node && dropdownRef.current &&
+      if (
+        e.target instanceof Node &&
+        dropdownRef.current &&
         !dropdownRef.current.contains(e.target) &&
         inputRef.current &&
         !inputRef.current?.contains(e.target)

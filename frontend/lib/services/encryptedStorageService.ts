@@ -158,9 +158,9 @@ class EncryptedStorageService {
       authTag,
       algorithm: "AES-256-GCM",
       chunkSize: 128 * 1024, // 128KB
-            keyVersion: 1, // TODO: [Frontend] - Get from encryption store (e.g., current active key version)
-//   Details: The `keyVersion` field is currently hardcoded. It should be dynamically retrieved from the encryption store to ensure that the correct encryption key version is used.
-//   Priority: High
+      keyVersion: 1, // TODO: [Frontend] - Get from encryption store (e.g., current active key version)
+      //   Details: The `keyVersion` field is currently hardcoded. It should be dynamically retrieved from the encryption store to ensure that the correct encryption key version is used.
+      //   Priority: High
     };
     formData.append("encryptionMetadata", JSON.stringify(encryptionMetadata));
 

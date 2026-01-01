@@ -40,9 +40,7 @@ export function useAutofill(): AutofillSuggestions {
       suggestAuditType: (clientName: string): string | undefined => {
         if (!clientName) return undefined;
 
-        const clientCases = cases.filter((c) =>
-          c.title?.toLowerCase().includes(clientName.toLowerCase()),
-        );
+        const clientCases = cases.filter((c) => c.title?.toLowerCase().includes(clientName.toLowerCase()));
 
         if (clientCases.length === 0) return undefined;
 
@@ -104,9 +102,7 @@ export function useAutofill(): AutofillSuggestions {
         const daysUntilDue = differenceInDays(dueDate, new Date());
 
         // Check if client typically requires high priority
-        const clientCases = cases.filter((c) =>
-          c.title?.toLowerCase().includes(clientName.toLowerCase()),
-        );
+        const clientCases = cases.filter((c) => c.title?.toLowerCase().includes(clientName.toLowerCase()));
 
         const highPriorityCount = clientCases.filter(
           (c) => c.priority === "high" || c.priority === "critical",
@@ -191,9 +187,7 @@ export function useAutofill(): AutofillSuggestions {
           };
         }
 
-        const clientCases = cases.filter((c) =>
-          c.title?.toLowerCase().includes(clientName.toLowerCase()),
-        );
+        const clientCases = cases.filter((c) => c.title?.toLowerCase().includes(clientName.toLowerCase()));
 
         if (clientCases.length === 0) {
           return {

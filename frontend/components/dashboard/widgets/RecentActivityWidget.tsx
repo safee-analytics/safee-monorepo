@@ -3,9 +3,9 @@
 import { Button } from "@safee/ui";
 
 export const RecentActivityWidget = () => {
-// TODO: [Backend/Frontend] - Fetch recent activities from API
-//   Details: The `activities` array is currently mocked. Implement a backend API endpoint to fetch recent activities and integrate it here.
-//   Priority: High
+  // TODO: [Backend/Frontend] - Fetch recent activities from API
+  //   Details: The `activities` array is currently mocked. Implement a backend API endpoint to fetch recent activities and integrate it here.
+  //   Priority: High
   const activities = [
     { name: "Invoice #1234", amount: "+$1,250", color: "text-green-600" },
     { name: "Office Supplies", amount: "-$89", color: "text-red-600" },
