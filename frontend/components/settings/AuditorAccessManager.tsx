@@ -1,25 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Shield, UserCheck, Trash2, AlertCircle, Eye, EyeOff } from "lucide-react";
-import {
-  deriveKeyFromPassword,
-  unwrapOrgKey,
-  wrapOrgKeyWithRSA,
-  importPublicKeyFromPEM,
-} from "@/lib/crypto/cryptoService";
-
-interface AuditorAccess {
-  id: string;
-  auditorUserId: string;
-  auditorName: string;
-  auditorEmail: string;
-  grantedBy: string;
-  grantedAt: string;
-  expiresAt?: string;
-  isRevoked: boolean;
-}
+import { useEncryptionStore } from "@/stores/useEncryptionStore";
+import { type AuditorAccess, type AvailableAuditor, auditorAccessSchema, availableAuditorSchema } from "@/lib/validation";
 
 interface AuditorAccessManagerProps {
   organizationId: string;
@@ -45,11 +27,13 @@ export function AuditorAccessManager({
   const [isGranting, setIsGranting] = useState(false);
   const [error, setError] = useState("");
 
-  // Mock auditors list - in real app, fetch from API
-  const availableAuditors = [
+  // TODO: [Backend/Frontend] - Fetch available auditors from API
+//   Details: The `availableAuditors` list is currently mocked. Implement a backend API endpoint to fetch a real list of auditors and integrate it here.
+//   Priority: High
+  const availableAuditors: AvailableAuditor[] = availableAuditorSchema.array().parse([
     { id: "1", name: "John Auditor", email: "john@audit.com" },
     { id: "2", name: "Jane Auditor", email: "jane@audit.com" },
-  ];
+  ]);
 
   const handleGrantAccess = async () => {
     try {
@@ -74,7 +58,9 @@ export function AuditorAccessManager({
         return;
       }
 
-      // TODO: Fetch real public key from backend
+      // TODO: [Backend] - Fetch real public key from backend for the selected auditor
+//   Details: The `publicKeyPEM` is currently mocked. Implement a backend API endpoint (e.g., `/api/v1/users/${selectedAuditor}/public-key`) to retrieve the actual RSA public key of the selected auditor.
+//   Priority: High
       // const response = await fetch(`/api/v1/users/${selectedAuditor}/public-key`);
       // const { publicKey: publicKeyPEM } = await response.json();
       const publicKeyPEM = "-----BEGIN PUBLIC KEY-----\nMOCK_KEY\n-----END PUBLIC KEY-----";
@@ -89,7 +75,9 @@ export function AuditorAccessManager({
       expiresAt.setDate(expiresAt.getDate() + parseInt(accessDuration));
 
       // 6. Send to backend
-      // TODO: Call actual API
+      // TODO: [Backend/Frontend] - Implement API call to grant auditor access
+//   Details: Implement the backend API endpoint (e.g., `POST /api/v1/encryption/auditor-access`) to persist the granted auditor access. This involves sending the `organizationId`, `auditorUserId`, `encryptionKeyId`, `wrappedOrgKey` (for the auditor), and `expiresAt`.
+//   Priority: High
       // await fetch('/api/v1/encryption/auditor-access', {
       //   method: 'POST',
       //   body: JSON.stringify({
@@ -102,7 +90,7 @@ export function AuditorAccessManager({
       // });
 
       // Mock: Add to local state
-      const newAccess: AuditorAccess = {
+      const newAccess: AuditorAccess = auditorAccessSchema.parse({
         id: crypto.randomUUID(),
         auditorUserId: selectedAuditor,
         auditorName: auditor.name,
@@ -111,7 +99,7 @@ export function AuditorAccessManager({
         grantedAt: new Date().toISOString(),
         expiresAt: expiresAt.toISOString(),
         isRevoked: false,
-      };
+      });
 
       setAuditorAccesses([...auditorAccesses, newAccess]);
       setShowPasswordPrompt(false);
@@ -131,7 +119,9 @@ export function AuditorAccessManager({
     }
 
     try {
-      // TODO: Call actual API
+      // TODO: [Backend/Frontend] - Implement API call to revoke auditor access
+//   Details: Implement the backend API endpoint (e.g., `DELETE /api/v1/encryption/auditor-access/${accessId}`) to revoke an auditor's access. Update this frontend logic to call the actual API.
+//   Priority: High
       // await fetch(`/api/v1/encryption/auditor-access/${accessId}`, {
       //   method: 'DELETE',
       // });

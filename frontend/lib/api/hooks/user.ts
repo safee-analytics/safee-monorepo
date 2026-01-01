@@ -3,9 +3,9 @@ import { apiClient, handleApiError, getCurrentUser, updateUserProfile, updateUse
 import { queryKeys } from "./queryKeys";
 import { useOrgStore } from "@/stores/useOrgStore";
 
-/**
- * Fetch current user profile
- */
+
+import { userSchema } from "@/lib/validation";
+// ... (rest of the imports)
 export function useUserProfile() {
   const { setLocale } = useOrgStore();
 
@@ -15,12 +15,17 @@ export function useUserProfile() {
       const { data, error } = await getCurrentUser();
       if (error) throw new Error("Failed to fetch profile");
 
-      // Update locale in store if it exists in profile
-      if (data?.preferredLocale) {
-        setLocale(data.preferredLocale);
+      const validation = userSchema.safeParse(data);
+      if (!validation.success) {
+        console.error("User profile validation error:", validation.error);
+        return null;
       }
 
-      return data;
+      if (validation.data?.preferredLocale) {
+        setLocale(validation.data.preferredLocale);
+      }
+
+      return validation.data;
     },
   });
 }
@@ -40,9 +45,7 @@ export function useUpdateUserProfile() {
   });
 }
 
-/**
- * Update user locale preference
- */
+
 export function useUpdateUserLocale() {
   const queryClient = useQueryClient();
   const { setLocale } = useOrgStore();
@@ -52,7 +55,7 @@ export function useUpdateUserLocale() {
       const { data, error } = await updateUserLocale(locale);
       if (error) throw new Error("Failed to update locale");
 
-      // Update locale in store
+      
       setLocale(locale);
 
       return data;
@@ -64,7 +67,7 @@ export function useUpdateUserLocale() {
   });
 }
 
-// Notification Hooks
+
 export function useNotifications() {
   return useQuery({
     queryKey: queryKeys.notifications.all,
@@ -85,7 +88,7 @@ export function useUnreadNotificationsCount() {
       if (error) throw new Error(handleApiError(error));
       return data;
     },
-    refetchInterval: 30000, // Refetch every 30 seconds
+    refetchInterval: 30000, 
   });
 }
 
@@ -109,7 +112,7 @@ export function useMarkNotificationAsRead() {
   });
 }
 
-// Activity Hook
+
 export function useActivity() {
   return useQuery({
     queryKey: queryKeys.activity.all,

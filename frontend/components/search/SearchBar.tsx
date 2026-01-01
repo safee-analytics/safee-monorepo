@@ -133,7 +133,9 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   // Get search items from shared configuration
   const handleExport = useCallback(() => {
     console.warn("Export data triggered - implementation pending");
-    // TODO: Implement actual export logic
+    // TODO: [Backend/Frontend] - Implement actual export logic
+//   Details: The export functionality is currently a placeholder. Implement the backend API for exporting data and integrate it with the frontend to enable actual data export.
+//   Priority: Medium
   }, []);
 
   const handleThemeToggle = useCallback(() => {
@@ -255,10 +257,10 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node) &&
-        !inputRef.current?.contains(e.target as Node)
+      if (e.target instanceof Node && dropdownRef.current &&
+        !dropdownRef.current.contains(e.target) &&
+        inputRef.current &&
+        !inputRef.current?.contains(e.target)
       ) {
         setIsOpen(false);
       }
@@ -308,7 +310,7 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
           onClick={onOpenCommandPalette}
           className={`absolute ${locale === "ar" ? "left-3" : "right-3"} top-1/2 transform -translate-y-1/2 hidden sm:flex items-center gap-1 px-2 py-1 text-xs font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors`}
         >
-          <FiCommand className="w-3 h-3" />
+          <FiCommand className="w-4 h-4" />
           <span>K</span>
         </button>
       </div>
@@ -440,7 +442,7 @@ export function SearchBar({ onOpenCommandPalette }: SearchBarProps) {
               onClick={onOpenCommandPalette}
               className="flex items-center gap-1 hover:text-gray-700 dark:hover:text-gray-300"
             >
-              <FiCommand className="w-3 h-3" />
+              <FiCommand className="w-4 h-4" />
               <span>K for more</span>
             </button>
           </div>

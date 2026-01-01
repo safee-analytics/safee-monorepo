@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient, handleApiError } from "../client";
 import { queryKeys } from "./queryKeys";
 
-// ==================== Invoices ====================
+
 
 export function useInvoices(params?: {
   page?: number;
@@ -151,7 +151,7 @@ export function useInvoicePDF(invoiceId: string) {
   });
 }
 
-// ==================== Bills ====================
+
 
 export function useBills(params?: {
   page?: number;
@@ -249,7 +249,7 @@ export function useCancelBill() {
   });
 }
 
-// ==================== Payments ====================
+
 
 export function usePayments(params?: {
   type?: "inbound" | "outbound" | "transfer";
@@ -312,7 +312,7 @@ export function useConfirmPayment() {
   });
 }
 
-// ==================== Master Data ====================
+
 
 export function useAccounts(accountType?: string) {
   return useQuery({
@@ -377,7 +377,7 @@ export function usePaymentTerms() {
   });
 }
 
-// ==================== Reports ====================
+
 
 export function useTrialBalance(params: { accountIds?: number[]; dateFrom?: string; dateTo?: string }) {
   return useQuery({
@@ -463,7 +463,7 @@ export function useAgedPayable(asOfDate?: string) {
   });
 }
 
-// ==================== Bank Reconciliation ====================
+
 
 export function useBankStatements(params?: {
   journalId?: number;
@@ -529,7 +529,7 @@ export function useReconcileBankLine() {
   });
 }
 
-// ==================== Multi-Currency ====================
+
 
 export function useCurrencies(onlyActive = true) {
   return useQuery({
@@ -574,7 +574,7 @@ export function useConvertCurrency() {
   });
 }
 
-// ==================== Batch Operations ====================
+
 
 export function useBatchValidateInvoices() {
   const queryClient = useQueryClient();

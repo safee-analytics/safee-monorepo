@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, startTransition } from "react";
 import { Search, Clock, TrendingUp, Copy } from "lucide-react";
 import { useAutofill, type AutofillClientHistory } from "@/lib/hooks/useAutofill";
 import { formatDistanceToNow } from "date-fns";
-import type { CaseData } from "@/lib/api/hooks/cases";
+import { type Case } from "@/lib/validation";
 
 interface ClientAutocompleteProps {
   value: string;
@@ -16,7 +16,7 @@ interface ClientAutocompleteProps {
 
 interface ClientFromRecent {
   name: string;
-  lastCase: CaseData;
+  lastCase: Case;
   count: number;
 }
 

@@ -7,7 +7,8 @@ import { NotificationCard } from "@/components/audit/ui/NotificationCard";
 import { CaseCard } from "@/components/audit/ui/CaseCard";
 import { ActivityItem } from "@/components/audit/ui/ActivityItem";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
-import { useCases, useNotifications, useActivity, type CaseData, type CaseAssignment } from "@/lib/api/hooks";
+import { useCases, useNotifications, useActivity } from "@/lib/api/hooks";
+import { type Case, type CaseAssignment } from "@/lib/validation";
 import { useMemo } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -56,15 +57,15 @@ export default function AuditDashboard() {
       };
     }
 
-    const activeCases = apiCases.filter((c: CaseData) => c.status === "in_progress").length;
-    const completedAudits = apiCases.filter((c: CaseData) => c.status === "completed").length;
-    const pendingReviews = apiCases.filter((c: CaseData) => c.status === "under_review").length;
+    const activeCases = apiCases.filter((c: Case) => c.status === "in_progress").length;
+    const completedAudits = apiCases.filter((c: Case) => c.status === "completed").length;
+    const pendingReviews = apiCases.filter((c: Case) => c.status === "under_review").length;
     const totalCases = apiCases.length;
     const completionRate = totalCases > 0 ? Math.round((completedAudits / totalCases) * 100) : 0;
 
     // Get unique team members from assignments
     const uniqueMembers = new Set<string>();
-    apiCases.forEach((c: CaseData) => {
+    apiCases.forEach((c: Case) => {
       c.assignments?.forEach((a: CaseAssignment) => {
         if (a.userId) uniqueMembers.add(a.userId);
       });
@@ -108,7 +109,7 @@ export default function AuditDashboard() {
   >(() => {
     if (!apiCases) return [];
 
-    return apiCases.slice(0, 3).map((caseData: CaseData) => ({
+    return apiCases.slice(0, 3).map((caseData: Case) => ({
       id: caseData.id,
       companyName: caseData.title,
       auditType: caseData.caseType,
@@ -156,17 +157,17 @@ export default function AuditDashboard() {
     const currentYear = new Date().getFullYear();
 
     return months.map((month, index) => {
-      const casesInMonth = apiCases.filter((c: CaseData) => {
-        if (!(c as CaseData & { createdAt?: string }).createdAt) return false;
-        const caseDate = new Date((c as CaseData & { createdAt?: string }).createdAt);
+      const casesInMonth = apiCases.filter((c: Case) => {
+        if (!(c as Case & { createdAt?: string }).createdAt) return false;
+        const caseDate = new Date((c as Case & { createdAt?: string }).createdAt);
         return caseDate.getMonth() === index && caseDate.getFullYear() === currentYear;
       });
 
       return {
         month,
-        completed: casesInMonth.filter((c: CaseData) => c.status === "completed").length,
-        inProgress: casesInMonth.filter((c: CaseData) => c.status === "in_progress").length,
-        pending: casesInMonth.filter((c: CaseData) => c.status === "draft" || c.status === "under_review").length,
+        completed: casesInMonth.filter((c: Case) => c.status === "completed").length,
+        inProgress: casesInMonth.filter((c: Case) => c.status === "in_progress").length,
+        pending: casesInMonth.filter((c: Case) => c.status === "draft" || c.status === "under_review").length,
       };
     });
   }, [apiCases]);

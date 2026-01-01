@@ -2,9 +2,9 @@
 
 import Link from "next/link";
 import { DollarSign, Mail, Phone, Clock, MoreVertical, Target } from "lucide-react";
-import type { paths } from "@/lib/api/types";
+import { type Lead, leadSchema } from "@/lib/validation";
 
-type LeadResponse = paths["/crm/leads"]["get"]["responses"]["200"]["content"]["application/json"][number];
+type LeadResponse = Lead;
 
 interface LeadCardProps {
   lead: LeadResponse;
@@ -43,7 +43,9 @@ export function LeadCard({ lead, isDragging = false }: LeadCardProps) {
         <button
           onClick={(e) => {
             e.preventDefault();
-            // TODO: Open actions menu
+            // TODO: [Frontend] - Implement actions menu for LeadCard
+//   Details: When the MoreVertical icon is clicked, a dropdown or modal should appear, providing options for lead-specific actions (e.g., Edit, Delete, Convert).
+//   Priority: Medium
           }}
           className="text-gray-400 hover:text-gray-600"
         >
@@ -74,15 +76,17 @@ export function LeadCard({ lead, isDragging = false }: LeadCardProps) {
             {lead.type === "opportunity" ? "Opportunity" : "Lead"}
           </span>
         )}
-        {lead.priority && lead.priority !== "0" && (
-          <span
-            className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-              priorityColors[lead.priority as keyof typeof priorityColors]
-            }`}
-          >
-            {priorityLabels[lead.priority as keyof typeof priorityLabels]}
-          </span>
-        )}
+        {lead.priority &&
+          lead.priority !== "0" &&
+          (leadSchema.shape.priority.safeParse(lead.priority).success ? (
+            <span
+              className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                priorityColors[lead.priority as keyof typeof priorityColors]
+              }`}
+            >
+              {priorityLabels[lead.priority as keyof typeof priorityLabels]}
+            </span>
+          ) : null)}
       </div>
 
       <div className="space-y-2 text-sm text-gray-600">

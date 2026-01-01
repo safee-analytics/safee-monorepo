@@ -12,9 +12,9 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth/client";
 
-// ============================================================================
-// Query Keys
-// ============================================================================
+
+
+
 
 export const teamQueryKeys = {
   all: (orgId: string) => ["teams", orgId] as const,
@@ -23,9 +23,9 @@ export const teamQueryKeys = {
   activeTeam: (orgId: string) => ["teams", orgId, "active"] as const,
 } as const;
 
-// ============================================================================
-// Team Management
-// ============================================================================
+
+
+
 
 /**
  * List all teams in an organization
@@ -206,20 +206,7 @@ export function useUpdateTeamMemberRole() {
     },
   });
 }
-// these are gotten from session
-// export function useActiveTeam(orgId: string) {
-//   return useQuery({
-//     queryKey: teamQueryKeys.activeTeam(orgId),
-//     queryFn: async () => {
-//       const { data, error } = await authClient.organization.getActiveTeam({
-//         organizationId: orgId,
-//       });
-//       if (error) throw new Error(error.message);
-//       return data;
-//     },
-//     enabled: !!orgId,
-//   });
-// }
+
 
 export function useSetActiveTeam() {
   const queryClient = useQueryClient();

@@ -11,7 +11,10 @@ import { ShiftHightlightTabs } from "@/components/layout/Tabs";
 // Data Display Components
 import { CustomKanban } from "@/components/data-display/KanbanBoard";
 import ShuffleSortTable from "@/components/data-display/DataTable";
-// import { FlipCalendarExample } from "@/components/data-display/Calendar"; // TODO: Create Calendar component
+// TODO: [Frontend] - Create Calendar component
+//   Details: The `FlipCalendarExample` import is commented out because the Calendar component is missing. Create a new Calendar component under `components/data-display/Calendar.tsx`.
+//   Priority: Medium
+// import { FlipCalendarExample } from "@/components/data-display/Calendar";
 
 // Feedback Components
 import { SafeeToastContainer } from "@/components/feedback/SafeeToast";

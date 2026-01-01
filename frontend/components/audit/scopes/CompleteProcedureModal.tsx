@@ -145,11 +145,160 @@ export function CompleteProcedureModal({
   const toast = useToast();
   const completeProcedure = useCompleteProcedure();
 
+import { z } from "zod";
+import { Button } from "@safee/ui";
+import { X, Upload, Trash2 } from "lucide-react";
+import { useToast } from "@safee/ui";
+import { useCompleteProcedure } from "@/lib/api/hooks";
+import { logError } from "@/lib/utils/logger";
+import type { components } from "@/lib/api/types/audit";
+import type { CustomField } from "../templates/ProcedureRequirementsEditor";
+
+const procedureRequirementsSchema = z.object({
+  customFields: z.array(z.any()).optional(), // TODO: Replace z.any() with a proper CustomField schema
+  minAttachments: z.number().optional(),
+  maxAttachments: z.number().optional(),
+  requiresObservations: z.boolean().optional(),
+  allowedFileTypes: z.array(z.string()).optional(),
+});
+
+type ProcedureResponse = components["schemas"]["ProcedureResponse"];
+
+interface CompleteProcedureModalProps {
+  caseId: string;
+  scopeId: string;
+  sectionId: string;
+  procedure: ProcedureResponse;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+interface ProcedureRequirements {
+  customFields?: CustomField[];
+  minAttachments?: number;
+  maxAttachments?: number;
+  requiresObservations?: boolean;
+  allowedFileTypes?: string[];
+}
+
+// Build dynamic Zod schema from custom fields
+function buildValidationSchema(requirements: ProcedureRequirements) {
+  const fieldSchemas: Record<string, z.ZodTypeAny> = {};
+
+  requirements.customFields?.forEach((field) => {
+    let fieldSchema: z.ZodTypeAny;
+
+    switch (field.type) {
+      case "text":
+      case "textarea":
+        fieldSchema = z.string();
+        if (field.validation?.minLength) {
+          fieldSchema = (fieldSchema as z.ZodString).min(
+            field.validation.minLength,
+            `${field.label} must be at least ${field.validation.minLength} characters`
+          );
+        }
+        if (field.validation?.maxLength) {
+          fieldSchema = (fieldSchema as z.ZodString).max(
+            field.validation.maxLength,
+            `${field.label} must be at most ${field.validation.maxLength} characters`
+          );
+        }
+        if (field.validation?.pattern) {
+          fieldSchema = (fieldSchema as z.ZodString).regex(
+            new RegExp(field.validation.pattern),
+            `${field.label} format is invalid`
+          );
+        }
+        break;
+
+      case "number":
+        fieldSchema = z.coerce.number();
+        if (field.validation?.min !== undefined) {
+          fieldSchema = (fieldSchema as z.ZodNumber).min(
+            field.validation.min,
+            `${field.label} must be at least ${field.validation.min}`
+          );
+        }
+        if (field.validation?.max !== undefined) {
+          fieldSchema = (fieldSchema as z.ZodNumber).max(
+            field.validation.max,
+            `${field.label} must be at most ${field.validation.max}`
+          );
+        }
+        break;
+
+      case "date":
+        fieldSchema = z.string();
+        break;
+
+      case "select":
+        fieldSchema = z.string();
+        if (field.options && field.options.length > 0) {
+          fieldSchema = z.enum(field.options as [string, ...string[]]);
+        }
+        break;
+
+      case "checkbox":
+        fieldSchema = z.boolean();
+        break;
+
+      case "file":
+        fieldSchema = z.string().optional();
+        break;
+
+      default:
+        fieldSchema = z.string();
+    }
+
+    // Apply required validation
+    if (field.required) {
+      if (field.type === "checkbox") {
+        fieldSchema = (fieldSchema as z.ZodBoolean).refine((val) => val === true, {
+          message: `${field.label} must be checked`,
+        });
+      } else if (field.type !== "file") {
+        fieldSchema = z.preprocess(
+          (val) => (val === "" ? undefined : val),
+          (fieldSchema as z.ZodString | z.ZodNumber).min(
+            1,
+            `${field.label} is required`
+          )
+        );
+      }
+    } else {
+      fieldSchema = fieldSchema.optional();
+    }
+
+    fieldSchemas[field.name] = fieldSchema;
+  });
+
+  return z.object({
+    fieldData: z.object(fieldSchemas),
+    memo: requirements.requiresObservations
+      ? z.string().min(1, "Observations are required")
+      : z.string().optional(),
+  });
+}
+
+export function CompleteProcedureModal({
+  caseId,
+  scopeId,
+  sectionId,
+  procedure,
+  onClose,
+  onSuccess,
+}: CompleteProcedureModalProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [attachments, setAttachments] = useState<File[]>([]);
+
+  const toast = useToast();
+  const completeProcedure = useCompleteProcedure();
+
   // Parse requirements from procedure
-  const requirements: ProcedureRequirements =
-    typeof procedure.requirements === "object" && procedure.requirements !== null
-      ? (procedure.requirements as ProcedureRequirements)
-      : {};
+  const requirements = procedureRequirementsSchema.safeParse(procedure.requirements).success
+    ? procedureRequirementsSchema.parse(procedure.requirements)
+    : {};
 
   // Build validation schema
   const validationSchema = buildValidationSchema(requirements);
@@ -214,8 +363,9 @@ export function CompleteProcedureModal({
     setIsSubmitting(true);
 
     try {
-      // TODO: Upload attachments first (when document upload API is ready)
-      // For now, we'll just complete the procedure without attachments
+      // TODO: [Backend] - Implement attachment upload API
+//   Details: The backend needs an API endpoint to handle file uploads for attachments. Once implemented, update this hook to first upload attachments before completing the procedure.
+//   Priority: High
 
       await completeProcedure.mutateAsync({
         caseId,

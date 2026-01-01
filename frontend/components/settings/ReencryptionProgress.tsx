@@ -1,32 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Lock, RefreshCw, CheckCircle, XCircle, AlertCircle, Eye, EyeOff } from "lucide-react";
-import { deriveKeyFromPassword, unwrapOrgKey } from "@/lib/crypto/cryptoService";
-import { encryptedStorageService } from "@/lib/services/encryptedStorageService";
 import { useEncryptionStore } from "@/stores/useEncryptionStore";
+import { type FileToEncrypt, type MigrationStats, fileToEncryptSchema, migrationStatsSchema } from "@/lib/validation";
 
 interface ReencryptionProgressProps {
   organizationId: string;
   wrappedOrgKey: string;
   salt: string;
   iv: string;
-}
-
-interface FileToEncrypt {
-  id: string;
-  name: string;
-  size: number;
-  status: "pending" | "encrypting" | "completed" | "failed";
-  error?: string;
-}
-
-interface MigrationStats {
-  total: number;
-  encrypted: number;
-  pending: number;
-  failed: number;
 }
 
 export function ReencryptionProgress({
@@ -54,16 +35,18 @@ export function ReencryptionProgress({
 
   const { setOrgKey, setMasterKey } = useEncryptionStore();
 
+  // TODO: [Backend/Frontend] - Fetch migration status on mount
+//   Details: This useEffect block is commented out and needs to be implemented. It should fetch the current re-encryption status from the backend API (e.g., `/encryption/reencryption-status`) on component mount and update the `stats` and `files` state accordingly.
+//   Priority: High
   // Load migration status on mount
-  // TODO: Fetch from API
   // useEffect(() => {
   //   const fetchStatus = async () => {
-  //     const { data } = await apiClient.GET("/encryption/reencryption-status");
-  //     if (data) {
-  //       setStats(data.stats);
-  //     }
+  //     // const { data } = await apiClient.GET("/encryption/reencryption-status");
+  //     // if (data) {
+  //     //   setStats(data.stats);
+  //     // }
   //   };
-  //   fetchStatus();
+  //   // fetchStatus();
   // }, []);
 
   const handleStartMigration = async () => {
@@ -85,18 +68,20 @@ export function ReencryptionProgress({
       setOrgKey(orgKey);
       setMasterKey(masterKey);
 
+      // TODO: [Backend/Frontend] - Fetch list of unencrypted files from API
+//   Details: The `mockFiles` are currently hardcoded. Replace this with an actual API call (e.g., `GET /storage/files?encrypted=false`) to fetch the list of files that need re-encryption.
+//   Priority: High
       // Fetch list of unencrypted files
-      // TODO: Replace with actual API call
       // const { data } = await apiClient.GET("/storage/files", {
       //   params: { query: { encrypted: false, limit: 1000 } },
       // });
 
       // Mock files for testing
-      const mockFiles: FileToEncrypt[] = [
+      const mockFiles: FileToEncrypt[] = fileToEncryptSchema.array().parse([
         { id: "1", name: "document1.pdf", size: 1024000, status: "pending" },
         { id: "2", name: "invoice.xlsx", size: 512000, status: "pending" },
         { id: "3", name: "report.docx", size: 2048000, status: "pending" },
-      ];
+      ]);
 
       setFiles(mockFiles);
       setStats({
@@ -131,7 +116,9 @@ export function ReencryptionProgress({
     setCurrentFileIndex(index);
 
     try {
-      // TODO: Download file, encrypt it, re-upload
+      // TODO: [Backend/Frontend] - Implement actual file download, encryption, and re-upload
+//   Details: This section currently simulates encryption. It needs to: 1. Download the file content from storage (API). 2. Encrypt the file using the organization key. 3. Re-upload the encrypted file, replacing the old one (API).
+//   Priority: High
       // For now, simulate encryption
       await new Promise((resolve) => setTimeout(resolve, 2000));
 

@@ -14,7 +14,6 @@ import {
   useCreateTemplate,
   useUpdateTemplate,
   useTemplate,
-  type CreateTemplateRequest,
   validateTemplateStructure,
 } from "@/lib/api/hooks/templates";
 import { SectionCard } from "./SectionCard";
@@ -180,7 +179,9 @@ export function TemplateBuilder({
 
   const handleMoveSection = (from: number, to: number) => {
     move(from, to);
-    // TODO: Update sort orders after move
+    // TODO: [Frontend] - Update sort orders after section move
+//   Details: After moving a section, the `sortOrder` property of all affected sections should be updated to reflect their new positions.
+//   Priority: Medium
   };
 
   const onSubmit = async (data: TemplateFormData) => {
@@ -204,7 +205,11 @@ export function TemplateBuilder({
         toast.success(`Template "${data.name}" has been updated successfully`);
         onSave?.(templateId);
       } else {
-        const result = await createTemplate.mutateAsync(data as CreateTemplateRequest);
+        import { createTemplateRequestSchema, type CreateTemplateRequestType } from "@/lib/validation";
+// ... (rest of imports)
+
+// ... (rest of code)
+      const result = await createTemplate.mutateAsync(createTemplateRequestSchema.parse(data));
         toast.success(`Template "${data.name}" has been created successfully`);
         onSave?.(result?.id || "");
         reset(); // Clear form after successful creation

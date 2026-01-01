@@ -11,9 +11,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { authClient } from "@/lib/auth/client";
 
-// ============================================================================
-// Query Keys
-// ============================================================================
+
+
+
 
 export const adminQueryKeys = {
   users: ["admin", "users"] as const,
@@ -21,9 +21,9 @@ export const adminQueryKeys = {
   bannedUsers: ["admin", "users", "banned"] as const,
 } as const;
 
-// ============================================================================
-// User Ban Management
-// ============================================================================
+
+
+
 
 /**
  * Ban a user (admin only)
@@ -71,9 +71,9 @@ export function useUnbanUser() {
   });
 }
 
-// ============================================================================
-// User Impersonation
-// ============================================================================
+
+
+
 
 /**
  * Impersonate a user (admin only)
@@ -116,9 +116,9 @@ export function useStopImpersonation() {
   });
 }
 
-// ============================================================================
-// User Management (Admin)
-// ============================================================================
+
+
+
 
 /**
  * List all users (admin only)
@@ -316,9 +316,9 @@ export function useAdminResetPassword() {
   });
 }
 
-// ============================================================================
-// Role Management (Admin)
-// ============================================================================
+
+
+
 
 /**
  * Set user role (admin only)
@@ -373,9 +373,9 @@ export function useAdminHasPermission() {
   });
 }
 
-// ============================================================================
-// Session Management (Admin)
-// ============================================================================
+
+
+
 
 /**
  * List all sessions for a specific user (admin only)

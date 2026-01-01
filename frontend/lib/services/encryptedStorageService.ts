@@ -8,6 +8,7 @@
 import type { FileMetadata, UploadProgress } from "./storageService";
 import { useEncryptionStore } from "@/stores/useEncryptionStore";
 import type { ResponseMessage, EncryptMessage, DecryptMessage } from "@/lib/crypto/encryptionWorker";
+import { z } from "zod";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -17,13 +18,15 @@ export interface EncryptedUploadProgress extends UploadProgress {
   stage: "encrypting" | "uploading" | "completed" | "error";
 }
 
-export interface FileEncryptionMetadata {
-  iv: string;
-  authTag: string;
-  algorithm: string;
-  chunkSize: number;
-  keyVersion: number;
-}
+export const fileEncryptionMetadataSchema = z.object({
+  iv: z.string(),
+  authTag: z.string(),
+  algorithm: z.string(),
+  chunkSize: z.number(),
+  keyVersion: z.number(),
+});
+
+export type FileEncryptionMetadata = z.infer<typeof fileEncryptionMetadataSchema>;
 
 class EncryptedStorageService {
   private worker: Worker | null = null;
@@ -155,7 +158,9 @@ class EncryptedStorageService {
       authTag,
       algorithm: "AES-256-GCM",
       chunkSize: 128 * 1024, // 128KB
-      keyVersion: 1, // TODO: Get from encryption store
+            keyVersion: 1, // TODO: [Frontend] - Get from encryption store (e.g., current active key version)
+//   Details: The `keyVersion` field is currently hardcoded. It should be dynamically retrieved from the encryption store to ensure that the correct encryption key version is used.
+//   Priority: High
     };
     formData.append("encryptionMetadata", JSON.stringify(encryptionMetadata));
 
@@ -221,7 +226,7 @@ class EncryptedStorageService {
       throw new Error("Failed to fetch encryption metadata");
     }
 
-    const encryptionMetadata: FileEncryptionMetadata = await metadataResponse.json();
+    const encryptionMetadata = fileEncryptionMetadataSchema.parse(await metadataResponse.json());
 
     // Fetch encrypted file
     onProgress?.({ stage: "downloading", percentage: 25 });

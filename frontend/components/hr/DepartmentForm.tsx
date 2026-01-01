@@ -135,8 +135,8 @@ export function DepartmentForm({
                 value={`#${colorValue || "3b82f6"}`}
                 onChange={(e) => {
                   const hex = e.target.value.replace("#", "");
-                  const colorInput = document.getElementById("color") as HTMLInputElement;
-                  if (colorInput) colorInput.value = hex;
+                  const colorInput = document.getElementById("color");
+                  if (colorInput instanceof HTMLInputElement) colorInput.value = hex;
                 }}
                 className="w-12 h-10 rounded-lg border border-gray-300 cursor-pointer"
               />

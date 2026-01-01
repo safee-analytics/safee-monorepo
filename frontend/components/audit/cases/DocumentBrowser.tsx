@@ -501,7 +501,7 @@ function DocumentGridView({
           }`}
           onClick={(e) => {
             // Only select if clicking the card, not the checkbox
-            if ((e.target as HTMLElement).closest(".checkbox-area")) {
+            if (e.target instanceof HTMLElement && e.target.closest(".checkbox-area")) {
               onToggleSelect(doc.id);
             } else {
               onDocumentClick?.(doc);

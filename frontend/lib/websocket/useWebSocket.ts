@@ -20,8 +20,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   const [isConnected, setIsConnected] = useState(false);
   const [reconnectCount, setReconnectCount] = useState(0);
   const socketRef = useRef<Socket | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const eventHandlers = useRef<Map<string, Set<(data: any) => void>>>(new Map());
+    const eventHandlers = useRef<Map<string, Set<(data: unknown) => void>>>(new Map());
 
   const connect = useCallback(async () => {
     if (!enabled || socketRef.current?.connected) return;
@@ -85,8 +84,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
   }, [enabled, onConnect, onDisconnect, onError]);
 
   const subscribe = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    <T = any>(channel: string, event: string, handler: (data: T) => void) => {
+    <T = unknown>(channel: string, event: string, handler: (data: T) => void) => {
       if (!enabled) return;
 
       const eventKey = event;
@@ -95,8 +93,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
       if (!eventHandlers.current.has(eventKey)) {
         eventHandlers.current.set(eventKey, new Set());
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      eventHandlers.current.get(eventKey)!.add(handler as (data: any) => void);
+      eventHandlers.current.get(eventKey)!.add(handler as (data: unknown) => void);
 
       // If socket is connected, register the listener
       if (socketRef.current?.connected) {
@@ -110,7 +107,7 @@ export function useWebSocket(options: UseWebSocketOptions = {}) {
 
       // Return unsubscribe function
       return () => {
-        eventHandlers.current.get(eventKey)?.delete(handler);
+        eventHandlers.current.get(eventKey)?.delete(handler as (data: unknown) => void);
 
         if (socketRef.current?.connected) {
           socketRef.current.off(eventKey, handler);

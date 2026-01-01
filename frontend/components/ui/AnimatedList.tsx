@@ -3,34 +3,45 @@
 import { AnimatePresence, useAnimate, usePresence, motion } from "framer-motion";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { FiClock, FiPlus, FiTrash2 } from "react-icons/fi";
+import { type AnimatedListTodo, animatedListTodoSchema } from "@/lib/validation";
+
+// TODO: [Backend] - Implement API for AnimatedListTodo management
+//   Details: The VanishList component currently uses mock data. A backend API is needed to handle CRUD operations for these todos, including user association and persistence.
+//   Priority: High
+
+// TODO: [Frontend] - Implement local storage persistence for AnimatedListTodos (interim)
+//   Details: Until the backend API is ready, implement local storage to persist user-specific todos across sessions.
+//   Priority: Medium
 
 export const VanishList = () => {
-  const [todos, setTodos] = useState<TODO[]>([
-    {
-      id: 1,
-      text: "Take out trash",
-      checked: false,
-      time: "5 mins",
-    },
-    {
-      id: 2,
-      text: "Do laundry",
-      checked: false,
-      time: "10 mins",
-    },
-    {
-      id: 3,
-      text: "Have existential crisis",
-      checked: true,
-      time: "12 hrs",
-    },
-    {
-      id: 4,
-      text: "Get dog food",
-      checked: false,
-      time: "1 hrs",
-    },
-  ]);
+  const [todos, setTodos] = useState<AnimatedListTodo[]>(
+    animatedListTodoSchema.array().parse([
+      {
+        id: 1,
+        text: "Take out trash",
+        checked: false,
+        time: "5 mins",
+      },
+      {
+        id: 2,
+        text: "Do laundry",
+        checked: false,
+        time: "10 mins",
+      },
+      {
+        id: 3,
+        text: "Have existential crisis",
+        checked: true,
+        time: "12 hrs",
+      },
+      {
+        id: 4,
+        text: "Get dog food",
+        checked: false,
+        time: "1 hrs",
+      },
+    ]),
+  );
 
   const handleCheck = (id: number) => {
     setTodos((pv) => pv.map((t) => (t.id === id ? { ...t, checked: !t.checked } : t)));
@@ -60,12 +71,12 @@ const Header = () => {
   return (
     <div className="mb-6">
       <h1 className="text-xl font-medium text-white">Good morning! ☀️</h1>
-      <p className="text-zinc-400">Let&apos;s see what we&apos;ve got to do today.</p>
+      <p className="text-zinc-400">Let's see what we've got to do today.</p>
     </div>
   );
 };
 
-const Form = ({ setTodos }: { setTodos: Dispatch<SetStateAction<TODO[]>> }) => {
+const Form = ({ setTodos }: { setTodos: Dispatch<SetStateAction<AnimatedListTodo[]>> }) => {
   const [visible, setVisible] = useState(false);
 
   const [time, setTime] = useState(15);
@@ -165,19 +176,12 @@ const Form = ({ setTodos }: { setTodos: Dispatch<SetStateAction<TODO[]>> }) => {
   );
 };
 
-type TODO = {
-  id: number;
-  text: string;
-  checked: boolean;
-  time: string;
-};
-
 const Todos = ({
   todos,
   handleCheck,
   removeElement,
 }: {
-  todos: TODO[];
+  todos: AnimatedListTodo[];
   handleCheck: (id: number) => void;
   removeElement: (id: number) => void;
 }) => {

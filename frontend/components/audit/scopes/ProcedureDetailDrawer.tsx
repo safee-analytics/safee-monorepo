@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { X, CheckCircle2, Clock, Calendar, User, FileText, MessageSquare } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import { Button } from "@safee/ui";
 import type { components } from "@/lib/api/types/audit";
-import type { CustomField } from "../templates/ProcedureRequirementsEditor";
+import { procedureRequirementsSchema, fieldDataSchema } from "@/lib/validation";
 
 type ProcedureResponse = components["schemas"]["ProcedureResponse"];
 
@@ -77,15 +76,13 @@ export function ProcedureDetailDrawer({
   if (!procedure) return null;
 
   // Parse requirements and field data
-  const requirements =
-    typeof procedure.requirements === "object" && procedure.requirements !== null
-      ? (procedure.requirements as { customFields?: CustomField[] })
-      : {};
+  const requirements = procedureRequirementsSchema.safeParse(procedure.requirements).success
+    ? procedureRequirementsSchema.parse(procedure.requirements)
+    : {};
 
-  const fieldData =
-    typeof procedure.fieldData === "object" && procedure.fieldData !== null
-      ? (procedure.fieldData as Record<string, unknown>)
-      : {};
+  const fieldData = fieldDataSchema.safeParse(procedure.fieldData).success
+    ? fieldDataSchema.parse(procedure.fieldData)
+    : {};
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -130,8 +127,9 @@ export function ProcedureDetailDrawer({
   const handleAddComment = () => {
     if (!newComment.trim()) return;
 
-    // TODO: Implement comment submission API
-    // For now, just clear the input
+    // TODO: [Backend/Frontend] - Implement comment submission API
+//   Details: Implement the backend API endpoint for submitting comments and integrate it with this frontend component to allow users to add comments to procedures.
+//   Priority: High
     setNewComment("");
   };
 
@@ -222,7 +220,9 @@ export function ProcedureDetailDrawer({
                 }`}
               >
                 Attachments
-                {/* TODO: Show attachment count */}
+// TODO: [Frontend] - Display attachment count
+//   Details: Implement logic to show the actual number of attachments for the procedure in the Attachments tab.
+//   Priority: Medium
               </button>
               <button
                 onClick={() => setActiveTab("history")}

@@ -4,29 +4,18 @@ import type { paths } from "../types";
 import { queryKeys } from "./queryKeys";
 import type { components } from "../types/audit";
 
-// ============================================================================
-// Types from Gateway OpenAPI Spec (Single Source of Truth)
-// ============================================================================
-
 export type TemplateResponse = components["schemas"]["TemplateResponse"];
 export type CreateTemplateRequest = components["schemas"]["CreateTemplateRequest"];
 export type TemplateType = components["schemas"]["TemplateType"];
 export type CaseCategory = components["schemas"]["CaseCategory"];
 export type TemplateStructure = components["schemas"]["TemplateStructure"];
 
-// ============================================================================
-// Template Queries
-// ============================================================================
-
 /**
  * Get all templates (currently only returns public/system templates)
  *
- * TODO: Backend should be enhanced to support filtering:
- * - Filter by templateType (scope, form, checklist, report, plan)
- * - Filter by category (certification, financial, operational, compliance)
- * - Filter by isActive status
- * - Include organization-specific templates
- * - Include isSystemTemplate filter
+ * // TODO: [Backend] - Enhance template filtering
+//   Details: The backend should be enhanced to support filtering templates by various criteria such as templateType, category, isActive status, and organization-specific templates.
+//   Priority: High
  */
 export function useTemplates(filters?: {
   templateType?: TemplateType;
@@ -120,16 +109,13 @@ export function useSystemTemplates() {
 /**
  * Get organization templates only
  *
- * TODO: Backend needs endpoint for organization-specific templates
- * Currently returns empty array
+ * // TODO: [Backend] - Add endpoint for organization-specific templates
+//   Details: The backend needs an endpoint to fetch templates that are specific to an organization.
+//   Priority: High
  */
 export function useOrganizationTemplates() {
   return useTemplates({ includeSystem: false, includeOrganization: true });
 }
-
-// ============================================================================
-// Template Mutations
-// ============================================================================
 
 /**
  * Create a new template
@@ -156,8 +142,9 @@ export function useCreateTemplate() {
 /**
  * Update an existing template
  *
- * TODO: Backend needs PUT /cases/templates/{templateId} endpoint
- * This hook is a placeholder for future implementation
+ * // TODO: [Backend] - Implement endpoint to update a template
+//   Details: The backend needs a PUT /cases/templates/{templateId} endpoint to update an existing template.
+//   Priority: High
  */
 export function useUpdateTemplate() {
   const queryClient = useQueryClient();
@@ -170,14 +157,6 @@ export function useUpdateTemplate() {
       templateId: string;
       updates: Partial<CreateTemplateRequest>;
     }) => {
-      // TODO: Implement when backend endpoint is available
-      // const { data, error } = await apiClient.PUT("/cases/templates/{templateId}", {
-      //   params: { path: { templateId: _templateId } },
-      //   body: _updates,
-      // });
-      // if (error) throw new Error(handleApiError(error));
-      // return data;
-
       throw new Error("Update template endpoint not yet implemented in backend");
     },
     onSuccess: (_, variables) => {
@@ -190,21 +169,15 @@ export function useUpdateTemplate() {
 /**
  * Delete a template
  *
- * TODO: Backend needs DELETE /cases/templates/{templateId} endpoint
- * This hook is a placeholder for future implementation
+ * // TODO: [Backend] - Implement endpoint to delete a template
+//   Details: The backend needs a DELETE /cases/templates/{templateId} endpoint to delete a template.
+//   Priority: High
  */
 export function useDeleteTemplate() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (_templateId: string) => {
-      // TODO: Implement when backend endpoint is available
-      // const { data, error } = await apiClient.DELETE("/cases/templates/{templateId}", {
-      //   params: { path: { templateId: _templateId } },
-      // });
-      // if (error) throw new Error(handleApiError(error));
-      // return data;
-
       throw new Error("Delete template endpoint not yet implemented in backend");
     },
     onSuccess: () => {
@@ -216,15 +189,15 @@ export function useDeleteTemplate() {
 /**
  * Activate/deactivate a template
  *
- * TODO: Backend needs PATCH /cases/templates/{templateId}/status endpoint
- * or use PUT endpoint to update isActive field
+ * // TODO: [Backend] - Implement endpoint to activate/deactivate a template
+//   Details: The backend needs a PATCH /cases/templates/{templateId}/status endpoint or similar to toggle the active status of a template.
+//   Priority: Medium
  */
 export function useToggleTemplateActive() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ templateId: _templateId, isActive: _isActive }: { templateId: string; isActive: boolean }) => {
-      // TODO: Implement when backend endpoint is available
       throw new Error("Toggle template active status endpoint not yet implemented in backend");
     },
     onSuccess: (_, variables) => {
@@ -271,10 +244,6 @@ export function useDuplicateTemplate() {
     },
   });
 }
-
-// ============================================================================
-// Utility Functions
-// ============================================================================
 
 /**
  * Get display label for template type
@@ -371,9 +340,5 @@ export function getTemplateSummary(template: TemplateResponse): {
     isPublic: template.isSystemTemplate,
   };
 }
-
-// ============================================================================
-// Re-exports from cases.ts for backwards compatibility
-// ============================================================================
 
 export { useCaseTemplates, useCaseTemplate, useCreateCaseTemplate } from "./cases";

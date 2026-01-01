@@ -8,7 +8,7 @@ export function useGenerateReport() {
   return useMutation({
     mutationFn: async (request: GenerateReportRequest) => {
       const { data, error } = await apiClient.POST("/reports/generate", {
-        body: request as never,
+        body: request,
       });
 
       if (error) throw error;
@@ -67,35 +67,10 @@ export function useExportReport() {
       reportId: string;
       format: "pdf" | "excel";
     }) => {
-      // TODO: Implement export endpoints in backend
+      // TODO: [Backend] - Implement report export endpoints
+//   Details: The backend needs endpoints for exporting reports in PDF and Excel formats (`/reports/{id}/export/pdf` and `/reports/{id}/export/excel`).
+//   Priority: High
       throw new Error("Report export is not yet implemented");
-
-      // When backend endpoints are ready, uncomment and fix:
-      // const endpoint = format === "pdf"
-      //   ? "/reports/{id}/export/pdf"
-      //   : "/reports/{id}/export/excel";
-      //
-      // const { data, error } = await apiClient.GET(endpoint, {
-      //   params: { path: { id: reportId } },
-      //   parseAs: "blob",
-      // });
-      //
-      // if (error) throw error;
-      //
-      // const blob = new Blob([data], {
-      //   type: format === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      // });
-      //
-      // const url = window.URL.createObjectURL(blob);
-      // const link = document.createElement("a");
-      // link.href = url;
-      // link.download = `audit-report-${reportId}.${format}`;
-      // document.body.appendChild(link);
-      // link.click();
-      // document.body.removeChild(link);
-      // window.URL.revokeObjectURL(url);
-      //
-      // return data;
     },
   });
 }

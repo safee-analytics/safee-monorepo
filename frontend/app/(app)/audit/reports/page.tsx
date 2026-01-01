@@ -6,7 +6,8 @@ import { ReportWizard } from "@/components/audit/reports/ReportWizard";
 import { ReportViewer } from "@/components/audit/reports/ReportViewer";
 import { useReports, useExportReport } from "@/lib/api/hooks/reports";
 import { useDashboardStats, useDashboardActivity } from "@/lib/api/hooks/dashboard";
-import { useCases, type CaseData } from "@/lib/api/hooks/cases";
+import { useCases } from "@/lib/api/hooks/cases";
+import { type Case } from "@/lib/validation";
 import type { AuditReportResponse } from "@/lib/types/reports";
 
 export default function AuditReports() {
@@ -65,11 +66,11 @@ export default function AuditReports() {
 
     return frameworks.map((framework) => {
       // Calculate score based on completed cases
-      const frameworkCases = cases.filter((c: CaseData) =>
+      const frameworkCases = cases.filter((c: Case) =>
         c.caseType.toLowerCase().includes(framework.toLowerCase().replace(/\s+/g, "")),
       );
 
-      const completedCases = frameworkCases.filter((c: CaseData) => c.status === "completed").length;
+      const completedCases = frameworkCases.filter((c: Case) => c.status === "completed").length;
       const totalCases = frameworkCases.length || 1;
       const score = Math.round((completedCases / totalCases) * 100);
 
@@ -82,9 +83,9 @@ export default function AuditReports() {
 
   // Calculate risk assessment from cases
   const riskAssessment = useMemo(() => {
-    const highRisk = cases.filter((c: CaseData) => c.priority === "high").length;
-    const mediumRisk = cases.filter((c: CaseData) => c.priority === "medium").length;
-    const lowRisk = cases.filter((c: CaseData) => c.priority === "low").length;
+    const highRisk = cases.filter((c: Case) => c.priority === "high").length;
+    const mediumRisk = cases.filter((c: Case) => c.priority === "medium").length;
+    const lowRisk = cases.filter((c: Case) => c.priority === "low").length;
     const total = cases.length || 1;
 
     return {

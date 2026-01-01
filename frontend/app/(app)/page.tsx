@@ -21,11 +21,20 @@ import { useAuth } from "@/lib/auth/hooks";
 import { useState } from "react";
 import { TodoWidget } from "@/components/dashboard/TodoWidget";
 import { QuickActionsDropdown } from "@/components/dashboard/QuickActionsDropdown";
-import { CustomizableGrid, type Widget, type WidgetSize } from "@/components/dashboard/CustomizableGrid";
+import { CustomizableGrid } from "@/components/dashboard/CustomizableGrid";
 import { ProfitLossWidget } from "@/components/dashboard/widgets/ProfitLossWidget";
 import { BankAccountsWidget } from "@/components/dashboard/widgets/BankAccountsWidget";
 import { RecentActivityWidget } from "@/components/dashboard/widgets/RecentActivityWidget";
 import { ExpensesChartWidget } from "@/components/dashboard/widgets/ExpensesChartWidget";
+import { type Widget, type WidgetSize, widgetSchema } from "@/lib/validation";
+
+// TODO: [Backend/Frontend] - Fetch and persist dashboard widgets configuration
+//   Details: The `dashboardWidgets` state is currently mocked. Implement a backend API to fetch and persist the user's dashboard widget configuration (including their order, size, and which widgets are visible).
+//   Priority: High
+
+// TODO: [Frontend] - Implement local storage persistence for dashboard widgets (interim)
+//   Details: Until the backend API is ready, implement local storage to persist the dashboard widget configuration across sessions.
+//   Priority: Medium
 
 export default function HomePage() {
   const { t } = useTranslation();
@@ -34,48 +43,50 @@ export default function HomePage() {
   const { user } = useAuth();
   const [hoveredModule, setHoveredModule] = useState<string | null>(null);
 
-  const [dashboardWidgets, setDashboardWidgets] = useState<Widget[]>([
-    {
-      id: "todo",
-      title: "Today's Tasks",
-      component: TodoWidget,
-      size: "large",
-      minSize: "medium",
-      maxSize: "large",
-    },
-    {
-      id: "profit-loss",
-      title: "Profit & Loss",
-      component: ProfitLossWidget,
-      size: "small",
-      minSize: "small",
-      maxSize: "medium",
-    },
-    {
-      id: "recent-activity",
-      title: "Recent Activity",
-      component: RecentActivityWidget,
-      size: "small",
-      minSize: "small",
-      maxSize: "medium",
-    },
-    {
-      id: "bank-accounts",
-      title: "Bank Accounts",
-      component: BankAccountsWidget,
-      size: "medium",
-      minSize: "small",
-      maxSize: "large",
-    },
-    {
-      id: "expenses-chart",
-      title: "Expenses Chart",
-      component: ExpensesChartWidget,
-      size: "small",
-      minSize: "small",
-      maxSize: "medium",
-    },
-  ]);
+  const [dashboardWidgets, setDashboardWidgets] = useState<Widget[]>(
+    widgetSchema.array().parse([
+      {
+        id: "todo",
+        title: "Today's Tasks",
+        component: TodoWidget,
+        size: "large",
+        minSize: "medium",
+        maxSize: "large",
+      },
+      {
+        id: "profit-loss",
+        title: "Profit & Loss",
+        component: ProfitLossWidget,
+        size: "small",
+        minSize: "small",
+        maxSize: "medium",
+      },
+      {
+        id: "recent-activity",
+        title: "Recent Activity",
+        component: RecentActivityWidget,
+        size: "small",
+        minSize: "small",
+        maxSize: "medium",
+      },
+      {
+        id: "bank-accounts",
+        title: "Bank Accounts",
+        component: BankAccountsWidget,
+        size: "medium",
+        minSize: "small",
+        maxSize: "large",
+      },
+      {
+        id: "expenses-chart",
+        title: "Expenses Chart",
+        component: ExpensesChartWidget,
+        size: "small",
+        minSize: "small",
+        maxSize: "medium",
+      },
+    ]),
+  );
 
   const handleReorderWidgets = (newOrder: Widget[]) => {
     setDashboardWidgets(newOrder);

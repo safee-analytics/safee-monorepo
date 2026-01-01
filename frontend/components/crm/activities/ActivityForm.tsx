@@ -8,6 +8,7 @@ import { useLeads, useCrmTeams } from "@/lib/api/hooks";
 import { activityFormSchema, type ActivityFormData } from "@/lib/api/schemas";
 import { AnimatedButton } from "@safee/ui";
 import type { paths } from "@/lib/api/types";
+import { type ActivityType, leadSchema } from "@/lib/validation";
 
 type ActivityResponse =
   paths["/crm/activities/{activityId}"]["get"]["responses"]["200"]["content"]["application/json"];
@@ -19,8 +20,10 @@ interface ActivityFormProps {
   defaultLeadId?: number;
 }
 
-// Common activity types - these would ideally come from API
-const ACTIVITY_TYPES = [
+// TODO: [Backend] - Fetch ACTIVITY_TYPES from API
+//   Details: The `ACTIVITY_TYPES` are currently hardcoded. They should be fetched from a backend API to allow for dynamic and configurable activity types.
+//   Priority: High
+const ACTIVITY_TYPES: ActivityType[] = [
   { id: 1, name: "Call" },
   { id: 2, name: "Meeting" },
   { id: 3, name: "Email" },
@@ -71,7 +74,9 @@ export function ActivityForm({ activity, onSubmit, isSubmitting, defaultLeadId }
       if (team.memberIds) {
         for (const memberId of team.memberIds) {
           if (!allUsers.find((u) => u.id === memberId)) {
-            // TODO: Fetch user details from memberId
+            // TODO: [Backend/Frontend] - Fetch user details from memberId
+//   Details: Currently, user names are mocked as `User ${memberId}`. Implement an API endpoint to fetch full user details based on `memberId` and update this logic to display actual user names.
+//   Priority: Medium
             allUsers.push({ id: memberId, name: `User ${memberId}` });
           }
         }

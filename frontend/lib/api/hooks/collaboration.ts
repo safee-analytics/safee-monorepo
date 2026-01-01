@@ -84,11 +84,9 @@ export interface UpdatePresenceRequest {
   caseId: string;
 }
 
-// Hooks
 
-/**
- * Fetch case activities with optional polling for real-time updates
- */
+
+
 export function useCaseActivities(caseId: string, options?: { limit?: number; refetchInterval?: number }) {
   return useQuery({
     queryKey: queryKeys.collaboration.activities(caseId),
@@ -103,76 +101,68 @@ export function useCaseActivities(caseId: string, options?: { limit?: number; re
       return data as CaseActivityResponse[];
     },
     enabled: !!caseId,
-    refetchInterval: options?.refetchInterval || false, // Enable polling by passing a number (e.g., 5000 for 5 seconds)
+    refetchInterval: options?.refetchInterval || false, 
   });
 }
 
-/**
- * Create a new activity
- */
+
 export function useCreateActivity() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (request: CreateCaseActivityRequest) => {
       const { data, error } = await apiClient.POST("/collaboration/activities", {
-        body: request as never,
+        body: request,
       });
       if (error) throw new Error(handleApiError(error));
       return data as CaseActivityResponse;
     },
     onSuccess: (_, variables) => {
-      // Invalidate activities for the affected case
+      
       void queryClient.invalidateQueries({ queryKey: queryKeys.collaboration.activities(variables.caseId) });
     },
   });
 }
 
-/**
- * Mark activities as read
- */
+
 export function useMarkActivitiesAsRead() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (activityIds: string[]) => {
       const { data, error } = await apiClient.POST("/collaboration/activities/mark-read", {
-        body: { activityIds } as never,
+        body: { activityIds },
       });
       if (error) throw new Error(handleApiError(error));
       return data as { success: boolean };
     },
     onSuccess: () => {
-      // Invalidate all activity queries
+      
       void queryClient.invalidateQueries({ queryKey: ["collaboration", "activities"] });
     },
   });
 }
 
-/**
- * Update user presence in a case with optional polling
- */
+
 export function useUpdatePresence() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (request: UpdatePresenceRequest) => {
       const { data, error } = await apiClient.POST("/collaboration/presence", {
-        body: request as never,
+        body: request,
       });
       if (error) throw new Error(handleApiError(error));
       return data as PresenceResponse;
     },
     onSuccess: (_, variables) => {
-      // Invalidate presence data for the case
+      
       void queryClient.invalidateQueries({ queryKey: queryKeys.collaboration.presence(variables.caseId) });
     },
   });
 }
 
-/**
- * Get active viewers for a case with optional polling
- */
+
 export function useActiveViewers(caseId: string, options?: { refetchInterval?: number }) {
   return useQuery({
     queryKey: queryKeys.collaboration.presence(caseId),
@@ -186,14 +176,11 @@ export function useActiveViewers(caseId: string, options?: { refetchInterval?: n
       return data as PresenceResponse[];
     },
     enabled: !!caseId,
-    refetchInterval: options?.refetchInterval || false, // Enable polling by passing a number (e.g., 3000 for 3 seconds)
+    refetchInterval: options?.refetchInterval || false, 
   });
 }
 
-/**
- * Custom hook to automatically update presence while viewing a case
- * Call this in your case detail page component
- */
+
 export function usePresenceTracking(caseId: string, enabled = true) {
   const updatePresence = useUpdatePresence();
 
@@ -206,7 +193,7 @@ export function usePresenceTracking(caseId: string, enabled = true) {
       return null;
     },
     enabled: enabled && !!caseId,
-    refetchInterval: 30000, // Update presence every 30 seconds
+    refetchInterval: 30000, 
     refetchIntervalInBackground: true,
   });
 }

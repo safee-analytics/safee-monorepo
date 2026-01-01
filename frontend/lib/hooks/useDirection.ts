@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 
-export type Direction = "ltr" | "rtl";
+
+import { isDirection, type Direction } from "@/lib/utils/type-guards";
 
 /**
  * Hook to get current text direction from HTML element
  * Useful for RTL-aware component styling
  */
 export function useDirection(): Direction {
-  // Use lazy initialization to get initial direction from DOM
   const [direction, setDirection] = useState<Direction>(() => {
     if (typeof window === "undefined") return "ltr";
-    const dir = document.documentElement.dir as Direction;
-    return dir || "ltr";
+    const dir = document.documentElement.dir;
+    return isDirection(dir) ? dir : "ltr";
   });
 
   useEffect(() => {
@@ -19,8 +19,8 @@ export function useDirection(): Direction {
     const observer = new MutationObserver((mutations) => {
       for (const mutation of mutations) {
         if (mutation.attributeName === "dir") {
-          const newDir = document.documentElement.dir as Direction;
-          setDirection(newDir || "rtl");
+          const newDir = document.documentElement.dir;
+          setDirection(isDirection(newDir) ? newDir : "ltr");
         }
       }
     });

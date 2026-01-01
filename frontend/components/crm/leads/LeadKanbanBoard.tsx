@@ -187,7 +187,9 @@ const Column = ({ stage, cards, setCards, color, onCardMove }: ColumnProps) => {
   };
 
   const getIndicators = () => {
-    return Array.from(document.querySelectorAll(`[data-column="${stage.id}"]`) as unknown as HTMLElement[]);
+    return Array.from(document.querySelectorAll(`[data-column="${stage.id}"]`)).filter(
+      (el): el is HTMLElement => el instanceof HTMLElement,
+    );
   };
 
   const handleDragLeave = () => {

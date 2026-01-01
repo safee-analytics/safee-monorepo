@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { useCases, type CaseData } from "@/lib/api/hooks";
+import { useCases } from "@/lib/api/hooks";
+import { type Case } from "@/lib/validation";
 import { differenceInDays, addDays, isBefore } from "date-fns";
 
 interface AutofillSuggestions {
@@ -9,7 +10,7 @@ interface AutofillSuggestions {
   suggestStatus: (dueDate: Date) => string;
   suggestTeam: (auditType: string, clientName?: string) => { userId: string; role: string }[];
   getClientHistory: (clientName: string) => AutofillClientHistory;
-  getRecentClients: () => { name: string; lastCase: CaseData; count: number }[];
+  getRecentClients: () => { name: string; lastCase: Case; count: number }[];
   getAuditTypeStats: () => Record<string, number>;
 }
 
@@ -17,7 +18,7 @@ export interface AutofillClientHistory {
   totalCases: number;
   mostCommonAuditType: string | undefined;
   averageDuration: number;
-  lastCase: CaseData | undefined;
+  lastCase: Case | undefined;
   commonPriority: string | undefined;
 }
 
@@ -249,7 +250,7 @@ export function useAutofill(): AutofillSuggestions {
        * Gets list of recent clients for autocomplete
        */
       getRecentClients: () => {
-        const clientMap = new Map<string, { lastCase: CaseData; count: number }>();
+        const clientMap = new Map<string, { lastCase: Case; count: number }>();
 
         for (const c of cases) {
           if (!c.title) continue;

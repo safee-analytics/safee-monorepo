@@ -132,7 +132,7 @@ export interface AuditPlanTemplateResponse {
   updatedAt: string | Date;
 }
 
-// Hooks
+
 
 export function useAuditPlans() {
   return useQuery({
@@ -167,7 +167,7 @@ export function useCreateAuditPlan() {
   return useMutation({
     mutationFn: async (request: CreateAuditPlanRequest) => {
       const { data, error } = await apiClient.POST("/audit-plans", {
-        body: request as never,
+        body: request,
       });
       if (error) throw new Error(handleApiError(error));
       return data as AuditPlanResponse;
@@ -187,7 +187,7 @@ export function useUpdateAuditPlan() {
         params: {
           path: { planId },
         },
-        body: request as never,
+        body: request,
       });
       if (error) throw new Error(handleApiError(error));
       return data as AuditPlanResponse;
@@ -277,7 +277,7 @@ export function useCreatePlanFromTemplate() {
       startDate?: string;
     }) => {
       const { data, error } = await apiClient.POST("/audit-plans/from-template", {
-        body: request as never,
+        body: request,
       });
       if (error) throw new Error(handleApiError(error));
       return data as AuditPlanResponse;

@@ -12,6 +12,7 @@ import {
   importEncryptedPrivateKey,
 } from "@/lib/crypto/cryptoService";
 import { useEncryptionStore } from "@/stores/useEncryptionStore";
+import { type AuditorAccessResponse } from "@/lib/validation";
 
 interface EncryptionUnlockPromptProps {
   organizationId: string;
@@ -21,6 +22,7 @@ interface EncryptionUnlockPromptProps {
   iv: string;
   onUnlock: () => void;
   onCancel: () => void;
+  auditorAccess?: AuditorAccessResponse | null;
 }
 
 export function EncryptionUnlockPrompt({
@@ -31,6 +33,7 @@ export function EncryptionUnlockPrompt({
   iv,
   onUnlock,
   onCancel,
+  auditorAccess: initialAuditorAccess = null,
 }: EncryptionUnlockPromptProps) {
   const [unlockMethod, setUnlockMethod] = useState<"password" | "recovery">("password");
   const [password, setPassword] = useState("");
@@ -38,37 +41,35 @@ export function EncryptionUnlockPrompt({
   const [showPassword, setShowPassword] = useState(false);
   const [isUnlocking, setIsUnlocking] = useState(false);
   const [error, setError] = useState("");
-  const [isAuditor] = useState(false);
-  const [auditorAccess] = useState<{
-    wrappedOrgKey: string;
-    encryptedPrivateKey: string;
-    privateKeySalt: string;
-    privateKeyIv: string;
-  } | null>(null);
+  const [isAuditor, setIsAuditor] = useState(false);
+  const [auditorAccess, setAuditorAccess] = useState<AuditorAccessResponse | null>(initialAuditorAccess);
 
   const { unlock } = useEncryptionStore();
 
-  // TODO: Check if user has auditor access on mount
-  // useEffect(() => {
-  //   const checkAuditorAccess = async () => {
-  //     try {
-  //       const { data, error } = await apiClient.GET("/encryption/auditor-access", {
-  //         params: {
-  //           query: { organizationId, encryptionKeyId },
-  //         },
-  //       });
-  //       if (data && !error) {
-  //         setAuditorAccess(data);
-  //         setIsAuditor(true);
-  //       }
-  //     } catch (err) {
-  //       console.error("Failed to check auditor access:", err);
-  //     }
-  //   };
-  //   checkAuditorAccess();
-  // }, [organizationId, encryptionKeyId]);
+  // TODO: [Backend/Frontend] - Implement fetching auditor access on mount
+//   Details: This useEffect block is commented out and needs to be implemented. It should fetch auditor access details from the backend (`/encryption/auditor-access`) using the `organizationId` and `encryptionKeyId` on component mount. The fetched data should then be used to set `auditorAccess` and `isAuditor` states.
+//   Priority: High
+  useEffect(() => {
+    const checkAuditorAccess = async () => {
+      // const { data, error } = await apiClient.GET("/encryption/auditor-access", {
+      //   params: {
+      //     query: { organizationId, encryptionKeyId },
+      //   },
+      // });
+      // if (data && !error) {
+      //   setAuditorAccess(data);
+      //   setIsAuditor(true);
+      // }
+    };
+    // checkAuditorAccess();
+  }, []); // Add organizationId, encryptionKeyId to dependencies when enabled
 
-  const handlePasswordUnlock = async () => {
+  useEffect(() => {
+    if (initialAuditorAccess) {
+      setAuditorAccess(initialAuditorAccess);
+      setIsAuditor(true);
+    }
+  }, [initialAuditorAccess]);
     try {
       setIsUnlocking(true);
       setError("");
