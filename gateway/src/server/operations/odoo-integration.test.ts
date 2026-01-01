@@ -13,7 +13,7 @@
  * - Admin credentials configured in environment
  */
 
-import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
+import { describe, it, expect, beforeAll, afterAll, beforeEach, afterEach } from "vitest";
 import { type DrizzleClient, schema, odoo, OdooLanguage, OdooDemo } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import { initTestServerContext } from "../test-helpers/testServerContext.js";
@@ -25,6 +25,7 @@ import { getOdooAdminCredentials } from "./getOdooAdminCredentials.js";
 import { getOdooDevCredentials } from "./getOdooDevCredentials.js";
 import { getOdooUserWebCredentials } from "./getOdooUserWebCredentials.js";
 import { ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.js";
+import { pino } from "pino";
 
 void describe("Odoo Integration Tests", async () => {
   let drizzle: DrizzleClient;
@@ -32,8 +33,8 @@ void describe("Odoo Integration Tests", async () => {
   let org: typeof schema.organizations.$inferSelect;
   let user: typeof schema.users.$inferSelect;
   let sharedOdooDatabase: { databaseName: string; adminLogin: string; adminPassword: string };
+  const logger = pino({ level: "silent" });
   const encryptionService = new odoo.EncryptionService(JWT_SECRET);
-  const logger = getServerContext().logger.child({ suite: "odoo-integration" });
 
   beforeAll(async () => {
     console.log("\n🔧 Setting up Odoo Integration Tests...");
@@ -107,7 +108,8 @@ void describe("Odoo Integration Tests", async () => {
       organizationId: orgId,
       databaseName: sharedOdooDatabase.databaseName,
       adminLogin: sharedOdooDatabase.adminLogin,
-      encryptedAdminPassword: await encryptionService.encrypt(sharedOdooDatabase.adminPassword),
+      adminPassword: await encryptionService.encrypt(sharedOdooDatabase.adminPassword),
+      odooUrl: ODOO_URL,
       provisioningStatus: "active",
       provisioningCompletedAt: new Date(),
     });
