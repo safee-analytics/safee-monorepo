@@ -1,26 +1,10 @@
-import { CaseStatus, CasePriority } from "@/types/audit";
 import { InlineStatus, InlinePriority, InlineAssignee, InlineDueDate } from "./InlineEditFields";
 import { useRouter } from "next/navigation";
 import { InlineCreateRow } from "@safee/ui";
+import type { CaseRow } from "@/lib/types/cases";
 
-export interface CaseRow {
-  id: string;
-  caseId: string;
-  auditType: string;
-  companyName: string;
-  industry: string;
-  assignee: {
-    name: string;
-    avatar: string;
-    id?: string;
-  };
-  status: CaseStatus;
-  priority: CasePriority;
-  dueDate: string;
-  progress: number;
-  icon: string;
-  iconBg: string;
-}
+// Re-export for backwards compatibility
+export type { CaseRow };
 
 interface CaseTableProps {
   cases: CaseRow[];
@@ -123,7 +107,7 @@ export function CaseTable({
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-gray-900">{caseRow.caseId}</p>
-                      <p className="text-xs text-gray-600">{caseRow.auditType}</p>
+                      <p className="text-xs text-gray-600">{caseRow.caseType}</p>
                     </div>
                   </div>
                 </td>

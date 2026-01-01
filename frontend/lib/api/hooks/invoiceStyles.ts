@@ -1,48 +1,15 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient, handleApiError } from "../client";
 import { queryKeys } from "./queryKeys";
-import type { components } from "../types";
+import type { components } from "../types/settings";
+import { type InvoiceStyle, invoiceStyleSchema } from "@/lib/validation";
 
 type DocumentTemplateResponse = components["schemas"]["DocumentTemplateResponse"];
 
-export interface InvoiceStyle {
-  id?: string;
-  organizationId: string;
-
-  // Logo
-  logoUrl?: string;
-  logoPosition: "left" | "center" | "right";
-
-  // Colors
-  primaryColor: string;
-  accentColor: string;
-  textColor: string;
-  backgroundColor: string;
-
-  // Fonts
-  headingFont: string;
-  bodyFont: string;
-  fontSize: "small" | "medium" | "large";
-
-  // Layout
-  showLogo: boolean;
-  showCompanyDetails: boolean;
-  showFooter: boolean;
-  footerText: string;
-
-  // Labels
-  invoiceLabel: string;
-  dateLabel: string;
-  dueLabel: string;
-  billToLabel: string;
-  itemLabel: string;
-  quantityLabel: string;
-  rateLabel: string;
-  amountLabel: string;
-  totalLabel: string;
-}
-
-const DEFAULT_STYLES: Omit<InvoiceStyle, "organizationId"> = {
+// TODO: [Backend] - Provide default invoice styles from the backend
+//   Details: The `DEFAULT_STYLES` object is currently hardcoded in the frontend. This should be moved to the backend to ensure consistency and allow for easier updates.
+//   Priority: Medium
+const DEFAULT_STYLES: Omit<InvoiceStyle, "organizationId" | "id"> = {
   logoPosition: "left",
   primaryColor: "#3B82F6",
   accentColor: "#8B5CF6",
@@ -81,10 +48,10 @@ export function useInvoiceStyles(orgId: string) {
 
         if (error || !activeTemplate?.templateId) {
           // Return defaults if no active template
-          return {
+          return invoiceStyleSchema.parse({
             organizationId: orgId,
             ...DEFAULT_STYLES,
-          } as InvoiceStyle;
+          });
         }
 
         // Get template details
@@ -96,33 +63,33 @@ export function useInvoiceStyles(orgId: string) {
         );
 
         if (templatesError || !templates) {
-          return {
+          return invoiceStyleSchema.parse({
             organizationId: orgId,
             ...DEFAULT_STYLES,
-          } as InvoiceStyle;
+          });
         }
 
         const template = templates.find((t: DocumentTemplateResponse) => t.isActive);
         if (!template?.customizations) {
-          return {
+          return invoiceStyleSchema.parse({
             organizationId: orgId,
             ...DEFAULT_STYLES,
-          } as InvoiceStyle;
+          });
         }
 
         // Extract style customizations
-        return {
+        return invoiceStyleSchema.parse({
           organizationId: orgId,
           id: template.id,
           ...DEFAULT_STYLES,
           ...(template.customizations.styles || {}),
-        } as InvoiceStyle;
+        });
       } catch {
         // Fallback to defaults on error
-        return {
+        return invoiceStyleSchema.parse({
           organizationId: orgId,
           ...DEFAULT_STYLES,
-        } as InvoiceStyle;
+        });
       }
     },
     enabled: !!orgId,

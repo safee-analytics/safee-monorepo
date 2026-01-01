@@ -4,10 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, ExternalLink, Calendar, User, Flag, Clock, BarChart3 } from "lucide-react";
-import type { components } from "@/lib/api/types";
-
-type CaseStatus = components["schemas"]["CaseResponse"]["status"];
-type CasePriority = components["schemas"]["CaseResponse"]["priority"];
+import type { CaseStatus, CasePriority } from "@/lib/types/cases";
 
 interface CasePreviewDrawerProps {
   isOpen: boolean;
@@ -15,8 +12,8 @@ interface CasePreviewDrawerProps {
   caseData: {
     id: string;
     caseNumber: string;
-    clientName: string;
-    auditType: string;
+    title: string;
+    caseType: string;
     status: CaseStatus;
     priority: CasePriority;
     dueDate?: string;
@@ -53,11 +50,11 @@ export function CasePreviewDrawer({ isOpen, onClose, caseData }: CasePreviewDraw
 
   const getStatusColor = (status: CaseStatus) => {
     switch (status) {
-      case "pending":
+      case "draft":
         return "bg-gray-100 text-gray-700";
-      case "in-progress":
+      case "in_progress":
         return "bg-blue-100 text-blue-700";
-      case "under-review":
+      case "under_review":
         return "bg-yellow-100 text-yellow-700";
       case "completed":
         return "bg-green-100 text-green-700";
@@ -125,8 +122,8 @@ export function CasePreviewDrawer({ isOpen, onClose, caseData }: CasePreviewDraw
               {/* Client Info */}
               <div>
                 <h3 className="text-sm font-medium text-gray-500 mb-2">Client</h3>
-                <p className="text-lg font-semibold text-gray-900">{caseData.clientName}</p>
-                <p className="text-sm text-gray-600">{caseData.auditType}</p>
+                <p className="text-lg font-semibold text-gray-900">{caseData.title}</p>
+                <p className="text-sm text-gray-600">{caseData.caseType}</p>
               </div>
 
               {/* Status & Priority */}

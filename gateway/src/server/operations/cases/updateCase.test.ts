@@ -36,18 +36,18 @@ void describe("updateCase operation", async () => {
   it("should update a case successfully", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-001",
-      clientName: "Original Client",
-      auditType: "ICV",
+      title: "Original Title",
+      caseType: "ICV_AUDIT",
     });
 
     const result = await updateCase(drizzle, testOrg.id, testUser.id, created.id, {
-      clientName: "Updated Client",
-      status: "in-progress",
+      title: "Updated Title",
+      status: "in_progress",
       priority: "high",
     });
 
-    expect(result.clientName).toBe("Updated Client");
-    expect(result.status).toBe("in-progress");
+    expect(result.title).toBe("Updated Title");
+    expect(result.status).toBe("in_progress");
     expect(result.priority).toBe("high");
     expect(result.caseNumber).toBe("CASE-001"); // unchanged
   });
@@ -55,12 +55,12 @@ void describe("updateCase operation", async () => {
   it("should create history entry with changes", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-002",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Title",
+      caseType: "ICV_AUDIT",
     });
 
     await updateCase(drizzle, testOrg.id, testUser.id, created.id, {
-      status: "in-progress",
+      status: "in_progress",
       priority: "high",
     });
 
@@ -71,11 +71,11 @@ void describe("updateCase operation", async () => {
 
     expect(history).toHaveLength(1);
     expect(history[0].changesBefore).toMatchObject({
-      status: "pending",
+      status: "draft",
       priority: "medium",
     });
     expect(history[0].changesAfter).toMatchObject({
-      status: "in-progress",
+      status: "in_progress",
       priority: "high",
     });
   });
@@ -83,8 +83,8 @@ void describe("updateCase operation", async () => {
   it("should auto-set completed date when marking as completed", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-003",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Title",
+      caseType: "ICV_AUDIT",
     });
 
     const result = await updateCase(drizzle, testOrg.id, testUser.id, created.id, {
@@ -98,7 +98,7 @@ void describe("updateCase operation", async () => {
   it("should throw NotFound for non-existent case", async () => {
     await expect(
       updateCase(drizzle, testOrg.id, testUser.id, "non-existent-id", {
-        clientName: "Test",
+        title: "Test",
       }),
     ).rejects.toThrow(NotFound);
   });
@@ -108,13 +108,13 @@ void describe("updateCase operation", async () => {
 
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-004",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Title",
+      caseType: "ICV_AUDIT",
     });
 
     await expect(
       updateCase(drizzle, testOrg2.id, testUser.id, created.id, {
-        clientName: "Hacked",
+        title: "Hacked",
       }),
     ).rejects.toThrow(InsufficientPermissions);
   });
@@ -122,8 +122,8 @@ void describe("updateCase operation", async () => {
   it("should reject invalid case number format", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-005",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Title",
+      caseType: "ICV_AUDIT",
     });
 
     await expect(
@@ -133,30 +133,30 @@ void describe("updateCase operation", async () => {
     ).rejects.toThrow(InvalidInput);
   });
 
-  it("should reject empty client name", async () => {
+  it("should reject empty title", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-006",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Title",
+      caseType: "ICV_AUDIT",
     });
 
     await expect(
       updateCase(drizzle, testOrg.id, testUser.id, created.id, {
-        clientName: "",
+        title: "",
       }),
-    ).rejects.toThrow("Client name cannot be empty");
+    ).rejects.toThrow("Title cannot be empty");
   });
 
   it("should reject completed date without completed status", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-007",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Title",
+      caseType: "ICV_AUDIT",
     });
 
     await expect(
       updateCase(drizzle, testOrg.id, testUser.id, created.id, {
-        status: "in-progress",
+        status: "in_progress",
         completedDate: new Date().toISOString(),
       }),
     ).rejects.toThrow("Completed date can only be set when status is 'completed'");
@@ -165,8 +165,8 @@ void describe("updateCase operation", async () => {
   it("should reject due date in the past", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-008",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Title",
+      caseType: "ICV_AUDIT",
     });
 
     const yesterday = new Date();
@@ -182,8 +182,8 @@ void describe("updateCase operation", async () => {
   it("should not create history if no changes", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-009",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Title",
+      caseType: "ICV_AUDIT",
     });
 
     // Clear creation history
@@ -204,16 +204,16 @@ void describe("updateCase operation", async () => {
   it("should trim whitespace from updated fields", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-010",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Title",
+      caseType: "ICV_AUDIT",
     });
 
     const result = await updateCase(drizzle, testOrg.id, testUser.id, created.id, {
-      clientName: "  Updated Client  ",
-      auditType: "ISO_9001",
+      title: "  Updated Title  ",
+      caseType: "ISO_9001_AUDIT",
     });
 
-    expect(result.clientName).toBe("Updated Client");
-    expect(result.auditType).toBe("ISO_9001");
+    expect(result.title).toBe("Updated Title");
+    expect(result.caseType).toBe("ISO_9001_AUDIT");
   });
 });

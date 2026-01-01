@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../client";
 import { queryKeys } from "./queryKeys";
 
-// Types
 export interface DatabaseStats {
   totalSize: string;
   tableCount: number;
@@ -29,7 +28,6 @@ export interface BackupSettings {
   encryptionEnabled: boolean;
 }
 
-// Get database stats
 export function useGetDatabaseStats() {
   return useQuery<DatabaseStats>({
     queryKey: queryKeys.database.stats,
@@ -41,7 +39,6 @@ export function useGetDatabaseStats() {
   });
 }
 
-// Get backup settings
 export function useGetBackupSettings() {
   return useQuery<BackupSettings>({
     queryKey: queryKeys.database.backupSettings,
@@ -53,7 +50,6 @@ export function useGetBackupSettings() {
   });
 }
 
-// Update backup settings
 export function useUpdateBackupSettings() {
   const queryClient = useQueryClient();
 
@@ -68,7 +64,6 @@ export function useUpdateBackupSettings() {
   });
 }
 
-// Get backup history
 export function useGetBackupHistory() {
   return useQuery<Backup[]>({
     queryKey: queryKeys.database.backups,
@@ -80,7 +75,6 @@ export function useGetBackupHistory() {
   });
 }
 
-// Create manual backup
 export function useCreateBackup() {
   const queryClient = useQueryClient();
 
@@ -95,7 +89,6 @@ export function useCreateBackup() {
   });
 }
 
-// Restore backup
 export function useRestoreBackup() {
   return useMutation({
     mutationFn: async (backupId: string) => {
@@ -111,7 +104,6 @@ export function useRestoreBackup() {
   });
 }
 
-// Download backup
 export function useDownloadBackup() {
   return useMutation({
     mutationFn: async (backupId: string) => {
@@ -140,7 +132,6 @@ export function useDownloadBackup() {
   });
 }
 
-// Optimize database
 export function useOptimizeDatabase() {
   const queryClient = useQueryClient();
 
@@ -155,7 +146,6 @@ export function useOptimizeDatabase() {
   });
 }
 
-// Run database maintenance
 export function useRunMaintenance() {
   const queryClient = useQueryClient();
 

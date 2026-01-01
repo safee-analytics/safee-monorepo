@@ -43,9 +43,11 @@ export default function EmployeeDetailPage() {
   const { data: manager } = useEmployee(employee?.managerId || "");
 
   // Fetch related data
-  const { data: contracts, error: contractsError } = useContracts({ employeeId: employee?.odooEmployeeId });
+  const { data: contracts, error: contractsError } = useContracts({
+    employeeId: employee?.odooEmployeeId ?? undefined,
+  });
   const { data: leaveBalances } = useLeaveBalances(employeeId);
-  const { data: payslips, error: payslipsError } = usePayslips({ employeeId: employee?.odooEmployeeId });
+  const { data: payslips, error: payslipsError } = usePayslips({ employeeId: employee?.odooEmployeeId ?? undefined });
 
   // Check if user has access to contracts/payslips (403/500 errors indicate no permission)
   const hasContractsAccess = !contractsError;

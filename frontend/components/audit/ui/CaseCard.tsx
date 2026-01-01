@@ -1,5 +1,5 @@
 import { StatusBadge } from "./StatusBadge";
-import { CaseStatus } from "@/types/audit";
+import { CaseStatus } from "@/lib/types/cases";
 import { cn } from "@/lib/utils";
 
 interface CaseCardProps {

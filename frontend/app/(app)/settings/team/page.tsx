@@ -27,6 +27,7 @@ import {
 import Link from "next/link";
 import { useToast, useConfirm, SafeeToastContainer } from "@/components/feedback";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { type Member, type Invitation, memberSchema, invitationSchema } from "@/lib/validation";
 
 export default function TeamManagement() {
   const { t } = useTranslation();
@@ -39,8 +40,11 @@ export default function TeamManagement() {
   const { data: session } = useSession();
   const orgId = session?.session.activeOrganizationId;
 
-  const { data: members, isLoading } = useOrganizationMembers(orgId!);
-  const { data: invitations } = useOrganizationInvitations(orgId!);
+  const { data: membersData, isLoading } = useOrganizationMembers(orgId!);
+  const { data: invitationsData } = useOrganizationInvitations(orgId!);
+
+  const members: Member[] = memberSchema.array().parse(membersData || []);
+  const invitations: Invitation[] = invitationSchema.array().parse(invitationsData || []);
 
   const inviteMemberMutation = useInviteMember();
   const removeMemberMutation = useRemoveMember();
@@ -52,12 +56,14 @@ export default function TeamManagement() {
   const manageableUserIds = useManageableUsers();
 
   // Calculate statistics
-  const totalUsers = members?.length || 0;
-  const adminCount = members?.filter((m) => m.role === "admin" || m.role === "owner").length || 0;
-  const pendingInvitesCount = invitations?.length || 0;
+  const totalUsers = members.length;
+  const adminCount = members.filter((m) => m.role === "admin" || m.role === "owner").length;
+  const pendingInvitesCount = invitations.length;
 
   // For now, consider all members as active since we don't have lastActiveAt field
-  // TODO: Add lastActiveAt field to member schema and filter by recent activity
+  // TODO: [Backend] - Add lastActiveAt field to member schema and filter by recent activity
+  //   Details: The `lastActiveAt` field should be added to the member schema on the backend to track user activity. This will allow for more accurate calculation of active users.
+  //   Priority: Medium
   const activeUsers = totalUsers;
 
   // Calculate activity rate (active / total)
@@ -65,7 +71,9 @@ export default function TeamManagement() {
 
   const stats = {
     totalUsers,
-    totalUsersChange: t.settings.team.stats.noHistoricalData, // TODO: Implement after adding member creation timestamps
+    totalUsersChange: t.settings.team.stats.noHistoricalData, // TODO: [Backend] - Implement after adding member creation timestamps
+    //   Details: To calculate the change in total users, a `createdAt` timestamp should be added to the member schema on the backend. This will allow for historical data analysis.
+    //   Priority: Medium
     activeUsers,
     activityRate: `${activityRate}% ${t.settings.team.stats.active}`,
     pendingInvites: pendingInvitesCount,
@@ -514,11 +522,13 @@ export default function TeamManagement() {
               onSubmit={(e) => {
                 e.preventDefault();
                 const formData = new FormData(e.currentTarget);
-                handleInviteMember(
-                  formData.get("email") as string,
-                  formData.get("role") as string,
-                  formData.get("name") as string,
-                );
+                const email = formData.get("email");
+                const role = formData.get("role");
+                const name = formData.get("name");
+
+                if (typeof email === "string" && typeof role === "string" && role) {
+                  handleInviteMember(email, role, typeof name === "string" ? name : undefined);
+                }
               }}
             >
               <div className="space-y-4">

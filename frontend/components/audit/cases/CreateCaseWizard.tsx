@@ -38,11 +38,11 @@ const WIZARD_STEPS: WizardStep[] = [
     component: QuickStartStep,
     validate: (data) => {
       const errors: Record<string, string> = {};
-      if (!data.clientName?.trim()) {
-        errors.clientName = "Client name is required";
+      if (!data.title?.trim()) {
+        errors.title = "Client name is required";
       }
-      if (!data.auditType) {
-        errors.auditType = "Audit type is required";
+      if (!data.caseType) {
+        errors.caseType = "Audit type is required";
       }
       return {
         valid: Object.keys(errors).length === 0,
@@ -84,7 +84,7 @@ export function CreateCaseWizard({ isOpen, onClose, onSuccess }: CreateCaseWizar
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [wizardData, setWizardData] = useState<Partial<WizardData>>({
     priority: "medium",
-    status: "pending",
+    status: "draft",
     useTemplate: false,
   });
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
@@ -178,31 +178,17 @@ export function CreateCaseWizard({ isOpen, onClose, onSuccess }: CreateCaseWizar
   const handleSubmit = async () => {
     try {
       await createCaseMutation.mutateAsync({
-        clientName: wizardData.clientName!,
-        auditType: wizardData.auditType! as
-          | "ICV"
-          | "ISO_9001"
-          | "ISO_14001"
-          | "ISO_45001"
-          | "financial_audit"
-          | "internal_audit"
-          | "compliance_audit"
-          | "operational_audit",
-        status: (wizardData.status || "pending") as
-          | "pending"
-          | "in-progress"
-          | "under-review"
-          | "completed"
-          | "overdue"
-          | "archived",
-        priority: (wizardData.priority || "medium") as "low" | "medium" | "high" | "critical",
+        title: wizardData.title!,
+        caseType: wizardData.caseType!,
+        status: wizardData.status || "draft",
+        priority: wizardData.priority || "medium",
         dueDate: wizardData.dueDate,
         // Additional fields can be added here as the API supports them
       });
 
       toast.success("Case created successfully!");
       clearWizardDraft();
-      setWizardData({ priority: "medium", status: "pending", useTemplate: false });
+      setWizardData({ priority: "medium", status: "draft", useTemplate: false });
       setCurrentStepIndex(0);
       onSuccess?.();
       onClose();

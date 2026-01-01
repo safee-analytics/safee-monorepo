@@ -1,13 +1,13 @@
 import { uuid, varchar, timestamp, text, boolean, integer, jsonb, index } from "drizzle-orm/pg-core";
-import { auditSchema, idpk } from "./_common.js";
-import { auditScopes } from "./auditScopes.js";
+import { casesSchema, idpk } from "./_common.js";
+import { templateInstances } from "./templateInstances.js";
 
-export const auditSections = auditSchema.table(
+export const auditSections = casesSchema.table(
   "audit_sections",
   {
     id: idpk("id"),
     scopeId: uuid("scope_id")
-      .references(() => auditScopes.id, { onDelete: "cascade" })
+      .references(() => templateInstances.id, { onDelete: "cascade" })
       .notNull(),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description"),

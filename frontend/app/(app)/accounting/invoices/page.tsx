@@ -16,19 +16,20 @@ import {
   Clock,
 } from "lucide-react";
 import { useInvoices } from "@/lib/api/hooks";
+import { type Invoice, type InvoiceStatus, type InvoiceType } from "@/lib/validation";
 
 export default function InvoicesPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<"all" | "draft" | "posted" | "cancel">("all");
-  const [typeFilter, setTypeFilter] = useState<"all" | "SALES" | "PURCHASE">("all");
+  const [statusFilter, setStatusFilter] = useState<InvoiceStatus | "all">("all");
+  const [typeFilter, setTypeFilter] = useState<InvoiceType | "all">("all");
 
   const { data: invoicesData, isLoading } = useInvoices({
     state: statusFilter === "all" ? undefined : statusFilter,
     type: typeFilter === "all" ? undefined : typeFilter,
   });
 
-  const invoices = invoicesData?.invoices || [];
+  const invoices: Invoice[] = invoicesData?.invoices || [];
 
   const filteredInvoices = invoices.filter((invoice) => {
     const matchesSearch = !searchQuery || invoice.number?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -67,13 +68,13 @@ export default function InvoicesPage() {
     },
   ];
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: InvoiceStatus) => {
     const statusColors = {
       draft: "bg-yellow-100 text-yellow-800",
       posted: "bg-green-100 text-green-800",
       cancel: "bg-red-100 text-red-800",
     };
-    return statusColors[status as keyof typeof statusColors] || "bg-gray-100 text-gray-800";
+    return statusColors[status] || "bg-gray-100 text-gray-800";
   };
 
   return (
@@ -287,7 +288,9 @@ export default function InvoicesPage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            // TODO: Download PDF
+                            // TODO: [Backend/Frontend] - Implement PDF download for invoices
+                            //   Details: This button currently has a TODO for downloading PDFs. Implement a backend API endpoint to generate and serve invoice PDFs, and integrate it with this frontend button to trigger the download.
+                            //   Priority: Medium
                           }}
                           className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
                           title="Download PDF"

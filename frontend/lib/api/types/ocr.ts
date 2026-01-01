@@ -371,20 +371,20 @@ export interface components {
       generatedAt?: string | null;
     };
     /** @enum {string} */
-    AuditType:
-      | "ICV"
-      | "ISO_9001"
-      | "ISO_14001"
-      | "ISO_45001"
-      | "financial_audit"
-      | "internal_audit"
-      | "compliance_audit"
-      | "operational_audit";
+    CaseType:
+      | "ICV_AUDIT"
+      | "ISO_9001_AUDIT"
+      | "ISO_14001_AUDIT"
+      | "ISO_45001_AUDIT"
+      | "FINANCIAL_AUDIT"
+      | "INTERNAL_AUDIT"
+      | "COMPLIANCE_AUDIT"
+      | "OPERATIONAL_AUDIT";
     AuditReportTemplateResponse: {
       id: string;
       name: string;
       nameAr?: string | null;
-      auditType?: components["schemas"]["AuditType"] | null;
+      caseType?: components["schemas"]["CaseType"] | null;
       description?: string | null;
       descriptionAr?: string | null;
       templateStructure: {
@@ -411,7 +411,7 @@ export interface components {
     CreateAuditReportTemplateRequest: {
       name: string;
       nameAr?: string | null;
-      auditType?: components["schemas"]["AuditType"] | null;
+      caseType?: components["schemas"]["CaseType"] | null;
       description?: string | null;
       descriptionAr?: string | null;
       templateStructure: {
@@ -1150,7 +1150,7 @@ export interface components {
       type: "case_update";
       caseId: string;
       caseNumber: string;
-      clientName: string;
+      title: string;
       status: string;
       updatedAt: string;
       updatedBy: {
@@ -1547,7 +1547,7 @@ export interface components {
       caseId: string;
     };
     /** @enum {string} */
-    CaseStatus: "pending" | "in-progress" | "under-review" | "completed" | "overdue" | "archived";
+    CaseStatus: "draft" | "in_progress" | "under_review" | "completed" | "overdue" | "archived";
     /** @enum {string} */
     CasePriority: "low" | "medium" | "high" | "critical";
     /** @enum {string} */
@@ -1556,8 +1556,9 @@ export interface components {
       id: string;
       organizationId: string;
       caseNumber: string;
-      clientName: string;
-      auditType: components["schemas"]["AuditType"];
+      title: string;
+      description?: string | null;
+      caseType: components["schemas"]["CaseType"];
       status: components["schemas"]["CaseStatus"];
       priority: components["schemas"]["CasePriority"];
       dueDate?: string | null;
@@ -1577,14 +1578,17 @@ export interface components {
     };
     CreateCaseRequest: {
       caseNumber?: string | null;
-      clientName: string;
-      auditType: components["schemas"]["AuditType"];
+      title: string;
+      description?: string | null;
+      caseType: components["schemas"]["CaseType"];
       status?: components["schemas"]["CaseStatus"] | null;
       priority?: components["schemas"]["CasePriority"] | null;
       dueDate?: string | null;
     };
     /** @enum {string} */
-    AuditCategory: "certification" | "financial" | "operational" | "compliance";
+    TemplateType: "scope" | "form" | "checklist" | "report" | "plan";
+    /** @enum {string} */
+    CaseCategory: "certification" | "financial" | "operational" | "compliance";
     TemplateStructure: {
       settings?: components["schemas"]["Record_string.unknown_"];
       sections: {
@@ -1608,11 +1612,11 @@ export interface components {
       organizationId?: string | null;
       name: string;
       description?: string | null;
-      auditType: components["schemas"]["AuditType"];
-      category?: components["schemas"]["AuditCategory"] | null;
+      templateType: components["schemas"]["TemplateType"];
+      category?: components["schemas"]["CaseCategory"] | null;
       version: string;
       isActive: boolean;
-      isPublic: boolean;
+      isSystemTemplate: boolean;
       structure: components["schemas"]["TemplateStructure"];
       createdBy: string;
       createdAt: string;
@@ -1622,24 +1626,25 @@ export interface components {
       organizationId?: string | null;
       name: string;
       description?: string | null;
-      auditType: components["schemas"]["AuditType"];
-      category?: components["schemas"]["AuditCategory"] | null;
+      templateType: components["schemas"]["TemplateType"];
+      category?: components["schemas"]["CaseCategory"] | null;
       version?: string;
       isActive?: boolean;
-      isPublic?: boolean;
+      isSystemTemplate?: boolean;
       structure: components["schemas"]["TemplateStructure"];
     };
     UpdateCaseRequest: {
       caseNumber?: string | null;
-      clientName?: string | null;
-      auditType?: components["schemas"]["AuditType"] | null;
+      title?: string | null;
+      description?: string | null;
+      caseType?: components["schemas"]["CaseType"] | null;
       status?: components["schemas"]["CaseStatus"] | null;
       priority?: components["schemas"]["CasePriority"] | null;
       dueDate?: string | null;
       completedDate?: string | null;
     };
     /** @enum {string} */
-    AuditStatus: "draft" | "in-progress" | "under-review" | "completed" | "archived";
+    AuditStatus: "draft" | "in_progress" | "under_review" | "completed" | "archived";
     ScopeResponse: {
       id: string;
       caseId: string;
@@ -1647,7 +1652,7 @@ export interface components {
       name: string;
       description?: string | null;
       status: components["schemas"]["AuditStatus"];
-      metadata: components["schemas"]["Record_string.unknown_"];
+      data: components["schemas"]["Record_string.unknown_"];
       createdBy: string;
       completedBy?: string | null;
       archivedBy?: string | null;
@@ -1660,7 +1665,7 @@ export interface components {
       name: string;
       description?: string | null;
       status?: components["schemas"]["AuditStatus"] | null;
-      metadata?: components["schemas"]["Record_string.unknown_"] | null;
+      data?: components["schemas"]["Record_string.unknown_"] | null;
     };
     CreateScopeFromTemplateRequest: {
       templateId: string;
@@ -1786,7 +1791,7 @@ export interface components {
       planType: components["schemas"]["PlanType"];
       title: string;
       clientName?: string | null;
-      auditType?: components["schemas"]["AuditType"] | null;
+      caseType?: components["schemas"]["CaseType"] | null;
       /** Format: double */
       auditYear?: number | null;
       startDate?: string | null;
@@ -1846,7 +1851,7 @@ export interface components {
       planType?: components["schemas"]["PlanType"] | null;
       title: string;
       clientName?: string | null;
-      auditType?: components["schemas"]["AuditType"] | null;
+      caseType?: components["schemas"]["CaseType"] | null;
       /** Format: double */
       auditYear?: number | null;
       startDate?: string | null;
@@ -1894,7 +1899,7 @@ export interface components {
       planType?: components["schemas"]["PlanType"] | null;
       title?: string | null;
       clientName?: string | null;
-      auditType?: components["schemas"]["AuditType"] | null;
+      caseType?: components["schemas"]["CaseType"] | null;
       /** Format: double */
       auditYear?: number | null;
       startDate?: string | null;
@@ -1940,7 +1945,7 @@ export interface components {
     AuditPlanTemplateResponse: {
       id: string;
       name: string;
-      auditType?: components["schemas"]["AuditType"] | null;
+      caseType?: components["schemas"]["CaseType"] | null;
       description?: string | null;
       defaultObjectives?:
         | {
@@ -1975,7 +1980,7 @@ export interface components {
     };
     CreateAuditPlanTemplateRequest: {
       name: string;
-      auditType?: components["schemas"]["AuditType"] | null;
+      caseType?: components["schemas"]["CaseType"] | null;
       description?: string | null;
       defaultObjectives?: {
         priority?: string;

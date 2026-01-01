@@ -10,7 +10,7 @@ import { invitations } from "./invitations.js";
 import { teams } from "./teams.js";
 import { organizationRoles } from "./organizationRoles.js";
 import { cases } from "./cases.js";
-import { auditTemplates } from "./auditTemplates.js";
+import { templates } from "./templates.js";
 import { auditPlans } from "./auditPlans.js";
 import { auditPlanTemplates } from "./auditPlanTemplates.js";
 import { auditReportTemplates } from "./auditReportTemplates.js";
@@ -28,7 +28,7 @@ export const organizationsRelations = relations(organizations, ({ many, one }) =
   teams: many(teams),
   organizationRoles: many(organizationRoles),
   cases: many(cases),
-  auditTemplates: many(auditTemplates),
+  templates: many(templates),
   auditPlans: many(auditPlans),
   auditPlanTemplates: many(auditPlanTemplates),
   auditReportTemplates: many(auditReportTemplates),

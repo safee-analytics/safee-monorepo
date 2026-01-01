@@ -3,6 +3,15 @@ import React, { Dispatch, SetStateAction, useState, DragEvent, FormEvent } from 
 import { FiPlus, FiTrash } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { FaFire } from "react-icons/fa";
+import { type ColumnType, type CardType, cardSchema } from "@/lib/validation";
+
+// TODO: [Backend] - Implement API for Kanban board persistence
+//   Details: The Kanban board currently uses mock data. A backend API is needed to handle CRUD operations for cards and columns, including their ordering and persistence.
+//   Priority: High
+
+// TODO: [Frontend] - Implement local storage persistence for Kanban board (interim)
+//   Details: Until the backend API is ready, implement local storage to persist Kanban board data across sessions.
+//   Priority: Medium
 
 export const CustomKanban = () => {
   return (
@@ -13,7 +22,7 @@ export const CustomKanban = () => {
 };
 
 const Board = () => {
-  const [cards, setCards] = useState(DEFAULT_CARDS);
+  const [cards, setCards] = useState<CardType[]>(DEFAULT_CARDS);
 
   return (
     <div className="flex h-full w-full gap-3 overflow-scroll p-12">
@@ -148,7 +157,9 @@ const Column = ({ title, headingColor, cards, column, setCards }: ColumnProps) =
   };
 
   const getIndicators = () => {
-    return Array.from(document.querySelectorAll(`[data-column="${column}"]`) as unknown as HTMLElement[]);
+    return Array.from(document.querySelectorAll(`[data-column="${column}"]`)).filter(
+      (el): el is HTMLElement => el instanceof HTMLElement,
+    );
   };
 
   const handleDragLeave = () => {
@@ -328,15 +339,7 @@ const AddCard = ({ column, setCards }: AddCardProps) => {
   );
 };
 
-type ColumnType = "backlog" | "todo" | "doing" | "done";
-
-type CardType = {
-  title: string;
-  id: string;
-  column: ColumnType;
-};
-
-const DEFAULT_CARDS: CardType[] = [
+const DEFAULT_CARDS: CardType[] = cardSchema.array().parse([
   // BACKLOG
   { title: "Look into render bug in dashboard", id: "1", column: "backlog" },
   { title: "SOX compliance checklist", id: "2", column: "backlog" },
@@ -364,4 +367,4 @@ const DEFAULT_CARDS: CardType[] = [
     id: "10",
     column: "done",
   },
-];
+]);

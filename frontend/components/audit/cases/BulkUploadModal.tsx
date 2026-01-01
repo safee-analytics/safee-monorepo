@@ -3,14 +3,7 @@
 import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, Upload, File, FileText, Image as ImageIcon, CheckCircle, XCircle, Loader } from "lucide-react";
-
-interface FileUploadItem {
-  file: File;
-  status: "pending" | "uploading" | "success" | "error";
-  progress: number;
-  category?: string;
-  error?: string;
-}
+import { type FileUploadItem, fileUploadItemSchema } from "@/lib/validation";
 
 interface BulkUploadModalProps {
   isOpen: boolean;
@@ -20,6 +13,9 @@ interface BulkUploadModalProps {
   availableCategories?: string[];
 }
 
+// TODO: [Backend] - Fetch document categories from API
+//   Details: The `DEFAULT_CATEGORIES` are currently hardcoded. They should be fetched from a backend API to allow for dynamic and configurable document categories.
+//   Priority: Medium
 const DEFAULT_CATEGORIES = [
   "Financial Statements",
   "Audit Reports",
@@ -71,12 +67,16 @@ export function BulkUploadModal({
   };
 
   const addFiles = (newFiles: File[]) => {
-    const uploadItems: FileUploadItem[] = newFiles.map((file) => ({
-      file,
-      status: "pending",
-      progress: 0,
-      category: defaultCategory,
-    }));
+    const uploadItems: FileUploadItem[] = newFiles.map((file) => {
+      const item = {
+        file,
+        status: "pending" as const,
+        progress: 0,
+        category: defaultCategory,
+      };
+      const validated = fileUploadItemSchema.parse(item);
+      return validated;
+    });
     setFiles((prev) => [...prev, ...uploadItems]);
   };
 

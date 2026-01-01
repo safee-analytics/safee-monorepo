@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { useCases, type CaseData } from "@/lib/api/hooks";
+import { useCases } from "@/lib/api/hooks";
+import { type Case } from "@/lib/validation";
 import { differenceInDays, addDays, isBefore } from "date-fns";
 
 interface AutofillSuggestions {
@@ -9,7 +10,7 @@ interface AutofillSuggestions {
   suggestStatus: (dueDate: Date) => string;
   suggestTeam: (auditType: string, clientName?: string) => { userId: string; role: string }[];
   getClientHistory: (clientName: string) => AutofillClientHistory;
-  getRecentClients: () => { name: string; lastCase: CaseData; count: number }[];
+  getRecentClients: () => { name: string; lastCase: Case; count: number }[];
   getAuditTypeStats: () => Record<string, number>;
 }
 
@@ -17,7 +18,7 @@ export interface AutofillClientHistory {
   totalCases: number;
   mostCommonAuditType: string | undefined;
   averageDuration: number;
-  lastCase: CaseData | undefined;
+  lastCase: Case | undefined;
   commonPriority: string | undefined;
 }
 
@@ -39,15 +40,13 @@ export function useAutofill(): AutofillSuggestions {
       suggestAuditType: (clientName: string): string | undefined => {
         if (!clientName) return undefined;
 
-        const clientCases = cases.filter((c) =>
-          c.clientName?.toLowerCase().includes(clientName.toLowerCase()),
-        );
+        const clientCases = cases.filter((c) => c.title?.toLowerCase().includes(clientName.toLowerCase()));
 
         if (clientCases.length === 0) return undefined;
 
         // Count audit type frequency
         const typeCounts = clientCases.reduce<Record<string, number>>((acc, c) => {
-          const type = c.auditType || "general_audit";
+          const type = c.caseType || "general_audit";
           acc[type] = (acc[type] || 0) + 1;
           return acc;
         }, {});
@@ -63,7 +62,7 @@ export function useAutofill(): AutofillSuggestions {
       suggestDueDate: (auditType: string): Date => {
         if (!auditType) return addDays(new Date(), 30); // Default 30 days
 
-        const typeCases = cases.filter((c) => c.auditType === auditType);
+        const typeCases = cases.filter((c) => c.caseType === auditType);
 
         if (typeCases.length === 0) return addDays(new Date(), 30);
 
@@ -103,9 +102,7 @@ export function useAutofill(): AutofillSuggestions {
         const daysUntilDue = differenceInDays(dueDate, new Date());
 
         // Check if client typically requires high priority
-        const clientCases = cases.filter((c) =>
-          c.clientName?.toLowerCase().includes(clientName.toLowerCase()),
-        );
+        const clientCases = cases.filter((c) => c.title?.toLowerCase().includes(clientName.toLowerCase()));
 
         const highPriorityCount = clientCases.filter(
           (c) => c.priority === "high" || c.priority === "critical",
@@ -138,8 +135,8 @@ export function useAutofill(): AutofillSuggestions {
         // Find similar cases
         const similarCases = cases.filter(
           (c) =>
-            c.auditType === auditType ||
-            (clientName && c.clientName?.toLowerCase().includes(clientName.toLowerCase())),
+            c.caseType === auditType ||
+            (clientName && c.title?.toLowerCase().includes(clientName.toLowerCase())),
         );
 
         if (similarCases.length === 0) return [];
@@ -190,9 +187,7 @@ export function useAutofill(): AutofillSuggestions {
           };
         }
 
-        const clientCases = cases.filter((c) =>
-          c.clientName?.toLowerCase().includes(clientName.toLowerCase()),
-        );
+        const clientCases = cases.filter((c) => c.title?.toLowerCase().includes(clientName.toLowerCase()));
 
         if (clientCases.length === 0) {
           return {
@@ -206,7 +201,7 @@ export function useAutofill(): AutofillSuggestions {
 
         // Most common audit type
         const typeCounts = clientCases.reduce<Record<string, number>>((acc, c) => {
-          const type = c.auditType || "general_audit";
+          const type = c.caseType || "general_audit";
           acc[type] = (acc[type] || 0) + 1;
           return acc;
         }, {});
@@ -249,12 +244,12 @@ export function useAutofill(): AutofillSuggestions {
        * Gets list of recent clients for autocomplete
        */
       getRecentClients: () => {
-        const clientMap = new Map<string, { lastCase: CaseData; count: number }>();
+        const clientMap = new Map<string, { lastCase: Case; count: number }>();
 
         for (const c of cases) {
-          if (!c.clientName) continue;
+          if (!c.title) continue;
 
-          const normalized = c.clientName.toLowerCase();
+          const normalized = c.title.toLowerCase();
           if (!clientMap.has(normalized)) {
             clientMap.set(normalized, { lastCase: c, count: 0 });
           }
@@ -270,7 +265,7 @@ export function useAutofill(): AutofillSuggestions {
 
         return Array.from(clientMap.entries())
           .map(([_name, data]) => ({
-            name: data.lastCase.clientName, // Use original casing
+            name: data.lastCase.title, // Use original casing
             lastCase: data.lastCase,
             count: data.count,
           }))
@@ -283,7 +278,7 @@ export function useAutofill(): AutofillSuggestions {
        */
       getAuditTypeStats: () => {
         return cases.reduce<Record<string, number>>((acc, c) => {
-          const type = c.auditType || "general_audit";
+          const type = c.caseType || "general_audit";
           acc[type] = (acc[type] || 0) + 1;
           return acc;
         }, {});

@@ -17,18 +17,8 @@ import {
   Copy,
 } from "lucide-react";
 import { EncryptionBadge } from "@/components/ui/EncryptionBadge";
-
-export interface FileItem {
-  id: string;
-  name: string;
-  size: number;
-  type: string;
-  uploadedAt: string;
-  uploadedBy?: string;
-  isEncrypted?: boolean;
-  tags?: string[];
-  url?: string;
-}
+import { Button } from "@safee/ui";
+import { type FileItem } from "@/lib/validation";
 
 interface FileListProps {
   files: FileItem[];
@@ -161,37 +151,40 @@ export function FileList({
             {showActions && (
               <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
                 {onPreview && (
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => {
                       void handleAction(() => onPreview(file));
                     }}
-                    className="rounded p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                     title="Preview"
                   >
                     <Eye className="h-4 w-4" />
-                  </button>
+                  </Button>
                 )}
                 {onDownload && (
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => {
                       void handleAction(() => onDownload(file));
                     }}
-                    className="rounded p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                     title="Download"
                   >
                     <Download className="h-4 w-4" />
-                  </button>
+                  </Button>
                 )}
                 {onShare && (
-                  <button
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => {
                       void handleAction(() => onShare(file));
                     }}
-                    className="rounded p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                     title="Share"
                   >
                     <Share2 className="h-4 w-4" />
-                  </button>
+                  </Button>
                 )}
               </div>
             )}
@@ -199,15 +192,16 @@ export function FileList({
             {/* More Menu */}
             {showActions && (
               <div className="relative">
-                <button
+                <Button
+                  variant="ghost"
+                  size="icon"
                   onClick={() => {
                     handleMenuToggle(file.id);
                   }}
-                  className="rounded p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-700 dark:hover:text-gray-300"
                   title="More actions"
                 >
                   <MoreVertical className="h-4 w-4" />
-                </button>
+                </Button>
 
                 {activeMenu === file.id && (
                   <>
@@ -226,61 +220,66 @@ export function FileList({
                       className="absolute right-0 top-full z-20 mt-1 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800"
                     >
                       {onPreview && (
-                        <button
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-3 px-4 py-2 text-sm"
                           onClick={() => {
                             void handleAction(() => onPreview(file));
                           }}
-                          className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                         >
                           <Eye className="h-4 w-4" />
                           Preview
-                        </button>
+                        </Button>
                       )}
                       {onDownload && (
-                        <button
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-3 px-4 py-2 text-sm"
                           onClick={() => {
                             void handleAction(() => onDownload(file));
                           }}
-                          className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                         >
                           <Download className="h-4 w-4" />
                           Download
-                        </button>
+                        </Button>
                       )}
                       {file.url && (
-                        <button
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-3 px-4 py-2 text-sm"
                           onClick={() => {
                             void handleAction(() => navigator.clipboard.writeText(file.url || ""));
                           }}
-                          className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                         >
                           <Copy className="h-4 w-4" />
                           Copy Link
-                        </button>
+                        </Button>
                       )}
                       {onShare && (
-                        <button
+                        <Button
+                          variant="ghost"
+                          className="w-full justify-start gap-3 px-4 py-2 text-sm"
                           onClick={() => {
                             void handleAction(() => onShare(file));
                           }}
-                          className="flex w-full items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
                         >
                           <Share2 className="h-4 w-4" />
                           Share
-                        </button>
+                        </Button>
                       )}
                       {onDelete && (
                         <>
                           <div className="my-1 border-t border-gray-200 dark:border-gray-700" />
-                          <button
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-start gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
                             onClick={() => {
                               void handleAction(() => onDelete(file.id));
                             }}
-                            className="flex w-full items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
                           >
                             <Trash2 className="h-4 w-4" />
                             Delete
-                          </button>
+                          </Button>
                         </>
                       )}
                     </motion.div>

@@ -16,12 +16,12 @@ export async function getCaseStats(deps: DbDeps, organizationId: string): Promis
   const [activeCasesResult] = await drizzle
     .select({ count: count() })
     .from(cases)
-    .where(and(eq(cases.organizationId, organizationId), eq(cases.status, "in-progress")));
+    .where(and(eq(cases.organizationId, organizationId), eq(cases.status, "in_progress")));
 
   const [pendingReviewsResult] = await drizzle
     .select({ count: count() })
     .from(cases)
-    .where(and(eq(cases.organizationId, organizationId), eq(cases.status, "under-review")));
+    .where(and(eq(cases.organizationId, organizationId), eq(cases.status, "under_review")));
 
   const [completedAuditsResult] = await drizzle
     .select({ count: count() })

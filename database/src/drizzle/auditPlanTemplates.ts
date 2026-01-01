@@ -1,13 +1,13 @@
 import { uuid, varchar, timestamp, text, jsonb, index, integer, decimal, boolean } from "drizzle-orm/pg-core";
-import { auditSchema, idpk, auditTypeEnum } from "./_common.js";
+import { casesSchema, idpk, caseTypeEnum } from "./_common.js";
 import { organizations } from "./organizations.js";
 
-export const auditPlanTemplates = auditSchema.table(
+export const auditPlanTemplates = casesSchema.table(
   "audit_plan_templates",
   {
     id: idpk("id"),
     name: varchar("name", { length: 255 }).notNull(),
-    auditType: auditTypeEnum("audit_type"),
+    caseType: caseTypeEnum("case_type"),
     description: text("description"),
     defaultObjectives: jsonb("default_objectives")
       .default([])
@@ -31,7 +31,7 @@ export const auditPlanTemplates = auditSchema.table(
       .notNull(),
   },
   (table) => [
-    index("audit_plan_templates_audit_type_idx").on(table.auditType),
+    index("audit_plan_templates_case_type_idx").on(table.caseType),
     index("audit_plan_templates_active_idx").on(table.isActive),
     index("audit_plan_templates_org_idx").on(table.organizationId),
   ],

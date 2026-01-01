@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect, startTransition } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useCases, useCreateCase, type CaseData, type CaseAssignment } from "@/lib/api/hooks";
+import { useCases, useCreateCase } from "@/lib/api/hooks";
 import { CaseStats } from "@/components/audit/cases/CaseStats";
 import { CaseFilters, type FilterToken } from "@/components/audit/cases/CaseFilters";
 import { CaseTable, type CaseRow } from "@/components/audit/cases/CaseTable";
@@ -16,9 +16,8 @@ import { BatchOperationsBar } from "@/components/audit/cases/BatchOperationsBar"
 import { SavedViewsManager } from "@/components/audit/cases/SavedViewsManager";
 import { useAuditStore } from "@/stores/useAuditStore";
 import { useKeyboardShortcuts, COMMON_SHORTCUTS } from "@/lib/hooks/useKeyboardShortcuts";
-import { isValidCaseStatus, isValidCasePriority } from "@/lib/api/schemas";
 import { useToast } from "@safee/ui";
-import type { CaseStatus, CasePriority } from "@/types/audit";
+import { type Case, type CaseAssignment, CaseStatusSchema, CasePrioritySchema } from "@/lib/validation";
 
 export default function CaseManagement() {
   const searchParams = useSearchParams();
@@ -128,7 +127,7 @@ export default function CaseManagement() {
 
   useEffect(() => {
     const statusParam = searchParams.get("status");
-    if (statusParam === "in-progress") {
+    if (statusParam === "in_progress") {
       startTransition(() => {
         setActiveStatusTab("active");
       });
@@ -136,10 +135,10 @@ export default function CaseManagement() {
       startTransition(() => {
         setActiveStatusTab("completed");
       });
-    } else if (statusParam === "under-review") {
-      // Add filter token for under-review since it's not a tab
+    } else if (statusParam === "under_review") {
+      // Add filter token for under_review since it's not a tab
       startTransition(() => {
-        setFilters([{ type: "status", value: "under-review", display: "Under Review" }]);
+        setFilters([{ type: "status", value: "under_review", display: "Under Review" }]);
       });
     } else {
       startTransition(() => {
@@ -154,15 +153,15 @@ export default function CaseManagement() {
 
     // Get status from URL with validation
     const statusParam = searchParams.get("status");
-    if (statusParam && isValidCaseStatus(statusParam)) {
+    if (statusParam && CaseStatusSchema.safeParse(statusParam).success) {
       result.status = statusParam;
     }
 
     // Add filters from filter tokens (can override URL params)
     for (const filter of filters) {
-      if (filter.type === "status" && isValidCaseStatus(filter.value)) {
+      if (filter.type === "status" && CaseStatusSchema.safeParse(filter.value).success) {
         result.status = filter.value;
-      } else if (filter.type === "priority" && isValidCasePriority(filter.value)) {
+      } else if (filter.type === "priority" && CasePrioritySchema.safeParse(filter.value).success) {
         result.priority = filter.value;
       } else if (filter.type === "assignee") {
         result.assignedTo = filter.value;
@@ -178,9 +177,9 @@ export default function CaseManagement() {
   const handleQuickCreate = async (title: string) => {
     try {
       await createCaseMutation.mutateAsync({
-        clientName: title,
-        auditType: "financial_audit",
-        status: "pending",
+        title: title,
+        caseType: "FINANCIAL_AUDIT",
+        status: "draft",
         priority: "medium",
         dueDate: undefined,
       });
@@ -194,7 +193,7 @@ export default function CaseManagement() {
 
   const { cases, stats, availableAssignees } = useMemo(() => {
     // Map API cases to table rows
-    let mappedCases: CaseRow[] = (apiCases ?? []).map((caseData: CaseData) => {
+    let mappedCases: CaseRow[] = (apiCases ?? []).map((caseData: Case) => {
       // Get the lead assignee from assignments (prefer lead role, fallback to any assignee)
       const leadAssignment = caseData.assignments?.find((a: CaseAssignment) => a.role === "lead");
       const anyAssignment = caseData.assignments?.[0];
@@ -206,23 +205,23 @@ export default function CaseManagement() {
       return {
         id: caseData.id,
         caseId: caseData.caseNumber,
-        auditType: caseData.auditType,
-        companyName: caseData.clientName,
+        caseType: caseData.caseType,
+        companyName: caseData.title,
         industry: "General",
         assignee: {
           name: assigneeName,
           avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${assigneeId}`,
           id: assigneeId,
         },
-        status: caseData.status as CaseStatus,
-        priority: caseData.priority as CasePriority,
+        status: caseData.status,
+        priority: caseData.priority,
         dueDate: caseData.dueDate ? new Date(caseData.dueDate).toLocaleDateString() : "N/A",
         progress:
           caseData.status === "completed"
             ? 100
-            : caseData.status === "under-review"
+            : caseData.status === "under_review"
               ? 80
-              : caseData.status === "in-progress"
+              : caseData.status === "in_progress"
                 ? 50
                 : 10,
         icon: "📋",
@@ -232,7 +231,7 @@ export default function CaseManagement() {
 
     // Extract unique assignees for filter dropdown
     const assigneeMap = new Map<string, string>();
-    apiCases?.forEach((caseData: CaseData) => {
+    apiCases?.forEach((caseData: Case) => {
       caseData.assignments?.forEach((assignment: CaseAssignment) => {
         if (assignment.user && assignment.userId) {
           assigneeMap.set(assignment.userId, assignment.user.name || assignment.user.email);
@@ -249,7 +248,7 @@ export default function CaseManagement() {
           (c) =>
             c.caseId.toLowerCase().includes(searchText) ||
             c.companyName.toLowerCase().includes(searchText) ||
-            c.auditType.toLowerCase().includes(searchText) ||
+            c.caseType.toLowerCase().includes(searchText) ||
             c.assignee.name.toLowerCase().includes(searchText),
         );
       }
@@ -258,9 +257,9 @@ export default function CaseManagement() {
     // Calculate stats from all cases (not filtered)
     const calculatedStats = {
       totalCases: (apiCases ?? []).length,
-      activeCases: (apiCases ?? []).filter((c: CaseData) => c.status === "in-progress").length,
-      completedCases: (apiCases ?? []).filter((c: CaseData) => c.status === "completed").length,
-      overdueCases: (apiCases ?? []).filter((c: CaseData) => c.status === "overdue").length,
+      activeCases: (apiCases ?? []).filter((c: Case) => c.status === "in_progress").length,
+      completedCases: (apiCases ?? []).filter((c: Case) => c.status === "completed").length,
+      overdueCases: (apiCases ?? []).filter((c: Case) => c.status === "overdue").length,
     };
 
     return { cases: mappedCases, stats: calculatedStats, availableAssignees: uniqueAssignees };
@@ -323,7 +322,7 @@ export default function CaseManagement() {
           <button
             onClick={() => {
               setActiveStatusTab("active");
-              router.push("/audit/cases?status=in-progress");
+              router.push("/audit/cases?status=in_progress");
             }}
             className={`px-4 py-2 rounded-lg font-medium transition-colors cursor-pointer ${
               activeStatusTab === "active"
@@ -535,8 +534,8 @@ export default function CaseManagement() {
             ? {
                 id: previewCase.id,
                 caseNumber: previewCase.caseId,
-                clientName: previewCase.companyName,
-                auditType: previewCase.auditType,
+                title: previewCase.companyName,
+                caseType: previewCase.caseType,
                 status: previewCase.status,
                 priority: previewCase.priority,
                 dueDate: previewCase.dueDate,

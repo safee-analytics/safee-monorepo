@@ -40,9 +40,9 @@ export async function createCase(
     throw new InvalidInput("Case number must be between 3 and 50 characters");
   }
 
-  // Validation: Client name
-  if (request.clientName.trim().length === 0) {
-    throw new InvalidInput("Client name cannot be empty");
+  // Validation: Title
+  if (request.title.trim().length === 0) {
+    throw new InvalidInput("Title cannot be empty");
   }
 
   // Validation: Due date must be in the future if provided
@@ -71,9 +71,10 @@ export async function createCase(
     const newCase = await dbCreateCase(deps, {
       organizationId,
       caseNumber,
-      clientName: request.clientName.trim(),
-      auditType: request.auditType,
-      status: request.status ?? "pending",
+      title: request.title.trim(),
+      description: request.description?.trim() ?? null,
+      caseType: request.caseType,
+      status: request.status ?? "draft",
       priority: request.priority ?? "medium",
       dueDate: request.dueDate ? new Date(request.dueDate) : undefined,
       createdBy: userId,
@@ -86,8 +87,8 @@ export async function createCase(
       action: "created",
       changesAfter: {
         caseNumber: newCase.caseNumber,
-        clientName: newCase.clientName,
-        auditType: newCase.auditType,
+        title: newCase.title,
+        caseType: newCase.caseType,
         status: newCase.status,
         priority: newCase.priority,
       },
@@ -108,8 +109,9 @@ export async function createCase(
       id: newCase.id,
       organizationId: newCase.organizationId,
       caseNumber: newCase.caseNumber,
-      clientName: newCase.clientName,
-      auditType: newCase.auditType,
+      title: newCase.title,
+      description: newCase.description,
+      caseType: newCase.caseType,
       status: newCase.status,
       priority: newCase.priority,
       dueDate: newCase.dueDate?.toISOString(),

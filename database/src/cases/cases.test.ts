@@ -67,9 +67,9 @@ describe("Cases Module", async () => {
       const caseData = {
         organizationId: testOrg.id,
         caseNumber: "CASE-001",
-        clientName: "Test Client",
-        auditType: "ICV" as const,
-        status: "pending" as const,
+        title: "Test Client",
+        caseType: "ICV_AUDIT" as const,
+        status: "draft" as const,
         priority: "medium" as const,
         createdBy: testUser.id,
       };
@@ -78,17 +78,17 @@ describe("Cases Module", async () => {
 
       expect(newCase.id).toBeTruthy();
       expect(newCase.caseNumber).toBe("CASE-001");
-      expect(newCase.clientName).toBe("Test Client");
-      expect(newCase.auditType).toBe("ICV");
-      expect(newCase.status).toBe("pending");
+      expect(newCase.title).toBe("Test Client");
+      expect(newCase.caseType).toBe("ICV_AUDIT");
+      expect(newCase.status).toBe("draft");
     });
 
     it("gets case by ID", async () => {
       const caseData = {
         organizationId: testOrg.id,
         caseNumber: "CASE-002",
-        clientName: "Test Client 2",
-        auditType: "ISO_9001" as const,
+        title: "Test Client 2",
+        caseType: "ISO_9001_AUDIT" as const,
         createdBy: testUser.id,
       };
 
@@ -104,16 +104,16 @@ describe("Cases Module", async () => {
       await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-003",
-        clientName: "Client A",
-        auditType: "ICV",
+        title: "Client A",
+        caseType: "ICV_AUDIT" as const,
         createdBy: testUser.id,
       });
 
       await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-004",
-        clientName: "Client B",
-        auditType: "ISO_9001" as const,
+        title: "Client B",
+        caseType: "ISO_9001_AUDIT" as const,
         createdBy: testUser.id,
       });
 
@@ -128,17 +128,17 @@ describe("Cases Module", async () => {
       const created = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-005",
-        clientName: "Client C",
-        auditType: "ICV",
+        title: "Client C",
+        caseType: "ICV_AUDIT" as const,
         createdBy: testUser.id,
       });
 
       const updated = await updateCase(deps, created.id, {
-        status: "in-progress",
+        status: "in_progress",
         priority: "high",
       });
 
-      expect(updated.status).toBe("in-progress");
+      expect(updated.status).toBe("in_progress");
       expect(updated.priority).toBe("high");
     });
 
@@ -146,8 +146,8 @@ describe("Cases Module", async () => {
       const created = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-006",
-        clientName: "Client D",
-        auditType: "ICV",
+        title: "Client D",
+        caseType: "ICV_AUDIT" as const,
         createdBy: testUser.id,
       });
 
@@ -179,7 +179,8 @@ describe("Cases Module", async () => {
       const templateData = {
         organizationId: testOrg.id,
         name: "Test Template",
-        auditType: "ICV" as const,
+        templateType: "scope" as const,
+        category: "certification" as const,
         structure,
         createdBy: testUser.id,
       };
@@ -188,7 +189,7 @@ describe("Cases Module", async () => {
 
       expect(template.id).toBeTruthy();
       expect(template.name).toBe("Test Template");
-      expect(template.auditType).toBe("ICV");
+      expect(template.templateType).toBe("scope");
       expect(template.structure.sections.length > 0).toBeTruthy();
     });
 
@@ -212,7 +213,8 @@ describe("Cases Module", async () => {
       const created = await createTemplate(deps, {
         organizationId: testOrg.id,
         name: "Template 2",
-        auditType: "ISO_9001" as const,
+        templateType: "scope" as const,
+        category: "certification" as const,
         structure,
         createdBy: testUser.id,
       });
@@ -243,9 +245,10 @@ describe("Cases Module", async () => {
 
       await createTemplate(deps, {
         name: "Public Template",
-        auditType: "ICV",
+        templateType: "scope" as const,
+        category: "certification" as const,
         structure,
-        isPublic: true,
+        isSystemTemplate: true,
         isActive: true,
         createdBy: testUser.id,
       });
@@ -262,8 +265,8 @@ describe("Cases Module", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-007",
-        clientName: "Client E",
-        auditType: "ICV",
+        title: "Client E",
+        caseType: "ICV_AUDIT" as const,
         createdBy: testUser.id,
       });
 
@@ -271,6 +274,7 @@ describe("Cases Module", async () => {
         caseId: testCase.id,
         name: "ICV Scope",
         status: "draft",
+        data: {},
         createdBy: testUser.id,
       });
 
@@ -283,8 +287,8 @@ describe("Cases Module", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-008",
-        clientName: "Client F",
-        auditType: "ICV",
+        title: "Client F",
+        caseType: "ICV_AUDIT" as const,
         createdBy: testUser.id,
       });
 
@@ -312,7 +316,8 @@ describe("Cases Module", async () => {
       const template = await createTemplate(deps, {
         organizationId: testOrg.id,
         name: "ICV Template",
-        auditType: "ICV",
+        templateType: "scope" as const,
+        category: "certification" as const,
         structure,
         createdBy: testUser.id,
       });
@@ -336,8 +341,8 @@ describe("Cases Module", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-009",
-        clientName: "Client G",
-        auditType: "ICV",
+        title: "Client G",
+        caseType: "ICV_AUDIT" as const,
         createdBy: testUser.id,
       });
 
@@ -345,6 +350,7 @@ describe("Cases Module", async () => {
         caseId: testCase.id,
         name: "Test Scope",
         status: "draft",
+        data: {},
         createdBy: testUser.id,
       });
 
@@ -361,8 +367,8 @@ describe("Cases Module", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-010",
-        clientName: "Client H",
-        auditType: "ICV",
+        title: "Client H",
+        caseType: "ICV_AUDIT" as const,
         createdBy: testUser.id,
       });
 
@@ -370,6 +376,7 @@ describe("Cases Module", async () => {
         caseId: testCase.id,
         name: "Test Scope",
         status: "draft",
+        data: {},
         createdBy: testUser.id,
       });
 
@@ -405,8 +412,8 @@ describe("Cases Module", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-011",
-        clientName: "Client I",
-        auditType: "ICV",
+        title: "Client I",
+        caseType: "ICV_AUDIT" as const,
         createdBy: testUser.id,
       });
 
@@ -437,8 +444,8 @@ describe("Cases Module", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-012",
-        clientName: "Client J",
-        auditType: "ICV",
+        title: "Client J",
+        caseType: "ICV_AUDIT" as const,
         createdBy: testUser.id,
       });
 
@@ -467,8 +474,8 @@ describe("Cases Module", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-013",
-        clientName: "Client K",
-        auditType: "ICV",
+        title: "Client K",
+        caseType: "ICV_AUDIT" as const,
         createdBy: testUser.id,
       });
 
@@ -497,8 +504,8 @@ describe("Cases Module", async () => {
       const testCase = await createCase(deps, {
         organizationId: testOrg.id,
         caseNumber: "CASE-014",
-        clientName: "Client L",
-        auditType: "ICV",
+        title: "Client L",
+        caseType: "ICV_AUDIT" as const,
         createdBy: testUser.id,
       });
 

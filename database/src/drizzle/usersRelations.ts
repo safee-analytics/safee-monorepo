@@ -8,8 +8,8 @@ import { apikeys } from "./apikeys.js";
 import { sessions } from "./sessions.js";
 import { oauthAccounts } from "./oauthAccounts.js";
 import { cases } from "./cases.js";
-import { auditTemplates } from "./auditTemplates.js";
-import { auditScopes } from "./auditScopes.js";
+import { templates } from "./templates.js";
+import { templateInstances } from "./templateInstances.js";
 import { auditSections } from "./auditSections.js";
 import { auditProcedures } from "./auditProcedures.js";
 import { auditPlans } from "./auditPlans.js";
@@ -33,11 +33,11 @@ export const usersRelations = relations(users, ({ many, one }) => ({
   oauthAccounts: many(oauthAccounts),
   // Audit/Cases relations
   createdCases: many(cases, { relationName: "caseCreator" }),
-  createdTemplates: many(auditTemplates),
+  createdTemplates: many(templates),
   createdPlans: many(auditPlans, { relationName: "auditPlanCreator" }),
-  createdScopes: many(auditScopes, { relationName: "auditScopeCreator" }),
-  completedScopes: many(auditScopes, { relationName: "auditScopeCompletor" }),
-  archivedScopes: many(auditScopes, { relationName: "auditScopeArchiver" }),
+  createdTemplateInstances: many(templateInstances, { relationName: "templateInstanceCreator" }),
+  completedTemplateInstances: many(templateInstances, { relationName: "templateInstanceCompletor" }),
+  archivedTemplateInstances: many(templateInstances, { relationName: "templateInstanceArchiver" }),
   completedSections: many(auditSections),
   completedProcedures: many(auditProcedures),
   uploadedDocuments: many(caseDocuments),

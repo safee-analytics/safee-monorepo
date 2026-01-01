@@ -57,6 +57,11 @@ export const ODOO_URL = process.env.ODOO_URL ?? "http://localhost:8069";
 export const ODOO_PORT = number("ODOO_PORT", 8069);
 export const ODOO_ADMIN_PASSWORD = process.env.ODOO_ADMIN_PASSWORD ?? "admin";
 
+// Odoo Webhook Configuration (for safee_webhooks module)
+export const ODOO_WEBHOOK_URL = process.env.ODOO_WEBHOOK_URL ?? "";
+export const ODOO_WEBHOOK_SECRET = process.env.ODOO_WEBHOOK_SECRET ?? ""; // Master secret for deriving per-org secrets
+export const ODOO_WEBHOOKS_ENABLED = boolean("ODOO_WEBHOOKS_ENABLED", false);
+
 const __dirname = fileURLToPath(new URL(".", import.meta.url));
 
 export const USE_CLOUD_STORAGE = boolean("USE_CLOUD_STORAGE", false);
@@ -93,6 +98,9 @@ export const env = {
   ODOO_URL,
   ODOO_PORT,
   ODOO_ADMIN_PASSWORD,
+  ODOO_WEBHOOK_URL,
+  ODOO_WEBHOOK_SECRET,
+  ODOO_WEBHOOKS_ENABLED,
   USE_CLOUD_STORAGE,
   FILE_UPLOAD_BUCKET,
   FILE_UPLOAD_PATH,

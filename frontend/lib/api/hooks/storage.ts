@@ -4,6 +4,7 @@ import { apiClient, handleApiError } from "../client";
 import { queryKeys } from "./queryKeys";
 import { encryptedStorageService } from "@/lib/services/encryptedStorageService";
 import { useEncryptionStatus } from "@/stores/useEncryptionStore";
+import { isString } from "@/lib/utils/type-guards";
 
 export function useStorageFiles(folderId?: string) {
   return useQuery({
@@ -146,7 +147,10 @@ export function useDownloadFile() {
         if (error) throw new Error(handleApiError(error));
 
         // Trigger browser download
-        const url = data as unknown as string; // Assuming API returns download URL
+        if (!isString(data)) {
+          throw new Error("Invalid response from server: expected a URL string.");
+        }
+        const url = data;
         const a = document.createElement("a");
         a.href = url;
         a.download = fileName;

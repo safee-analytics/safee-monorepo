@@ -4,10 +4,15 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useDepartments } from "@/lib/api/hooks/hrManagement";
-import type { paths } from "@/lib/api/types";
+import { Button } from "@safee/ui";
+import {
+  type EmployeeDbResponse,
+  employeeDbResponseSchema as _employeeDbResponseSchema,
+} from "@/lib/validation";
 
-type EmployeeDbResponse =
-  paths["/hr-management/employees"]["get"]["responses"]["200"]["content"]["application/json"][number];
+// TODO: [Frontend] - Validate defaultValues with employeeDbResponseSchema
+//   Details: The defaultValues prop receives API response data that should be validated with employeeDbResponseSchema.parse() to ensure data integrity before using it in the form.
+//   Priority: Medium
 
 // Zod schema for employee form validation
 const employeeFormSchema = z.object({
@@ -374,22 +379,18 @@ export function EmployeeForm({
 
       {/* Form Actions */}
       <div className="flex items-center justify-end gap-3">
-        <button
+        <Button
           type="button"
+          variant="outline"
           onClick={() => {
             window.history.back();
           }}
-          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
         >
           Cancel
-        </button>
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-        >
+        </Button>
+        <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Saving..." : submitLabel}
-        </button>
+        </Button>
       </div>
     </form>
   );

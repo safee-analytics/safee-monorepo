@@ -14,7 +14,7 @@ export const hrSchema = pgSchema("hr");
 export const salesSchema = pgSchema("sales");
 export const systemSchema = pgSchema("system");
 export const jobsSchema = pgSchema("jobs");
-export const auditSchema = pgSchema("audit");
+export const casesSchema = pgSchema("cases");
 export const odooSchema = pgSchema("odoo");
 
 export const userRoleEnum = identitySchema.enum("user_role", ["ADMIN", "MANAGER", "EMPLOYEE", "ACCOUNTANT"]);
@@ -143,36 +143,36 @@ export const riskLevelEnum = identitySchema.enum("risk_level", ["low", "medium",
 
 export const localeEnum = identitySchema.enum("locale", ["en", "ar"]);
 
-export const caseStatusEnum = auditSchema.enum("case_status", [
-  "pending",
-  "in-progress",
-  "under-review",
+export const caseStatusEnum = casesSchema.enum("case_status", [
+  "draft",
+  "in_progress",
+  "under_review",
   "completed",
   "overdue",
   "archived",
 ]);
 
-export const casePriorityEnum = auditSchema.enum("case_priority", ["low", "medium", "high", "critical"]);
+export const casePriorityEnum = casesSchema.enum("case_priority", ["low", "medium", "high", "critical"]);
 
 export const CASE_STATUSES = caseStatusEnum.enumValues;
 export const CASE_PRIORITIES = casePriorityEnum.enumValues;
 
-export const auditStatusEnum = auditSchema.enum("audit_status", [
+export const templateStatusEnum = casesSchema.enum("template_status", [
   "draft",
-  "in-progress",
-  "under-review",
+  "in_progress",
+  "under_review",
   "completed",
   "archived",
 ]);
 
-export const noteTypeEnum = auditSchema.enum("note_type", [
+export const noteTypeEnum = casesSchema.enum("note_type", [
   "observation",
   "review_comment",
   "general",
   "memo",
 ]);
 
-export const assignmentRoleEnum = auditSchema.enum("assignment_role", ["lead", "reviewer", "team_member"]);
+export const assignmentRoleEnum = casesSchema.enum("assignment_role", ["lead", "reviewer", "team_member"]);
 
 export const approvalStatusEnum = systemSchema.enum("approval_status", [
   "pending",
@@ -356,25 +356,54 @@ export const accountInternalTypeEnum = financeSchema.enum("account_internal_type
   "other",
 ]);
 
-export const auditTypeEnum = auditSchema.enum("audit_type", [
-  "ICV",
-  "ISO_9001",
-  "ISO_14001",
-  "ISO_45001",
-  "financial_audit",
-  "internal_audit",
-  "compliance_audit",
-  "operational_audit",
+export const caseTypeEnum = casesSchema.enum("case_type", [
+  "ICV_AUDIT",
+  "ISO_9001_AUDIT",
+  "ISO_14001_AUDIT",
+  "ISO_45001_AUDIT",
+  "FINANCIAL_AUDIT",
+  "INTERNAL_AUDIT",
+  "COMPLIANCE_AUDIT",
+  "OPERATIONAL_AUDIT",
 ]);
 
-export const auditCategoryEnum = auditSchema.enum("audit_category", [
+export const caseCategoryEnum = casesSchema.enum("case_category", [
   "certification",
   "financial",
   "operational",
   "compliance",
 ]);
 
-export const caseEntityTypeEnum = auditSchema.enum("case_entity_type", [
+export const templateTypeEnum = casesSchema.enum("template_type", [
+  "scope",
+  "form",
+  "checklist",
+  "report",
+  "plan",
+]);
+
+export const stepTypeEnum = casesSchema.enum("step_type", [
+  "form_input",
+  "document_upload",
+  "document_collection",
+  "scope_editor",
+  "calculation_review",
+  "approval_stage",
+  "review_stage",
+  "checklist",
+  "report_generation",
+  "custom",
+]);
+
+export const stepStatusEnum = casesSchema.enum("step_status", [
+  "pending",
+  "in_progress",
+  "completed",
+  "skipped",
+  "blocked",
+]);
+
+export const caseEntityTypeEnum = casesSchema.enum("case_entity_type", [
   "case",
   "scope",
   "section",
@@ -383,7 +412,7 @@ export const caseEntityTypeEnum = auditSchema.enum("case_entity_type", [
   "note",
 ]);
 
-export const caseActionEnum = auditSchema.enum("case_action", [
+export const caseActionEnum = casesSchema.enum("case_action", [
   "created",
   "updated",
   "deleted",
@@ -430,9 +459,16 @@ export type RiskLevel = (typeof riskLevelEnum.enumValues)[number];
 export type Locale = (typeof localeEnum.enumValues)[number];
 export type CaseStatus = (typeof caseStatusEnum.enumValues)[number];
 export type CasePriority = (typeof casePriorityEnum.enumValues)[number];
-export type AuditStatus = (typeof auditStatusEnum.enumValues)[number];
+export type CaseType = (typeof caseTypeEnum.enumValues)[number];
+export type CaseCategory = (typeof caseCategoryEnum.enumValues)[number];
+export type TemplateStatus = (typeof templateStatusEnum.enumValues)[number];
+export type TemplateType = (typeof templateTypeEnum.enumValues)[number];
+export type StepType = (typeof stepTypeEnum.enumValues)[number];
+export type StepStatus = (typeof stepStatusEnum.enumValues)[number];
 export type NoteType = (typeof noteTypeEnum.enumValues)[number];
 export type AssignmentRole = (typeof assignmentRoleEnum.enumValues)[number];
+export type CaseEntityType = (typeof caseEntityTypeEnum.enumValues)[number];
+export type CaseAction = (typeof caseActionEnum.enumValues)[number];
 export type OdooOperationStatus = (typeof odooOperationStatusEnum.enumValues)[number];
 export type OdooCircuitState = (typeof odooCircuitStateEnum.enumValues)[number];
 export type DocumentType = (typeof documentTypeEnum.enumValues)[number];
@@ -441,10 +477,6 @@ export type RelatedEntityType = (typeof relatedEntityTypeEnum.enumValues)[number
 export type InvitationStatus = (typeof invitationStatusEnum.enumValues)[number];
 export type AccountType = (typeof accountTypeEnum.enumValues)[number];
 export type AccountInternalType = (typeof accountInternalTypeEnum.enumValues)[number];
-export type AuditType = (typeof auditTypeEnum.enumValues)[number];
-export type AuditCategory = (typeof auditCategoryEnum.enumValues)[number];
-export type CaseEntityType = (typeof caseEntityTypeEnum.enumValues)[number];
-export type CaseAction = (typeof caseActionEnum.enumValues)[number];
 export type Theme = (typeof themeEnum.enumValues)[number];
 export type ColorScheme = (typeof colorSchemeEnum.enumValues)[number];
 export type FontSize = (typeof fontSizeEnum.enumValues)[number];
@@ -575,6 +607,6 @@ export const schemas = {
   sales: salesSchema,
   system: systemSchema,
   jobs: jobsSchema,
-  audit: auditSchema,
+  cases: casesSchema,
   odoo: odooSchema,
 } as const;

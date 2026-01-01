@@ -139,7 +139,9 @@ export function CaseCommands({
             icon: <Users className="h-4 w-4" />,
             shortcut: "Shift+T",
             onExecute: () => {
-              console.warn("Assign team");
+              // TODO: [Backend/Frontend] - Implement bulk assign team for cases
+              //   Details: This action currently has a placeholder. Implement the backend API for bulk assigning cases to a team and integrate it with a frontend modal or component to handle the assignment process.
+              //   Priority: High
             },
           },
           {
@@ -148,7 +150,9 @@ export function CaseCommands({
             icon: <Trash2 className="h-4 w-4" />,
             shortcut: "Shift+D",
             onExecute: () => {
-              console.warn("Delete cases");
+              // TODO: [Backend/Frontend] - Implement bulk delete for cases
+              //   Details: This action currently has a placeholder. Implement the backend API for bulk deleting cases and integrate it with a frontend confirmation modal.
+              //   Priority: High
             },
           },
         ]
@@ -168,7 +172,9 @@ export function CaseCommands({
       icon: <Filter className="h-4 w-4" />,
       shortcut: "Shift+F",
       onExecute: () => {
-        console.warn("Toggle filters");
+        // TODO: [Frontend] - Implement toggle filters functionality
+        //   Details: This action currently has a placeholder. Implement the frontend logic to toggle the visibility of filters in the case list view.
+        //   Priority: Medium
       },
     },
     {
@@ -177,7 +183,9 @@ export function CaseCommands({
       icon: <CheckSquare className="h-4 w-4" />,
       shortcut: "Cmd+A",
       onExecute: () => {
-        console.warn("Select all");
+        // TODO: [Frontend] - Implement select all cases functionality
+        //   Details: This action currently has a placeholder. Implement the frontend logic to select all cases in the current view.
+        //   Priority: Medium
       },
     },
 

@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../client";
 import { queryKeys } from "./queryKeys";
 
-// Types
 export interface Integration {
   id: string;
   name: string;
@@ -13,7 +12,6 @@ export interface Integration {
   configUrl?: string;
 }
 
-// Get all integrations
 export function useGetIntegrations() {
   return useQuery<Integration[]>({
     queryKey: queryKeys.integrations.all,
@@ -25,7 +23,6 @@ export function useGetIntegrations() {
   });
 }
 
-// Connect integration
 export function useConnectIntegration() {
   const queryClient = useQueryClient();
 
@@ -46,7 +43,6 @@ export function useConnectIntegration() {
   });
 }
 
-// Disconnect integration
 export function useDisconnectIntegration() {
   const queryClient = useQueryClient();
 

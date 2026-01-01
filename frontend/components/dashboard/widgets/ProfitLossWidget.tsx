@@ -1,9 +1,16 @@
 "use client";
 
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { Button } from "@safee/ui";
 
 export const ProfitLossWidget = () => {
   const { t } = useTranslation();
+
+  // TODO: [Backend/Frontend] - Fetch profit and loss data from API
+  //   Details: The income and expenses data is currently hardcoded to $0. Implement a backend API endpoint to fetch real profit and loss data and integrate it here.
+  //   Priority: High
+  const income = 0;
+  const expenses = 0;
 
   return (
     <div className="h-full flex flex-col">
@@ -18,27 +25,33 @@ export const ProfitLossWidget = () => {
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-600">{t.dashboard.income}</span>
-            <span className="text-lg font-semibold text-gray-900">$0</span>
+            <span className="text-lg font-semibold text-gray-900">${income.toLocaleString()}</span>
           </div>
           <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full bg-green-500 rounded-full" style={{ width: "0%" }}></div>
+            <div
+              className="h-full bg-green-500 rounded-full"
+              style={{ width: `${Math.min(100, (income / (income + expenses || 1)) * 100)}%` }}
+            ></div>
           </div>
         </div>
 
         <div>
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-600">{t.dashboard.expensesLabel}</span>
-            <span className="text-lg font-semibold text-gray-900">$0</span>
+            <span className="text-lg font-semibold text-gray-900">${expenses.toLocaleString()}</span>
           </div>
           <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
-            <div className="h-full bg-red-500 rounded-full" style={{ width: "0%" }}></div>
+            <div
+              className="h-full bg-red-500 rounded-full"
+              style={{ width: `${Math.min(100, (expenses / (income + expenses || 1)) * 100)}%` }}
+            ></div>
           </div>
         </div>
       </div>
 
-      <button className="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-lg transition-colors">
+      <Button variant="outline" className="w-full">
         {t.dashboard.bringTransactionsAuto}
-      </button>
+      </Button>
     </div>
   );
 };

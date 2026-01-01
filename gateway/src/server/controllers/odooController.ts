@@ -23,7 +23,15 @@ import { getOdooDevCredentials as getOdooDevCredentialsOp } from "../operations/
 import { installOdooModules as installOdooModulesOp } from "../operations/installOdooModules.js";
 import { getOdooModelFields as getOdooModelFieldsOp } from "../operations/getOdooModelFields.js";
 import { getOdooDatabaseInfo as getOdooDatabaseInfoOp } from "../operations/getOdooDatabaseInfo.js";
-import { ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.js";
+import {
+  ODOO_URL,
+  ODOO_PORT,
+  ODOO_ADMIN_PASSWORD,
+  ODOO_WEBHOOK_URL,
+  ODOO_WEBHOOK_SECRET,
+  ODOO_WEBHOOKS_ENABLED,
+  JWT_SECRET,
+} from "../../env.js";
 
 enum OdooLanguage {
   English = "en_US",
@@ -138,6 +146,14 @@ export class OdooController extends Controller {
         url: ODOO_URL,
         port: ODOO_PORT,
         adminPassword: ODOO_ADMIN_PASSWORD,
+        webhook:
+          ODOO_WEBHOOK_URL && ODOO_WEBHOOK_SECRET
+            ? {
+                url: ODOO_WEBHOOK_URL,
+                masterSecret: ODOO_WEBHOOK_SECRET,
+                enabled: ODOO_WEBHOOKS_ENABLED,
+              }
+            : undefined,
       },
     });
   }

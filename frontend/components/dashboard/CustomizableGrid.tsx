@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Grip, X, ChevronsLeftRight } from "lucide-react";
+import { Button } from "@safee/ui";
 
 export type WidgetSize = "small" | "medium" | "large";
 export type WidgetComponent = React.ComponentType;
@@ -80,18 +81,15 @@ export const CustomizableGrid = ({
       {/* Customization Toggle */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-gray-900">Dashboard Widgets</h2>
-        <button
+        <Button
           onClick={() => {
             setIsCustomizing(!isCustomizing);
           }}
-          className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm ${
-            isCustomizing
-              ? "bg-safee-600 text-white hover:bg-safee-700"
-              : "bg-gray-100 text-gray-700 hover:bg-gray-200"
-          }`}
+          variant={isCustomizing ? "primary" : "secondary"}
+          className="shadow-sm"
         >
           {isCustomizing ? "✓ Done" : "Customize Dashboard"}
-        </button>
+        </Button>
       </div>
 
       {/* Grid */}
@@ -255,13 +253,15 @@ const GridWidget = ({
         {isCustomizing && (
           <>
             {/* Remove Button - Highest z-index */}
-            <button
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={handleRemove}
-              className="absolute top-2 right-2 z-30 p-2 bg-white rounded-lg border border-gray-200 hover:bg-red-50 hover:border-red-300 transition-colors shadow-sm"
+              className="absolute top-2 right-2 z-30 bg-white hover:bg-red-50 hover:border-red-300 transition-colors shadow-sm"
               title="Remove widget"
             >
               <X className="w-4 h-4 text-gray-600 hover:text-red-600" />
-            </button>
+            </Button>
 
             {/* Drag Handle */}
             <div

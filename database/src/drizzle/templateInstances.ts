@@ -1,21 +1,22 @@
 import { uuid, varchar, timestamp, text, jsonb, index } from "drizzle-orm/pg-core";
-import { auditSchema, idpk, auditStatusEnum } from "./_common.js";
+import { casesSchema, idpk, templateStatusEnum } from "./_common.js";
 import { cases } from "./cases.js";
-import { auditTemplates } from "./auditTemplates.js";
+import { templates } from "./templates.js";
 import { users } from "./users.js";
 
-export const auditScopes = auditSchema.table(
-  "audit_scopes",
+export const templateInstances = casesSchema.table(
+  "template_instances",
   {
     id: idpk("id"),
     caseId: uuid("case_id")
       .references(() => cases.id, { onDelete: "cascade" })
       .notNull(),
-    templateId: uuid("template_id").references(() => auditTemplates.id, { onDelete: "set null" }), // Optional: which template was used
+    templateId: uuid("template_id").references(() => templates.id, { onDelete: "set null" }),
+    stepExecutionId: uuid("step_execution_id"),
     name: varchar("name", { length: 255 }).notNull(),
     description: text("description"),
-    status: auditStatusEnum("status").notNull().default("draft"),
-    metadata: jsonb("metadata").default({}).$type<Record<string, unknown>>(), // Flexible audit-type-specific data
+    status: templateStatusEnum("status").notNull().default("draft"),
+    data: jsonb("data").notNull().$type<Record<string, unknown>>(),
     createdBy: uuid("created_by")
       .references(() => users.id, { onDelete: "restrict", onUpdate: "cascade" })
       .notNull(),
@@ -33,11 +34,12 @@ export const auditScopes = auditSchema.table(
     archivedAt: timestamp("archived_at", { withTimezone: true }),
   },
   (table) => [
-    index("audit_scopes_case_id_idx").on(table.caseId),
-    index("audit_scopes_template_id_idx").on(table.templateId),
-    index("audit_scopes_status_idx").on(table.status),
+    index("template_instances_case_id_idx").on(table.caseId),
+    index("template_instances_template_id_idx").on(table.templateId),
+    index("template_instances_step_execution_id_idx").on(table.stepExecutionId),
+    index("template_instances_status_idx").on(table.status),
   ],
 );
 
-export type AuditScope = typeof auditScopes.$inferSelect;
-export type NewAuditScope = typeof auditScopes.$inferInsert;
+export type TemplateInstance = typeof templateInstances.$inferSelect;
+export type NewTemplateInstance = typeof templateInstances.$inferInsert;

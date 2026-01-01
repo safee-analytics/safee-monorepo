@@ -24,13 +24,13 @@ export const SAMPLE_TEMPLATES: CaseTemplateData[] = [
     name: "Financial Audit",
     description:
       "Comprehensive financial statement audit including balance sheet, income statement, and cash flow analysis",
-    auditType: "financial_audit",
+    auditType: "FINANCIAL_AUDIT",
     priority: "high",
     estimatedDuration: 45,
     icon: "💰",
     color: "blue",
     defaultFields: {
-      status: "pending",
+      status: "draft",
     },
     documentCategories: [
       "Financial Statements",
@@ -60,13 +60,13 @@ export const SAMPLE_TEMPLATES: CaseTemplateData[] = [
     name: "Compliance Audit",
     description:
       "Regulatory compliance review covering policies, procedures, and adherence to applicable standards",
-    auditType: "compliance_audit",
+    auditType: "COMPLIANCE_AUDIT",
     priority: "high",
     estimatedDuration: 30,
     icon: "✅",
     color: "green",
     defaultFields: {
-      status: "pending",
+      status: "draft",
     },
     documentCategories: [
       "Policies & Procedures",
@@ -94,13 +94,13 @@ export const SAMPLE_TEMPLATES: CaseTemplateData[] = [
     name: "ICV Audit",
     description:
       "In-Country Value (ICV) certification audit for UAE-based companies to measure local economic contribution",
-    auditType: "icv_audit",
+    auditType: "ICV_AUDIT",
     priority: "medium",
     estimatedDuration: 20,
     icon: "🇦🇪",
     color: "purple",
     defaultFields: {
-      status: "pending",
+      status: "draft",
     },
     documentCategories: [
       "Financial Data",
@@ -126,13 +126,13 @@ export const SAMPLE_TEMPLATES: CaseTemplateData[] = [
   {
     name: "General Audit",
     description: "Flexible template for custom audit engagements with standard documentation structure",
-    auditType: "general_audit",
+    auditType: "OPERATIONAL_AUDIT",
     priority: "medium",
     estimatedDuration: 30,
     icon: "📋",
     color: "gray",
     defaultFields: {
-      status: "pending",
+      status: "draft",
     },
     documentCategories: [
       "Planning Documents",

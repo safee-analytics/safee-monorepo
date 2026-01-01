@@ -1,4 +1,4 @@
-import type { AuditType } from "./cases.js";
+import type { CaseType } from "./cases.js";
 
 export type ReportStatus = "generating" | "ready" | "failed";
 
@@ -49,7 +49,7 @@ export interface AuditReportTemplateResponse {
   id: string;
   name: string;
   nameAr?: string | null;
-  auditType?: AuditType | null;
+  caseType?: CaseType | null;
   description?: string | null;
   descriptionAr?: string | null;
   templateStructure: {
@@ -74,7 +74,7 @@ export interface AuditReportTemplateResponse {
 export interface CreateAuditReportTemplateRequest {
   name: string;
   nameAr?: string | null;
-  auditType?: AuditType | null;
+  caseType?: CaseType | null;
   description?: string | null;
   descriptionAr?: string | null;
   templateStructure: {

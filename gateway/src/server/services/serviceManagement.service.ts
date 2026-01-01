@@ -1,6 +1,15 @@
 import { schema, eq, and, odoo } from "@safee/database";
 import { ServiceAlreadyEnabled, ServiceNotFound } from "../errors.js";
-import { env, ODOO_URL, ODOO_PORT, ODOO_ADMIN_PASSWORD, JWT_SECRET } from "../../env.js";
+import {
+  env,
+  ODOO_URL,
+  ODOO_PORT,
+  ODOO_ADMIN_PASSWORD,
+  ODOO_WEBHOOK_URL,
+  ODOO_WEBHOOK_SECRET,
+  ODOO_WEBHOOKS_ENABLED,
+  JWT_SECRET,
+} from "../../env.js";
 import type { ServerContext } from "../serverContext.js";
 
 export interface EnableServiceForOrganizationParams {
@@ -28,6 +37,14 @@ export class ServiceManagementService {
         url: ODOO_URL,
         port: ODOO_PORT,
         adminPassword: ODOO_ADMIN_PASSWORD,
+        webhook:
+          ODOO_WEBHOOK_URL && ODOO_WEBHOOK_SECRET
+            ? {
+                url: ODOO_WEBHOOK_URL,
+                masterSecret: ODOO_WEBHOOK_SECRET,
+                enabled: ODOO_WEBHOOKS_ENABLED,
+              }
+            : undefined,
       },
     });
     this.odooModuleService = new odoo.OdooModuleService({

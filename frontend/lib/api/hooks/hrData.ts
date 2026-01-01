@@ -17,8 +17,6 @@ type PayslipResponse =
 type PayslipLineResponse =
   paths["/hr/payslips/{payslipId}/lines"]["get"]["responses"]["200"]["content"]["application/json"][number];
 
-// ==================== Contracts ====================
-
 export function useContracts(params?: { employeeId?: number; state?: string }) {
   return useQuery({
     queryKey: queryKeys.hr.contracts(params),
@@ -46,8 +44,6 @@ export function useContract(contractId: number) {
   });
 }
 
-// ==================== Leave Types ====================
-
 export function useLeaveTypes() {
   return useQuery({
     queryKey: queryKeys.hr.leaveTypes(),
@@ -58,8 +54,6 @@ export function useLeaveTypes() {
     },
   });
 }
-
-// ==================== Leave Requests ====================
 
 export function useLeaveRequests(params?: { employeeId?: number; state?: string }) {
   return useQuery({
@@ -74,8 +68,6 @@ export function useLeaveRequests(params?: { employeeId?: number; state?: string 
   });
 }
 
-// ==================== Leave Allocations ====================
-
 export function useLeaveAllocations(params?: { employeeId?: number }) {
   return useQuery({
     queryKey: queryKeys.hr.leaveAllocations(params),
@@ -88,8 +80,6 @@ export function useLeaveAllocations(params?: { employeeId?: number }) {
     },
   });
 }
-
-// ==================== Payslips ====================
 
 export function usePayslips(params?: { employeeId?: number; dateFrom?: string; dateTo?: string }) {
   return useQuery({

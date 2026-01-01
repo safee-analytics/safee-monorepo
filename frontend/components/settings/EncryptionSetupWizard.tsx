@@ -119,7 +119,10 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
       // Wrap org key with master key
       const { wrappedKey: _wrappedKey, iv: _iv } = await wrapOrgKey(orgKey, masterKey);
 
-      // TODO: Send to backend
+      // TODO: [Backend/Frontend] - Send encryption setup data to backend
+      //   Details: Implement a backend API endpoint (e.g., `POST /encryption/setup`) to persist the new encryption key details. This should include the `wrappedOrgKey`, `salt`, `iv`, `keyVersion`, `algorithm`, and `derivationParams`.
+      //   Update this frontend logic to send `EncryptionSetupRequest` to the backend.
+      //   Priority: High
       // await api.post('/api/v1/encryption/setup', {
       //   wrappedOrgKey: _wrappedKey,
       //   salt,
@@ -130,8 +133,8 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
       //     iterations: 600000,
       //     hash: 'SHA-256',
       //     keyLength: 256,
-      //   },
-      // });
+      //   } as EncryptionSetupRequest["derivationParams"],
+      // } as EncryptionSetupRequest);
 
       // Store keys in memory
       unlock(orgKey, masterKey);
@@ -147,7 +150,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
   };
 
   const handleComplete = () => {
-    // TODO: Trigger background re-encryption if needed
+    // TODO: [Backend/Frontend] - Trigger background re-encryption if needed
+    //   Details: After encryption setup is complete, if there are existing unencrypted files, trigger a background process (via API call) to re-encrypt them with the new organization key.
+    //   Priority: Medium
     onComplete();
   };
 
@@ -427,7 +432,9 @@ export function EncryptionSetupWizard({ onComplete, onCancel }: EncryptionSetupW
                 </button>
                 <button
                   onClick={() => {
-                    // TODO: Verify password with backend
+                    // TODO: [Backend/Frontend] - Verify password with backend
+                    //   Details: Before proceeding to the password creation step, implement a backend API call to verify the current user's password. This ensures that only authorized users can set up encryption.
+                    //   Priority: High
                     setCurrentStep("password");
                   }}
                   disabled={!currentPassword || !confirmationMatches}

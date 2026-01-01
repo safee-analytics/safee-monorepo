@@ -2,9 +2,16 @@
 
 import { PieChart } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { Button } from "@safee/ui";
+import { type Expense, expenseSchema } from "@/lib/validation";
 
 export const ExpensesChartWidget = () => {
   const { t } = useTranslation();
+
+  // TODO: [Backend/Frontend] - Fetch expense data from API
+  //   Details: The expenses chart is currently a placeholder. Implement a backend API endpoint to fetch expense data and integrate it here to display a real chart.
+  //   Priority: High
+  const _expenses: Expense[] = expenseSchema.array().parse([]);
 
   return (
     <div className="h-full flex flex-col">
@@ -21,9 +28,9 @@ export const ExpensesChartWidget = () => {
         </div>
       </div>
 
-      <button className="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-lg transition-colors">
+      <Button variant="outline" className="w-full">
         {t.dashboard.bringTransactionsAuto}
-      </button>
+      </Button>
     </div>
   );
 };

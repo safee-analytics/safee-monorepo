@@ -19,17 +19,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { DocumentPreviewDrawer } from "./DocumentPreviewDrawer";
-
-interface Document {
-  id: string;
-  name: string;
-  type: string;
-  size: number;
-  category: string;
-  status: "pending" | "approved" | "rejected";
-  uploadedAt: string;
-  uploadedBy: string;
-}
+import { type Document } from "@/lib/validation";
 
 interface DocumentBrowserProps {
   caseId: string;
@@ -152,9 +142,8 @@ export function DocumentBrowser({
     }
   };
 
-  const handleStatusChange = (documentId: string, status: string) => {
+  const handleStatusChange = (_documentId: string, _status: string) => {
     // Update document status - this would typically call an API
-    console.warn(`Updating document ${documentId} status to ${status}`);
   };
 
   return (
@@ -501,7 +490,7 @@ function DocumentGridView({
           }`}
           onClick={(e) => {
             // Only select if clicking the card, not the checkbox
-            if ((e.target as HTMLElement).closest(".checkbox-area")) {
+            if (e.target instanceof HTMLElement && e.target.closest(".checkbox-area")) {
               onToggleSelect(doc.id);
             } else {
               onDocumentClick?.(doc);

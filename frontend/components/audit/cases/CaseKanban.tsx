@@ -86,7 +86,7 @@ export function CaseKanban({ cases, onCaseClick, availableUsers = [], onUpdate }
 
                   {/* Client & Audit Type */}
                   <h4 className="font-medium text-sm text-gray-900 mb-1">{caseItem.companyName}</h4>
-                  <p className="text-xs text-gray-500 mb-3">{caseItem.auditType}</p>
+                  <p className="text-xs text-gray-500 mb-3">{caseItem.caseType}</p>
 
                   {/* Progress */}
                   <div className="mb-3">

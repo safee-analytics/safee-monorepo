@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, startTransition } from "react";
 import { Search, Clock, TrendingUp, Copy } from "lucide-react";
 import { useAutofill, type AutofillClientHistory } from "@/lib/hooks/useAutofill";
 import { formatDistanceToNow } from "date-fns";
-import type { CaseData } from "@/lib/api/hooks/cases";
+import { type Case } from "@/lib/validation";
 
 interface ClientAutocompleteProps {
   value: string;
@@ -16,7 +16,7 @@ interface ClientAutocompleteProps {
 
 interface ClientFromRecent {
   name: string;
-  lastCase: CaseData;
+  lastCase: Case;
   count: number;
 }
 
@@ -168,7 +168,7 @@ export function ClientAutocomplete({
                         </div>
                         <div className="flex items-center space-x-1">
                           <TrendingUp className="h-3 w-3" />
-                          <span>{getAuditTypeLabel(client.lastCase.auditType)}</span>
+                          <span>{getAuditTypeLabel(client.lastCase.caseType)}</span>
                         </div>
                         <span className="px-2 py-0.5 bg-gray-100 text-gray-700 rounded text-xs">
                           {client.lastCase.status}

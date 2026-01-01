@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiClient } from "../client";
 import { queryKeys } from "./queryKeys";
 
-// Types
 export interface NASConfig {
   type: "smb" | "nfs" | "webdav" | "local";
   host: string;
@@ -21,7 +20,6 @@ export interface StorageInfo {
   usagePercentage: number;
 }
 
-// Get storage configuration
 export function useGetStorageConfig() {
   return useQuery<NASConfig>({
     queryKey: queryKeys.storage.config,
@@ -33,7 +31,6 @@ export function useGetStorageConfig() {
   });
 }
 
-// Update storage configuration
 export function useUpdateStorageConfig() {
   const queryClient = useQueryClient();
 
@@ -48,7 +45,6 @@ export function useUpdateStorageConfig() {
   });
 }
 
-// Test storage connection
 export function useTestStorageConnection() {
   return useMutation({
     mutationFn: async (config: NASConfig) => {
@@ -58,7 +54,6 @@ export function useTestStorageConnection() {
   });
 }
 
-// Get storage information
 export function useGetStorageInfo() {
   return useQuery<StorageInfo>({
     queryKey: queryKeys.storage.info,

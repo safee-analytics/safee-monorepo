@@ -37,8 +37,8 @@ void describe("deleteCase operation", async () => {
   it("should delete a case successfully", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-001",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     const result = await deleteCase(drizzle, testOrg.id, testUser.id, created.id);
@@ -53,8 +53,8 @@ void describe("deleteCase operation", async () => {
   it("should create history entry before deletion", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-002",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     await deleteCase(drizzle, testOrg.id, testUser.id, created.id);
@@ -71,8 +71,8 @@ void describe("deleteCase operation", async () => {
 
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-003",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     await expect(deleteCase(drizzle, testOrg2.id, testUser.id, created.id)).rejects.toThrow(
@@ -86,14 +86,15 @@ void describe("deleteCase operation", async () => {
 
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-004",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     await dbCreateScope(deps, {
       caseId: created.id,
       name: "Active Scope",
       status: "draft",
+      data: {},
       createdBy: testUser.id,
     });
 
@@ -108,14 +109,15 @@ void describe("deleteCase operation", async () => {
 
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-005",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
     });
 
     await dbCreateScope(deps, {
       caseId: created.id,
       name: "Archived Scope",
       status: "archived",
+      data: {},
       createdBy: testUser.id,
     });
 
@@ -127,8 +129,8 @@ void describe("deleteCase operation", async () => {
   it("should reject deletion of completed case", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-006",
-      clientName: "Test Client",
-      auditType: "ICV",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
       status: "completed",
     });
 
@@ -140,9 +142,9 @@ void describe("deleteCase operation", async () => {
   it("should allow deletion of pending case", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-007",
-      clientName: "Test Client",
-      auditType: "ICV",
-      status: "pending",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
+      status: "draft",
     });
 
     const result = await deleteCase(drizzle, testOrg.id, testUser.id, created.id);
@@ -153,9 +155,9 @@ void describe("deleteCase operation", async () => {
   it("should allow deletion of in-progress case", async () => {
     const created = await createCase(drizzle, testOrg.id, testUser.id, {
       caseNumber: "CASE-008",
-      clientName: "Test Client",
-      auditType: "ICV",
-      status: "in-progress",
+      title: "Test Case",
+      caseType: "ICV_AUDIT",
+      status: "in_progress",
     });
 
     const result = await deleteCase(drizzle, testOrg.id, testUser.id, created.id);

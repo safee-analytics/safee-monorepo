@@ -1,28 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { apiClient, handleApiError } from "../client";
 import { queryKeys } from "./queryKeys";
+import type { components } from "@/lib/api/types/dashboard";
 
-export interface DashboardStatsResponse {
-  activeCases: number;
-  pendingReviews: number;
-  completedAudits: number;
-  totalCases: number;
-  completionRate: number;
-}
-
-export interface RecentCaseUpdateResponse {
-  id: string;
-  type: "case_update";
-  caseId: string;
-  caseNumber: string;
-  clientName: string;
-  status: string;
-  updatedAt: string;
-  updatedBy: {
-    id: string;
-    name: string;
-  };
-}
+// Use gateway types directly
+export type DashboardStatsResponse = components["schemas"]["DashboardStatsResponse"];
+export type RecentCaseUpdateResponse = components["schemas"]["RecentCaseUpdateResponse"];
+export type NotificationResponse = components["schemas"]["NotificationResponse"];
+export type UnreadNotificationsCountResponse = components["schemas"]["UnreadNotificationsCountResponse"];
 
 export function useDashboardStats() {
   return useQuery({

@@ -2,38 +2,25 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient, handleApiError } from "../client";
 import type { paths } from "../types";
 import { queryKeys } from "./queryKeys";
-
-export type CaseAssignment = {
-  role?: string;
-  userId?: string;
-  user?: {
-    name?: string;
-    email: string;
-  };
-};
-
-export type CaseData = {
-  id: string;
-  caseNumber: string;
-  auditType: string;
-  clientName: string;
-  status: string;
-  priority: string;
-  dueDate?: string;
-  createdBy: string;
-  createdAt: string;
-  assignments?: CaseAssignment[];
-};
+import { z } from "zod";
+import { caseSchema, type Case } from "@/lib/validation";
+// ... (rest of the imports)
 
 export function useCases(filters?: { status?: string; priority?: string; assignedTo?: string }) {
-  return useQuery<CaseData[]>({
+  return useQuery<Case[]>({
     queryKey: queryKeys.cases.list(filters),
     queryFn: async () => {
-      // Skip the apiClient if no /cases route exists in types, use fetch directly
       const queryParams = filters ? new URLSearchParams(filters as Record<string, string>) : "";
       const response = await fetch(`/api/v1/cases${queryParams ? `?${queryParams}` : ""}`);
       if (!response.ok) throw new Error("Failed to fetch cases");
-      return response.json();
+      const data = await response.json();
+
+      const validation = z.array(caseSchema).safeParse(data);
+      if (!validation.success) {
+        console.error("Cases validation error:", validation.error);
+        return [];
+      }
+      return validation.data;
     },
   });
 }
@@ -48,7 +35,13 @@ export function useCase(caseId: string) {
         },
       });
       if (error) throw new Error(handleApiError(error));
-      return data;
+
+      const validation = caseSchema.safeParse(data);
+      if (!validation.success) {
+        console.error("Case validation error:", validation.error);
+        return null;
+      }
+      return validation.data;
     },
     enabled: !!caseId,
   });
@@ -117,7 +110,6 @@ export function useDeleteCase() {
   });
 }
 
-// Case Templates
 export function useCaseTemplates() {
   return useQuery({
     queryKey: queryKeys.cases.templates,
@@ -164,7 +156,6 @@ export function useCreateCaseTemplate() {
   });
 }
 
-// Case Scopes
 export function useCaseScopes(caseId: string) {
   return useQuery({
     queryKey: queryKeys.cases.scopes(caseId),
@@ -264,7 +255,6 @@ export function useUpdateScopeStatus() {
   });
 }
 
-// Case Sections
 export function useCaseSections(caseId: string, scopeId: string) {
   return useQuery({
     queryKey: queryKeys.cases.sections(caseId, scopeId),
@@ -281,7 +271,6 @@ export function useCaseSections(caseId: string, scopeId: string) {
   });
 }
 
-// Case Procedures
 export function useCaseProcedures(caseId: string, scopeId: string, sectionId: string) {
   return useQuery({
     queryKey: queryKeys.cases.procedures(caseId, scopeId, sectionId),
@@ -343,7 +332,6 @@ export function useCompleteProcedure() {
   });
 }
 
-// Case Documents
 export function useCaseDocuments(caseId: string) {
   return useQuery({
     queryKey: queryKeys.cases.documents(caseId),
@@ -405,7 +393,6 @@ export function useDeleteCaseDocument() {
   });
 }
 
-// Case Notes
 export function useCaseNotes(caseId: string) {
   return useQuery({
     queryKey: queryKeys.cases.notes(caseId),
@@ -476,7 +463,6 @@ export function useUpdateCaseNote() {
   });
 }
 
-// Case Assignments
 export function useCaseAssignments(caseId: string) {
   return useQuery({
     queryKey: queryKeys.cases.assignments(caseId),
@@ -540,7 +526,6 @@ export function useRemoveCaseAssignment() {
   });
 }
 
-// Case History
 export function useCaseHistory(caseId: string) {
   return useQuery({
     queryKey: queryKeys.cases.history(caseId),
@@ -556,5 +541,3 @@ export function useCaseHistory(caseId: string) {
     enabled: !!caseId,
   });
 }
-
-// ============================================================================
