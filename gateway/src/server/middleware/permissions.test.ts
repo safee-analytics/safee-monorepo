@@ -35,6 +35,8 @@ void describe("permissions middleware", () => {
   });
 
   beforeEach(async () => {
+    await drizzle.delete(schema.fileEncryptionMetadata);
+    await drizzle.delete(schema.approvalRequests);
     await drizzle.delete(schema.members);
     await drizzle.delete(schema.users);
     await drizzle.delete(schema.organizations);

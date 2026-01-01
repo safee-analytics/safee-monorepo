@@ -1122,6 +1122,55 @@ export interface components {
       [key: string]: components["schemas"]["NASConnectionStatus"];
     };
     NASStatusResponse: components["schemas"]["Record_string.NASConnectionStatus_"];
+    ModuleAccessResponse: {
+      modules: string[];
+    };
+    HRSectionResponse: {
+      id: string;
+      sectionKey: string;
+      /** @enum {string} */
+      sectionType: "self_service" | "management";
+      displayName: string;
+      description: string | null;
+      path: string;
+      requiredPermissions: string | null;
+      minimumRole: string | null;
+      /** Format: double */
+      sortOrder: number | null;
+      isActive: boolean | null;
+    };
+    HRSectionsResponse: {
+      sections: components["schemas"]["HRSectionResponse"][];
+    };
+    ModuleAccessRule: {
+      moduleKey: string;
+      role: string;
+      hasAccess: boolean;
+    };
+    UpdateModuleAccessRequest: {
+      organizationId?: string;
+      rules: components["schemas"]["ModuleAccessRule"][];
+    };
+    ResourceAssignmentResponse: {
+      id: string;
+      userId: string;
+      resourceType: string;
+      resourceId: string;
+      role: string | null;
+      assignedBy: string | null;
+      assignedAt: string;
+      expiresAt: string | null;
+    };
+    AssignResourceRequest: {
+      userId: string;
+      /** @enum {string} */
+      resourceType: "audit_case" | "accounting_client" | "crm_lead" | "crm_deal" | "hr_department";
+      resourceId: string;
+      role?: string;
+    };
+    AssignedResourcesResponse: {
+      resourceIds: string[];
+    };
     Integration: {
       id: string;
       name: string;

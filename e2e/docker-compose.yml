@@ -31,10 +31,10 @@ services:
       - safee_net
 
   odoo:
-    image: safee-odoo:local
+    image: ${ODOO_IMAGE:-ghcr.io/safee-analytics/safee-odoo:18.0}
     build:
-      context: ..
-      dockerfile: odoo/Dockerfile
+      context: ../odoo
+      dockerfile: Dockerfile
     profiles:
       - odoo
     ports:
@@ -47,9 +47,18 @@ services:
       - DB_PORT=5432
       - DB_USER=safee
       - DB_PASSWORD=safee
-      - ADMIN_PASSWORD=admin123
+      - ODOO_ADMIN_PASSWORD=admin
+    healthcheck:
+      test: ["CMD", "curl", "-f", "-s", "http://localhost:8069/web/database/selector"]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+      start_period: 60s
+    # Local dev/test override: single-threaded mode (safe for laptops)
+    # workers=0 uses ~500MB RAM instead of 20GB
+    command: odoo --workers=0 --max-cron-threads=0
     volumes:
-      - ../infra/config/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./odoo.conf:/etc/odoo/odoo.conf:ro
       - odoo-data:/var/lib/odoo
     networks:
       - safee_net

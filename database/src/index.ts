@@ -5,7 +5,7 @@ import type { Column } from "drizzle-orm";
 export * from "./errors.js";
 export * from "./drizzle.js";
 export * from "./deps.js";
-export type { Locale, DocumentType } from "./drizzle/_common.js";
+export type { Locale, DocumentType, ResourceType, HRSectionType } from "./drizzle/_common.js";
 export { CASE_STATUSES, CASE_PRIORITIES } from "./drizzle/_common.js";
 export type RedisClient = Awaited<ReturnType<typeof redisConnect>>;
 
@@ -69,3 +69,5 @@ export * as generalUtils from "./general-utils/index.js";
 export * from "./test-helpers/integration-setup.js";
 
 export * from "./types/websocket.js";
+
+export { EncryptionService, encryptionService } from "./encryption.js";

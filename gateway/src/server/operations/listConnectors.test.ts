@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, type RedisClient, schema } from "@safee/database";
+import { type DrizzleClient, schema } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import { listConnectors } from "./listConnectors.js";
 import { initTestServerContext } from "../test-helpers/testServerContext.js";
@@ -7,16 +7,20 @@ import { getServerContext } from "../serverContext.js";
 
 void describe("listConnectors", async () => {
   let drizzle: DrizzleClient;
-  let redis: RedisClient;
   let close: () => Promise<void>;
   let org: typeof schema.organizations.$inferSelect;
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "list-connectors-test" }));
-    redis = await initTestServerContext(drizzle);
+    await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
+    await drizzle.delete(schema.fileEncryptionMetadata);
+    await drizzle.delete(schema.approvalRequests);
+    await drizzle.delete(schema.connectors);
+    await drizzle.delete(schema.organizations);
+
     const timestamp = Date.now();
     [org] = await drizzle
       .insert(schema.organizations)
@@ -28,7 +32,6 @@ void describe("listConnectors", async () => {
   });
 
   afterAll(async () => {
-    await redis.quit();
     await close();
   });
 

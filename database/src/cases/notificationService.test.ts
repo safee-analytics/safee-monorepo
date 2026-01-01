@@ -1,13 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach, vi } from "vitest";
 import { type DrizzleClient, schema, eq, connectTest } from "../index.js";
 import { pino } from "pino";
-import {
-  createTestOrganization,
-  createTestUser,
-  nukeDatabase,
-  type TestOrganization,
-  type TestUser,
-} from "../test-helpers/test-fixtures.js";
+import { createTestOrganization, type TestOrganization } from "../test-helpers/organizations.js";
+import { createTestUser, type TestUser } from "../test-helpers/users.js";
+import { cleanTestData } from "../test-helpers/cleanup.js";
 import {
   createNotification,
   createNotificationsForUsers,
@@ -36,7 +32,7 @@ describe("Notification Service", async () => {
   });
 
   beforeEach(async () => {
-    await nukeDatabase(drizzle);
+    await cleanTestData(drizzle);
     testOrg = await createTestOrganization(drizzle);
     testUser = await createTestUser(drizzle);
     testUser2 = await createTestUser(drizzle);

@@ -555,6 +555,10 @@ export class ResilientOdooClient implements OdooClient {
 
   // Implement OdooClient interface methods with resilience
 
+  setApiKeyCredentials(uid: number) {
+    return this.client.setApiKeyCredentials(uid);
+  }
+
   async authenticate() {
     return this.executeWithResilience(() => this.client.authenticate(), {
       operation: "authenticate",

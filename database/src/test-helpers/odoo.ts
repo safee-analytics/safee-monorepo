@@ -1,0 +1,35 @@
+import type { OdooClient } from "../odoo/client.js";
+
+/**
+ * Cleanup test Odoo databases
+ * Deletes all databases matching the pattern: odoo_test_org_*
+ */
+export async function cleanupTestOdooDatabases(
+  odooClient: OdooClient,
+  adminPassword: string,
+): Promise<{
+  deleted: string[];
+  failed: string[];
+  totalDeleted: number;
+}> {
+  const databases = await odooClient.listDatabases();
+  const testDatabases = databases.filter((db) => db.startsWith("odoo_test_org_"));
+
+  const deleted: string[] = [];
+  const failed: string[] = [];
+
+  for (const db of testDatabases) {
+    try {
+      await odooClient.dropDatabase(adminPassword, db);
+      deleted.push(db);
+    } catch {
+      failed.push(db);
+    }
+  }
+
+  return {
+    deleted,
+    failed,
+    totalDeleted: deleted.length,
+  };
+}

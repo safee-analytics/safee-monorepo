@@ -1,12 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, type RedisClient, schema, eq } from "@safee/database";
+import { type DrizzleClient, schema, eq } from "@safee/database";
 import { connectTest } from "@safee/database/test-helpers";
 import {
   createTestOrganization,
   createTestUser,
   createTestApprovalWorkflow,
   addMemberToOrganization,
-  nukeDatabase,
+  cleanTestData,
   type TestOrganization,
   type TestUser,
 } from "@safee/database/test-helpers";
@@ -18,7 +18,6 @@ import { getServerContext, type ServerContext } from "../../serverContext.js";
 
 void describe("reject operation", async () => {
   let drizzle: DrizzleClient;
-  let redis: RedisClient;
   let close: () => Promise<void>;
   let testOrg: TestOrganization;
   let testUser: TestUser;
@@ -27,11 +26,11 @@ void describe("reject operation", async () => {
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "reject-test" }));
-    redis = await initTestServerContext(drizzle);
+    await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
-    await nukeDatabase(drizzle);
+    await cleanTestData(drizzle);
 
     testOrg = await createTestOrganization(drizzle);
     testUser = await createTestUser(drizzle, { email: "requester@test.com", name: "Requester" });
@@ -47,7 +46,6 @@ void describe("reject operation", async () => {
   });
 
   afterAll(async () => {
-    await redis.quit();
     await close();
   });
 

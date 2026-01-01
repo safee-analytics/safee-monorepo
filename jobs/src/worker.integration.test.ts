@@ -2,7 +2,7 @@ import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { Queue, Worker } from "bullmq";
 import { Redis } from "ioredis";
 import { pino } from "pino";
-import { connectTest, nukeDatabase } from "@safee/database/test-helpers";
+import { connectTest, cleanTestData } from "@safee/database/test-helpers";
 import { createJob, getJobById, startJob, completeJob, failJob } from "@safee/database";
 import type { DrizzleClient, DbDeps } from "@safee/database";
 import { z } from "zod";
@@ -31,7 +31,7 @@ describe.sequential("Worker End-to-End Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    await nukeDatabase(drizzle);
+    await cleanTestData(drizzle);
     await cleanAllQueues(redis);
     // Give extra time for any previous workers to fully close
     await new Promise((resolve) => setTimeout(resolve, 500));

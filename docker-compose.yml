@@ -1,4 +1,6 @@
 services:
+  # NOTE: For local development, run Caddy on your host with "just dev"
+  # This docker-compose is for production deployment
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
@@ -18,6 +20,8 @@ services:
     depends_on:
       - frontend
       - backend
+    profiles:
+      - production  # Only start in production mode
 
   postgres:
     image: postgres:15
@@ -48,14 +52,16 @@ services:
 
   odoo:
     build:
-      context: .
-      dockerfile: odoo/Dockerfile
+      context: ./odoo
+      dockerfile: Dockerfile
     image: safee-odoo:local
     ports:
       - "8069:8069"
     depends_on:
       postgres:
         condition: service_healthy
+    env_file:
+      - ./odoo/.env
     environment:
       - DB_HOST=postgres
       - DB_PORT=5432
@@ -64,9 +70,12 @@ services:
       - ODOO_ADMIN_PASSWORD=${ODOO_ADMIN_PASSWORD:-admin}
       - SLACK_WEBHOOK_URL=${SLACK_WEBHOOK_URL}
       - SLACK_ERROR_CHANNEL=${SLACK_ERROR_CHANNEL:-#dev_odoo_alerts}
+    # Local dev override: single-threaded mode (safe for laptops)
+    # workers=0 uses ~500MB RAM instead of 20GB
+    command: odoo --workers=0 --max-cron-threads=0
     volumes:
       - odoo-data:/var/lib/odoo
-      - ./infra/config/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./odoo/odoo.conf:/etc/odoo/odoo.conf:ro
     networks:
       - safee-network
     profiles:

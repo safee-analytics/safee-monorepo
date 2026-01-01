@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from "vitest";
-import { type DrizzleClient, type RedisClient, schema, eq, odoo } from "@safee/database";
-import { connectTest, nukeDatabase } from "@safee/database/test-helpers";
+import { type DrizzleClient, schema, eq, odoo } from "@safee/database";
+import { connectTest, cleanTestData } from "@safee/database/test-helpers";
 import { updateConnector } from "./updateConnector.js";
 const encryptionService = new odoo.EncryptionService(
   process.env.JWT_SECRET ?? "development-encryption-key-change-in-production",
@@ -10,20 +10,18 @@ import { getServerContext } from "../serverContext.js";
 
 void describe("updateConnector", async () => {
   let drizzle: DrizzleClient;
-  let redis: RedisClient;
   let close: () => Promise<void>;
 
   beforeAll(async () => {
     ({ drizzle, close } = await connectTest({ appName: "update-connector-test" }));
-    redis = await initTestServerContext(drizzle);
+    await initTestServerContext(drizzle);
   });
 
   beforeEach(async () => {
-    await nukeDatabase(drizzle);
+    await cleanTestData(drizzle);
   });
 
   afterAll(async () => {
-    await redis.quit();
     await close();
   });
 

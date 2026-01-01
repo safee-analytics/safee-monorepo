@@ -21,7 +21,6 @@ export interface LeadResponse {
   zip?: string;
 
   partner?: OdooRelation;
-  commercialPartner?: OdooRelation;
   stage?: OdooRelation;
   team?: OdooRelation;
   user?: OdooRelation;
@@ -61,10 +60,8 @@ export interface StageResponse {
   sequence?: number;
   fold?: boolean;
   isWon?: boolean;
-  rottingThresholdDays?: number;
   requirements?: string;
-  teamIds?: number[];
-  color?: number;
+  team?: OdooRelation;
 }
 
 export interface ContactResponse {

@@ -37,6 +37,7 @@ export class QueueManager {
       "odoo-sync",
       "reports",
       "odoo-provisioning",
+      "odoo-provision-organization",
       "install-modules",
       "encryption",
       "key-rotation",
@@ -58,6 +59,7 @@ export class QueueManager {
       | "odoo-sync"
       | "reports"
       | "odoo-provisioning"
+      | "odoo-provision-organization"
       | "install-modules"
       | "encryption"
       | "key-rotation",
@@ -89,6 +91,9 @@ export class QueueManager {
         break;
       case "odoo-provisioning":
         jobName = "odoo_provisioning";
+        break;
+      case "odoo-provision-organization":
+        jobName = "odoo_provision_organization";
         break;
       case "install-modules":
         jobName = "install_odoo_modules";

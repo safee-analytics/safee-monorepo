@@ -87,4 +87,151 @@ void describe("getOdooUserWebCredentials", async () => {
 
     expect(credentials).toBeNull();
   });
+
+  it("should handle HTTPS URLs correctly", async () => {
+    const [odooDb] = await drizzle
+      .insert(schema.odooDatabases)
+      .values({
+        organizationId: org.id,
+        databaseName: "secure_db",
+        adminLogin: "admin",
+        adminPassword: encryptionService.encrypt("admin-pass"),
+        odooUrl: "https://secure.odoo.example.com:443",
+      })
+      .returning();
+
+    await drizzle.insert(schema.odooUsers).values({
+      userId: user.id,
+      odooDatabaseId: odooDb.id,
+      odooUid: 456,
+      odooLogin: "secure@example.com",
+      password: encryptionService.encrypt("secure-pass"),
+      apiKey: null,
+    });
+
+    const credentials = await getOdooUserWebCredentials(drizzle, user.id, org.id);
+
+    expect(credentials?.webUrl).toContain("https://secure.odoo.example.com:443/web/login");
+    expect(credentials?.webUrl).toContain("db=secure_db");
+  });
+
+  it("should decrypt complex passwords correctly", async () => {
+    const [odooDb] = await drizzle
+      .insert(schema.odooDatabases)
+      .values({
+        organizationId: org.id,
+        databaseName: "complex_db",
+        adminLogin: "admin",
+        adminPassword: encryptionService.encrypt("admin-pass"),
+        odooUrl: "http://localhost:8069",
+      })
+      .returning();
+
+    const complexPassword = "C0mpl3x!P@ssw0rd#2024$%&*()_+-=[]{}|;':\",./<>?";
+    const encryptedPassword = encryptionService.encrypt(complexPassword);
+
+    await drizzle.insert(schema.odooUsers).values({
+      userId: user.id,
+      odooDatabaseId: odooDb.id,
+      odooUid: 789,
+      odooLogin: "complex@example.com",
+      password: encryptedPassword,
+      apiKey: null,
+    });
+
+    const credentials = await getOdooUserWebCredentials(drizzle, user.id, org.id);
+
+    expect(credentials?.password).toBe(complexPassword);
+    expect(credentials?.password).not.toBe(encryptedPassword);
+  });
+
+  it("should not return credentials for different organization", async () => {
+    const timestamp = `${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    const [org2] = await drizzle
+      .insert(schema.organizations)
+      .values({
+        name: `Different Org ${timestamp}`,
+        slug: `diff-org-${timestamp}`,
+      })
+      .returning();
+
+    const [odooDb] = await drizzle
+      .insert(schema.odooDatabases)
+      .values({
+        organizationId: org.id, // Original org
+        databaseName: "org1_db",
+        adminLogin: "admin",
+        adminPassword: encryptionService.encrypt("admin-pass"),
+        odooUrl: "http://localhost:8069",
+      })
+      .returning();
+
+    await drizzle.insert(schema.odooUsers).values({
+      userId: user.id,
+      odooDatabaseId: odooDb.id,
+      odooUid: 999,
+      odooLogin: "user@org1.com",
+      password: encryptionService.encrypt("password"),
+      apiKey: null,
+    });
+
+    // Try to get credentials with different org ID
+    const credentials = await getOdooUserWebCredentials(drizzle, user.id, org2.id);
+
+    expect(credentials).toBeNull();
+  });
+
+  it("should handle database names with special characters in URL", async () => {
+    const [odooDb] = await drizzle
+      .insert(schema.odooDatabases)
+      .values({
+        organizationId: org.id,
+        databaseName: "test_db-2024",
+        adminLogin: "admin",
+        adminPassword: encryptionService.encrypt("admin-pass"),
+        odooUrl: "http://localhost:8069",
+      })
+      .returning();
+
+    await drizzle.insert(schema.odooUsers).values({
+      userId: user.id,
+      odooDatabaseId: odooDb.id,
+      odooUid: 111,
+      odooLogin: "test@example.com",
+      password: encryptionService.encrypt("password"),
+      apiKey: null,
+    });
+
+    const credentials = await getOdooUserWebCredentials(drizzle, user.id, org.id);
+
+    expect(credentials?.webUrl).toContain("db=test_db-2024");
+  });
+
+  it("should include correct odooUid in response", async () => {
+    const [odooDb] = await drizzle
+      .insert(schema.odooDatabases)
+      .values({
+        organizationId: org.id,
+        databaseName: "uid_test_db",
+        adminLogin: "admin",
+        adminPassword: encryptionService.encrypt("admin-pass"),
+        odooUrl: "http://localhost:8069",
+      })
+      .returning();
+
+    const expectedUid = 42;
+
+    await drizzle.insert(schema.odooUsers).values({
+      userId: user.id,
+      odooDatabaseId: odooDb.id,
+      odooUid: expectedUid,
+      odooLogin: "uid@example.com",
+      password: encryptionService.encrypt("password"),
+      apiKey: null,
+    });
+
+    const credentials = await getOdooUserWebCredentials(drizzle, user.id, org.id);
+
+    expect(credentials?.odooUid).toBe(expectedUid);
+  });
 });

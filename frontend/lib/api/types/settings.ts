@@ -179,6 +179,118 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/module-access/modules": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccessibleModules"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/module-access/hr-sections": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAccessibleHRSections"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/module-access/rules": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put: operations["UpdateModuleAccessRules"];
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/module-access/assignments": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["AssignResource"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/module-access/assignments/{resourceType}/{resourceId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetResourceAssignments"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/module-access/assignments/{userId}/{resourceType}/{resourceId}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete: operations["UnassignResource"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/module-access/assigned-resources": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["GetAssignedResources"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/settings/document-templates": {
     parameters: {
       query?: never;
@@ -986,6 +1098,55 @@ export interface components {
       [key: string]: components["schemas"]["NASConnectionStatus"];
     };
     NASStatusResponse: components["schemas"]["Record_string.NASConnectionStatus_"];
+    ModuleAccessResponse: {
+      modules: string[];
+    };
+    HRSectionResponse: {
+      id: string;
+      sectionKey: string;
+      /** @enum {string} */
+      sectionType: "self_service" | "management";
+      displayName: string;
+      description: string | null;
+      path: string;
+      requiredPermissions: string | null;
+      minimumRole: string | null;
+      /** Format: double */
+      sortOrder: number | null;
+      isActive: boolean | null;
+    };
+    HRSectionsResponse: {
+      sections: components["schemas"]["HRSectionResponse"][];
+    };
+    ModuleAccessRule: {
+      moduleKey: string;
+      role: string;
+      hasAccess: boolean;
+    };
+    UpdateModuleAccessRequest: {
+      organizationId?: string;
+      rules: components["schemas"]["ModuleAccessRule"][];
+    };
+    ResourceAssignmentResponse: {
+      id: string;
+      userId: string;
+      resourceType: string;
+      resourceId: string;
+      role: string | null;
+      assignedBy: string | null;
+      assignedAt: string;
+      expiresAt: string | null;
+    };
+    AssignResourceRequest: {
+      userId: string;
+      /** @enum {string} */
+      resourceType: "audit_case" | "accounting_client" | "crm_lead" | "crm_deal" | "hr_department";
+      resourceId: string;
+      role?: string;
+    };
+    AssignedResourcesResponse: {
+      resourceIds: string[];
+    };
     Integration: {
       id: string;
       name: string;
@@ -2911,6 +3072,169 @@ export interface operations {
             nextStep: string;
             message: string;
           };
+        };
+      };
+    };
+  };
+  GetAccessibleModules: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ModuleAccessResponse"];
+        };
+      };
+    };
+  };
+  GetAccessibleHRSections: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HRSectionsResponse"];
+        };
+      };
+    };
+  };
+  UpdateModuleAccessRules: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateModuleAccessRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  AssignResource: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["AssignResourceRequest"];
+      };
+    };
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ResourceAssignmentResponse"];
+        };
+      };
+    };
+  };
+  GetResourceAssignments: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        resourceType: "audit_case" | "accounting_client" | "crm_lead" | "crm_deal" | "hr_department";
+        resourceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            assignments: components["schemas"]["ResourceAssignmentResponse"][];
+          };
+        };
+      };
+    };
+  };
+  UnassignResource: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        userId: string;
+        resourceType: "audit_case" | "accounting_client" | "crm_lead" | "crm_deal" | "hr_department";
+        resourceId: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            success: boolean;
+          };
+        };
+      };
+    };
+  };
+  GetAssignedResources: {
+    parameters: {
+      query: {
+        resourceType: "audit_case" | "accounting_client" | "crm_lead" | "crm_deal" | "hr_department";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description Ok */
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AssignedResourcesResponse"];
         };
       };
     };

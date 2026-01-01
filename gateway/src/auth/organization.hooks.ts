@@ -265,50 +265,26 @@ export const organizationHooks: OrganizationOptions["organizationHooks"] = {
       );
     }
 
-    setImmediate(() => {
-      void (async () => {
-        try {
-          const { odooDatabaseService, odooUserProvisioningService } = await getServices();
-          const existingCreds = await odooDatabaseService.getCredentials(organization.id);
-
-          if (existingCreds) {
-            logger.info(
-              { organizationId: organization.id },
-              "Odoo database already provisioned, skipping database creation",
-            );
-          } else {
-            logger.info({ organizationId: organization.id }, "Provisioning Odoo database");
-            await odooDatabaseService.provisionDatabase(organization.id);
-            logger.info({ organizationId: organization.id }, "Odoo database provisioned");
-          }
-
-          if (odooUserProvisioningService) {
-            const userExists = await odooUserProvisioningService.userExists(user.id, organization.id);
-
-            if (userExists) {
-              logger.info(
-                { userId: user.id, organizationId: organization.id },
-                "Odoo user already provisioned, skipping user creation",
-              );
-            } else {
-              logger.info({ userId: user.id, organizationId: organization.id }, "Provisioning Odoo user");
-              await odooUserProvisioningService.provisionUser(user.id, organization.id, member.role);
-              logger.info({ userId: user.id }, "Odoo user provisioned");
-            }
-          }
-
-          // Configure Odoo webhooks for the organization
-          logger.info({ organizationId: organization.id }, "Configuring Odoo webhooks");
-          await odoo.configureOdooWebhooks(logger, user.id, organization.id);
-          logger.info({ organizationId: organization.id }, "Odoo webhooks configured");
-        } catch (err) {
-          logger.error(
-            { error: err, userId: user.id, organizationId: organization.id },
-            "Failed to provision Odoo resources",
-          );
-        }
-      })();
-    });
+    // Queue Odoo provisioning as a background job instead of using setImmediate
+    // This provides: retry logic, failure tracking, and proper error handling
+    const ctx = getServerContext();
+    await ctx.queueManager
+      .addJob("odoo-provision-organization", {
+        organizationId: organization.id,
+        userId: user.id,
+        memberRole: member.role,
+      })
+      .catch((err: unknown) => {
+        // If queueing fails, log but don't block org creation
+        logger.error(
+          {
+            error: err instanceof Error ? err.message : String(err),
+            userId: user.id,
+            organizationId: organization.id,
+          },
+          "Failed to queue Odoo provisioning job - provisioning will need to be triggered manually",
+        );
+      });
   },
 
   afterAddMember: async ({ member, user, organization }) => {

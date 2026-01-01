@@ -12,6 +12,7 @@ export interface OdooUserWebCredentials {
   login: string;
   password: string;
   webUrl: string;
+  odooUid: number;
 }
 
 export async function getOdooUserWebCredentials(
@@ -43,5 +44,6 @@ export async function getOdooUserWebCredentials(
     login: odooUser.odooLogin,
     password,
     webUrl: `${odooDb.odooUrl}/web/login?db=${odooDb.databaseName}`,
+    odooUid: odooUser.odooUid,
   };
 }

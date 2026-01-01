@@ -36,6 +36,7 @@ export interface OdooSearchOptions {
 }
 
 export interface OdooClient {
+  setApiKeyCredentials(uid: number): OdooAuthResult;
   authenticate(): Promise<OdooAuthResult>;
   search(model: string, domain: unknown[], options?: OdooSearchOptions): Promise<number[]>;
   searchRead<T = Record<string, unknown>>(
@@ -108,17 +109,41 @@ export class OdooClientService implements OdooClient {
   }
 
   /**
+   * Set credentials for API key authentication
+   * API keys don't need authentication - they're used directly in execute_kw
+   * Requires the UID to be passed in via config
+   */
+  setApiKeyCredentials(uid: number): OdooAuthResult {
+    this.uid = uid;
+    this.sessionId = null;
+    this.useXmlRpc = true; // Mark as using API key
+
+    this.logger.info(
+      {
+        uid,
+        database: this.config.database,
+        username: this.config.username,
+        authMethod: "API key (direct)",
+      },
+      "✅ Using API key for Odoo authentication",
+    );
+
+    return {
+      uid,
+      database: this.config.database,
+      username: this.config.username,
+      sessionId: null,
+    };
+  }
+
+  /**
    * Authenticate with Odoo
-   * Supports both password and API key authentication
-   * In Odoo 17+, API keys work through the same web session endpoint as passwords
+   * Both passwords and API keys use web session authentication
+   * The auth_api_key module intercepts and validates API keys during authentication
    */
   async authenticate(): Promise<OdooAuthResult> {
     try {
-      // Detect if this is an API key (contains underscore and is ~29 chars)
-      const isApiKey = this.config.password.includes("_") && this.config.password.length >= 25;
-
-      // Use web session authenticate for both password and API key authentication
-      // In Odoo 17+, API keys work as passwords in the web session endpoint
+      // Authenticate via web session (works for both passwords and API keys)
       const response = await fetch(`${this.baseUrl}/web/session/authenticate`, {
         method: "POST",
         headers: {
@@ -198,7 +223,7 @@ export class OdooClientService implements OdooClient {
 
       this.uid = result.uid;
       this.sessionId = result.session_id;
-      this.useXmlRpc = isApiKey; // Track if using API key for future requests
+      this.useXmlRpc = false; // Password authentication uses web sessions, not XML-RPC
 
       this.logger.info(
         {
@@ -208,9 +233,9 @@ export class OdooClientService implements OdooClient {
           sessionIdFromResult: result.session_id,
           sessionIdStored: this.sessionId,
           sessionIdType: typeof result.session_id,
-          authMethod: isApiKey ? "API key" : "password",
+          authMethod: "password",
         },
-        `Authenticated with Odoo via ${isApiKey ? "API key" : "password"}`,
+        "✅ Authenticated with Odoo via password",
       );
 
       return {
@@ -256,31 +281,43 @@ export class OdooClientService implements OdooClient {
     args: unknown[] = [],
     kwargs: Record<string, unknown> = {},
   ): Promise<T> {
-    this.logger.info({ model, method, useJsonRpc: true }, "Executing Odoo JSON-RPC call with API key");
+    const requestPayload = {
+      jsonrpc: "2.0",
+      method: "call",
+      params: {
+        service: "object",
+        method: "execute_kw",
+        args: [
+          this.config.database,
+          this.uid,
+          this.config.password, // API key
+          model,
+          method,
+          args,
+          kwargs,
+        ],
+      },
+      id: null,
+    };
+
+    this.logger.info(
+      {
+        model,
+        method,
+        uid: this.uid,
+        database: this.config.database,
+        useJsonRpc: true,
+        requestPayload: JSON.stringify(requestPayload, null, 2),
+      },
+      "Executing Odoo JSON-RPC call with API key",
+    );
 
     const response = await fetch(`${this.baseUrl}/jsonrpc`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "call",
-        params: {
-          service: "object",
-          method: "execute_kw",
-          args: [
-            this.config.database,
-            this.uid,
-            this.config.password, // API key
-            model,
-            method,
-            args,
-            kwargs,
-          ],
-        },
-        id: null,
-      }),
+      body: JSON.stringify(requestPayload),
     });
 
     if (!response.ok) {
@@ -297,6 +334,16 @@ export class OdooClientService implements OdooClient {
     const data = parseResult.data;
 
     if (data.error) {
+      this.logger.error(
+        {
+          model,
+          method,
+          fullError: data.error,
+          errorType: typeof data.error,
+        },
+        "Odoo JSON-RPC returned error",
+      );
+
       const errorMessage =
         typeof data.error === "object" && "message" in data.error
           ? String(data.error.message)
@@ -483,7 +530,8 @@ export class OdooClientService implements OdooClient {
     await this.ensureAuthenticated();
 
     try {
-      // In Odoo 17+, both password and API key authentication use web session endpoints
+      // Both password and API key authentication use web session endpoints with cookies
+      // The auth_api_key module validates API keys during /web/session/authenticate
       // Build cookie header from all stored cookies
       const cookieHeader = this.cookies.length > 0 ? this.cookies.join("; ") : `session_id=${this.sessionId}`;
 

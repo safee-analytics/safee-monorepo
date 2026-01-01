@@ -14,7 +14,7 @@ import {
   deleteJobSchedule,
   type DrizzleClient,
 } from "@safee/database";
-import { nukeDatabase } from "@safee/database/test-helpers";
+import { cleanTestData } from "@safee/database/test-helpers";
 
 describe("JobSchedules Integration Tests", () => {
   let db: DrizzleClient;
@@ -31,7 +31,7 @@ describe("JobSchedules Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    await nukeDatabase(db);
+    await cleanTestData(db);
   });
 
   describe("createJobSchedule", () => {

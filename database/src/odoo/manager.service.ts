@@ -1,7 +1,8 @@
 import type { Logger } from "pino";
 import type { DrizzleClient } from "../drizzle.js";
 import { schema, eq, and } from "../drizzle.js";
-import { createOdooClient, type OdooClient, type OdooConnectionConfig } from "./client.service.js";
+import { type OdooClient, type OdooConnectionConfig } from "./client.service.js";
+import { createResilientOdooClient } from "./resilient-client.js";
 import { OperationFailed } from "./errors.js";
 import { OdooUserProvisioningService } from "./user-provisioning.service.js";
 
@@ -119,8 +120,10 @@ export class OdooClientManager {
       password: userCredentials.odooPassword,
     };
 
-    const client = createOdooClient(config, this.logger);
+    const client = createResilientOdooClient(config, this.logger, this.drizzle);
 
+    // Both passwords and API keys authenticate via web session
+    // The auth_api_key module validates API keys during /web/session/authenticate
     await client.authenticate();
 
     return client;

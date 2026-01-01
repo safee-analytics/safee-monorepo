@@ -68,7 +68,6 @@ export class CRMSyncService {
             countryId: lead.country_id?.[0],
             zip: lead.zip,
             partnerId: lead.partner_id?.[0],
-            commercialPartnerId: lead.commercial_partner_id?.[0],
             stageId: lead.stage_id?.[0],
             teamId: lead.team_id?.[0],
             userId: lead.user_id?.[0],

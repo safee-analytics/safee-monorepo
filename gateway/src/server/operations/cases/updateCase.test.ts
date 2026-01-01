@@ -4,7 +4,7 @@ import { connectTest } from "@safee/database/test-helpers";
 import {
   createTestOrganization,
   createTestUser,
-  nukeDatabase,
+  cleanTestData,
   type TestOrganization,
   type TestUser,
 } from "@safee/database/test-helpers";
@@ -23,7 +23,7 @@ void describe("updateCase operation", async () => {
   });
 
   beforeEach(async () => {
-    await nukeDatabase(drizzle);
+    await cleanTestData(drizzle);
 
     testOrg = await createTestOrganization(drizzle);
     testUser = await createTestUser(drizzle);

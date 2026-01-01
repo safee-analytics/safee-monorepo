@@ -1,16 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Users, Search, Plus, Mail, Phone, Building2, Filter, UserCheck, UserX } from "lucide-react";
-import { useEmployees, useDepartments } from "@/lib/api/hooks/hrManagement";
+import {
+  Users,
+  Search,
+  Plus,
+  Mail,
+  Phone,
+  Building2,
+  Filter,
+  UserCheck,
+  UserX,
+  ShieldAlert,
+} from "lucide-react";
+import {
+  useEmployees,
+  useDepartments,
+  useSyncAllEmployees,
+  useSyncAllDepartments,
+} from "@/lib/api/hooks/hrManagement";
+import { useHasHRSectionAccess } from "@/lib/api/hooks";
 
 export default function EmployeesPage() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedDepartment, setSelectedDepartment] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
+  const hasAutoSyncedRef = useRef(false);
 
   // Fetch employees and departments
   const {
@@ -19,6 +37,56 @@ export default function EmployeesPage() {
     error,
   } = useEmployees(selectedDepartment ? { departmentId: selectedDepartment } : undefined);
   const { data: departments } = useDepartments();
+
+  // Sync mutations
+  const syncEmployees = useSyncAllEmployees();
+  const syncDepartments = useSyncAllDepartments();
+
+  const canAccess = useHasHRSectionAccess("employees");
+
+  const handleSync = useCallback(async () => {
+    try {
+      await Promise.all([syncDepartments.mutateAsync(), syncEmployees.mutateAsync()]);
+    } catch (err) {
+      console.error("Sync failed:", err);
+    }
+  }, [syncDepartments, syncEmployees]);
+
+  // Auto-sync if no data on first load
+  useEffect(() => {
+    if (!isLoading && !hasAutoSyncedRef.current && employees?.length === 0) {
+      hasAutoSyncedRef.current = true;
+      void handleSync();
+    }
+  }, [isLoading, employees, handleSync]);
+
+  const isSyncing = syncEmployees.isPending || syncDepartments.isPending;
+
+  // Check permission
+  if (!canAccess) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-6 bg-gray-50 dark:bg-gray-900">
+        <div className="max-w-md w-full bg-white dark:bg-gray-800 border border-red-200 dark:border-red-800 rounded-xl shadow-lg p-8">
+          <div className="flex flex-col items-center text-center">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mb-4">
+              <ShieldAlert className="w-8 h-8 text-red-600 dark:text-red-400" />
+            </div>
+            <h2 className="text-2xl font-bold text-red-900 dark:text-red-100 mb-2">Access Denied</h2>
+            <p className="text-red-700 dark:text-red-300 mb-6">
+              You don&apos;t have permission to access employee management. This section is only available to
+              HR roles.
+            </p>
+            <button
+              onClick={() => router.push("/hr")}
+              className="px-4 py-2 bg-red-600 dark:bg-red-500 text-white rounded-lg hover:bg-red-700 dark:hover:bg-red-600 transition-colors font-medium"
+            >
+              Go to HR Dashboard
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   // Filter employees based on search and status
   const filteredEmployees = employees?.filter((employee) => {
@@ -213,7 +281,7 @@ export default function EmployeesPage() {
 
       {/* Table */}
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
-        {isLoading ? (
+        {isLoading || isSyncing ? (
           <div className="p-12 text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
             <p className="mt-4 text-gray-600">Loading employees...</p>

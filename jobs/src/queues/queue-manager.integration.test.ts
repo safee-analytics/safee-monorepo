@@ -2,7 +2,7 @@ import { describe, it, beforeAll, afterAll, beforeEach, expect } from "vitest";
 import { Queue } from "bullmq";
 import { Redis } from "ioredis";
 import { pino } from "pino";
-import { connectTest, nukeDatabase, createTestOrganization } from "@safee/database/test-helpers";
+import { connectTest, cleanTestData, createTestOrganization } from "@safee/database/test-helpers";
 import { getJobById, getJobsByStatus } from "@safee/database";
 import type { DrizzleClient, DbDeps } from "@safee/database";
 import { QueueManager } from "./queue-manager.js";
@@ -36,7 +36,7 @@ describe("QueueManager Integration Tests", () => {
   });
 
   beforeEach(async () => {
-    await nukeDatabase(drizzle);
+    await cleanTestData(drizzle);
 
     // Create test organization for foreign key constraints
     const testOrg = await createTestOrganization(drizzle);

@@ -56,6 +56,7 @@ export const jobNameEnum = jobsSchema.enum("job_name", [
   "generate_report",
   "odoo_provisioning",
   "install_odoo_modules",
+  "odoo_provision_organization",
 ]);
 
 export const priorityEnum = jobsSchema.enum("priority", ["low", "normal", "high", "critical"]);
@@ -480,6 +481,8 @@ export type Theme = (typeof themeEnum.enumValues)[number];
 export type ColorScheme = (typeof colorSchemeEnum.enumValues)[number];
 export type FontSize = (typeof fontSizeEnum.enumValues)[number];
 export type Density = (typeof densityEnum.enumValues)[number];
+export type ResourceType = (typeof resourceTypeEnum.enumValues)[number];
+export type HRSectionType = (typeof hrSectionTypeEnum.enumValues)[number];
 
 export const employeeTypeEnum = hrSchema.enum("employee_type", [
   "employee",
@@ -533,6 +536,16 @@ export const payslipLineCategoryEnum = hrSchema.enum("payslip_line_category", [
   "BASIC",
   "GROSS",
   "NET",
+]);
+
+export const hrSectionTypeEnum = hrSchema.enum("section_type", ["self_service", "management"]);
+
+export const resourceTypeEnum = identitySchema.enum("resource_type", [
+  "audit_case",
+  "accounting_client",
+  "crm_lead",
+  "crm_deal",
+  "hr_department",
 ]);
 
 export const taxAmountTypeEnum = financeSchema.enum("tax_amount_type", ["percent", "division", "fixed"]);
