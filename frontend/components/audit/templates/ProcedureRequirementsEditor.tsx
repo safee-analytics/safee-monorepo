@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { Button } from "@safee/ui";
-import { X, Plus, Trash2, Save } from "lucide-react";
+import { X, Trash2, Save } from "lucide-react";
 import { CustomFieldBuilder } from "./CustomFieldBuilder";
 
 interface ProcedureRequirementsEditorProps {
@@ -20,6 +20,9 @@ export interface CustomField {
   label: string;
   description?: string;
   required: boolean;
+  placeholder?: string;
+  helpText?: string;
+  defaultValue?: string | number | boolean;
   options?: string[]; // For select fields
   validation?: {
     min?: number;
@@ -83,14 +86,6 @@ export function ProcedureRequirementsEditor({
     setRequirements({
       ...requirements,
       customFields: requirements.customFields?.filter((f) => f.id !== fieldId) || [],
-    });
-  };
-
-  const handleUpdateCustomField = (fieldId: string, updates: Partial<CustomField>) => {
-    setRequirements({
-      ...requirements,
-      customFields:
-        requirements.customFields?.map((f) => (f.id === fieldId ? { ...f, ...updates } : f)) || [],
     });
   };
 

@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient, handleApiError } from "../client";
 import type { paths } from "../types";
 import { queryKeys } from "./queryKeys";
-import type { CaseData, CaseResponse, CaseAssignment } from "@/lib/types/cases";
+import type { CaseData } from "@/lib/types/cases";
 
 // Re-export for backwards compatibility
 export type { CaseData, CaseAssignment } from "@/lib/types/cases";

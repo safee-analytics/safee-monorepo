@@ -1,7 +1,7 @@
 import { InlineStatus, InlinePriority, InlineAssignee, InlineDueDate } from "./InlineEditFields";
 import { useRouter } from "next/navigation";
 import { InlineCreateRow } from "@safee/ui";
-import type { CaseRow, CaseStatus, CasePriority } from "@/lib/types/cases";
+import type { CaseRow } from "@/lib/types/cases";
 
 // Re-export for backwards compatibility
 export type { CaseRow };

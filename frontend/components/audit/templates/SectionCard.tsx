@@ -11,7 +11,6 @@ import {
   GripVertical,
   ArrowUp,
   ArrowDown,
-  Edit,
 } from "lucide-react";
 import { ProcedureRow } from "./ProcedureRow";
 import { ProcedureRequirementsEditor } from "./ProcedureRequirementsEditor";

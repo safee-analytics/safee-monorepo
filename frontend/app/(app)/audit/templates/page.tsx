@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { TemplateLibrary } from "@/components/audit/templates/TemplateLibrary";
 import type { TemplateResponse } from "@/lib/api/hooks/templates";

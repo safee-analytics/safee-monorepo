@@ -164,16 +164,16 @@ export function useUpdateTemplate() {
 
   return useMutation({
     mutationFn: async ({
-      templateId,
-      updates,
+      templateId: _templateId,
+      updates: _updates,
     }: {
       templateId: string;
       updates: Partial<CreateTemplateRequest>;
     }) => {
       // TODO: Implement when backend endpoint is available
       // const { data, error } = await apiClient.PUT("/cases/templates/{templateId}", {
-      //   params: { path: { templateId } },
-      //   body: updates,
+      //   params: { path: { templateId: _templateId } },
+      //   body: _updates,
       // });
       // if (error) throw new Error(handleApiError(error));
       // return data;
@@ -197,10 +197,10 @@ export function useDeleteTemplate() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (templateId: string) => {
+    mutationFn: async (_templateId: string) => {
       // TODO: Implement when backend endpoint is available
       // const { data, error } = await apiClient.DELETE("/cases/templates/{templateId}", {
-      //   params: { path: { templateId } },
+      //   params: { path: { templateId: _templateId } },
       // });
       // if (error) throw new Error(handleApiError(error));
       // return data;
@@ -223,7 +223,7 @@ export function useToggleTemplateActive() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ templateId, isActive }: { templateId: string; isActive: boolean }) => {
+    mutationFn: async ({ templateId: _templateId, isActive: _isActive }: { templateId: string; isActive: boolean }) => {
       // TODO: Implement when backend endpoint is available
       throw new Error("Toggle template active status endpoint not yet implemented in backend");
     },

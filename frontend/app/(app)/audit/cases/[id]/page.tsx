@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Edit2, MoreVertical, CheckCircle, Clock, AlertCircle } from "lucide-react";
-import { useCase } from "@/lib/api/hooks";
+import { useCase, useCaseScopes } from "@/lib/api/hooks";
 import { DocumentBrowser } from "@/components/audit/cases/DocumentBrowser";
 import {
   DocumentPreviewDrawer,
@@ -13,8 +13,9 @@ import { BulkUploadModal } from "@/components/audit/cases/BulkUploadModal";
 import { ActivityFeed } from "@/components/collaboration/ActivityFeed";
 import { ActiveViewers } from "@/components/collaboration/ActiveViewers";
 import { AnimatedButton } from "@safee/ui";
+import { ScopesTab } from "@/components/audit/scopes/ScopesTab";
 
-type TabType = "overview" | "documents" | "activity" | "team";
+type TabType = "overview" | "scopes" | "documents" | "activity" | "team";
 
 export default function CaseDetailPage() {
   const params = useParams();
@@ -27,6 +28,7 @@ export default function CaseDetailPage() {
 
   // Fetch case data
   const { data: caseData, isLoading } = useCase(caseId);
+  const { data: scopes } = useCaseScopes(caseId);
 
   // Mock documents - replace with actual API call
   const mockDocuments = [
@@ -203,6 +205,23 @@ export default function CaseDetailPage() {
             </button>
             <button
               onClick={() => {
+                setActiveTab("scopes");
+              }}
+              className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "scopes"
+                  ? "border-blue-600 text-blue-600"
+                  : "border-transparent text-gray-600 hover:text-gray-900"
+              }`}
+            >
+              Scopes
+              {scopes && scopes.length > 0 && (
+                <span className="ml-2 px-2 py-0.5 bg-gray-200 text-gray-700 text-xs rounded-full">
+                  {scopes.length}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={() => {
                 setActiveTab("documents");
               }}
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
@@ -324,6 +343,8 @@ export default function CaseDetailPage() {
             </div>
           </div>
         )}
+
+        {activeTab === "scopes" && <ScopesTab caseId={caseId} scopes={scopes || []} />}
 
         {activeTab === "documents" && (
           <DocumentBrowser
