@@ -14,7 +14,7 @@ import { type Todo } from "@/lib/validation";
 //   Priority: Medium
 
 export const TodoWidget = () => {
-  const [todos, setTodos] = useState<Todo[]>(([
+  const [todos, setTodos] = useState<Todo[]>([
     {
       id: 1,
       text: "Review quarterly financial reports",

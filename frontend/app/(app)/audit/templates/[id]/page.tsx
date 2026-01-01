@@ -1,17 +1,19 @@
 "use client";
 
+import { use } from "react";
 import { useRouter } from "next/navigation";
 import { TemplateBuilder } from "@/components/audit/templates/TemplateBuilder";
 
 interface TemplatePageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function TemplatePage({ params }: TemplatePageProps) {
   const router = useRouter();
-  const templateId = params.id === "new" ? undefined : params.id;
+  const { id } = use(params);
+  const templateId = id === "new" ? undefined : id;
 
   const handleSave = (savedTemplateId: string) => {
     // Navigate to the saved template page

@@ -2,15 +2,20 @@
 
 import { Plus, Building2, CreditCard } from "lucide-react";
 import { useTranslation } from "@/lib/providers/TranslationProvider";
+import { Button } from "@safee/ui";
+import { type Bank, bankSchema } from "@/lib/validation";
 
 export const BankAccountsWidget = () => {
   const { t } = useTranslation();
 
-  const banks = [
+  // TODO: [Backend/Frontend] - Fetch bank accounts from API
+//   Details: The `banks` array is currently mocked. Implement a backend API endpoint to fetch the user's bank accounts and integrate it here.
+//   Priority: High
+  const banks: Bank[] = bankSchema.array().parse([
     { name: "Desjardins Online Solutions", icon: Building2, color: "from-green-500 to-green-600" },
     { name: "RBC Bank (CAN)", icon: CreditCard, color: "from-blue-500 to-blue-600" },
     { name: "TD Canada Trust", icon: Building2, color: "from-emerald-500 to-emerald-600" },
-  ];
+  ]);
 
   return (
     <div className="h-full flex flex-col">
@@ -37,17 +42,17 @@ export const BankAccountsWidget = () => {
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-semibold text-gray-900 truncate">{bank.name}</p>
               </div>
-              <button className="flex-shrink-0 hover:scale-110 transition-transform">
+              <Button variant="ghost" size="icon" className="flex-shrink-0 hover:scale-110 transition-transform">
                 <Plus className="w-5 h-5 text-safee-600" />
-              </button>
+              </Button>
             </div>
           );
         })}
       </div>
 
-      <button className="w-full py-2.5 bg-gray-50 hover:bg-gray-100 text-gray-700 font-medium rounded-lg transition-colors">
+      <Button variant="outline" className="w-full">
         {t.dashboard.findYourBank}
-      </button>
+      </Button>
     </div>
   );
 };

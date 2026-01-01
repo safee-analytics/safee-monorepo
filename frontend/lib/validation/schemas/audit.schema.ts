@@ -29,6 +29,22 @@ export const procedureRequirementsSchema = z.object({
 
 export const fieldDataSchema = z.record(z.string(), z.unknown());
 
+export const procedureSchema = z.object({
+  referenceNumber: z.string().min(1, "Reference number is required"),
+  title: z.string().min(1, "Title is required"),
+  description: z.string().optional(),
+  sortOrder: z.number(),
+  requirements: procedureRequirementsSchema.optional(),
+});
+
+export const sectionSchema = z.object({
+  name: z.string().min(1, "Section name is required"),
+  description: z.string().optional(),
+  sortOrder: z.number(),
+  settings: z.record(z.string(), z.unknown()).optional(),
+  procedures: z.array(procedureSchema).min(1, "At least one procedure is required"),
+});
+
 export const createTemplateRequestSchema = z.object({
   name: z.string().min(1, "Template name is required"),
   description: z.string().optional(),

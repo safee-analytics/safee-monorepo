@@ -14,6 +14,7 @@ import {
   useCreateTemplate,
   useUpdateTemplate,
   useTemplate,
+  type CreateTemplateRequest,
   validateTemplateStructure,
 } from "@/lib/api/hooks/templates";
 import { SectionCard } from "./SectionCard";
@@ -205,11 +206,7 @@ export function TemplateBuilder({
         toast.success(`Template "${data.name}" has been updated successfully`);
         onSave?.(templateId);
       } else {
-        import { createTemplateRequestSchema, type CreateTemplateRequestType } from "@/lib/validation";
-// ... (rest of imports)
-
-// ... (rest of code)
-      const result = await createTemplate.mutateAsync(createTemplateRequestSchema.parse(data));
+        const result = await createTemplate.mutateAsync(data as CreateTemplateRequest);
         toast.success(`Template "${data.name}" has been created successfully`);
         onSave?.(result?.id || "");
         reset(); // Clear form after successful creation

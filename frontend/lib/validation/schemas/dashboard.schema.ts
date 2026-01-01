@@ -23,3 +23,31 @@ export const widgetSchema = z.object({
 
 export type Widget = z.infer<typeof widgetSchema>;
 
+export const bankSchema = z.object({
+  name: z.string(),
+  icon: z.any(), // Cannot easily validate React component type with Zod
+  color: z.string(),
+});
+
+export type Bank = z.infer<typeof bankSchema>;
+
+export const expenseSchema = z.object({
+  name: z.string(),
+  amount: z.number(),
+});
+
+export type Expense = z.infer<typeof expenseSchema>;
+
+export const quickActionSchema = z.object({
+  id: z.string(),
+  label: z.string(),
+  icon: z.any(), // Cannot easily validate React component type with Zod
+  href: z.string(),
+  color: z.string(),
+});
+
+export type QuickAction = z.infer<typeof quickActionSchema>;
+
+
+
+

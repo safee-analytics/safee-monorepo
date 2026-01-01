@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Lock, AlertCircle, Eye, EyeOff, Key } from "lucide-react";
 import {
@@ -70,6 +70,8 @@ export function EncryptionUnlockPrompt({
       setIsAuditor(true);
     }
   }, [initialAuditorAccess]);
+
+  const handlePasswordUnlock = async () => {
     try {
       setIsUnlocking(true);
       setError("");
