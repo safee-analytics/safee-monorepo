@@ -3,16 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import {
-  Mail,
-  Building2,
-  Sparkles,
-  ArrowRight,
-  RefreshCw,
-  Users,
-  Shield,
-  Zap,
-} from "lucide-react";
+import { Mail, Building2, Sparkles, ArrowRight, RefreshCw, Users, Shield, Zap } from "lucide-react";
 import { authClient } from "@/lib/auth/client";
 import { SafeeLogo } from "@/components/common/SafeeLogo";
 import { twMerge } from "tailwind-merge";
@@ -277,7 +268,8 @@ export default function GetStartedPage() {
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Waiting for Invitation?</h3>
                   <p className="text-gray-600 mb-6">
-                    Ask your team admin to send you an invitation. You&apos;ll be able to join once you receive it.
+                    Ask your team admin to send you an invitation. You&apos;ll be able to join once you
+                    receive it.
                   </p>
                   <button
                     onClick={() => void handleCheckAgain()}

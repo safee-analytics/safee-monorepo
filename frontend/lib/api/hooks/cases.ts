@@ -30,7 +30,7 @@ export function useCases(filters?: { status?: string; priority?: string; assigne
         }
         if (filters.assignedTo) {
           filteredData = filteredData.filter((c) =>
-            c.assignments?.some((a) => a.userId === filters.assignedTo)
+            c.assignments?.some((a) => a.userId === filters.assignedTo),
           );
         }
       }

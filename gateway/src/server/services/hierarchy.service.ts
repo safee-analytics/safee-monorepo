@@ -112,6 +112,8 @@ export class HierarchyService {
       where: and(eq(schema.members.userId, userId), eq(schema.members.organizationId, organizationId)),
     });
 
-    return (member?.role.includes("manager") ?? false) || member?.role === "owner" || member?.role === "admin";
+    return (
+      (member?.role.includes("manager") ?? false) || member?.role === "owner" || member?.role === "admin"
+    );
   }
 }

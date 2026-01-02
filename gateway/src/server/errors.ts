@@ -3,11 +3,7 @@ export abstract class ApiError extends Error {
   statusCode = 500;
   context: Record<string, unknown>;
 
-  constructor(
-    message: string,
-    context: Record<string, unknown> = {},
-    opts?: ErrorOptions,
-  ) {
+  constructor(message: string, context: Record<string, unknown> = {}, opts?: ErrorOptions) {
     super(message, opts);
     this.context = context;
   }

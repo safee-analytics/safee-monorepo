@@ -61,9 +61,9 @@ export async function updateAuditPlan(
     const phaseBreakdown = request.phaseBreakdown?.map((phase) => ({
       name: phase.name ?? "",
       duration: phase.duration,
-      description: phase.description,
-      startDate: phase.startDate,
-      endDate: phase.endDate,
+      description: phase.description ?? undefined,
+      startDate: phase.startDate ?? undefined,
+      endDate: phase.endDate ?? undefined,
     }));
 
     const riskAssessment = request.riskAssessment
@@ -73,8 +73,8 @@ export async function updateAuditPlan(
             severity: risk.severity,
             message: risk.message,
           })),
-          overallRisk: request.riskAssessment.overallRisk,
-          score: request.riskAssessment.score,
+          overallRisk: request.riskAssessment.overallRisk ?? undefined,
+          score: request.riskAssessment.score ?? undefined,
         }
       : undefined;
 
