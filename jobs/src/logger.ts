@@ -80,7 +80,7 @@ export function createLogger(name: string): Logger {
           }
         }
 
-        return method.apply(this, args);
+        method.apply(this, args);
       },
     },
   };
