@@ -7,9 +7,9 @@ export function register() {
     Sentry.init({
       dsn: process.env.SENTRY_DSN,
 
-      // 🔑 Use Sentry's instrumenter instead of OpenTelemetry auto-instrumentation
-      // This avoids the require-in-the-middle dependency issues with Next.js 16 + Turbopack
-      instrumenter: 'sentry',
+      // 🔑 Skip OpenTelemetry auto-instrumentation to avoid require-in-the-middle issues
+      // with Next.js 16 + Turbopack + standalone mode
+      skipOpenTelemetrySetup: true,
 
       tracesSampleRate: 1,
       enableLogs: true,
