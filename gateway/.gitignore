@@ -30,3 +30,6 @@ pids
 *.pid
 *.seed
 *.pid.lock
+
+# Sentry Config File
+.sentryclirc

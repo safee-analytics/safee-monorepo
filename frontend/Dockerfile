@@ -25,6 +25,7 @@ COPY --from=database /workspace/database/src ./database/src
 COPY --from=ui /workspace/ui/dist ./ui/dist
 COPY --from=ui /workspace/ui/src ./ui/src
 COPY frontend ./frontend/
+ARG NODE_ENV=development
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_LANDING_URL
 ARG NEXT_PUBLIC_SENTRY_DSN
@@ -33,7 +34,10 @@ ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NEXT_PUBLIC_LANDING_URL=${NEXT_PUBLIC_LANDING_URL}
 ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
 ENV SENTRY_DSN=${SENTRY_DSN}
-RUN npm run build -w frontend
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
+    export NODE_ENV=${NODE_ENV} && \
+    export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null || echo "") && \
+    npm run build -w frontend
 
 # Production image - standalone mode
 FROM node:20.19.0-alpine AS runner

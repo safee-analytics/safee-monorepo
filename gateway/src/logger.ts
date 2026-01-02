@@ -6,9 +6,6 @@ import { dirname, join } from "node:path";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-/**
- * Configure error notification transports based on environment variables
- */
 function getErrorTransports(): TransportTargetOptions[] {
   const transports: TransportTargetOptions[] = [];
 
@@ -25,13 +22,13 @@ function getErrorTransports(): TransportTargetOptions[] {
     });
   }
 
-  // Sentry for error tracking
-  if (process.env.SENTRY_DSN) {
+  const sentryDsn = process.env.SENTRY_DSN_GATEWAY ?? process.env.SENTRY_DSN;
+  if (sentryDsn) {
     transports.push({
       target: join(__dirname, "transports", "sentry.transport.js"),
       level: "error",
       options: {
-        dsn: process.env.SENTRY_DSN,
+        dsn: sentryDsn,
         environment: process.env.NODE_ENV ?? "development",
         release: process.env.GIT_SHA ?? "unknown",
       },
@@ -41,13 +38,9 @@ function getErrorTransports(): TransportTargetOptions[] {
   return transports;
 }
 
-/**
- * Create logger with error notification transports
- */
 export function createLogger(name: string) {
   const errorTransports = getErrorTransports();
 
-  // Common base configuration
   const baseConfig = {
     name,
     level: process.env.LOG_LEVEL ?? "info",
@@ -55,14 +48,12 @@ export function createLogger(name: string) {
     customLevels: { http: 27 }, // Custom level for HTTP request logging
   };
 
-  // If we have error transports, use pino with transport
   if (errorTransports.length > 0) {
     const targets: TransportTargetOptions[] = [
       // Error notification transports
       ...errorTransports,
     ];
 
-    // Add pino-pretty only in development
     if (process.env.NODE_ENV !== "production") {
       targets.unshift({
         target: "pino-pretty",
@@ -96,6 +87,5 @@ export function createLogger(name: string) {
     });
   }
 
-  // Production mode without error transports - use plain JSON logging
   return pino(baseConfig);
 }
