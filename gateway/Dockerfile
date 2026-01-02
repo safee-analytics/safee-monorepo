@@ -27,12 +27,16 @@ COPY jobs ./jobs/
 RUN npm run build -w jobs
 
 FROM build-deps AS builder
+ARG NODE_ENV=development
 COPY --from=database /workspace/database/build ./database/build
 COPY --from=database /workspace/database/src ./database/src
 COPY --from=jobs /workspace/jobs/build ./jobs/build
 COPY --from=jobs /workspace/jobs/src ./jobs/src
 COPY gateway ./gateway/
-RUN npm run build -w gateway
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
+    export NODE_ENV=${NODE_ENV} && \
+    export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null || echo "") && \
+    npm run build -w gateway
 
 FROM node:20.19.0-alpine AS runner
 WORKDIR /workspace

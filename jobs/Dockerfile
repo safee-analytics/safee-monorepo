@@ -23,10 +23,14 @@ RUN npm run build -w database
 
 # Stage 4: Build jobs (reuse build-deps)
 FROM build-deps AS builder
+ARG NODE_ENV=development
 COPY --from=database /workspace/database/build ./database/build
 COPY --from=database /workspace/database/src ./database/src
 COPY jobs ./jobs/
-RUN npm run build -w jobs
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN \
+    export NODE_ENV=${NODE_ENV} && \
+    export SENTRY_AUTH_TOKEN=$(cat /run/secrets/SENTRY_AUTH_TOKEN 2>/dev/null || echo "") && \
+    npm run build -w jobs
 
 # Production image
 FROM node:20.19.0-alpine AS runner

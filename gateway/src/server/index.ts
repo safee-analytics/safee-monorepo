@@ -1,3 +1,4 @@
+import "./instrument.js";
 import express, { Request, Response, NextFunction, Application, json, urlencoded } from "express";
 import cors from "cors";
 import helmet from "helmet";
@@ -6,6 +7,7 @@ import { serve as swaggerServe, setup as swaggerSetup } from "swagger-ui-express
 import { pinoHttp } from "pino-http";
 import type { Logger } from "pino";
 import { ValidateError } from "tsoa";
+import * as Sentry from "@sentry/node";
 
 import type { RedisClient, DrizzleClient, Storage, PubSub, JobScheduler } from "@safee/database";
 import type { QueueManager } from "@safee/jobs";
@@ -102,7 +104,6 @@ export async function server({
   );
 
   app.use(localeMiddleware);
-
   logger.info("Odoo client manager initialized");
 
   app.use((req, _res, next) => {
@@ -235,6 +236,9 @@ export async function server({
       docs: "/docs",
     });
   });
+
+  // Add Sentry error handler after all routes but before other error handlers
+  Sentry.setupExpressErrorHandler(app);
 
   app.use((err: unknown, req: Request, res: Response, _next: NextFunction) => {
     if (err instanceof ValidateError) {

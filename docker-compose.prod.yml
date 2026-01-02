@@ -71,6 +71,7 @@ services:
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
       - RESEND_API_KEY=${RESEND_API_KEY}
+      - SENTRY_DSN_GATEWAY=${SENTRY_DSN_GATEWAY}
     depends_on:
       redis:
         condition: service_healthy
@@ -109,6 +110,7 @@ services:
       - STRIPE_SECRET_KEY=${STRIPE_SECRET_KEY}
       - STRIPE_WEBHOOK_SECRET=${STRIPE_WEBHOOK_SECRET}
       - RESEND_API_KEY=${RESEND_API_KEY}
+      - SENTRY_DSN_GATEWAY=${SENTRY_DSN_GATEWAY}
     depends_on:
       redis:
         condition: service_healthy
@@ -129,6 +131,8 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
+      - SENTRY_DSN=${SENTRY_DSN}
+      - NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
     networks:
       - safee-network
     healthcheck:
@@ -175,6 +179,7 @@ services:
       - ODOO_URL=${ODOO_URL}
       - ODOO_PORT=${ODOO_PORT}
       - ODOO_ADMIN_PASSWORD=${ODOO_ADMIN_PASSWORD}
+      - SENTRY_DSN_JOBS=${SENTRY_DSN_JOBS}
     depends_on:
       redis:
         condition: service_healthy

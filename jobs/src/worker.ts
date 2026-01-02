@@ -1,3 +1,6 @@
+// Import Sentry instrumentation first!
+import "./instrument.js";
+
 import { Worker, Job } from "bullmq";
 import { Redis } from "ioredis";
 import { z } from "zod";

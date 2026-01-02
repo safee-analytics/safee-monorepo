@@ -100,6 +100,7 @@ services:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://safee:safee@postgres:5432/safee
       - REDIS_URL=redis://redis:6379
+      - SENTRY_DSN_GATEWAY=${SENTRY_DSN_GATEWAY}
     depends_on:
       - postgres
       - redis
@@ -115,6 +116,8 @@ services:
       - "3001"
     environment:
       - NODE_ENV=production
+      - SENTRY_DSN=${SENTRY_DSN}
+      - NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN}
     networks:
       - safee-network
 
@@ -139,6 +142,7 @@ services:
       - NODE_ENV=production
       - DATABASE_URL=postgresql://safee:safee@postgres:5432/safee
       - REDIS_URL=redis://redis:6379
+      - SENTRY_DSN_JOBS=${SENTRY_DSN_JOBS}
     depends_on:
       - postgres
       - redis
