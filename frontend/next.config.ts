@@ -7,11 +7,7 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   outputFileTracingRoot: monorepoRoot,
   output: "standalone",
-  serverExternalPackages: [
-    "@safee/database",
-    "@opentelemetry/instrumentation",
-    "@opentelemetry/api",
-  ],
+  serverExternalPackages: ["@safee/database", "@opentelemetry/instrumentation", "@opentelemetry/api"],
 };
 
 export default withSentryConfig(nextConfig, {
