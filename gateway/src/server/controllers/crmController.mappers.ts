@@ -25,11 +25,6 @@ function odooString(value: unknown): string | undefined {
   return typeof value === "string" ? value : undefined;
 }
 
-// Odoo returns false for empty number fields - convert to undefined
-function odooNumber(value: unknown): number | undefined {
-  return typeof value === "number" ? value : undefined;
-}
-
 export function mapLead(lead: OdooLead): LeadResponse {
   return {
     id: lead.id,

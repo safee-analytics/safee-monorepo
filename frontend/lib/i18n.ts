@@ -13,10 +13,10 @@ const translations = {
 
 export default getRequestConfig(async ({ locale }) => {
   // Validate that the incoming `locale` parameter is valid
-  if (!locales.includes(locale as Locale)) notFound();
+  if (!locale || !locales.includes(locale as Locale)) notFound();
 
   return {
-    locale,
+    locale: locale as string,
     messages: await translations[locale as Locale](),
   };
 });

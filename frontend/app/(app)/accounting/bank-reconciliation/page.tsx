@@ -11,8 +11,8 @@ export default function BankReconciliationPage() {
             <FileText className="h-16 w-16 text-gray-300 mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Bank Reconciliation</h1>
             <p className="text-gray-600 mb-6">
-              Bank reconciliation feature is coming soon. Match bank transactions to accounting records and reconcile
-              accounts.
+              Bank reconciliation feature is coming soon. Match bank transactions to accounting records and
+              reconcile accounts.
             </p>
             <p className="text-sm text-gray-500">
               This is part of the Hisabiq accounting module that will be ported from Odoo.

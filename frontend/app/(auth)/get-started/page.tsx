@@ -9,7 +9,6 @@ import {
   Sparkles,
   ArrowRight,
   RefreshCw,
-  CheckCircle2,
   Users,
   Shield,
   Zap,
@@ -39,7 +38,14 @@ export default function GetStartedPage() {
       try {
         const { data } = await authClient.organization.listUserInvitations();
         if (data && data.length > 0) {
-          setPendingInvitations(data as PendingInvitation[]);
+          const mappedInvitations: PendingInvitation[] = data.map((inv) => ({
+            id: inv.id,
+            organizationName: "Organization",
+            inviterName: "Team Admin",
+            role: inv.role,
+            expiresAt: inv.expiresAt.toISOString(),
+          }));
+          setPendingInvitations(mappedInvitations);
         }
       } catch (err) {
         console.error("Failed to load invitations:", err);
@@ -90,7 +96,14 @@ export default function GetStartedPage() {
     try {
       const { data } = await authClient.organization.listUserInvitations();
       if (data && data.length > 0) {
-        setPendingInvitations(data as PendingInvitation[]);
+        const mappedInvitations: PendingInvitation[] = data.map((inv) => ({
+          id: inv.id,
+          organizationName: "Organization",
+          inviterName: "Team Admin",
+          role: inv.role,
+          expiresAt: inv.expiresAt.toISOString(),
+        }));
+        setPendingInvitations(mappedInvitations);
       } else {
         setError("No invitations found yet. Ask your team admin to send you an invitation.");
       }
@@ -127,7 +140,11 @@ export default function GetStartedPage() {
 
       <div className="relative z-10 mx-auto w-full max-w-5xl">
         {/* Logo */}
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mb-8 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8 text-center"
+        >
           <div className="inline-block">
             <SafeeLogo size="lg" />
           </div>
@@ -164,18 +181,14 @@ export default function GetStartedPage() {
                 <p className="text-gray-600">Checking for invitations...</p>
               </div>
             ) : pendingInvitations.length > 0 ? (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="mb-12"
-              >
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-12">
                 <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-2xl p-6 mb-6">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center flex-shrink-0">
                       <Mail className="w-6 h-6 text-white" />
                     </div>
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900 mb-2">You've been invited!</h2>
+                      <h2 className="text-2xl font-bold text-gray-900 mb-2">You&apos;ve been invited!</h2>
                       <p className="text-gray-700">
                         Accept an invitation below to join an existing organization and start collaborating
                       </p>
@@ -264,10 +277,10 @@ export default function GetStartedPage() {
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 mb-2">Waiting for Invitation?</h3>
                   <p className="text-gray-600 mb-6">
-                    Ask your team admin to send you an invitation. You'll be able to join once you receive it.
+                    Ask your team admin to send you an invitation. You&apos;ll be able to join once you receive it.
                   </p>
                   <button
-                    onClick={handleCheckAgain}
+                    onClick={() => void handleCheckAgain()}
                     disabled={checkingInvitations}
                     className="w-full px-6 py-3 rounded-lg border-2 border-gray-300 text-gray-700 font-semibold transition-all hover:bg-gray-50 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
                   >
@@ -295,7 +308,7 @@ export default function GetStartedPage() {
               className="border-t border-gray-200 pt-8"
             >
               <h3 className="text-center text-lg font-semibold text-gray-900 mb-6">
-                What you'll get with Safee Analytics
+                What you&apos;ll get with Safee Analytics
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">

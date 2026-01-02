@@ -237,7 +237,7 @@ export class SubscriptionController extends Controller {
     try {
       // Verify the subscription belongs to the user
       const existingSubscription = await service.getUserSubscription(userId);
-      if (!existingSubscription || existingSubscription.id !== subscriptionId) {
+      if (existingSubscription?.id !== subscriptionId) {
         throw new NotFound("Subscription not found");
       }
 
@@ -285,7 +285,7 @@ export class SubscriptionController extends Controller {
     try {
       // Verify the subscription belongs to the user
       const existingSubscription = await service.getUserSubscription(userId);
-      if (!existingSubscription || existingSubscription.id !== subscriptionId) {
+      if (existingSubscription?.id !== subscriptionId) {
         throw new NotFound("Subscription not found");
       }
 

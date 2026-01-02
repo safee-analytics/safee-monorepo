@@ -1,37 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import {
-  FiBell,
-  FiCheck,
-  FiCheckCircle,
-  FiAlertCircle,
-  FiInfo,
-  FiUser,
-  FiCalendar,
-  FiFileText,
-  FiDollarSign,
-  FiUsers,
-  FiX,
-  FiClock,
-  FiAlertTriangle,
-  FiMessageSquare,
-  FiAtSign,
-  FiCheckSquare,
-  FiXCircle,
-  FiTrendingUp,
-  FiTrendingDown,
-  FiArchive,
-  FiBriefcase,
-  FiClipboard,
-  FiCreditCard,
-  FiXOctagon,
-  FiSend,
-  FiEdit,
-  FiActivity,
-  FiTrash2,
-  FiFilter,
-} from "react-icons/fi";
+import { FiBell, FiCheck, FiX, FiTrash2, FiFilter } from "react-icons/fi";
 import {
   useNotifications,
   useUnreadNotificationsCount,
@@ -43,7 +13,6 @@ import { formatDistanceToNow } from "date-fns";
 import type { components } from "@/lib/api/types/dashboard";
 import { notificationConfig, notificationCategories } from "@/components/layout/NotificationDropdown";
 
-type NotificationType = components["schemas"]["NotificationType"];
 type NotificationResponse = components["schemas"]["NotificationResponse"];
 type NotificationCategory = "all" | "unread" | "read" | "mentions" | "tasks";
 
@@ -144,7 +113,9 @@ export default function NotificationsPage() {
           </div>
 
           {/* Icon */}
-          <div className={`flex-shrink-0 w-12 h-12 rounded-full ${config.bgColor} flex items-center justify-center`}>
+          <div
+            className={`flex-shrink-0 w-12 h-12 rounded-full ${config.bgColor} flex items-center justify-center`}
+          >
             <Icon className={`w-6 h-6 ${config.textColor}`} />
           </div>
 
@@ -207,7 +178,9 @@ export default function NotificationsPage() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
               <p className="text-gray-600 mt-1">
-                {unreadCount > 0 ? `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}` : "All caught up!"}
+                {unreadCount > 0
+                  ? `${unreadCount} unread notification${unreadCount > 1 ? "s" : ""}`
+                  : "All caught up!"}
               </p>
             </div>
             {unreadCount > 0 && (
@@ -279,7 +252,10 @@ export default function NotificationsPage() {
           <div className="flex items-center gap-3 px-4 py-3 bg-gray-50 border-b border-gray-200">
             <input
               type="checkbox"
-              checked={selectedNotifications.size === filteredNotifications.length && filteredNotifications.length > 0}
+              checked={
+                selectedNotifications.size === filteredNotifications.length &&
+                filteredNotifications.length > 0
+              }
               onChange={handleSelectAll}
               className="w-4 h-4 text-blue-600 rounded focus:ring-blue-500"
             />
@@ -297,7 +273,7 @@ export default function NotificationsPage() {
                 <FiBell className="w-10 h-10 text-gray-400" />
               </div>
               <p className="text-base font-medium text-gray-900">No notifications</p>
-              <p className="text-sm text-gray-500 mt-1">You're all caught up!</p>
+              <p className="text-sm text-gray-500 mt-1">You&apos;re all caught up!</p>
             </div>
           ) : (
             <div className="divide-y divide-gray-100">

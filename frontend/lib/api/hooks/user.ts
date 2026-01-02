@@ -102,7 +102,7 @@ export function useUnreadNotificationsCount() {
     queryFn: async () => {
       const { data, error } = await apiClient.GET("/dashboard/notifications/unread-count");
       if (error) throw new Error(handleApiError(error));
-      return data;
+      return data?.count ?? 0;
     },
     // Remove polling since we're using WebSocket for real-time updates
     // refetchInterval: 30000,

@@ -12,7 +12,19 @@ import {
   FiPlus,
   FiX,
 } from "react-icons/fi";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, isSameDay, addMonths, subMonths, startOfWeek, endOfWeek } from "date-fns";
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  eachDayOfInterval,
+  isSameMonth,
+  isToday,
+  isSameDay,
+  addMonths,
+  subMonths,
+  startOfWeek,
+  endOfWeek,
+} from "date-fns";
 import Link from "next/link";
 
 interface CalendarEvent {
@@ -88,9 +100,7 @@ export function CalendarDropdown() {
 
   // Get events for selected date or today
   const displayDate = selectedDate || new Date();
-  const todayEvents = mockEvents.filter((event) =>
-    isSameDay(event.startTime, displayDate)
-  );
+  const todayEvents = mockEvents.filter((event) => isSameDay(event.startTime, displayDate));
 
   const upcomingEvents = mockEvents
     .filter((event) => event.startTime >= displayDate)
@@ -190,9 +200,7 @@ export function CalendarDropdown() {
 
       {/* Dropdown */}
       {isOpen && (
-        <div
-          className="absolute right-0 mt-2 w-[420px] bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden animate-in slide-in-from-top-2 fade-in duration-200"
-        >
+        <div className="absolute right-0 mt-2 w-[420px] bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden animate-in slide-in-from-top-2 fade-in duration-200">
           {/* Header */}
           <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-white">
             <div className="flex items-center justify-between">
@@ -258,7 +266,9 @@ export function CalendarDropdown() {
                   >
                     {format(day, "d")}
                     {hasEvent && (
-                      <span className={`absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${isSelected ? "bg-white" : "bg-blue-500"}`}></span>
+                      <span
+                        className={`absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full ${isSelected ? "bg-white" : "bg-blue-500"}`}
+                      ></span>
                     )}
                   </button>
                 );
@@ -307,7 +317,9 @@ export function CalendarDropdown() {
                       key={event.id}
                       className="flex items-center gap-2 p-2 rounded-lg hover:bg-white transition-colors cursor-pointer text-xs"
                     >
-                      <div className={`w-1.5 h-1.5 rounded-full ${event.color === "blue" ? "bg-blue-500" : event.color === "red" ? "bg-red-500" : event.color === "green" ? "bg-green-500" : "bg-purple-500"}`}></div>
+                      <div
+                        className={`w-1.5 h-1.5 rounded-full ${event.color === "blue" ? "bg-blue-500" : event.color === "red" ? "bg-red-500" : event.color === "green" ? "bg-green-500" : "bg-purple-500"}`}
+                      ></div>
                       <span className="flex-1 font-medium text-gray-700 line-clamp-1">{event.title}</span>
                       <span className="text-gray-500">{format(event.startTime, "MMM d")}</span>
                     </div>

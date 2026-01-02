@@ -6,7 +6,7 @@ export abstract class ApiError extends Error {
   constructor(
     message: string,
     context: Record<string, unknown> = {},
-    opts: ErrorOptions | undefined = undefined,
+    opts?: ErrorOptions,
   ) {
     super(message, opts);
     this.context = context;
@@ -21,7 +21,7 @@ export class CustomError extends ApiError {
     statusCode: number,
     message: string,
     context: Record<string, unknown> = {},
-    opts: ErrorOptions | undefined = undefined,
+    opts?: ErrorOptions,
   ) {
     super(message, context, opts);
     this.code = code;

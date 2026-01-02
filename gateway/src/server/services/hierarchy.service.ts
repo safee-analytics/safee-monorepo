@@ -91,7 +91,7 @@ export class HierarchyService {
       where: eq(schema.hrDepartments.id, managerEmployee.departmentId),
     });
 
-    if (!department || department.managerId !== managerEmployee.id) {
+    if (department?.managerId !== managerEmployee.id) {
       return [];
     }
 
@@ -112,10 +112,6 @@ export class HierarchyService {
       where: and(eq(schema.members.userId, userId), eq(schema.members.organizationId, organizationId)),
     });
 
-    if (!member) {
-      return false;
-    }
-
-    return member.role.includes("manager") || member.role === "owner" || member.role === "admin";
+    return (member?.role.includes("manager") ?? false) || member?.role === "owner" || member?.role === "admin";
   }
 }

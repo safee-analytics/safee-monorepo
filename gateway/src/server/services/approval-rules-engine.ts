@@ -101,7 +101,7 @@ export class ApprovalRulesEngine {
   }
 
   private evaluateRule(rule: Rule, entityData: EntityData): boolean {
-    const { conditions, logic = "AND" } = rule;
+    const { conditions, logic } = rule;
 
     if (conditions.length === 0) {
       return false;

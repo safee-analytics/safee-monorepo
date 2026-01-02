@@ -11,8 +11,6 @@ import {
   FiMenu,
   FiX,
   FiSearch,
-  FiCalendar,
-  FiBell,
   FiSettings,
   FiHelpCircle,
   FiChevronDown,

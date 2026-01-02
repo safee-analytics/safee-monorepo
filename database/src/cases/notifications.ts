@@ -1,4 +1,14 @@
-import { schema, eq, and, desc, count, isNull, DbDeps, NotificationType, RelatedEntityType } from "../index.js";
+import {
+  schema,
+  eq,
+  and,
+  desc,
+  count,
+  isNull,
+  DbDeps,
+  NotificationType,
+  RelatedEntityType,
+} from "../index.js";
 
 const { notifications } = schema;
 

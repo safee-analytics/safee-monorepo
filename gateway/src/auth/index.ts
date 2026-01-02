@@ -125,7 +125,13 @@ export const auth = betterAuth({
     minPasswordLength: 8,
     maxPasswordLength: 128,
     autoSignIn: true,
-    sendVerificationEmail: async ({ user, url }: { user: { id: string; email: string; name: string }; url: string }) => {
+    sendVerificationEmail: async ({
+      user,
+      url,
+    }: {
+      user: { id: string; email: string; name: string };
+      url: string;
+    }) => {
       if (!emailService) {
         logger.warn({ userId: user.id }, "Email service not configured");
         return;

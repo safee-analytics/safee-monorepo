@@ -65,9 +65,9 @@ export async function hasPermission(
 
     // Check if the role has the required permission
     const permissionString = `${resource}:${action}`;
-    const rolePermissions = defaultRoles[member.role as keyof typeof defaultRoles]?.permissions ?? [];
+    const role = defaultRoles[member.role as keyof typeof defaultRoles];
 
-    return rolePermissions.includes(permissionString);
+    return role.permissions.includes(permissionString);
   } catch (err) {
     ctx.logger.error({ error: err, userId, action, resource }, "Error checking permission");
     return false;

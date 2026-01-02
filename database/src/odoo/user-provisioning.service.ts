@@ -541,8 +541,16 @@ export class OdooUserProvisioningService {
     try {
       // IMPORTANT: Authenticate as the target user (not admin)
       // Odoo only allows users to create their own API keys
-      const { sessionId, cookies } = await this.authenticate(databaseName, targetUserLogin, targetUserPassword);
-      const userCredentials = { databaseName, adminLogin: targetUserLogin, adminPassword: targetUserPassword };
+      const { sessionId, cookies } = await this.authenticate(
+        databaseName,
+        targetUserLogin,
+        targetUserPassword,
+      );
+      const userCredentials = {
+        databaseName,
+        adminLogin: targetUserLogin,
+        adminPassword: targetUserPassword,
+      };
 
       // Create the API key record using Odoo's native res.users.apikeys model
       // When authenticated as the user, user_id defaults to current user
@@ -756,7 +764,14 @@ export class OdooUserProvisioningService {
 
       try {
         const keyName = `safee-${userName}-${Date.now()}`;
-        apiKey = await this.generateApiKey(databaseName, adminLogin, adminPassword, user.email, password, keyName);
+        apiKey = await this.generateApiKey(
+          databaseName,
+          adminLogin,
+          adminPassword,
+          user.email,
+          password,
+          keyName,
+        );
         authCredential = apiKey; // Prefer API key
         this.logger.info({ userId, odooUid, keyName }, "✅ API key generated successfully (preferred)");
       } catch (err) {

@@ -10,11 +10,7 @@ export function useCases(filters?: { status?: string; priority?: string; assigne
   return useQuery<Case[]>({
     queryKey: queryKeys.cases.list(filters),
     queryFn: async () => {
-      const { data, error } = await apiClient.GET("/cases", {
-        params: {
-          query: filters as Record<string, string>,
-        },
-      });
+      const { data, error } = await apiClient.GET("/cases");
       if (error) throw new Error(handleApiError(error));
 
       const validation = z.array(caseSchema).safeParse(data);
@@ -22,7 +18,24 @@ export function useCases(filters?: { status?: string; priority?: string; assigne
         console.error("Cases validation error:", validation.error);
         return [];
       }
-      return validation.data;
+
+      // Apply client-side filtering if needed
+      let filteredData = validation.data;
+      if (filters) {
+        if (filters.status) {
+          filteredData = filteredData.filter((c) => c.status === filters.status);
+        }
+        if (filters.priority) {
+          filteredData = filteredData.filter((c) => c.priority === filters.priority);
+        }
+        if (filters.assignedTo) {
+          filteredData = filteredData.filter((c) =>
+            c.assignments?.some((a) => a.userId === filters.assignedTo)
+          );
+        }
+      }
+
+      return filteredData;
     },
   });
 }

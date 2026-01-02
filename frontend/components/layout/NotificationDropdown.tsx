@@ -270,12 +270,10 @@ export const notificationConfig: Record<
 };
 
 const categoryIcons: Record<string, React.ComponentType<{ className?: string }>> = {
-  user: FiUser,
-  calendar: FiCalendar,
-  document: FiFileText,
-  payment: FiDollarSign,
-  team: FiUsers,
-  default: FiBell,
+  all: FiBell,
+  mentions: FiAtSign,
+  tasks: FiCheckSquare,
+  system: FiInfo,
 };
 
 export function NotificationDropdown() {
@@ -443,9 +441,7 @@ export function NotificationDropdown() {
 
       {/* Dropdown */}
       {isOpen && (
-        <div
-          className="absolute right-0 mt-2 w-96 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden animate-in slide-in-from-top-2 fade-in duration-200"
-        >
+        <div className="absolute right-0 mt-2 w-96 bg-white border border-gray-200 rounded-xl shadow-2xl z-50 overflow-hidden animate-in slide-in-from-top-2 fade-in duration-200">
           {/* Header */}
           <div className="px-4 py-3 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-white">
             <div className="flex items-center justify-between">
@@ -475,22 +471,26 @@ export function NotificationDropdown() {
                 { key: "mentions", label: "Mentions" },
                 { key: "tasks", label: "Tasks" },
                 { key: "system", label: "System" },
-              ].map((category) => (
-                <button
-                  key={category.key}
-                  onClick={() => setSelectedCategory(category.key as NotificationCategory)}
-                  className={`
-                    px-3 py-1.5 rounded-lg text-xs font-medium transition-all
-                    ${
-                      selectedCategory === category.key
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
-                    }
-                  `}
-                >
-                  {category.label}
-                </button>
-              ))}
+              ].map((category) => {
+                const Icon = categoryIcons[category.key];
+                return (
+                  <button
+                    key={category.key}
+                    onClick={() => setSelectedCategory(category.key as NotificationCategory)}
+                    className={`
+                      px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5
+                      ${
+                        selectedCategory === category.key
+                          ? "bg-blue-600 text-white shadow-sm"
+                          : "bg-white text-gray-600 hover:bg-gray-100 border border-gray-200"
+                      }
+                    `}
+                  >
+                    <Icon className="w-3.5 h-3.5" />
+                    {category.label}
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -506,7 +506,7 @@ export function NotificationDropdown() {
                   <FiBell className="w-8 h-8 text-gray-400" />
                 </div>
                 <p className="text-sm font-medium text-gray-900">No notifications</p>
-                <p className="text-xs text-gray-500 mt-1">You're all caught up!</p>
+                <p className="text-xs text-gray-500 mt-1">You&apos;re all caught up!</p>
               </div>
             ) : (
               <div className="divide-y divide-gray-100">
