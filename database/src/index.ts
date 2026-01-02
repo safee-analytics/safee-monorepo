@@ -5,7 +5,14 @@ import type { Column } from "drizzle-orm";
 export * from "./errors.js";
 export * from "./drizzle.js";
 export * from "./deps.js";
-export type { Locale, DocumentType, ResourceType, HRSectionType } from "./drizzle/_common.js";
+export type {
+  Locale,
+  DocumentType,
+  ResourceType,
+  HRSectionType,
+  NotificationType,
+  RelatedEntityType,
+} from "./drizzle/_common.js";
 export { CASE_STATUSES, CASE_PRIORITIES } from "./drizzle/_common.js";
 export type RedisClient = Awaited<ReturnType<typeof redisConnect>>;
 

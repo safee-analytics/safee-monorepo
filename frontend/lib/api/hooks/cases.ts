@@ -10,10 +10,12 @@ export function useCases(filters?: { status?: string; priority?: string; assigne
   return useQuery<Case[]>({
     queryKey: queryKeys.cases.list(filters),
     queryFn: async () => {
-      const queryParams = filters ? new URLSearchParams(filters as Record<string, string>) : "";
-      const response = await fetch(`/api/v1/cases${queryParams ? `?${queryParams}` : ""}`);
-      if (!response.ok) throw new Error("Failed to fetch cases");
-      const data = await response.json();
+      const { data, error } = await apiClient.GET("/cases", {
+        params: {
+          query: filters as Record<string, string>,
+        },
+      });
+      if (error) throw new Error(handleApiError(error));
 
       const validation = z.array(caseSchema).safeParse(data);
       if (!validation.success) {

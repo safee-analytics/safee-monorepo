@@ -4,4080 +4,4032 @@
  */
 
 export interface paths {
-  "/accounting/invoices": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/invoices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingInvoices"];
+        put?: never;
+        post: operations["CreateAccountingInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingInvoices"];
-    put?: never;
-    post: operations["CreateAccountingInvoice"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/{invoiceId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/invoices/{invoiceId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingInvoice"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingInvoice"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/{invoiceId}/validate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/invoices/{invoiceId}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ValidateAccountingInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["ValidateAccountingInvoice"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/{invoiceId}/cancel": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/invoices/{invoiceId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CancelAccountingInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["CancelAccountingInvoice"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/{invoiceId}/refund": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/invoices/{invoiceId}/refund": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RefundAccountingInvoice"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["RefundAccountingInvoice"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/{invoiceId}/pdf": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/invoices/{invoiceId}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingInvoicePDF"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingInvoicePDF"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bills": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/bills": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingBills"];
+        put?: never;
+        post: operations["CreateAccountingBill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingBills"];
-    put?: never;
-    post: operations["CreateAccountingBill"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bills/{billId}": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/bills/{billId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingBill"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingBill"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bills/{billId}/validate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/bills/{billId}/validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ValidateAccountingBill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["ValidateAccountingBill"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bills/{billId}/cancel": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/bills/{billId}/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CancelAccountingBill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["CancelAccountingBill"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bills/{billId}/refund": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/bills/{billId}/refund": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RefundAccountingBill"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["RefundAccountingBill"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bills/{billId}/pdf": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/bills/{billId}/pdf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingBillPDF"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingBillPDF"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/accounts": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingAccounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingAccounts"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/accounts/search": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/accounts/search": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["SearchAccountingAccounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["SearchAccountingAccounts"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/payments": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/payments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingPayments"];
+        put?: never;
+        post: operations["CreateAccountingPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingPayments"];
-    put?: never;
-    post: operations["CreateAccountingPayment"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/payments/{paymentId}/confirm": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/payments/{paymentId}/confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ConfirmAccountingPayment"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["ConfirmAccountingPayment"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/partners": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/partners": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingPartners"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingPartners"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/journals": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/journals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingJournals"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingJournals"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/taxes": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/taxes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingTaxes"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingTaxes"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/reports/trial-balance": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/reports/trial-balance": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetAccountingTrialBalance"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["GetAccountingTrialBalance"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/reports/partner-ledger": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/reports/partner-ledger": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetAccountingPartnerLedger"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["GetAccountingPartnerLedger"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/reports/profit-loss": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/reports/profit-loss": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingProfitLoss"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingProfitLoss"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/general-ledger": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/general-ledger": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingGeneralLedger"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingGeneralLedger"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/payment-terms": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/payment-terms": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingPaymentTerms"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingPaymentTerms"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/reports/aged-receivable": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/reports/aged-receivable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingAgedReceivable"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingAgedReceivable"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/reports/aged-payable": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/reports/aged-payable": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingAgedPayable"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingAgedPayable"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bank-statements": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/bank-statements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingBankStatements"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingBankStatements"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bank-statements/{statementId}/lines": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/bank-statements/{statementId}/lines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingBankStatementLines"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingBankStatementLines"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bank-statements/lines/{lineId}/suggestions": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/bank-statements/lines/{lineId}/suggestions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingReconciliationSuggestions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingReconciliationSuggestions"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/bank-statements/lines/{lineId}/reconcile": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/bank-statements/lines/{lineId}/reconcile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ReconcileAccountingBankStatementLine"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["ReconcileAccountingBankStatementLine"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/currencies": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/currencies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingCurrencies"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingCurrencies"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/currency-rates": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/currency-rates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["GetAccountingCurrencyRates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations["GetAccountingCurrencyRates"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/currency-convert": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/currency-convert": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ConvertAccountingCurrency"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["ConvertAccountingCurrency"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/batch-validate": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/invoices/batch-validate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BatchValidateAccountingInvoices"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["BatchValidateAccountingInvoices"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/batch-cancel": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/invoices/batch-cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BatchCancelAccountingInvoices"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["BatchCancelAccountingInvoices"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/invoices/batch-create": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/invoices/batch-create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BatchCreateAccountingInvoices"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["BatchCreateAccountingInvoices"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/payments/batch-create": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/payments/batch-create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BatchCreateAccountingPayments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["BatchCreateAccountingPayments"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/accounting/payments/batch-confirm": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/accounting/payments/batch-confirm": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["BatchConfirmAccountingPayments"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations["BatchConfirmAccountingPayments"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    WorkflowRules: {
-      autoApprove?: boolean;
-      requireComments?: boolean;
-      allowReassignment?: boolean;
-      /** Format: double */
-      timeoutHours?: number;
-      escalationUserIds?: string[];
-      notifyOnSubmit?: boolean;
-      notifyOnComplete?: boolean;
-    };
-    /** @enum {string} */
-    StepType: "single" | "parallel" | "any";
-    /** @enum {string} */
-    ApproverType: "role" | "team" | "user";
-    WorkflowStepResponse: {
-      id: string;
-      /** Format: double */
-      stepOrder: number;
-      stepType: components["schemas"]["StepType"];
-      approverType: components["schemas"]["ApproverType"];
-      approverId?: string;
-      /** Format: double */
-      minApprovals: number;
-      /** Format: double */
-      requiredApprovers: number;
-    };
-    WorkflowResponse: {
-      id: string;
-      name: string;
-      organizationId: string;
-      entityType: string;
-      isActive: boolean;
-      rules?: components["schemas"]["WorkflowRules"];
-      createdAt: string;
-      updatedAt: string;
-      steps: components["schemas"]["WorkflowStepResponse"][];
-    };
-    WorkflowStepInput: {
-      /** Format: double */
-      stepOrder: number;
-      stepType: components["schemas"]["StepType"];
-      approverType: components["schemas"]["ApproverType"];
-      approverId?: string;
-      /** Format: double */
-      minApprovals?: number;
-      /** Format: double */
-      requiredApprovers?: number;
-    };
-    CreateWorkflowRequest: {
-      name: string;
-      entityType: string;
-      rules?: components["schemas"]["WorkflowRules"];
-      steps: components["schemas"]["WorkflowStepInput"][];
-    };
-    UpdateWorkflowRequest: {
-      name?: string;
-      isActive?: boolean;
-      rules?: components["schemas"]["WorkflowRules"];
-      steps?: components["schemas"]["WorkflowStepInput"][];
-    };
-    RuleCondition:
-      | {
-          /** Format: double */
-          value: number;
-          /** @enum {string} */
-          operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq";
-          /** @enum {string} */
-          type: "amount";
-        }
-      | {
-          value: string;
-          /** @enum {string} */
-          operator?: "eq";
-          /** @enum {string} */
-          type: "entityType";
-        }
-      | {
-          value: string;
-          /** @enum {string} */
-          operator?: "eq";
-          /** @enum {string} */
-          type: "userRole";
-        }
-      | {
-          /** @enum {string} */
-          type: "manual";
-        }
-      | {
-          value: string | number | boolean;
-          /** @enum {string} */
-          operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq" | "contains";
-          field: string;
-          /** @enum {string} */
-          type: "field";
+    schemas: {
+        WorkflowRules: {
+            autoApprove?: boolean;
+            requireComments?: boolean;
+            allowReassignment?: boolean;
+            /** Format: double */
+            timeoutHours?: number;
+            escalationUserIds?: string[];
+            notifyOnSubmit?: boolean;
+            notifyOnComplete?: boolean;
         };
-    Rule: {
-      conditions: components["schemas"]["RuleCondition"][];
-      /** @enum {string} */
-      logic?: "AND" | "OR";
-    };
-    RuleResponse: {
-      id: string;
-      organizationId: string;
-      entityType: string;
-      ruleName: string;
-      conditions: components["schemas"]["Rule"];
-      workflowId: string;
-      /** Format: double */
-      priority: number;
-    };
-    CreateRuleRequest: {
-      entityType: string;
-      ruleName: string;
-      conditions: string;
-      workflowId: string;
-      /** Format: double */
-      priority?: number;
-    };
-    /** @description Construct a type with a set of properties K of type T */
-    "Record_string.unknown_": {
-      [key: string]: unknown;
-    };
-    FileMetadata: {
-      id: string;
-      name: string;
-      path: string;
-      /** Format: double */
-      size: number;
-      mimeType: string;
-      createdAt: string;
-      modifiedAt: string;
-      createdBy: string;
-      modifiedBy?: string;
-      folderId?: string;
-      tags?: string[];
-      metadata?: components["schemas"]["Record_string.unknown_"];
-    };
-    FolderMetadata: {
-      id: string;
-      name: string;
-      path: string;
-      parentId?: string;
-      createdAt: string;
-      modifiedAt: string;
-      createdBy: string;
-      modifiedBy?: string;
-      /** Format: double */
-      fileCount: number;
-      /** Format: double */
-      subFolderCount: number;
-    };
-    CreateFolderRequest: {
-      name: string;
-      parentId?: string;
-    };
-    /** @enum {string} */
-    Locale: "en" | "ar";
-    UserProfileResponse: {
-      id: string;
-      email: string;
-      name?: string | null;
-      image?: string | null;
-      preferredLocale: components["schemas"]["Locale"];
-      activeOrganizationId?: string | null;
-    };
-    UpdateProfileRequest: {
-      name?: string;
-      preferredLocale?: components["schemas"]["Locale"];
-    };
-    UpdateLocaleRequest: {
-      locale: components["schemas"]["Locale"];
-    };
-    SubscriptionPlanResponse: {
-      id: string;
-      name: string;
-      slug: string;
-      pricePerSeat: string;
-      /** Format: double */
-      maxSeats: number | null;
-      billingInterval: string;
-      features: components["schemas"]["Record_string.unknown_"] | null;
-    };
-    CreateSubscriptionResponse: {
-      subscriptionId: string;
-      planId: string;
-      /** Format: double */
-      seats: number;
-      status: string;
-    };
-    CreateSubscriptionRequest: {
-      planId: string;
-      /** Format: double */
-      seats: number;
-    };
-    CurrentSubscriptionResponse: {
-      hasSubscription: boolean;
-      status: string | null;
-      plan: {
-        /** Format: double */
-        maxSeats: number | null;
-        pricePerSeat: string;
-        slug: string;
-        name: string;
-        id: string;
-      } | null;
-      seats: {
-        unlimited: boolean;
-        /** Format: double */
-        available: number;
-        /** Format: double */
-        used: number;
-        /** Format: double */
-        purchased: number;
-      } | null;
-      isGrandfathered?: boolean;
-    };
-    UpdateSubscriptionResponse: {
-      subscriptionId: string;
-      planId: string;
-      /** Format: double */
-      seats: number;
-      status: string;
-    };
-    UpdateSubscriptionRequest: {
-      planId?: string;
-      /** Format: double */
-      seats?: number;
-    };
-    NASConfig: {
-      /** @enum {string} */
-      type: "smb" | "nfs" | "webdav" | "local";
-      host: string;
-      shareName: string;
-      username: string;
-      password: string;
-      domain?: string;
-      mountPoint?: string;
-      /** Format: double */
-      port?: number;
-    };
-    StorageInfo: {
-      totalSpace: string;
-      usedSpace: string;
-      availableSpace: string;
-      /** Format: double */
-      usagePercentage: number;
-    };
-    SecuritySettings: {
-      twoFactorEnabled: boolean;
-      sessionTimeout: string;
-      passwordExpiry: string;
-      requirePasswordChange: boolean;
-      allowMultipleSessions: boolean;
-      ipWhitelisting: boolean;
-      loginNotifications: boolean;
-    };
-    /** @enum {string} */
-    ReportStatus: "generating" | "ready" | "failed";
-    AuditReportResponse: {
-      id: string;
-      caseId: string;
-      templateId?: string | null;
-      title: string;
-      status: components["schemas"]["ReportStatus"];
-      generatedData?: components["schemas"]["Record_string.unknown_"] | null;
-      settings?: {
-        customizations?: components["schemas"]["Record_string.unknown_"];
-        includeSections?: string[];
-        dateRange?: {
-          end: string;
-          start: string;
-        };
-      } | null;
-      filePath?: string | null;
-      /** Format: date-time */
-      generatedAt?: string | null;
-      generatedBy: string;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    GenerateReportRequest: {
-      caseId: string;
-      templateId: string;
-      title: string;
-      titleAr?: string | null;
-      settings?: {
-        customizations?: components["schemas"]["Record_string.unknown_"];
-        /** @enum {string|null} */
-        locale?: "en" | "ar" | null;
-        includeSections?: string[];
-        dateRange?: {
-          end: string;
-          start: string;
-        };
-      };
-    };
-    UpdateAuditReportRequest: {
-      title?: string | null;
-      status?: components["schemas"]["ReportStatus"] | null;
-      generatedData?: components["schemas"]["Record_string.unknown_"] | null;
-      settings?: {
-        customizations?: components["schemas"]["Record_string.unknown_"];
-        includeSections?: string[];
-        dateRange?: {
-          end: string;
-          start: string;
-        };
-      } | null;
-      filePath?: string | null;
-      /** Format: date-time */
-      generatedAt?: string | null;
-    };
-    /** @enum {string} */
-    CaseType:
-      | "ICV_AUDIT"
-      | "ISO_9001_AUDIT"
-      | "ISO_14001_AUDIT"
-      | "ISO_45001_AUDIT"
-      | "FINANCIAL_AUDIT"
-      | "INTERNAL_AUDIT"
-      | "COMPLIANCE_AUDIT"
-      | "OPERATIONAL_AUDIT";
-    AuditReportTemplateResponse: {
-      id: string;
-      name: string;
-      nameAr?: string | null;
-      caseType?: components["schemas"]["CaseType"] | null;
-      description?: string | null;
-      descriptionAr?: string | null;
-      templateStructure: {
-        metadata?: components["schemas"]["Record_string.unknown_"];
-        styles?: components["schemas"]["Record_string.unknown_"];
-        sections: {
-          config?: components["schemas"]["Record_string.unknown_"];
-          dataSource?: string;
-          titleAr?: string;
-          title?: string;
-          /** @enum {string} */
-          type: "cover_page" | "text" | "metrics_table" | "findings_list" | "chart" | "appendix";
-          id: string;
-        }[];
-      };
-      isDefault: boolean;
-      isActive: boolean;
-      organizationId?: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    CreateAuditReportTemplateRequest: {
-      name: string;
-      nameAr?: string | null;
-      caseType?: components["schemas"]["CaseType"] | null;
-      description?: string | null;
-      descriptionAr?: string | null;
-      templateStructure: {
-        metadata?: components["schemas"]["Record_string.unknown_"];
-        styles?: components["schemas"]["Record_string.unknown_"];
-        sections: {
-          config?: components["schemas"]["Record_string.unknown_"];
-          dataSource?: string;
-          titleAr?: string;
-          title?: string;
-          /** @enum {string} */
-          type: "cover_page" | "text" | "metrics_table" | "findings_list" | "chart" | "appendix";
-          id: string;
-        }[];
-      };
-      isDefault?: boolean | null;
-      isActive?: boolean | null;
-    };
-    SlugResponse: {
-      nextSlug: string;
-    };
-    OrganizationResponse: {
-      id: string;
-      name: string;
-      slug: string;
-      logo?: string | null;
-      industry?: string | null;
-      size?: string | null;
-      country?: string | null;
-      createdAt: string;
-      updatedAt: string;
-    };
-    OnboardingStatus: {
-      /** @enum {string} */
-      currentStep: "accept-invitation" | "select-plan" | "create-organization" | "completed";
-      hasSubscription: boolean;
-      hasOrganization: boolean;
-      hasPendingInvitations: boolean;
-      /** Format: double */
-      pendingInvitationsCount: number;
-      subscription: {
-        isFree: boolean;
-        /** Format: double */
-        seats: number;
-        planSlug: string;
-        planName: string;
-      } | null;
-      nextAction: {
-        ctaRoute: string;
-        ctaText: string;
-        description: string;
-        title: string;
-      };
-    };
-    UpgradePlanRequest: {
-      planId: string;
-      /** Format: double */
-      seats: number;
-    };
-    OdooWebhookPayload: {
-      /** @enum {string} */
-      event: "create" | "write" | "unlink";
-      model: string;
-      /** Format: double */
-      record_id: number;
-      organization_id: string;
-      user_id: string;
-      timestamp: string;
-    };
-    OdooProvisionResponse: {
-      success: boolean;
-      message: string;
-      jobId?: string;
-    };
-    /** @enum {string} */
-    OdooLanguage: "en_US" | "ar_001" | "fr_FR" | "es_ES" | "de_DE";
-    /** @enum {string} */
-    OdooDemo: "true" | "false";
-    OdooInfoResponse: {
-      databaseName: string;
-      exists: boolean;
-      loginUrl: string | null;
-    };
-    OdooDeleteResponse: {
-      success: boolean;
-      message: string;
-    };
-    OdooDuplicateResponse: {
-      success: boolean;
-      originalName: string;
-      newName: string;
-    };
-    OdooDuplicateRequest: {
-      newName: string;
-      neutralize?: boolean;
-    };
-    OdooListResponse: {
-      databases: string[];
-    };
-    OdooSearchRequest: {
-      model: string;
-      domain?: unknown[];
-      /** Format: double */
-      limit?: number;
-      /** Format: double */
-      offset?: number;
-      order?: string;
-    };
-    OdooSearchReadRequest: {
-      model: string;
-      domain?: unknown[];
-      fields?: string[];
-      /** Format: double */
-      limit?: number;
-      /** Format: double */
-      offset?: number;
-      order?: string;
-      context?: components["schemas"]["Record_string.unknown_"];
-    };
-    OdooReadRequest: {
-      model: string;
-      ids: number[];
-      fields?: string[];
-      context?: components["schemas"]["Record_string.unknown_"];
-    };
-    OdooCreateRequest: {
-      model: string;
-      values: components["schemas"]["Record_string.unknown_"];
-      context?: components["schemas"]["Record_string.unknown_"];
-    };
-    OdooWriteRequest: {
-      model: string;
-      ids: number[];
-      values: components["schemas"]["Record_string.unknown_"];
-      context?: components["schemas"]["Record_string.unknown_"];
-    };
-    OdooUnlinkRequest: {
-      model: string;
-      ids: number[];
-      context?: components["schemas"]["Record_string.unknown_"];
-    };
-    OdooExecuteRequest: {
-      model: string;
-      method: string;
-      args?: unknown[];
-      kwargs?: components["schemas"]["Record_string.unknown_"];
-    };
-    OcrResponse: {
-      documentId: string;
-      extractedText: string;
-      /** Format: date-time */
-      processedAt: string;
-    };
-    ProcessOcrRequest: {
-      documentId: string;
-      language?: string | null;
-    };
-    DocumentSearchResult: {
-      id: string;
-      fileName: string;
-      fileType: string;
-      ocrText: string | null;
-      /** Format: date-time */
-      uploadedAt: string;
-    };
-    DocumentSearchRequest: {
-      caseId: string;
-      searchText: string;
-    };
-    NASConnectionStatus: {
-      connected: boolean;
-      mountPoint?: string;
-      error?: string;
-      /** Format: double */
-      freeSpace?: number;
-      /** Format: double */
-      totalSpace?: number;
-      /** Format: double */
-      usedSpace?: number;
-    };
-    ConnectNASRequest: {
-      name: string;
-      /** @enum {string} */
-      type: "smb" | "nfs" | "webdav";
-      host: string;
-      shareName: string;
-      username?: string;
-      password?: string;
-      domain?: string;
-      mountPoint?: string;
-      /** Format: double */
-      port?: number;
-    };
-    /** @description Construct a type with a set of properties K of type T */
-    "Record_string.NASConnectionStatus_": {
-      [key: string]: components["schemas"]["NASConnectionStatus"];
-    };
-    NASStatusResponse: components["schemas"]["Record_string.NASConnectionStatus_"];
-    ModuleAccessResponse: {
-      modules: string[];
-    };
-    HRSectionResponse: {
-      id: string;
-      sectionKey: string;
-      /** @enum {string} */
-      sectionType: "self_service" | "management";
-      displayName: string;
-      description: string | null;
-      path: string;
-      requiredPermissions: string | null;
-      minimumRole: string | null;
-      /** Format: double */
-      sortOrder: number | null;
-      isActive: boolean | null;
-    };
-    HRSectionsResponse: {
-      sections: components["schemas"]["HRSectionResponse"][];
-    };
-    ModuleAccessRule: {
-      moduleKey: string;
-      role: string;
-      hasAccess: boolean;
-    };
-    UpdateModuleAccessRequest: {
-      organizationId?: string;
-      rules: components["schemas"]["ModuleAccessRule"][];
-    };
-    ResourceAssignmentResponse: {
-      id: string;
-      userId: string;
-      resourceType: string;
-      resourceId: string;
-      role: string | null;
-      assignedBy: string | null;
-      assignedAt: string;
-      expiresAt: string | null;
-    };
-    AssignResourceRequest: {
-      userId: string;
-      /** @enum {string} */
-      resourceType: "audit_case" | "accounting_client" | "crm_lead" | "crm_deal" | "hr_department";
-      resourceId: string;
-      role?: string;
-    };
-    AssignedResourcesResponse: {
-      resourceIds: string[];
-    };
-    Integration: {
-      id: string;
-      name: string;
-      description: string;
-      logo: string;
-      connected: boolean;
-      /** @enum {string} */
-      category: "accounting" | "communication" | "storage" | "productivity";
-      configUrl?: string;
-    };
-    /** @enum {string} */
-    EmployeeType: "employee" | "student" | "trainee" | "contractor" | "freelance";
-    /** @enum {string} */
-    Gender: "male" | "female" | "other";
-    /** @enum {string} */
-    MaritalStatus: "single" | "married" | "cohabitant" | "widower" | "divorced";
-    EmployeeDbResponse: {
-      id: string;
-      organizationId: string;
-      userId?: string | null;
-      /** Format: double */
-      odooEmployeeId?: number | null;
-      name: string;
-      email?: string | null;
-      phone?: string | null;
-      mobile?: string | null;
-      workEmail?: string | null;
-      workPhone?: string | null;
-      workLocation?: string | null;
-      jobTitle?: string | null;
-      departmentId?: string | null;
-      managerId?: string | null;
-      employeeType?: components["schemas"]["EmployeeType"] | null;
-      gender?: components["schemas"]["Gender"] | null;
-      maritalStatus?: components["schemas"]["MaritalStatus"] | null;
-      birthday?: string | null;
-      placeOfBirth?: string | null;
-      countryOfBirth?: string | null;
-      nationality?: string | null;
-      identificationId?: string | null;
-      passportId?: string | null;
-      bankAccountNumber?: string | null;
-      bankName?: string | null;
-      bankIban?: string | null;
-      emergencyContact?: string | null;
-      emergencyPhone?: string | null;
-      emergencyRelation?: string | null;
-      hireDate?: string | null;
-      terminationDate?: string | null;
-      photoUrl?: string | null;
-      notes?: string | null;
-      active: boolean;
-      lastSyncedAt?: string | null;
-      createdAt: string;
-      updatedAt: string;
-    };
-    CreateEmployeeRequest: {
-      userId?: string | null;
-      /** Format: double */
-      odooEmployeeId?: number | null;
-      name: string;
-      email?: string | null;
-      phone?: string | null;
-      mobile?: string | null;
-      workEmail?: string | null;
-      workPhone?: string | null;
-      workLocation?: string | null;
-      jobTitle?: string | null;
-      departmentId?: string | null;
-      managerId?: string | null;
-      employeeType?: components["schemas"]["EmployeeType"] | null;
-      gender?: components["schemas"]["Gender"] | null;
-      maritalStatus?: components["schemas"]["MaritalStatus"] | null;
-      birthday?: string | null;
-      placeOfBirth?: string | null;
-      countryOfBirth?: string | null;
-      nationality?: string | null;
-      identificationId?: string | null;
-      passportId?: string | null;
-      bankAccountNumber?: string | null;
-      bankName?: string | null;
-      bankIban?: string | null;
-      emergencyContact?: string | null;
-      emergencyPhone?: string | null;
-      emergencyRelation?: string | null;
-      hireDate?: string | null;
-      terminationDate?: string | null;
-      photoUrl?: string | null;
-      notes?: string | null;
-      active?: boolean | null;
-    };
-    UpdateEmployeeRequest: {
-      name?: string | null;
-      email?: string | null;
-      phone?: string | null;
-      mobile?: string | null;
-      workEmail?: string | null;
-      workPhone?: string | null;
-      workLocation?: string | null;
-      jobTitle?: string | null;
-      departmentId?: string | null;
-      managerId?: string | null;
-      employeeType?: components["schemas"]["EmployeeType"] | null;
-      gender?: components["schemas"]["Gender"] | null;
-      maritalStatus?: components["schemas"]["MaritalStatus"] | null;
-      birthday?: string | null;
-      placeOfBirth?: string | null;
-      countryOfBirth?: string | null;
-      nationality?: string | null;
-      identificationId?: string | null;
-      passportId?: string | null;
-      bankAccountNumber?: string | null;
-      bankName?: string | null;
-      bankIban?: string | null;
-      emergencyContact?: string | null;
-      emergencyPhone?: string | null;
-      emergencyRelation?: string | null;
-      hireDate?: string | null;
-      terminationDate?: string | null;
-      photoUrl?: string | null;
-      notes?: string | null;
-      active?: boolean | null;
-    };
-    SyncEmployeeFromOdooRequest: {
-      /** Format: double */
-      odooEmployeeId: number;
-    };
-    SyncAllEmployeesResponse: {
-      /** Format: double */
-      synced: number;
-      /** Format: double */
-      created: number;
-      /** Format: double */
-      updated: number;
-      errors: string[];
-    };
-    DepartmentDbResponse: {
-      id: string;
-      organizationId: string;
-      /** Format: double */
-      odooDepartmentId?: number | null;
-      name: string;
-      code?: string | null;
-      parentId?: string | null;
-      managerId?: string | null;
-      /** Format: double */
-      color?: number | null;
-      note?: string | null;
-      lastSyncedAt?: string | null;
-      createdAt: string;
-      updatedAt: string;
-    };
-    CreateDepartmentRequest: {
-      /** Format: double */
-      odooDepartmentId?: number | null;
-      name: string;
-      code?: string | null;
-      parentId?: string | null;
-      managerId?: string | null;
-      /** Format: double */
-      color?: number | null;
-      note?: string | null;
-    };
-    UpdateDepartmentRequest: {
-      name?: string | null;
-      code?: string | null;
-      parentId?: string | null;
-      managerId?: string | null;
-      /** Format: double */
-      color?: number | null;
-      note?: string | null;
-    };
-    SyncDepartmentFromOdooRequest: {
-      /** Format: double */
-      odooDepartmentId: number;
-    };
-    SyncAllDepartmentsResponse: {
-      /** Format: double */
-      synced: number;
-      /** Format: double */
-      created: number;
-      /** Format: double */
-      updated: number;
-      errors: string[];
-    };
-    LeaveBalanceResponse: {
-      employeeId: string;
-      leaveTypeId: string;
-      leaveTypeName: string;
-      /** Format: double */
-      totalAllocated: number;
-      /** Format: double */
-      totalUsed: number;
-      /** Format: double */
-      totalRemaining: number;
-    };
-    OdooRelation: {
-      /** Format: double */
-      id: number;
-      name: string;
-    };
-    EmployeeResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      work_email?: string;
-      work_phone?: string;
-      mobile_phone?: string;
-      job_title?: string;
-      department_id?: components["schemas"]["OdooRelation"];
-      parent_id?: components["schemas"]["OdooRelation"];
-      address_id?: components["schemas"]["OdooRelation"];
-      work_location_id?: components["schemas"]["OdooRelation"];
-      user_id?: components["schemas"]["OdooRelation"];
-      employee_type?: string;
-      gender?: string;
-      marital?: string;
-      birthday?: string;
-      identification_id?: string;
-      passport_id?: string;
-      bank_account_id?: components["schemas"]["OdooRelation"];
-      emergency_contact?: string;
-      emergency_phone?: string;
-      visa_no?: string;
-      visa_expire?: string;
-      work_permit_no?: string;
-      work_permit_expiration_date?: string;
-      certificate?: string;
-      study_field?: string;
-      study_school?: string;
-      place_of_birth?: string;
-      country_of_birth?: components["schemas"]["OdooRelation"];
-      active?: boolean;
-    };
-    DepartmentResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      complete_name?: string;
-      manager_id?: components["schemas"]["OdooRelation"];
-      parent_id?: components["schemas"]["OdooRelation"];
-      company_id?: components["schemas"]["OdooRelation"];
-      active?: boolean;
-      /** Format: double */
-      total_employee?: number;
-      /** Format: double */
-      color?: number;
-      note?: string;
-    };
-    ContractResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      employee_id: components["schemas"]["OdooRelation"];
-      date_start: string;
-      date_end?: string;
-      state: string;
-      job_id?: components["schemas"]["OdooRelation"];
-      department_id?: components["schemas"]["OdooRelation"];
-      /** Format: double */
-      wage: number;
-      wage_type: string;
-      struct_id?: components["schemas"]["OdooRelation"];
-      resource_calendar_id?: components["schemas"]["OdooRelation"];
-      notes?: string;
-    };
-    LeaveTypeResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      request_unit: string;
-      time_type: string;
-      /** Format: double */
-      color?: number;
-      leave_validation_type?: string;
-      requires_allocation?: boolean;
-      employee_requests?: boolean;
-      allocation_validation_type?: string;
-      /** Format: double */
-      max_leaves?: number;
-      unpaid?: boolean;
-      active?: boolean;
-      support_document?: boolean;
-    };
-    LeaveRequestResponse: {
-      /** Format: double */
-      id: number;
-      employee_id: components["schemas"]["OdooRelation"];
-      holiday_status_id: components["schemas"]["OdooRelation"];
-      date_from: string;
-      date_to: string;
-      /** Format: double */
-      number_of_days: number;
-      state: string;
-      request_date_from?: string;
-      request_unit_half?: boolean;
-      request_unit_hours?: boolean;
-      request_hour_from?: string;
-      request_hour_to?: string;
-      notes?: string;
-      manager_id?: components["schemas"]["OdooRelation"];
-      department_id?: components["schemas"]["OdooRelation"];
-    };
-    LeaveAllocationResponse: {
-      /** Format: double */
-      id: number;
-      employee_id: components["schemas"]["OdooRelation"];
-      holiday_status_id: components["schemas"]["OdooRelation"];
-      /** Format: double */
-      number_of_days: number;
-      /** Format: double */
-      number_of_days_display?: number;
-      date_from?: string;
-      date_to?: string;
-      state: string;
-      name?: string;
-      notes?: string;
-    };
-    PayslipResponse: {
-      /** Format: double */
-      id: number;
-      number: string;
-      employee_id: components["schemas"]["OdooRelation"];
-      date_from: string;
-      date_to: string;
-      state: string;
-      /** Format: double */
-      basic_wage?: number;
-      /** Format: double */
-      net_wage?: number;
-      /** Format: double */
-      gross_wage?: number;
-      contract_id?: components["schemas"]["OdooRelation"];
-      struct_id?: components["schemas"]["OdooRelation"];
-      credit_note?: boolean;
-      paid_date?: string;
-    };
-    PayslipLineResponse: {
-      /** Format: double */
-      id: number;
-      slip_id: components["schemas"]["OdooRelation"];
-      name: string;
-      code: string;
-      category_id?: components["schemas"]["OdooRelation"];
-      /** Format: double */
-      sequence?: number;
-      /** Format: double */
-      quantity?: number;
-      /** Format: double */
-      rate?: number;
-      /** Format: double */
-      amount: number;
-    };
-    HealthCheck: {
-      /** @enum {string} */
-      status: "ok" | "error";
-      timestamp: string;
-      /** Format: double */
-      uptime: number;
-      version: string;
-    };
-    SetupEncryptionRequest: {
-      wrappedOrgKey: string;
-      salt: string;
-      iv: string;
-    };
-    GrantAuditorAccessRequest: {
-      auditorUserId: string;
-      wrappedOrgKey: string;
-      expiresAt?: string;
-    };
-    ResendWebhookPayload: {
-      type: string;
-      created_at: string;
-      data: {
-        complaint_type?: string;
-        bounce_subtype?: string;
         /** @enum {string} */
-        bounce_type?: "hard" | "soft";
-        created_at?: string;
-        subject?: string;
-        to?: string[];
-        from?: string;
-        email_id?: string;
-      };
-    };
-    /** @enum {string} */
-    DocumentType:
-      | "invoice"
-      | "bill"
-      | "quote"
-      | "purchase_order"
-      | "delivery_note"
-      | "receipt"
-      | "credit_note"
-      | "debit_note"
-      | "payslip"
-      | "contract"
-      | "payment_receipt"
-      | "refund";
-    DocumentTemplateResponse: {
-      id: string;
-      organizationId: string;
-      documentType: components["schemas"]["DocumentType"];
-      templateId: string;
-      templateName: string;
-      templateDescription: string | null;
-      isActive: boolean;
-      customizations: components["schemas"]["Record_string.unknown_"] | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    OdooReportTemplate: {
-      /** Format: double */
-      id: number;
-      name: string;
-      report_name: string;
-      model: string;
-      report_type: string;
-    };
-    CreateDocumentTemplateRequest: {
-      documentType: components["schemas"]["DocumentType"];
-      templateId: string;
-      templateName: string;
-      templateDescription?: string;
-      isActive?: boolean;
-      customizations?: components["schemas"]["Record_string.unknown_"];
-    };
-    UpdateTemplateRequest: {
-      templateName?: string;
-      templateDescription?: string;
-      customizations?: components["schemas"]["Record_string.unknown_"];
-    };
-    CreateCustomTemplateRequest: {
-      documentType: components["schemas"]["DocumentType"];
-      templateName: string;
-      templateDescription?: string;
-      qwebXml: string;
-      model: string;
-      isActive?: boolean;
-      customizations?: components["schemas"]["Record_string.unknown_"];
-    };
-    DatabaseStats: {
-      totalSize: string;
-      /** Format: double */
-      tableCount: number;
-      rowCount: string;
-      lastOptimized: string;
-      /** @enum {string} */
-      health: "good" | "warning" | "critical";
-    };
-    BackupSettings: {
-      autoBackup: boolean;
-      backupFrequency: string;
-      backupRetention: string;
-      backupLocation: string;
-      compressionEnabled: boolean;
-      encryptionEnabled: boolean;
-    };
-    Backup: {
-      id: string;
-      name: string;
-      size: string;
-      date: string;
-      /** @enum {string} */
-      status: "completed" | "failed" | "in-progress";
-      /** @enum {string} */
-      type: "automatic" | "manual";
-    };
-    /** @description Dashboard statistics response */
-    DashboardStatsResponse: {
-      /** Format: double */
-      activeCases: number;
-      /** Format: double */
-      pendingReviews: number;
-      /** Format: double */
-      completedAudits: number;
-      /** Format: double */
-      totalCases: number;
-      /** Format: double */
-      completionRate: number;
-    };
-    /** @description Case activity item */
-    RecentCaseUpdateResponse: {
-      id: string;
-      /** @enum {string} */
-      type: "case_update";
-      caseId: string;
-      caseNumber: string;
-      title: string;
-      status: string;
-      updatedAt: string;
-      updatedBy: {
-        name: string;
-        id: string;
-      };
-    };
-    /** @description Notification response */
-    NotificationResponse: {
-      id: string;
-      type: string;
-      title: string;
-      description: string;
-      timestamp: string;
-      isRead: boolean;
-      relatedEntityType: string | null;
-      relatedEntityId: string | null;
-      actionLabel: string | null;
-      actionUrl: string | null;
-    };
-    /** @description Unread notifications count response */
-    UnreadNotificationsCountResponse: {
-      /** Format: double */
-      count: number;
-    };
-    LeadResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      type: string;
-      contactName?: string;
-      partnerName?: string;
-      emailFrom?: string;
-      phone?: string;
-      website?: string;
-      function?: string;
-      street?: string;
-      street2?: string;
-      city?: string;
-      state?: components["schemas"]["OdooRelation"];
-      country?: components["schemas"]["OdooRelation"];
-      zip?: string;
-      partner?: components["schemas"]["OdooRelation"];
-      commercialPartner?: components["schemas"]["OdooRelation"];
-      stage?: components["schemas"]["OdooRelation"];
-      team?: components["schemas"]["OdooRelation"];
-      user?: components["schemas"]["OdooRelation"];
-      company?: components["schemas"]["OdooRelation"];
-      campaign?: components["schemas"]["OdooRelation"];
-      source?: components["schemas"]["OdooRelation"];
-      medium?: components["schemas"]["OdooRelation"];
-      language?: components["schemas"]["OdooRelation"];
-      tags?: number[];
-      /** Format: double */
-      expectedRevenue?: number;
-      /** Format: double */
-      proratedRevenue?: number;
-      /** Format: double */
-      recurringRevenue?: number;
-      recurringPlan?: components["schemas"]["OdooRelation"];
-      /** Format: double */
-      recurringRevenueMonthly?: number;
-      /** Format: double */
-      probability?: number;
-      dateOpen?: string;
-      dateDeadline?: string;
-      dateClosed?: string;
-      dateConversion?: string;
-      dateLastStageUpdate?: string;
-      priority?: string;
-      active?: boolean;
-      description?: string;
-      referred?: string;
-      /** Format: double */
-      color?: number;
-      lostReason?: components["schemas"]["OdooRelation"];
-    };
-    CreateLeadRequest: {
-      name: string;
-      /** @enum {string} */
-      type?: "lead" | "opportunity";
-      contactName?: string;
-      emailFrom?: string;
-      phone?: string;
-      /** Format: double */
-      partnerId?: number;
-      /** Format: double */
-      teamId?: number;
-      /** Format: double */
-      userId?: number;
-      /** Format: double */
-      expectedRevenue?: number;
-      description?: string;
-    };
-    UpdateLeadRequest: {
-      name?: string;
-      /** Format: double */
-      stageId?: number;
-      /** Format: double */
-      userId?: number;
-      /** Format: double */
-      expectedRevenue?: number;
-      dateDeadline?: string;
-      priority?: string;
-      description?: string;
-    };
-    StageResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      /** Format: double */
-      sequence?: number;
-      fold?: boolean;
-      isWon?: boolean;
-      /** Format: double */
-      rottingThresholdDays?: number;
-      requirements?: string;
-      teamIds?: number[];
-      /** Format: double */
-      color?: number;
-    };
-    ContactResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      isCompany?: boolean;
-      companyType?: string;
-      email?: string;
-      phone?: string;
-      mobile?: string;
-      website?: string;
-      function?: string;
-      comment?: string;
-      street?: string;
-      street2?: string;
-      city?: string;
-      state?: components["schemas"]["OdooRelation"];
-      country?: components["schemas"]["OdooRelation"];
-      zip?: string;
-      vat?: string;
-      industry?: components["schemas"]["OdooRelation"];
-      ref?: string;
-      barcode?: string;
-      isCustomer?: boolean;
-      isSupplier?: boolean;
-      active?: boolean;
-    };
-    CreateContactRequest: {
-      name: string;
-      isCompany?: boolean;
-      email?: string;
-      phone?: string;
-      mobile?: string;
-      website?: string;
-      street?: string;
-      city?: string;
-      zip?: string;
-      /** Format: double */
-      countryId?: number;
-    };
-    UpdateContactRequest: {
-      name?: string;
-      email?: string;
-      phone?: string;
-      mobile?: string;
-      website?: string;
-      street?: string;
-      city?: string;
-      zip?: string;
-    };
-    ActivityResponse: {
-      /** Format: double */
-      id: number;
-      /** Format: double */
-      leadId: number;
-      activityType: components["schemas"]["OdooRelation"];
-      summary?: string;
-      note?: string;
-      dateDeadline: string;
-      user: components["schemas"]["OdooRelation"];
-      state: string;
-    };
-    CreateActivityRequest: {
-      /** Format: double */
-      leadId: number;
-      /** Format: double */
-      activityTypeId: number;
-      summary?: string;
-      note?: string;
-      dateDeadline: string;
-      /** Format: double */
-      userId?: number;
-    };
-    TeamResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      active?: boolean;
-      leader?: components["schemas"]["OdooRelation"];
-      memberIds?: number[];
-    };
-    LostReasonResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      active?: boolean;
-    };
-    /** @enum {string} */
-    ConnectorType:
-      | "postgresql"
-      | "mysql"
-      | "mssql"
-      | "storage_local"
-      | "storage_webdav"
-      | "storage_smb"
-      | "storage_cloud";
-    ConnectorResponse: {
-      id: string;
-      organizationId: string;
-      name: string;
-      description?: string | null;
-      type: components["schemas"]["ConnectorType"];
-      isActive: boolean;
-      tags: string[];
-      metadata: components["schemas"]["Record_string.unknown_"];
-      lastConnectionTest?: string | null;
-      lastConnectionStatus?: string | null;
-      lastConnectionError?: string | null;
-      createdAt: string;
-      updatedAt: string;
-    };
-    ConnectorConfig: {
-      host?: string;
-      /** Format: double */
-      port?: number;
-      database?: string;
-      username?: string;
-      password?: string;
-      ssl?: boolean;
-      url?: string;
-      apiKey?: string;
-      authToken?: string;
-    } & {
-      [key: string]: unknown;
-    };
-    CreateConnectorRequest: {
-      name: string;
-      description?: string | null;
-      type: components["schemas"]["ConnectorType"];
-      config: components["schemas"]["ConnectorConfig"];
-      tags?: string[] | null;
-      metadata?: components["schemas"]["Record_string.unknown_"] | null;
-    };
-    UpdateConnectorRequest: {
-      name?: string | null;
-      description?: string | null;
-      config?: components["schemas"]["ConnectorConfig"] | null;
-      tags?: string[] | null;
-      metadata?: components["schemas"]["Record_string.unknown_"] | null;
-      isActive?: boolean | null;
-    };
-    QueryResponse: {
-      rows: unknown[];
-      /** Format: double */
-      rowCount: number;
-      /** Format: double */
-      executionTime: number;
-    };
-    QueryRequest: {
-      sql: string;
-      params?: unknown[] | null;
-    };
-    SchemaResponse: {
-      tables: {
+        StepType: "single" | "parallel" | "any";
         /** @enum {string} */
-        type: "table" | "view";
-        name: string;
-        schema: string;
-      }[];
-    };
-    TablePreviewResponse: {
-      schema: string;
-      table: string;
-      columns: {
-        nullable: boolean;
-        type: string;
-        name: string;
-      }[];
-      sampleData: unknown[];
-      /** Format: double */
-      totalRows: number;
-    };
-    FieldMapping: {
-      sourceColumn: string;
-      targetField: string;
-      /** @enum {string|null} */
-      transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean" | null;
-      defaultValue?: unknown;
-    };
-    SuggestMappingsRequest: {
-      sourceColumns: string[];
-      /** @enum {string} */
-      targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
-    };
-    /** @enum {string} */
-    ActivityType:
-      | "case_created"
-      | "status_changed"
-      | "priority_updated"
-      | "document_uploaded"
-      | "document_approved"
-      | "document_rejected"
-      | "comment_added"
-      | "team_member_assigned"
-      | "team_member_removed"
-      | "case_completed"
-      | "case_archived"
-      | "scope_created"
-      | "procedure_completed"
-      | "plan_created"
-      | "report_generated";
-    /** @description Construct a type with a set of properties K of type T */
-    "Record_string.boolean_": {
-      [key: string]: boolean;
-    };
-    CaseActivityResponse: {
-      id: string;
-      caseId: string;
-      activityType: components["schemas"]["ActivityType"];
-      userId?: string | null;
-      user?: {
-        email: string;
-        name: string | null;
-        id: string | null;
-      };
-      metadata?:
-        | ({
-            reportId?: string | null;
-            planId?: string | null;
-            scopeId?: string | null;
-            commentId?: string | null;
-            assignedUserName?: string | null;
-            assignedUserId?: string | null;
-            userName?: string | null;
-            documentId?: string | null;
-            documentName?: string | null;
-            newValue?: string | null;
-            oldValue?: string | null;
-            caseName?: string | null;
-          } & {
+        ApproverType: "role" | "team" | "user";
+        WorkflowStepResponse: {
+            id: string;
+            /** Format: double */
+            stepOrder: number;
+            stepType: components["schemas"]["StepType"];
+            approverType: components["schemas"]["ApproverType"];
+            approverId?: string;
+            /** Format: double */
+            minApprovals: number;
+            /** Format: double */
+            requiredApprovers: number;
+        };
+        WorkflowResponse: {
+            id: string;
+            name: string;
+            organizationId: string;
+            entityType: string;
+            isActive: boolean;
+            rules?: components["schemas"]["WorkflowRules"];
+            createdAt: string;
+            updatedAt: string;
+            steps: components["schemas"]["WorkflowStepResponse"][];
+        };
+        WorkflowStepInput: {
+            /** Format: double */
+            stepOrder: number;
+            stepType: components["schemas"]["StepType"];
+            approverType: components["schemas"]["ApproverType"];
+            approverId?: string;
+            /** Format: double */
+            minApprovals?: number;
+            /** Format: double */
+            requiredApprovers?: number;
+        };
+        CreateWorkflowRequest: {
+            name: string;
+            entityType: string;
+            rules?: components["schemas"]["WorkflowRules"];
+            steps: components["schemas"]["WorkflowStepInput"][];
+        };
+        UpdateWorkflowRequest: {
+            name?: string;
+            isActive?: boolean;
+            rules?: components["schemas"]["WorkflowRules"];
+            steps?: components["schemas"]["WorkflowStepInput"][];
+        };
+        RuleCondition: {
+            /** Format: double */
+            value: number;
+            /** @enum {string} */
+            operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq";
+            /** @enum {string} */
+            type: "amount";
+        } | {
+            value: string;
+            /** @enum {string} */
+            operator?: "eq";
+            /** @enum {string} */
+            type: "entityType";
+        } | {
+            value: string;
+            /** @enum {string} */
+            operator?: "eq";
+            /** @enum {string} */
+            type: "userRole";
+        } | {
+            /** @enum {string} */
+            type: "manual";
+        } | {
+            value: string | number | boolean;
+            /** @enum {string} */
+            operator: "gt" | "gte" | "lt" | "lte" | "eq" | "neq" | "contains";
+            field: string;
+            /** @enum {string} */
+            type: "field";
+        };
+        Rule: {
+            conditions: components["schemas"]["RuleCondition"][];
+            /** @enum {string} */
+            logic?: "AND" | "OR";
+        };
+        RuleResponse: {
+            id: string;
+            organizationId: string;
+            entityType: string;
+            ruleName: string;
+            conditions: components["schemas"]["Rule"];
+            workflowId: string;
+            /** Format: double */
+            priority: number;
+        };
+        CreateRuleRequest: {
+            entityType: string;
+            ruleName: string;
+            conditions: string;
+            workflowId: string;
+            /** Format: double */
+            priority?: number;
+        };
+        /** @description Construct a type with a set of properties K of type T */
+        "Record_string.unknown_": {
             [key: string]: unknown;
-          })
-        | null;
-      isRead?: components["schemas"]["Record_string.boolean_"] | null;
-      /** Format: date-time */
-      createdAt: string;
-    };
-    CreateCaseActivityRequest: {
-      caseId: string;
-      activityType: components["schemas"]["ActivityType"];
-      metadata?: {
-        reportId?: string | null;
-        planId?: string | null;
-        scopeId?: string | null;
-        commentId?: string | null;
-        assignedUserName?: string | null;
-        assignedUserId?: string | null;
-        userName?: string | null;
-        documentId?: string | null;
-        documentName?: string | null;
-        newValue?: string | null;
-        oldValue?: string | null;
-        caseName?: string | null;
-      } & {
-        [key: string]: unknown;
-      };
-    };
-    MarkAsReadRequest: {
-      activityIds: string[];
-    };
-    PresenceResponse: {
-      id: string;
-      caseId: string;
-      userId: string;
-      user?: {
-        email: string;
-        name: string | null;
-        id: string | null;
-      };
-      /** Format: date-time */
-      lastSeenAt: string;
-    };
-    UpdatePresenceRequest: {
-      caseId: string;
-    };
-    /** @enum {string} */
-    CaseStatus: "draft" | "in_progress" | "under_review" | "completed" | "overdue" | "archived";
-    /** @enum {string} */
-    CasePriority: "low" | "medium" | "high" | "critical";
-    /** @enum {string} */
-    AssignmentRole: "lead" | "reviewer" | "team_member";
-    CaseResponse: {
-      id: string;
-      organizationId: string;
-      caseNumber: string;
-      title: string;
-      description?: string | null;
-      caseType: components["schemas"]["CaseType"];
-      status: components["schemas"]["CaseStatus"];
-      priority: components["schemas"]["CasePriority"];
-      dueDate?: string | null;
-      completedDate?: string | null;
-      createdBy: string;
-      createdAt: string;
-      updatedAt: string;
-      assignments?: {
-        user?: {
-          email: string;
-          name: string | null;
-          id: string | null;
         };
-        role: components["schemas"]["AssignmentRole"];
-        userId: string | null;
-      }[];
-    };
-    CreateCaseRequest: {
-      caseNumber?: string | null;
-      title: string;
-      description?: string | null;
-      caseType: components["schemas"]["CaseType"];
-      status?: components["schemas"]["CaseStatus"] | null;
-      priority?: components["schemas"]["CasePriority"] | null;
-      dueDate?: string | null;
-    };
-    /** @enum {string} */
-    TemplateType: "scope" | "form" | "checklist" | "report" | "plan";
-    /** @enum {string} */
-    CaseCategory: "certification" | "financial" | "operational" | "compliance";
-    TemplateStructure: {
-      settings?: components["schemas"]["Record_string.unknown_"];
-      sections: {
-        procedures: {
-          /** Format: double */
-          sortOrder: number;
-          requirements?: components["schemas"]["Record_string.unknown_"];
-          description?: string;
-          title: string;
-          referenceNumber: string;
-        }[];
-        settings?: components["schemas"]["Record_string.unknown_"];
-        /** Format: double */
-        sortOrder: number;
-        description?: string;
-        name: string;
-      }[];
-    };
-    TemplateResponse: {
-      id: string;
-      organizationId?: string | null;
-      name: string;
-      description?: string | null;
-      templateType: components["schemas"]["TemplateType"];
-      category?: components["schemas"]["CaseCategory"] | null;
-      version: string;
-      isActive: boolean;
-      isSystemTemplate: boolean;
-      structure: components["schemas"]["TemplateStructure"];
-      createdBy: string;
-      createdAt: string;
-      updatedAt: string;
-    };
-    CreateTemplateRequest: {
-      organizationId?: string | null;
-      name: string;
-      description?: string | null;
-      templateType: components["schemas"]["TemplateType"];
-      category?: components["schemas"]["CaseCategory"] | null;
-      version?: string;
-      isActive?: boolean;
-      isSystemTemplate?: boolean;
-      structure: components["schemas"]["TemplateStructure"];
-    };
-    UpdateCaseRequest: {
-      caseNumber?: string | null;
-      title?: string | null;
-      description?: string | null;
-      caseType?: components["schemas"]["CaseType"] | null;
-      status?: components["schemas"]["CaseStatus"] | null;
-      priority?: components["schemas"]["CasePriority"] | null;
-      dueDate?: string | null;
-      completedDate?: string | null;
-    };
-    /** @enum {string} */
-    AuditStatus: "draft" | "in_progress" | "under_review" | "completed" | "archived";
-    ScopeResponse: {
-      id: string;
-      caseId: string;
-      templateId?: string | null;
-      name: string;
-      description?: string | null;
-      status: components["schemas"]["AuditStatus"];
-      data: components["schemas"]["Record_string.unknown_"];
-      createdBy: string;
-      completedBy?: string | null;
-      archivedBy?: string | null;
-      createdAt: string;
-      updatedAt: string;
-      completedAt?: string | null;
-      archivedAt?: string | null;
-    };
-    CreateScopeRequest: {
-      name: string;
-      description?: string | null;
-      status?: components["schemas"]["AuditStatus"] | null;
-      data?: components["schemas"]["Record_string.unknown_"] | null;
-    };
-    CreateScopeFromTemplateRequest: {
-      templateId: string;
-    };
-    UpdateScopeStatusRequest: {
-      status: components["schemas"]["AuditStatus"];
-    };
-    SectionResponse: {
-      id: string;
-      scopeId: string;
-      name: string;
-      description?: string | null;
-      /** Format: double */
-      sortOrder: number;
-      isCompleted: boolean;
-      settings: components["schemas"]["Record_string.unknown_"];
-      createdAt: string;
-      updatedAt: string;
-    };
-    ProcedureResponse: {
-      id: string;
-      sectionId: string;
-      referenceNumber: string;
-      title: string;
-      description?: string | null;
-      requirements: components["schemas"]["Record_string.unknown_"];
-      /** Format: double */
-      sortOrder: number;
-      isCompleted: boolean;
-      completedBy?: string | null;
-      completedAt?: string | null;
-      memo?: string | null;
-      fieldData: components["schemas"]["Record_string.unknown_"];
-      canEdit: boolean;
-      createdAt: string;
-      updatedAt: string;
-    };
-    CompleteProcedureRequest: {
-      fieldData?: components["schemas"]["Record_string.unknown_"] | null;
-      memo?: string | null;
-    };
-    DocumentResponse: {
-      id: string;
-      caseId: string;
-      procedureId?: string | null;
-      fileName: string;
-      /** Format: double */
-      fileSize: number;
-      fileType: string;
-      storagePath: string;
-      /** Format: double */
-      version: number;
-      parentDocumentId?: string | null;
-      uploadedBy: string;
-      uploadedAt: string;
-      isDeleted: boolean;
-    };
-    CreateDocumentRequest: {
-      procedureId?: string | null;
-      fileName: string;
-      /** Format: double */
-      fileSize: number;
-      fileType: string;
-      storagePath: string;
-      /** Format: double */
-      version?: number | null;
-      parentDocumentId?: string | null;
-    };
-    /** @enum {string} */
-    NoteType: "observation" | "review_comment" | "general" | "memo";
-    NoteResponse: {
-      id: string;
-      caseId: string;
-      procedureId?: string | null;
-      noteType: components["schemas"]["NoteType"];
-      content: string;
-      createdBy: string;
-      createdAt: string;
-      updatedAt: string;
-      isEdited: boolean;
-    };
-    CreateNoteRequest: {
-      procedureId?: string | null;
-      noteType: components["schemas"]["NoteType"];
-      content: string;
-    };
-    UpdateNoteRequest: {
-      content: string;
-    };
-    AssignmentResponse: {
-      caseId: string;
-      userId: string;
-      role: components["schemas"]["AssignmentRole"];
-      assignedBy: string;
-      assignedAt: string;
-    };
-    CreateAssignmentRequest: {
-      userId: string;
-      role: components["schemas"]["AssignmentRole"];
-    };
-    /** @enum {string} */
-    CaseEntityType: "case" | "scope" | "section" | "procedure" | "document" | "note";
-    /** @enum {string} */
-    CaseAction: "created" | "updated" | "deleted" | "completed" | "archived" | "assigned" | "unassigned";
-    HistoryResponse: {
-      id: string;
-      caseId: string;
-      entityType: components["schemas"]["CaseEntityType"];
-      entityId: string;
-      action: components["schemas"]["CaseAction"];
-      changesBefore?: components["schemas"]["Record_string.unknown_"] | null;
-      changesAfter?: components["schemas"]["Record_string.unknown_"] | null;
-      changedBy: string;
-      changedAt: string;
-    };
-    /** @enum {string} */
-    PlanType: "standalone" | "case_integrated";
-    /** @enum {string} */
-    PlanStatus: "draft" | "in_review" | "approved" | "converted" | "archived";
-    AuditPlanResponse: {
-      id: string;
-      caseId?: string | null;
-      planType: components["schemas"]["PlanType"];
-      title: string;
-      clientName?: string | null;
-      caseType?: components["schemas"]["CaseType"] | null;
-      /** Format: double */
-      auditYear?: number | null;
-      startDate?: string | null;
-      targetCompletion?: string | null;
-      objectives?:
-        | {
-            priority?: string;
-            description: string;
-            id: string | null;
-          }[]
-        | null;
-      businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
-      financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
-      teamMembers?:
-        | {
-            /** Format: double */
-            hours?: number;
-            role: string;
+        FileMetadata: {
+            id: string;
             name: string;
-            userId: string | null;
-          }[]
-        | null;
-      phaseBreakdown?:
-        | {
-            endDate?: string | null;
-            startDate?: string | null;
-            description?: string | null;
+            path: string;
             /** Format: double */
-            duration: number;
-            name: string | null;
-          }[]
-        | null;
-      totalBudget?: string | null;
-      /** Format: double */
-      totalHours?: number | null;
-      materialityThreshold?: string | null;
-      riskAssessment?: {
-        /** Format: double */
-        score?: number | null;
-        overallRisk?: string | null;
-        risks?: {
-          message: string;
-          severity: string;
-          type: string | null;
-        }[];
-      } | null;
-      status: components["schemas"]["PlanStatus"];
-      organizationId: string;
-      createdBy: string;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    CreateAuditPlanRequest: {
-      caseId?: string | null;
-      planType?: components["schemas"]["PlanType"] | null;
-      title: string;
-      clientName?: string | null;
-      caseType?: components["schemas"]["CaseType"] | null;
-      /** Format: double */
-      auditYear?: number | null;
-      startDate?: string | null;
-      targetCompletion?: string | null;
-      objectives?: {
-        priority?: string;
-        description: string;
-        id: string | null;
-      }[];
-      businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
-      financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
-      teamMembers?: {
-        /** Format: double */
-        hours?: number;
-        role: string;
-        name: string;
-        userId: string | null;
-      }[];
-      phaseBreakdown?: {
-        endDate?: string | null;
-        startDate?: string | null;
-        description?: string | null;
-        /** Format: double */
-        duration: number;
-        name: string | null;
-      }[];
-      totalBudget?: string | null;
-      /** Format: double */
-      totalHours?: number | null;
-      materialityThreshold?: string | null;
-      riskAssessment?: {
-        /** Format: double */
-        score?: number | null;
-        overallRisk?: string | null;
-        risks?: {
-          message: string;
-          severity: string;
-          type: string | null;
-        }[];
-      };
-      status?: components["schemas"]["PlanStatus"] | null;
-    };
-    UpdateAuditPlanRequest: {
-      caseId?: string | null;
-      planType?: components["schemas"]["PlanType"] | null;
-      title?: string | null;
-      clientName?: string | null;
-      caseType?: components["schemas"]["CaseType"] | null;
-      /** Format: double */
-      auditYear?: number | null;
-      startDate?: string | null;
-      targetCompletion?: string | null;
-      objectives?: {
-        priority?: string;
-        description: string;
-        id: string | null;
-      }[];
-      businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
-      financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
-      teamMembers?: {
-        /** Format: double */
-        hours?: number;
-        role: string;
-        name: string;
-        userId: string | null;
-      }[];
-      phaseBreakdown?: {
-        endDate?: string | null;
-        startDate?: string | null;
-        description?: string | null;
-        /** Format: double */
-        duration: number;
-        name: string | null;
-      }[];
-      totalBudget?: string | null;
-      /** Format: double */
-      totalHours?: number | null;
-      materialityThreshold?: string | null;
-      riskAssessment?: {
-        /** Format: double */
-        score?: number | null;
-        overallRisk?: string | null;
-        risks?: {
-          message: string;
-          severity: string;
-          type: string | null;
-        }[];
-      };
-      status?: components["schemas"]["PlanStatus"] | null;
-    };
-    AuditPlanTemplateResponse: {
-      id: string;
-      name: string;
-      caseType?: components["schemas"]["CaseType"] | null;
-      description?: string | null;
-      defaultObjectives?:
-        | {
-            priority?: string;
-            description: string;
-            id: string | null;
-          }[]
-        | null;
-      defaultScope?: components["schemas"]["Record_string.unknown_"] | null;
-      defaultPhases?:
-        | {
-            description?: string;
-            /** Format: double */
-            duration: number;
-            name: string | null;
-          }[]
-        | null;
-      defaultBusinessUnits?: components["schemas"]["Record_string.boolean_"] | null;
-      defaultFinancialAreas?: components["schemas"]["Record_string.boolean_"] | null;
-      /** Format: double */
-      estimatedDuration?: number | null;
-      /** Format: double */
-      estimatedHours?: number | null;
-      estimatedBudget?: string | null;
-      isDefault: boolean;
-      isActive: boolean;
-      organizationId?: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      /** Format: date-time */
-      updatedAt: string;
-    };
-    CreateAuditPlanTemplateRequest: {
-      name: string;
-      caseType?: components["schemas"]["CaseType"] | null;
-      description?: string | null;
-      defaultObjectives?: {
-        priority?: string;
-        description: string;
-        id?: string | null;
-      }[];
-      defaultScope?: components["schemas"]["Record_string.unknown_"] | null;
-      defaultPhases?: {
-        description?: string;
-        /** Format: double */
-        duration: number;
-        name: string | null;
-      }[];
-      defaultBusinessUnits?: components["schemas"]["Record_string.boolean_"] | null;
-      defaultFinancialAreas?: components["schemas"]["Record_string.boolean_"] | null;
-      /** Format: double */
-      estimatedDuration?: number | null;
-      /** Format: double */
-      estimatedHours?: number | null;
-      estimatedBudget?: string | null;
-      isDefault?: boolean | null;
-      isActive?: boolean | null;
-    };
-    CreatePlanFromTemplateRequest: {
-      templateId: string;
-      title: string;
-      clientName?: string | null;
-      /** Format: double */
-      auditYear?: number | null;
-      startDate?: string | null;
-    };
-    /** @enum {string} */
-    EntityType: "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
-    /** @enum {string} */
-    AuditAction:
-      | "created"
-      | "updated"
-      | "deleted"
-      | "completed"
-      | "failed"
-      | "started"
-      | "cancelled"
-      | "retrying";
-    AuditLogUser: {
-      id: string;
-      name: string | null;
-      email: string;
-    };
-    AuditLogResponse: {
-      id: string;
-      entityType: components["schemas"]["EntityType"];
-      entityId: string;
-      action: components["schemas"]["AuditAction"];
-      organizationId: string | null;
-      userId: string | null;
-      metadata: components["schemas"]["Record_string.unknown_"] | null;
-      ipAddress: string | null;
-      userAgent: string | null;
-      /** Format: date-time */
-      createdAt: string;
-      user?: components["schemas"]["AuditLogUser"] | null;
-    };
-    AuditLogFilters: {
-      entityType?: components["schemas"]["EntityType"];
-      entityId?: string;
-      action?: components["schemas"]["AuditAction"];
-      userId?: string;
-      startDate?: string;
-      endDate?: string;
-      /** Format: double */
-      limit?: number;
-      /** Format: double */
-      offset?: number;
-    };
-    ExportAuditLogsRequest: {
-      /** @enum {string} */
-      format: "csv" | "json";
-      filters?: components["schemas"]["AuditLogFilters"];
-    };
-    SubmitForApprovalResponse: {
-      requestId: string;
-      workflowId: string;
-      status: string;
-      message: string;
-    };
-    EntityData: {
-      entityType: components["schemas"]["EntityType"];
-      entityId: string;
-      /** Format: double */
-      amount?: number;
-      status?: string;
-      createdBy?: string;
-    } & {
-      [key: string]: unknown;
-    };
-    SubmitForApprovalRequest: {
-      entityType: string;
-      entityId: string;
-      entityData: components["schemas"]["EntityData"];
-    };
-    ApprovalStepResponse: {
-      id: string;
-      /** Format: double */
-      stepOrder: number;
-      approverId: string;
-      approverName?: string;
-      status: string;
-      comments?: string;
-      actionAt?: string;
-      delegatedTo?: string;
-      delegatedToName?: string;
-    };
-    ApprovalRequestResponse: {
-      id: string;
-      workflowId: string;
-      workflowName: string;
-      entityType: string;
-      entityId: string;
-      status: string;
-      requestedBy: string;
-      requestedByName?: string;
-      submittedAt: string;
-      completedAt?: string;
-      /** Format: double */
-      currentStep?: number;
-      /** Format: double */
-      totalSteps?: number;
-      steps: components["schemas"]["ApprovalStepResponse"][];
-    };
-    ApprovalActionResponse: {
-      success: boolean;
-      message: string;
-      requestStatus?: string;
-    };
-    ApprovalActionRequest: {
-      comments?: string;
-    };
-    DelegateApprovalRequest: {
-      delegateToUserId: string;
-      comments?: string;
-    };
-    Invoice: {
-      id: string;
-      number: string;
-      /** @enum {string} */
-      type: "SALES" | "PURCHASE";
-      date: string;
-      /** Format: double */
-      total: number;
-      status: string;
-    };
-    InvoiceCreateRequest: {
-      /** @enum {string} */
-      type: "SALES" | "PURCHASE";
-      customerId?: string;
-      supplierId?: string;
-      date: string;
-      dueDate?: string;
-      items: {
-        /** Format: double */
-        unitPrice: number;
-        /** Format: double */
-        quantity: number;
-        description: string;
-      }[];
-    };
-    /**
-     * @description Hisabiq (Accounting) API Response Types
-     *
-     *     These are simplified types for API responses that TSOA can handle.
-     *     Internal Odoo types use tuples [number, string] which TSOA doesn't support.
-     *     All fields use camelCase naming convention for JavaScript/TypeScript APIs.
-     */
-    PaymentResponse: {
-      /** Format: double */
-      id?: number;
-      /** @enum {string} */
-      paymentType: "inbound" | "outbound" | "transfer";
-      /** @enum {string} */
-      partnerType: "customer" | "supplier";
-      /** Format: double */
-      partnerId: number;
-      partnerName?: string;
-      /** Format: double */
-      amount: number;
-      /** Format: double */
-      currencyId?: number;
-      paymentDate: string;
-      /** Format: double */
-      journalId: number;
-      journalName?: string;
-      /** Format: double */
-      paymentMethodId?: number;
-      ref?: string;
-      /** @enum {string} */
-      state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
-    };
-    CreatePaymentDTO: {
-      /** @enum {string} */
-      type: "inbound" | "outbound";
-      /** Format: double */
-      partnerId: number;
-      /** @enum {string} */
-      partnerType: "customer" | "supplier";
-      /** Format: double */
-      amount: number;
-      date: string;
-      /** Format: double */
-      journalId: number;
-      reference?: string;
-      invoiceIds?: number[];
-    };
-    PartnerResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      email?: string;
-      phone?: string;
-      vat?: string;
-      /** Format: double */
-      accountReceivableId?: number;
-      /** Format: double */
-      accountPayableId?: number;
-      /** Format: double */
-      paymentTermId?: number;
-      /** Format: double */
-      customerRank?: number;
-      /** Format: double */
-      supplierRank?: number;
-    };
-    JournalResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      code: string;
-      /** @enum {string} */
-      type: "sale" | "purchase" | "cash" | "bank" | "general";
-      /** Format: double */
-      currencyId?: number;
-      currencyName?: string;
-      /** Format: double */
-      companyId: number;
-      companyName?: string;
-      /** Format: double */
-      defaultAccountId: number;
-      defaultAccountName?: string;
-    };
-    TaxResponse: {
-      /** Format: double */
-      id: number;
-      name: string;
-      /** Format: double */
-      amount: number;
-      /** @enum {string} */
-      amountType: "percent" | "division" | "fixed" | "group";
-      /** @enum {string} */
-      typeTaxUse: "sale" | "purchase" | "none";
-      active: boolean;
-    };
-    AccountBalanceReportResponse: {
-      /** Format: double */
-      accountId: number;
-      accountCode: string;
-      accountName: string;
-      /** Format: double */
-      debit: number;
-      /** Format: double */
-      credit: number;
-      /** Format: double */
-      balance: number;
-    };
-    AccountBalanceQuery: {
-      accountIds?: number[];
-      dateFrom?: string;
-      dateTo?: string;
-    };
-    PartnerLedgerEntryResponse: {
-      date: string;
-      moveName: string;
-      label: string;
-      /** Format: double */
-      debit: number;
-      /** Format: double */
-      credit: number;
-      /** Format: double */
-      balance: number;
-    };
-    PartnerLedgerReportResponse: {
-      /** Format: double */
-      partnerId: number;
-      partnerName: string;
-      /** Format: double */
-      debit: number;
-      /** Format: double */
-      credit: number;
-      /** Format: double */
-      balance: number;
-      entries: components["schemas"]["PartnerLedgerEntryResponse"][];
-    };
-    PartnerLedgerQuery: {
-      /** Format: double */
-      partnerId: number;
-      dateFrom?: string;
-      dateTo?: string;
-    };
-    ProfitLossResponse: {
-      /** Format: double */
-      income: number;
-      /** Format: double */
-      expenses: number;
-      /** Format: double */
-      netProfit: number;
-    };
-    GLEntryResponse: {
-      /** Format: double */
-      id: number;
-      /** Format: double */
-      moveId: number;
-      moveName?: string;
-      date: string;
-      /** Format: double */
-      accountId: number;
-      accountName?: string;
-      /** Format: double */
-      partnerId?: number;
-      partnerName?: string;
-      name: string;
-      /** Format: double */
-      debit: number;
-      /** Format: double */
-      credit: number;
-      /** Format: double */
-      balance: number;
-      /** Format: double */
-      amountCurrency?: number;
-      /** Format: double */
-      currencyId?: number;
-      currencyName?: string;
-      /** Format: double */
-      companyId: number;
-      companyName?: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
-}
-export type $defs = Record<string, never>;
-export interface operations {
-  GetAccountingInvoices: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        type?: "SALES" | "PURCHASE";
-        state?: "draft" | "posted" | "cancel";
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+            size: number;
+            mimeType: string;
+            createdAt: string;
+            modifiedAt: string;
+            createdBy: string;
+            modifiedBy?: string;
+            folderId?: string;
+            tags?: string[];
+            metadata?: components["schemas"]["Record_string.unknown_"];
         };
-        content: {
-          "application/json": {
-            /** Format: double */
-            limit: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            total: number;
-            invoices: components["schemas"]["Invoice"][];
-          };
-        };
-      };
-    };
-  };
-  CreateAccountingInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InvoiceCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Invoice created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Invoice"];
-        };
-      };
-    };
-  };
-  GetAccountingInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Invoice"];
-        };
-      };
-    };
-  };
-  ValidateAccountingInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  CancelAccountingInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  RefundAccountingInvoice: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          /** Format: double */
-          journalId?: number;
-          date?: string;
-          reason?: string;
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            refundId: number;
-          };
-        };
-      };
-    };
-  };
-  GetAccountingInvoicePDF: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        invoiceId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-    };
-  };
-  GetAccountingBills: {
-    parameters: {
-      query?: {
-        page?: number;
-        limit?: number;
-        state?: "draft" | "posted" | "cancel";
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            limit: number;
-            /** Format: double */
-            page: number;
-            /** Format: double */
-            total: number;
-            bills: components["schemas"]["Invoice"][];
-          };
-        };
-      };
-    };
-  };
-  CreateAccountingBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["InvoiceCreateRequest"];
-      };
-    };
-    responses: {
-      /** @description Bill created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Invoice"];
-        };
-      };
-    };
-  };
-  GetAccountingBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["Invoice"];
-        };
-      };
-    };
-  };
-  ValidateAccountingBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  CancelAccountingBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  RefundAccountingBill: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          /** Format: double */
-          journalId?: number;
-          date?: string;
-          reason?: string;
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            refundId: number;
-          };
-        };
-      };
-    };
-  };
-  GetAccountingBillPDF: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        billId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": string;
-        };
-      };
-    };
-  };
-  GetAccountingAccounts: {
-    parameters: {
-      query?: {
-        accountType?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
+        FolderMetadata: {
+            id: string;
+            name: string;
+            path: string;
             parentId?: string;
-            type: string;
-            name: string;
-            code: string;
-            id: string;
-          }[];
-        };
-      };
-    };
-  };
-  SearchAccountingAccounts: {
-    parameters: {
-      query: {
-        q: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            type: string;
-            name: string;
-            code: string;
-            id: string;
-          }[];
-        };
-      };
-    };
-  };
-  GetAccountingPayments: {
-    parameters: {
-      query?: {
-        type?: "inbound" | "outbound" | "transfer";
-        state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["PaymentResponse"][];
-        };
-      };
-    };
-  };
-  CreateAccountingPayment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["CreatePaymentDTO"];
-      };
-    };
-    responses: {
-      /** @description Payment created successfully */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
+            createdAt: string;
+            modifiedAt: string;
+            createdBy: string;
+            modifiedBy?: string;
             /** Format: double */
-            id: number;
-          };
+            fileCount: number;
+            /** Format: double */
+            subFolderCount: number;
         };
-      };
-    };
-  };
-  ConfirmAccountingPayment: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        paymentId: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        CreateFolderRequest: {
+            name: string;
+            parentId?: string;
         };
-        content: {
-          "application/json": {
+        /** @enum {string} */
+        Locale: "en" | "ar";
+        UserProfileResponse: {
+            id: string;
+            email: string;
+            name?: string | null;
+            image?: string | null;
+            preferredLocale: components["schemas"]["Locale"];
+            activeOrganizationId?: string | null;
+        };
+        UpdateProfileRequest: {
+            name?: string;
+            preferredLocale?: components["schemas"]["Locale"];
+        };
+        UpdateLocaleRequest: {
+            locale: components["schemas"]["Locale"];
+        };
+        SubscriptionPlanResponse: {
+            id: string;
+            name: string;
+            slug: string;
+            pricePerSeat: string;
+            /** Format: double */
+            maxSeats: number | null;
+            billingInterval: string;
+            features: components["schemas"]["Record_string.unknown_"] | null;
+        };
+        CreateSubscriptionResponse: {
+            subscriptionId: string;
+            planId: string;
+            /** Format: double */
+            seats: number;
+            status: string;
+        };
+        CreateSubscriptionRequest: {
+            planId: string;
+            /** Format: double */
+            seats: number;
+        };
+        CurrentSubscriptionResponse: {
+            hasSubscription: boolean;
+            status: string | null;
+            plan: {
+                /** Format: double */
+                maxSeats: number | null;
+                pricePerSeat: string;
+                slug: string;
+                name: string;
+                id: string;
+            } | null;
+            seats: {
+                unlimited: boolean;
+                /** Format: double */
+                available: number;
+                /** Format: double */
+                used: number;
+                /** Format: double */
+                purchased: number;
+            } | null;
+            isGrandfathered?: boolean;
+        };
+        UpdateSubscriptionResponse: {
+            subscriptionId: string;
+            planId: string;
+            /** Format: double */
+            seats: number;
+            status: string;
+        };
+        UpdateSubscriptionRequest: {
+            planId?: string;
+            /** Format: double */
+            seats?: number;
+        };
+        NASConfig: {
+            /** @enum {string} */
+            type: "smb" | "nfs" | "webdav" | "local";
+            host: string;
+            shareName: string;
+            username: string;
+            password: string;
+            domain?: string;
+            mountPoint?: string;
+            /** Format: double */
+            port?: number;
+        };
+        StorageInfo: {
+            totalSpace: string;
+            usedSpace: string;
+            availableSpace: string;
+            /** Format: double */
+            usagePercentage: number;
+        };
+        SecuritySettings: {
+            twoFactorEnabled: boolean;
+            sessionTimeout: string;
+            passwordExpiry: string;
+            requirePasswordChange: boolean;
+            allowMultipleSessions: boolean;
+            ipWhitelisting: boolean;
+            loginNotifications: boolean;
+        };
+        /** @enum {string} */
+        ReportStatus: "generating" | "ready" | "failed";
+        AuditReportResponse: {
+            id: string;
+            caseId: string;
+            templateId?: string | null;
+            title: string;
+            status: components["schemas"]["ReportStatus"];
+            generatedData?: components["schemas"]["Record_string.unknown_"] | null;
+            settings?: {
+                customizations?: components["schemas"]["Record_string.unknown_"];
+                includeSections?: string[];
+                dateRange?: {
+                    end: string;
+                    start: string;
+                };
+            } | null;
+            filePath?: string | null;
+            /** Format: date-time */
+            generatedAt?: string | null;
+            generatedBy: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        GenerateReportRequest: {
+            caseId: string;
+            templateId: string;
+            title: string;
+            titleAr?: string | null;
+            settings?: {
+                customizations?: components["schemas"]["Record_string.unknown_"];
+                /** @enum {string|null} */
+                locale?: "en" | "ar" | null;
+                includeSections?: string[];
+                dateRange?: {
+                    end: string;
+                    start: string;
+                };
+            };
+        };
+        UpdateAuditReportRequest: {
+            title?: string | null;
+            status?: components["schemas"]["ReportStatus"] | null;
+            generatedData?: components["schemas"]["Record_string.unknown_"] | null;
+            settings?: {
+                customizations?: components["schemas"]["Record_string.unknown_"];
+                includeSections?: string[];
+                dateRange?: {
+                    end: string;
+                    start: string;
+                };
+            } | null;
+            filePath?: string | null;
+            /** Format: date-time */
+            generatedAt?: string | null;
+        };
+        /** @enum {string} */
+        CaseType: "ICV_AUDIT" | "ISO_9001_AUDIT" | "ISO_14001_AUDIT" | "ISO_45001_AUDIT" | "FINANCIAL_AUDIT" | "INTERNAL_AUDIT" | "COMPLIANCE_AUDIT" | "OPERATIONAL_AUDIT";
+        AuditReportTemplateResponse: {
+            id: string;
+            name: string;
+            nameAr?: string | null;
+            caseType?: components["schemas"]["CaseType"] | null;
+            description?: string | null;
+            descriptionAr?: string | null;
+            templateStructure: {
+                metadata?: components["schemas"]["Record_string.unknown_"];
+                styles?: components["schemas"]["Record_string.unknown_"];
+                sections: {
+                    config?: components["schemas"]["Record_string.unknown_"];
+                    dataSource?: string;
+                    titleAr?: string;
+                    title?: string;
+                    /** @enum {string} */
+                    type: "cover_page" | "text" | "metrics_table" | "findings_list" | "chart" | "appendix";
+                    id: string;
+                }[];
+            };
+            isDefault: boolean;
+            isActive: boolean;
+            organizationId?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        CreateAuditReportTemplateRequest: {
+            name: string;
+            nameAr?: string | null;
+            caseType?: components["schemas"]["CaseType"] | null;
+            description?: string | null;
+            descriptionAr?: string | null;
+            templateStructure: {
+                metadata?: components["schemas"]["Record_string.unknown_"];
+                styles?: components["schemas"]["Record_string.unknown_"];
+                sections: {
+                    config?: components["schemas"]["Record_string.unknown_"];
+                    dataSource?: string;
+                    titleAr?: string;
+                    title?: string;
+                    /** @enum {string} */
+                    type: "cover_page" | "text" | "metrics_table" | "findings_list" | "chart" | "appendix";
+                    id: string;
+                }[];
+            };
+            isDefault?: boolean | null;
+            isActive?: boolean | null;
+        };
+        SlugResponse: {
+            nextSlug: string;
+        };
+        OrganizationResponse: {
+            id: string;
+            name: string;
+            slug: string;
+            logo?: string | null;
+            industry?: string | null;
+            size?: string | null;
+            country?: string | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+        OnboardingStatus: {
+            /** @enum {string} */
+            currentStep: "accept-invitation" | "select-plan" | "create-organization" | "completed";
+            hasSubscription: boolean;
+            hasOrganization: boolean;
+            hasPendingInvitations: boolean;
+            /** Format: double */
+            pendingInvitationsCount: number;
+            subscription: {
+                isFree: boolean;
+                /** Format: double */
+                seats: number;
+                planSlug: string;
+                planName: string;
+            } | null;
+            nextAction: {
+                ctaRoute: string;
+                ctaText: string;
+                description: string;
+                title: string;
+            };
+        };
+        UpgradePlanRequest: {
+            planId: string;
+            /** Format: double */
+            seats: number;
+        };
+        OdooWebhookPayload: {
+            /** @enum {string} */
+            event: "create" | "write" | "unlink";
+            model: string;
+            /** Format: double */
+            record_id: number;
+            organization_id: string;
+            user_id: string;
+            timestamp: string;
+        };
+        OdooProvisionResponse: {
             success: boolean;
-          };
+            message: string;
+            jobId?: string;
         };
-      };
-    };
-  };
-  GetAccountingPartners: {
-    parameters: {
-      query?: {
-        isCustomer?: boolean;
-        isSupplier?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        /** @enum {string} */
+        OdooLanguage: "en_US" | "ar_001" | "fr_FR" | "es_ES" | "de_DE";
+        /** @enum {string} */
+        OdooDemo: "true" | "false";
+        OdooInfoResponse: {
+            databaseName: string;
+            exists: boolean;
+            loginUrl: string | null;
         };
-        content: {
-          "application/json": components["schemas"]["PartnerResponse"][];
+        OdooDeleteResponse: {
+            success: boolean;
+            message: string;
         };
-      };
-    };
-  };
-  GetAccountingJournals: {
-    parameters: {
-      query?: {
-        type?: "sale" | "purchase" | "cash" | "bank" | "general";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        OdooDuplicateResponse: {
+            success: boolean;
+            originalName: string;
+            newName: string;
         };
-        content: {
-          "application/json": components["schemas"]["JournalResponse"][];
+        OdooDuplicateRequest: {
+            newName: string;
+            neutralize?: boolean;
         };
-      };
-    };
-  };
-  GetAccountingTaxes: {
-    parameters: {
-      query?: {
-        typeTaxUse?: "sale" | "purchase" | "none";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        OdooListResponse: {
+            databases: string[];
         };
-        content: {
-          "application/json": components["schemas"]["TaxResponse"][];
+        OdooSearchRequest: {
+            model: string;
+            domain?: unknown[];
+            /** Format: double */
+            limit?: number;
+            /** Format: double */
+            offset?: number;
+            order?: string;
         };
-      };
-    };
-  };
-  GetAccountingTrialBalance: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["AccountBalanceQuery"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        OdooSearchReadRequest: {
+            model: string;
+            domain?: unknown[];
+            fields?: string[];
+            /** Format: double */
+            limit?: number;
+            /** Format: double */
+            offset?: number;
+            order?: string;
+            context?: components["schemas"]["Record_string.unknown_"];
         };
-        content: {
-          "application/json": components["schemas"]["AccountBalanceReportResponse"][];
+        OdooReadRequest: {
+            model: string;
+            ids: number[];
+            fields?: string[];
+            context?: components["schemas"]["Record_string.unknown_"];
         };
-      };
-    };
-  };
-  GetAccountingPartnerLedger: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["PartnerLedgerQuery"];
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        OdooCreateRequest: {
+            model: string;
+            values: components["schemas"]["Record_string.unknown_"];
+            context?: components["schemas"]["Record_string.unknown_"];
         };
-        content: {
-          "application/json": components["schemas"]["PartnerLedgerReportResponse"] | null;
+        OdooWriteRequest: {
+            model: string;
+            ids: number[];
+            values: components["schemas"]["Record_string.unknown_"];
+            context?: components["schemas"]["Record_string.unknown_"];
         };
-      };
-    };
-  };
-  GetAccountingProfitLoss: {
-    parameters: {
-      query?: {
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        OdooUnlinkRequest: {
+            model: string;
+            ids: number[];
+            context?: components["schemas"]["Record_string.unknown_"];
         };
-        content: {
-          "application/json": components["schemas"]["ProfitLossResponse"];
+        OdooExecuteRequest: {
+            model: string;
+            method: string;
+            args?: unknown[];
+            kwargs?: components["schemas"]["Record_string.unknown_"];
         };
-      };
-    };
-  };
-  GetAccountingGeneralLedger: {
-    parameters: {
-      query?: {
-        accountId?: number;
-        partnerId?: number;
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        OcrResponse: {
+            documentId: string;
+            extractedText: string;
+            /** Format: date-time */
+            processedAt: string;
         };
-        content: {
-          "application/json": components["schemas"]["GLEntryResponse"][];
+        ProcessOcrRequest: {
+            documentId: string;
+            language?: string | null;
         };
-      };
-    };
-  };
-  GetAccountingPaymentTerms: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        DocumentSearchResult: {
+            id: string;
+            fileName: string;
+            fileType: string;
+            ocrText: string | null;
+            /** Format: date-time */
+            uploadedAt: string;
         };
-        content: {
-          "application/json": {
-            note?: string;
+        DocumentSearchRequest: {
+            caseId: string;
+            searchText: string;
+        };
+        NASConnectionStatus: {
+            connected: boolean;
+            mountPoint?: string;
+            error?: string;
+            /** Format: double */
+            freeSpace?: number;
+            /** Format: double */
+            totalSpace?: number;
+            /** Format: double */
+            usedSpace?: number;
+        };
+        ConnectNASRequest: {
             name: string;
+            /** @enum {string} */
+            type: "smb" | "nfs" | "webdav";
+            host: string;
+            shareName: string;
+            username?: string;
+            password?: string;
+            domain?: string;
+            mountPoint?: string;
+            /** Format: double */
+            port?: number;
+        };
+        /** @description Construct a type with a set of properties K of type T */
+        "Record_string.NASConnectionStatus_": {
+            [key: string]: components["schemas"]["NASConnectionStatus"];
+        };
+        NASStatusResponse: components["schemas"]["Record_string.NASConnectionStatus_"];
+        ModuleAccessResponse: {
+            modules: string[];
+        };
+        HRSectionResponse: {
+            id: string;
+            sectionKey: string;
+            /** @enum {string} */
+            sectionType: "self_service" | "management";
+            displayName: string;
+            description: string | null;
+            path: string;
+            requiredPermissions: string | null;
+            minimumRole: string | null;
+            /** Format: double */
+            sortOrder: number | null;
+            isActive: boolean | null;
+        };
+        HRSectionsResponse: {
+            sections: components["schemas"]["HRSectionResponse"][];
+        };
+        ModuleAccessRule: {
+            moduleKey: string;
+            role: string;
+            hasAccess: boolean;
+        };
+        UpdateModuleAccessRequest: {
+            organizationId?: string;
+            rules: components["schemas"]["ModuleAccessRule"][];
+        };
+        ResourceAssignmentResponse: {
+            id: string;
+            userId: string;
+            resourceType: string;
+            resourceId: string;
+            role: string | null;
+            assignedBy: string | null;
+            assignedAt: string;
+            expiresAt: string | null;
+        };
+        AssignResourceRequest: {
+            userId: string;
+            /** @enum {string} */
+            resourceType: "audit_case" | "accounting_client" | "crm_lead" | "crm_deal" | "hr_department";
+            resourceId: string;
+            role?: string;
+        };
+        AssignedResourcesResponse: {
+            resourceIds: string[];
+        };
+        Integration: {
+            id: string;
+            name: string;
+            description: string;
+            logo: string;
+            connected: boolean;
+            /** @enum {string} */
+            category: "accounting" | "communication" | "storage" | "productivity";
+            configUrl?: string;
+        };
+        /** @enum {string} */
+        EmployeeType: "employee" | "student" | "trainee" | "contractor" | "freelance";
+        /** @enum {string} */
+        Gender: "male" | "female" | "other";
+        /** @enum {string} */
+        MaritalStatus: "single" | "married" | "cohabitant" | "widower" | "divorced";
+        EmployeeDbResponse: {
+            id: string;
+            organizationId: string;
+            userId?: string | null;
+            /** Format: double */
+            odooEmployeeId?: number | null;
+            name: string;
+            email?: string | null;
+            phone?: string | null;
+            mobile?: string | null;
+            workEmail?: string | null;
+            workPhone?: string | null;
+            workLocation?: string | null;
+            jobTitle?: string | null;
+            departmentId?: string | null;
+            managerId?: string | null;
+            employeeType?: components["schemas"]["EmployeeType"] | null;
+            gender?: components["schemas"]["Gender"] | null;
+            maritalStatus?: components["schemas"]["MaritalStatus"] | null;
+            birthday?: string | null;
+            placeOfBirth?: string | null;
+            countryOfBirth?: string | null;
+            nationality?: string | null;
+            identificationId?: string | null;
+            passportId?: string | null;
+            bankAccountNumber?: string | null;
+            bankName?: string | null;
+            bankIban?: string | null;
+            emergencyContact?: string | null;
+            emergencyPhone?: string | null;
+            emergencyRelation?: string | null;
+            hireDate?: string | null;
+            terminationDate?: string | null;
+            photoUrl?: string | null;
+            notes?: string | null;
+            active: boolean;
+            lastSyncedAt?: string | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+        CreateEmployeeRequest: {
+            userId?: string | null;
+            /** Format: double */
+            odooEmployeeId?: number | null;
+            name: string;
+            email?: string | null;
+            phone?: string | null;
+            mobile?: string | null;
+            workEmail?: string | null;
+            workPhone?: string | null;
+            workLocation?: string | null;
+            jobTitle?: string | null;
+            departmentId?: string | null;
+            managerId?: string | null;
+            employeeType?: components["schemas"]["EmployeeType"] | null;
+            gender?: components["schemas"]["Gender"] | null;
+            maritalStatus?: components["schemas"]["MaritalStatus"] | null;
+            birthday?: string | null;
+            placeOfBirth?: string | null;
+            countryOfBirth?: string | null;
+            nationality?: string | null;
+            identificationId?: string | null;
+            passportId?: string | null;
+            bankAccountNumber?: string | null;
+            bankName?: string | null;
+            bankIban?: string | null;
+            emergencyContact?: string | null;
+            emergencyPhone?: string | null;
+            emergencyRelation?: string | null;
+            hireDate?: string | null;
+            terminationDate?: string | null;
+            photoUrl?: string | null;
+            notes?: string | null;
+            active?: boolean | null;
+        };
+        UpdateEmployeeRequest: {
+            name?: string | null;
+            email?: string | null;
+            phone?: string | null;
+            mobile?: string | null;
+            workEmail?: string | null;
+            workPhone?: string | null;
+            workLocation?: string | null;
+            jobTitle?: string | null;
+            departmentId?: string | null;
+            managerId?: string | null;
+            employeeType?: components["schemas"]["EmployeeType"] | null;
+            gender?: components["schemas"]["Gender"] | null;
+            maritalStatus?: components["schemas"]["MaritalStatus"] | null;
+            birthday?: string | null;
+            placeOfBirth?: string | null;
+            countryOfBirth?: string | null;
+            nationality?: string | null;
+            identificationId?: string | null;
+            passportId?: string | null;
+            bankAccountNumber?: string | null;
+            bankName?: string | null;
+            bankIban?: string | null;
+            emergencyContact?: string | null;
+            emergencyPhone?: string | null;
+            emergencyRelation?: string | null;
+            hireDate?: string | null;
+            terminationDate?: string | null;
+            photoUrl?: string | null;
+            notes?: string | null;
+            active?: boolean | null;
+        };
+        SyncEmployeeFromOdooRequest: {
+            /** Format: double */
+            odooEmployeeId: number;
+        };
+        SyncAllEmployeesResponse: {
+            /** Format: double */
+            synced: number;
+            /** Format: double */
+            created: number;
+            /** Format: double */
+            updated: number;
+            errors: string[];
+        };
+        DepartmentDbResponse: {
+            id: string;
+            organizationId: string;
+            /** Format: double */
+            odooDepartmentId?: number | null;
+            name: string;
+            code?: string | null;
+            parentId?: string | null;
+            managerId?: string | null;
+            /** Format: double */
+            color?: number | null;
+            note?: string | null;
+            lastSyncedAt?: string | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+        CreateDepartmentRequest: {
+            /** Format: double */
+            odooDepartmentId?: number | null;
+            name: string;
+            code?: string | null;
+            parentId?: string | null;
+            managerId?: string | null;
+            /** Format: double */
+            color?: number | null;
+            note?: string | null;
+        };
+        UpdateDepartmentRequest: {
+            name?: string | null;
+            code?: string | null;
+            parentId?: string | null;
+            managerId?: string | null;
+            /** Format: double */
+            color?: number | null;
+            note?: string | null;
+        };
+        SyncDepartmentFromOdooRequest: {
+            /** Format: double */
+            odooDepartmentId: number;
+        };
+        SyncAllDepartmentsResponse: {
+            /** Format: double */
+            synced: number;
+            /** Format: double */
+            created: number;
+            /** Format: double */
+            updated: number;
+            errors: string[];
+        };
+        LeaveBalanceResponse: {
+            employeeId: string;
+            leaveTypeId: string;
+            leaveTypeName: string;
+            /** Format: double */
+            totalAllocated: number;
+            /** Format: double */
+            totalUsed: number;
+            /** Format: double */
+            totalRemaining: number;
+        };
+        OdooRelation: {
             /** Format: double */
             id: number;
-          }[];
+            name: string;
         };
-      };
-    };
-  };
-  GetAccountingAgedReceivable: {
-    parameters: {
-      query?: {
-        asOfDate?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        EmployeeResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            work_email?: string;
+            work_phone?: string;
+            mobile_phone?: string;
+            job_title?: string;
+            department_id?: components["schemas"]["OdooRelation"];
+            parent_id?: components["schemas"]["OdooRelation"];
+            address_id?: components["schemas"]["OdooRelation"];
+            work_location_id?: components["schemas"]["OdooRelation"];
+            user_id?: components["schemas"]["OdooRelation"];
+            employee_type?: string;
+            gender?: string;
+            marital?: string;
+            birthday?: string;
+            identification_id?: string;
+            passport_id?: string;
+            bank_account_id?: components["schemas"]["OdooRelation"];
+            emergency_contact?: string;
+            emergency_phone?: string;
+            visa_no?: string;
+            visa_expire?: string;
+            work_permit_no?: string;
+            work_permit_expiration_date?: string;
+            certificate?: string;
+            study_field?: string;
+            study_school?: string;
+            place_of_birth?: string;
+            country_of_birth?: components["schemas"]["OdooRelation"];
+            active?: boolean;
         };
-        content: {
-          "application/json": {
+        DepartmentResponse: {
             /** Format: double */
-            total: number;
+            id: number;
+            name: string;
+            complete_name?: string;
+            manager_id?: components["schemas"]["OdooRelation"];
+            parent_id?: components["schemas"]["OdooRelation"];
+            company_id?: components["schemas"]["OdooRelation"];
+            active?: boolean;
             /** Format: double */
-            days_over_90: number;
+            total_employee?: number;
             /** Format: double */
-            days_61_90: number;
-            /** Format: double */
-            days_31_60: number;
-            /** Format: double */
-            days_1_30: number;
-            /** Format: double */
-            current: number;
-            partnerName: string;
-            /** Format: double */
-            partnerId: number;
-          }[];
+            color?: number;
+            note?: string;
         };
-      };
-    };
-  };
-  GetAccountingAgedPayable: {
-    parameters: {
-      query?: {
-        asOfDate?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        ContractResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            employee_id: components["schemas"]["OdooRelation"];
+            date_start: string;
+            date_end?: string;
+            state: string;
+            job_id?: components["schemas"]["OdooRelation"];
+            department_id?: components["schemas"]["OdooRelation"];
+            /** Format: double */
+            wage: number;
+            wage_type: string;
+            struct_id?: components["schemas"]["OdooRelation"];
+            resource_calendar_id?: components["schemas"]["OdooRelation"];
+            notes?: string;
         };
-        content: {
-          "application/json": {
+        LeaveTypeResponse: {
             /** Format: double */
-            total: number;
+            id: number;
+            name: string;
+            request_unit: string;
+            time_type: string;
             /** Format: double */
-            days_over_90: number;
+            color?: number;
+            leave_validation_type?: string;
+            requires_allocation?: boolean;
+            employee_requests?: boolean;
+            allocation_validation_type?: string;
             /** Format: double */
-            days_61_90: number;
-            /** Format: double */
-            days_31_60: number;
-            /** Format: double */
-            days_1_30: number;
-            /** Format: double */
-            current: number;
-            partnerName: string;
-            /** Format: double */
-            partnerId: number;
-          }[];
+            max_leaves?: number;
+            unpaid?: boolean;
+            active?: boolean;
+            support_document?: boolean;
         };
-      };
-    };
-  };
-  GetAccountingBankStatements: {
-    parameters: {
-      query?: {
-        journalId?: number;
-        dateFrom?: string;
-        dateTo?: string;
-        state?: "open" | "confirm";
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        LeaveRequestResponse: {
+            /** Format: double */
+            id: number;
+            employee_id: components["schemas"]["OdooRelation"];
+            holiday_status_id: components["schemas"]["OdooRelation"];
+            date_from: string;
+            date_to: string;
+            /** Format: double */
+            number_of_days: number;
+            state: string;
+            request_date_from?: string;
+            request_unit_half?: boolean;
+            request_unit_hours?: boolean;
+            request_hour_from?: string;
+            request_hour_to?: string;
+            notes?: string;
+            manager_id?: components["schemas"]["OdooRelation"];
+            department_id?: components["schemas"]["OdooRelation"];
         };
-        content: {
-          "application/json": {
+        LeaveAllocationResponse: {
+            /** Format: double */
+            id: number;
+            employee_id: components["schemas"]["OdooRelation"];
+            holiday_status_id: components["schemas"]["OdooRelation"];
+            /** Format: double */
+            number_of_days: number;
+            /** Format: double */
+            number_of_days_display?: number;
+            date_from?: string;
+            date_to?: string;
+            state: string;
+            name?: string;
+            notes?: string;
+        };
+        PayslipResponse: {
+            /** Format: double */
+            id: number;
+            number: string;
+            employee_id: components["schemas"]["OdooRelation"];
+            date_from: string;
+            date_to: string;
             state: string;
             /** Format: double */
-            balanceEnd: number;
+            basic_wage?: number;
             /** Format: double */
-            balanceEndReal: number;
+            net_wage?: number;
             /** Format: double */
-            balanceStart: number;
-            date: string;
-            journalName: string;
+            gross_wage?: number;
+            contract_id?: components["schemas"]["OdooRelation"];
+            struct_id?: components["schemas"]["OdooRelation"];
+            credit_note?: boolean;
+            paid_date?: string;
+        };
+        PayslipLineResponse: {
             /** Format: double */
-            journalId: number;
+            id: number;
+            slip_id: components["schemas"]["OdooRelation"];
             name: string;
+            code: string;
+            category_id?: components["schemas"]["OdooRelation"];
             /** Format: double */
-            id: number;
-          }[];
-        };
-      };
-    };
-  };
-  GetAccountingBankStatementLines: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        statementId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            isReconciled: boolean;
+            sequence?: number;
+            /** Format: double */
+            quantity?: number;
+            /** Format: double */
+            rate?: number;
             /** Format: double */
             amount: number;
-            partnerName?: string;
-            paymentRef: string;
-            date: string;
-            /** Format: double */
-            id: number;
-          }[];
         };
-      };
-    };
-  };
-  GetAccountingReconciliationSuggestions: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        lineId: number;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            amount: number;
-            date: string;
-            partnerName: string;
-            moveName: string;
-            /** Format: double */
-            moveId: number;
-          }[];
-        };
-      };
-    };
-  };
-  ReconcileAccountingBankStatementLine: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        lineId: number;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          moveIds: number[];
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            message?: string;
-            success: boolean;
-          };
-        };
-      };
-    };
-  };
-  GetAccountingCurrencies: {
-    parameters: {
-      query?: {
-        onlyActive?: boolean;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            active: boolean;
-            /** Format: double */
-            rounding: number;
+        HealthCheck: {
             /** @enum {string} */
-            position: "after" | "before";
-            symbol: string;
-            name: string;
+            status: "ok" | "error";
+            timestamp: string;
+            /** Format: double */
+            uptime: number;
+            version: string;
+        };
+        OdooHealthCheck: {
+            /** @enum {string} */
+            status: "ok" | "error";
+            timestamp: string;
+            odooUrl: string;
+            accessible: boolean;
+            /** Format: double */
+            databaseCount?: number;
+            error?: string;
+        };
+        SetupEncryptionRequest: {
+            wrappedOrgKey: string;
+            salt: string;
+            iv: string;
+        };
+        GrantAuditorAccessRequest: {
+            auditorUserId: string;
+            wrappedOrgKey: string;
+            expiresAt?: string;
+        };
+        ResendWebhookPayload: {
+            type: string;
+            created_at: string;
+            data: {
+                complaint_type?: string;
+                bounce_subtype?: string;
+                /** @enum {string} */
+                bounce_type?: "hard" | "soft";
+                created_at?: string;
+                subject?: string;
+                to?: string[];
+                from?: string;
+                email_id?: string;
+            };
+        };
+        /** @enum {string} */
+        DocumentType: "invoice" | "bill" | "quote" | "purchase_order" | "delivery_note" | "receipt" | "credit_note" | "debit_note" | "payslip" | "contract" | "payment_receipt" | "refund";
+        DocumentTemplateResponse: {
+            id: string;
+            organizationId: string;
+            documentType: components["schemas"]["DocumentType"];
+            templateId: string;
+            templateName: string;
+            templateDescription: string | null;
+            isActive: boolean;
+            customizations: components["schemas"]["Record_string.unknown_"] | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        OdooReportTemplate: {
             /** Format: double */
             id: number;
-          }[];
-        };
-      };
-    };
-  };
-  GetAccountingCurrencyRates: {
-    parameters: {
-      query?: {
-        currencyId?: number;
-        dateFrom?: string;
-        dateTo?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            /** Format: double */
-            companyId: number;
-            /** Format: double */
-            rate: number;
             name: string;
-            currencyName: string;
+            report_name: string;
+            model: string;
+            report_type: string;
+        };
+        CreateDocumentTemplateRequest: {
+            documentType: components["schemas"]["DocumentType"];
+            templateId: string;
+            templateName: string;
+            templateDescription?: string;
+            isActive?: boolean;
+            customizations?: components["schemas"]["Record_string.unknown_"];
+        };
+        UpdateTemplateRequest: {
+            templateName?: string;
+            templateDescription?: string;
+            customizations?: components["schemas"]["Record_string.unknown_"];
+        };
+        CreateCustomTemplateRequest: {
+            documentType: components["schemas"]["DocumentType"];
+            templateName: string;
+            templateDescription?: string;
+            qwebXml: string;
+            model: string;
+            isActive?: boolean;
+            customizations?: components["schemas"]["Record_string.unknown_"];
+        };
+        DatabaseStats: {
+            totalSize: string;
             /** Format: double */
-            currencyId: number;
+            tableCount: number;
+            rowCount: string;
+            lastOptimized: string;
+            /** @enum {string} */
+            health: "good" | "warning" | "critical";
+        };
+        BackupSettings: {
+            autoBackup: boolean;
+            backupFrequency: string;
+            backupRetention: string;
+            backupLocation: string;
+            compressionEnabled: boolean;
+            encryptionEnabled: boolean;
+        };
+        Backup: {
+            id: string;
+            name: string;
+            size: string;
+            date: string;
+            /** @enum {string} */
+            status: "completed" | "failed" | "in-progress";
+            /** @enum {string} */
+            type: "automatic" | "manual";
+        };
+        /** @description Dashboard statistics response */
+        DashboardStatsResponse: {
+            /** Format: double */
+            activeCases: number;
+            /** Format: double */
+            pendingReviews: number;
+            /** Format: double */
+            completedAudits: number;
+            /** Format: double */
+            totalCases: number;
+            /** Format: double */
+            completionRate: number;
+        };
+        /** @description Case activity item */
+        RecentCaseUpdateResponse: {
+            id: string;
+            /** @enum {string} */
+            type: "case_update";
+            caseId: string;
+            caseNumber: string;
+            title: string;
+            status: string;
+            updatedAt: string;
+            updatedBy: {
+                name: string;
+                id: string;
+            };
+        };
+        /**
+         * @description Notification type - matches database enum
+         * @enum {string}
+         */
+        NotificationType: "deadline" | "review" | "completed" | "team" | "assignment" | "comment" | "mention" | "reminder" | "alert" | "warning" | "error" | "info" | "success" | "approval_requested" | "approval_approved" | "approval_rejected" | "approval_cancelled" | "approval_reminder" | "request_submitted" | "request_updated" | "request_withdrawn" | "request_escalated" | "case_update" | "case_created" | "case_assigned" | "case_completed" | "case_overdue" | "case_archived" | "document" | "document_uploaded" | "document_reviewed" | "document_approved" | "document_rejected" | "invoice_created" | "invoice_submitted" | "invoice_approved" | "invoice_rejected" | "invoice_paid" | "invoice_overdue" | "invoice_cancelled" | "payment_received" | "payment_sent" | "payment_failed" | "payment_pending" | "bill_created" | "bill_submitted" | "bill_approved" | "bill_rejected" | "bill_paid" | "bill_overdue" | "expense_submitted" | "expense_approved" | "expense_rejected" | "expense_reimbursed" | "leave_requested" | "leave_approved" | "leave_rejected" | "leave_cancelled" | "leave_reminder" | "payslip_generated" | "payslip_available" | "contract_created" | "contract_expiring" | "contract_expired" | "contract_renewed" | "employee_onboarded" | "employee_offboarded" | "timesheet_submitted" | "timesheet_approved" | "timesheet_rejected" | "deal_created" | "deal_updated" | "deal_won" | "deal_lost" | "deal_assigned" | "contact_added" | "contact_updated" | "task_assigned" | "task_completed" | "task_overdue" | "task_reminder" | "meeting_scheduled" | "meeting_reminder" | "meeting_cancelled" | "follow_up_due";
+        /**
+         * @description Related entity type for notifications - matches database enum
+         * @enum {string}
+         */
+        RelatedEntityType: "case" | "document" | "audit_template" | "audit_scope" | "audit_section" | "audit_procedure" | "approval" | "approval_request" | "invoice" | "bill" | "payment" | "account" | "journal" | "employee" | "payslip" | "leave_request" | "leave_allocation" | "contract" | "department" | "contact" | "deal" | "task" | "organization" | "user" | "team";
+        /** @description Notification response */
+        NotificationResponse: {
+            id: string;
+            /** @description Notification type: info, success, warning, or error */
+            type: components["schemas"]["NotificationType"];
+            title: string;
+            description: string;
+            timestamp: string;
+            isRead: boolean;
+            /** @description Related entity type (case, user, document, etc.) */
+            relatedEntityType: components["schemas"]["RelatedEntityType"] | null;
+            relatedEntityId: string | null;
+            actionLabel: string | null;
+            actionUrl: string | null;
+        };
+        /** @description Unread notifications count response */
+        UnreadNotificationsCountResponse: {
+            /** Format: double */
+            count: number;
+        };
+        LeadResponse: {
             /** Format: double */
             id: number;
-          }[];
-        };
-      };
-    };
-  };
-  ConvertAccountingCurrency: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          date?: string;
-          /** Format: double */
-          toCurrencyId: number;
-          /** Format: double */
-          fromCurrencyId: number;
-          /** Format: double */
-          amount: number;
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
+            name: string;
+            type: string;
+            contactName?: string;
+            partnerName?: string;
+            emailFrom?: string;
+            phone?: string;
+            website?: string;
+            function?: string;
+            street?: string;
+            street2?: string;
+            city?: string;
+            state?: components["schemas"]["OdooRelation"];
+            country?: components["schemas"]["OdooRelation"];
+            zip?: string;
+            partner?: components["schemas"]["OdooRelation"];
+            stage?: components["schemas"]["OdooRelation"];
+            team?: components["schemas"]["OdooRelation"];
+            user?: components["schemas"]["OdooRelation"];
+            company?: components["schemas"]["OdooRelation"];
+            campaign?: components["schemas"]["OdooRelation"];
+            source?: components["schemas"]["OdooRelation"];
+            medium?: components["schemas"]["OdooRelation"];
+            language?: components["schemas"]["OdooRelation"];
+            tags?: number[];
             /** Format: double */
-            rate: number;
+            expectedRevenue?: number;
             /** Format: double */
-            convertedAmount: number;
-          };
-        };
-      };
-    };
-  };
-  BatchValidateAccountingInvoices: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          invoiceIds: number[];
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              id: number;
-            }[];
-            success: number[];
-          };
-        };
-      };
-    };
-  };
-  BatchCancelAccountingInvoices: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          invoiceIds: number[];
-        };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              id: number;
-            }[];
-            success: number[];
-          };
-        };
-      };
-    };
-  };
-  BatchCreateAccountingInvoices: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          invoices: components["schemas"]["InvoiceCreateRequest"][];
-        };
-      };
-    };
-    responses: {
-      /** @description Invoices created */
-      201: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              index: number;
-            }[];
-            success: {
-              /** Format: double */
-              id: number;
-              /** Format: double */
-              index: number;
-            }[];
-          };
-        };
-      };
-    };
-  };
-  BatchCreateAccountingPayments: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          payments: {
-            reference?: string;
+            proratedRevenue?: number;
             /** Format: double */
-            journalId: number;
+            recurringRevenue?: number;
+            recurringPlan?: components["schemas"]["OdooRelation"];
+            /** Format: double */
+            recurringRevenueMonthly?: number;
+            /** Format: double */
+            probability?: number;
+            dateOpen?: string;
+            dateDeadline?: string;
+            dateClosed?: string;
+            dateConversion?: string;
+            dateLastStageUpdate?: string;
+            priority?: string;
+            active?: boolean;
+            description?: string;
+            referred?: string;
+            /** Format: double */
+            color?: number;
+            lostReason?: components["schemas"]["OdooRelation"];
+        };
+        CreateLeadRequest: {
+            name: string;
+            /** @enum {string} */
+            type?: "lead" | "opportunity";
+            contactName?: string;
+            emailFrom?: string;
+            phone?: string;
+            /** Format: double */
+            partnerId?: number;
+            /** Format: double */
+            teamId?: number;
+            /** Format: double */
+            userId?: number;
+            /** Format: double */
+            expectedRevenue?: number;
+            description?: string;
+        };
+        UpdateLeadRequest: {
+            name?: string;
+            /** Format: double */
+            stageId?: number;
+            /** Format: double */
+            userId?: number;
+            /** Format: double */
+            expectedRevenue?: number;
+            dateDeadline?: string;
+            priority?: string;
+            description?: string;
+        };
+        StageResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            /** Format: double */
+            sequence?: number;
+            fold?: boolean;
+            isWon?: boolean;
+            requirements?: string;
+            team?: components["schemas"]["OdooRelation"];
+        };
+        ContactResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            isCompany?: boolean;
+            companyType?: string;
+            email?: string;
+            phone?: string;
+            mobile?: string;
+            website?: string;
+            function?: string;
+            comment?: string;
+            street?: string;
+            street2?: string;
+            city?: string;
+            state?: components["schemas"]["OdooRelation"];
+            country?: components["schemas"]["OdooRelation"];
+            zip?: string;
+            vat?: string;
+            industry?: components["schemas"]["OdooRelation"];
+            ref?: string;
+            barcode?: string;
+            isCustomer?: boolean;
+            isSupplier?: boolean;
+            active?: boolean;
+        };
+        CreateContactRequest: {
+            name: string;
+            isCompany?: boolean;
+            email?: string;
+            phone?: string;
+            mobile?: string;
+            website?: string;
+            street?: string;
+            city?: string;
+            zip?: string;
+            /** Format: double */
+            countryId?: number;
+        };
+        UpdateContactRequest: {
+            name?: string;
+            email?: string;
+            phone?: string;
+            mobile?: string;
+            website?: string;
+            street?: string;
+            city?: string;
+            zip?: string;
+        };
+        ActivityResponse: {
+            /** Format: double */
+            id: number;
+            /** Format: double */
+            leadId: number;
+            activityType: components["schemas"]["OdooRelation"];
+            summary?: string;
+            note?: string;
+            dateDeadline: string;
+            user: components["schemas"]["OdooRelation"];
+            state: string;
+        };
+        CreateActivityRequest: {
+            /** Format: double */
+            leadId: number;
+            /** Format: double */
+            activityTypeId: number;
+            summary?: string;
+            note?: string;
+            dateDeadline: string;
+            /** Format: double */
+            userId?: number;
+        };
+        TeamResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            active?: boolean;
+            leader?: components["schemas"]["OdooRelation"];
+            memberIds?: number[];
+        };
+        LostReasonResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            active?: boolean;
+        };
+        /** @enum {string} */
+        ConnectorType: "postgresql" | "mysql" | "mssql" | "storage_local" | "storage_webdav" | "storage_smb" | "storage_cloud";
+        ConnectorResponse: {
+            id: string;
+            organizationId: string;
+            name: string;
+            description?: string | null;
+            type: components["schemas"]["ConnectorType"];
+            isActive: boolean;
+            tags: string[];
+            metadata: components["schemas"]["Record_string.unknown_"];
+            lastConnectionTest?: string | null;
+            lastConnectionStatus?: string | null;
+            lastConnectionError?: string | null;
+            createdAt: string;
+            updatedAt: string;
+        };
+        ConnectorConfig: {
+            host?: string;
+            /** Format: double */
+            port?: number;
+            database?: string;
+            username?: string;
+            password?: string;
+            ssl?: boolean;
+            url?: string;
+            apiKey?: string;
+            authToken?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        CreateConnectorRequest: {
+            name: string;
+            description?: string | null;
+            type: components["schemas"]["ConnectorType"];
+            config: components["schemas"]["ConnectorConfig"];
+            tags?: string[] | null;
+            metadata?: components["schemas"]["Record_string.unknown_"] | null;
+        };
+        UpdateConnectorRequest: {
+            name?: string | null;
+            description?: string | null;
+            config?: components["schemas"]["ConnectorConfig"] | null;
+            tags?: string[] | null;
+            metadata?: components["schemas"]["Record_string.unknown_"] | null;
+            isActive?: boolean | null;
+        };
+        QueryResponse: {
+            rows: unknown[];
+            /** Format: double */
+            rowCount: number;
+            /** Format: double */
+            executionTime: number;
+        };
+        QueryRequest: {
+            sql: string;
+            params?: unknown[] | null;
+        };
+        SchemaResponse: {
+            tables: {
+                /** @enum {string} */
+                type: "table" | "view";
+                name: string;
+                schema: string;
+            }[];
+        };
+        TablePreviewResponse: {
+            schema: string;
+            table: string;
+            columns: {
+                nullable: boolean;
+                type: string;
+                name: string;
+            }[];
+            sampleData: unknown[];
+            /** Format: double */
+            totalRows: number;
+        };
+        FieldMapping: {
+            sourceColumn: string;
+            targetField: string;
+            /** @enum {string|null} */
+            transform?: "lowercase" | "uppercase" | "trim" | "date" | "number" | "boolean" | null;
+            defaultValue?: unknown;
+        };
+        SuggestMappingsRequest: {
+            sourceColumns: string[];
+            /** @enum {string} */
+            targetEntity: "contact" | "deal" | "company" | "invoice" | "employee" | "custom";
+        };
+        /** @enum {string} */
+        ActivityType: "case_created" | "status_changed" | "priority_updated" | "document_uploaded" | "document_approved" | "document_rejected" | "comment_added" | "team_member_assigned" | "team_member_removed" | "case_completed" | "case_archived" | "scope_created" | "procedure_completed" | "plan_created" | "report_generated";
+        /** @description Construct a type with a set of properties K of type T */
+        "Record_string.boolean_": {
+            [key: string]: boolean;
+        };
+        CaseActivityResponse: {
+            id: string;
+            caseId: string;
+            activityType: components["schemas"]["ActivityType"];
+            userId?: string | null;
+            user?: {
+                email: string;
+                name: string | null;
+                id: string | null;
+            };
+            metadata?: ({
+                reportId?: string | null;
+                planId?: string | null;
+                scopeId?: string | null;
+                commentId?: string | null;
+                assignedUserName?: string | null;
+                assignedUserId?: string | null;
+                userName?: string | null;
+                documentId?: string | null;
+                documentName?: string | null;
+                newValue?: string | null;
+                oldValue?: string | null;
+                caseName?: string | null;
+            } & {
+                [key: string]: unknown;
+            }) | null;
+            isRead?: components["schemas"]["Record_string.boolean_"] | null;
+            /** Format: date-time */
+            createdAt: string;
+        };
+        CreateCaseActivityRequest: {
+            caseId: string;
+            activityType: components["schemas"]["ActivityType"];
+            metadata?: {
+                reportId?: string | null;
+                planId?: string | null;
+                scopeId?: string | null;
+                commentId?: string | null;
+                assignedUserName?: string | null;
+                assignedUserId?: string | null;
+                userName?: string | null;
+                documentId?: string | null;
+                documentName?: string | null;
+                newValue?: string | null;
+                oldValue?: string | null;
+                caseName?: string | null;
+            } & {
+                [key: string]: unknown;
+            };
+        };
+        MarkAsReadRequest: {
+            activityIds: string[];
+        };
+        PresenceResponse: {
+            id: string;
+            caseId: string;
+            userId: string;
+            user?: {
+                email: string;
+                name: string | null;
+                id: string | null;
+            };
+            /** Format: date-time */
+            lastSeenAt: string;
+        };
+        UpdatePresenceRequest: {
+            caseId: string;
+        };
+        /** @enum {string} */
+        CaseStatus: "draft" | "in_progress" | "under_review" | "completed" | "overdue" | "archived";
+        /** @enum {string} */
+        CasePriority: "low" | "medium" | "high" | "critical";
+        /** @enum {string} */
+        AssignmentRole: "lead" | "reviewer" | "team_member";
+        CaseResponse: {
+            id: string;
+            organizationId: string;
+            caseNumber: string;
+            title: string;
+            description?: string | null;
+            caseType: components["schemas"]["CaseType"];
+            status: components["schemas"]["CaseStatus"];
+            priority: components["schemas"]["CasePriority"];
+            dueDate?: string | null;
+            completedDate?: string | null;
+            createdBy: string;
+            createdAt: string;
+            updatedAt: string;
+            assignments?: {
+                user?: {
+                    email: string;
+                    name: string | null;
+                    id: string | null;
+                };
+                role: components["schemas"]["AssignmentRole"];
+                userId: string | null;
+            }[];
+        };
+        CreateCaseRequest: {
+            caseNumber?: string | null;
+            title: string;
+            description?: string | null;
+            caseType: components["schemas"]["CaseType"];
+            status?: components["schemas"]["CaseStatus"] | null;
+            priority?: components["schemas"]["CasePriority"] | null;
+            dueDate?: string | null;
+        };
+        /** @enum {string} */
+        TemplateType: "scope" | "form" | "checklist" | "report" | "plan";
+        /** @enum {string} */
+        CaseCategory: "certification" | "financial" | "operational" | "compliance";
+        TemplateStructure: {
+            settings?: components["schemas"]["Record_string.unknown_"];
+            sections: {
+                procedures: {
+                    /** Format: double */
+                    sortOrder: number;
+                    requirements?: components["schemas"]["Record_string.unknown_"];
+                    description?: string;
+                    title: string;
+                    referenceNumber: string;
+                }[];
+                settings?: components["schemas"]["Record_string.unknown_"];
+                /** Format: double */
+                sortOrder: number;
+                description?: string;
+                name: string;
+            }[];
+        };
+        TemplateResponse: {
+            id: string;
+            organizationId?: string | null;
+            name: string;
+            description?: string | null;
+            templateType: components["schemas"]["TemplateType"];
+            category?: components["schemas"]["CaseCategory"] | null;
+            version: string;
+            isActive: boolean;
+            isSystemTemplate: boolean;
+            structure: components["schemas"]["TemplateStructure"];
+            createdBy: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        CreateTemplateRequest: {
+            organizationId?: string | null;
+            name: string;
+            description?: string | null;
+            templateType: components["schemas"]["TemplateType"];
+            category?: components["schemas"]["CaseCategory"] | null;
+            version?: string;
+            isActive?: boolean;
+            isSystemTemplate?: boolean;
+            structure: components["schemas"]["TemplateStructure"];
+        };
+        UpdateCaseRequest: {
+            caseNumber?: string | null;
+            title?: string | null;
+            description?: string | null;
+            caseType?: components["schemas"]["CaseType"] | null;
+            status?: components["schemas"]["CaseStatus"] | null;
+            priority?: components["schemas"]["CasePriority"] | null;
+            dueDate?: string | null;
+            completedDate?: string | null;
+        };
+        /** @enum {string} */
+        AuditStatus: "draft" | "in_progress" | "under_review" | "completed" | "archived";
+        ScopeResponse: {
+            id: string;
+            caseId: string;
+            templateId?: string | null;
+            name: string;
+            description?: string | null;
+            status: components["schemas"]["AuditStatus"];
+            data: components["schemas"]["Record_string.unknown_"];
+            createdBy: string;
+            completedBy?: string | null;
+            archivedBy?: string | null;
+            createdAt: string;
+            updatedAt: string;
+            completedAt?: string | null;
+            archivedAt?: string | null;
+        };
+        CreateScopeRequest: {
+            name: string;
+            description?: string | null;
+            status?: components["schemas"]["AuditStatus"] | null;
+            data?: components["schemas"]["Record_string.unknown_"] | null;
+        };
+        CreateScopeFromTemplateRequest: {
+            templateId: string;
+        };
+        UpdateScopeStatusRequest: {
+            status: components["schemas"]["AuditStatus"];
+        };
+        SectionResponse: {
+            id: string;
+            scopeId: string;
+            name: string;
+            description?: string | null;
+            /** Format: double */
+            sortOrder: number;
+            isCompleted: boolean;
+            settings: components["schemas"]["Record_string.unknown_"];
+            createdAt: string;
+            updatedAt: string;
+        };
+        ProcedureResponse: {
+            id: string;
+            sectionId: string;
+            referenceNumber: string;
+            title: string;
+            description?: string | null;
+            requirements: components["schemas"]["Record_string.unknown_"];
+            /** Format: double */
+            sortOrder: number;
+            isCompleted: boolean;
+            completedBy?: string | null;
+            completedAt?: string | null;
+            memo?: string | null;
+            fieldData: components["schemas"]["Record_string.unknown_"];
+            canEdit: boolean;
+            createdAt: string;
+            updatedAt: string;
+        };
+        CompleteProcedureRequest: {
+            fieldData?: components["schemas"]["Record_string.unknown_"] | null;
+            memo?: string | null;
+        };
+        DocumentResponse: {
+            id: string;
+            caseId: string;
+            procedureId?: string | null;
+            fileName: string;
+            /** Format: double */
+            fileSize: number;
+            fileType: string;
+            storagePath: string;
+            /** Format: double */
+            version: number;
+            parentDocumentId?: string | null;
+            uploadedBy: string;
+            uploadedAt: string;
+            isDeleted: boolean;
+        };
+        CreateDocumentRequest: {
+            procedureId?: string | null;
+            fileName: string;
+            /** Format: double */
+            fileSize: number;
+            fileType: string;
+            storagePath: string;
+            /** Format: double */
+            version?: number | null;
+            parentDocumentId?: string | null;
+        };
+        /** @enum {string} */
+        NoteType: "observation" | "review_comment" | "general" | "memo";
+        NoteResponse: {
+            id: string;
+            caseId: string;
+            procedureId?: string | null;
+            noteType: components["schemas"]["NoteType"];
+            content: string;
+            createdBy: string;
+            createdAt: string;
+            updatedAt: string;
+            isEdited: boolean;
+        };
+        CreateNoteRequest: {
+            procedureId?: string | null;
+            noteType: components["schemas"]["NoteType"];
+            content: string;
+        };
+        UpdateNoteRequest: {
+            content: string;
+        };
+        AssignmentResponse: {
+            caseId: string;
+            userId: string;
+            role: components["schemas"]["AssignmentRole"];
+            assignedBy: string;
+            assignedAt: string;
+        };
+        CreateAssignmentRequest: {
+            userId: string;
+            role: components["schemas"]["AssignmentRole"];
+        };
+        /** @enum {string} */
+        CaseEntityType: "case" | "scope" | "section" | "procedure" | "document" | "note";
+        /** @enum {string} */
+        CaseAction: "created" | "updated" | "deleted" | "completed" | "archived" | "assigned" | "unassigned";
+        HistoryResponse: {
+            id: string;
+            caseId: string;
+            entityType: components["schemas"]["CaseEntityType"];
+            entityId: string;
+            action: components["schemas"]["CaseAction"];
+            changesBefore?: components["schemas"]["Record_string.unknown_"] | null;
+            changesAfter?: components["schemas"]["Record_string.unknown_"] | null;
+            changedBy: string;
+            changedAt: string;
+        };
+        /** @enum {string} */
+        PlanType: "standalone" | "case_integrated";
+        /** @enum {string} */
+        PlanStatus: "draft" | "in_review" | "approved" | "converted" | "archived";
+        AuditPlanResponse: {
+            id: string;
+            caseId?: string | null;
+            planType: components["schemas"]["PlanType"];
+            title: string;
+            clientName?: string | null;
+            caseType?: components["schemas"]["CaseType"] | null;
+            /** Format: double */
+            auditYear?: number | null;
+            startDate?: string | null;
+            targetCompletion?: string | null;
+            objectives?: {
+                priority?: string;
+                description: string;
+                id: string | null;
+            }[] | null;
+            businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+            financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
+            teamMembers?: {
+                /** Format: double */
+                hours?: number;
+                role: string;
+                name: string;
+                userId: string | null;
+            }[] | null;
+            phaseBreakdown?: {
+                endDate?: string | null;
+                startDate?: string | null;
+                description?: string | null;
+                /** Format: double */
+                duration: number;
+                name: string | null;
+            }[] | null;
+            totalBudget?: string | null;
+            /** Format: double */
+            totalHours?: number | null;
+            materialityThreshold?: string | null;
+            riskAssessment?: {
+                /** Format: double */
+                score?: number | null;
+                overallRisk?: string | null;
+                risks?: {
+                    message: string;
+                    severity: string;
+                    type: string | null;
+                }[];
+            } | null;
+            status: components["schemas"]["PlanStatus"];
+            organizationId: string;
+            createdBy: string;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        CreateAuditPlanRequest: {
+            caseId?: string | null;
+            planType?: components["schemas"]["PlanType"] | null;
+            title: string;
+            clientName?: string | null;
+            caseType?: components["schemas"]["CaseType"] | null;
+            /** Format: double */
+            auditYear?: number | null;
+            startDate?: string | null;
+            targetCompletion?: string | null;
+            objectives?: {
+                priority?: string;
+                description: string;
+                id: string | null;
+            }[];
+            businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+            financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
+            teamMembers?: {
+                /** Format: double */
+                hours?: number;
+                role: string;
+                name: string;
+                userId: string | null;
+            }[];
+            phaseBreakdown?: {
+                endDate?: string | null;
+                startDate?: string | null;
+                description?: string | null;
+                /** Format: double */
+                duration: number;
+                name: string | null;
+            }[];
+            totalBudget?: string | null;
+            /** Format: double */
+            totalHours?: number | null;
+            materialityThreshold?: string | null;
+            riskAssessment?: {
+                /** Format: double */
+                score?: number | null;
+                overallRisk?: string | null;
+                risks?: {
+                    message: string;
+                    severity: string;
+                    type: string | null;
+                }[];
+            };
+            status?: components["schemas"]["PlanStatus"] | null;
+        };
+        UpdateAuditPlanRequest: {
+            caseId?: string | null;
+            planType?: components["schemas"]["PlanType"] | null;
+            title?: string | null;
+            clientName?: string | null;
+            caseType?: components["schemas"]["CaseType"] | null;
+            /** Format: double */
+            auditYear?: number | null;
+            startDate?: string | null;
+            targetCompletion?: string | null;
+            objectives?: {
+                priority?: string;
+                description: string;
+                id: string | null;
+            }[];
+            businessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+            financialAreas?: components["schemas"]["Record_string.boolean_"] | null;
+            teamMembers?: {
+                /** Format: double */
+                hours?: number;
+                role: string;
+                name: string;
+                userId: string | null;
+            }[];
+            phaseBreakdown?: {
+                endDate?: string | null;
+                startDate?: string | null;
+                description?: string | null;
+                /** Format: double */
+                duration: number;
+                name: string | null;
+            }[];
+            totalBudget?: string | null;
+            /** Format: double */
+            totalHours?: number | null;
+            materialityThreshold?: string | null;
+            riskAssessment?: {
+                /** Format: double */
+                score?: number | null;
+                overallRisk?: string | null;
+                risks?: {
+                    message: string;
+                    severity: string;
+                    type: string | null;
+                }[];
+            };
+            status?: components["schemas"]["PlanStatus"] | null;
+        };
+        AuditPlanTemplateResponse: {
+            id: string;
+            name: string;
+            caseType?: components["schemas"]["CaseType"] | null;
+            description?: string | null;
+            defaultObjectives?: {
+                priority?: string;
+                description: string;
+                id: string | null;
+            }[] | null;
+            defaultScope?: components["schemas"]["Record_string.unknown_"] | null;
+            defaultPhases?: {
+                description?: string;
+                /** Format: double */
+                duration: number;
+                name: string | null;
+            }[] | null;
+            defaultBusinessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+            defaultFinancialAreas?: components["schemas"]["Record_string.boolean_"] | null;
+            /** Format: double */
+            estimatedDuration?: number | null;
+            /** Format: double */
+            estimatedHours?: number | null;
+            estimatedBudget?: string | null;
+            isDefault: boolean;
+            isActive: boolean;
+            organizationId?: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            /** Format: date-time */
+            updatedAt: string;
+        };
+        CreateAuditPlanTemplateRequest: {
+            name: string;
+            caseType?: components["schemas"]["CaseType"] | null;
+            description?: string | null;
+            defaultObjectives?: {
+                priority?: string;
+                description: string;
+                id?: string | null;
+            }[];
+            defaultScope?: components["schemas"]["Record_string.unknown_"] | null;
+            defaultPhases?: {
+                description?: string;
+                /** Format: double */
+                duration: number;
+                name: string | null;
+            }[];
+            defaultBusinessUnits?: components["schemas"]["Record_string.boolean_"] | null;
+            defaultFinancialAreas?: components["schemas"]["Record_string.boolean_"] | null;
+            /** Format: double */
+            estimatedDuration?: number | null;
+            /** Format: double */
+            estimatedHours?: number | null;
+            estimatedBudget?: string | null;
+            isDefault?: boolean | null;
+            isActive?: boolean | null;
+        };
+        CreatePlanFromTemplateRequest: {
+            templateId: string;
+            title: string;
+            clientName?: string | null;
+            /** Format: double */
+            auditYear?: number | null;
+            startDate?: string | null;
+        };
+        /** @enum {string} */
+        EntityType: "job" | "invoice" | "user" | "organization" | "employee" | "contact" | "deal";
+        /** @enum {string} */
+        AuditAction: "created" | "updated" | "deleted" | "completed" | "failed" | "started" | "cancelled" | "retrying";
+        AuditLogUser: {
+            id: string;
+            name: string | null;
+            email: string;
+        };
+        AuditLogResponse: {
+            id: string;
+            entityType: components["schemas"]["EntityType"];
+            entityId: string;
+            action: components["schemas"]["AuditAction"];
+            organizationId: string | null;
+            userId: string | null;
+            metadata: components["schemas"]["Record_string.unknown_"] | null;
+            ipAddress: string | null;
+            userAgent: string | null;
+            /** Format: date-time */
+            createdAt: string;
+            user?: components["schemas"]["AuditLogUser"] | null;
+        };
+        AuditLogFilters: {
+            entityType?: components["schemas"]["EntityType"];
+            entityId?: string;
+            action?: components["schemas"]["AuditAction"];
+            userId?: string;
+            startDate?: string;
+            endDate?: string;
+            /** Format: double */
+            limit?: number;
+            /** Format: double */
+            offset?: number;
+        };
+        ExportAuditLogsRequest: {
+            /** @enum {string} */
+            format: "csv" | "json";
+            filters?: components["schemas"]["AuditLogFilters"];
+        };
+        SubmitForApprovalResponse: {
+            requestId: string;
+            workflowId: string;
+            status: string;
+            message: string;
+        };
+        EntityData: {
+            entityType: components["schemas"]["EntityType"];
+            entityId: string;
+            /** Format: double */
+            amount?: number;
+            status?: string;
+            createdBy?: string;
+        } & {
+            [key: string]: unknown;
+        };
+        SubmitForApprovalRequest: {
+            entityType: string;
+            entityId: string;
+            entityData: components["schemas"]["EntityData"];
+        };
+        ApprovalStepResponse: {
+            id: string;
+            /** Format: double */
+            stepOrder: number;
+            approverId: string;
+            approverName?: string;
+            status: string;
+            comments?: string;
+            actionAt?: string;
+            delegatedTo?: string;
+            delegatedToName?: string;
+        };
+        ApprovalRequestResponse: {
+            id: string;
+            workflowId: string;
+            workflowName: string;
+            entityType: string;
+            entityId: string;
+            status: string;
+            requestedBy: string;
+            requestedByName?: string;
+            submittedAt: string;
+            completedAt?: string;
+            /** Format: double */
+            currentStep?: number;
+            /** Format: double */
+            totalSteps?: number;
+            steps: components["schemas"]["ApprovalStepResponse"][];
+        };
+        ApprovalActionResponse: {
+            success: boolean;
+            message: string;
+            requestStatus?: string;
+        };
+        ApprovalActionRequest: {
+            comments?: string;
+        };
+        DelegateApprovalRequest: {
+            delegateToUserId: string;
+            comments?: string;
+        };
+        Invoice: {
+            id: string;
+            number: string;
+            /** @enum {string} */
+            type: "SALES" | "PURCHASE";
             date: string;
             /** Format: double */
-            amount: number;
+            total: number;
+            status: string;
+        };
+        InvoiceCreateRequest: {
+            /** @enum {string} */
+            type: "SALES" | "PURCHASE";
+            customerId?: string;
+            supplierId?: string;
+            date: string;
+            dueDate?: string;
+            items: {
+                /** Format: double */
+                unitPrice: number;
+                /** Format: double */
+                quantity: number;
+                description: string;
+            }[];
+        };
+        /**
+         * @description Hisabiq (Accounting) API Response Types
+         *
+         *     These are simplified types for API responses that TSOA can handle.
+         *     Internal Odoo types use tuples [number, string] which TSOA doesn't support.
+         *     All fields use camelCase naming convention for JavaScript/TypeScript APIs.
+         */
+        PaymentResponse: {
+            /** Format: double */
+            id?: number;
+            /** @enum {string} */
+            paymentType: "inbound" | "outbound" | "transfer";
             /** @enum {string} */
             partnerType: "customer" | "supplier";
             /** Format: double */
             partnerId: number;
+            partnerName?: string;
+            /** Format: double */
+            amount: number;
+            /** Format: double */
+            currencyId?: number;
+            paymentDate: string;
+            /** Format: double */
+            journalId: number;
+            journalName?: string;
+            /** Format: double */
+            paymentMethodId?: number;
+            ref?: string;
+            /** @enum {string} */
+            state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
+        };
+        CreatePaymentDTO: {
             /** @enum {string} */
             type: "inbound" | "outbound";
-          }[];
+            /** Format: double */
+            partnerId: number;
+            /** @enum {string} */
+            partnerType: "customer" | "supplier";
+            /** Format: double */
+            amount: number;
+            date: string;
+            /** Format: double */
+            journalId: number;
+            reference?: string;
+            invoiceIds?: number[];
         };
-      };
+        PartnerResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            email?: string;
+            phone?: string;
+            vat?: string;
+            /** Format: double */
+            accountReceivableId?: number;
+            /** Format: double */
+            accountPayableId?: number;
+            /** Format: double */
+            paymentTermId?: number;
+            /** Format: double */
+            customerRank?: number;
+            /** Format: double */
+            supplierRank?: number;
+        };
+        JournalResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            code: string;
+            /** @enum {string} */
+            type: "sale" | "purchase" | "cash" | "bank" | "general";
+            /** Format: double */
+            currencyId?: number;
+            currencyName?: string;
+            /** Format: double */
+            companyId: number;
+            companyName?: string;
+            /** Format: double */
+            defaultAccountId: number;
+            defaultAccountName?: string;
+        };
+        TaxResponse: {
+            /** Format: double */
+            id: number;
+            name: string;
+            /** Format: double */
+            amount: number;
+            /** @enum {string} */
+            amountType: "percent" | "division" | "fixed" | "group";
+            /** @enum {string} */
+            typeTaxUse: "sale" | "purchase" | "none";
+            active: boolean;
+        };
+        AccountBalanceReportResponse: {
+            /** Format: double */
+            accountId: number;
+            accountCode: string;
+            accountName: string;
+            /** Format: double */
+            debit: number;
+            /** Format: double */
+            credit: number;
+            /** Format: double */
+            balance: number;
+        };
+        AccountBalanceQuery: {
+            accountIds?: number[];
+            dateFrom?: string;
+            dateTo?: string;
+        };
+        PartnerLedgerEntryResponse: {
+            date: string;
+            moveName: string;
+            label: string;
+            /** Format: double */
+            debit: number;
+            /** Format: double */
+            credit: number;
+            /** Format: double */
+            balance: number;
+        };
+        PartnerLedgerReportResponse: {
+            /** Format: double */
+            partnerId: number;
+            partnerName: string;
+            /** Format: double */
+            debit: number;
+            /** Format: double */
+            credit: number;
+            /** Format: double */
+            balance: number;
+            entries: components["schemas"]["PartnerLedgerEntryResponse"][];
+        };
+        PartnerLedgerQuery: {
+            /** Format: double */
+            partnerId: number;
+            dateFrom?: string;
+            dateTo?: string;
+        };
+        ProfitLossResponse: {
+            /** Format: double */
+            income: number;
+            /** Format: double */
+            expenses: number;
+            /** Format: double */
+            netProfit: number;
+        };
+        GLEntryResponse: {
+            /** Format: double */
+            id: number;
+            /** Format: double */
+            moveId: number;
+            moveName?: string;
+            date: string;
+            /** Format: double */
+            accountId: number;
+            accountName?: string;
+            /** Format: double */
+            partnerId?: number;
+            partnerName?: string;
+            name: string;
+            /** Format: double */
+            debit: number;
+            /** Format: double */
+            credit: number;
+            /** Format: double */
+            balance: number;
+            /** Format: double */
+            amountCurrency?: number;
+            /** Format: double */
+            currencyId?: number;
+            currencyName?: string;
+            /** Format: double */
+            companyId: number;
+            companyName?: string;
+        };
     };
-    responses: {
-      /** @description Payments created */
-      201: {
-        headers: {
-          [name: string]: unknown;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
+}
+export type $defs = Record<string, never>;
+export interface operations {
+    GetAccountingInvoices: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                type?: "SALES" | "PURCHASE";
+                state?: "draft" | "posted" | "cancel";
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              index: number;
-            }[];
-            success: {
-              /** Format: double */
-              id: number;
-              /** Format: double */
-              index: number;
-            }[];
-          };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        limit: number;
+                        /** Format: double */
+                        page: number;
+                        /** Format: double */
+                        total: number;
+                        invoices: components["schemas"]["Invoice"][];
+                    };
+                };
+            };
         };
-      };
     };
-  };
-  BatchConfirmAccountingPayments: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        "application/json": {
-          paymentIds: number[];
+    CreateAccountingInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
         };
-      };
-    };
-    responses: {
-      /** @description Ok */
-      200: {
-        headers: {
-          [name: string]: unknown;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvoiceCreateRequest"];
+            };
         };
-        content: {
-          "application/json": {
-            failed: {
-              error: string;
-              /** Format: double */
-              id: number;
-            }[];
-            success: number[];
-          };
+        responses: {
+            /** @description Invoice created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invoice"];
+                };
+            };
         };
-      };
     };
-  };
+    GetAccountingInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invoice"];
+                };
+            };
+        };
+    };
+    ValidateAccountingInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    CancelAccountingInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    RefundAccountingInvoice: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: double */
+                    journalId?: number;
+                    date?: string;
+                    reason?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        refundId: number;
+                    };
+                };
+            };
+        };
+    };
+    GetAccountingInvoicePDF: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                invoiceId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+        };
+    };
+    GetAccountingBills: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                state?: "draft" | "posted" | "cancel";
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        limit: number;
+                        /** Format: double */
+                        page: number;
+                        /** Format: double */
+                        total: number;
+                        bills: components["schemas"]["Invoice"][];
+                    };
+                };
+            };
+        };
+    };
+    CreateAccountingBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["InvoiceCreateRequest"];
+            };
+        };
+        responses: {
+            /** @description Bill created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invoice"];
+                };
+            };
+        };
+    };
+    GetAccountingBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Invoice"];
+                };
+            };
+        };
+    };
+    ValidateAccountingBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    CancelAccountingBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    RefundAccountingBill: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** Format: double */
+                    journalId?: number;
+                    date?: string;
+                    reason?: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        refundId: number;
+                    };
+                };
+            };
+        };
+    };
+    GetAccountingBillPDF: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                billId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": string;
+                };
+            };
+        };
+    };
+    GetAccountingAccounts: {
+        parameters: {
+            query?: {
+                accountType?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        parentId?: string;
+                        type: string;
+                        name: string;
+                        code: string;
+                        id: string;
+                    }[];
+                };
+            };
+        };
+    };
+    SearchAccountingAccounts: {
+        parameters: {
+            query: {
+                q: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        type: string;
+                        name: string;
+                        code: string;
+                        id: string;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingPayments: {
+        parameters: {
+            query?: {
+                page?: number;
+                limit?: number;
+                type?: "inbound" | "outbound" | "transfer";
+                state?: "draft" | "posted" | "sent" | "reconciled" | "cancelled";
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PaymentResponse"][];
+                };
+            };
+        };
+    };
+    CreateAccountingPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePaymentDTO"];
+            };
+        };
+        responses: {
+            /** @description Payment created successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        id: number;
+                    };
+                };
+            };
+        };
+    };
+    ConfirmAccountingPayment: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                paymentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetAccountingPartners: {
+        parameters: {
+            query?: {
+                isCustomer?: boolean;
+                isSupplier?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerResponse"][];
+                };
+            };
+        };
+    };
+    GetAccountingJournals: {
+        parameters: {
+            query?: {
+                type?: "sale" | "purchase" | "cash" | "bank" | "general";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JournalResponse"][];
+                };
+            };
+        };
+    };
+    GetAccountingTaxes: {
+        parameters: {
+            query?: {
+                typeTaxUse?: "sale" | "purchase" | "none";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TaxResponse"][];
+                };
+            };
+        };
+    };
+    GetAccountingTrialBalance: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountBalanceQuery"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountBalanceReportResponse"][];
+                };
+            };
+        };
+    };
+    GetAccountingPartnerLedger: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PartnerLedgerQuery"];
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PartnerLedgerReportResponse"] | null;
+                };
+            };
+        };
+    };
+    GetAccountingProfitLoss: {
+        parameters: {
+            query?: {
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProfitLossResponse"];
+                };
+            };
+        };
+    };
+    GetAccountingGeneralLedger: {
+        parameters: {
+            query?: {
+                accountId?: number;
+                partnerId?: number;
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GLEntryResponse"][];
+                };
+            };
+        };
+    };
+    GetAccountingPaymentTerms: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        note?: string;
+                        name: string;
+                        /** Format: double */
+                        id: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingAgedReceivable: {
+        parameters: {
+            query?: {
+                asOfDate?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        total: number;
+                        /** Format: double */
+                        days_over_90: number;
+                        /** Format: double */
+                        days_61_90: number;
+                        /** Format: double */
+                        days_31_60: number;
+                        /** Format: double */
+                        days_1_30: number;
+                        /** Format: double */
+                        current: number;
+                        partnerName: string;
+                        /** Format: double */
+                        partnerId: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingAgedPayable: {
+        parameters: {
+            query?: {
+                asOfDate?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        total: number;
+                        /** Format: double */
+                        days_over_90: number;
+                        /** Format: double */
+                        days_61_90: number;
+                        /** Format: double */
+                        days_31_60: number;
+                        /** Format: double */
+                        days_1_30: number;
+                        /** Format: double */
+                        current: number;
+                        partnerName: string;
+                        /** Format: double */
+                        partnerId: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingBankStatements: {
+        parameters: {
+            query?: {
+                journalId?: number;
+                dateFrom?: string;
+                dateTo?: string;
+                state?: "open" | "confirm";
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        state: string;
+                        /** Format: double */
+                        balanceEnd: number;
+                        /** Format: double */
+                        balanceEndReal: number;
+                        /** Format: double */
+                        balanceStart: number;
+                        date: string;
+                        journalName: string;
+                        /** Format: double */
+                        journalId: number;
+                        name: string;
+                        /** Format: double */
+                        id: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingBankStatementLines: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                statementId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        isReconciled: boolean;
+                        /** Format: double */
+                        amount: number;
+                        partnerName?: string;
+                        paymentRef: string;
+                        date: string;
+                        /** Format: double */
+                        id: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingReconciliationSuggestions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lineId: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        amount: number;
+                        date: string;
+                        partnerName: string;
+                        moveName: string;
+                        /** Format: double */
+                        moveId: number;
+                    }[];
+                };
+            };
+        };
+    };
+    ReconcileAccountingBankStatementLine: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                lineId: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    moveIds: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        message?: string;
+                        success: boolean;
+                    };
+                };
+            };
+        };
+    };
+    GetAccountingCurrencies: {
+        parameters: {
+            query?: {
+                onlyActive?: boolean;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        active: boolean;
+                        /** Format: double */
+                        rounding: number;
+                        /** @enum {string} */
+                        position: "after" | "before";
+                        symbol: string;
+                        name: string;
+                        /** Format: double */
+                        id: number;
+                    }[];
+                };
+            };
+        };
+    };
+    GetAccountingCurrencyRates: {
+        parameters: {
+            query?: {
+                currencyId?: number;
+                dateFrom?: string;
+                dateTo?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        companyId: number;
+                        /** Format: double */
+                        rate: number;
+                        name: string;
+                        currencyName: string;
+                        /** Format: double */
+                        currencyId: number;
+                        /** Format: double */
+                        id: number;
+                    }[];
+                };
+            };
+        };
+    };
+    ConvertAccountingCurrency: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    date?: string;
+                    /** Format: double */
+                    toCurrencyId: number;
+                    /** Format: double */
+                    fromCurrencyId: number;
+                    /** Format: double */
+                    amount: number;
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        /** Format: double */
+                        rate: number;
+                        /** Format: double */
+                        convertedAmount: number;
+                    };
+                };
+            };
+        };
+    };
+    BatchValidateAccountingInvoices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    invoiceIds: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        failed: {
+                            error: string;
+                            /** Format: double */
+                            id: number;
+                        }[];
+                        success: number[];
+                    };
+                };
+            };
+        };
+    };
+    BatchCancelAccountingInvoices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    invoiceIds: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        failed: {
+                            error: string;
+                            /** Format: double */
+                            id: number;
+                        }[];
+                        success: number[];
+                    };
+                };
+            };
+        };
+    };
+    BatchCreateAccountingInvoices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    invoices: components["schemas"]["InvoiceCreateRequest"][];
+                };
+            };
+        };
+        responses: {
+            /** @description Invoices created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        failed: {
+                            error: string;
+                            /** Format: double */
+                            index: number;
+                        }[];
+                        success: {
+                            /** Format: double */
+                            id: number;
+                            /** Format: double */
+                            index: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    BatchCreateAccountingPayments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    payments: {
+                        reference?: string;
+                        /** Format: double */
+                        journalId: number;
+                        date: string;
+                        /** Format: double */
+                        amount: number;
+                        /** @enum {string} */
+                        partnerType: "customer" | "supplier";
+                        /** Format: double */
+                        partnerId: number;
+                        /** @enum {string} */
+                        type: "inbound" | "outbound";
+                    }[];
+                };
+            };
+        };
+        responses: {
+            /** @description Payments created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        failed: {
+                            error: string;
+                            /** Format: double */
+                            index: number;
+                        }[];
+                        success: {
+                            /** Format: double */
+                            id: number;
+                            /** Format: double */
+                            index: number;
+                        }[];
+                    };
+                };
+            };
+        };
+    };
+    BatchConfirmAccountingPayments: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    paymentIds: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Ok */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        failed: {
+                            error: string;
+                            /** Format: double */
+                            id: number;
+                        }[];
+                        success: number[];
+                    };
+                };
+            };
+        };
+    };
 }

@@ -37,8 +37,8 @@ export function ProtectedRoute({
         return;
       }
 
-      // Skip check if already on onboarding page
-      if (pathname === "/onboarding") {
+      // Skip check if already on get-started or onboarding page
+      if (pathname === "/get-started" || pathname === "/onboarding") {
         setCheckingOrganization(false);
         return;
       }
@@ -47,23 +47,23 @@ export function ProtectedRoute({
         // Get user's active organization
         const { data, error } = await authClient.organization.getFullOrganization();
 
-        // If no organization or error, redirect to onboarding
+        // If no organization or error, redirect to get-started page
         if (!data || error) {
-          router.push("/onboarding");
+          router.push("/get-started");
           return;
         }
 
         // Additional check: ensure user is a member of the organization
         if (!data.members || data.members.length === 0) {
-          router.push("/onboarding");
+          router.push("/get-started");
           return;
         }
 
         setCheckingOrganization(false);
       } catch (err) {
         console.error("Error checking organization:", err);
-        // If error, redirect to onboarding to be safe
-        router.push("/onboarding");
+        // If error, redirect to get-started for a friendly experience
+        router.push("/get-started");
       }
     }
 

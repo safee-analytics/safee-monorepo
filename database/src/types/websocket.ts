@@ -1,3 +1,5 @@
+import type { NotificationType } from "../drizzle/_common.js";
+
 export type SocketChannel = `user:${string}` | `org:${string}` | `upload:${string}` | "admin:all";
 
 export interface ConnectedEvent {
@@ -20,12 +22,16 @@ export interface ErrorEvent {
 }
 
 export interface NotificationEvent {
-  id?: string;
-  type: "info" | "success" | "warning" | "error";
+  id: string;
+  type: NotificationType;
   title: string;
-  message: string;
+  description: string;
   timestamp: string;
-  metadata?: Record<string, unknown>;
+  isRead: boolean;
+  relatedEntityType: string | null;
+  relatedEntityId: string | null;
+  actionLabel: string | null;
+  actionUrl: string | null;
 }
 
 export interface ActivityEvent {

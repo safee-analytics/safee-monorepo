@@ -25,6 +25,8 @@ import { CommandPalette } from "@/components/search/CommandPalette";
 import { SearchBar } from "@/components/search/SearchBar";
 import { useActiveOrganization, useListOrganizations, useOrganizationMembers } from "@/lib/api/hooks";
 import { CompanyMenu } from "./CompanyMenu";
+import { NotificationDropdown } from "./NotificationDropdown";
+import { CalendarDropdown } from "./CalendarDropdown";
 
 export function Navigation() {
   const pathname = usePathname();
@@ -136,14 +138,9 @@ export function Navigation() {
 
             <LanguageSwitcher />
 
-            <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-              <FiCalendar className="w-5 h-5" />
-            </button>
+            <CalendarDropdown />
 
-            <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors relative">
-              <FiBell className="w-5 h-5" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
+            <NotificationDropdown />
 
             <CompanyMenu />
 

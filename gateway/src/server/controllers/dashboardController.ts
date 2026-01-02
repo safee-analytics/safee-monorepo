@@ -1,64 +1,21 @@
-import { Controller, Get, Post, Route, Tags, Security, Request, Path, Query } from "tsoa";
+import { Controller, Get, Post, Delete, Route, Tags, Security, Request, Path, Query } from "tsoa";
 import type { AuthenticatedRequest } from "../middleware/auth.js";
 import {
   getCaseStats,
   getRecentCaseActivity,
   getRecentNotifications,
   markNotificationAsRead,
+  markNotificationAsUnread,
+  markNotificationAsDeleted,
   getUnreadNotificationsCount,
 } from "@safee/database";
 import { getServerContext } from "../serverContext.js";
-
-/**
- * Dashboard statistics response
- */
-export interface DashboardStatsResponse {
-  activeCases: number;
-  pendingReviews: number;
-  completedAudits: number;
-  totalCases: number;
-  completionRate: number;
-}
-
-/**
- * Case activity item
- */
-export interface RecentCaseUpdateResponse {
-  id: string;
-  type: "case_update";
-  caseId: string;
-  caseNumber: string;
-  title: string;
-  status: string;
-  updatedAt: string;
-  updatedBy: {
-    id: string;
-    name: string;
-  };
-}
-
-/**
- * Notification response
- */
-export interface NotificationResponse {
-  id: string;
-  type: string;
-  title: string;
-  description: string;
-  timestamp: string;
-  isRead: boolean;
-  relatedEntityType: string | null;
-  relatedEntityId: string | null;
-  actionLabel: string | null;
-  actionUrl: string | null;
-}
-
-/**
- * Unread notifications count response
- */
-export interface UnreadNotificationsCountResponse {
-  count: number;
-}
+import type {
+  DashboardStatsResponse,
+  RecentCaseUpdateResponse,
+  NotificationResponse,
+  UnreadNotificationsCountResponse,
+} from "../dtos/dashboard.js";
 
 @Route("dashboard")
 @Tags("Dashboard")
@@ -172,6 +129,50 @@ export class DashboardController extends Controller {
     }
 
     await markNotificationAsRead({ drizzle, logger }, notificationId, userId);
+
+    return { success: true };
+  }
+
+  /**
+   * Mark a notification as unread
+   * Marks a specific notification as unread for the authenticated user
+   */
+  @Post("/notifications/{notificationId}/unread")
+  @Security("jwt")
+  public async markNotificationAsUnread(
+    @Request() req: AuthenticatedRequest,
+    @Path() notificationId: string,
+  ): Promise<{ success: boolean }> {
+    const { drizzle, logger } = getServerContext();
+    const userId = req.betterAuthSession?.user.id;
+
+    if (!userId) {
+      throw new Error("No active user");
+    }
+
+    await markNotificationAsUnread({ drizzle, logger }, notificationId, userId);
+
+    return { success: true };
+  }
+
+  /**
+   * Delete a notification
+   * Marks a specific notification as deleted (soft delete) for the authenticated user
+   */
+  @Delete("/notifications/{notificationId}")
+  @Security("jwt")
+  public async deleteNotification(
+    @Request() req: AuthenticatedRequest,
+    @Path() notificationId: string,
+  ): Promise<{ success: boolean }> {
+    const { drizzle, logger } = getServerContext();
+    const userId = req.betterAuthSession?.user.id;
+
+    if (!userId) {
+      throw new Error("No active user");
+    }
+
+    await markNotificationAsDeleted({ drizzle, logger }, notificationId, userId);
 
     return { success: true };
   }
