@@ -25,7 +25,7 @@ export async function updateAuditPlan(
 
   const title = request.title ?? undefined;
 
-  if (title !== undefined && title.trim().length === 0) {
+  if (title?.trim().length === 0) {
     throw new InvalidInput("Title cannot be empty");
   }
 
@@ -42,41 +42,37 @@ export async function updateAuditPlan(
   }
 
   try {
-    const objectives =
-      request.objectives?.map((obj) => ({
-        id: obj.id ?? crypto.randomUUID(),
-        description: obj.description,
-        priority: obj.priority ?? undefined,
-      })) ?? undefined;
+    const objectives = request.objectives?.map((obj) => ({
+      id: obj.id ?? crypto.randomUUID(),
+      description: obj.description,
+      priority: obj.priority,
+    }));
 
-    const teamMembers =
-      request.teamMembers
-        // eslint-disable-next-line eqeqeq
-        ?.filter((member): member is typeof member & { userId: string } => member.userId != null)
-        .map((member) => ({
-          userId: member.userId,
-          name: member.name,
-          role: member.role,
-          hours: member.hours ?? undefined,
-        })) ?? undefined;
+    const teamMembers = request.teamMembers
+      // eslint-disable-next-line eqeqeq
+      ?.filter((member): member is typeof member & { userId: string } => member.userId != null)
+      .map((member) => ({
+        userId: member.userId,
+        name: member.name,
+        role: member.role,
+        hours: member.hours,
+      }));
 
-    const phaseBreakdown =
-      request.phaseBreakdown?.map((phase) => ({
-        name: phase.name ?? "",
-        duration: phase.duration,
-        description: phase.description ?? undefined,
-        startDate: phase.startDate ?? undefined,
-        endDate: phase.endDate ?? undefined,
-      })) ?? undefined;
+    const phaseBreakdown = request.phaseBreakdown?.map((phase) => ({
+      name: phase.name ?? "",
+      duration: phase.duration,
+      description: phase.description ?? undefined,
+      startDate: phase.startDate ?? undefined,
+      endDate: phase.endDate ?? undefined,
+    }));
 
     const riskAssessment = request.riskAssessment
       ? {
-          risks:
-            request.riskAssessment.risks?.map((risk) => ({
-              type: risk.type ?? "",
-              severity: risk.severity,
-              message: risk.message,
-            })) ?? undefined,
+          risks: request.riskAssessment.risks?.map((risk) => ({
+            type: risk.type ?? "",
+            severity: risk.severity,
+            message: risk.message,
+          })),
           overallRisk: request.riskAssessment.overallRisk ?? undefined,
           score: request.riskAssessment.score ?? undefined,
         }

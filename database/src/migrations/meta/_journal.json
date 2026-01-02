@@ -302,6 +302,13 @@
       "when": 1767295682317,
       "tag": "0042_spicy_sue_storm",
       "breakpoints": false
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1767315978052,
+      "tag": "0043_minor_kingpin",
+      "breakpoints": false
     }
   ]
 }

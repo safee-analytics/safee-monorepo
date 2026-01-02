@@ -135,7 +135,6 @@ export function requireRole(requiredRole: string) {
 
 export function requireAdmin() {
   return (request: AuthenticatedRequest): boolean => {
-    const user = request.betterAuthSession?.user;
-    return user !== undefined && user.role === "admin";
+    return request.betterAuthSession?.user.role === "admin";
   };
 }

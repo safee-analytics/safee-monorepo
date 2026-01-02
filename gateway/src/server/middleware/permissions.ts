@@ -2,6 +2,7 @@ import type { AuthenticatedRequest } from "./auth.js";
 import { getServerContext } from "../serverContext.js";
 import { eq, and, schema } from "@safee/database";
 import { InsufficientPermissions } from "../errors.js";
+import { defaultRoles } from "../../auth/accessControl.js";
 
 /**
  * Permission actions that can be checked
@@ -39,7 +40,7 @@ export type PermissionResource =
   | "teams";
 
 /**
- * Check if user has a specific permission
+ * Check if user has a specific permission by querying database
  */
 export async function hasPermission(
   userId: string,
@@ -50,24 +51,23 @@ export async function hasPermission(
   const ctx = getServerContext();
 
   try {
-    const member = await ctx.drizzle.query.members.findFirst({
-      where: and(eq(schema.members.userId, userId), eq(schema.members.organizationId, organizationId)),
+    // Query user's role in the organization
+    const { drizzle } = ctx;
+    const { members } = schema;
+
+    const member = await drizzle.query.members.findFirst({
+      where: and(eq(members.userId, userId), eq(members.organizationId, organizationId)),
     });
 
     if (!member) {
       return false;
     }
 
-    if (member.role === "admin" || member.role === "owner") {
-      return true;
-    }
+    // Check if the role has the required permission
+    const permissionString = `${resource}:${action}`;
+    const role = defaultRoles[member.role as keyof typeof defaultRoles];
 
-    if (member.role === "member" && action === "manage") {
-      return false;
-    }
-
-    // TODO: Implement fine-grained permission checking with Better-Auth dynamic access control
-    return true;
+    return role.permissions.includes(permissionString);
   } catch (err) {
     ctx.logger.error({ error: err, userId, action, resource }, "Error checking permission");
     return false;
@@ -81,17 +81,15 @@ export async function isTeamMember(userId: string, teamId: string): Promise<bool
   const ctx = getServerContext();
 
   try {
-    // Query Better-Auth's team_members table
-    // Better-Auth uses snake_case for table names
-    const teamMember = await ctx.drizzle
-      .select()
-      .from(schema.members) // This is a placeholder - Better-Auth creates its own team_members table
-      .where(eq(schema.members.userId, userId))
-      .limit(1);
+    // Query team members directly from database
+    const { drizzle } = ctx;
+    const { teamMembers } = schema;
 
-    // TODO: Query Better-Auth team_members table when schema is available
-    // For now, return true if user is a member of the organization
-    return teamMember.length > 0;
+    const member = await drizzle.query.teamMembers.findFirst({
+      where: and(eq(teamMembers.userId, userId), eq(teamMembers.teamId, teamId)),
+    });
+
+    return !!member;
   } catch (err) {
     ctx.logger.error({ error: err, userId, teamId }, "Error checking team membership");
     return false;

@@ -87,7 +87,7 @@ export class AnthropicProvider implements LLMProvider {
           contentArray.push({ text: curr.content, type: "text" } as Anthropic.Messages.TextBlockParam);
         }
 
-        if (lastMessage && lastMessage.role === curr.role) {
+        if (lastMessage?.role === curr.role) {
           (lastMessage.content as MessageContent[]).push(...contentArray);
         } else {
           agg.push({

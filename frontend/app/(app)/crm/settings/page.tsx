@@ -150,7 +150,7 @@ export default function CRMSettingsPage() {
                               </span>
                             )}
                             <span className="text-xs text-gray-500">
-                              Team: {stage.teamIds?.length ? "Specific Teams" : "All Teams"}
+                              Team: {stage.team ? stage.team.name : "All Teams"}
                             </span>
                           </div>
                         </div>

@@ -29,6 +29,7 @@ export const notifications = systemSchema.table(
     // Status
     isRead: boolean("is_read").default(false).notNull(),
     readAt: timestamp("read_at", { withTimezone: true }),
+    deletedAt: timestamp("deleted_at", { withTimezone: true }),
 
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
   },
@@ -37,6 +38,7 @@ export const notifications = systemSchema.table(
     index("notifications_org_id_idx").on(table.organizationId),
     index("notifications_created_at_idx").on(table.createdAt),
     index("notifications_is_read_idx").on(table.isRead),
+    index("notifications_deleted_at_idx").on(table.deletedAt),
   ],
 );
 

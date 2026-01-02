@@ -46,9 +46,7 @@ export function LeadKanbanBoard({ leads, stages }: LeadKanbanBoardProps) {
   const defaultColors = ["#3B82F6", "#8B5CF6", "#EC4899", "#10B981", "#F59E0B", "#EF4444"];
 
   const getStageColor = (stage: StageResponse) => {
-    if (stage.color) {
-      return typeof stage.color === "number" ? `#${stage.color.toString(16).padStart(6, "0")}` : stage.color;
-    }
+    // Stage color is not available in the current type, use sequence-based default color
     return defaultColors[(stage.sequence || 0) % defaultColors.length];
   };
 

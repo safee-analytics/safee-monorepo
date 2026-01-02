@@ -24,6 +24,7 @@ const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET ?? "";
 const corsOrigin = process.env.CORS_ORIGIN ?? "http://app.localhost:8080";
 const frontendUrl = process.env.FRONTEND_URL ?? "http://app.localhost:8080";
 const landingUrl = process.env.LANDING_URL ?? "http://localhost:8080";
+const requireEmailVerification = process.env.REQUIRE_EMAIL_VERIFICATION === "true";
 
 const { drizzle } = connect("better-auth");
 
@@ -120,10 +121,29 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-    requireEmailVerification: false, // TODO: Enable in production
+    requireEmailVerification,
     minPasswordLength: 8,
     maxPasswordLength: 128,
     autoSignIn: true,
+    sendVerificationEmail: async ({
+      user,
+      url,
+    }: {
+      user: { id: string; email: string; name: string };
+      url: string;
+    }) => {
+      if (!emailService) {
+        logger.warn({ userId: user.id }, "Email service not configured");
+        return;
+      }
+
+      const emailConfig = createEmailConfig(emailService, logger);
+      await emailConfig.emailVerification.sendEmailVerification({
+        email: user.email,
+        name: user.name,
+        verificationUrl: url,
+      });
+    },
     sendResetPassword: async ({ user, url }) => {
       if (!emailService) {
         logger.warn({ userId: user.id }, "Email service not configured");
@@ -137,7 +157,8 @@ export const auth = betterAuth({
         resetUrl: url,
       });
     },
-    resetPasswordTokenExpiresIn: 3600,
+    emailVerificationTokenExpiresIn: 86400, // 24 hours
+    resetPasswordTokenExpiresIn: 3600, // 1 hour
   },
 
   socialProviders: {

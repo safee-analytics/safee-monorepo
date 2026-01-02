@@ -72,7 +72,8 @@ services:
       - SLACK_ERROR_CHANNEL=${SLACK_ERROR_CHANNEL:-#dev_odoo_alerts}
     # Local dev override: single-threaded mode (safe for laptops)
     # workers=0 uses ~500MB RAM instead of 20GB
-    command: odoo --workers=0 --max-cron-threads=0
+    # Auto-install core modules on first DB: dependencies + business modules
+    command: odoo --workers=0 --max-cron-threads=0 --init=mail,calendar,resource,account,crm,sale_management,sale_crm,hr,hr_holidays,hr_attendance,hr_expense,portal,base_automation,auditlog,auto_backup,database_cleanup --without-demo=all
     volumes:
       - odoo-data:/var/lib/odoo
       - ./odoo/odoo.conf:/etc/odoo/odoo.conf:ro

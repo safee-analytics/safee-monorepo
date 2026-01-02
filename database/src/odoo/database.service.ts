@@ -810,10 +810,7 @@ export class OdooDatabaseService {
       "mail", // Required by almost all modules
       "calendar", // Required by HR modules
       "resource", // Required by HR scheduling/calendar
-      "sms", // Required by CRM/Sales/HR SMS features
-      "phone_validation", // Required by CRM
-      "iap", // Internet Account Protocol (required by CRM IAP features)
-      "snailmail", // Required for postal mail features
+      // Note: sms, phone_validation, iap, snailmail removed - not used
       "digest", // Required by various modules
 
       // Core business modules
@@ -898,8 +895,8 @@ export class OdooDatabaseService {
       // ========================================
       // CRITICAL: Core Odoo Dependencies (must be installed FIRST)
       // ========================================
-      "stock", // Inventory/Warehouse - required by stock_*, sale_stock, purchase_stock, project_stock
-      "purchase", // Purchase Management - required by purchase_*, sale_purchase, project_purchase
+      // "stock", // Inventory/Warehouse - not used
+      // "purchase", // Purchase Management - not used
       "mass_mailing", // Mass Mailing - required by mass_mailing_*, mail_tracking_mass_mailing
       "board", // Dashboards - required by various modules
       "hr_contract", // HR Contracts - required by hr_contract_*, hr_holidays_contract

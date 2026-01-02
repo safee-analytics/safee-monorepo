@@ -2,7 +2,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiClient, handleApiError, getCurrentUser, updateUserProfile, updateUserLocale } from "../client";
 import { queryKeys } from "./queryKeys";
 import { useOrgStore } from "@/stores/useOrgStore";
-
+import { useWebSocket } from "@/lib/websocket/useWebSocket";
+import { useEffect } from "react";
 import { userSchema } from "@/lib/validation";
 // ... (rest of the imports)
 export function useUserProfile() {
@@ -65,7 +66,10 @@ export function useUpdateUserLocale() {
 }
 
 export function useNotifications() {
-  return useQuery({
+  const queryClient = useQueryClient();
+  const { subscribe } = useWebSocket();
+
+  const query = useQuery({
     queryKey: queryKeys.notifications.all,
     queryFn: async () => {
       const { data, error } = await apiClient.GET("/dashboard/notifications");
@@ -74,18 +78,48 @@ export function useNotifications() {
     },
     retry: false,
   });
+
+  // Subscribe to real-time notification events
+  useEffect(() => {
+    const unsubscribe = subscribe("user:notifications", "notification", () => {
+      // Invalidate both notifications and unread count when new notification arrives
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount });
+    });
+
+    return unsubscribe;
+  }, [subscribe, queryClient]);
+
+  return query;
 }
 
 export function useUnreadNotificationsCount() {
-  return useQuery({
+  const queryClient = useQueryClient();
+  const { subscribe } = useWebSocket();
+
+  const query = useQuery({
     queryKey: queryKeys.notifications.unreadCount,
     queryFn: async () => {
       const { data, error } = await apiClient.GET("/dashboard/notifications/unread-count");
       if (error) throw new Error(handleApiError(error));
-      return data;
+      return data?.count ?? 0;
     },
-    refetchInterval: 30000,
+    // Remove polling since we're using WebSocket for real-time updates
+    // refetchInterval: 30000,
   });
+
+  // Subscribe to real-time notification events
+  useEffect(() => {
+    const unsubscribe = subscribe("user:notifications", "notification", () => {
+      // Invalidate both notifications and unread count when new notification arrives
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount });
+    });
+
+    return unsubscribe;
+  }, [subscribe, queryClient]);
+
+  return query;
 }
 
 export function useMarkNotificationAsRead() {
@@ -94,6 +128,46 @@ export function useMarkNotificationAsRead() {
   return useMutation({
     mutationFn: async (notificationId: string) => {
       const { data, error } = await apiClient.POST("/dashboard/notifications/{notificationId}/read", {
+        params: {
+          path: { notificationId },
+        },
+      });
+      if (error) throw new Error(handleApiError(error));
+      return data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount });
+    },
+  });
+}
+
+export function useMarkNotificationAsUnread() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (notificationId: string) => {
+      const { data, error } = await apiClient.POST("/dashboard/notifications/{notificationId}/unread", {
+        params: {
+          path: { notificationId },
+        },
+      });
+      if (error) throw new Error(handleApiError(error));
+      return data;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.all });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.notifications.unreadCount });
+    },
+  });
+}
+
+export function useDeleteNotification() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (notificationId: string) => {
+      const { data, error } = await apiClient.DELETE("/dashboard/notifications/{notificationId}", {
         params: {
           path: { notificationId },
         },

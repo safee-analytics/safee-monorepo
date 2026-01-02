@@ -43,7 +43,7 @@ export async function updateCase(
   const title = request.title ?? undefined;
   const description = request.description ?? undefined;
 
-  if (title !== undefined && title.trim().length === 0) {
+  if (title?.trim().length === 0) {
     throw new InvalidInput("Title cannot be empty");
   }
 
